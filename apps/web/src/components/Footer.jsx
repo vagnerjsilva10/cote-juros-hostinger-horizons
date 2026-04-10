@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Linkedin, ShieldCheck, Lock, Building } from 'lucide-react';
@@ -11,8 +10,8 @@ function Footer() {
     {
       title: 'Comparadores',
       links: [
-        { label: 'Melhores empréstimos', path: '/melhores-emprestimos' },
-        { label: 'Melhores cartões', path: '/melhores-cartoes' },
+        { label: 'Melhores emprestimos', path: '/melhores-emprestimos' },
+        { label: 'Melhores cartoes', path: '/melhores-cartoes' },
         { label: 'Melhores financiamentos', path: '/financiamento' },
         { label: 'Comparador de taxas', path: '/emprestimos' }
       ]
@@ -22,12 +21,12 @@ function Footer() {
       links: [
         { label: 'Simuladores', path: '/ferramentas' },
         { label: 'Calculadoras', path: '/ferramentas' },
-        { label: 'Análise de Perfil', path: '/diagnostico-financeiro' },
+        { label: 'Analise de Perfil', path: '/diagnostico-financeiro' },
         { label: 'Cote Finance AI', path: '/cote-finance-ai' }
       ]
     },
     {
-      title: 'Educação',
+      title: 'Educacao',
       links: [
         { label: 'Blog', path: '/blog' },
         { label: 'Guias', path: '/blog' },
@@ -55,6 +54,13 @@ function Footer() {
     }
   ];
 
+  const socialItems = [
+    { label: 'LinkedIn', Icon: Linkedin },
+    { label: 'Twitter', Icon: Twitter },
+    { label: 'Instagram', Icon: Instagram },
+    { label: 'Facebook', Icon: Facebook }
+  ];
+
   return (
     <footer className="bg-secondary-subtle border-t border-border pt-20 pb-10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -63,8 +69,8 @@ function Footer() {
             <Link to="/" className="inline-block">
               <CoteJurosLogo variant="grayscale" className="h-8 w-auto" />
             </Link>
-            <p className="text-slate-600 text-sm leading-relaxed max-w-sm">
-              Comparador financeiro inteligente. Encontre as melhores taxas de empréstimos, cartões e financiamentos do mercado em segundos.
+            <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
+              Comparador financeiro inteligente. Encontre as melhores taxas de emprestimos, cartoes e financiamentos do mercado em segundos.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 bg-white rounded-lg py-2 px-3 border border-border shadow-sm">
@@ -81,7 +87,7 @@ function Footer() {
               </div>
             </div>
           </div>
-          
+
           {footerSections.map((section) => (
             <div key={section.title} className="col-span-1">
               <span className="text-sm font-bold text-foreground uppercase tracking-wider mb-6 block">
@@ -92,7 +98,7 @@ function Footer() {
                   <li key={link.path}>
                     <Link
                       to={link.path}
-                      className="text-sm text-slate-600 hover:text-primary transition-colors duration-200 font-medium"
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 font-medium"
                     >
                       {link.label}
                     </Link>
@@ -105,32 +111,31 @@ function Footer() {
 
         <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
           <div className="flex flex-col items-center md:items-start space-y-2">
-            <p className="text-sm text-slate-600 font-medium">
-              Cote Juros © {currentYear}. Todos os direitos reservados.
+            <p className="text-sm text-muted-foreground font-medium">
+              Cote Juros � {currentYear}. Todos os direitos reservados.
             </p>
-            <p className="text-xs text-slate-400">
-              CNPJ: 00.000.000/0001-00 • São Paulo, SP - Brasil
+            <p className="text-xs text-muted-foreground/80">
+              Operacao digital no Brasil � Informacoes societarias no lancamento oficial
             </p>
           </div>
 
           <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full border border-border shadow-sm">
             <Lock className="w-3 h-3 text-primary" />
-            <span className="text-xs text-slate-600 font-medium">Seus dados são protegidos com criptografia SSL</span>
+            <span className="text-xs text-muted-foreground font-medium">Seus dados sao protegidos com criptografia SSL</span>
           </div>
 
           <div className="flex items-center space-x-5">
-            <a href="#" className="text-slate-600 hover:text-primary transition-colors duration-200" aria-label="LinkedIn">
-              <Linkedin className="h-5 w-5" />
-            </a>
-            <a href="#" className="text-slate-600 hover:text-primary transition-colors duration-200" aria-label="Twitter">
-              <Twitter className="h-5 w-5" />
-            </a>
-            <a href="#" className="text-slate-600 hover:text-primary transition-colors duration-200" aria-label="Instagram">
-              <Instagram className="h-5 w-5" />
-            </a>
-            <a href="#" className="text-slate-600 hover:text-primary transition-colors duration-200" aria-label="Facebook">
-              <Facebook className="h-5 w-5" />
-            </a>
+            {socialItems.map(({ label, Icon }) => (
+              <button
+                key={label}
+                type="button"
+                aria-label={`${label} em breve`}
+                title={`${label} em breve`}
+                className="text-muted-foreground/70 transition-colors duration-200 cursor-default"
+              >
+                <Icon className="h-5 w-5" />
+              </button>
+            ))}
           </div>
         </div>
       </div>

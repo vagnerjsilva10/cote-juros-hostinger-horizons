@@ -1,8 +1,6 @@
 
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import Header from '@/components/Header.jsx';
-import Footer from '@/components/Footer.jsx';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Target, Users, Award, Shield } from 'lucide-react';
 
@@ -38,9 +36,8 @@ function SobreNosPage() {
       </Helmet>
 
       <div className="min-h-screen bg-background">
-        <Header />
 
-        <section className="py-12 bg-secondary">
+        <section className="py-14 bg-slate-50 border-b border-border">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance" style={{ letterSpacing: '-0.02em' }}>
               Sobre nós
@@ -108,11 +105,10 @@ function SobreNosPage() {
             </div>
           </div>
         </section>
-
-        <Footer />
       </div>
     </>
   );
 }
 
 export default SobreNosPage;
+
