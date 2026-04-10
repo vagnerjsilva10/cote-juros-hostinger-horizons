@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Linkedin, ShieldCheck, Lock, Building } from 'lucide-react';
 import { CoteJurosLogo } from './CoteJurosLogo.jsx';
@@ -10,8 +10,8 @@ function Footer() {
     {
       title: 'Comparadores',
       links: [
-        { label: 'Melhores emprestimos', path: '/melhores-emprestimos' },
-        { label: 'Melhores cartoes', path: '/melhores-cartoes' },
+        { label: 'Melhores empréstimos', path: '/melhores-emprestimos' },
+        { label: 'Melhores cartões', path: '/melhores-cartoes' },
         { label: 'Melhores financiamentos', path: '/financiamento' },
         { label: 'Comparador de taxas', path: '/emprestimos' }
       ]
@@ -21,12 +21,12 @@ function Footer() {
       links: [
         { label: 'Simuladores', path: '/ferramentas' },
         { label: 'Calculadoras', path: '/ferramentas' },
-        { label: 'Analise de Perfil', path: '/diagnostico-financeiro' },
+        { label: 'Análise de Perfil', path: '/diagnostico-financeiro' },
         { label: 'Cote Finance AI', path: '/cote-finance-ai' }
       ]
     },
     {
-      title: 'Educacao',
+      title: 'Educação',
       links: [
         { label: 'Blog', path: '/blog' },
         { label: 'Guias', path: '/blog' },
@@ -70,7 +70,7 @@ function Footer() {
               <CoteJurosLogo variant="grayscale" className="h-8 w-auto" />
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
-              Comparador financeiro inteligente. Encontre as melhores taxas de emprestimos, cartoes e financiamentos do mercado em segundos.
+              Comparador financeiro inteligente. Encontre as melhores taxas de empréstimos, cartões e financiamentos do mercado em segundos.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 bg-white rounded-lg py-2 px-3 border border-border shadow-sm">
@@ -112,16 +112,16 @@ function Footer() {
         <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
           <div className="flex flex-col items-center md:items-start space-y-2">
             <p className="text-sm text-muted-foreground font-medium">
-              Cote Juros � {currentYear}. Todos os direitos reservados.
+              Cote Juros © {currentYear}. Todos os direitos reservados.
             </p>
             <p className="text-xs text-muted-foreground/80">
-              Operacao digital no Brasil � Informacoes societarias no lancamento oficial
+              Operação digital no Brasil • Informações societárias no lançamento oficial
             </p>
           </div>
 
           <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full border border-border shadow-sm">
             <Lock className="w-3 h-3 text-primary" />
-            <span className="text-xs text-muted-foreground font-medium">Seus dados sao protegidos com criptografia SSL</span>
+            <span className="text-xs text-muted-foreground font-medium">Seus dados são protegidos com criptografia SSL</span>
           </div>
 
           <div className="flex items-center space-x-5">
