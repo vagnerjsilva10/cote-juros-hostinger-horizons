@@ -63,11 +63,11 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
         <div className="bg-slate-50 px-6 py-4 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-2">
             {step > 1 && (
-              <button onClick={handlePrev} className="text-foreground-secondary hover:text-primary interactive-element">
+              <button onClick={handlePrev} className="text-slate-600 hover:text-primary interactive-element">
                 <ChevronLeft className="w-5 h-5" />
               </button>
             )}
-            <span className="font-semibold text-sm uppercase tracking-wider text-foreground-secondary">
+            <span className="font-semibold text-sm uppercase tracking-wider text-slate-600">
               Passo {step} de 6
             </span>
           </div>
@@ -92,7 +92,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                 <div className="space-y-8">
                   <div className="text-center space-y-2">
                     <h2 className="text-3xl font-bold text-foreground">Qual valor você precisa?</h2>
-                    <p className="text-foreground-secondary">Deslize para escolher o valor ideal.</p>
+                    <p className="text-slate-600">Deslize para escolher o valor ideal.</p>
                   </div>
                   <div className="text-5xl font-bold text-primary text-center py-6 font-variant-tabular">
                     R$ {data.valor.toLocaleString('pt-BR')}
@@ -115,7 +115,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                 <div className="space-y-8">
                   <div className="text-center space-y-2">
                     <h2 className="text-3xl font-bold text-foreground">Qual sua renda mensal?</h2>
-                    <p className="text-foreground-secondary">Isso nos ajuda a encontrar parcelas que cabem no seu bolso.</p>
+                    <p className="text-slate-600">Isso nos ajuda a encontrar parcelas que cabem no seu bolso.</p>
                   </div>
                   <div className="text-5xl font-bold text-primary text-center py-6 font-variant-tabular">
                     R$ {data.renda.toLocaleString('pt-BR')}
@@ -138,7 +138,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                 <div className="space-y-8">
                   <div className="text-center space-y-2">
                     <h2 className="text-3xl font-bold text-foreground">Qual seu tipo de vínculo?</h2>
-                    <p className="text-foreground-secondary">Selecione sua principal fonte de renda.</p>
+                    <p className="text-slate-600">Selecione sua principal fonte de renda.</p>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {employmentTypes.map(emp => (
@@ -147,7 +147,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                         onClick={() => { setData({...data, emprego: emp.id}); setTimeout(handleNext, 300); }}
                         className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 flex flex-col items-center gap-2 text-center ${data.emprego === emp.id ? 'ring-2 ring-primary border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-slate-50'}`}
                       >
-                        <emp.icon className={`w-6 h-6 ${data.emprego === emp.id ? 'text-primary' : 'text-foreground-secondary'}`} />
+                        <emp.icon className={`w-6 h-6 ${data.emprego === emp.id ? 'text-primary' : 'text-slate-600'}`} />
                         <span className="font-semibold text-sm text-foreground">{emp.id}</span>
                       </div>
                     ))}
@@ -159,7 +159,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                 <div className="space-y-8">
                   <div className="text-center space-y-2">
                     <h2 className="text-3xl font-bold text-foreground">Qual seu score aproximado?</h2>
-                    <p className="text-foreground-secondary">Sua pontuação nos birôs de crédito.</p>
+                    <p className="text-slate-600">Sua pontuação nos birôs de crédito.</p>
                   </div>
                   <div className="grid gap-4">
                     {[
@@ -173,8 +173,8 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                         className={`p-5 rounded-xl border-2 cursor-pointer transition-all duration-200 flex justify-between items-center ${data.score === s.id ? 'ring-2 ring-primary border-primary bg-primary/5' : s.color}`}
                       >
                         <div>
-                          <p className="font-bold text-lg text-foreground">{s.id} <span className="text-sm font-normal text-foreground-secondary ml-2">({s.range})</span></p>
-                          <p className="text-sm text-foreground-secondary">{s.desc}</p>
+                          <p className="font-bold text-lg text-foreground">{s.id} <span className="text-sm font-normal text-slate-600 ml-2">({s.range})</span></p>
+                          <p className="text-sm text-slate-600">{s.desc}</p>
                         </div>
                         {data.score === s.id && <CheckCircle2 className="text-primary w-6 h-6" />}
                       </div>
@@ -187,21 +187,21 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                 <div className="space-y-8">
                   <div className="text-center space-y-2">
                     <h2 className="text-3xl font-bold text-foreground">Possui restrição no nome?</h2>
-                    <p className="text-foreground-secondary">Contas atrasadas ou nome negativado.</p>
+                    <p className="text-slate-600">Contas atrasadas ou nome negativado.</p>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div 
                       onClick={() => { setData({...data, restricao: true}); setTimeout(handleNext, 300); }}
                       className={`p-8 rounded-xl border-2 cursor-pointer transition-all duration-200 text-center flex flex-col items-center gap-3 ${data.restricao === true ? 'ring-2 ring-primary border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-slate-50'}`}
                     >
-                      <XCircle className={`w-10 h-10 ${data.restricao === true ? 'text-primary' : 'text-foreground-secondary'}`} />
+                      <XCircle className={`w-10 h-10 ${data.restricao === true ? 'text-primary' : 'text-slate-600'}`} />
                       <span className="font-bold text-lg text-foreground">Sim</span>
                     </div>
                     <div 
                       onClick={() => { setData({...data, restricao: false}); setTimeout(handleNext, 300); }}
                       className={`p-8 rounded-xl border-2 cursor-pointer transition-all duration-200 text-center flex flex-col items-center gap-3 ${data.restricao === false ? 'ring-2 ring-primary border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-slate-50'}`}
                     >
-                      <CheckCircle2 className={`w-10 h-10 ${data.restricao === false ? 'text-primary' : 'text-foreground-secondary'}`} />
+                      <CheckCircle2 className={`w-10 h-10 ${data.restricao === false ? 'text-primary' : 'text-slate-600'}`} />
                       <span className="font-bold text-lg text-foreground">Não</span>
                     </div>
                   </div>
@@ -212,7 +212,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                 <div className="space-y-8">
                   <div className="text-center space-y-2">
                     <h2 className="text-3xl font-bold text-foreground">Quase lá!</h2>
-                    <p className="text-foreground-secondary">Insira seu CPF para ver ofertas personalizadas.</p>
+                    <p className="text-slate-600">Insira seu CPF para ver ofertas personalizadas.</p>
                   </div>
                   
                   <div className="space-y-4">
@@ -236,7 +236,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                         checked={data.terms} 
                         onCheckedChange={(c) => setData({...data, terms: c})} 
                       />
-                      <label htmlFor="terms" className="text-sm font-medium leading-none text-foreground-secondary cursor-pointer">
+                      <label htmlFor="terms" className="text-sm font-medium leading-none text-slate-600 cursor-pointer">
                         Concordo com os Termos de Uso e Política de Privacidade.
                       </label>
                     </div>

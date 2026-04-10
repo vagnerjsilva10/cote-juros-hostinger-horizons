@@ -63,7 +63,7 @@ function Footer() {
             <Link to="/" className="inline-block">
               <CoteJurosLogo variant="grayscale" className="h-8 w-auto" />
             </Link>
-            <p className="text-foreground-secondary text-sm leading-relaxed max-w-sm">
+            <p className="text-slate-600 text-sm leading-relaxed max-w-sm">
               Comparador financeiro inteligente. Encontre as melhores taxas de empréstimos, cartões e financiamentos do mercado em segundos.
             </p>
             <div className="flex flex-wrap items-center gap-3">
@@ -92,7 +92,7 @@ function Footer() {
                   <li key={link.path}>
                     <Link
                       to={link.path}
-                      className="text-sm text-foreground-secondary hover:text-primary transition-colors duration-200 font-medium"
+                      className="text-sm text-slate-600 hover:text-primary transition-colors duration-200 font-medium"
                     >
                       {link.label}
                     </Link>
@@ -105,7 +105,7 @@ function Footer() {
 
         <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
           <div className="flex flex-col items-center md:items-start space-y-2">
-            <p className="text-sm text-foreground-secondary font-medium">
+            <p className="text-sm text-slate-600 font-medium">
               Cote Juros © {currentYear}. Todos os direitos reservados.
             </p>
             <p className="text-xs text-slate-400">
@@ -115,20 +115,20 @@ function Footer() {
 
           <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full border border-border shadow-sm">
             <Lock className="w-3 h-3 text-primary" />
-            <span className="text-xs text-foreground-secondary font-medium">Seus dados são protegidos com criptografia SSL</span>
+            <span className="text-xs text-slate-600 font-medium">Seus dados são protegidos com criptografia SSL</span>
           </div>
 
           <div className="flex items-center space-x-5">
-            <a href="#" className="text-foreground-secondary hover:text-primary transition-colors duration-200" aria-label="LinkedIn">
+            <a href="#" className="text-slate-600 hover:text-primary transition-colors duration-200" aria-label="LinkedIn">
               <Linkedin className="h-5 w-5" />
             </a>
-            <a href="#" className="text-foreground-secondary hover:text-primary transition-colors duration-200" aria-label="Twitter">
+            <a href="#" className="text-slate-600 hover:text-primary transition-colors duration-200" aria-label="Twitter">
               <Twitter className="h-5 w-5" />
             </a>
-            <a href="#" className="text-foreground-secondary hover:text-primary transition-colors duration-200" aria-label="Instagram">
+            <a href="#" className="text-slate-600 hover:text-primary transition-colors duration-200" aria-label="Instagram">
               <Instagram className="h-5 w-5" />
             </a>
-            <a href="#" className="text-foreground-secondary hover:text-primary transition-colors duration-200" aria-label="Facebook">
+            <a href="#" className="text-slate-600 hover:text-primary transition-colors duration-200" aria-label="Facebook">
               <Facebook className="h-5 w-5" />
             </a>
           </div>

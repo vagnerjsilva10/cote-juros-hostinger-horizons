@@ -83,7 +83,7 @@ function HomePage() {
               <h1 className="mb-6 text-foreground">
                 Cote juros antes de pegar crédito.
               </h1>
-              <p className="text-xl md:text-2xl text-foreground-secondary mb-10 leading-relaxed max-w-3xl mx-auto font-medium">
+              <p className="text-xl md:text-2xl text-slate-600 mb-10 leading-relaxed max-w-3xl mx-auto font-medium">
                 Compare empréstimos, cartões e financiamentos em segundos e encontre a melhor oferta para seu perfil.
               </p>
               
@@ -102,7 +102,7 @@ function HomePage() {
                   </Button>
                 </form>
               </div>
-              <p className="text-sm text-foreground-secondary mt-6 flex items-center justify-center gap-2 font-medium">
+              <p className="text-sm text-slate-600 mt-6 flex items-center justify-center gap-2 font-medium">
                 <ShieldCheck className="w-4 h-4 text-primary" /> Simulação 100% gratuita e segura
               </p>
             </motion.div>
@@ -139,11 +139,11 @@ function HomePage() {
       </section>
 
       {/* Categories Bento Grid */}
-      <section className="py-24 bg-background-secondary">
+      <section className="py-24 bg-slate-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="mb-4">Tudo para sua vida financeira</h2>
-            <p className="text-lg text-foreground-secondary max-w-2xl mx-auto">
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
               Soluções inteligentes para economizar tempo e dinheiro.
             </p>
           </div>
@@ -156,7 +156,7 @@ function HomePage() {
                   <DollarSign className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="mb-3 group-hover:text-primary transition-colors">Empréstimos</h3>
-                <p className="text-foreground-secondary mb-6 text-lg">
+                <p className="text-slate-600 mb-6 text-lg">
                   Compare taxas de crédito pessoal, consignado e com garantia nas principais instituições.
                 </p>
                 <span className="font-semibold text-primary flex items-center">
@@ -172,7 +172,7 @@ function HomePage() {
                   <CreditCard className="w-8 h-8 text-secondary" />
                 </div>
                 <h3 className="mb-3 group-hover:text-secondary transition-colors">Cartões de Crédito</h3>
-                <p className="text-foreground-secondary mb-6 text-lg">
+                <p className="text-slate-600 mb-6 text-lg">
                   Filtre por benefícios como milhas, cashback ou ausência de anuidade e peça o seu.
                 </p>
                 <span className="font-semibold text-secondary flex items-center">
@@ -189,7 +189,7 @@ function HomePage() {
                   <Home className="w-6 h-6 text-accent" />
                 </div>
                 <h4 className="mb-2 group-hover:text-accent transition-colors">Financiamentos</h4>
-                <p className="text-sm text-foreground-secondary mb-4">Simule a compra da casa própria ou veículo.</p>
+                <p className="text-sm text-slate-600 mb-4">Simule a compra da casa própria ou veículo.</p>
                 <span className="text-sm font-semibold text-accent flex items-center">Simular <ArrowRight className="w-3 h-3 ml-1" /></span>
               </Card>
             </Link>
@@ -199,7 +199,7 @@ function HomePage() {
                   <Calculator className="w-6 h-6 text-primary" />
                 </div>
                 <h4 className="mb-2 group-hover:text-primary transition-colors">Ferramentas</h4>
-                <p className="text-sm text-foreground-secondary mb-4">Calculadoras de juros compostos e mais.</p>
+                <p className="text-sm text-slate-600 mb-4">Calculadoras de juros compostos e mais.</p>
                 <span className="text-sm font-semibold text-primary flex items-center">Acessar <ArrowRight className="w-3 h-3 ml-1" /></span>
               </Card>
             </Link>
@@ -209,7 +209,7 @@ function HomePage() {
                   <BookOpen className="w-6 h-6 text-secondary" />
                 </div>
                 <h4 className="mb-2 group-hover:text-secondary transition-colors">Blog</h4>
-                <p className="text-sm text-foreground-secondary mb-4">Dicas e guias para sua educação financeira.</p>
+                <p className="text-sm text-slate-600 mb-4">Dicas e guias para sua educação financeira.</p>
                 <span className="text-sm font-semibold text-secondary flex items-center">Ler artigos <ArrowRight className="w-3 h-3 ml-1" /></span>
               </Card>
             </Link>
@@ -228,7 +228,7 @@ function HomePage() {
               <h2 className="mb-6">
                 Cote Finance AI
               </h2>
-              <p className="text-lg text-foreground-secondary mb-8">
+              <p className="text-lg text-slate-600 mb-8">
                 Nossa inteligência artificial faz uma varredura completa no mercado cruzando os dados do seu perfil com mais de 50 instituições para encontrar ofertas com até 95% de chance de aprovação.
               </p>
               <Link to="/cote-finance-ai">
@@ -246,11 +246,11 @@ function HomePage() {
       </section>
 
       {/* Social Proof */}
-      <section className="py-24 bg-background-secondary">
+      <section className="py-24 bg-slate-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="mb-4">Milhares de histórias de sucesso</h2>
-            <p className="text-lg text-foreground-secondary">O que nossos usuários dizem sobre nós.</p>
+            <p className="text-lg text-slate-600">O que nossos usuários dizem sobre nós.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -266,7 +266,7 @@ function HomePage() {
                       <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full shadow-sm" />
                       <div>
                         <p className="font-bold text-foreground">{t.name}</p>
-                        <p className="text-sm text-foreground-secondary">{t.location} • <span className="font-semibold text-primary">{t.product}</span></p>
+                        <p className="text-sm text-slate-600">{t.location} • <span className="font-semibold text-primary">{t.product}</span></p>
                       </div>
                     </div>
                   </CardContent>

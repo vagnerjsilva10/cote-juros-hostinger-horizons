@@ -129,7 +129,7 @@ function App() {
           <AppLayout>
             <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
               <h1 className="mb-4 text-foreground">Página não encontrada</h1>
-              <p className="text-foreground-secondary text-lg mb-8">A página que você está procurando não existe ou foi movida.</p>
+              <p className="text-slate-600 text-lg mb-8">A página que você está procurando não existe ou foi movida.</p>
               <a href="/" className="text-primary font-bold hover:underline">Voltar para o Início</a>
             </div>
           </AppLayout>
