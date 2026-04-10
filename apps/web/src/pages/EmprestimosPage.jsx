@@ -1,5 +1,4 @@
-
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { banksData } from '@/data/banksData.js';
 import { loansData } from '@/data/loansData.js';
@@ -11,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Filter, Star, Clock, ShieldCheck, CheckCircle2, ChevronRight } from 'lucide-react';
+import { Filter, Star, Clock, ShieldCheck, CheckCircle2, ChevronRight, Sparkles } from 'lucide-react';
 
 function EmprestimosPage() {
   const [amount, setAmount] = useState([10000]);
@@ -21,14 +20,14 @@ function EmprestimosPage() {
   const [sort, setSort] = useState('taxa-baixa');
 
   const filteredLoans = useMemo(() => {
-    let result = loansData.filter(loan => {
+    let result = loansData.filter((loan) => {
       const matchValue = amount[0] >= loan.minValue && amount[0] <= loan.maxValue;
       const matchType = type === 'Todos' || loan.type === type;
-      const matchScore = score === 'Todos' || loan.minScore === score || 
-                         (score === 'Alto' && (loan.minScore === 'Médio' || loan.minScore === 'Baixo')) ||
-                         (score === 'Médio' && loan.minScore === 'Baixo');
+      const matchScore = score === 'Todos' || loan.minScore === score ||
+        (score === 'Alto' && (loan.minScore === 'Médio' || loan.minScore === 'Baixo')) ||
+        (score === 'Médio' && loan.minScore === 'Baixo');
       const matchTerm = term[0] >= loan.minTerm && term[0] <= loan.maxTerm;
-      
+
       return matchValue && matchType && matchScore && matchTerm;
     });
 
@@ -43,7 +42,7 @@ function EmprestimosPage() {
     if (rate < 2.0) return { icon: Star, text: 'Melhor taxa', color: 'bg-teal-100 text-teal-800 border-teal-200' };
     if (loanType === 'Negativado') return { icon: ShieldCheck, text: 'Sem consulta', color: 'bg-purple-100 text-purple-800 border-purple-200' };
     if (loanType === 'Pessoal') return { icon: CheckCircle2, text: 'Aprovação rápida', color: 'bg-green-100 text-green-800 border-green-200' };
-    return { icon: CheckCircle2, text: 'Mais aprovado', color: 'bg-blue-100 text-blue-800 border-blue-200' };
+    return { icon: Sparkles, text: 'Mais aprovado', color: 'bg-blue-100 text-blue-800 border-blue-200' };
   };
 
   const handleSimulate = (bankName) => {
@@ -67,7 +66,7 @@ function EmprestimosPage() {
 
       <div className="bg-slate-50 border-b border-border py-12 lg:py-16 relative overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img src="https://images.unsplash.com/photo-1583223527919-dfb0e34bd4e0?auto=format&fit=crop&w=2000&q=80" alt="Empréstimos bg" className="w-full h-full object-cover opacity-10 mix-blend-multiply grayscale" />
+          <img src="https://images.unsplash.com/photo-1583223527919-dfb0e34bd4e0?auto=format&fit=crop&w=2000&q=80" alt="Empréstimos" className="w-full h-full object-cover opacity-10 mix-blend-multiply grayscale" />
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-foreground text-balance">Comparador de Empréstimos</h1>
@@ -77,8 +76,7 @@ function EmprestimosPage() {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid lg:grid-cols-12 gap-8">
-          
-          {/* Sidebar Filters */}
+
           <div className="lg:col-span-3 space-y-8">
             <div className="bg-white border rounded-[var(--radius-lg)] p-6 shadow-sm sticky top-24">
               <div className="flex items-center justify-between mb-6 border-b pb-4">
@@ -87,7 +85,7 @@ function EmprestimosPage() {
                 </h3>
                 <button onClick={resetFilters} className="text-sm text-muted-foreground hover:text-primary transition-colors">Limpar</button>
               </div>
-              
+
               <div className="space-y-8">
                 <div className="space-y-4">
                   <div className="flex justify-between items-end">
@@ -124,7 +122,7 @@ function EmprestimosPage() {
                 <div className="space-y-3">
                   <Label className="font-semibold text-foreground">Seu Score</Label>
                   <RadioGroup value={score} onValueChange={setScore} className="space-y-2">
-                    {['Todos', 'Alto', 'Médio', 'Baixo'].map(s => (
+                    {['Todos', 'Alto', 'Médio', 'Baixo'].map((s) => (
                       <div key={s} className="flex items-center space-x-2">
                         <RadioGroupItem value={s} id={`score-${s}`} />
                         <Label htmlFor={`score-${s}`} className="font-medium cursor-pointer">{s === 'Todos' ? 'Não sei' : s}</Label>
@@ -140,7 +138,6 @@ function EmprestimosPage() {
             </div>
           </div>
 
-          {/* Results Grid */}
           <div className="lg:col-span-9">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
               <p className="text-muted-foreground font-medium">
@@ -162,62 +159,71 @@ function EmprestimosPage() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredLoans.map(loan => {
-                const bank = banksData.find(b => b.id === loan.bankId);
+              {filteredLoans.map((loan) => {
+                const bank = banksData.find((b) => b.id === loan.bankId);
                 const badgeInfo = getBadgeStyle(loan.type, loan.monthlyRate);
                 const BadgeIcon = badgeInfo.icon;
-                
-                return (
-                  <Card key={loan.id} className="card-premium overflow-hidden group flex flex-col h-full bg-white relative pt-4">
-                    <div className="absolute top-4 right-4">
-                      <Badge className={`border px-2 py-1 flex items-center gap-1 font-semibold ${badgeInfo.color}`}>
-                        <BadgeIcon className="w-3 h-3" /> {badgeInfo.text}
-                      </Badge>
-                    </div>
 
-                    <CardContent className="p-6 flex flex-col h-full">
-                      <div className="flex items-center gap-4 mb-6 pt-4">
-                        <div className="w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shadow-sm" style={{ backgroundColor: bank?.color, color: '#fff' }}>
-                          {bank?.name.charAt(0)}
-                        </div>
-                        <div>
-                          <h3 className="font-extrabold text-lg text-foreground leading-tight">{bank?.name}</h3>
-                          <p className="text-sm text-muted-foreground font-medium">{loan.type}</p>
+                return (
+                  <Card key={loan.id} className="card-premium overflow-hidden group flex flex-col h-full bg-white relative">
+                    <CardContent className="p-0 flex flex-col h-full">
+                      <div className="p-5 border-b border-border bg-slate-50/70">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-11 h-11 rounded-xl flex items-center justify-center text-lg font-bold shadow-sm shrink-0" style={{ backgroundColor: bank?.color, color: '#fff' }}>
+                              {bank?.name?.charAt(0)}
+                            </div>
+                            <div className="min-w-0">
+                              <h3 className="font-bold text-base text-foreground truncate">{bank?.name}</h3>
+                              <p className="text-xs text-muted-foreground font-medium">{loan.type}</p>
+                            </div>
+                          </div>
+                          <Badge className={`border px-2 py-1 flex items-center gap-1 font-semibold ${badgeInfo.color}`}>
+                            <BadgeIcon className="w-3 h-3" /> {badgeInfo.text}
+                          </Badge>
                         </div>
                       </div>
 
-                      <div className="space-y-4 mb-8 flex-1">
-                        <div>
-                          <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Taxa de Juros</p>
-                          <p className="text-3xl font-extrabold text-primary font-variant-tabular">
-                            {loan.monthlyRate}% <span className="text-base font-semibold text-muted-foreground">a.m.</span>
+                      <div className="p-6 flex flex-col h-full">
+                        <div className="mb-6">
+                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Taxa de juros</p>
+                          <p className="text-4xl font-extrabold text-primary font-variant-tabular leading-none">
+                            {loan.monthlyRate}%
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">ao mês</p>
+                        </div>
+
+                        <div className="mb-6 rounded-xl border border-border bg-slate-50 p-4">
+                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Benefício principal</p>
+                          <p className="text-sm font-semibold text-foreground">
+                            {loan.monthlyRate < 2 ? 'Condição de taxa reduzida para o perfil selecionado.' : 'Oferta com boa chance de aprovação conforme os filtros.'}
                           </p>
                         </div>
-                        
-                        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+
+                        <div className="grid grid-cols-2 gap-3 mb-6 pt-3 border-t border-slate-100">
                           <div>
-                            <p className="text-xs font-semibold text-muted-foreground uppercase">Valor</p>
-                            <p className="font-bold text-foreground text-sm">Até R$ {(loan.maxValue/1000).toFixed(0)}k</p>
+                            <p className="text-[11px] font-semibold text-muted-foreground uppercase">Valor máximo</p>
+                            <p className="font-bold text-foreground text-sm">Até R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1"><Clock className="w-3 h-3"/> Prazo</p>
-                            <p className="font-bold text-foreground text-sm">Até {loan.maxTerm}m</p>
+                            <p className="text-[11px] font-semibold text-muted-foreground uppercase flex items-center gap-1"><Clock className="w-3 h-3" /> Prazo</p>
+                            <p className="font-bold text-foreground text-sm">Até {loan.maxTerm} meses</p>
                           </div>
                         </div>
-                      </div>
 
-                      <Button 
-                        className="w-full h-12 text-base font-bold gradient-fintech-hover border-0 shadow-[var(--shadow-sm)] mt-auto"
-                        onClick={() => handleSimulate(bank?.name)}
-                      >
-                        Simular Oferta <ChevronRight className="w-4 h-4 ml-1" />
-                      </Button>
+                        <Button
+                          className="w-full h-12 text-base font-bold gradient-fintech-hover border-0 mt-auto shadow-md transition-all duration-300 group-hover:shadow-lg"
+                          onClick={() => handleSimulate(bank?.name)}
+                        >
+                          Simular oferta <ChevronRight className="w-4 h-4 ml-1" />
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
-                )
+                );
               })}
             </div>
-            
+
             {filteredLoans.length === 0 && (
               <div className="text-center py-20 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
                 <Filter className="w-12 h-12 text-slate-300 mx-auto mb-4" />

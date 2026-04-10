@@ -19,7 +19,8 @@ import {
   Calculator,
   BookOpen,
   Sparkles,
-  CheckCircle2
+  CheckCircle2,
+  BarChart3
 } from 'lucide-react';
 
 const AI_DASHBOARD_ASSET = '/assets/cote-finance-ai-dashboard.png';
@@ -85,13 +86,11 @@ function HomePage() {
         initialAmount={heroValue ? parseInt(heroValue.replace(/\D/g, '')) / 100 : 10000}
       />
 
-      <section className="relative overflow-hidden bg-background border-b border-border">
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.10] via-background to-secondary/[0.08]" />
-          <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-primary/20 blur-3xl" />
-          <div className="absolute top-16 right-[-80px] h-72 w-72 rounded-full bg-secondary/20 blur-3xl" />
-          <div className="absolute bottom-[-120px] left-1/3 h-80 w-80 rounded-full bg-accent/10 blur-3xl" />
-        </div>
+      <section className="relative overflow-hidden border-b border-border text-white">
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#071129] via-[#0A1F4E] to-[#172554]" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_18%_28%,rgba(59,130,246,0.28),transparent_38%),radial-gradient(circle_at_78%_20%,rgba(124,58,237,0.26),transparent_40%),radial-gradient(circle_at_58%_82%,rgba(20,184,166,0.18),transparent_38%)]" />
+        <div className="absolute -left-24 top-16 -z-10 h-80 w-80 rounded-full bg-blue-400/20 blur-[120px]" />
+        <div className="absolute right-0 top-0 -z-10 h-96 w-96 rounded-full bg-indigo-400/20 blur-[130px]" />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20 md:py-24 lg:py-28">
           <div className="max-w-5xl mx-auto text-center">
@@ -100,21 +99,21 @@ function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
             >
-              <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/90 px-4 py-2 text-sm font-semibold text-primary shadow-sm mb-8">
-                <Sparkles className="h-4 w-4" /> Plataforma de comparação com curadoria premium
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-sm mb-8 backdrop-blur-sm">
+                <Sparkles className="h-4 w-4 text-cyan-300" /> Plataforma de comparação com curadoria premium
               </span>
 
-              <h1 className="mb-6 text-foreground drop-shadow-[0_1px_0_rgba(255,255,255,0.45)]">Cote juros antes de pegar crédito.</h1>
+              <h1 className="mb-6 text-white drop-shadow-[0_6px_24px_rgba(2,6,23,0.45)]">Cote juros antes de pegar crédito.</h1>
 
-              <p className="text-lg md:text-2xl text-muted-foreground mb-10 leading-relaxed max-w-3xl mx-auto font-medium">
+              <p className="text-lg md:text-2xl text-slate-100/95 mb-10 leading-relaxed max-w-3xl mx-auto font-medium">
                 Compare empréstimos, cartões e financiamentos em segundos para tomar decisões financeiras com mais segurança.
               </p>
 
-              <div className="bg-card/90 backdrop-blur-md rounded-2xl shadow-[0_20px_45px_-20px_rgba(15,98,254,0.25)] max-w-3xl mx-auto p-4 sm:p-5 border border-border">
+              <div className="bg-white/95 rounded-2xl shadow-[0_30px_60px_-30px_rgba(15,23,42,0.7)] max-w-3xl mx-auto p-4 sm:p-5 border border-white/20 backdrop-blur-sm">
                 <form onSubmit={handleHeroSubmit} className="flex flex-col sm:flex-row gap-3 w-full">
                   <Input
                     placeholder="De quanto você precisa? (R$)"
-                    className="h-14 text-lg bg-background border-border text-foreground rounded-xl shadow-inner"
+                    className="h-14 text-lg bg-slate-50 border-slate-200 text-foreground rounded-xl shadow-inner"
                     value={heroValue}
                     onChange={(e) => formatCurrency(e.target.value)}
                   />
@@ -127,8 +126,8 @@ function HomePage() {
                 </form>
               </div>
 
-              <div className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground font-medium">
-                <ShieldCheck className="w-4 h-4 text-primary" /> Simulação 100% gratuita e segura
+              <div className="mt-6 flex items-center justify-center gap-2 text-sm text-slate-200 font-medium">
+                <ShieldCheck className="w-4 h-4 text-cyan-300" /> Simulação 100% gratuita e segura
               </div>
             </motion.div>
 
@@ -139,9 +138,9 @@ function HomePage() {
                 { label: 'Atualização de taxas', value: 'Diária' },
                 { label: 'Consulta de risco', value: 'Soft Query' }
               ].map((metric) => (
-                <div key={metric.label} className="rounded-xl border border-border bg-card px-4 py-4 text-left shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
-                  <p className="text-lg font-bold text-foreground">{metric.value}</p>
-                  <p className="text-xs text-muted-foreground font-medium">{metric.label}</p>
+                <div key={metric.label} className="rounded-xl border border-white/20 bg-white/10 px-4 py-4 text-left shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/15">
+                  <p className="text-lg font-bold text-white">{metric.value}</p>
+                  <p className="text-xs text-slate-200 font-medium">{metric.label}</p>
                 </div>
               ))}
             </div>
@@ -292,11 +291,11 @@ function HomePage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
+              initial={{ opacity: 0, scale: 0.97 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+              transition={{ duration: 6.8, repeat: Infinity, ease: 'easeInOut' }}
               className="relative"
             >
               <div className="absolute inset-0 rounded-[28px] bg-gradient-to-tr from-primary/25 to-secondary/20 blur-xl" />
@@ -310,12 +309,14 @@ function HomePage() {
                 </div>
 
                 {!aiImageUnavailable ? (
-                  <img
-                    src={AI_DASHBOARD_ASSET}
-                    alt="Preview do dashboard Cote Finance AI"
-                    className="w-full aspect-[16/10] object-cover"
-                    onError={() => setAiImageUnavailable(true)}
-                  />
+                  <div className="bg-[#06132d] px-3 pt-3 pb-0">
+                    <img
+                      src={AI_DASHBOARD_ASSET}
+                      alt="Preview do dashboard Cote Finance AI"
+                      className="w-full h-auto rounded-t-xl"
+                      onError={() => setAiImageUnavailable(true)}
+                    />
+                  </div>
                 ) : (
                   <div className="aspect-[16/10] bg-gradient-to-br from-background via-primary/5 to-secondary/10 p-8">
                     <div className="h-full rounded-2xl border border-border bg-card p-5">

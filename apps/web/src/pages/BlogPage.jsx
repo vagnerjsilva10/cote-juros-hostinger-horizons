@@ -1,5 +1,4 @@
-
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { articlesData } from '@/data/articlesData.js';
 import { Card, CardContent } from '@/components/ui/card';
@@ -20,19 +19,21 @@ function BlogPage() {
   const [selectedArticle, setSelectedArticle] = useState(null);
 
   const filteredArticles = useMemo(() => {
-    let result = articlesData.filter(article => {
+    let result = articlesData.filter((article) => {
       const matchCat = category === 'Todas' || article.category === category;
-      const matchSearch = article.title.toLowerCase().includes(search.toLowerCase()) || 
-                          article.summary.toLowerCase().includes(search.toLowerCase());
+      const matchSearch = article.title.toLowerCase().includes(search.toLowerCase()) ||
+        article.summary.toLowerCase().includes(search.toLowerCase());
       return matchCat && matchSearch;
     });
 
-    if (sort === 'recent') result.sort((a,b) => new Date(b.publishDate) - new Date(a.publishDate));
-    // Mock sorting for others
-    if (sort === 'read') result.sort((a,b) => a.title.length - b.title.length);
+    if (sort === 'recent') result.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+    if (sort === 'read') result.sort((a, b) => a.title.length - b.title.length);
 
     return result;
   }, [search, category, sort]);
+
+  const featured = filteredArticles[0];
+  const rest = filteredArticles.slice(1);
 
   const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -45,16 +46,16 @@ function BlogPage() {
       </Helmet>
 
       <div className="bg-card py-16 border-b border-border">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-3xl">
-          <Badge className="mb-4 bg-primary/10 text-primary border-primary/20" variant="outline">Educação Financeira</Badge>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-4xl">
+          <Badge className="mb-4 bg-primary/10 text-primary border-primary/20" variant="outline">Editorial financeiro</Badge>
           <h1 className="mb-6">Blog Cote Juros</h1>
-          <p className="text-lg text-muted-foreground mb-8">Dicas, guias e novidades para você dominar as suas finanças pessoais.</p>
-          
+          <p className="text-lg text-muted-foreground mb-8">Análises, guias e estratégias para decisões de crédito mais inteligentes.</p>
+
           <div className="relative max-w-xl mx-auto">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-            <Input 
-              className="h-14 pl-12 rounded-full text-base bg-background text-foreground shadow-sm border-border" 
-              placeholder="Buscar artigos..." 
+            <Input
+              className="h-14 pl-12 rounded-full text-base bg-background text-foreground shadow-sm border-border"
+              placeholder="Buscar artigos..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -65,10 +66,10 @@ function BlogPage() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-10">
           <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-            {CATEGORIES.map(cat => (
-              <Button 
-                key={cat} 
-                variant={category === cat ? 'default' : 'outline'} 
+            {CATEGORIES.map((cat) => (
+              <Button
+                key={cat}
+                variant={category === cat ? 'default' : 'outline'}
                 className="rounded-full"
                 onClick={() => setCategory(cat)}
               >
@@ -77,7 +78,7 @@ function BlogPage() {
             ))}
           </div>
           <Select value={sort} onValueChange={setSort}>
-            <SelectTrigger className="w-[180px] bg-background">
+            <SelectTrigger className="w-[190px] bg-background">
               <SelectValue placeholder="Ordenar por" />
             </SelectTrigger>
             <SelectContent>
@@ -87,14 +88,35 @@ function BlogPage() {
           </Select>
         </div>
 
+        {featured && (
+          <div className="mb-12">
+            <Card className="card-premium overflow-hidden bg-card cursor-pointer" onClick={() => setSelectedArticle(featured)}>
+              <div className="grid lg:grid-cols-2">
+                <div className="h-72 lg:h-full overflow-hidden">
+                  <img src={featured.image} alt={featured.title} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                </div>
+                <CardContent className="p-8 lg:p-10 flex flex-col justify-center">
+                  <Badge variant="secondary" className="w-fit mb-4">Destaque • {featured.category}</Badge>
+                  <h2 className="text-3xl lg:text-4xl font-bold mb-4 leading-tight">{featured.title}</h2>
+                  <p className="text-muted-foreground text-base lg:text-lg mb-6 leading-relaxed">{featured.summary}</p>
+                  <div className="flex items-center justify-between text-sm text-muted-foreground border-t border-border pt-4">
+                    <span className="flex items-center"><CalendarDays className="w-4 h-4 mr-2" /> {formatDate(featured.publishDate)}</span>
+                    <span className="flex items-center"><Clock className="w-4 h-4 mr-2" /> {featured.readTime} min</span>
+                  </div>
+                </CardContent>
+              </div>
+            </Card>
+          </div>
+        )}
+
         <div className="grid lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8 xl:col-span-9">
             <div className="grid md:grid-cols-2 gap-8">
-              {filteredArticles.map((article, index) => (
+              {rest.map((article, index) => (
                 <React.Fragment key={article.id}>
                   <Card className="card-premium overflow-hidden flex flex-col bg-card">
-                    <div className="h-48 overflow-hidden">
-                      <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
+                    <div className="h-52 overflow-hidden">
+                      <img src={article.image} alt={article.title} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
                     </div>
                     <CardContent className="flex-1 p-6 flex flex-col">
                       <div className="flex items-center justify-between mb-4">
@@ -103,7 +125,10 @@ function BlogPage() {
                           <Clock className="w-3 h-3 mr-1" /> {article.readTime} min
                         </div>
                       </div>
-                      <h3 className="text-xl font-bold leading-snug mb-3 hover:text-primary transition-colors cursor-pointer" onClick={() => setSelectedArticle(article)}>
+                      <h3
+                        className="text-2xl font-bold leading-snug mb-3 hover:text-primary transition-colors cursor-pointer"
+                        onClick={() => setSelectedArticle(article)}
+                      >
                         {article.title}
                       </h3>
                       <p className="text-muted-foreground text-sm line-clamp-3 mb-6 flex-1">
@@ -114,12 +139,11 @@ function BlogPage() {
                           <CalendarDays className="w-3 h-3 mr-1" /> {formatDate(article.publishDate)}
                         </span>
                         <Button variant="ghost" className="p-0 h-auto text-primary hover:bg-transparent hover:text-primary/80" onClick={() => setSelectedArticle(article)}>
-                          Ler Artigo <ArrowRight className="w-4 h-4 ml-1" />
+                          Ler artigo <ArrowRight className="w-4 h-4 ml-1" />
                         </Button>
                       </div>
                     </CardContent>
                   </Card>
-                  {/* Insert AdSpace after every 4th article */}
                   {(index + 1) % 4 === 0 && (
                     <div className="md:col-span-2">
                       <AdSpace height="150px" />
@@ -128,7 +152,7 @@ function BlogPage() {
                 </React.Fragment>
               ))}
             </div>
-            
+
             {filteredArticles.length === 0 && (
               <div className="text-center py-20 text-muted-foreground">
                 Nenhum artigo encontrado para a sua busca.
@@ -136,14 +160,12 @@ function BlogPage() {
             )}
           </div>
 
-          {/* Sidebar */}
           <div className="hidden lg:block lg:col-span-4 xl:col-span-3 space-y-8">
             <AdSpace height="600px" />
           </div>
         </div>
       </div>
 
-      {/* Article Read Modal */}
       <Dialog open={!!selectedArticle} onOpenChange={(open) => !open && setSelectedArticle(null)}>
         <DialogContent className="max-w-4xl h-[90vh] overflow-y-auto p-0 bg-background border-border">
           {selectedArticle && (
@@ -161,7 +183,7 @@ function BlogPage() {
                   <span className="flex items-center"><CalendarDays className="w-4 h-4 mr-2" /> {formatDate(selectedArticle.publishDate)}</span>
                   <span className="flex items-center"><Clock className="w-4 h-4 mr-2" /> {selectedArticle.readTime} min de leitura</span>
                 </div>
-                
+
                 <AdSpace height="90px" className="mb-8" />
 
                 <div className="prose prose-lg dark:prose-invert max-w-none text-foreground leading-relaxed">
