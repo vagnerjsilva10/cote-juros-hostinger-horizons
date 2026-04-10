@@ -23,12 +23,9 @@ import {
   BarChart3
 } from 'lucide-react';
 
-const AI_DASHBOARD_ASSET = '/assets/cote-finance-ai-dashboard.png';
-
 function HomePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [heroValue, setHeroValue] = useState('');
-  const [aiImageUnavailable, setAiImageUnavailable] = useState(false);
 
   const formatCurrency = (val) => {
     let v = val.replace(/\D/g, '');
@@ -253,14 +250,14 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="py-24 relative overflow-hidden bg-background border-y border-border">
+      <section className="py-16 md:py-20 relative overflow-hidden bg-background border-y border-border">
         <div className="absolute inset-0 z-0 pointer-events-none">
           <div className="absolute -right-20 top-8 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
           <div className="absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-secondary/10 blur-3xl" />
         </div>
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-14 items-center">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
             <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary font-semibold text-sm mb-6">
                 <Sparkles className="w-4 h-4" /> Produto em destaque
@@ -291,48 +288,84 @@ function HomePage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.97 }}
+              initial={{ opacity: 0, scale: 0.98 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 6.8, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative"
+              animate={{ y: [0, -6, 0], rotate: [0, -0.4, 0] }}
+              transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+              className="relative mx-auto w-full max-w-[620px]"
             >
               <div className="absolute inset-0 rounded-[28px] bg-gradient-to-tr from-primary/25 to-secondary/20 blur-xl" />
 
-              <div className="relative rounded-[28px] border border-border bg-card shadow-[0_24px_70px_-25px_rgba(15,98,254,0.45)] overflow-hidden">
-                <div className="flex items-center gap-2 border-b border-border bg-background px-5 py-3">
-                  <span className="h-2.5 w-2.5 rounded-full bg-red-300" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
-                  <span className="ml-3 text-xs text-muted-foreground font-medium">Cote Finance AI Dashboard</span>
+              <div className="relative rounded-[28px] border border-slate-700/60 bg-[#071328] shadow-[0_24px_70px_-25px_rgba(15,98,254,0.45)] overflow-hidden">
+                <div className="flex items-center gap-2 border-b border-slate-700/70 bg-[#0A1A37] px-5 py-3">
+                  <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
+                  <span className="ml-3 text-xs text-slate-300 font-medium flex items-center gap-2">
+                    <BarChart3 className="w-3.5 h-3.5 text-cyan-300" />
+                    Cote Finance AI — Product Preview
+                  </span>
                 </div>
 
-                {!aiImageUnavailable ? (
-                  <div className="bg-[#06132d] px-3 pt-3 pb-0">
-                    <img
-                      src={AI_DASHBOARD_ASSET}
-                      alt="Preview do dashboard Cote Finance AI"
-                      className="w-full h-auto rounded-t-xl"
-                      onError={() => setAiImageUnavailable(true)}
-                    />
-                  </div>
-                ) : (
-                  <div className="aspect-[16/10] bg-gradient-to-br from-background via-primary/5 to-secondary/10 p-8">
-                    <div className="h-full rounded-2xl border border-border bg-card p-5">
-                      <div className="grid grid-cols-3 gap-3 mb-4">
-                        <div className="h-12 rounded-lg bg-primary/10" />
-                        <div className="h-12 rounded-lg bg-secondary/10" />
-                        <div className="h-12 rounded-lg bg-accent/10" />
+                <div className="p-4 md:p-5">
+                  <div className="grid grid-cols-[118px_1fr] gap-4">
+                    <aside className="rounded-xl border border-slate-700/70 bg-[#0A1A37] p-3 space-y-2">
+                      <div className="h-7 rounded-md bg-slate-800/80" />
+                      <div className="h-6 rounded-md bg-blue-500/30 border border-blue-400/25" />
+                      <div className="h-6 rounded-md bg-slate-800/70" />
+                      <div className="h-6 rounded-md bg-slate-800/70" />
+                      <div className="h-6 rounded-md bg-slate-800/70" />
+                      <div className="h-6 rounded-md bg-slate-800/70" />
+                    </aside>
+
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="rounded-lg border border-slate-700/70 bg-[#0A1A37] p-3">
+                          <p className="text-[10px] uppercase tracking-wide text-slate-400 mb-1">Entradas</p>
+                          <p className="text-sm font-bold text-emerald-400">R$ 8.438</p>
+                        </div>
+                        <div className="rounded-lg border border-slate-700/70 bg-[#0A1A37] p-3">
+                          <p className="text-[10px] uppercase tracking-wide text-slate-400 mb-1">Saídas</p>
+                          <p className="text-sm font-bold text-rose-400">R$ 1.328</p>
+                        </div>
+                        <div className="rounded-lg border border-slate-700/70 bg-[#0A1A37] p-3">
+                          <p className="text-[10px] uppercase tracking-wide text-slate-400 mb-1">Saldo</p>
+                          <p className="text-sm font-bold text-cyan-300">R$ 7.110</p>
+                        </div>
                       </div>
-                      <div className="h-24 rounded-lg bg-muted mb-4" />
+
+                      <div className="rounded-xl border border-slate-700/70 bg-[#0A1A37] p-4">
+                        <p className="text-xs text-slate-400 mb-3 font-medium">Visão Geral • últimos 90 dias</p>
+                        <div className="h-24 rounded-lg bg-[#09162f] border border-slate-700/50 relative overflow-hidden">
+                          <div className="absolute inset-x-2 top-1/2 h-px bg-slate-700/40" />
+                          <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-1">
+                            {[22, 36, 28, 52, 44, 58, 46, 66, 61, 75].map((h, i) => (
+                              <div
+                                key={i}
+                                className="w-2 rounded-sm bg-cyan-400/75"
+                                style={{ height: `${h}%` }}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
                       <div className="grid grid-cols-2 gap-3">
-                        <div className="h-16 rounded-lg bg-muted" />
-                        <div className="h-16 rounded-lg bg-muted" />
+                        <div className="rounded-lg border border-slate-700/70 bg-[#0A1A37] p-3">
+                          <p className="text-[10px] uppercase tracking-wide text-slate-400 mb-2">Metas</p>
+                          <div className="h-2 rounded-full bg-slate-700/70 overflow-hidden">
+                            <div className="h-full w-2/3 bg-blue-400/75 rounded-full" />
+                          </div>
+                        </div>
+                        <div className="rounded-lg border border-slate-700/70 bg-[#0A1A37] p-3">
+                          <p className="text-[10px] uppercase tracking-wide text-slate-400 mb-1">Assistente IA</p>
+                          <p className="text-xs text-slate-300">“Como melhorar meu saldo?”</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             </motion.div>
           </div>
