@@ -86,12 +86,10 @@ function HomePage() {
         initialAmount={heroValue ? parseInt(heroValue.replace(/\D/g, '')) / 100 : 10000}
       />
 
-      <section className="relative overflow-hidden border-b border-border text-white">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0B1220] to-[#111827]" />
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_15%_22%,rgba(59,130,246,0.20),transparent_38%),radial-gradient(circle_at_82%_18%,rgba(124,58,237,0.18),transparent_40%)]" />
-        <div className="absolute -left-24 top-16 -z-10 h-72 w-72 rounded-full bg-blue-400/14 blur-[110px]" />
-        <div className="absolute right-0 top-0 -z-10 h-80 w-80 rounded-full bg-indigo-400/12 blur-[120px]" />
-        <div className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-b from-transparent to-white/8" />
+      <section className="relative isolate overflow-hidden border-b border-slate-800/80 bg-gradient-to-b from-[#0B1220] to-[#111827] text-white">
+        <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_20%_18%,rgba(59,130,246,0.15),transparent_42%),radial-gradient(circle_at_82%_14%,rgba(124,58,237,0.13),transparent_44%)]" />
+        <div className="pointer-events-none absolute -left-24 top-12 z-0 h-64 w-64 rounded-full bg-blue-500/10 blur-[90px]" />
+        <div className="pointer-events-none absolute -right-24 top-6 z-0 h-72 w-72 rounded-full bg-violet-500/10 blur-[95px]" />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20 md:py-24 lg:py-28">
           <div className="max-w-5xl mx-auto text-center">
@@ -100,19 +98,19 @@ function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
             >
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-sm mb-8 backdrop-blur-sm">
+              <span className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-slate-900/40 px-4 py-2 text-sm font-semibold text-white shadow-sm">
                 <Sparkles className="h-4 w-4 text-cyan-300" /> Plataforma de comparação com curadoria premium
               </span>
 
               <h1 className="mb-6 text-white drop-shadow-[0_6px_24px_rgba(2,6,23,0.45)]">Cote juros antes de pegar crédito.</h1>
 
-              <p className="text-lg md:text-2xl text-slate-100/95 mb-10 leading-relaxed max-w-3xl mx-auto font-medium">
+              <p className="mx-auto mb-10 max-w-3xl text-lg font-medium leading-relaxed text-slate-200 md:text-2xl">
                 Compare empréstimos, cartões e financiamentos em segundos para tomar decisões financeiras com mais segurança.
               </p>
 
               <div className="relative max-w-3xl mx-auto">
-                <div className="absolute inset-x-10 -inset-y-4 bg-primary/25 blur-3xl opacity-70 pointer-events-none" />
-                <div className="relative bg-white rounded-2xl shadow-[0_30px_60px_-30px_rgba(15,23,42,0.75)] p-4 sm:p-5 border border-white/40">
+                <div className="pointer-events-none absolute inset-x-12 -inset-y-3 bg-blue-500/16 blur-2xl" />
+                <div className="relative rounded-2xl border border-slate-200/90 bg-white p-4 shadow-[0_22px_48px_-26px_rgba(2,6,23,0.75)] sm:p-5">
                 <form onSubmit={handleHeroSubmit} className="flex flex-col sm:flex-row gap-3 w-full">
                   <Input
                     placeholder="De quanto você precisa? (R$)"
@@ -130,7 +128,7 @@ function HomePage() {
                 </div>
               </div>
 
-              <div className="mt-6 flex items-center justify-center gap-2 text-sm text-slate-200 font-medium">
+              <div className="mt-6 flex items-center justify-center gap-2 text-sm font-medium text-slate-200">
                 <ShieldCheck className="w-4 h-4 text-cyan-300" /> Simulação 100% gratuita e segura
               </div>
             </motion.div>
@@ -142,7 +140,7 @@ function HomePage() {
                 { label: 'Atualização de taxas', value: 'Diária' },
                 { label: 'Consulta de risco', value: 'Soft Query' }
               ].map((metric) => (
-                <div key={metric.label} className="rounded-xl border border-white/20 bg-white/10 px-4 py-4 text-left shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/15">
+                <div key={metric.label} className="rounded-xl border border-slate-200/20 bg-slate-900/40 px-4 py-4 text-left shadow-[0_10px_24px_-18px_rgba(2,6,23,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-900/50">
                   <p className="text-lg font-bold text-white">{metric.value}</p>
                   <p className="text-xs text-slate-200 font-medium">{metric.label}</p>
                 </div>
