@@ -68,11 +68,11 @@ function HomePage() {
         initialAmount={heroValue ? parseInt(heroValue.replace(/\D/g, '')) / 100 : 10000}
       />
 
-      <section className="relative isolate overflow-hidden border-b border-border hero-fintech-bg text-foreground">
-        <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_16%_16%,rgba(37,99,235,0.10),transparent_36%),radial-gradient(circle_at_84%_18%,rgba(37,99,235,0.08),transparent_38%)]" />
-        <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.10] [background-image:linear-gradient(rgba(148,163,184,0.20)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.20)_1px,transparent_1px)] [background-size:64px_64px]" />
+      <section className="relative isolate overflow-hidden border-b border-slate-800/80 bg-[linear-gradient(135deg,#0F172A_0%,#1E293B_40%,#312E81_100%)] text-white">
+        <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_16%_16%,rgba(96,165,250,0.16),transparent_36%),radial-gradient(circle_at_84%_18%,rgba(129,140,248,0.18),transparent_38%)]" />
+        <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.16] [background-image:linear-gradient(rgba(148,163,184,0.24)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.24)_1px,transparent_1px)] [background-size:64px_64px]" />
         <div className="pointer-events-none absolute -left-24 top-10 z-0 h-64 w-64 rounded-full bg-blue-500/12 blur-[95px]" />
-        <div className="pointer-events-none absolute -right-28 top-4 z-0 h-72 w-72 rounded-full bg-blue-500/10 blur-[100px]" />
+        <div className="pointer-events-none absolute -right-28 top-4 z-0 h-72 w-72 rounded-full bg-violet-500/12 blur-[100px]" />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20 md:py-24 lg:py-28">
           <div className="max-w-5xl mx-auto text-center">
@@ -81,13 +81,13 @@ function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
             >
-              <span className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/85 px-4 py-2 text-sm font-semibold text-slate-700 shadow-[var(--shadow-sm)]">
-                <Sparkles className="h-4 w-4 text-primary" /> Plataforma de comparação com curadoria premium
+              <span className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-sm font-semibold text-white/60 shadow-sm">
+                <Sparkles className="h-4 w-4 text-white/80" /> Plataforma de comparação com curadoria premium
               </span>
 
-              <h1 className="mb-6 text-foreground">Cote juros antes de pegar crédito.</h1>
+              <h1 className="mb-6 text-white drop-shadow-[0_6px_24px_rgba(2,6,23,0.45)]">Cote juros antes de pegar crédito.</h1>
 
-              <p className="mx-auto mb-10 max-w-3xl text-lg font-medium leading-relaxed text-slate-600 md:text-2xl">
+              <p className="mx-auto mb-10 max-w-3xl text-lg font-medium leading-relaxed text-white/80 md:text-2xl">
                 Compare empréstimos, cartões e financiamentos em segundos para tomar decisões financeiras com mais segurança.
               </p>
 
@@ -97,16 +97,16 @@ function HomePage() {
                   { label: 'Motor de elegibilidade', value: 'Leitura em segundos' },
                   { label: 'Curadoria inteligente', value: 'Ofertas priorizadas' }
                 ].map((signal) => (
-                  <div key={signal.label} className="rounded-xl border border-border bg-white/95 px-4 py-3 text-left shadow-[var(--shadow-sm)]">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-500">{signal.label}</p>
-                    <p className="text-sm font-semibold text-slate-800">{signal.value}</p>
+                  <div key={signal.label} className="rounded-xl border border-white/12 bg-white/8 px-4 py-3 text-left shadow-[0_12px_26px_-18px_rgba(2,6,23,0.92)] backdrop-blur-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-white/60">{signal.label}</p>
+                    <p className="text-sm font-semibold text-white">{signal.value}</p>
                   </div>
                 ))}
               </div>
 
               <div className="relative max-w-3xl mx-auto">
-                <div className="pointer-events-none absolute inset-x-12 -inset-y-3 bg-blue-500/12 blur-2xl" />
-                <div className="relative rounded-2xl border border-slate-200/90 bg-white p-4 shadow-[0_22px_48px_-26px_rgba(2,6,23,0.75)] sm:p-5">
+                <div className="pointer-events-none absolute inset-x-12 -inset-y-3 bg-blue-500/16 blur-2xl" />
+                <div className="relative rounded-2xl bg-white p-2 shadow-[0_20px_40px_rgba(0,0,0,0.25)]">
                   <form onSubmit={handleHeroSubmit} className="flex flex-col sm:flex-row gap-3 w-full">
                     <Input
                       placeholder="De quanto você precisa? (R$)"
@@ -124,8 +124,8 @@ function HomePage() {
                 </div>
               </div>
 
-              <div className="mt-6 flex items-center justify-center gap-2 text-sm font-medium text-slate-600">
-                <ShieldCheck className="w-4 h-4 text-cyan-300" /> Simulação 100% gratuita e segura
+              <div className="mt-6 flex items-center justify-center gap-2 text-sm font-medium text-white/80">
+                <ShieldCheck className="w-4 h-4 text-white/80" /> Simulação 100% gratuita e segura
               </div>
             </motion.div>
 
@@ -136,9 +136,9 @@ function HomePage() {
                 { label: 'Atualização de taxas', value: 'Diária' },
                 { label: 'Consulta de risco', value: 'Soft Query' }
               ].map((metric) => (
-                <div key={metric.label} className="rounded-xl border border-border bg-white px-4 py-4 text-left shadow-[var(--shadow-sm)] transition-all duration-300 hover:-translate-y-0.5">
-                  <p className="text-lg font-bold text-foreground">{metric.value}</p>
-                  <p className="text-xs text-slate-600 font-medium">{metric.label}</p>
+                <div key={metric.label} className="rounded-xl border border-white/12 bg-white/8 px-4 py-4 text-left shadow-[0_10px_24px_-18px_rgba(2,6,23,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/10 backdrop-blur-sm">
+                  <p className="text-lg font-bold text-white">{metric.value}</p>
+                  <p className="text-xs text-white/80 font-medium">{metric.label}</p>
                 </div>
               ))}
             </div>
