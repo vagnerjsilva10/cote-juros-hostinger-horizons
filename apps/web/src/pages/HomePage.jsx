@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
-  BadgeCheck,
   Building2,
   Calculator,
   CheckCircle2,
@@ -22,14 +21,7 @@ import { SimulationModal } from '@/components/SimulationModal.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 
-const bankLogos = [
-  { name: 'Nubank', logo: '/assets/banks/nubank.svg' },
-  { name: 'Itaú', logo: '/assets/banks/itau.svg' },
-  { name: 'Santander', logo: '/assets/banks/santander.svg' },
-  { name: 'C6', logo: '/assets/banks/c6.svg' },
-  { name: 'Inter', logo: '/assets/banks/inter.svg' },
-  { name: 'Banco do Brasil', logo: '/assets/banks/bb.svg' }
-];
+const bankInstitutions = ['Nubank', 'Itaú', 'Santander', 'C6 Bank', 'Inter', 'Banco do Brasil'];
 
 const fallbackTestimonials = [
   {
@@ -416,10 +408,14 @@ function HomePage() {
               <span className="inline-flex items-center rounded-full border border-sky-200/80 bg-white/85 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-700">
                 Simulação com clareza
               </span>
-              <h1 className="mt-5 text-slate-900" style={{ fontFamily: '"Space Grotesk", "Manrope", sans-serif' }}>
-                Cote juros antes de pegar crédito.
+              <h1
+                className="mt-5 text-[clamp(2.7rem,5.8vw,4.1rem)] font-bold leading-[1.03] tracking-[-0.03em] text-slate-900"
+                style={{ fontFamily: '"Space Grotesk", "Manrope", sans-serif' }}
+              >
+                <span className="block">Cote juros antes</span>
+                <span className="block">de pegar crédito.</span>
               </h1>
-              <p className="mt-5 text-lg leading-8 text-slate-600 md:text-xl">
+              <p className="mt-5 text-base font-normal leading-8 text-slate-600 md:text-lg">
                 Compare empréstimos, cartões e financiamentos com mais clareza antes de decidir.
               </p>
             </div>
@@ -466,7 +462,7 @@ function HomePage() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="h-12 w-full rounded-xl bg-slate-900 text-base font-semibold text-white transition-all duration-200 hover:bg-slate-800"
+                  className="h-12 w-full rounded-xl bg-[#2563EB] text-base font-semibold text-white shadow-[0_12px_30px_rgba(37,99,235,0.28)] transition-all duration-200 hover:bg-[#1D4ED8] hover:shadow-[0_16px_34px_rgba(29,78,216,0.34)]"
                 >
                   Simular agora
                 </Button>
@@ -507,23 +503,18 @@ function HomePage() {
       <section className="border-b border-border bg-white py-12 md:py-14">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-5xl text-center">
-            <span className="soft-blue-chip mb-5">Bancos disponíveis</span>
-            <h2 className="mb-3">Instituições que você encontra no Cote Juros</h2>
-            <p className="mx-auto max-w-2xl text-muted-foreground">
-              Compare ofertas de Nubank, Itaú, Santander, C6, Inter e Banco do Brasil em um único fluxo.
+            <span className="soft-blue-chip mb-5">Instituições</span>
+            <h2 className="mb-3 text-[clamp(2rem,3.5vw,2.7rem)] font-semibold tracking-[-0.025em]">
+              Instituições analisadas no Cote Juros
+            </h2>
+            <p className="mx-auto max-w-2xl text-[1.03rem] font-normal leading-8 text-slate-600">
+              Compare ofertas de bancos digitais e tradicionais em um único fluxo.
             </p>
-            <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {bankLogos.map((bank) => (
-                <div key={bank.name} className="bank-pill justify-start px-4 py-3">
-                  <img
-                    src={bank.logo}
-                    alt={`Logo ${bank.name}`}
-                    className="h-5 w-auto max-w-[84px] object-contain"
-                    loading="lazy"
-                  />
-                  <span>{bank.name}</span>
-                  <BadgeCheck className="ml-auto h-4 w-4 text-primary" />
-                </div>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              {bankInstitutions.map((bank) => (
+                <span key={bank} className="institution-chip">
+                  {bank}
+                </span>
               ))}
             </div>
           </motion.div>

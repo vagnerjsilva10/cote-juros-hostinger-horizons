@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700&family=Space+Grotesk:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -81,9 +81,9 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Manrope', 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
-    line-height: 1.6;
+    line-height: 1.62;
     background-image:
       radial-gradient(circle at 20% -10%, rgba(37, 99, 235, 0.12), transparent 35%),
       radial-gradient(circle at 80% -20%, rgba(37, 99, 235, 0.08), transparent 30%);
@@ -100,26 +100,26 @@
   h5,
   h6 {
     @apply text-balance text-foreground;
-    font-family: 'Inter', sans-serif;
-    letter-spacing: -0.02em;
+    font-family: 'Space Grotesk', 'Manrope', sans-serif;
+    letter-spacing: -0.024em;
   }
 
   h1 {
-    font-size: clamp(3rem, 6vw, 4rem);
-    font-weight: 600;
-    line-height: 1.02;
+    font-size: clamp(2.75rem, 5.3vw, 4rem);
+    font-weight: 700;
+    line-height: 1.04;
   }
 
   h2 {
-    font-size: clamp(2.25rem, 4vw, 3rem);
-    font-weight: 600;
-    line-height: 1.08;
+    font-size: clamp(2rem, 3.6vw, 2.85rem);
+    font-weight: 700;
+    line-height: 1.1;
   }
 
   h3 {
-    font-size: clamp(1.5rem, 2vw, 1.875rem);
-    font-weight: 600;
-    line-height: 1.18;
+    font-size: clamp(1.35rem, 2vw, 1.78rem);
+    font-weight: 700;
+    line-height: 1.2;
   }
 
   h4 {
@@ -129,8 +129,8 @@
 
   p {
     color: var(--text-secondary-hex);
-    font-size: 16px;
-    line-height: 1.7;
+    font-size: 15.5px;
+    line-height: 1.72;
   }
 
   small {
@@ -180,7 +180,7 @@
   }
 
   .section-copy {
-    @apply max-w-2xl text-base md:text-lg text-muted-foreground;
+    @apply max-w-2xl text-base md:text-[1.05rem] text-muted-foreground leading-8;
   }
 
   .surface-card {
@@ -324,6 +324,26 @@
   .bank-pill:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-sm);
+  }
+
+  .institution-chip {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #1e293b;
+    padding: 0.56rem 1.02rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    transition: background-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  }
+
+  .institution-chip:hover {
+    background: #e8eef9;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+    transform: translateY(-1px);
   }
 
   .product-illustration {
