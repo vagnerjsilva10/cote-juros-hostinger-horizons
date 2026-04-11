@@ -16,7 +16,7 @@
   <rect width="960" height="600" rx="36" fill="url(#bg)"/>
   <rect width="960" height="600" rx="36" fill="url(#glow)"/>
   <rect x="70" y="88" width="92" height="68" rx="12" fill="url(#accent)"/>
-  <text x="74" y="152" fill="white" fill-opacity="0.98" font-family="Inter, Arial, sans-serif" font-size="46" font-weight="800" letter-spacing="0.08em">BRADESCO</text>
+  <text x="186" y="141" fill="white" fill-opacity="0.98" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800" letter-spacing="0.08em">BRADESCO</text>
   <text x="74" y="304" fill="white" fill-opacity="0.96" font-family="Inter, Arial, sans-serif" font-size="66" font-weight="700">Visa Infinite</text>
   <text x="74" y="500" fill="white" fill-opacity="0.94" font-family="Inter, Arial, sans-serif" font-size="46" font-weight="700" letter-spacing="0.12em">CRÉDITO</text>
 </svg>
