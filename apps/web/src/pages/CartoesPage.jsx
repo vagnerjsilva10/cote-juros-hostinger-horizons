@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { CheckCircle2, ChevronRight, CreditCard, Filter } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -54,6 +55,16 @@ function CartoesPage() {
     return result;
   }, [benefits, cardsData, categories, freeAnnuity, sort]);
 
+  const freeCardsCount = useMemo(
+    () => cardsData.filter((item) => item.annualFee === 0).length,
+    [cardsData]
+  );
+
+  const bestLimit = useMemo(() => {
+    if (!filteredCards.length) return 0;
+    return Math.max(...filteredCards.map((item) => item.maxLimit || 0));
+  }, [filteredCards]);
+
   const handleApply = async (card) => {
     const destinationUrl = 'https://finance.cotejuros.com.br';
 
@@ -81,23 +92,53 @@ function CartoesPage() {
     <>
       <Helmet>
         <title>Comparador de cartoes - Cote Juros</title>
-        <meta name="description" content="Compare cartoes por anuidade, limite estimado e beneficios em uma interface mais limpa." />
+        <meta name="description" content="Compare cartoes por anuidade, limite estimado e beneficios em uma interface premium e objetiva." />
       </Helmet>
 
       <PageHero
-        badge="Cartoes"
-        title="Selecione cartoes com leitura mais objetiva."
-        subtitle="Anuidade, limite estimado e beneficios ficam organizados em uma grade mais neutra e mais facil de escanear."
-      />
+        badge="Comparador de cartoes"
+        title="Encontre o cartao ideal com leitura clara de custo e beneficio."
+        subtitle="Compare anuidade, limite estimado e vantagens reais em uma grade de decisao feita para acelerar conversao."
+      >
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Link to="/diagnostico-financeiro">
+            <Button size="lg">Analisar perfil completo</Button>
+          </Link>
+          <a href="#resultados-cartoes">
+            <Button size="lg" variant="outline">Ver cartoes agora</Button>
+          </a>
+        </div>
+      </PageHero>
 
-      <div className="page-shell py-12">
+      <section className="border-b border-border bg-background-secondary py-8">
+        <div className="page-shell grid gap-4 md:grid-cols-4">
+          <div className="interactive-card px-5 py-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Cartoes no comparador</p>
+            <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{cardsData.length}</p>
+          </div>
+          <div className="interactive-card px-5 py-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Sem anuidade</p>
+            <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-primary">{freeCardsCount}</p>
+          </div>
+          <div className="interactive-card px-5 py-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Maior limite estimado</p>
+            <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">R$ {(bestLimit / 1000).toFixed(0)}k</p>
+          </div>
+          <div className="interactive-card px-5 py-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Ofertas visiveis</p>
+            <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{filteredCards.length}</p>
+          </div>
+        </div>
+      </section>
+
+      <div className="page-shell py-12" id="resultados-cartoes">
         <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
           <aside className="lg:sticky lg:top-24 lg:h-fit">
-            <Card>
+            <Card className="border-border bg-white shadow-[var(--shadow-sm)]">
               <CardContent className="space-y-8 p-8">
                 <div className="flex items-center gap-2 border-b border-border pb-4">
-                  <Filter className="h-4 w-4 text-foreground" />
-                  <h3 className="text-lg">Filtros</h3>
+                  <Filter className="h-4 w-4 text-primary" />
+                  <h3 className="text-lg">Filtros da comparacao</h3>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -141,7 +182,7 @@ function CartoesPage() {
           <section>
             <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <p className="text-sm text-muted-foreground">{filteredCards.length} cartao(oes) visiveis na comparacao.</p>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <Label className="whitespace-nowrap">Ordenar</Label>
                 <Select value={sort} onValueChange={setSort}>
                   <SelectTrigger className="w-[220px]">
@@ -152,6 +193,9 @@ function CartoesPage() {
                     <SelectItem value="anuidade-menor">Menor anuidade</SelectItem>
                   </SelectContent>
                 </Select>
+                <Link to="/diagnostico-financeiro">
+                  <Button variant="outline">Analisar perfil</Button>
+                </Link>
               </div>
             </div>
 
@@ -160,26 +204,28 @@ function CartoesPage() {
                 const isFree = card.annualFee === 0;
 
                 return (
-                  <Card key={card.id} className="surface-card h-full overflow-hidden">
+                  <Card key={card.id} className="surface-card h-full overflow-hidden border-border bg-white">
                     <div className="relative h-44 border-b border-border bg-background-secondary">
-                      <img src={card.image} alt={card.title} className="h-full w-full object-cover grayscale" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-white via-white/85 to-white/30" />
+                      <img src={card.image} alt={card.title} className="h-full w-full object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/35 via-slate-900/5 to-transparent" />
                       <div className="absolute inset-x-5 bottom-5">
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{card.bankName}</p>
-                        <h3 className="mt-2 text-xl">{card.title}</h3>
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/85">{card.bankName}</p>
+                        <h3 className="mt-2 text-xl text-white">{card.title}</h3>
                       </div>
                     </div>
 
                     <CardContent className="flex h-full flex-col gap-5 p-8">
                       <div className="flex items-center justify-between gap-3">
-                        <Badge variant="outline">{card.category}</Badge>
+                        <Badge variant="outline" className="border-primary/25 bg-primary/10 text-primary">{card.category}</Badge>
                         {isFree ? <Badge variant="secondary">Sem anuidade</Badge> : null}
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="rounded-[12px] border border-border bg-background-secondary p-4">
                           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Anuidade</p>
-                          <p className="mt-2 text-sm font-semibold text-foreground">{isFree ? 'Gratis' : `R$ ${card.annualFee}/ano`}</p>
+                          <p className={`mt-2 text-sm font-semibold ${isFree ? 'text-primary' : 'text-foreground'}`}>
+                            {isFree ? 'Gratis' : `R$ ${card.annualFee}/ano`}
+                          </p>
                         </div>
                         <div className="rounded-[12px] border border-border bg-background-secondary p-4">
                           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Limite estimado</p>
@@ -190,7 +236,7 @@ function CartoesPage() {
                       <div className="space-y-3">
                         {card.benefits?.slice(0, 3).map((benefit, index) => (
                           <div key={`${benefit}-${index}`} className="flex items-start gap-3">
-                            <CheckCircle2 className="mt-0.5 h-4 w-4 text-foreground" />
+                            <CheckCircle2 className="mt-0.5 h-4 w-4 text-primary" />
                             <p className="text-sm text-muted-foreground">{benefit}</p>
                           </div>
                         ))}
@@ -210,11 +256,30 @@ function CartoesPage() {
                 <CreditCard className="mx-auto h-10 w-10 text-muted-foreground" />
                 <h3 className="mt-4 text-2xl">Nenhum cartao encontrado.</h3>
                 <p className="mt-3 text-muted-foreground">Tente reduzir os filtros ativos para ver mais opcoes.</p>
+                <div className="mt-6">
+                  <Link to="/diagnostico-financeiro">
+                    <Button>Analisar perfil completo</Button>
+                  </Link>
+                </div>
               </div>
             ) : null}
           </section>
         </div>
       </div>
+
+      <section className="border-t border-border bg-background-secondary py-16">
+        <div className="page-shell">
+          <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
+            <h2 className="mb-3">Quer escolher o cartao com mais aderencia ao seu momento?</h2>
+            <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
+              O diagnostico combina renda e comportamento financeiro para indicar linhas com maior chance de aprovacao e melhor pacote de beneficios.
+            </p>
+            <Link to="/diagnostico-financeiro">
+              <Button size="lg">Analisar perfil agora</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

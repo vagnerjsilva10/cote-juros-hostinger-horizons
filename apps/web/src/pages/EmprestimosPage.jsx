@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ChevronRight, Clock, Filter, ShieldCheck, Sparkles, Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -51,6 +52,12 @@ function EmprestimosPage() {
     return result;
   }, [amount, loansData, score, sort, term, type]);
 
+  const bestRate = useMemo(() => {
+    if (!filteredLoans.length) return null;
+    const minRate = Math.min(...filteredLoans.map((item) => item.monthlyRate));
+    return Number.isFinite(minRate) ? minRate.toFixed(2) : null;
+  }, [filteredLoans]);
+
   const getBadge = (loanType, rate) => {
     if (rate < 2) return { icon: Star, text: 'Melhor taxa' };
     if (loanType === 'Negativado') return { icon: ShieldCheck, text: 'Sem consulta dura' };
@@ -98,37 +105,52 @@ function EmprestimosPage() {
       </Helmet>
 
       <PageHero
-        badge="Emprestimos"
-        title="Um comparador mais claro para emprestimos."
-        subtitle="Filtre por faixa de valor, prazo e score para enxergar custo, limite e aderencia sem ruido visual."
-      />
+        badge="Comparador de emprestimos"
+        title="Compare emprestimos com foco em taxa e custo total."
+        subtitle="Visualize ofertas por valor, prazo e perfil de score em uma experiencia premium, clara e orientada para conversao."
+      >
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Link to="/diagnostico-financeiro">
+            <Button size="lg">Analisar perfil completo</Button>
+          </Link>
+          <a href="#resultados-emprestimos">
+            <Button size="lg" variant="outline">Ver ofertas agora</Button>
+          </a>
+        </div>
+      </PageHero>
 
       <section className="border-b border-border bg-background-secondary py-8">
-        <div className="page-shell grid gap-4 md:grid-cols-3">
-          {[
-            { label: 'Valor em analise', value: `R$ ${amount[0].toLocaleString('pt-BR')}` },
-            { label: 'Prazo selecionado', value: `${term[0]} meses` },
-            { label: 'Ofertas visiveis', value: filteredLoans.length.toString() }
-          ].map((item) => (
-            <div key={item.label} className="rounded-[12px] border border-border bg-white px-5 py-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{item.label}</p>
-              <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{item.value}</p>
-            </div>
-          ))}
+        <div className="page-shell grid gap-4 md:grid-cols-4">
+          <div className="interactive-card px-5 py-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor em analise</p>
+            <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">R$ {amount[0].toLocaleString('pt-BR')}</p>
+          </div>
+          <div className="interactive-card px-5 py-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Prazo selecionado</p>
+            <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{term[0]} meses</p>
+          </div>
+          <div className="interactive-card px-5 py-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Melhor taxa atual</p>
+            <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-primary">{bestRate ? `${bestRate}% a.m.` : '--'}</p>
+          </div>
+          <div className="interactive-card px-5 py-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Ofertas visiveis</p>
+            <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{filteredLoans.length}</p>
+          </div>
         </div>
       </section>
 
-      <div className="page-shell py-12">
+      <div className="page-shell py-12" id="resultados-emprestimos">
         <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
           <aside className="lg:sticky lg:top-24 lg:h-fit">
-            <Card>
+            <Card className="border-border bg-white shadow-[var(--shadow-sm)]">
               <CardContent className="space-y-8 p-8">
                 <div className="flex items-center justify-between border-b border-border pb-4">
                   <div className="flex items-center gap-2">
-                    <Filter className="h-4 w-4 text-foreground" />
-                    <h3 className="text-lg">Filtros</h3>
+                    <Filter className="h-4 w-4 text-primary" />
+                    <h3 className="text-lg">Filtros da comparacao</h3>
                   </div>
-                  <button type="button" onClick={resetFilters} className="text-sm text-muted-foreground hover:text-foreground">
+                  <button type="button" onClick={resetFilters} className="text-sm font-medium text-primary hover:text-primary-hover">
                     Limpar
                   </button>
                 </div>
@@ -183,9 +205,9 @@ function EmprestimosPage() {
           <section>
             <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <p className="text-sm text-muted-foreground">
-                {filteredLoans.length} oferta(s) ordenadas por custo e aderencia.
+                {filteredLoans.length} oferta(s) ordenadas para facilitar sua decisao.
               </p>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <Label className="whitespace-nowrap">Ordenar</Label>
                 <Select value={sort} onValueChange={setSort}>
                   <SelectTrigger className="w-[220px]">
@@ -197,6 +219,9 @@ function EmprestimosPage() {
                     <SelectItem value="prazo-maior">Maior prazo</SelectItem>
                   </SelectContent>
                 </Select>
+                <Link to="/diagnostico-financeiro">
+                  <Button variant="outline">Analisar perfil</Button>
+                </Link>
               </div>
             </div>
 
@@ -207,11 +232,11 @@ function EmprestimosPage() {
                 const BadgeIcon = badge.icon;
 
                 return (
-                  <Card key={loan.id} className="surface-card h-full">
+                  <Card key={loan.id} className="surface-card h-full border-border bg-white">
                     <CardContent className="flex h-full flex-col gap-6 p-8">
                       <div className="flex items-start justify-between gap-4">
                         <div className="space-y-2">
-                          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-background-secondary text-sm font-semibold text-foreground">
+                          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-sm font-semibold text-primary">
                             {bank?.name?.charAt(0) || 'B'}
                           </div>
                           <div>
@@ -219,7 +244,7 @@ function EmprestimosPage() {
                             <p className="text-sm text-muted-foreground">{loan.category}</p>
                           </div>
                         </div>
-                        <Badge variant="outline" className="gap-1">
+                        <Badge variant="outline" className="gap-1 border-primary/25 bg-primary/10 text-primary">
                           <BadgeIcon className="h-3 w-3" />
                           {badge.text}
                         </Badge>
@@ -227,7 +252,7 @@ function EmprestimosPage() {
 
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Taxa mensal</p>
-                        <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-foreground">{loan.monthlyRate}%</p>
+                        <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-primary">{loan.monthlyRate}%</p>
                       </div>
 
                       <div className="rounded-[12px] border border-border bg-background-secondary p-4">
@@ -266,14 +291,33 @@ function EmprestimosPage() {
               <div className="rounded-[16px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center">
                 <h3 className="text-2xl">Nenhuma oferta encontrada.</h3>
                 <p className="mt-3 text-muted-foreground">Ajuste valor, prazo ou score para ampliar a comparacao.</p>
-                <Button variant="outline" className="mt-6" onClick={resetFilters}>
-                  Limpar filtros
-                </Button>
+                <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                  <Button variant="outline" onClick={resetFilters}>
+                    Limpar filtros
+                  </Button>
+                  <Link to="/diagnostico-financeiro">
+                    <Button>Analisar perfil completo</Button>
+                  </Link>
+                </div>
               </div>
             ) : null}
           </section>
         </div>
       </div>
+
+      <section className="border-t border-border bg-background-secondary py-16">
+        <div className="page-shell">
+          <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
+            <h2 className="mb-3">Quer acelerar sua escolha com mais seguranca?</h2>
+            <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
+              O diagnostico financeiro cruza seu perfil com as melhores linhas para priorizar ofertas com maior aderencia e menor custo potencial.
+            </p>
+            <Link to="/diagnostico-financeiro">
+              <Button size="lg">Analisar perfil agora</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
     </>
   );
 }
