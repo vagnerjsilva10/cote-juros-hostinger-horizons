@@ -12,8 +12,8 @@ function Header() {
 
   const navItems = [
     { label: 'Home', path: '/' },
-    { label: 'Empr√©stimos', path: '/emprestimos' },
-    { label: 'Cart√µes', path: '/cartoes-de-credito' },
+    { label: 'EmprÈstimos', path: '/emprestimos' },
+    { label: 'Cartıes', path: '/cartoes-de-credito' },
     { label: 'Financiamentos', path: '/financiamento' },
     { label: 'Ferramentas', path: '/ferramentas' },
     { label: 'Blog', path: '/blog' }
@@ -87,7 +87,7 @@ function Header() {
                     <div className="pt-6 mt-4 border-t border-border">
                       <Link to="/diagnostico-financeiro" onClick={() => setMobileOpen(false)}>
                         <Button className="w-full gradient-fintech-hover text-white border-0 shadow-premium rounded-xl h-12 text-base font-semibold">
-                          Analisar Perfil Gr√°tis
+                          Analisar Perfil Gr·tis
                         </Button>
                       </Link>
                     </div>
@@ -103,3 +103,4 @@ function Header() {
 }
 
 export default Header;
+
