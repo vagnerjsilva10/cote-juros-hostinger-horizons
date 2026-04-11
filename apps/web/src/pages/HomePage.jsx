@@ -245,6 +245,8 @@ function HomePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [heroValue, setHeroValue] = useState('R$ 2.000,00');
   const [heroInstallments, setHeroInstallments] = useState(24);
+  const [typedWord, setTypedWord] = useState('');
+  const [isDeletingWord, setIsDeletingWord] = useState(false);
   const [testimonials, setTestimonials] = useState([]);
   const [comparisonRows, setComparisonRows] = useState(fallbackComparisonRows);
   const [catalogSize, setCatalogSize] = useState(0);
@@ -308,6 +310,40 @@ function HomePage() {
         setComparisonRows(fallbackComparisonRows);
       });
   }, []);
+
+  useEffect(() => {
+    const targetWord = 'empréstimo.';
+    const typingSpeed = isDeletingWord ? 42 : 86;
+    const pauseAtEnd = 1100;
+    const pauseAtStart = 260;
+
+    const timeout = setTimeout(
+      () => {
+        if (!isDeletingWord && typedWord === targetWord) {
+          setIsDeletingWord(true);
+          return;
+        }
+
+        if (isDeletingWord && typedWord.length === 0) {
+          setIsDeletingWord(false);
+          return;
+        }
+
+        const nextValue = isDeletingWord
+          ? targetWord.slice(0, typedWord.length - 1)
+          : targetWord.slice(0, typedWord.length + 1);
+
+        setTypedWord(nextValue);
+      },
+      !isDeletingWord && typedWord === targetWord
+        ? pauseAtEnd
+        : isDeletingWord && typedWord.length === 0
+          ? pauseAtStart
+          : typingSpeed
+    );
+
+    return () => clearTimeout(timeout);
+  }, [isDeletingWord, typedWord]);
 
   const testimonialItems = useMemo(() => {
     if (!Array.isArray(testimonials) || testimonials.length === 0) return fallbackTestimonials;
@@ -427,11 +463,17 @@ function HomePage() {
                 className="mt-5 text-[clamp(2.7rem,5.8vw,4.1rem)] font-bold leading-[1.03] tracking-[-0.03em] text-slate-900"
                 style={{ fontFamily: '"Space Grotesk", "Manrope", sans-serif' }}
               >
-                <span className="block">O crédito pode resolver hoje.</span>
-                <span className="block">Ou pesar por anos.</span>
+                <span className="block">Compare, escolha e contrate</span>
+                <span className="block">
+                  seu próximo{' '}
+                  <span className="hero-word-emphasis inline-block min-w-[11ch]">
+                    {typedWord}
+                    <span className="ml-0.5 inline-block animate-pulse text-primary">|</span>
+                  </span>
+                </span>
               </h1>
               <p className="mt-5 text-base font-normal leading-8 text-slate-600 md:text-lg">
-                O Cote Juros mostra, de forma clara, quanto cada opção realmente custa antes de você assinar.
+                A plataforma aumenta suas chances reais de aprovação e conecta você às opções de crédito mais aderentes ao seu perfil.
               </p>
               <div className="hero-proof-pill mx-auto mt-6 inline-flex flex-wrap items-center justify-center gap-2.5 lg:mx-0 lg:justify-start">
                 <span>Taxa + CET no mesmo lugar</span>
