@@ -29,7 +29,7 @@ function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           <Link to="/" className="flex items-center interactive-element hover:opacity-80">
-            <CoteJurosLogo variant="horizontal" className="h-11 w-auto" />
+            <CoteJurosLogo variant="horizontal" className="h-14 w-auto" />
           </Link>
 
           <nav className="hidden lg:flex items-center space-x-2">
