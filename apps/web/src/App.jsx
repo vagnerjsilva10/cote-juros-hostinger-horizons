@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
 import ScrollToTop from '@/components/ScrollToTop.jsx';
 import Header from '@/components/Header.jsx';
@@ -19,7 +19,20 @@ import SeoLandingPage from '@/pages/SeoLandingPage.jsx';
 import CoteFinanceAIPage from '@/pages/CoteFinanceAIPage.jsx';
 import MotionHeroPage from '@/pages/MotionHeroPage.jsx';
 
-import { seoFallbackPaths, seoPages } from '@/platform/seed/portalSeed.js';
+import AdminAuthGuard from '@/admin/AdminAuthGuard.jsx';
+import AdminLayout from '@/admin/AdminLayout.jsx';
+import AdminDashboardPage from '@/pages/admin/AdminDashboardPage.jsx';
+import AdminOffersPage from '@/pages/admin/AdminOffersPage.jsx';
+import AdminBanksPage from '@/pages/admin/AdminBanksPage.jsx';
+import AdminPartnersPage from '@/pages/admin/AdminPartnersPage.jsx';
+import AdminArticlesPage from '@/pages/admin/AdminArticlesPage.jsx';
+import AdminSeoPagesPage from '@/pages/admin/AdminSeoPagesPage.jsx';
+import AdminLeadsPage from '@/pages/admin/AdminLeadsPage.jsx';
+import AdminTestimonialsPage from '@/pages/admin/AdminTestimonialsPage.jsx';
+import AdminSettingsPage from '@/pages/admin/AdminSettingsPage.jsx';
+
+import { seoFallbackPaths as seedFallbackPaths, seoPages as seedSeoPages } from '@/platform/seed/portalSeed.js';
+import { portalApi } from '@/platform/services/portalApi.js';
 import { Toaster } from '@/components/ui/sonner';
 
 function AppLayout({ children }) {
@@ -32,7 +45,29 @@ function AppLayout({ children }) {
   );
 }
 
+function AdminRoute({ title, children }) {
+  return (
+    <AdminAuthGuard>
+      <AdminLayout title={title}>{children}</AdminLayout>
+    </AdminAuthGuard>
+  );
+}
+
 function App() {
+  const [seoPages, setSeoPages] = useState(seedSeoPages);
+  const [seoFallbackPaths, setSeoFallbackPaths] = useState(seedFallbackPaths);
+
+  useEffect(() => {
+    Promise.all([portalApi.getSeoPages(), portalApi.getSeoFallbackPaths()])
+      .then(([pages, fallbackPaths]) => {
+        if (Array.isArray(pages) && pages.length) setSeoPages(pages);
+        if (Array.isArray(fallbackPaths) && fallbackPaths.length) setSeoFallbackPaths(fallbackPaths);
+      })
+      .catch(() => {
+        // keep seed fallback
+      });
+  }, []);
+
   return (
     <Router>
       <ScrollToTop />
@@ -51,6 +86,17 @@ function App() {
         <Route path="/cote-finance-ai" element={<AppLayout><CoteFinanceAIPage /></AppLayout>} />
         <Route path="/motion-hero" element={<AppLayout><MotionHeroPage /></AppLayout>} />
 
+        <Route path="/admin/login" element={<AdminAuthGuard />} />
+        <Route path="/admin" element={<AdminRoute title="Dashboard"><AdminDashboardPage /></AdminRoute>} />
+        <Route path="/admin/offers" element={<AdminRoute title="Offer Management"><AdminOffersPage /></AdminRoute>} />
+        <Route path="/admin/banks" element={<AdminRoute title="Bank Management"><AdminBanksPage /></AdminRoute>} />
+        <Route path="/admin/partners" element={<AdminRoute title="Partner Management"><AdminPartnersPage /></AdminRoute>} />
+        <Route path="/admin/articles" element={<AdminRoute title="Article Management"><AdminArticlesPage /></AdminRoute>} />
+        <Route path="/admin/seo-pages" element={<AdminRoute title="SEO Page Management"><AdminSeoPagesPage /></AdminRoute>} />
+        <Route path="/admin/leads" element={<AdminRoute title="Lead Management"><AdminLeadsPage /></AdminRoute>} />
+        <Route path="/admin/testimonials" element={<AdminRoute title="Testimonials"><AdminTestimonialsPage /></AdminRoute>} />
+        <Route path="/admin/settings" element={<AdminRoute title="Settings"><AdminSettingsPage /></AdminRoute>} />
+
         {seoPages.map((page) => (
           <Route
             key={page.path}
@@ -60,8 +106,8 @@ function App() {
                 <SeoLandingPage
                   title={page.title}
                   description={page.description}
-                  heading={page.heading}
-                  content={page.content}
+                  heading={page.heroCopy || page.heading}
+                  content={Array.isArray(page.content) ? page.content : [page.description].filter(Boolean)}
                   type={page.type}
                 />
               </AppLayout>
@@ -109,4 +155,3 @@ function App() {
 }
 
 export default App;
-

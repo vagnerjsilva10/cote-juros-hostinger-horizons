@@ -1,4 +1,4 @@
-Ôªøimport React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -23,7 +23,7 @@ import {
   BarChart3,
   Activity
 } from 'lucide-react';
-import { testimonials as testimonialsSeed } from '@/platform/seed/portalSeed.js';
+import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 
 const AI_DASHBOARD_ASSET = '/assets/cote-finance-ai-dashboard.png';
@@ -31,6 +31,7 @@ const AI_DASHBOARD_ASSET = '/assets/cote-finance-ai-dashboard.png';
 function HomePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [heroValue, setHeroValue] = useState('');
+  const [testimonials, setTestimonials] = useState([]);
 
   const formatCurrency = (val) => {
     let v = val.replace(/\D/g, '');
@@ -47,8 +48,9 @@ function HomePage() {
     e.preventDefault();
     setModalOpen(true);
   };
-
-  const testimonials = testimonialsSeed;
+  useEffect(() => {
+    portalApi.getTestimonials().then(setTestimonials);
+  }, []);
 
   return (
     <>
@@ -56,7 +58,7 @@ function HomePage() {
         <title>Cote Juros - Comparador Financeiro Premium</title>
         <meta
           name="description"
-          content="Compare empr√©stimos, cart√µes e financiamentos em segundos e encontre a melhor oferta para seu perfil."
+          content="Compare emprÈstimos, cartıes e financiamentos em segundos e encontre a melhor oferta para seu perfil."
         />
       </Helmet>
 
@@ -80,18 +82,18 @@ function HomePage() {
               transition={{ duration: 0.6, ease: 'easeOut' }}
             >
               <span className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-slate-900/40 px-4 py-2 text-sm font-semibold text-white shadow-sm">
-                <Sparkles className="h-4 w-4 text-cyan-300" /> Plataforma de compara√ß√£o com curadoria premium
+                <Sparkles className="h-4 w-4 text-cyan-300" /> Plataforma de comparaÁ„o com curadoria premium
               </span>
 
-              <h1 className="mb-6 text-white drop-shadow-[0_6px_24px_rgba(2,6,23,0.45)]">Cote juros antes de pegar cr√©dito.</h1>
+              <h1 className="mb-6 text-white drop-shadow-[0_6px_24px_rgba(2,6,23,0.45)]">Cote juros antes de pegar crÈdito.</h1>
 
               <p className="mx-auto mb-10 max-w-3xl text-lg font-medium leading-relaxed text-slate-200 md:text-2xl">
-                Compare empr√©stimos, cart√µes e financiamentos em segundos para tomar decis√µes financeiras com mais seguran√ßa.
+                Compare emprÈstimos, cartıes e financiamentos em segundos para tomar decisıes financeiras com mais seguranÁa.
               </p>
 
               <div className="mx-auto mb-8 grid max-w-4xl gap-3 sm:grid-cols-3">
                 {[
-                  { label: 'Radar de taxas', value: 'Atualiza√ß√£o di√°ria' },
+                  { label: 'Radar de taxas', value: 'AtualizaÁ„o di·ria' },
                   { label: 'Motor de elegibilidade', value: 'Leitura em segundos' },
                   { label: 'Curadoria inteligente', value: 'Ofertas priorizadas' }
                 ].map((signal) => (
@@ -107,7 +109,7 @@ function HomePage() {
                 <div className="relative rounded-2xl border border-slate-200/90 bg-white p-4 shadow-[0_22px_48px_-26px_rgba(2,6,23,0.75)] sm:p-5">
                   <form onSubmit={handleHeroSubmit} className="flex flex-col sm:flex-row gap-3 w-full">
                     <Input
-                      placeholder="De quanto voc√™ precisa? (R$)"
+                      placeholder="De quanto vocÍ precisa? (R$)"
                       className="h-14 text-lg bg-slate-50 border-slate-200 text-foreground rounded-xl shadow-inner"
                       value={heroValue}
                       onChange={(e) => formatCurrency(e.target.value)}
@@ -123,15 +125,15 @@ function HomePage() {
               </div>
 
               <div className="mt-6 flex items-center justify-center gap-2 text-sm font-medium text-slate-200">
-                <ShieldCheck className="w-4 h-4 text-cyan-300" /> Simula√ß√£o 100% gratuita e segura
+                <ShieldCheck className="w-4 h-4 text-cyan-300" /> SimulaÁ„o 100% gratuita e segura
               </div>
             </motion.div>
 
             <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {[
-                { label: 'Institui√ß√µes analisadas', value: '50+' },
-                { label: 'Simula√ß√µes realizadas', value: 'Milhares' },
-                { label: 'Atualiza√ß√£o de taxas', value: 'Di√°ria' },
+                { label: 'InstituiÁıes analisadas', value: '50+' },
+                { label: 'SimulaÁıes realizadas', value: 'Milhares' },
+                { label: 'AtualizaÁ„o de taxas', value: 'Di·ria' },
                 { label: 'Consulta de risco', value: 'Soft Query' }
               ].map((metric) => (
                 <div key={metric.label} className="rounded-xl border border-slate-200/20 bg-slate-900/40 px-4 py-4 text-left shadow-[0_10px_24px_-18px_rgba(2,6,23,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-900/50">
@@ -148,10 +150,10 @@ function HomePage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-10">
             {[
-              { icon: Building2, title: '50+ institui√ß√µes analisadas', color: 'text-primary', bg: 'bg-primary/10' },
-              { icon: Users, title: 'Milhares de simula√ß√µes', color: 'text-secondary', bg: 'bg-secondary/10' },
+              { icon: Building2, title: '50+ instituiÁıes analisadas', color: 'text-primary', bg: 'bg-primary/10' },
+              { icon: Users, title: 'Milhares de simulaÁıes', color: 'text-secondary', bg: 'bg-secondary/10' },
               { icon: RefreshCw, title: 'Taxas atualizadas diariamente', color: 'text-accent', bg: 'bg-accent/10' },
-              { icon: ShieldCheck, title: 'Seguran√ßa de dados garantida', color: 'text-primary', bg: 'bg-primary/10' }
+              { icon: ShieldCheck, title: 'SeguranÁa de dados garantida', color: 'text-primary', bg: 'bg-primary/10' }
             ].map((item, i) => (
               <motion.div
                 key={i}
@@ -176,7 +178,7 @@ function HomePage() {
           <div className="text-center mb-16 max-w-3xl mx-auto">
             <h2 className="mb-4">Tudo para sua vida financeira</h2>
             <p className="text-lg text-muted-foreground">
-              Solu√ß√µes inteligentes para economizar tempo, reduzir custos e escolher cr√©dito com mais confian√ßa.
+              SoluÁıes inteligentes para economizar tempo, reduzir custos e escolher crÈdito com mais confianÁa.
             </p>
           </div>
 
@@ -184,21 +186,21 @@ function HomePage() {
             <Link to="/emprestimos" className="group">
               <Card className="card-premium h-full overflow-hidden border-0 bg-card relative p-8 transition-all duration-300 group-hover:-translate-y-1">
                 <div className="absolute top-0 right-0 w-44 h-44 bg-primary/10 rounded-full blur-3xl -mr-12 -mt-12 transition-all group-hover:bg-primary/15" />
-                <span className="mb-5 inline-flex rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-semibold tracking-wide text-primary">Cr√©dito pessoal</span>
+                <span className="mb-5 inline-flex rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-semibold tracking-wide text-primary">CrÈdito pessoal</span>
                 <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-5">
                   <DollarSign className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="mb-3 group-hover:text-primary transition-colors">Empr√©stimos</h3>
+                <h3 className="mb-3 group-hover:text-primary transition-colors">EmprÈstimos</h3>
                 <p className="text-muted-foreground mb-6 text-lg">
-                  Compare taxas de cr√©dito pessoal, consignado e com garantia nas principais institui√ß√µes.
+                  Compare taxas de crÈdito pessoal, consignado e com garantia nas principais instituiÁıes.
                 </p>
                 <div className="mb-6 grid grid-cols-2 gap-3">
                   <div className="rounded-lg border border-border bg-slate-50 px-3 py-2">
-                    <p className="text-[11px] uppercase tracking-wide text-slate-500">An√°lise inicial</p>
+                    <p className="text-[11px] uppercase tracking-wide text-slate-500">An·lise inicial</p>
                     <p className="text-sm font-semibold text-foreground">em minutos</p>
                   </div>
                   <div className="rounded-lg border border-border bg-slate-50 px-3 py-2">
-                    <p className="text-[11px] uppercase tracking-wide text-slate-500">Compara√ß√£o</p>
+                    <p className="text-[11px] uppercase tracking-wide text-slate-500">ComparaÁ„o</p>
                     <p className="text-sm font-semibold text-foreground">50+ bancos</p>
                   </div>
                 </div>
@@ -211,26 +213,26 @@ function HomePage() {
             <Link to="/cartoes-de-credito" className="group">
               <Card className="card-premium h-full overflow-hidden border-0 bg-card relative p-8 transition-all duration-300 group-hover:-translate-y-1">
                 <div className="absolute top-0 right-0 w-44 h-44 bg-secondary/10 rounded-full blur-3xl -mr-12 -mt-12 transition-all group-hover:bg-secondary/15" />
-                <span className="mb-5 inline-flex rounded-full border border-secondary/20 bg-secondary/5 px-3 py-1 text-xs font-semibold tracking-wide text-secondary">Cart√µes premium</span>
+                <span className="mb-5 inline-flex rounded-full border border-secondary/20 bg-secondary/5 px-3 py-1 text-xs font-semibold tracking-wide text-secondary">Cartıes premium</span>
                 <div className="w-16 h-16 rounded-2xl bg-secondary/10 flex items-center justify-center mb-5">
                   <CreditCard className="w-8 h-8 text-secondary" />
                 </div>
-                <h3 className="mb-3 group-hover:text-secondary transition-colors">Cart√µes de Cr√©dito</h3>
+                <h3 className="mb-3 group-hover:text-secondary transition-colors">Cartıes de CrÈdito</h3>
                 <p className="text-muted-foreground mb-6 text-lg">
-                  Filtre por benef√≠cios como milhas, cashback ou aus√™ncia de anuidade e pe√ßa o seu.
+                  Filtre por benefÌcios como milhas, cashback ou ausÍncia de anuidade e peÁa o seu.
                 </p>
                 <div className="mb-6 grid grid-cols-2 gap-3">
                   <div className="rounded-lg border border-border bg-slate-50 px-3 py-2">
                     <p className="text-[11px] uppercase tracking-wide text-slate-500">Sem anuidade</p>
-                    <p className="text-sm font-semibold text-foreground">op√ß√µes ativas</p>
+                    <p className="text-sm font-semibold text-foreground">opÁıes ativas</p>
                   </div>
                   <div className="rounded-lg border border-border bg-slate-50 px-3 py-2">
-                    <p className="text-[11px] uppercase tracking-wide text-slate-500">Benef√≠cios</p>
+                    <p className="text-[11px] uppercase tracking-wide text-slate-500">BenefÌcios</p>
                     <p className="text-sm font-semibold text-foreground">milhas e cashback</p>
                   </div>
                 </div>
                 <span className="font-semibold text-secondary flex items-center">
-                  Ver melhores cart√µes <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  Ver melhores cartıes <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </span>
               </Card>
             </Link>
@@ -244,13 +246,13 @@ function HomePage() {
                   <Home className="w-6 h-6 text-accent" />
                 </div>
                 <h4 className="mb-2 group-hover:text-accent transition-colors">Financiamentos</h4>
-                <p className="text-sm text-muted-foreground mb-4">Simule a compra da casa pr√≥pria ou ve√≠culo.</p>
+                <p className="text-sm text-muted-foreground mb-4">Simule a compra da casa prÛpria ou veÌculo.</p>
                 <span className="text-sm font-semibold text-accent flex items-center">Simular <ArrowRight className="w-3 h-3 ml-1" /></span>
               </Card>
             </Link>
             <Link to="/ferramentas" className="group">
               <Card className="card-premium h-full overflow-hidden border-0 bg-card p-6 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-xl">
-                <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-primary/80">Intelig√™ncia de c√°lculo</p>
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-primary/80">InteligÍncia de c·lculo</p>
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                   <Calculator className="w-6 h-6 text-primary" />
                 </div>
@@ -261,12 +263,12 @@ function HomePage() {
             </Link>
             <Link to="/blog" className="group">
               <Card className="card-premium h-full overflow-hidden border-0 bg-card p-6 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-xl">
-                <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-secondary/80">Conte√∫do editorial</p>
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-secondary/80">Conte˙do editorial</p>
                 <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center mb-4">
                   <BookOpen className="w-6 h-6 text-secondary" />
                 </div>
                 <h4 className="mb-2 group-hover:text-secondary transition-colors">Blog</h4>
-                <p className="text-sm text-muted-foreground mb-4">Dicas e guias para sua educa√ß√£o financeira.</p>
+                <p className="text-sm text-muted-foreground mb-4">Dicas e guias para sua educaÁ„o financeira.</p>
                 <span className="text-sm font-semibold text-secondary flex items-center">Ler artigos <ArrowRight className="w-3 h-3 ml-1" /></span>
               </Card>
             </Link>
@@ -288,14 +290,14 @@ function HomePage() {
               </div>
               <h2 className="mb-6">Cote Finance AI</h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Plataforma de organiza√ß√£o financeira com IA para entender entradas, sa√≠das e padr√µes de gasto, acompanhar metas, d√≠vidas e investimentos e decidir melhor no dia a dia.
+                Plataforma de organizaÁ„o financeira com IA para entender entradas, saÌdas e padrıes de gasto, acompanhar metas, dÌvidas e investimentos e decidir melhor no dia a dia.
               </p>
 
               <div className="space-y-3 mb-8">
                 {[
-                  'Dashboard financeiro com vis√£o consolidada do m√™s',
-                  'Insights autom√°ticos para identificar desperd√≠cios e priorizar ajustes',
-                  'Acompanhamento de metas, d√≠vidas e carteira com contexto real'
+                  'Dashboard financeiro com vis„o consolidada do mÍs',
+                  'Insights autom·ticos para identificar desperdÌcios e priorizar ajustes',
+                  'Acompanhamento de metas, dÌvidas e carteira com contexto real'
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-2 text-muted-foreground font-medium">
                     <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
@@ -312,12 +314,12 @@ function HomePage() {
                     trackingService.trackCtaClick({
                       sourcePage: '/',
                       ctaId: 'home_ai_analisar',
-                      ctaLabel: 'Analisar minhas finan√ßas',
+                      ctaLabel: 'Analisar minhas finanÁas',
                       productType: 'loan'
                     })
                   }
                 >
-                  Analisar minhas finan√ßas
+                  Analisar minhas finanÁas
                 </Button>
               </Link>
             </motion.div>
@@ -386,7 +388,7 @@ function HomePage() {
                 <Activity className="h-4 w-4 text-emerald-400" />
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Meta mensal</p>
-                  <p className="text-xs font-bold text-slate-100">67% conclu√≠da</p>
+                  <p className="text-xs font-bold text-slate-100">67% concluÌda</p>
                 </div>
               </motion.div>
             </motion.div>
@@ -397,8 +399,8 @@ function HomePage() {
       <section className="py-24 bg-secondary-subtle">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="mb-4">Milhares de hist√≥rias de sucesso</h2>
-            <p className="text-lg text-muted-foreground">O que nossos usu√°rios dizem sobre n√≥s.</p>
+            <h2 className="mb-4">Milhares de histÛrias de sucesso</h2>
+            <p className="text-lg text-muted-foreground">O que nossos usu·rios dizem sobre nÛs.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -423,7 +425,7 @@ function HomePage() {
                       <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full shadow-sm" />
                       <div>
                         <p className="font-bold text-foreground">{t.name}</p>
-                        <p className="text-sm text-muted-foreground">{t.location} ‚Ä¢ <span className="font-semibold text-primary">{t.product}</span></p>
+                        <p className="text-sm text-muted-foreground">{t.location} ï <span className="font-semibold text-primary">{t.product}</span></p>
                       </div>
                     </div>
                   </CardContent>
@@ -438,3 +440,4 @@ function HomePage() {
 }
 
 export default HomePage;
+
