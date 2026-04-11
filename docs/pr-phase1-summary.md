@@ -1,4 +1,4 @@
-﻿# PR - Phase 1 Foundation (Portal Escalavel)
+# PR - Phase 1 Foundation (Portal Escalavel)
 
 ## Summary
 This PR starts the architecture transition from a static frontend MVP to a scalable financial platform foundation integrated with Cote Finance AI.

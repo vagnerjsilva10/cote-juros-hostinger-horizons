@@ -1,4 +1,4 @@
-﻿import { portalApi } from '@/platform/services/portalApi.js';
+import { portalApi } from '@/platform/services/portalApi.js';
 
 const FINANCE_APP_BASE = 'https://finance.cotejuros.com.br/app';
 

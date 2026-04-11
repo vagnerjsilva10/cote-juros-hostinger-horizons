@@ -1,4 +1,4 @@
-﻿import { portalRepository } from '@/platform/repositories/portalRepository.js';
+import { portalRepository } from '@/platform/repositories/portalRepository.js';
 import { normalizeMojibake, normalizeMojibakeDeep } from '@/lib/textEncoding.js';
 
 const wait = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));

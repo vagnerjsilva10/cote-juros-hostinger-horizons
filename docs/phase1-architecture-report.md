@@ -1,4 +1,4 @@
-﻿# Cote Juros - Fase 1 de Arquitetura Escalavel
+# Cote Juros - Fase 1 de Arquitetura Escalavel
 
 ## 1) Diagnostico do estado atual
 

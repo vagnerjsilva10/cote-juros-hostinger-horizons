@@ -66,14 +66,14 @@ function FerramentasPage() {
     <>
       <Helmet>
         <title>Ferramentas financeiras - Cote Juros</title>
-        <meta name="description" content="Use calculadoras simples para entender parcelas, juros e custo total antes de contratar credito." />
+        <meta name="description" content="Use calculadoras simples para entender parcelas, juros e custo total antes de contratar crédito." />
       </Helmet>
 
       <PageHero
         centered
         badge="Ferramentas"
-        title="Calculadoras simples para decidir com mais seguranca."
-        subtitle="Use calculadoras simples para entender quanto voce realmente vai pagar em juros e parcelas antes de tomar uma decisao."
+        title="Calculadoras simples para decidir com mais segurança."
+        subtitle="Use calculadoras simples para entender quanto você realmente vai pagar em juros e parcelas antes de tomar uma decisão."
       >
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-white shadow-[var(--shadow-sm)]">
           <Calculator className="h-7 w-7 text-foreground" />
@@ -114,7 +114,7 @@ function FerramentasPage() {
                     <Input type="number" value={jcRate} onChange={(event) => setJcRate(Number(event.target.value))} />
                   </div>
                   <div className="space-y-2">
-                    <Label>Periodo (anos)</Label>
+                    <Label>Período (anos)</Label>
                     <Input type="number" value={jcYears} onChange={(event) => setJcYears(Number(event.target.value))} />
                   </div>
                 </CardContent>
@@ -123,7 +123,7 @@ function FerramentasPage() {
               <Card>
                 <CardHeader className="flex flex-col gap-4 border-b border-border sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <CardTitle>Resultado da simulacao</CardTitle>
+                    <CardTitle>Resultado da simulação</CardTitle>
                     <CardDescription>Entenda ano a ano quanto vira rendimento e quanto vira saldo final.</CardDescription>
                   </div>
                   <Button variant="outline" onClick={handleExport}>
@@ -192,7 +192,7 @@ function FerramentasPage() {
               <Card>
                 <CardHeader className="flex flex-col gap-4 border-b border-border sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <CardTitle>Quanto voce paga no total</CardTitle>
+                    <CardTitle>Quanto você paga no total</CardTitle>
                     <CardDescription>Veja de forma separada o valor financiado, os juros e o total que sai do seu bolso.</CardDescription>
                   </div>
                   <Button variant="outline" onClick={handleExport}>
@@ -259,19 +259,19 @@ function FerramentasPage() {
                 <div className="space-y-3">
                   <h3>Comprometimento de renda</h3>
                   <p className="mx-auto max-w-2xl text-muted-foreground">
-                    Descubra em segundos se a parcela esta confortavel para o seu orcamento mensal.
+                    Descubra em segundos se a parcela está confortável para o seu orçamento mensal.
                   </p>
                 </div>
                 <div className="mx-auto grid max-w-xl gap-4 text-left">
                   <div className="space-y-2">
-                    <Label>Renda liquida</Label>
+                    <Label>Renda líquida</Label>
                     <Input type="number" defaultValue="5000" />
                   </div>
                   <div className="space-y-2">
                     <Label>Parcela</Label>
                     <Input type="number" defaultValue="1200" />
                   </div>
-                  <Button size="lg" onClick={() => toast.success('Comprometimento estimado: 24% da sua renda liquida')}>
+                  <Button size="lg" onClick={() => toast.success('Comprometimento estimado: 24% da sua renda líquida')}>
                     Ver resultado
                   </Button>
                 </div>

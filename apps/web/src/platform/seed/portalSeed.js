@@ -1,4 +1,4 @@
-﻿import { banksData } from '@/data/banksData.js';
+import { banksData } from '@/data/banksData.js';
 import { loansData } from '@/data/loansData.js';
 import { creditCardsData } from '@/data/creditCardsData.js';
 import { financingData } from '@/data/financingData.js';

@@ -1,4 +1,4 @@
-﻿import { portalApi } from '@/platform/services/portalApi.js';
+import { portalApi } from '@/platform/services/portalApi.js';
 
 const hashCpf = (cpf = '') => {
   const digits = cpf.replace(/\D/g, '');

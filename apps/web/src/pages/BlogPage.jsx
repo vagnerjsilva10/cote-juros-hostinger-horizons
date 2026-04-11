@@ -100,21 +100,21 @@ function BlogPage() {
         <title>Blog - Cote Juros</title>
         <meta
           name="description"
-          content="Guias e analises para ajudar voce a tomar decisoes financeiras com mais seguranca no dia a dia."
+          content="Guias e análises para ajudar você a tomar decisões financeiras com mais segurança no dia a dia."
         />
       </Helmet>
 
       <PageHero
         centered
         badge="Editorial"
-        title="Guias e analises para decidir melhor com seu dinheiro."
-        subtitle="Conteudo em linguagem clara para ajudar voce a comparar opcoes, evitar juros altos e escolher com mais confianca."
+        title="Guias e análises para decidir melhor com seu dinheiro."
+        subtitle="Conteúdo em linguagem clara para ajudar você a comparar opções, evitar juros altos e escolher com mais confiança."
       >
         <div className="relative mx-auto max-w-xl">
           <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="h-12 rounded-full bg-background pl-11"
-            placeholder="Busque por tema, banco ou tipo de credito"
+            placeholder="Busque por tema, banco ou tipo de crédito"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />

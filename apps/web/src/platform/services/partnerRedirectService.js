@@ -1,4 +1,4 @@
-﻿import { portalApi } from '@/platform/services/portalApi.js';
+import { portalApi } from '@/platform/services/portalApi.js';
 
 export const partnerRedirectService = {
   async create({ partnerId, offerId, destinationUrl, sourcePage, productType, utm, metadata }) {

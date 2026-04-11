@@ -1,4 +1,4 @@
-﻿import { portalApi } from '@/platform/services/portalApi.js';
+import { portalApi } from '@/platform/services/portalApi.js';
 
 export const trackingService = {
   async trackOfferClick({ sourcePage, offerId, target, productType, partnerId, utm, metadata }) {

@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
@@ -35,12 +35,6 @@ const heroComparisonRows = [
   { bank: 'Nubank', rate: '2,10% a.m.', limit: 'Até R$ 32.000', best: true },
   { bank: 'Itaú', rate: '2,40% a.m.', limit: 'Até R$ 28.000' },
   { bank: 'C6 Bank', rate: '2,60% a.m.', limit: 'Até R$ 25.000' }
-];
-
-const heroFloatingCards = [
-  { bank: 'Nubank', tier: 'Ultravioleta', accent: 'linear-gradient(135deg, #7C23C7 0%, #4A157B 100%)' },
-  { bank: 'Itaú', tier: 'Personnalité', accent: 'linear-gradient(135deg, #F28C18 0%, #E86E00 100%)' },
-  { bank: 'Santander', tier: 'Unique', accent: 'linear-gradient(135deg, #E42A2D 0%, #AD1016 100%)' }
 ];
 
 const fallbackTestimonials = [
@@ -119,25 +113,25 @@ function HeroComparatorShowcase() {
     <div className="relative mx-auto w-full max-w-[560px]">
       <motion.div
         id="comparador"
-        initial={{ opacity: 0, y: 24, scale: 0.98 }}
+        initial={{ opacity: 0, y: 20, scale: 0.99 }}
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.45, ease: 'easeOut' }}
-        className="relative overflow-hidden rounded-[24px] border border-sky-200/30 bg-slate-950/75 p-5 shadow-[0_28px_70px_rgba(8,47,123,0.45)] backdrop-blur-xl"
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        className="relative overflow-hidden rounded-[22px] border border-sky-200/20 bg-slate-950/60 p-5 shadow-[0_22px_48px_rgba(8,47,123,0.28)] backdrop-blur-xl"
       >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_0%,rgba(59,130,246,0.28),transparent_42%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_0%,rgba(59,130,246,0.18),transparent_42%)]" />
         <div className="relative z-10 space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-200/80">Comparação rápida</p>
-              <p className="mt-1 text-sm text-slate-300">Taxa mensal, limite e melhor escolha em segundos.</p>
+              <p className="mt-1 text-sm text-slate-300">Taxa mensal e melhor opção em segundos.</p>
             </div>
             <span className="rounded-full border border-emerald-300/40 bg-emerald-400/20 px-2.5 py-1 text-[11px] font-semibold text-emerald-100">
               Atualizado agora
             </span>
           </div>
 
-          <div className="space-y-2 rounded-2xl border border-slate-700/80 bg-slate-900/80 p-3">
+          <div className="space-y-2 rounded-2xl border border-slate-700/60 bg-slate-900/70 p-3">
             {heroComparisonRows.map((row, index) => (
               <motion.div
                 key={row.bank}
@@ -145,9 +139,9 @@ function HeroComparatorShowcase() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.25, ease: 'easeOut', delay: 0.1 + index * 0.08 }}
-                whileHover={{ x: 4 }}
+                whileHover={{ x: 2 }}
                 className={`flex items-center justify-between rounded-xl border px-3 py-2.5 transition-colors ${
-                  row.best ? 'border-emerald-300/50 bg-emerald-400/12' : 'border-slate-700/80 bg-slate-900/70'
+                  row.best ? 'border-emerald-300/45 bg-emerald-400/10' : 'border-slate-700/70 bg-slate-900/55'
                 }`}
               >
                 <div>
@@ -166,31 +160,16 @@ function HeroComparatorShowcase() {
             ))}
           </div>
 
-          <div className="rounded-2xl border border-sky-300/30 bg-sky-500/10 px-3 py-2.5">
+          <div className="rounded-2xl border border-sky-300/25 bg-sky-500/10 px-3 py-2.5">
             <p className="text-[11px] uppercase tracking-[0.14em] text-sky-100/80">Decisão recomendada</p>
             <p className="mt-1 text-sm font-semibold text-white">Nubank com menor taxa mensal e melhor custo total.</p>
           </div>
         </div>
       </motion.div>
 
-      {heroFloatingCards.map((card, index) => (
-        <motion.div
-          key={card.bank}
-          className={`absolute hidden w-[170px] rounded-2xl border border-white/20 p-3 text-white shadow-[0_20px_45px_rgba(2,6,23,0.5)] md:block ${
-            index === 0 ? '-left-16 top-8' : index === 1 ? '-right-14 top-20' : 'left-10 -bottom-8'
-          }`}
-          style={{ background: card.accent }}
-          animate={{ y: [0, index % 2 === 0 ? -8 : 8, 0], rotate: [0, index % 2 === 0 ? -1.2 : 1.2, 0] }}
-          transition={{ duration: 6 + index, repeat: Infinity, ease: 'easeInOut', delay: index * 0.35 }}
-          whileHover={{ scale: 1.03 }}
-        >
-          <p className="text-[11px] uppercase tracking-[0.14em] text-white/75">{card.bank}</p>
-          <p className="mt-2 text-sm font-semibold">{card.tier}</p>
-          <p className="mt-3 text-xs text-white/80">Cartão premium</p>
-        </motion.div>
-      ))}
-
-      <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-3">
+      <div className="mt-6">
+        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-300/70">Bancos analisados</p>
+        <div className="flex flex-wrap items-center gap-4 sm:gap-5">
         {bankLogos.map((bank, index) => (
           <motion.div
             key={bank.name}
@@ -198,12 +177,13 @@ function HeroComparatorShowcase() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.2, ease: 'easeOut', delay: 0.35 + index * 0.05 }}
-            whileHover={{ y: -2 }}
-            className="flex items-center justify-center rounded-xl border border-slate-700/80 bg-white/95 px-3 py-2.5"
+            whileHover={{ y: -1 }}
+            className="flex items-center"
           >
-            <img src={bank.logo} alt={`Logo ${bank.name}`} className="h-5 w-auto max-w-[96px] object-contain" loading="lazy" />
+            <img src={bank.logo} alt={`Logo ${bank.name}`} className="h-4 w-auto max-w-[94px] object-contain opacity-90" loading="lazy" />
           </motion.div>
         ))}
+        </div>
       </div>
     </div>
   );
@@ -490,40 +470,24 @@ function HomePage() {
       />
 
       <section className="hero-premium-dark relative overflow-hidden border-b border-slate-800">
-        <div className="pointer-events-none absolute inset-0 hero-tech-grid-dark opacity-55" />
-        <div className="pointer-events-none absolute inset-0 hero-scanlines opacity-30" />
-        <div className="pointer-events-none absolute inset-0 hero-vignette opacity-60" />
-        {[14, 34, 56, 78].map((offset, index) => (
-          <motion.span
-            key={offset}
-            className="pointer-events-none absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-sky-300/30 to-transparent"
-            style={{ top: `${offset}%` }}
-            animate={{ opacity: [0.15, 0.4, 0.15], x: ['-2%', '2%', '-2%'] }}
-            transition={{ duration: 8 + index, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        ))}
+        <div className="pointer-events-none absolute inset-0 hero-vignette opacity-45" />
         {[1, 2, 3, 4, 5, 6, 7, 8].map((id) => (
           <motion.span
             key={id}
-            className="pointer-events-none absolute h-1.5 w-1.5 rounded-full bg-sky-300/60"
+            className="pointer-events-none absolute h-1 w-1 rounded-full bg-sky-300/45"
             style={{ left: `${12 + id * 13}%`, top: `${18 + (id % 3) * 18}%` }}
-            animate={{ y: [0, -12, 0], opacity: [0.18, 0.75, 0.18] }}
-            transition={{ duration: 7 + id, repeat: Infinity, ease: 'easeInOut', delay: id * 0.3 }}
+            animate={{ y: [0, -8, 0], opacity: [0.12, 0.45, 0.12] }}
+            transition={{ duration: 9 + id, repeat: Infinity, ease: 'easeInOut', delay: id * 0.4 }}
           />
         ))}
         <motion.div
-          className="pointer-events-none absolute left-[16%] top-20 h-32 w-32 rounded-full bg-sky-300/30 blur-3xl"
-          animate={{ y: [0, -10, 0], opacity: [0.28, 0.52, 0.28] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="pointer-events-none absolute right-[15%] top-28 h-28 w-28 rounded-full bg-violet-300/30 blur-3xl"
-          animate={{ y: [0, 8, 0], opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+          className="pointer-events-none absolute left-[18%] top-24 h-28 w-28 rounded-full bg-sky-300/20 blur-3xl"
+          animate={{ y: [0, -6, 0], opacity: [0.14, 0.3, 0.14] }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
           style={{ y: heroParallaxY }}
-          className="pointer-events-none absolute left-1/2 top-16 h-72 w-[620px] -translate-x-1/2 hero-premium-glow"
+          className="pointer-events-none absolute left-1/2 top-16 h-64 w-[560px] -translate-x-1/2 hero-premium-glow"
         />
 
         <div className="page-shell relative py-16 md:py-20 lg:py-24">
@@ -565,8 +529,8 @@ function HomePage() {
 
               <div className="mt-6 grid gap-2.5 text-left sm:grid-cols-2">
                 {[
-                  `${catalogSize > 30 ? `+${catalogSize}` : '+30'} ofertas analisadas`,
-                  `${Math.max(bankCount || 0, 8)} instituições financeiras`,
+                  '+30 ofertas analisadas',
+                  '8 instituições financeiras',
                   'simulação gratuita'
                 ].map((item) => (
                   <div key={item} className="inline-flex items-center gap-2 text-sm text-slate-200">
@@ -611,14 +575,14 @@ function HomePage() {
       <section className="border-b border-border bg-background-secondary py-20 md:py-24">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto mb-14 max-w-3xl text-center">
-            <span className="soft-blue-chip mb-5">Como o Cote Juros ajuda voce</span>
-            <h2 className="mb-4">Da comparacao a decisao em 3 passos.</h2>
+            <span className="soft-blue-chip mb-5">Como o Cote Juros ajuda você</span>
+            <h2 className="mb-4">Da comparação à decisão em 3 passos.</h2>
           </motion.div>
           <div className="grid gap-5 md:grid-cols-3">
             {[
-              { title: '1. Compare taxas', copy: 'Veja em poucos segundos quanto cada opcao cobra em juros e custo total.' },
-              { title: '2. Entenda as condicoes', copy: 'Entenda limite, prazo, anuidade e regras sem linguagem complicada.' },
-              { title: '3. Escolha com seguranca', copy: 'Tome a melhor decisao com clareza antes de contratar qualquer produto.' }
+              { title: '1. Compare taxas', copy: 'Veja em poucos segundos quanto cada opção cobra em juros e custo total.' },
+              { title: '2. Entenda as condições', copy: 'Entenda limite, prazo, anuidade e regras sem linguagem complicada.' },
+              { title: '3. Escolha com segurança', copy: 'Tome a melhor decisão com clareza antes de contratar qualquer produto.' }
             ].map((item) => (
               <motion.div key={item.title} {...animationIn}>
                 <Card className="interactive-card h-full">
@@ -838,10 +802,10 @@ function HomePage() {
       <section className="border-b border-border bg-background-secondary py-16 md:py-20">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-4xl rounded-[24px] border border-violet-200/70 bg-gradient-to-br from-white via-teal-50/40 to-violet-50/50 px-8 py-10 text-center shadow-[var(--shadow-sm)]">
-            <span className="soft-blue-chip mb-4">Avaliacoes externas</span>
-            <h2 className="mb-3">Sinta o poder das avaliacoes reais.</h2>
+            <span className="soft-blue-chip mb-4">Avaliações externas</span>
+            <h2 className="mb-3">Sinta o poder das avaliações reais.</h2>
             <p className="mx-auto max-w-2xl text-muted-foreground">
-              Clientes avaliam a experiencia de comparacao com foco em clareza, confianca e decisao financeira segura.
+              Clientes avaliam a experiência de comparação com foco em clareza, confiança e decisão financeira segura.
             </p>
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <div className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700">

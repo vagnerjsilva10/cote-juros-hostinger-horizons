@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @typedef {'loan'|'credit_card'|'financing'} ProductType
  * @typedef {'offer_click'|'partner_redirect'|'cta_click'} ClickEventType
  *

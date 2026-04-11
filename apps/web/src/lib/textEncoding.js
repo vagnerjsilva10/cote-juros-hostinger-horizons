@@ -1,4 +1,4 @@
-﻿const MOJIBAKE_PATTERNS = [
+const MOJIBAKE_PATTERNS = [
   /Ã[\x80-\xBF]/,
   /Â[\x80-\xBF]/,
   /â[\x80-\xBF]{1,2}/,

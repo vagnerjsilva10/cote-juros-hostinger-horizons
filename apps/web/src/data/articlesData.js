@@ -1,4 +1,4 @@
-﻿export const articlesData = [
+export const articlesData = [
   {
     id: 'a1',
     title: 'Como aumentar seu Score de Crédito em 30 dias',
