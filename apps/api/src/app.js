@@ -43,6 +43,14 @@ export const createApp = () => {
       return res.status(500).json({ error: 'Database configuration error', message: err.message });
     }
 
+    if (err?.name?.startsWith('Prisma')) {
+      return res.status(500).json({
+        error: 'Database query error',
+        code: err.code || null,
+        message: err.message
+      });
+    }
+
     console.error(err);
     return res.status(500).json({ error: 'Internal server error' });
   });
