@@ -1,0 +1,14 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cj_shape_back" x1="18" y1="50" x2="46" y2="22" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F62FE"/>
+      <stop offset="1" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="cj_shape_front" x1="10" y1="40" x2="36" y2="14" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#0F62FE"/>
+    </linearGradient>
+  </defs>
+  <path d="M31.926 15.293L48.707 32.074L31.926 48.854L15.146 32.074L31.926 15.293Z" fill="url(#cj_shape_back)"/>
+  <path d="M8.5 33.34L27.327 14.513L26.876 24.218H39.969V37.311H30.264L30.715 47.016L8.5 33.34Z" fill="url(#cj_shape_front)"/>
+</svg>

@@ -1,0 +1,15 @@
+<svg width="384" height="88" viewBox="0 0 384 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cjp_shape_back" x1="26" y1="67" x2="58" y2="35" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F62FE"/>
+      <stop offset="1" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="cjp_shape_front" x1="14" y1="53" x2="44" y2="23" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#0F62FE"/>
+    </linearGradient>
+  </defs>
+  <path d="M39.68 24.576L59.104 44L39.68 63.424L20.256 44L39.68 24.576Z" fill="url(#cjp_shape_back)"/>
+  <path d="M11.5 45.464L33.114 23.85L32.596 34.99H47.621V50.015H36.481L36.999 61.155L11.5 45.464Z" fill="url(#cjp_shape_front)"/>
+  <text x="74" y="57" fill="#0B1220" font-family="Inter, Manrope, system-ui, sans-serif" font-size="56" font-weight="600" letter-spacing="-0.02em">CoteJuros</text>
+</svg>

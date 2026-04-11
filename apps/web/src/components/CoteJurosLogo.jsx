@@ -1,27 +1,18 @@
-
 import React from 'react';
 
 export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
   const sources = {
-    horizontal: '/assets/cote-juros-logo-horizontal-light.svg',
-    horizontalDark: '/assets/cote-juros-logo-horizontal-dark.svg',
-    square: '/assets/cote-juros-logo-symbol.svg',
-    symbol: '/assets/cote-juros-logo-symbol.svg',
-    symbolLight: '/assets/cote-juros-logo-symbol-light.svg',
-    grayscale: '/assets/cote-juros-logo-horizontal-light.svg'
+    horizontal: '/assets/logo/logo-primary.svg',
+    horizontalDark: '/assets/logo/logo-dark.svg',
+    square: '/assets/logo/logo-icon.svg',
+    symbol: '/assets/logo/logo-icon.svg',
+    symbolLight: '/assets/logo/logo-icon.svg',
+    grayscale: '/assets/logo/logo-primary.svg'
   };
 
   const src = sources[variant] || sources.horizontal;
   const isSymbol = variant === 'square' || variant === 'symbol' || variant === 'symbolLight';
-  const alt = isSymbol ? 'Símbolo Cote Juros' : 'Logo Cote Juros';
+  const alt = isSymbol ? 'Simbolo Cote Juros' : 'Logo Cote Juros';
 
-  return (
-    <img
-      src={src}
-      alt={alt}
-      className={className}
-      loading="eager"
-      decoding="async"
-    />
-  );
+  return <img src={src} alt={alt} className={className} loading="eager" decoding="async" />;
 }
