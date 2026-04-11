@@ -122,12 +122,12 @@ function App() {
             element={
               <AppLayout>
                 <SeoLandingPage
-                  title="Conteudo especializado - Cote Juros"
+                  title="Conteúdo especializado - Cote Juros"
                   description="Encontre a melhor oferta financeira para o seu perfil. Compare taxas e economize."
-                  heading="Descubra a melhor opcao para voce"
+                  heading="Descubra a melhor opção para você"
                   content={[
-                    'A Cote Juros analisa dezenas de instituicoes financeiras para entregar a melhor oferta para o seu bolso.',
-                    'Comparamos taxas, prazos e condicoes para que voce tome a melhor decisao de forma gratuita.'
+                    'A Cote Juros analisa dezenas de instituições financeiras para entregar a melhor oferta para o seu bolso.',
+                    'Comparamos taxas, prazos e condições para que você tome a melhor decisão de forma gratuita.'
                   ]}
                   type="all"
                 />
@@ -141,12 +141,12 @@ function App() {
           element={
             <AppLayout>
               <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
-                <h1 className="mb-4 text-foreground">Pagina nao encontrada</h1>
+                <h1 className="mb-4 text-foreground">Página não encontrada</h1>
                 <p className="mb-8 max-w-xl text-lg text-muted-foreground">
-                  A pagina que voce esta procurando nao existe ou foi movida.
+                  A página que você está procurando não existe ou foi movida.
                 </p>
                 <a href="/" className="font-semibold text-foreground hover:underline">
-                  Voltar para o inicio
+                  Voltar para o início
                 </a>
               </div>
             </AppLayout>

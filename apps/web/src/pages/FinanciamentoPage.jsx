@@ -50,7 +50,7 @@ function FinanciamentoPage() {
       productType: 'financing'
     });
 
-    toast.success(`Interesse registrado para simulacao com ${offer.bankName}.`);
+    toast.success(`Interesse registrado para simulação com ${offer.bankName}.`);
     window.location.href = redirect.resolvedUrl;
   };
 
@@ -75,7 +75,7 @@ function FinanciamentoPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="rounded-[12px] border border-border bg-background-secondary p-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor maximo</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor máximo</p>
                   <p className="mt-2 text-sm font-semibold text-foreground">R$ {(item.maxValue / 1000).toFixed(0)}k</p>
                 </div>
                 <div className="rounded-[12px] border border-border bg-background-secondary p-4">
@@ -85,7 +85,7 @@ function FinanciamentoPage() {
               </div>
 
               <div className="rounded-[12px] border border-border bg-background-secondary p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Entrada minima</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Entrada mínima</p>
                 <p className="mt-2 text-sm text-muted-foreground">A partir de {item.minDownPayment}% do valor do bem.</p>
               </div>
 
@@ -103,21 +103,21 @@ function FinanciamentoPage() {
     <>
       <Helmet>
         <title>Comparador de financiamento - Cote Juros</title>
-        <meta name="description" content="Compare financiamento de imoveis e veiculos com leitura premium de taxa, prazo e entrada minima." />
+        <meta name="description" content="Compare financiamento de imóveis e veículos com leitura premium de taxa, prazo e entrada mínima." />
       </Helmet>
 
       <PageHero
         badge="Comparador de financiamentos"
         centered
         title="Compare financiamento com clareza de taxa, entrada e prazo."
-        subtitle="A mesma linguagem premium da home aplicada para decisao de veiculos e imoveis com mais confianca."
+        subtitle="A mesma linguagem premium da home aplicada para decisão de veículos e imóveis com mais confiança."
       >
         <div className="flex flex-col justify-center gap-3 sm:flex-row">
           <Link to="/diagnostico-financeiro">
             <Button size="lg">Analisar perfil completo</Button>
           </Link>
           <a href="#resultados-financiamento">
-            <Button size="lg" variant="outline">Ver opcoes agora</Button>
+            <Button size="lg" variant="outline">Ver opções agora</Button>
           </a>
         </div>
       </PageHero>
@@ -137,7 +137,7 @@ function FinanciamentoPage() {
             <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{maxTerm} meses</p>
           </div>
           <div className="interactive-card px-5 py-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Leitura de condicoes</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Leitura de condições</p>
             <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">Completa</p>
           </div>
         </div>
@@ -148,11 +148,11 @@ function FinanciamentoPage() {
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="veiculos" className="gap-2">
               <Car className="h-4 w-4" />
-              Veiculos
+              Veículos
             </TabsTrigger>
             <TabsTrigger value="imobiliario" className="gap-2">
               <Home className="h-4 w-4" />
-              Imoveis
+              Imóveis
             </TabsTrigger>
           </TabsList>
 
@@ -161,7 +161,7 @@ function FinanciamentoPage() {
               <div className="flex items-start gap-3">
                 <ShieldCheck className="mt-0.5 h-5 w-5 text-primary" />
                 <p className="text-sm text-muted-foreground">
-                  Veiculos mais novos costumam concentrar taxas menores e prazos mais competitivos.
+                  Veículos mais novos costumam concentrar taxas menores e prazos mais competitivos.
                 </p>
               </div>
             </div>
@@ -173,7 +173,7 @@ function FinanciamentoPage() {
               <div className="flex items-start gap-3">
                 <ShieldCheck className="mt-0.5 h-5 w-5 text-primary" />
                 <p className="text-sm text-muted-foreground">
-                  Em financiamento imobiliario, o uso do FGTS pode reduzir a entrada conforme regra aplicavel.
+                  Em financiamento imobiliário, o uso do FGTS pode reduzir a entrada conforme regra aplicável.
                 </p>
               </div>
             </div>
@@ -185,9 +185,9 @@ function FinanciamentoPage() {
       <section className="border-t border-border bg-background-secondary py-16">
         <div className="page-shell">
           <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
-            <h2 className="mb-3">Quer validar seu financiamento com mais seguranca?</h2>
+            <h2 className="mb-3">Quer validar seu financiamento com mais segurança?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
-              O diagnostico financeiro organiza sua capacidade de pagamento para voce decidir com mais confianca antes de assumir o contrato.
+              O diagnóstico financeiro organiza sua capacidade de pagamento para você decidir com mais confiança antes de assumir o contrato.
             </p>
             <Link to="/diagnostico-financeiro">
               <Button size="lg">Analisar perfil agora</Button>

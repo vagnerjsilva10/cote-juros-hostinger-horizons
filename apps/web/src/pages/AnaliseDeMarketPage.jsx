@@ -10,39 +10,39 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 function AnaliseDeMarketPage() {
   const marketData = [
     {
-      categoria: 'Emprestimo pessoal',
+      categoria: 'Empréstimo pessoal',
       taxaMedia: '2.39%',
       tendencia: 'baixa',
       variacao: '-0.15%',
-      descricao: 'As taxas de emprestimo pessoal cederam levemente no trimestre com o ambiente de juros mais controlado.'
+      descricao: 'As taxas de empréstimo pessoal cederam levemente no trimestre com o ambiente de juros mais controlado.'
     },
     {
-      categoria: 'Emprestimo consignado',
+      categoria: 'Empréstimo consignado',
       taxaMedia: '1.69%',
       tendencia: 'estavel',
       variacao: '0.00%',
-      descricao: 'O consignado segue como uma das linhas mais acessiveis e manteve comportamento estavel.'
+      descricao: 'O consignado segue como uma das linhas mais acessíveis e manteve comportamento estável.'
     },
     {
-      categoria: 'Financiamento de veiculos',
+      categoria: 'Financiamento de veículos',
       taxaMedia: '1.89%',
       tendencia: 'alta',
       variacao: '+0.08%',
-      descricao: 'A demanda mais aquecida elevou discretamente o custo medio dessa categoria.'
+      descricao: 'A demanda mais aquecida elevou discretamente o custo médio dessa categoria.'
     },
     {
-      categoria: 'Financiamento imobiliario',
+      categoria: 'Financiamento imobiliário',
       taxaMedia: '0.94%',
       tendencia: 'baixa',
       variacao: '-0.05%',
-      descricao: 'O custo medio do financiamento imobiliario mostra movimento de acomodacao no periodo.'
+      descricao: 'O custo médio do financiamento imobiliário mostra movimento de acomodação no período.'
     },
     {
-      categoria: 'Cartoes de credito',
+      categoria: 'Cartões de crédito',
       taxaMedia: '13.89%',
       tendencia: 'estavel',
       variacao: '+0.02%',
-      descricao: 'O rotativo segue elevado, reforcando a importancia de pagar a fatura integralmente.'
+      descricao: 'O rotativo segue elevado, reforçando a importância de pagar a fatura integralmente.'
     }
   ];
 
@@ -55,22 +55,22 @@ function AnaliseDeMarketPage() {
   const getTrendBadge = (trend) => {
     if (trend === 'alta') return <Badge variant="outline">Em alta</Badge>;
     if (trend === 'baixa') return <Badge variant="secondary">Em baixa</Badge>;
-    return <Badge variant="outline">Estavel</Badge>;
+    return <Badge variant="outline">Estável</Badge>;
   };
 
   return (
     <>
       <Helmet>
-        <title>Analise de mercado - Cote Juros</title>
-        <meta name="description" content="Acompanhe tendencias e medias do mercado de credito em uma leitura mais limpa." />
+        <title>Análise de mercado - Cote Juros</title>
+        <meta name="description" content="Acompanhe tendências e médias do mercado de crédito em uma leitura mais limpa." />
       </Helmet>
 
       <div className="min-h-screen bg-background">
         <Header />
         <PageHero
           badge="Mercado"
-          title="Analise de mercado em uma interface mais calma."
-          subtitle="Leituras sinteticas sobre custo medio e variacao recente nas principais categorias do credito."
+          title="Análise de mercado em uma interface mais calma."
+          subtitle="Leituras sintéticas sobre custo médio e variação recente nas principais categorias do crédito."
         />
 
         <section className="page-section bg-background">
@@ -79,7 +79,7 @@ function AnaliseDeMarketPage() {
               <CardHeader>
                 <CardTitle>Panorama - Abril 2026</CardTitle>
                 <CardDescription>
-                  O mercado de credito mostra sinais de estabilizacao, com algumas categorias cedendo levemente e outras mantendo comportamento lateral.
+                  O mercado de crédito mostra sinais de estabilização, com algumas categorias cedendo levemente e outras mantendo comportamento lateral.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -99,11 +99,11 @@ function AnaliseDeMarketPage() {
                   <CardContent>
                     <div className="grid gap-6 md:grid-cols-3">
                       <div>
-                        <p className="text-sm text-muted-foreground">Taxa media mensal</p>
+                        <p className="text-sm text-muted-foreground">Taxa média mensal</p>
                         <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">{item.taxaMedia}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Variacao no trimestre</p>
+                        <p className="text-sm text-muted-foreground">Variação no trimestre</p>
                         <div className="mt-2 flex items-center gap-2">
                           {getTrendIcon(item.tendencia)}
                           <p className="text-2xl font-semibold tracking-[-0.04em] text-foreground">{item.variacao}</p>

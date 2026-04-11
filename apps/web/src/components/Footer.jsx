@@ -10,17 +10,17 @@ function Footer() {
     {
       title: 'Produto',
       links: [
-        { label: 'Emprestimos', path: '/emprestimos' },
-        { label: 'Cartoes', path: '/cartoes-de-credito' },
+        { label: 'Empréstimos', path: '/emprestimos' },
+        { label: 'Cartões', path: '/cartoes-de-credito' },
         { label: 'Financiamento', path: '/financiamento' },
         { label: 'Ferramentas', path: '/ferramentas' }
       ]
     },
     {
-      title: 'Conteudo',
+      title: 'Conteúdo',
       links: [
         { label: 'Blog', path: '/blog' },
-        { label: 'Diagnostico', path: '/diagnostico-financeiro' },
+        { label: 'Diagnóstico', path: '/diagnostico-financeiro' },
         { label: 'Cote Finance AI', path: '/cote-finance-ai' }
       ]
     },
@@ -44,12 +44,12 @@ function Footer() {
               <CoteJurosLogo />
             </Link>
             <p className="text-sm leading-7 text-muted-foreground">
-              Um comparador financeiro com interface limpa, simulacao objetiva e orientacao para credito com menos ruido.
+              Um comparador financeiro com interface limpa, simulação objetiva e orientação para crédito com menos ruído.
             </p>
             <div className="flex flex-wrap gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
                 <ShieldCheck className="h-3.5 w-3.5" />
-                Experiencia segura
+                Experiência segura
               </div>
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
                 LGPD
@@ -67,7 +67,7 @@ function Footer() {
                   <li key={link.path}>
                     <Link
                       to={link.path}
-                      className="group inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                      className="link-animated group inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
                     >
                       {link.label}
                       <ArrowUpRight className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
@@ -83,7 +83,7 @@ function Footer() {
           <div>
             <p className="text-sm font-medium text-foreground">Cote Juros © {currentYear}</p>
             <p className="text-sm text-muted-foreground">
-              Credito explicado com mais clareza, menos excesso visual e foco no que importa.
+              Crédito explicado com mais clareza, menos excesso visual e foco no que importa.
             </p>
           </div>
           <p className="text-sm text-muted-foreground">Brasil • Plataforma digital</p>

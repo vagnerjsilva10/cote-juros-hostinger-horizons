@@ -2,7 +2,16 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Building2, Calculator, CheckCircle2, CreditCard, HandCoins, ShieldCheck, Sparkles } from 'lucide-react';
+import {
+  ArrowRight,
+  Building2,
+  Calculator,
+  CheckCircle2,
+  CreditCard,
+  HandCoins,
+  ShieldCheck,
+  Sparkles
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,43 +19,41 @@ import { SimulationModal } from '@/components/SimulationModal.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 
-const AI_DASHBOARD_ASSET = '/assets/cote-finance-ai-dashboard.png';
-
 const fallbackTestimonials = [
   {
     name: 'Larissa M.',
-    location: 'Sao Paulo, SP',
-    product: 'Emprestimo pessoal',
+    location: 'São Paulo, SP',
+    product: 'Empréstimo pessoal',
     quote: 'Vi taxa, prazo e custo total no mesmo lugar e evitei fechar um contrato mais caro.',
     badge: 'Economia real'
   },
   {
     name: 'Rafael P.',
     location: 'Belo Horizonte, MG',
-    product: 'Cartao de credito',
-    quote: 'Consegui comparar beneficios e condicoes sem perder tempo em varios sites de banco.',
-    badge: 'Decisao segura'
+    product: 'Cartão de crédito',
+    quote: 'Consegui comparar benefícios e condições sem perder tempo em vários sites de banco.',
+    badge: 'Decisão segura'
   },
   {
     name: 'Marina C.',
     location: 'Curitiba, PR',
     product: 'Financiamento',
-    quote: 'O comparador me mostrou opcoes mais aderentes ao meu perfil e com melhor custo.',
-    badge: 'Comparacao inteligente'
+    quote: 'O comparador me mostrou opções mais aderentes ao meu perfil e com melhor custo.',
+    badge: 'Comparação inteligente'
   }
 ];
 
 const fallbackComparisonRows = [
   {
-    product: 'Emprestimo pessoal',
+    product: 'Empréstimo pessoal',
     bank: 'Banco parceiro',
     rate: 'A partir de 1,89% a.m.',
-    benefit: 'Analise de perfil com ordenacao por custo total',
+    benefit: 'Análise de perfil com ordenação por custo total',
     condition: 'Prazo de 6 a 84 meses'
   },
   {
-    product: 'Cartao de credito',
-    bank: 'Instituicao digital',
+    product: 'Cartão de crédito',
+    bank: 'Instituição digital',
     rate: 'Sem anuidade em linhas selecionadas',
     benefit: 'Comparativo de cashback, milhas e sala VIP',
     condition: 'Limite conforme renda e elegibilidade'
@@ -55,8 +62,8 @@ const fallbackComparisonRows = [
     product: 'Financiamento',
     bank: 'Banco tradicional',
     rate: 'A partir de 8,99% a.a.',
-    benefit: 'Leitura rapida de taxa e entrada minima',
-    condition: 'Condicoes por tipo de bem e prazo'
+    benefit: 'Leitura rápida de taxa e entrada mínima',
+    condition: 'Condições por tipo de bem e prazo'
   }
 ];
 
@@ -82,6 +89,102 @@ const formatRate = (value, suffix) => {
   if (value == null || Number.isNaN(Number(value))) return '--';
   return `${Number(value).toFixed(2)}% ${suffix}`;
 };
+
+function FinanceAiIllustration() {
+  return (
+    <div className="relative rounded-[24px] border border-primary/20 bg-white p-5 shadow-[var(--shadow-md)]">
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+        <div className="ai-ambient-glow h-56 w-56 rounded-full" />
+      </div>
+
+      <motion.div
+        animate={{ y: [0, -4, 0] }}
+        transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
+        className="relative z-10 rounded-[18px] border border-border bg-slate-950 p-4"
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Cote Finance AI</p>
+          <span className="rounded-full bg-primary/20 px-2 py-1 text-[10px] font-semibold text-primary-foreground">Ativo</span>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-3">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut', delay: 0.1 }}
+            viewport={{ once: true }}
+            className="rounded-[12px] border border-slate-800 bg-slate-900/70 p-3"
+          >
+            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Saldo</p>
+            <p className="mt-1 text-sm font-semibold text-emerald-400">R$ 8.438,00</p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut', delay: 0.18 }}
+            viewport={{ once: true }}
+            className="rounded-[12px] border border-slate-800 bg-slate-900/70 p-3"
+          >
+            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Despesas</p>
+            <p className="mt-1 text-sm font-semibold text-rose-400">R$ 1.328,00</p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut', delay: 0.26 }}
+            viewport={{ once: true }}
+            className="rounded-[12px] border border-slate-800 bg-slate-900/70 p-3"
+          >
+            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Reserva</p>
+            <p className="mt-1 text-sm font-semibold text-sky-400">R$ 7.110,00</p>
+          </motion.div>
+        </div>
+
+        <div className="mt-3 rounded-[14px] border border-slate-800 bg-slate-900/70 p-3">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-xs font-medium text-slate-300">Fluxo mensal</p>
+            <div className="flex gap-2">
+              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+              <span className="h-2 w-2 rounded-full bg-primary" />
+            </div>
+          </div>
+          <svg viewBox="0 0 240 90" className="h-[92px] w-full">
+            <path d="M4 68 C28 62, 38 54, 58 56 C86 58, 92 40, 118 41 C142 42, 152 62, 174 58 C196 54, 210 32, 236 18" fill="none" stroke="rgba(37,99,235,0.95)" strokeWidth="2.5" className="chart-draw" />
+            <path d="M4 74 C26 78, 44 72, 64 68 C86 63, 104 62, 126 58 C144 56, 160 50, 178 52 C198 53, 216 48, 236 42" fill="none" stroke="rgba(52,211,153,0.65)" strokeWidth="2" />
+            <circle cx="236" cy="18" r="4" fill="#2563EB" className="chart-pulse" />
+          </svg>
+        </div>
+
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <motion.div
+            animate={{ y: [0, -3, 0] }}
+            transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
+            className="rounded-[12px] border border-slate-800 bg-slate-900/70 p-3"
+          >
+            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Transações</p>
+            <ul className="mt-2 space-y-2 text-xs text-slate-300">
+              <li className="flex items-center justify-between"><span>Mercado</span><span className="text-rose-400">-R$ 450</span></li>
+              <li className="flex items-center justify-between"><span>Salário</span><span className="text-emerald-400">+R$ 4.650</span></li>
+            </ul>
+          </motion.div>
+          <motion.div
+            animate={{ y: [0, -2, 0] }}
+            transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut', delay: 0.45 }}
+            className="rounded-[12px] border border-slate-800 bg-slate-900/70 p-3"
+          >
+            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Sinal de risco</p>
+            <p className="mt-2 text-xs text-slate-300">
+              Comprometimento sob controle. Continue monitorando gastos variáveis.
+            </p>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      <div className="pointer-events-none absolute left-6 top-8 floating-dot h-3 w-3 rounded-full bg-primary/50" />
+      <div className="pointer-events-none absolute bottom-10 right-8 floating-dot h-2 w-2 rounded-full bg-sky-400/60 [animation-delay:600ms]" />
+    </div>
+  );
+}
 
 function HomePage() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -111,22 +214,22 @@ function HomePage() {
         if (sortedLoans[0]) {
           const offer = sortedLoans[0];
           nextRows.push({
-            product: 'Emprestimo pessoal',
+            product: 'Empréstimo pessoal',
             bank: offer.bankName || 'Banco parceiro',
             rate: formatRate(offer.monthlyRate, 'a.m.'),
-            benefit: `Linha ${String(offer.category || 'personalizada').toLowerCase()} com comparacao por taxa efetiva`,
-            condition: `Prazo ate ${offer.maxTerm || 84} meses`
+            benefit: `Linha ${String(offer.category || 'personalizada').toLowerCase()} com comparação por taxa efetiva`,
+            condition: `Prazo até ${offer.maxTerm || 84} meses`
           });
         }
 
         if (sortedCards[0]) {
           const offer = sortedCards[0];
           nextRows.push({
-            product: 'Cartao de credito',
-            bank: offer.bankName || 'Instituicao digital',
+            product: 'Cartão de crédito',
+            bank: offer.bankName || 'Instituição digital',
             rate: offer.annualFee === 0 ? 'Sem anuidade' : `R$ ${offer.annualFee}/ano`,
-            benefit: offer.benefits?.[0] || 'Comparacao de beneficios por perfil',
-            condition: `Limite estimado ate R$ ${Math.round((offer.maxLimit || 0) / 1000)} mil`
+            benefit: offer.benefits?.[0] || 'Comparação de benefícios por perfil',
+            condition: `Limite estimado até R$ ${Math.round((offer.maxLimit || 0) / 1000)} mil`
           });
         }
 
@@ -136,8 +239,8 @@ function HomePage() {
             product: 'Financiamento',
             bank: offer.bankName || 'Banco tradicional',
             rate: formatRate(offer.annualRate, 'a.a.'),
-            benefit: `Entrada minima de ${offer.minDownPayment || 20}%`,
-            condition: `Prazo ate ${offer.maxTerm || 360} meses`
+            benefit: `Entrada mínima de ${offer.minDownPayment || 20}%`,
+            condition: `Prazo até ${offer.maxTerm || 360} meses`
           });
         }
 
@@ -169,22 +272,22 @@ function HomePage() {
   const productCards = [
     {
       icon: HandCoins,
-      title: 'Emprestimos',
+      title: 'Empréstimos',
       copy: 'Compare taxas, custo total e prazo antes de fechar contrato.',
       href: '/emprestimos',
       tier: 'primary'
     },
     {
       icon: CreditCard,
-      title: 'Cartoes de credito',
-      copy: 'Filtre por anuidade, beneficios e limite estimado no mesmo painel.',
+      title: 'Cartões de crédito',
+      copy: 'Filtre por anuidade, benefícios e limite estimado no mesmo painel.',
       href: '/cartoes-de-credito',
       tier: 'primary'
     },
     {
       icon: Building2,
       title: 'Financiamentos',
-      copy: 'Visualize bancos, entrada minima e condicoes por tipo de bem.',
+      copy: 'Visualize bancos, entrada mínima e condições por tipo de bem.',
       href: '/financiamento',
       tier: 'secondary'
     },
@@ -200,10 +303,10 @@ function HomePage() {
   return (
     <>
       <Helmet>
-        <title>Cote Juros - Comparador financeiro de credito</title>
+        <title>Cote Juros - Comparador financeiro de crédito</title>
         <meta
           name="description"
-          content="Compare emprestimos, cartoes, financiamentos e ferramentas financeiras em uma plataforma clara, moderna e focada em decisao segura."
+          content="Compare empréstimos, cartões, financiamentos e ferramentas financeiras em uma plataforma clara, moderna e focada em decisão segura."
         />
       </Helmet>
 
@@ -213,23 +316,22 @@ function HomePage() {
         initialAmount={heroValue ? parseInt(heroValue.replace(/\D/g, ''), 10) / 100 : 10000}
       />
 
-      <section className="relative overflow-hidden border-b border-border bg-background">
-        <div className="pointer-events-none absolute inset-0 hero-grid opacity-40" />
-        <div className="pointer-events-none absolute left-[6%] top-20 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
-        <div className="pointer-events-none absolute right-[8%] top-16 h-52 w-52 rounded-full bg-primary/10 blur-3xl" />
+      <section className="hero-premium relative overflow-hidden border-b border-border">
+        <div className="pointer-events-none absolute inset-0 hero-grid-soft opacity-25" />
+        <div className="pointer-events-none absolute left-1/2 top-16 h-72 w-[560px] -translate-x-1/2 hero-premium-glow" />
 
         <div className="page-shell relative py-20 md:py-28">
           <motion.div {...animationIn} className="mx-auto max-w-5xl text-center">
             <span className="soft-blue-chip mb-6">Comparador financeiro completo</span>
-            <h1 className="mx-auto mb-5 max-w-4xl">Cote juros antes de pegar credito.</h1>
+            <h1 className="mx-auto mb-5 max-w-4xl">Cote juros antes de pegar crédito.</h1>
             <p className="mx-auto max-w-3xl text-lg leading-8 text-muted-foreground md:text-xl">
-              Compare emprestimos, cartoes e financiamentos com clareza de taxa, condicoes e beneficios para tomar uma decisao financeira mais segura.
+              Compare empréstimos, cartões e financiamentos com clareza de taxa, condições e benefícios para tomar uma decisão financeira mais segura.
             </p>
 
             <form onSubmit={handleHeroSubmit} className="hero-highlight mx-auto mt-10 max-w-3xl rounded-[18px] border border-primary/20 p-3 shadow-[var(--shadow-md)]">
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Input
-                  placeholder="Digite o valor que voce quer analisar"
+                  placeholder="Digite o valor que você quer analisar"
                   className="h-12 border-0 bg-white text-base shadow-none focus-visible:ring-0"
                   value={heroValue}
                   onChange={(event) => setHeroValue(formatCurrency(event.target.value))}
@@ -242,14 +344,14 @@ function HomePage() {
 
             <div className="mt-5 inline-flex items-center gap-2 text-sm text-muted-foreground">
               <ShieldCheck className="h-4 w-4 text-primary" />
-              Simulacao gratuita e organizada para comparar sem pressao comercial.
+              Simulação gratuita e organizada para comparar sem pressão comercial.
             </div>
 
             <div className="mt-12 grid gap-4 sm:grid-cols-3">
               <div className="interactive-card px-5 py-5 text-left">
-                <p className="text-base font-semibold text-foreground">Comparacao inteligente</p>
+                <p className="text-base font-semibold text-foreground">Comparação inteligente</p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {catalogSize > 0 ? `${catalogSize}+ ofertas` : 'Ofertas de diferentes perfis'} em um unico fluxo.
+                  {catalogSize > 0 ? `${catalogSize}+ ofertas` : 'Ofertas de diferentes perfis'} em um único fluxo.
                 </p>
               </div>
               <div className="interactive-card px-5 py-5 text-left">
@@ -259,8 +361,8 @@ function HomePage() {
                 </p>
               </div>
               <div className="interactive-card px-5 py-5 text-left">
-                <p className="text-base font-semibold text-foreground">Decisao mais segura</p>
-                <p className="mt-1 text-sm text-muted-foreground">Taxa, prazo e condicao no mesmo painel comparativo.</p>
+                <p className="text-base font-semibold text-foreground">Decisão mais segura</p>
+                <p className="mt-1 text-sm text-muted-foreground">Taxa, prazo e condição no mesmo painel comparativo.</p>
               </div>
             </div>
           </motion.div>
@@ -271,9 +373,9 @@ function HomePage() {
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto mb-14 max-w-3xl text-center">
             <span className="soft-blue-chip mb-5">Produtos</span>
-            <h2 className="mb-4">Tudo para comparar credito com profundidade.</h2>
+            <h2 className="mb-4">Tudo para comparar crédito com profundidade.</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              Cada modulo foi organizado para reduzir duvidas e aumentar conversao com linguagem clara de comparador financeiro.
+              Cada módulo foi organizado para reduzir dúvidas e aumentar conversão com linguagem clara de comparador financeiro.
             </p>
           </motion.div>
 
@@ -312,9 +414,9 @@ function HomePage() {
         <div className="page-shell">
           <motion.div {...animationIn} className="mb-10 max-w-3xl">
             <span className="soft-blue-chip mb-5">Comparador financeiro</span>
-            <h2 className="mb-4">Veja taxas, bancos, beneficios e condicoes lado a lado.</h2>
+            <h2 className="mb-4">Veja taxas, bancos, benefícios e condições lado a lado.</h2>
             <p className="section-copy">
-              O Cote Juros volta a se posicionar como comparador: voce enxerga custo, proposta e aderencia sem navegar em paginas confusas.
+              O Cote Juros volta a se posicionar como comparador: você enxerga custo, proposta e aderência sem navegar em páginas confusas.
             </p>
           </motion.div>
 
@@ -323,8 +425,8 @@ function HomePage() {
               <span>Produto</span>
               <span>Banco</span>
               <span>Taxa</span>
-              <span>Beneficios</span>
-              <span>Condicoes</span>
+              <span>Benefícios</span>
+              <span>Condições</span>
             </div>
 
             <div className="divide-y divide-border">
@@ -343,11 +445,11 @@ function HomePage() {
                     <p className="text-sm font-semibold text-primary">{item.rate}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground md:hidden">Beneficios</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground md:hidden">Benefícios</p>
                     <p className="text-sm text-muted-foreground">{item.benefit}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground md:hidden">Condicoes</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground md:hidden">Condições</p>
                     <p className="text-sm text-muted-foreground">{item.condition}</p>
                   </div>
                 </div>
@@ -362,16 +464,16 @@ function HomePage() {
           <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
             <motion.div {...animationIn} className="space-y-6">
               <span className="soft-blue-chip">Cote Finance AI</span>
-              <h2>Gestao financeira viva para decidir melhor antes de contratar credito.</h2>
+              <h2>Gestão financeira viva para decidir melhor antes de contratar crédito.</h2>
               <p className="section-copy">
-                O Cote Finance AI funciona como camada inteligente para acompanhar entradas, saidas e margem financeira enquanto voce compara as melhores linhas de credito.
+                O Cote Finance AI funciona como camada inteligente para acompanhar entradas, saídas e margem financeira enquanto você compara as melhores linhas de crédito.
               </p>
 
               <div className="space-y-3">
                 {[
-                  'Visao mensal de receitas, despesas e saldo projetado.',
+                  'Visão mensal de receitas, despesas e saldo projetado.',
                   'Alertas para gastos que pressionam sua capacidade de pagamento.',
-                  'Sugestoes de ajuste para reduzir risco de juros abusivos.'
+                  'Sugestões de ajuste para reduzir risco de juros abusivos.'
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-3">
                     <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary" />
@@ -402,24 +504,14 @@ function HomePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.4, ease: 'easeOut' }}
+              whileHover={{ y: -4 }}
+              className="ai-showcase transition-all duration-200 ease-out"
             >
-              <motion.div
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                whileHover={{ y: -4 }}
-                className="ai-showcase rounded-[22px] border border-primary/20 bg-white p-4 transition-all duration-200 ease-out"
-              >
-                <img
-                  src={AI_DASHBOARD_ASSET}
-                  alt="Dashboard do Cote Finance AI"
-                  className="w-full rounded-[14px] border border-border object-cover"
-                  loading="lazy"
-                />
-                <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-                  <Sparkles className="h-4 w-4 text-primary" />
-                  Painel inteligente com atualizacao de contexto financeiro.
-                </div>
-              </motion.div>
+              <FinanceAiIllustration />
+              <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+                <Sparkles className="h-4 w-4 text-primary" />
+                Ilustração dinâmica com contexto financeiro em tempo real.
+              </div>
             </motion.div>
           </div>
         </div>
@@ -459,10 +551,10 @@ function HomePage() {
       <section className="bg-background-secondary py-20 md:py-24">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-4xl rounded-[24px] border border-primary/20 bg-white px-8 py-12 text-center shadow-[var(--shadow-md)]">
-            <span className="soft-blue-chip mb-6">Analise final</span>
-            <h2 className="mb-4">Descubra se voce esta pagando juros abusivos.</h2>
+            <span className="soft-blue-chip mb-6">Análise final</span>
+            <h2 className="mb-4">Descubra se você está pagando juros abusivos.</h2>
             <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground">
-              Em poucos passos, voce compara opcoes com leitura clara de taxa, beneficio e condicao para escolher com seguranca.
+              Em poucos passos, você compara opções com leitura clara de taxa, benefício e condição para escolher com segurança.
             </p>
             <div className="flex flex-col justify-center gap-3 sm:flex-row">
               <Button

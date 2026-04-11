@@ -50,7 +50,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
   const employmentTypes = [
     { id: 'CLT', icon: Briefcase },
     { id: 'PJ', icon: Building2 },
-    { id: 'Autonomo', icon: User },
+    { id: 'Autônomo', icon: User },
     { id: 'Aposentado', icon: Wallet },
     { id: 'Desempregado', icon: UserMinus }
   ];
@@ -88,16 +88,16 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
   const stepTitle = [
     'Valor desejado',
     'Renda mensal',
-    'Vinculo principal',
+    'Vínculo principal',
     'Faixa de score',
-    'Restricao no nome',
-    'Confirmacao final'
+    'Restrição no nome',
+    'Confirmação final'
   ];
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-2xl overflow-hidden border border-border bg-white p-0">
-        <DialogTitle className="sr-only">Simulacao de credito</DialogTitle>
+        <DialogTitle className="sr-only">Simulação de crédito</DialogTitle>
         <DialogDescription className="sr-only">Preencha seus dados para visualizar ofertas personalizadas.</DialogDescription>
 
         <div className="border-b border-border bg-background-secondary px-6 py-5">
@@ -137,8 +137,8 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
               {step === 1 ? (
                 <>
                   <div className="space-y-3">
-                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Qual valor voce quer comparar?</h2>
-                    <p className="text-base text-muted-foreground">Comece pelo montante real para reduzir ruido nas ofertas seguintes.</p>
+                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Qual valor você quer comparar?</h2>
+                    <p className="text-base text-muted-foreground">Comece pelo montante real para reduzir ruído nas ofertas seguintes.</p>
                   </div>
                   <div className="rounded-[16px] border border-border bg-background-secondary px-6 py-8 text-center">
                     <p className="text-4xl font-semibold tracking-[-0.04em] text-foreground">R$ {data.valor.toLocaleString('pt-BR')}</p>
@@ -153,8 +153,8 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
               {step === 2 ? (
                 <>
                   <div className="space-y-3">
-                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Qual e a sua renda mensal?</h2>
-                    <p className="text-base text-muted-foreground">Usamos esse dado para priorizar ofertas mais compativeis com o seu contexto.</p>
+                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Qual é a sua renda mensal?</h2>
+                    <p className="text-base text-muted-foreground">Usamos esse dado para priorizar ofertas mais compatíveis com o seu contexto.</p>
                   </div>
                   <div className="rounded-[16px] border border-border bg-background-secondary px-6 py-8 text-center">
                     <p className="text-4xl font-semibold tracking-[-0.04em] text-foreground">R$ {data.renda.toLocaleString('pt-BR')}</p>
@@ -169,8 +169,8 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
               {step === 3 ? (
                 <>
                   <div className="space-y-3">
-                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Como voce recebe a maior parte da renda?</h2>
-                    <p className="text-base text-muted-foreground">Uma selecao simples, em cards discretos, seguindo a mesma referencia visual.</p>
+                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Como você recebe a maior parte da renda?</h2>
+                    <p className="text-base text-muted-foreground">Uma seleção simples, em cards discretos, seguindo a mesma referência visual.</p>
                   </div>
                   <div className="grid gap-3 sm:grid-cols-3">
                     {employmentTypes.map((item) => (
@@ -197,12 +197,12 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                 <>
                   <div className="space-y-3">
                     <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Qual faixa de score mais se aproxima do seu perfil?</h2>
-                    <p className="text-base text-muted-foreground">A informacao ajuda a ordenar as opcoes com mais clareza.</p>
+                    <p className="text-base text-muted-foreground">A informação ajuda a ordenar as opções com mais clareza.</p>
                   </div>
                   <div className="grid gap-3">
                     {[
-                      { id: 'Baixo', range: '300-549', copy: 'Perfil com aprovacoes mais restritas.' },
-                      { id: 'Medio', range: '550-749', copy: 'Faixa intermediaria com variacao de custo.' },
+                      { id: 'Baixo', range: '300-549', copy: 'Perfil com aprovações mais restritas.' },
+                      { id: 'Medio', range: '550-749', copy: 'Faixa intermediária com variação de custo.' },
                       { id: 'Alto', range: '750-1000', copy: 'Maior chance de taxas mais competitivas.' }
                     ].map((item) => (
                       <button
@@ -218,7 +218,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                       >
                         <div className="flex items-start justify-between gap-4">
                           <div>
-                            <p className="text-lg font-semibold text-foreground">{item.id}</p>
+                            <p className="text-lg font-semibold text-foreground">{item.id === 'Medio' ? 'Médio' : item.id}</p>
                             <p className="text-sm text-muted-foreground">{item.range}</p>
                             <p className="mt-2 text-sm text-muted-foreground">{item.copy}</p>
                           </div>
@@ -233,13 +233,13 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
               {step === 5 ? (
                 <>
                   <div className="space-y-3">
-                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Existe alguma restricao em aberto?</h2>
-                    <p className="text-base text-muted-foreground">Mantemos a pergunta direta para nao criar atrito desnecessario no fluxo.</p>
+                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Existe alguma restrição em aberto?</h2>
+                    <p className="text-base text-muted-foreground">Mantemos a pergunta direta para não criar atrito desnecessário no fluxo.</p>
                   </div>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {[
-                      { value: true, label: 'Sim, existe restricao', icon: XCircle },
-                      { value: false, label: 'Nao, esta regular', icon: CheckCircle2 }
+                      { value: true, label: 'Sim, existe restrição', icon: XCircle },
+                      { value: false, label: 'Não, está regular', icon: CheckCircle2 }
                     ].map((item) => (
                       <button
                         key={String(item.value)}
@@ -263,8 +263,8 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
               {step === 6 ? (
                 <>
                   <div className="space-y-3">
-                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Ultimo passo para ver ofertas personalizadas.</h2>
-                    <p className="text-base text-muted-foreground">Coletamos apenas o necessario para concluir a simulacao com seguranca.</p>
+                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Último passo para ver ofertas personalizadas.</h2>
+                    <p className="text-base text-muted-foreground">Coletamos apenas o necessário para concluir a simulação com segurança.</p>
                   </div>
 
                   <div className="space-y-4">
@@ -279,7 +279,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                       <div className="flex items-start gap-3">
                         <ShieldCheck className="mt-0.5 h-5 w-5 text-foreground" />
                         <p className="text-sm text-muted-foreground">
-                          Seu CPF sera usado apenas para personalizar a consulta. Nesta etapa inicial, o fluxo prioriza seguranca e transparencia.
+                          Seu CPF será usado apenas para personalizar a consulta. Nesta etapa inicial, o fluxo prioriza segurança e transparência.
                         </p>
                       </div>
                     </div>
@@ -289,7 +289,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                         checked={data.terms}
                         onCheckedChange={(checked) => setData((previous) => ({ ...previous, terms: Boolean(checked) }))}
                       />
-                      Concordo com os Termos de Uso e Politica de Privacidade.
+                      Concordo com os Termos de Uso e Política de Privacidade.
                     </label>
                   </div>
 

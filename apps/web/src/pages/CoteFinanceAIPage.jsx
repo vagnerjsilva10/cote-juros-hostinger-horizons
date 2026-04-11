@@ -29,12 +29,12 @@ function CoteFinanceAIPage() {
   };
 
   const featureCards = [
-    { icon: ChartColumnIncreasing, title: 'Dashboard financeiro', copy: 'Visao consolidada de entradas, saidas e margem do periodo.' },
-    { icon: CircleDollarSign, title: 'Receitas e despesas', copy: 'Categorias mais claras para entender para onde o dinheiro esta indo.' },
+    { icon: ChartColumnIncreasing, title: 'Dashboard financeiro', copy: 'Visão consolidada de entradas, saídas e margem do período.' },
+    { icon: CircleDollarSign, title: 'Receitas e despesas', copy: 'Categorias mais claras para entender para onde o dinheiro está indo.' },
     { icon: Goal, title: 'Metas', copy: 'Acompanhamento de objetivos com menos ruído de interface.' },
-    { icon: Landmark, title: 'Dividas', copy: 'Monitoramento de compromissos para priorizar ajustes.' },
+    { icon: Landmark, title: 'Dívidas', copy: 'Monitoramento de compromissos para priorizar ajustes.' },
     { icon: Wallet, title: 'Carteira', copy: 'Visibilidade patrimonial de forma mais simples.' },
-    { icon: MessageCircleMore, title: 'Insights', copy: 'Leituras automaticas e alertas em fluxos elegiveis.' }
+    { icon: MessageCircleMore, title: 'Insights', copy: 'Leituras automáticas e alertas em fluxos elegíveis.' }
   ];
 
   return (
@@ -43,7 +43,7 @@ function CoteFinanceAIPage() {
         <title>Cote Finance AI - Controle financeiro</title>
         <meta
           name="description"
-          content="Organize entradas, saidas, metas e dividas em uma interface minimalista e orientada por clareza."
+          content="Organize entradas, saídas, metas e dívidas em uma interface minimalista e orientada por clareza."
         />
       </Helmet>
 
@@ -58,13 +58,13 @@ function CoteFinanceAIPage() {
               </Badge>
               <h1 className="max-w-3xl">Controle financeiro com o mesmo rigor visual do novo portal.</h1>
               <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
-                O produto complementa a comparacao de credito com uma camada de organizacao mensal, metas e leitura de comportamento financeiro.
+                O produto complementa a comparação de crédito com uma camada de organização mensal, metas e leitura de comportamento financeiro.
               </p>
               <div className="space-y-3">
                 {[
-                  'Entradas e saidas com estrutura mais limpa.',
-                  'Visao de metas, dividas e patrimonio no mesmo ambiente.',
-                  'Apresentacao mais proxima de software premium do que de landing page promocional.'
+                  'Entradas e saídas com estrutura mais limpa.',
+                  'Visão de metas, dívidas e patrimônio no mesmo ambiente.',
+                  'Apresentação mais próxima de software premium do que de landing page promocional.'
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-3">
                     <ShieldCheck className="mt-0.5 h-5 w-5 text-foreground" />
@@ -87,10 +87,10 @@ function CoteFinanceAIPage() {
       <section className="border-b border-border bg-background-secondary py-20 md:py-24">
         <div className="page-shell">
           <div className="mx-auto mb-14 max-w-3xl text-center">
-            <span className="section-eyebrow mb-5">Modulos</span>
+            <span className="section-eyebrow mb-5">Módulos</span>
             <h2 className="mb-4">Recursos alinhados ao novo sistema visual.</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              O produto ganha uma apresentacao mais tipografica, com blocos discretos e o mesmo contraste do restante da plataforma.
+              O produto ganha uma apresentação mais tipográfica, com blocos discretos e o mesmo contraste do restante da plataforma.
             </p>
           </div>
 
@@ -115,10 +115,10 @@ function CoteFinanceAIPage() {
       <section className="page-section bg-background">
         <div className="page-shell max-w-4xl">
           <div className="space-y-6 rounded-[20px] border border-border bg-background-secondary p-10">
-            <span className="section-eyebrow">Transparencia</span>
-            <h2>O Cote Finance AI organiza o financeiro. Nao promete aprovacao automatica.</h2>
+            <span className="section-eyebrow">Transparência</span>
+            <h2>O Cote Finance AI organiza o financeiro. Não promete aprovação automática.</h2>
             <p className="text-lg text-muted-foreground">
-              A pagina deixa claro o papel do produto: organizar, dar contexto e apoiar decisoes melhores, sem promessas artificiais.
+              A página deixa claro o papel do produto: organizar, dar contexto e apoiar decisões melhores, sem promessas artificiais.
             </p>
             <Button size="lg" className="w-fit" onClick={handleFinanceAiEntry}>
               Acessar plataforma <ArrowRight className="h-4 w-4" />

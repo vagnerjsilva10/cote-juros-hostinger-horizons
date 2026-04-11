@@ -100,14 +100,17 @@ function EmprestimosPage() {
   return (
     <>
       <Helmet>
-        <title>Comparador de emprestimos - Cote Juros</title>
-        <meta name="description" content="Compare taxa, prazo e valor maximo para encontrar o emprestimo mais aderente ao seu perfil." />
+        <title>Comparador de empréstimos - Cote Juros</title>
+        <meta
+          name="description"
+          content="Compare taxa, prazo e valor máximo para encontrar o empréstimo mais aderente ao seu perfil."
+        />
       </Helmet>
 
       <PageHero
-        badge="Comparador de emprestimos"
-        title="Compare emprestimos com foco em taxa e custo total."
-        subtitle="Visualize ofertas por valor, prazo e perfil de score em uma experiencia premium, clara e orientada para conversao."
+        badge="Comparador de empréstimos"
+        title="Compare empréstimos com foco em taxa e custo total."
+        subtitle="Visualize ofertas por valor, prazo e perfil de score em uma experiência premium, clara e orientada para conversão."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link to="/diagnostico-financeiro">
@@ -122,7 +125,7 @@ function EmprestimosPage() {
       <section className="border-b border-border bg-background-secondary py-8">
         <div className="page-shell grid gap-4 md:grid-cols-4">
           <div className="interactive-card px-5 py-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor em analise</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor em análise</p>
             <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">R$ {amount[0].toLocaleString('pt-BR')}</p>
           </div>
           <div className="interactive-card px-5 py-4">
@@ -134,7 +137,7 @@ function EmprestimosPage() {
             <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-primary">{bestRate ? `${bestRate}% a.m.` : '--'}</p>
           </div>
           <div className="interactive-card px-5 py-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Ofertas visiveis</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Ofertas visíveis</p>
             <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{filteredLoans.length}</p>
           </div>
         </div>
@@ -148,7 +151,7 @@ function EmprestimosPage() {
                 <div className="flex items-center justify-between border-b border-border pb-4">
                   <div className="flex items-center gap-2">
                     <Filter className="h-4 w-4 text-primary" />
-                    <h3 className="text-lg">Filtros da comparacao</h3>
+                    <h3 className="text-lg">Filtros da comparação</h3>
                   </div>
                   <button type="button" onClick={resetFilters} className="text-sm font-medium text-primary hover:text-primary-hover">
                     Limpar
@@ -164,7 +167,7 @@ function EmprestimosPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <Label>Tipo de credito</Label>
+                  <Label>Tipo de crédito</Label>
                   <Select value={type} onValueChange={setType}>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione..." />
@@ -193,7 +196,9 @@ function EmprestimosPage() {
                     {['Todos', 'Alto', 'Medio', 'Baixo'].map((item) => (
                       <label key={item} className="flex items-center gap-3 rounded-[10px] border border-border px-4 py-3 hover:bg-background-secondary">
                         <RadioGroupItem value={item} />
-                        <span className="text-sm text-foreground">{item === 'Todos' ? 'Nao sei' : item}</span>
+                        <span className="text-sm text-foreground">
+                          {item === 'Todos' ? 'Não sei' : item === 'Medio' ? 'Médio' : item}
+                        </span>
                       </label>
                     ))}
                   </RadioGroup>
@@ -205,7 +210,7 @@ function EmprestimosPage() {
           <section>
             <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <p className="text-sm text-muted-foreground">
-                {filteredLoans.length} oferta(s) ordenadas para facilitar sua decisao.
+                {filteredLoans.length} oferta(s) ordenadas para facilitar sua decisão.
               </p>
               <div className="flex flex-wrap items-center gap-3">
                 <Label className="whitespace-nowrap">Ordenar</Label>
@@ -256,17 +261,17 @@ function EmprestimosPage() {
                       </div>
 
                       <div className="rounded-[12px] border border-border bg-background-secondary p-4">
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Leitura rapida</p>
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Leitura rápida</p>
                         <p className="mt-2 text-sm text-muted-foreground">
                           {loan.monthlyRate < 2
                             ? 'Oferta com taxa mais competitiva dentro do filtro atual.'
-                            : 'Linha com boa chance de aprovacao para o contexto selecionado.'}
+                            : 'Linha com boa chance de aprovação para o contexto selecionado.'}
                         </p>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4 border-t border-border pt-4">
                         <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor maximo</p>
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor máximo</p>
                           <p className="mt-2 text-sm font-semibold text-foreground">R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
                         </div>
                         <div>
@@ -290,7 +295,7 @@ function EmprestimosPage() {
             {filteredLoans.length === 0 ? (
               <div className="rounded-[16px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center">
                 <h3 className="text-2xl">Nenhuma oferta encontrada.</h3>
-                <p className="mt-3 text-muted-foreground">Ajuste valor, prazo ou score para ampliar a comparacao.</p>
+                <p className="mt-3 text-muted-foreground">Ajuste valor, prazo ou score para ampliar a comparação.</p>
                 <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
                   <Button variant="outline" onClick={resetFilters}>
                     Limpar filtros
@@ -308,9 +313,9 @@ function EmprestimosPage() {
       <section className="border-t border-border bg-background-secondary py-16">
         <div className="page-shell">
           <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
-            <h2 className="mb-3">Quer acelerar sua escolha com mais seguranca?</h2>
+            <h2 className="mb-3">Quer acelerar sua escolha com mais segurança?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
-              O diagnostico financeiro cruza seu perfil com as melhores linhas para priorizar ofertas com maior aderencia e menor custo potencial.
+              O diagnóstico financeiro cruza seu perfil com as melhores linhas para priorizar ofertas com maior aderência e menor custo potencial.
             </p>
             <Link to="/diagnostico-financeiro">
               <Button size="lg">Analisar perfil agora</Button>

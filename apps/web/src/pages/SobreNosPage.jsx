@@ -6,10 +6,10 @@ import PageHero from '@/components/PageHero.jsx';
 
 function SobreNosPage() {
   const values = [
-    { icon: Target, title: 'Missao', description: 'Tornar a comparacao de credito mais legivel, direta e menos cansativa para o usuario.' },
-    { icon: Users, title: 'Transparencia', description: 'Explicamos custo, prazo e aderencia sem criar artificios visuais desnecessarios.' },
-    { icon: Award, title: 'Qualidade', description: 'Dados atualizados e apresentacao consistente ao longo de todo o sistema.' },
-    { icon: Shield, title: 'Seguranca', description: 'Coleta minima e cuidado com o tratamento das informacoes pessoais.' }
+    { icon: Target, title: 'Missão', description: 'Tornar a comparação de crédito mais legível, direta e menos cansativa para o usuário.' },
+    { icon: Users, title: 'Transparência', description: 'Explicamos custo, prazo e aderência sem criar artifícios visuais desnecessários.' },
+    { icon: Award, title: 'Qualidade', description: 'Dados atualizados e apresentação consistente ao longo de todo o sistema.' },
+    { icon: Shield, title: 'Segurança', description: 'Coleta mínima e cuidado com o tratamento das informações pessoais.' }
   ];
 
   return (
@@ -20,8 +20,8 @@ function SobreNosPage() {
 
       <PageHero
         badge="Empresa"
-        title="Uma camada de clareza entre o usuario e o mercado de credito."
-        subtitle="A proposta da Cote Juros e simplificar leitura, comparacao e decisao com uma interface mais tipografica e menos carregada."
+        title="Uma camada de clareza entre o usuário e o mercado de crédito."
+        subtitle="A proposta da Cote Juros é simplificar leitura, comparação e decisão com uma interface mais tipográfica e menos carregada."
       />
 
       <section className="page-section bg-background">
@@ -30,10 +30,10 @@ function SobreNosPage() {
             <h2 className="mb-4">Quem somos</h2>
             <div className="space-y-4 text-lg text-muted-foreground">
               <p>
-                A Cote Juros nasceu para transformar comparacao financeira em uma experiencia mais clara. Em vez de competir por excesso visual, a plataforma organiza informacao para que taxa, prazo e custo total sejam os protagonistas.
+                A Cote Juros nasceu para transformar comparação financeira em uma experiência mais clara. Em vez de competir por excesso visual, a plataforma organiza informação para que taxa, prazo e custo total sejam os protagonistas.
               </p>
               <p>
-                O redesenho reforca essa ideia com uma linguagem mais proxima de software premium: muito espaco, contraste controlado e tipografia guiando o fluxo.
+                O redesenho reforça essa ideia com uma linguagem mais próxima de software premium: muito espaço, contraste controlado e tipografia guiando o fluxo.
               </p>
             </div>
           </div>

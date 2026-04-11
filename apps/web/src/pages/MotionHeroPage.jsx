@@ -9,17 +9,17 @@ function MotionHeroPage() {
     {
       icon: Layers3,
       title: 'Ritmo visual mais calmo',
-      copy: 'Uma demonstracao de como movimento sutil pode conviver com uma interface mais silenciosa.'
+      copy: 'Uma demonstração de como movimento sutil pode conviver com uma interface mais silenciosa.'
     },
     {
       icon: SquareDashedBottomCode,
-      title: 'Espaco e alinhamento',
-      copy: 'Mesmo em paginas experimentais, o sistema agora segue o mesmo contraste e a mesma tipografia.'
+      title: 'Espaço e alinhamento',
+      copy: 'Mesmo em páginas experimentais, o sistema agora segue o mesmo contraste e a mesma tipografia.'
     },
     {
       icon: Sparkles,
-      title: 'Microinteracoes discretas',
-      copy: 'Animacoes curtas, elevacao minima e zero dependencia de cor vibrante.'
+      title: 'Microinterações discretas',
+      copy: 'Animações curtas, elevação mínima e zero dependência de cor vibrante.'
     }
   ];
 
@@ -39,9 +39,9 @@ function MotionHeroPage() {
             className="mx-auto max-w-4xl text-center"
           >
             <span className="section-eyebrow mb-6">Motion study</span>
-            <h1 className="mx-auto mb-6 max-w-3xl">Uma pagina experimental, agora no mesmo sistema visual do restante do produto.</h1>
+            <h1 className="mx-auto mb-6 max-w-3xl">Uma página experimental, agora no mesmo sistema visual do restante do produto.</h1>
             <p className="mx-auto max-w-2xl text-lg leading-8 text-muted-foreground">
-              O objetivo aqui nao e vender demais. E mostrar movimento leve, hierarquia de texto e composicao consistente.
+              O objetivo aqui não é vender demais. É mostrar movimento leve, hierarquia de texto e composição consistente.
             </p>
             <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
               <Button size="lg">

@@ -20,12 +20,12 @@ function SeoLandingPage({ title, description, heading, content }) {
       <SimulationModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
 
       <PageHero
-        badge="Comparacao"
+        badge="Comparação"
         title={heading}
         subtitle={description}
       >
         <Button size="lg" onClick={() => setModalOpen(true)}>
-          Fazer simulacao gratuita
+          Fazer simulação gratuita
         </Button>
       </PageHero>
 
@@ -47,9 +47,9 @@ function SeoLandingPage({ title, description, heading, content }) {
                 <h3>Pronto para comparar com mais clareza?</h3>
                 <div className="space-y-3">
                   {[
-                    'Analise inicial em fluxo simples.',
+                    'Análise inicial em fluxo simples.',
                     'Leitura organizada por taxa e prazo.',
-                    'Comparacao com menos ruido visual.'
+                    'Comparação com menos ruído visual.'
                   ].map((item) => (
                     <div key={item} className="flex items-start gap-3">
                       <CheckCircle2 className="mt-0.5 h-5 w-5 text-foreground" />
@@ -68,7 +68,9 @@ function SeoLandingPage({ title, description, heading, content }) {
             <Card className="lg:sticky lg:top-24">
               <CardContent className="space-y-4 p-8">
                 <h4>Por que usar o Cote Juros?</h4>
-                <p className="text-sm text-muted-foreground">A plataforma foi redesenhada para apresentar menos ruído, mais respiro e uma hierarquia de texto muito mais clara.</p>
+                <p className="text-sm text-muted-foreground">
+                  A plataforma foi redesenhada para apresentar menos ruído, mais respiro e uma hierarquia de texto muito mais clara.
+                </p>
               </CardContent>
             </Card>
             <AdSpace height="600px" />

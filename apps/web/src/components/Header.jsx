@@ -11,8 +11,8 @@ function Header() {
 
   const navItems = [
     { label: 'Home', path: '/' },
-    { label: 'Emprestimos', path: '/emprestimos' },
-    { label: 'Cartoes', path: '/cartoes-de-credito' },
+    { label: 'Empréstimos', path: '/emprestimos' },
+    { label: 'Cartões', path: '/cartoes-de-credito' },
     { label: 'Financiamentos', path: '/financiamento' },
     { label: 'Ferramentas', path: '/ferramentas' },
     { label: 'Blog', path: '/blog' }

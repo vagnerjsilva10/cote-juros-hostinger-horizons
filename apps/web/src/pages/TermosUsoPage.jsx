@@ -4,12 +4,12 @@ import PageHero from '@/components/PageHero.jsx';
 
 function TermosUsoPage() {
   const sections = [
-    ['Aceitacao', 'Ao acessar a plataforma, o usuario concorda com estes termos e com o uso adequado dos recursos disponibilizados.'],
-    ['Servicos', 'A Cote Juros oferece comparacao de produtos financeiros, simulacoes, conteudo educativo e direcionamento para parceiros.'],
-    ['Responsabilidades do usuario', 'O usuario deve fornecer informacoes verdadeiras, proteger seus acessos e utilizar a plataforma de forma licita.'],
-    ['Limites da plataforma', 'A Cote Juros nao concede credito diretamente e nao substitui a verificacao final junto as instituicoes financeiras.'],
-    ['Propriedade intelectual', 'Conteudos, estrutura visual, marca e tecnologia da plataforma sao protegidos por direitos aplicaveis.'],
-    ['Contato', 'Para duvidas sobre os termos, escreva para legal@cotejuros.com.br.']
+    ['Aceitação', 'Ao acessar a plataforma, o usuário concorda com estes termos e com o uso adequado dos recursos disponibilizados.'],
+    ['Serviços', 'A Cote Juros oferece comparação de produtos financeiros, simulações, conteúdo educativo e direcionamento para parceiros.'],
+    ['Responsabilidades do usuário', 'O usuário deve fornecer informações verdadeiras, proteger seus acessos e utilizar a plataforma de forma lícita.'],
+    ['Limites da plataforma', 'A Cote Juros não concede crédito diretamente e não substitui a verificação final junto às instituições financeiras.'],
+    ['Propriedade intelectual', 'Conteúdos, estrutura visual, marca e tecnologia da plataforma são protegidos por direitos aplicáveis.'],
+    ['Contato', 'Para dúvidas sobre os termos, escreva para legal@cotejuros.com.br.']
   ];
 
   return (
@@ -21,7 +21,7 @@ function TermosUsoPage() {
       <PageHero
         badge="Termos"
         title="Termos de uso apresentados com a mesma objetividade visual."
-        subtitle={`Ultima atualizacao: ${new Date().toLocaleDateString('pt-BR')}`}
+        subtitle={`Última atualização: ${new Date().toLocaleDateString('pt-BR')}`}
       />
 
       <section className="page-section bg-background">

@@ -91,21 +91,21 @@ function CartoesPage() {
   return (
     <>
       <Helmet>
-        <title>Comparador de cartoes - Cote Juros</title>
-        <meta name="description" content="Compare cartoes por anuidade, limite estimado e beneficios em uma interface premium e objetiva." />
+        <title>Comparador de cartões - Cote Juros</title>
+        <meta name="description" content="Compare cartões por anuidade, limite estimado e benefícios em uma interface premium e objetiva." />
       </Helmet>
 
       <PageHero
-        badge="Comparador de cartoes"
-        title="Encontre o cartao ideal com leitura clara de custo e beneficio."
-        subtitle="Compare anuidade, limite estimado e vantagens reais em uma grade de decisao feita para acelerar conversao."
+        badge="Comparador de cartões"
+        title="Encontre o cartão ideal com leitura clara de custo e benefício."
+        subtitle="Compare anuidade, limite estimado e vantagens reais em uma grade de decisão feita para acelerar conversão."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link to="/diagnostico-financeiro">
             <Button size="lg">Analisar perfil completo</Button>
           </Link>
           <a href="#resultados-cartoes">
-            <Button size="lg" variant="outline">Ver cartoes agora</Button>
+            <Button size="lg" variant="outline">Ver cartões agora</Button>
           </a>
         </div>
       </PageHero>
@@ -113,7 +113,7 @@ function CartoesPage() {
       <section className="border-b border-border bg-background-secondary py-8">
         <div className="page-shell grid gap-4 md:grid-cols-4">
           <div className="interactive-card px-5 py-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Cartoes no comparador</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Cartões no comparador</p>
             <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{cardsData.length}</p>
           </div>
           <div className="interactive-card px-5 py-4">
@@ -125,7 +125,7 @@ function CartoesPage() {
             <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">R$ {(bestLimit / 1000).toFixed(0)}k</p>
           </div>
           <div className="interactive-card px-5 py-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Ofertas visiveis</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Ofertas visíveis</p>
             <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{filteredCards.length}</p>
           </div>
         </div>
@@ -138,7 +138,7 @@ function CartoesPage() {
               <CardContent className="space-y-8 p-8">
                 <div className="flex items-center gap-2 border-b border-border pb-4">
                   <Filter className="h-4 w-4 text-primary" />
-                  <h3 className="text-lg">Filtros da comparacao</h3>
+                  <h3 className="text-lg">Filtros da comparação</h3>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -162,7 +162,7 @@ function CartoesPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label>Beneficios</Label>
+                  <Label>Benefícios</Label>
                   <div className="space-y-3">
                     {['Cashback', 'Milhas', 'VIP'].map((item) => (
                       <label key={item} className="flex items-center gap-3 rounded-[10px] border border-border px-4 py-3 hover:bg-background-secondary">
@@ -181,7 +181,7 @@ function CartoesPage() {
 
           <section>
             <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <p className="text-sm text-muted-foreground">{filteredCards.length} cartao(oes) visiveis na comparacao.</p>
+              <p className="text-sm text-muted-foreground">{filteredCards.length} cartão(ões) visíveis na comparação.</p>
               <div className="flex flex-wrap items-center gap-3">
                 <Label className="whitespace-nowrap">Ordenar</Label>
                 <Select value={sort} onValueChange={setSort}>
@@ -224,7 +224,7 @@ function CartoesPage() {
                         <div className="rounded-[12px] border border-border bg-background-secondary p-4">
                           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Anuidade</p>
                           <p className={`mt-2 text-sm font-semibold ${isFree ? 'text-primary' : 'text-foreground'}`}>
-                            {isFree ? 'Gratis' : `R$ ${card.annualFee}/ano`}
+                            {isFree ? 'Grátis' : `R$ ${card.annualFee}/ano`}
                           </p>
                         </div>
                         <div className="rounded-[12px] border border-border bg-background-secondary p-4">
@@ -254,8 +254,8 @@ function CartoesPage() {
             {filteredCards.length === 0 ? (
               <div className="rounded-[16px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center">
                 <CreditCard className="mx-auto h-10 w-10 text-muted-foreground" />
-                <h3 className="mt-4 text-2xl">Nenhum cartao encontrado.</h3>
-                <p className="mt-3 text-muted-foreground">Tente reduzir os filtros ativos para ver mais opcoes.</p>
+                <h3 className="mt-4 text-2xl">Nenhum cartão encontrado.</h3>
+                <p className="mt-3 text-muted-foreground">Tente reduzir os filtros ativos para ver mais opções.</p>
                 <div className="mt-6">
                   <Link to="/diagnostico-financeiro">
                     <Button>Analisar perfil completo</Button>
@@ -270,9 +270,9 @@ function CartoesPage() {
       <section className="border-t border-border bg-background-secondary py-16">
         <div className="page-shell">
           <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
-            <h2 className="mb-3">Quer escolher o cartao com mais aderencia ao seu momento?</h2>
+            <h2 className="mb-3">Quer escolher o cartão com mais aderência ao seu momento?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
-              O diagnostico combina renda e comportamento financeiro para indicar linhas com maior chance de aprovacao e melhor pacote de beneficios.
+              O diagnóstico combina renda e comportamento financeiro para indicar linhas com maior chance de aprovação e melhor pacote de benefícios.
             </p>
             <Link to="/diagnostico-financeiro">
               <Button size="lg">Analisar perfil agora</Button>

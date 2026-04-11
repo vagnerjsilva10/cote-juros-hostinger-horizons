@@ -4,24 +4,24 @@ import PageHero from '@/components/PageHero.jsx';
 
 function PoliticaPrivacidadePage() {
   const sections = [
-    ['Introducao', 'A Cote Juros esta comprometida com o tratamento responsavel de dados pessoais e com uma comunicacao clara sobre como essas informacoes sao utilizadas.'],
-    ['Coleta', 'Podemos coletar dados de identificacao, informacoes financeiras fornecidas pelo usuario, dados de navegacao e dados relacionados a simulacoes realizadas na plataforma.'],
-    ['Uso', 'As informacoes sao utilizadas para gerar comparacoes mais aderentes, melhorar a experiencia da plataforma, apoiar comunicacoes relevantes e cumprir exigencias legais.'],
-    ['Compartilhamento', 'Nao vendemos dados pessoais. O compartilhamento ocorre apenas quando necessario para operacao, parceiros autorizados ou obrigacao legal.'],
-    ['Direitos', 'O usuario pode solicitar acesso, correcao, exclusao, revogacao de consentimento e outros direitos previstos em lei.'],
-    ['Contato', 'Em caso de duvidas, entre em contato pelo e-mail privacidade@cotejuros.com.br.']
+    ['Introdução', 'A Cote Juros está comprometida com o tratamento responsável de dados pessoais e com uma comunicação clara sobre como essas informações são utilizadas.'],
+    ['Coleta', 'Podemos coletar dados de identificação, informações financeiras fornecidas pelo usuário, dados de navegação e dados relacionados a simulações realizadas na plataforma.'],
+    ['Uso', 'As informações são utilizadas para gerar comparações mais aderentes, melhorar a experiência da plataforma, apoiar comunicações relevantes e cumprir exigências legais.'],
+    ['Compartilhamento', 'Não vendemos dados pessoais. O compartilhamento ocorre apenas quando necessário para operação, parceiros autorizados ou obrigação legal.'],
+    ['Direitos', 'O usuário pode solicitar acesso, correção, exclusão, revogação de consentimento e outros direitos previstos em lei.'],
+    ['Contato', 'Em caso de dúvidas, entre em contato pelo e-mail privacidade@cotejuros.com.br.']
   ];
 
   return (
     <>
       <Helmet>
-        <title>Politica de privacidade - Cote Juros</title>
+        <title>Política de privacidade - Cote Juros</title>
       </Helmet>
 
       <PageHero
         badge="Privacidade"
-        title="Uma politica de privacidade tao clara quanto a interface."
-        subtitle={`Ultima atualizacao: ${new Date().toLocaleDateString('pt-BR')}`}
+        title="Uma política de privacidade tão clara quanto a interface."
+        subtitle={`Última atualização: ${new Date().toLocaleDateString('pt-BR')}`}
       />
 
       <section className="page-section bg-background">
