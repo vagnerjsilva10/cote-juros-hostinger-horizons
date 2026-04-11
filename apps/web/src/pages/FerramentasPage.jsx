@@ -73,7 +73,7 @@ function FerramentasPage() {
         centered
         badge="Ferramentas"
         title="Calculadoras com visual mais claro e silencioso."
-        subtitle="As ferramentas seguem a mesma referencia: cinza suave, tipografia dominante e apenas os dados necessarios em destaque."
+        subtitle="Ferramentas simples para entender juros, parcelas e o impacto real das decisões no seu bolso."
       >
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-white shadow-[var(--shadow-sm)]">
           <Calculator className="h-7 w-7 text-foreground" />
@@ -102,7 +102,7 @@ function FerramentasPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Parametros</CardTitle>
-                  <CardDescription>Insira os dados e acompanhe a curva de crescimento.</CardDescription>
+                  <CardDescription>Preencha os dados e veja como seu dinheiro pode crescer ao longo do tempo.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-5">
                   <div className="space-y-2">
@@ -124,7 +124,7 @@ function FerramentasPage() {
                 <CardHeader className="flex flex-col gap-4 border-b border-border sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <CardTitle>Projecao</CardTitle>
-                    <CardDescription>Leitura simples da evolucao do montante ao longo do tempo.</CardDescription>
+                    <CardDescription>Leitura simples da evolução do valor final ano a ano.</CardDescription>
                   </div>
                   <Button variant="outline" onClick={handleExport}>
                     <Download className="h-4 w-4" />
@@ -167,7 +167,7 @@ function FerramentasPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Dados do financiamento</CardTitle>
-                  <CardDescription>Ajuste valor, entrada, taxa e prazo.</CardDescription>
+                  <CardDescription>Simule entrada, taxa e prazo para entender o peso da parcela.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-5">
                   <div className="space-y-2">
@@ -193,7 +193,7 @@ function FerramentasPage() {
                 <CardHeader className="flex flex-col gap-4 border-b border-border sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <CardTitle>Custo efetivo</CardTitle>
-                    <CardDescription>Resumo do peso entre principal e juros no contrato.</CardDescription>
+                    <CardDescription>Veja quanto você paga no valor financiado e quanto vai para juros.</CardDescription>
                   </div>
                   <Button variant="outline" onClick={handleExport}>
                     <Download className="h-4 w-4" />
@@ -259,7 +259,7 @@ function FerramentasPage() {
                 <div className="space-y-3">
                   <h3>Comprometimento de renda</h3>
                   <p className="mx-auto max-w-2xl text-muted-foreground">
-                    Mantenha a visualizacao simples: renda liquida, valor da parcela e um retorno rapido sobre a faixa de comprometimento.
+                    Descubra se a parcela cabe no seu orçamento com uma leitura rápida e fácil de entender.
                   </p>
                 </div>
                 <div className="mx-auto grid max-w-xl gap-4 text-left">

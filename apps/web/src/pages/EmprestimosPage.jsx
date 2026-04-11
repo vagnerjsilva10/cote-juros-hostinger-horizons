@@ -15,6 +15,17 @@ import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
 
+const bankAccentById = {
+  itau: '#EC7000',
+  nubank: '#8A05BE',
+  santander: '#EC0000',
+  c6: '#101010',
+  caixa: '#005CA9',
+  bb: '#F8D117',
+  inter: '#FF7A00',
+  bradesco: '#CC092F'
+};
+
 function EmprestimosPage() {
   const [banksData, setBanksData] = useState([]);
   const [loansData, setLoansData] = useState([]);
@@ -110,7 +121,7 @@ function EmprestimosPage() {
       <PageHero
         badge="Comparador de empréstimos"
         title="Compare empréstimos com foco em taxa e custo total."
-        subtitle="Visualize ofertas por valor, prazo e perfil de score em uma experiência premium, clara e orientada para conversão."
+        subtitle="Veja em poucos segundos as ofertas que cabem no seu momento e entenda o custo real antes de contratar."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link to="/diagnostico-financeiro">
@@ -210,7 +221,7 @@ function EmprestimosPage() {
           <section>
             <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <p className="text-sm text-muted-foreground">
-                {filteredLoans.length} oferta(s) ordenadas para facilitar sua decisão.
+                {filteredLoans.length} oferta(s) organizadas para facilitar sua decisão.
               </p>
               <div className="flex flex-wrap items-center gap-3">
                 <Label className="whitespace-nowrap">Ordenar</Label>
@@ -235,13 +246,21 @@ function EmprestimosPage() {
                 const bank = banksData.find((item) => item.id === loan.bankId);
                 const badge = getBadge(loan.category, loan.monthlyRate);
                 const BadgeIcon = badge.icon;
+                const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#2563EB';
 
                 return (
                   <Card key={loan.id} className="surface-card h-full border-border bg-white">
                     <CardContent className="flex h-full flex-col gap-6 p-8">
                       <div className="flex items-start justify-between gap-4">
                         <div className="space-y-2">
-                          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-sm font-semibold text-primary">
+                          <div
+                            className="flex h-11 w-11 items-center justify-center rounded-xl border text-sm font-semibold"
+                            style={{
+                              borderColor: `${bankAccent}40`,
+                              backgroundColor: `${bankAccent}1A`,
+                              color: bankAccent
+                            }}
+                          >
                             {bank?.name?.charAt(0) || 'B'}
                           </div>
                           <div>
@@ -261,11 +280,11 @@ function EmprestimosPage() {
                       </div>
 
                       <div className="rounded-[12px] border border-border bg-background-secondary p-4">
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Leitura rápida</p>
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Resumo da oferta</p>
                         <p className="mt-2 text-sm text-muted-foreground">
                           {loan.monthlyRate < 2
-                            ? 'Oferta com taxa mais competitiva dentro do filtro atual.'
-                            : 'Linha com boa chance de aprovação para o contexto selecionado.'}
+                            ? 'Uma das menores taxas dentro do filtro que você escolheu.'
+                            : 'Boa opção para quem busca aprovação e parcelas previsíveis.'}
                         </p>
                       </div>
 
@@ -315,7 +334,7 @@ function EmprestimosPage() {
           <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
             <h2 className="mb-3">Quer acelerar sua escolha com mais segurança?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
-              O diagnóstico financeiro cruza seu perfil com as melhores linhas para priorizar ofertas com maior aderência e menor custo potencial.
+              O diagnóstico cruza seu perfil com as melhores linhas para destacar opções com mais chance de aprovação e custo menor.
             </p>
             <Link to="/diagnostico-financeiro">
               <Button size="lg">Analisar perfil agora</Button>

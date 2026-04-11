@@ -19,7 +19,8 @@ const bankCardImages = {
   nubank: '/assets/cards/nubank-card.svg',
   itau: '/assets/cards/itau-card.svg',
   santander: '/assets/cards/santander-card.svg',
-  c6: '/assets/cards/c6-card.svg'
+  c6: '/assets/cards/c6-card.svg',
+  inter: '/assets/cards/inter-card.svg'
 };
 
 const normalizeBankKey = (value = '') =>
@@ -34,7 +35,18 @@ const resolveCardImage = (card) => {
   if (bankName.includes('itau')) return bankCardImages.itau;
   if (bankName.includes('santander')) return bankCardImages.santander;
   if (bankName.includes('c6')) return bankCardImages.c6;
+  if (bankName.includes('inter')) return bankCardImages.inter;
   return card?.image;
+};
+
+const resolveCardPalette = (card) => {
+  const bankName = normalizeBankKey(card?.bankName);
+  if (bankName.includes('nubank')) return ['#6D28D9', '#8B5CF6'];
+  if (bankName.includes('itau')) return ['#EA580C', '#F97316'];
+  if (bankName.includes('santander')) return ['#B91C1C', '#EF4444'];
+  if (bankName.includes('c6')) return ['#0F172A', '#334155'];
+  if (bankName.includes('inter')) return ['#EA580C', '#FDBA74'];
+  return ['#1E293B', '#2563EB'];
 };
 
 function CartoesPage() {
@@ -120,7 +132,7 @@ function CartoesPage() {
       <PageHero
         badge="Comparador de cartões"
         title="Encontre o cartão ideal com leitura clara de custo e benefício."
-        subtitle="Compare anuidade, limite estimado e vantagens reais em uma grade de decisão feita para acelerar conversão."
+        subtitle="Compare anuidade, limite e benefícios reais em uma leitura simples para decidir com segurança."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link to="/diagnostico-financeiro">
@@ -224,15 +236,32 @@ function CartoesPage() {
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {filteredCards.map((card) => {
                 const isFree = card.annualFee === 0;
+                const cardImage = resolveCardImage(card);
+                const hasPremiumAsset = Boolean(cardImage?.startsWith('/assets/cards/'));
+                const [toneA, toneB] = resolveCardPalette(card);
 
                 return (
                   <Card key={card.id} className="surface-card h-full overflow-hidden border-border bg-white">
-                    <div className="relative h-44 border-b border-border bg-background-secondary">
-                      <img src={resolveCardImage(card)} alt={card.title} className="h-full w-full object-cover" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/35 via-slate-900/5 to-transparent" />
-                      <div className="absolute inset-x-5 bottom-5">
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/85">{card.bankName}</p>
-                        <h3 className="mt-2 text-xl text-white">{card.title}</h3>
+                    <div className="relative h-48 border-b border-border bg-slate-100">
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_10%,rgba(148,163,184,0.2),transparent_46%)]" />
+                      <div className="absolute inset-0 flex items-center justify-center p-4">
+                        <div className="relative w-full max-w-[240px] -rotate-[6deg] transition-transform duration-300 hover:-translate-y-1 hover:rotate-[-4deg]">
+                          {hasPremiumAsset ? (
+                            <img src={cardImage} alt={card.title} className="h-[148px] w-full rounded-2xl object-cover shadow-[0_16px_34px_rgba(15,23,42,0.28)]" />
+                          ) : (
+                            <div
+                              className="h-[148px] rounded-2xl border border-white/20 p-4 text-white shadow-[0_16px_34px_rgba(15,23,42,0.28)]"
+                              style={{ background: `linear-gradient(135deg, ${toneA}, ${toneB})` }}
+                            >
+                              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/80">{card.bankName}</p>
+                              <p className="mt-6 text-lg font-semibold leading-tight">{card.title}</p>
+                              <p className="mt-8 text-[11px] uppercase tracking-[0.14em] text-white/80">Crédito</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="absolute inset-x-5 bottom-4">
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-700/75">{card.bankName}</p>
                       </div>
                     </div>
 
@@ -294,7 +323,7 @@ function CartoesPage() {
           <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
             <h2 className="mb-3">Quer escolher o cartão com mais aderência ao seu momento?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
-              O diagnóstico combina renda e comportamento financeiro para indicar linhas com maior chance de aprovação e melhor pacote de benefícios.
+              O diagnóstico combina renda e comportamento financeiro para mostrar opções com maior chance de aprovação e benefícios que fazem sentido para você.
             </p>
             <Link to="/diagnostico-financeiro">
               <Button size="lg">Analisar perfil agora</Button>

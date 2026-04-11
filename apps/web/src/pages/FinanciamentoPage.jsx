@@ -110,7 +110,7 @@ function FinanciamentoPage() {
         badge="Comparador de financiamentos"
         centered
         title="Compare financiamento com clareza de taxa, entrada e prazo."
-        subtitle="A mesma linguagem premium da home aplicada para decisão de veículos e imóveis com mais confiança."
+        subtitle="Compare bancos, taxas e prazos para descobrir qual financiamento faz mais sentido para você."
       >
         <div className="flex flex-col justify-center gap-3 sm:flex-row">
           <Link to="/diagnostico-financeiro">
@@ -161,7 +161,7 @@ function FinanciamentoPage() {
               <div className="flex items-start gap-3">
                 <ShieldCheck className="mt-0.5 h-5 w-5 text-primary" />
                 <p className="text-sm text-muted-foreground">
-                  Veículos mais novos costumam concentrar taxas menores e prazos mais competitivos.
+                  Em geral, veículos mais novos costumam ter taxas menores e parcelas mais equilibradas.
                 </p>
               </div>
             </div>
@@ -173,7 +173,7 @@ function FinanciamentoPage() {
               <div className="flex items-start gap-3">
                 <ShieldCheck className="mt-0.5 h-5 w-5 text-primary" />
                 <p className="text-sm text-muted-foreground">
-                  Em financiamento imobiliário, o uso do FGTS pode reduzir a entrada conforme regra aplicável.
+                  No financiamento imobiliário, o uso do FGTS pode ajudar a reduzir a entrada quando disponível.
                 </p>
               </div>
             </div>
@@ -187,7 +187,7 @@ function FinanciamentoPage() {
           <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
             <h2 className="mb-3">Quer validar seu financiamento com mais segurança?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
-              O diagnóstico financeiro organiza sua capacidade de pagamento para você decidir com mais confiança antes de assumir o contrato.
+              O diagnóstico organiza sua capacidade de pagamento para você decidir com confiança antes de assumir um contrato de longo prazo.
             </p>
             <Link to="/diagnostico-financeiro">
               <Button size="lg">Analisar perfil agora</Button>

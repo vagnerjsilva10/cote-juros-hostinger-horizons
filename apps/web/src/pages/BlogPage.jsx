@@ -69,7 +69,7 @@ function BlogPage() {
         centered
         badge="Editorial"
         title="Artigos organizados em uma leitura mais limpa."
-        subtitle="Conteúdo financeiro com menos blocos promocionais e mais foco em educação, contexto e decisão."
+        subtitle="Conteúdo financeiro em linguagem clara para ajudar você a entender escolhas, custos e próximos passos."
       >
         <div className="relative mx-auto max-w-xl">
           <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -170,7 +170,7 @@ function BlogPage() {
             {filteredArticles.length === 0 ? (
               <div className="rounded-[16px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center md:col-span-2">
                 <h3 className="text-2xl">Nenhum artigo encontrado.</h3>
-                <p className="mt-3 text-muted-foreground">Tente outro termo ou reduza os filtros ativos.</p>
+                <p className="mt-3 text-muted-foreground">Tente outro termo de busca ou escolha uma categoria diferente.</p>
               </div>
             ) : null}
           </div>
