@@ -10,29 +10,35 @@ function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navItems = [
-    { label: 'Simulador', path: '/diagnostico-financeiro' },
-    { label: 'Como funciona', path: '/ferramentas' },
-    { label: 'Sobre', path: '/sobre-nos' }
+    { label: 'Home', path: '/' },
+    { label: 'Emprestimos', path: '/emprestimos' },
+    { label: 'Cartoes', path: '/cartoes-de-credito' },
+    { label: 'Financiamentos', path: '/financiamento' },
+    { label: 'Ferramentas', path: '/ferramentas' },
+    { label: 'Blog', path: '/blog' }
   ];
 
-  const isActive = (path) => location.pathname.startsWith(path);
+  const isActive = (path) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
+  };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-white/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-white/95 backdrop-blur-xl">
       <div className="page-shell">
-        <div className="flex h-[72px] items-center justify-between">
+        <div className="flex h-[74px] items-center justify-between">
           <Link to="/" className="flex items-center">
             <CoteJurosLogo />
           </Link>
 
-          <nav className="hidden items-center gap-2 lg:flex">
+          <nav className="hidden items-center gap-1 lg:flex">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 className={`rounded-full px-4 py-2 text-sm font-medium ${
                   isActive(item.path)
-                    ? 'bg-background-secondary text-foreground'
+                    ? 'bg-primary/10 text-primary'
                     : 'text-muted-foreground hover:bg-background-secondary hover:text-foreground'
                 }`}
               >
@@ -44,7 +50,7 @@ function Header() {
           <div className="hidden items-center gap-3 lg:flex">
             <Link to="/diagnostico-financeiro">
               <Button size="lg" className="rounded-[10px] px-5">
-                Calcular juros
+                Analisar perfil
               </Button>
             </Link>
           </div>
@@ -70,7 +76,7 @@ function Header() {
                         onClick={() => setMobileOpen(false)}
                         className={`rounded-[10px] px-4 py-3 text-base font-medium ${
                           isActive(item.path)
-                            ? 'bg-background-secondary text-foreground'
+                            ? 'bg-primary/10 text-primary'
                             : 'text-muted-foreground hover:bg-background-secondary hover:text-foreground'
                         }`}
                       >
@@ -79,7 +85,7 @@ function Header() {
                     ))}
                     <div className="mt-4 border-t border-border pt-6">
                       <Link to="/diagnostico-financeiro" onClick={() => setMobileOpen(false)}>
-                        <Button className="h-12 w-full text-base">Calcular juros</Button>
+                        <Button className="h-12 w-full text-base">Analisar perfil</Button>
                       </Link>
                     </div>
                   </nav>
