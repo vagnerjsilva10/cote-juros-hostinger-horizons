@@ -50,7 +50,7 @@ const resolveCardPalette = (card) => {
   if (bankName.includes('santander')) return ['#B91C1C', '#EF4444'];
   if (bankName.includes('c6')) return ['#0F172A', '#334155'];
   if (bankName.includes('inter')) return ['#EA580C', '#FDBA74'];
-  return ['#1E293B', '#027DFB'];
+  return ['#1E293B', '#2563EB'];
 };
 
 function CartoesPage() {
@@ -265,7 +265,9 @@ function CartoesPage() {
                         </div>
                       </div>
                       <div className="absolute inset-x-5 bottom-4">
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-700/75">{card.bankName}</p>
+                        <p className="inline-flex rounded-full bg-white/82 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-slate-900 shadow-[0_2px_8px_rgba(15,23,42,0.14)] backdrop-blur-sm">
+                          {card.bankName}
+                        </p>
                       </div>
                     </div>
 
@@ -340,5 +342,6 @@ function CartoesPage() {
 }
 
 export default CartoesPage;
+
 
 
