@@ -23,7 +23,10 @@ export const partnerRedirectService = {
       metadata
     });
 
-    return redirect;
+    return {
+      ...redirect,
+      resolvedUrl: redirect?.resolvedUrl || redirect?.destination || destinationUrl
+    };
   }
 };
 

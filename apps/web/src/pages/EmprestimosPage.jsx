@@ -70,7 +70,7 @@ function EmprestimosPage() {
       metadata: { monthlyRate: loan.monthlyRate }
     });
 
-    await partnerRedirectService.create({
+    const redirect = await partnerRedirectService.create({
       partnerId: loan.bankId,
       offerId: loan.id,
       destinationUrl,
@@ -79,6 +79,7 @@ function EmprestimosPage() {
     });
 
     toast.success(`Oferta registrada para ${loan.bankName}.`);
+    window.location.href = redirect.resolvedUrl;
   };
 
   const resetFilters = () => {

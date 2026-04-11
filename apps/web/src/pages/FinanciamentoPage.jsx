@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { Home, Car, Calendar, ArrowRight, ShieldCheck } from 'lucide-react';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
+import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
 
 function FinanciamentoPage() {
   const [financingData, setFinancingData] = useState([]);
@@ -17,16 +18,27 @@ function FinanciamentoPage() {
   }, []);
 
   const handleSimulate = async (offer) => {
+    const destinationUrl = 'https://finance.cotejuros.com.br';
+
     await trackingService.trackOfferClick({
       sourcePage: '/financiamento',
       offerId: offer.id,
-      target: 'https://finance.cotejuros.com.br',
+      target: destinationUrl,
       productType: 'financing',
       partnerId: offer.bankId,
       metadata: { annualRate: offer.annualRate }
     });
 
+    const redirect = await partnerRedirectService.create({
+      partnerId: offer.bankId,
+      offerId: offer.id,
+      destinationUrl,
+      sourcePage: '/financiamento',
+      productType: 'financing'
+    });
+
     toast.success(`Interesse registrado para simulacao com ${offer.bankName}.`);
+    window.location.href = redirect.resolvedUrl;
   };
 
   const renderCards = (filterFn) => {

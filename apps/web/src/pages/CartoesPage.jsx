@@ -62,7 +62,7 @@ function CartoesPage() {
       partnerId: card.bankId
     });
 
-    await partnerRedirectService.create({
+    const redirect = await partnerRedirectService.create({
       partnerId: card.bankId,
       offerId: card.id,
       destinationUrl,
@@ -71,6 +71,7 @@ function CartoesPage() {
     });
 
     toast.success(`Interesse registrado para ${card.title}.`);
+    window.location.href = redirect.resolvedUrl;
   };
 
   return (
