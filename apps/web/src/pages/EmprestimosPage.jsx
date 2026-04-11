@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -246,7 +246,7 @@ function EmprestimosPage() {
                 const bank = banksData.find((item) => item.id === loan.bankId);
                 const badge = getBadge(loan.category, loan.monthlyRate);
                 const BadgeIcon = badge.icon;
-                const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#2563EB';
+                const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#027DFB';
 
                 return (
                   <Card key={loan.id} className="surface-card h-full border-border bg-white">
@@ -347,3 +347,4 @@ function EmprestimosPage() {
 }
 
 export default EmprestimosPage;
+

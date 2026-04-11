@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -11,8 +11,8 @@
     --background-tertiary-hex: #f1f5f9;
     --border-default-hex: #e2e8f0;
     --border-soft-hex: #edf2f7;
-    --primary-hex: #2563eb;
-    --primary-hover-hex: #1d4ed8;
+    --primary-hex: #027dfb;
+    --primary-hover-hex: #0168d1;
     --text-primary-hex: #0f172a;
     --text-secondary-hex: #475569;
     --text-muted-hex: #64748b;
@@ -32,8 +32,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 217 83% 53%;
-    --primary-hover: 221 76% 48%;
+    --primary: 210 99% 50%;
+    --primary-hover: 210 99% 41%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96%;
@@ -48,21 +48,21 @@
     --border: 214 32% 91%;
     --border-soft: 214 32% 94%;
     --input: 214 32% 91%;
-    --ring: 217 83% 53%;
+    --ring: 210 99% 50%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --success: 217 83% 53%;
+    --success: 210 99% 50%;
     --success-foreground: 0 0% 100%;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 217 83% 53%;
+    --sidebar-primary: 210 99% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 210 40% 98%;
     --sidebar-accent-foreground: 222 47% 11%;
     --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 217 83% 53%;
+    --sidebar-ring: 210 99% 50%;
 
     --radius: 12px;
     --radius-md: 10px;
@@ -85,12 +85,12 @@
     -webkit-font-smoothing: antialiased;
     line-height: 1.62;
     background-image:
-      radial-gradient(circle at 20% -10%, rgba(37, 99, 235, 0.12), transparent 35%),
-      radial-gradient(circle at 80% -20%, rgba(37, 99, 235, 0.08), transparent 30%);
+      radial-gradient(circle at 20% -10%, rgba(2, 125, 251, 0.12), transparent 35%),
+      radial-gradient(circle at 80% -20%, rgba(2, 125, 251, 0.08), transparent 30%);
   }
 
   ::selection {
-    background: rgba(37, 99, 235, 0.2);
+    background: rgba(2, 125, 251, 0.2);
   }
 
   h1,
@@ -206,8 +206,8 @@
 
   .hero-grid {
     background-image:
-      linear-gradient(rgba(37, 99, 235, 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(37, 99, 235, 0.08) 1px, transparent 1px);
+      linear-gradient(rgba(2, 125, 251, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(2, 125, 251, 0.08) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
@@ -221,21 +221,21 @@
   .hero-premium-clean {
     background:
       radial-gradient(circle at 14% 18%, #d4e2ff 0%, #e8f0ff 30%, #f4f7fd 56%, #ffffff 76%),
-      radial-gradient(circle at 84% 8%, rgba(37, 99, 235, 0.14), transparent 42%),
+      radial-gradient(circle at 84% 8%, rgba(2, 125, 251, 0.14), transparent 42%),
       radial-gradient(circle at 52% 12%, rgba(99, 102, 241, 0.09), transparent 40%),
       linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(247, 250, 255, 0.92) 100%);
   }
 
   .hero-premium-mist {
     background:
-      radial-gradient(circle at 24% 14%, rgba(59, 130, 246, 0.14), transparent 46%),
+      radial-gradient(circle at 24% 14%, rgba(2, 125, 251, 0.14), transparent 46%),
       radial-gradient(circle at 64% 84%, rgba(20, 184, 166, 0.08), transparent 50%);
   }
 
   .hero-float-cloud {
     border-radius: 999px;
     background:
-      radial-gradient(circle at 22% 48%, rgba(59, 130, 246, 0.2), transparent 58%),
+      radial-gradient(circle at 22% 48%, rgba(2, 125, 251, 0.2), transparent 58%),
       radial-gradient(circle at 74% 44%, rgba(20, 184, 166, 0.14), transparent 56%),
       radial-gradient(circle at 52% 50%, rgba(255, 255, 255, 0.46), transparent 72%);
     filter: blur(26px);
@@ -244,12 +244,12 @@
   .hero-premium-dark {
     background:
       radial-gradient(circle at 16% 20%, rgba(56, 189, 248, 0.2), transparent 36%),
-      radial-gradient(circle at 84% 16%, rgba(59, 130, 246, 0.28), transparent 42%),
+      radial-gradient(circle at 84% 16%, rgba(2, 125, 251, 0.28), transparent 42%),
       linear-gradient(132deg, #0b1220 0%, #0f172a 48%, #1e3a8a 100%);
   }
 
   .hero-premium-glow {
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.35), rgba(59, 130, 246, 0.08) 48%, transparent 70%);
+    background: radial-gradient(circle, rgba(2, 125, 251, 0.35), rgba(2, 125, 251, 0.08) 48%, transparent 70%);
     filter: blur(30px);
   }
 
@@ -311,8 +311,8 @@
   }
 
   .hero-word-emphasis {
-    color: #1d4ed8;
-    text-shadow: 0 6px 22px rgba(37, 99, 235, 0.15);
+    color: #0168d1;
+    text-shadow: 0 6px 22px rgba(2, 125, 251, 0.15);
   }
 
   .hero-proof-pill {
@@ -332,7 +332,7 @@
     width: 4px;
     height: 4px;
     border-radius: 999px;
-    background: #3b82f6;
+    background: #027dfb;
     display: inline-block;
   }
 
@@ -387,7 +387,7 @@
   .product-illustration {
     position: relative;
     height: 92px;
-    border: 1px solid rgba(37, 99, 235, 0.12);
+    border: 1px solid rgba(2, 125, 251, 0.12);
     border-radius: 14px;
     overflow: hidden;
   }
@@ -399,7 +399,7 @@
     width: 14px;
     height: 14px;
     border-radius: 999px;
-    background: rgba(37, 99, 235, 0.45);
+    background: rgba(2, 125, 251, 0.45);
     animation: pulse-dot 3.2s ease-out infinite;
   }
 
@@ -409,19 +409,19 @@
     right: 16px;
     bottom: 22px;
     height: 2px;
-    background: linear-gradient(90deg, rgba(37, 99, 235, 0.18), rgba(37, 99, 235, 0.75), rgba(37, 99, 235, 0.18));
+    background: linear-gradient(90deg, rgba(2, 125, 251, 0.18), rgba(2, 125, 251, 0.75), rgba(2, 125, 251, 0.18));
     border-radius: 999px;
   }
 
   .ai-showcase {
     box-shadow:
       0 20px 50px rgba(15, 23, 42, 0.08),
-      0 0 0 1px rgba(37, 99, 235, 0.12),
-      0 0 40px rgba(37, 99, 235, 0.15);
+      0 0 0 1px rgba(2, 125, 251, 0.12),
+      0 0 40px rgba(2, 125, 251, 0.15);
   }
 
   .ai-ambient-glow {
-    background: radial-gradient(circle, rgba(37, 99, 235, 0.12), transparent 65%);
+    background: radial-gradient(circle, rgba(2, 125, 251, 0.12), transparent 65%);
     filter: blur(30px);
   }
 
@@ -481,3 +481,4 @@
     opacity: 1;
   }
 }
+

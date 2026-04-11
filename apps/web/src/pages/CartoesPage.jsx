@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -50,7 +50,7 @@ const resolveCardPalette = (card) => {
   if (bankName.includes('santander')) return ['#B91C1C', '#EF4444'];
   if (bankName.includes('c6')) return ['#0F172A', '#334155'];
   if (bankName.includes('inter')) return ['#EA580C', '#FDBA74'];
-  return ['#1E293B', '#2563EB'];
+  return ['#1E293B', '#027DFB'];
 };
 
 function CartoesPage() {
@@ -340,4 +340,5 @@ function CartoesPage() {
 }
 
 export default CartoesPage;
+
 

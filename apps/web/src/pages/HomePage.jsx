@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -182,7 +182,7 @@ function FinanceAiIllustration() {
             <path
               d="M4 70 C26 64, 40 52, 60 54 C84 56, 98 38, 120 40 C146 42, 156 60, 176 56 C198 52, 216 30, 236 20"
               fill="none"
-              stroke="rgba(37,99,235,0.95)"
+              stroke="rgba(2,125,251,0.95)"
               strokeWidth="2.5"
               className="chart-draw"
             />
@@ -198,7 +198,7 @@ function FinanceAiIllustration() {
               stroke="rgba(139,92,246,0.5)"
               strokeWidth="1.8"
             />
-            <circle cx="236" cy="20" r="4" fill="#2563EB" className="chart-pulse" />
+            <circle cx="236" cy="20" r="4" fill="#027DFB" className="chart-pulse" />
           </svg>
         </div>
 
@@ -486,7 +486,7 @@ function HomePage() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="h-10 w-full rounded-xl bg-[#2563EB] text-[14px] font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_20px_rgba(37,99,235,0.26)] transition-all duration-200 hover:bg-[#1D4ED8] hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_10px_24px_rgba(29,78,216,0.3)]"
+                  className="h-10 w-full rounded-xl bg-[#027DFB] text-[14px] font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_20px_rgba(2,125,251,0.26)] transition-all duration-200 hover:bg-[#0168D1] hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_10px_24px_rgba(1,104,209,0.3)]"
                 >
                   Simular agora
                 </Button>
@@ -684,7 +684,7 @@ function HomePage() {
                 <Link to="/cote-finance-ai">
                   <Button
                     size="lg"
-                    className="bg-[#2563EB] text-white transition-all duration-200 hover:bg-[#1D4ED8]"
+                    className="bg-[#027DFB] text-white transition-all duration-200 hover:bg-[#0168D1]"
                     onClick={() =>
                       trackingService.trackCtaClick({
                         sourcePage: '/',
@@ -803,7 +803,7 @@ function HomePage() {
             <div className="flex flex-col justify-center gap-3 sm:flex-row">
               <Button
                 size="lg"
-                className="bg-[#2563EB] text-white transition-all duration-200 hover:bg-[#1D4ED8]"
+                className="bg-[#027DFB] text-white transition-all duration-200 hover:bg-[#0168D1]"
                 onClick={() => {
                   trackingService.trackCtaClick({
                     sourcePage: '/',
@@ -830,3 +830,4 @@ function HomePage() {
 }
 
 export default HomePage;
+
