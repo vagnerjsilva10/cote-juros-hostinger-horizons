@@ -398,6 +398,7 @@ function HomePage() {
 
       <section className="hero-premium-clean relative overflow-hidden border-b border-slate-200/60">
         <div className="pointer-events-none absolute inset-0 hero-premium-mist" />
+        <div className="pointer-events-none absolute inset-x-0 top-4 mx-auto h-[88%] w-[min(1200px,94%)] rounded-[34px] border border-white/70 bg-white/28 blur-[0.2px]" />
         <div className="pointer-events-none absolute -left-24 top-6 h-64 w-64 rounded-full bg-sky-300/30 blur-3xl" />
         <div className="pointer-events-none absolute -right-16 top-0 h-72 w-72 rounded-full bg-indigo-200/30 blur-3xl" />
         <div className="pointer-events-none absolute bottom-[-90px] left-1/2 h-56 w-[540px] -translate-x-1/2 rounded-full bg-white/65 blur-3xl" />
@@ -413,8 +414,8 @@ function HomePage() {
         />
 
         <div className="page-shell relative pb-16 pt-8 md:pb-20 md:pt-12 lg:pb-24 lg:pt-14">
-          <motion.div {...animationIn} id="hero-layout" className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-12">
-            <div className="max-w-[580px] text-center lg:text-left">
+          <motion.div {...animationIn} id="hero-layout" className="grid items-center gap-12 lg:grid-cols-[0.96fr_1.04fr] lg:gap-14">
+            <div className="max-w-[610px] text-center lg:text-left">
               <span className="inline-flex items-center rounded-full border border-sky-200/80 bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-700 transition-all duration-200">
                 Simulação com clareza
               </span>
@@ -423,11 +424,20 @@ function HomePage() {
                 style={{ fontFamily: '"Space Grotesk", "Manrope", sans-serif' }}
               >
                 <span className="block">Cote juros antes</span>
-                <span className="block">de pegar crédito.</span>
+                <span className="block">
+                  de pegar <span className="hero-word-emphasis">crédito.</span>
+                </span>
               </h1>
               <p className="mt-5 text-base font-normal leading-8 text-slate-600 md:text-lg">
                 Compare empréstimos, cartões e financiamentos com mais clareza antes de decidir.
               </p>
+              <div className="hero-proof-pill mx-auto mt-6 inline-flex flex-wrap items-center justify-center gap-2.5 lg:mx-0 lg:justify-start">
+                <span>Sem custo</span>
+                <span className="hero-proof-dot" />
+                <span>Resposta rápida</span>
+                <span className="hero-proof-dot" />
+                <span>Comparação imparcial</span>
+              </div>
             </div>
 
             <motion.div
@@ -435,7 +445,7 @@ function HomePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.35, ease: 'easeOut' }}
-              className="hero-simulation-card mx-auto mt-8 w-full max-w-[460px] rounded-[20px] border border-slate-200/80 bg-white/95 p-4 shadow-[0_20px_56px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:p-5 lg:mt-12"
+              className="hero-simulation-card mx-auto mt-8 w-full max-w-[472px] rounded-[20px] border border-slate-200/80 bg-white/95 p-4 shadow-[0_20px_56px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:p-5 lg:mt-12"
             >
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Simulador principal</p>
               <form
