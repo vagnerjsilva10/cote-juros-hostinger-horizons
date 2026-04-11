@@ -401,6 +401,16 @@ function HomePage() {
         <div className="pointer-events-none absolute -left-24 top-6 h-64 w-64 rounded-full bg-sky-300/30 blur-3xl" />
         <div className="pointer-events-none absolute -right-16 top-0 h-72 w-72 rounded-full bg-indigo-200/30 blur-3xl" />
         <div className="pointer-events-none absolute bottom-[-90px] left-1/2 h-56 w-[540px] -translate-x-1/2 rounded-full bg-white/65 blur-3xl" />
+        <motion.div
+          className="pointer-events-none absolute -left-10 top-8 h-56 w-56 rounded-full bg-sky-300/25 blur-3xl"
+          animate={{ x: [0, 16, 0], y: [0, -8, 0], opacity: [0.4, 0.62, 0.4], scale: [1, 1.06, 1] }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="pointer-events-none absolute right-[8%] top-3 h-64 w-64 rounded-full bg-indigo-300/20 blur-3xl"
+          animate={{ x: [0, -14, 0], y: [0, 10, 0], opacity: [0.34, 0.56, 0.34], scale: [1, 1.08, 1] }}
+          transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
+        />
 
         <div className="page-shell relative pb-16 pt-8 md:pb-20 md:pt-12 lg:pb-24 lg:pt-14">
           <motion.div {...animationIn} id="hero-layout" className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-12">
