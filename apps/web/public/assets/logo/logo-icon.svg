@@ -1,14 +1,14 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="cj_shape_back" x1="18" y1="50" x2="46" y2="22" gradientUnits="userSpaceOnUse">
+    <linearGradient id="icon_back" x1="25.5" y1="49.5" x2="50.5" y2="24.5" gradientUnits="userSpaceOnUse">
       <stop stop-color="#0F62FE"/>
       <stop offset="1" stop-color="#3B82F6"/>
     </linearGradient>
-    <linearGradient id="cj_shape_front" x1="10" y1="40" x2="36" y2="14" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#3B82F6"/>
+    <linearGradient id="icon_front" x1="7.5" y1="46.5" x2="35" y2="16" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38BDF8"/>
       <stop offset="1" stop-color="#0F62FE"/>
     </linearGradient>
   </defs>
-  <path d="M31.926 15.293L48.707 32.074L31.926 48.854L15.146 32.074L31.926 15.293Z" fill="url(#cj_shape_back)"/>
-  <path d="M8.5 33.34L27.327 14.513L26.876 24.218H39.969V37.311H30.264L30.715 47.016L8.5 33.34Z" fill="url(#cj_shape_front)"/>
+  <path d="M39.5 15L57 32.5L39.5 50L22 32.5L39.5 15Z" fill="url(#icon_back)"/>
+  <path d="M7.5 33.5L24.5 16.5H35V10L50 25L35 40V33.5H24.5L7.5 50.5L14.5 57.5L29 43H41V37.5L57 21.5L48.5 13H41V16.5H20.5L0.5 36.5L7.5 33.5Z" fill="url(#icon_front)"/>
 </svg>
