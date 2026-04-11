@@ -15,11 +15,11 @@ export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
       aria-hidden="true"
     >
       <span className="absolute inset-[1px] rounded-[12px] bg-slate-50" />
-      <svg viewBox="0 0 20 20" className="relative h-[22px] w-[22px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 20 20" className="relative h-6 w-6" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M3.5 13.2L7.4 9.1L10.2 11.1L15.2 6.1M15.2 6.1V8.9M15.2 6.1H12.4"
           stroke={isMonochrome ? '#334155' : '#2563EB'}
-          strokeWidth="2.2"
+          strokeWidth="2.3"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
