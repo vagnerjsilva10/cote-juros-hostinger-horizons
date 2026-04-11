@@ -11,7 +11,7 @@ export const simulationFunnelService = {
     return portalApi.trackCta({
       sourcePage,
       ctaId: 'simulation_start',
-      ctaLabel: 'Iniciar simulacao',
+      ctaLabel: 'Iniciar simulação',
       productType,
       utm,
       metadata: {
@@ -54,7 +54,7 @@ export const simulationFunnelService = {
     await portalApi.trackCta({
       sourcePage,
       ctaId: 'simulation_submit',
-      ctaLabel: 'Enviar simulacao',
+      ctaLabel: 'Enviar simulação',
       productType,
       utm,
       metadata: {

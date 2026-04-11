@@ -133,8 +133,8 @@ function BlogArticlePage() {
       <section className="page-shell py-20">
         <Card className="mx-auto max-w-2xl border-border bg-white text-center">
           <CardContent className="space-y-4 p-10">
-            <h1 className="text-3xl">Artigo nao encontrado</h1>
-            <p className="text-muted-foreground">Esse conteudo pode ter sido movido ou removido.</p>
+            <h1 className="text-3xl">Artigo não encontrado</h1>
+            <p className="text-muted-foreground">Esse conteúdo pode ter sido movido ou removido.</p>
             <Link to="/blog">
               <Button>Voltar para o blog</Button>
             </Link>
@@ -215,7 +215,7 @@ function BlogArticlePage() {
               <CardContent className="space-y-3 p-6">
                 <h3 className="text-xl">Continue sua leitura</h3>
                 <p className="text-sm text-muted-foreground">
-                  Compare opcoes de credito e veja guias praticos para decidir com mais seguranca.
+                  Compare opções de crédito e veja guias práticos para decidir com mais segurança.
                 </p>
                 <Link to="/ferramentas">
                   <Button variant="outline" className="w-full">Abrir ferramentas</Button>
@@ -231,7 +231,7 @@ function BlogArticlePage() {
           <div className="page-shell">
             <div className="mb-8">
               <h2 className="mb-3">Artigos relacionados</h2>
-              <p className="text-muted-foreground">Mais leituras para voce continuar sua jornada financeira.</p>
+              <p className="text-muted-foreground">Mais leituras para você continuar sua jornada financeira.</p>
             </div>
 
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">

@@ -8,6 +8,7 @@ import { CoteJurosLogo } from './CoteJurosLogo.jsx';
 function Header() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isHome = location.pathname === '/';
 
   const navItems = [
     { label: 'Home', path: '/' },
@@ -24,7 +25,13 @@ function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-white/95 backdrop-blur-xl">
+    <header
+      className={`sticky top-0 z-50 w-full backdrop-blur-xl transition-colors ${
+        isHome
+          ? 'border-b border-slate-200/70 bg-gradient-to-b from-white/95 via-[#f7faff]/90 to-[#eef4ff]/75'
+          : 'border-b border-border bg-white/95'
+      }`}
+    >
       <div className="page-shell">
         <div className="flex h-[74px] items-center justify-between">
           <Link to="/" className="flex items-center">
@@ -38,7 +45,7 @@ function Header() {
                 to={item.path}
                 className={`rounded-full px-4 py-2 text-sm font-medium ${
                   isActive(item.path)
-                    ? 'bg-primary/10 text-primary'
+                    ? 'bg-slate-900/10 text-slate-900'
                     : 'text-muted-foreground hover:bg-background-secondary hover:text-foreground'
                 }`}
               >
@@ -49,7 +56,10 @@ function Header() {
 
           <div className="hidden items-center gap-3 lg:flex">
             <Link to="/diagnostico-financeiro">
-              <Button size="lg" className="rounded-[10px] px-5">
+              <Button
+                size="lg"
+                className={`rounded-[10px] px-5 ${isHome ? 'bg-slate-900 text-white hover:bg-slate-800' : ''}`}
+              >
                 Analisar perfil
               </Button>
             </Link>

@@ -37,8 +37,8 @@ function ContatoPage() {
 
       <PageHero
         badge="Contato"
-        title="Fale com a equipe em um fluxo tao simples quanto o restante do produto."
-        subtitle="O formulario segue a mesma linguagem do novo portal: poucos elementos, muito respiro e foco no texto."
+        title="Fale com a equipe em um fluxo tão simples quanto o restante do produto."
+        subtitle="O formulário segue a mesma linguagem do novo portal: poucos elementos, muito respiro e foco no texto."
       />
 
       <section className="page-section bg-background">
@@ -46,7 +46,7 @@ function ContatoPage() {
           <Card>
             <CardHeader>
               <CardTitle>Envie sua mensagem</CardTitle>
-              <CardDescription>Responderemos o mais rapido possivel.</CardDescription>
+              <CardDescription>Responderemos o mais rápido possível.</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-5">
@@ -77,7 +77,7 @@ function ContatoPage() {
             {[
               { icon: Mail, title: 'E-mail', value: 'contato@cotejuros.com.br' },
               { icon: Phone, title: 'Telefone', value: '(11) 3000-0000' },
-              { icon: MapPin, title: 'Base', value: 'Sao Paulo, SP - Brasil' }
+              { icon: MapPin, title: 'Base', value: 'São Paulo, SP - Brasil' }
             ].map((item) => (
               <Card key={item.title}>
                 <CardContent className="flex items-start gap-4 p-8">

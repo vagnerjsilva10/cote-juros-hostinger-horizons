@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   ArrowRight,
   BadgeCheck,
@@ -29,12 +29,6 @@ const bankLogos = [
   { name: 'C6', logo: '/assets/banks/c6.svg' },
   { name: 'Inter', logo: '/assets/banks/inter.svg' },
   { name: 'Banco do Brasil', logo: '/assets/banks/bb.svg' }
-];
-
-const heroComparisonRows = [
-  { bank: 'Nubank', rate: '2,10% a.m.', limit: 'Até R$ 32.000', best: true },
-  { bank: 'Itaú', rate: '2,40% a.m.', limit: 'Até R$ 28.000' },
-  { bank: 'C6 Bank', rate: '2,60% a.m.', limit: 'Até R$ 25.000' }
 ];
 
 const fallbackTestimonials = [
@@ -108,86 +102,23 @@ const formatRate = (value, suffix) => {
   return `${Number(value).toFixed(2)}% ${suffix}`;
 };
 
-function HeroComparatorShowcase() {
-  return (
-    <div className="relative mx-auto w-full max-w-[560px]">
-      <motion.div
-        id="comparador"
-        initial={{ opacity: 0, y: 20, scale: 0.99 }}
-        whileInView={{ opacity: 1, y: 0, scale: 1 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="relative overflow-hidden rounded-[22px] border border-sky-200/20 bg-slate-950/60 p-5 shadow-[0_22px_48px_rgba(8,47,123,0.28)] backdrop-blur-xl"
-      >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_0%,rgba(59,130,246,0.18),transparent_42%)]" />
-        <div className="relative z-10 space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-200/80">Comparação rápida</p>
-              <p className="mt-1 text-sm text-slate-300">Taxa mensal e melhor opção em segundos.</p>
-            </div>
-            <span className="rounded-full border border-emerald-300/40 bg-emerald-400/20 px-2.5 py-1 text-[11px] font-semibold text-emerald-100">
-              Atualizado agora
-            </span>
-          </div>
+const INSTALLMENT_OPTIONS = [
+  { value: 12, factor: 0.1064 },
+  { value: 18, factor: 0.0791 },
+  { value: 24, factor: 0.06552 },
+  { value: 36, factor: 0.0518 }
+];
 
-          <div className="space-y-2 rounded-2xl border border-slate-700/60 bg-slate-900/70 p-3">
-            {heroComparisonRows.map((row, index) => (
-              <motion.div
-                key={row.bank}
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.25, ease: 'easeOut', delay: 0.1 + index * 0.08 }}
-                whileHover={{ x: 2 }}
-                className={`flex items-center justify-between rounded-xl border px-3 py-2.5 transition-colors ${
-                  row.best ? 'border-emerald-300/45 bg-emerald-400/10' : 'border-slate-700/70 bg-slate-900/55'
-                }`}
-              >
-                <div>
-                  <p className="text-sm font-semibold text-slate-100">{row.bank}</p>
-                  <p className="text-xs text-slate-400">{row.limit}</p>
-                </div>
-                <div className="text-right">
-                  <p className={`text-sm font-semibold ${row.best ? 'text-emerald-200' : 'text-sky-200'}`}>{row.rate}</p>
-                  {row.best ? (
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-100">Melhor opção</p>
-                  ) : (
-                    <p className="text-[11px] text-slate-400">Condição simulada</p>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-          </div>
+const parseCurrencyToNumber = (value) => {
+  const sanitized = String(value || '').replace(/[^\d]/g, '');
+  return sanitized ? parseInt(sanitized, 10) / 100 : 0;
+};
 
-          <div className="rounded-2xl border border-sky-300/25 bg-sky-500/10 px-3 py-2.5">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-sky-100/80">Decisão recomendada</p>
-            <p className="mt-1 text-sm font-semibold text-white">Nubank com menor taxa mensal e melhor custo total.</p>
-          </div>
-        </div>
-      </motion.div>
-
-      <div className="mt-6">
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-300/70">Bancos analisados</p>
-        <div className="flex flex-wrap items-center gap-4 sm:gap-5">
-        {bankLogos.map((bank, index) => (
-          <motion.div
-            key={bank.name}
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.2, ease: 'easeOut', delay: 0.35 + index * 0.05 }}
-            whileHover={{ y: -1 }}
-            className="flex items-center"
-          >
-            <img src={bank.logo} alt={`Logo ${bank.name}`} className="h-4 w-auto max-w-[94px] object-contain opacity-90" loading="lazy" />
-          </motion.div>
-        ))}
-        </div>
-      </div>
-    </div>
-  );
-}
+const formatBrl = (value) =>
+  Number(value || 0).toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  });
 
 function FinanceAiIllustration() {
   return (
@@ -320,7 +251,8 @@ function FinanceAiIllustration() {
 
 function HomePage() {
   const [modalOpen, setModalOpen] = useState(false);
-  const [heroValue, setHeroValue] = useState('');
+  const [heroValue, setHeroValue] = useState('R$ 2.000,00');
+  const [heroInstallments, setHeroInstallments] = useState(24);
   const [testimonials, setTestimonials] = useState([]);
   const [comparisonRows, setComparisonRows] = useState(fallbackComparisonRows);
   const [catalogSize, setCatalogSize] = useState(0);
@@ -439,15 +371,18 @@ function HomePage() {
     }
   ];
 
-  const { scrollYProgress } = useScroll();
-  const heroParallaxY = useTransform(scrollYProgress, [0, 0.35], [0, 80]);
+  const estimatedInstallment = useMemo(() => {
+    const amount = parseCurrencyToNumber(heroValue) || 2000;
+    const selectedOption = INSTALLMENT_OPTIONS.find((item) => item.value === Number(heroInstallments)) || INSTALLMENT_OPTIONS[2];
+    return amount * selectedOption.factor;
+  }, [heroInstallments, heroValue]);
 
   const handleHeroSubmit = (event) => {
     event.preventDefault();
     trackingService.trackCtaClick({
       sourcePage: '/',
-      ctaId: 'home_hero_analisar',
-      ctaLabel: 'Analisar agora',
+      ctaId: 'home_hero_simular',
+      ctaLabel: 'Simular agora',
       productType: 'loan'
     });
     setModalOpen(true);
@@ -469,79 +404,102 @@ function HomePage() {
         initialAmount={heroValue ? parseInt(heroValue.replace(/\D/g, ''), 10) / 100 : 10000}
       />
 
-      <section className="hero-premium-dark relative overflow-hidden border-b border-slate-800">
-        <div className="pointer-events-none absolute inset-0 hero-vignette opacity-45" />
-        {[1, 2, 3, 4, 5, 6, 7, 8].map((id) => (
-          <motion.span
-            key={id}
-            className="pointer-events-none absolute h-1 w-1 rounded-full bg-sky-300/45"
-            style={{ left: `${12 + id * 13}%`, top: `${18 + (id % 3) * 18}%` }}
-            animate={{ y: [0, -8, 0], opacity: [0.12, 0.45, 0.12] }}
-            transition={{ duration: 9 + id, repeat: Infinity, ease: 'easeInOut', delay: id * 0.4 }}
-          />
-        ))}
-        <motion.div
-          className="pointer-events-none absolute left-[18%] top-24 h-28 w-28 rounded-full bg-sky-300/20 blur-3xl"
-          animate={{ y: [0, -6, 0], opacity: [0.14, 0.3, 0.14] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          style={{ y: heroParallaxY }}
-          className="pointer-events-none absolute left-1/2 top-16 h-64 w-[560px] -translate-x-1/2 hero-premium-glow"
-        />
+      <section className="hero-premium-clean relative overflow-hidden border-b border-slate-200/60">
+        <div className="pointer-events-none absolute inset-0 hero-premium-mist" />
+        <div className="pointer-events-none absolute -left-24 top-8 h-64 w-64 rounded-full bg-sky-200/40 blur-3xl" />
+        <div className="pointer-events-none absolute -right-16 top-0 h-72 w-72 rounded-full bg-indigo-100/40 blur-3xl" />
+        <div className="pointer-events-none absolute bottom-[-90px] left-1/2 h-56 w-[540px] -translate-x-1/2 rounded-full bg-white/70 blur-3xl" />
 
-        <div className="page-shell relative py-16 md:py-20 lg:py-24">
-          <motion.div {...animationIn} id="hero-layout" className="grid items-center gap-12 lg:grid-cols-[1.04fr_0.96fr] lg:gap-10">
-            <div className="max-w-[620px] text-center lg:text-left">
-              <span className="inline-flex items-center rounded-full border border-sky-300/30 bg-sky-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-200">
-                Comparador financeiro completo
+        <div className="page-shell relative py-12 md:py-16 lg:py-20">
+          <motion.div {...animationIn} id="hero-layout" className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-12">
+            <div className="max-w-[580px] text-center lg:text-left">
+              <span className="inline-flex items-center rounded-full border border-sky-200/80 bg-white/85 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-700">
+                Simulação com clareza
               </span>
-              <h1 className="mt-5 text-white" style={{ fontFamily: '"Space Grotesk", "Manrope", sans-serif' }}>
+              <h1 className="mt-5 text-slate-900" style={{ fontFamily: '"Space Grotesk", "Manrope", sans-serif' }}>
                 Cote juros antes de pegar crédito.
               </h1>
-              <p className="mt-5 text-lg leading-8 text-slate-300 md:text-xl">
-                Compare taxas, limites e condições de empréstimos, cartões e financiamentos em um único lugar.
+              <p className="mt-5 text-lg leading-8 text-slate-600 md:text-xl">
+                Compare empréstimos, cartões e financiamentos com mais clareza antes de decidir.
               </p>
+            </div>
 
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              className="hero-simulation-card mx-auto w-full max-w-[560px] rounded-[24px] border border-slate-200/80 bg-white/95 p-6 shadow-[0_30px_90px_rgba(15,23,42,0.09)] backdrop-blur-sm sm:p-8"
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Simulador principal</p>
               <form
                 onSubmit={handleHeroSubmit}
-                className="mt-8 rounded-[18px] border border-white/15 bg-white/5 p-3 shadow-[0_24px_60px_rgba(2,6,23,0.4)] backdrop-blur-md"
+                className="mt-4 space-y-4"
               >
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <div className="relative flex-1">
-                    <HandCoins className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                <label className="block space-y-2">
+                  <span className="text-sm font-medium text-slate-700">Quanto você deseja?</span>
+                  <div className="relative">
                     <Input
-                      placeholder="Digite o valor que você quer analisar"
-                      className="h-12 border border-white/20 bg-white/95 pl-11 text-base shadow-none focus-visible:ring-2 focus-visible:ring-sky-300/60"
+                      placeholder="R$ 2.000,00"
+                      className="h-12 rounded-xl border-slate-200 bg-white text-base font-medium text-slate-800 shadow-none focus-visible:ring-2 focus-visible:ring-sky-200"
                       value={heroValue}
                       onChange={(event) => setHeroValue(formatCurrency(event.target.value))}
                     />
                   </div>
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="hero-cta-glow h-12 min-w-[180px] bg-sky-500 text-white transition-all duration-200 hover:scale-[1.02] hover:bg-sky-400"
+                </label>
+
+                <label className="block space-y-2">
+                  <span className="text-sm font-medium text-slate-700">Em quantas parcelas?</span>
+                  <select
+                    value={heroInstallments}
+                    onChange={(event) => setHeroInstallments(Number(event.target.value))}
+                    className="h-12 w-full rounded-xl border border-slate-200 bg-white px-3 text-base font-medium text-slate-800 outline-none transition-all focus:border-sky-300 focus:ring-2 focus:ring-sky-100"
                   >
-                    Analisar agora
-                  </Button>
-                </div>
+                    {INSTALLMENT_OPTIONS.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {`${item.value}x de ${formatBrl((parseCurrencyToNumber(heroValue) || 2000) * item.factor)}`}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="h-12 w-full rounded-xl bg-slate-900 text-base font-semibold text-white transition-all duration-200 hover:bg-slate-800"
+                >
+                  Simular agora
+                </Button>
+
+                <p className="text-xs leading-6 text-slate-500">
+                  Parcela estimada com taxa de referência de 3,99% ao mês. Os valores podem variar conforme o perfil e cada
+                  instituição financeira.
+                </p>
               </form>
 
-              <div className="mt-6 grid gap-2.5 text-left sm:grid-cols-2">
+              <div className="mt-5 grid gap-2.5 border-t border-slate-100 pt-5 sm:grid-cols-3">
                 {[
-                  '+30 ofertas analisadas',
-                  '8 instituições financeiras',
-                  'simulação gratuita'
+                  'Simulação gratuita',
+                  'Comparação em segundos',
+                  'Múltiplas instituições'
                 ].map((item) => (
-                  <div key={item} className="inline-flex items-center gap-2 text-sm text-slate-200">
-                    <CheckCircle2 className="h-4 w-4 text-sky-300" />
+                  <div key={item} className="inline-flex items-center gap-2 text-sm text-slate-600">
+                    <CheckCircle2 className="h-4 w-4 text-sky-600" />
                     <span>{item}</span>
                   </div>
                 ))}
               </div>
-            </div>
 
-            <HeroComparatorShowcase />
+              <div className="mt-4 rounded-xl border border-sky-100 bg-sky-50/65 px-3.5 py-2.5 text-sm font-medium text-sky-900">
+                {`${heroInstallments}x de ${formatBrl(estimatedInstallment)}`}
+              </div>
+            </motion.div>
+          </motion.div>
+
+          <motion.div {...animationIn} className="mt-8 text-center">
+            <p className="text-sm text-slate-500">
+              {`${catalogSize || 30}+ ofertas ativas e ${bankCount || 8} instituições financeiras para comparar.`}
+            </p>
           </motion.div>
         </div>
       </section>
