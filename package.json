@@ -4,8 +4,13 @@
 	"private": true,
 	"scripts": {
 		"dev": "npm run dev --prefix apps/web",
+		"dev:api": "npm run dev --prefix apps/api",
 		"build": "npm run build --prefix apps/web",
 		"start": "npm run start --prefix apps/web",
+		"start:api": "npm run start --prefix apps/api",
+		"prisma:generate": "npm run prisma:generate --prefix apps/api",
+		"prisma:migrate": "npm run prisma:migrate --prefix apps/api",
+		"prisma:deploy": "npm run prisma:deploy --prefix apps/api",
 		"lint": "npm run lint --prefix apps/web"
 	},
 	"workspaces": [
