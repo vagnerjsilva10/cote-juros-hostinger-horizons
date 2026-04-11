@@ -24,6 +24,8 @@ import {
   Activity
 } from 'lucide-react';
 
+const AI_DASHBOARD_ASSET = '/assets/cote-finance-ai-dashboard.png';
+
 function HomePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [heroValue, setHeroValue] = useState('');
@@ -50,21 +52,27 @@ function HomePage() {
       location: 'São Paulo, SP',
       product: 'Financiamento',
       avatar: 'https://ui-avatars.com/api/?name=Joao+Silva&background=0F62FE&color=fff',
-      quote: 'Economizei mais de R$ 500 por mês no meu financiamento comparando as taxas aqui. O processo foi rápido e transparente.'
+      quote: 'Economizei mais de R$ 500 por mês no meu financiamento comparando as taxas aqui. O processo foi rápido e transparente.',
+      result: '-R$ 527/mês',
+      badge: 'Perfil verificado'
     },
     {
       name: 'Maria Santos',
       location: 'Rio de Janeiro, RJ',
       product: 'Cartão de Crédito',
       avatar: 'https://ui-avatars.com/api/?name=Maria+Santos&background=7C3AED&color=fff',
-      quote: 'Encontrei um cartão sem anuidade com ótimo limite e cashback. Antes eu pagava taxas abusivas sem saber das opções.'
+      quote: 'Encontrei um cartão sem anuidade com ótimo limite e cashback. Antes eu pagava taxas abusivas sem saber das opções.',
+      result: '+R$ 230/mês cashback',
+      badge: 'Oferta aprovada'
     },
     {
       name: 'Carlos Oliveira',
       location: 'Belo Horizonte, MG',
       product: 'Empréstimo Pessoal',
       avatar: 'https://ui-avatars.com/api/?name=Carlos+Oliveira&background=14B8A6&color=fff',
-      quote: 'Estava negativado e achei que não conseguiria crédito. A plataforma me mostrou opções reais que couberam no meu bolso.'
+      quote: 'Estava negativado e achei que não conseguiria crédito. A plataforma me mostrou opções reais que couberam no meu bolso.',
+      result: 'Aprovação em 48h',
+      badge: 'Caso concluído'
     }
   ];
 
@@ -84,10 +92,11 @@ function HomePage() {
         initialAmount={heroValue ? parseInt(heroValue.replace(/\D/g, '')) / 100 : 10000}
       />
 
-      <section className="relative isolate overflow-hidden border-b border-slate-800/80 bg-gradient-to-b from-[#0B1220] to-[#111827] text-white">
-        <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_20%_18%,rgba(59,130,246,0.15),transparent_42%),radial-gradient(circle_at_82%_14%,rgba(124,58,237,0.13),transparent_44%)]" />
-        <div className="pointer-events-none absolute -left-24 top-12 z-0 h-64 w-64 rounded-full bg-blue-500/10 blur-[90px]" />
-        <div className="pointer-events-none absolute -right-24 top-6 z-0 h-72 w-72 rounded-full bg-violet-500/10 blur-[95px]" />
+      <section className="relative isolate overflow-hidden border-b border-slate-800/80 bg-gradient-to-b from-[#090F1D] via-[#0D1628] to-[#111827] text-white">
+        <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_16%_16%,rgba(56,189,248,0.14),transparent_36%),radial-gradient(circle_at_84%_18%,rgba(124,58,237,0.14),transparent_38%)]" />
+        <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.16] [background-image:linear-gradient(rgba(148,163,184,0.24)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.24)_1px,transparent_1px)] [background-size:64px_64px]" />
+        <div className="pointer-events-none absolute -left-24 top-10 z-0 h-64 w-64 rounded-full bg-blue-500/12 blur-[95px]" />
+        <div className="pointer-events-none absolute -right-28 top-4 z-0 h-72 w-72 rounded-full bg-violet-500/12 blur-[100px]" />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20 md:py-24 lg:py-28">
           <div className="max-w-5xl mx-auto text-center">
@@ -106,23 +115,36 @@ function HomePage() {
                 Compare empréstimos, cartões e financiamentos em segundos para tomar decisões financeiras com mais segurança.
               </p>
 
+              <div className="mx-auto mb-8 grid max-w-4xl gap-3 sm:grid-cols-3">
+                {[
+                  { label: 'Radar de taxas', value: 'Atualização diária' },
+                  { label: 'Motor de elegibilidade', value: 'Leitura em segundos' },
+                  { label: 'Curadoria inteligente', value: 'Ofertas priorizadas' }
+                ].map((signal) => (
+                  <div key={signal.label} className="rounded-xl border border-slate-500/30 bg-slate-950/35 px-4 py-3 text-left shadow-[0_12px_26px_-18px_rgba(2,6,23,0.92)]">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-300">{signal.label}</p>
+                    <p className="text-sm font-semibold text-white">{signal.value}</p>
+                  </div>
+                ))}
+              </div>
+
               <div className="relative max-w-3xl mx-auto">
                 <div className="pointer-events-none absolute inset-x-12 -inset-y-3 bg-blue-500/16 blur-2xl" />
                 <div className="relative rounded-2xl border border-slate-200/90 bg-white p-4 shadow-[0_22px_48px_-26px_rgba(2,6,23,0.75)] sm:p-5">
-                <form onSubmit={handleHeroSubmit} className="flex flex-col sm:flex-row gap-3 w-full">
-                  <Input
-                    placeholder="De quanto você precisa? (R$)"
-                    className="h-14 text-lg bg-slate-50 border-slate-200 text-foreground rounded-xl shadow-inner"
-                    value={heroValue}
-                    onChange={(e) => formatCurrency(e.target.value)}
-                  />
-                  <Button
-                    type="submit"
-                    className="h-14 px-8 text-base md:text-lg font-bold rounded-xl gradient-fintech-hover border-0 text-white w-full sm:w-auto shadow-md transition-transform duration-300 hover:-translate-y-0.5"
-                  >
-                    Simular agora
-                  </Button>
-                </form>
+                  <form onSubmit={handleHeroSubmit} className="flex flex-col sm:flex-row gap-3 w-full">
+                    <Input
+                      placeholder="De quanto você precisa? (R$)"
+                      className="h-14 text-lg bg-slate-50 border-slate-200 text-foreground rounded-xl shadow-inner"
+                      value={heroValue}
+                      onChange={(e) => formatCurrency(e.target.value)}
+                    />
+                    <Button
+                      type="submit"
+                      className="h-14 px-8 text-base md:text-lg font-bold rounded-xl gradient-fintech-hover border-0 text-white w-full sm:w-auto shadow-md transition-transform duration-300 hover:-translate-y-0.5"
+                    >
+                      Simular agora
+                    </Button>
+                  </form>
                 </div>
               </div>
 
@@ -186,15 +208,26 @@ function HomePage() {
 
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <Link to="/emprestimos" className="group">
-              <Card className="card-premium h-full overflow-hidden border-0 bg-card relative p-8 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-xl">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full blur-3xl -mr-10 -mt-10 transition-all group-hover:bg-primary/10" />
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+              <Card className="card-premium h-full overflow-hidden border-0 bg-card relative p-8 transition-all duration-300 group-hover:-translate-y-1">
+                <div className="absolute top-0 right-0 w-44 h-44 bg-primary/10 rounded-full blur-3xl -mr-12 -mt-12 transition-all group-hover:bg-primary/15" />
+                <span className="mb-5 inline-flex rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-semibold tracking-wide text-primary">Crédito pessoal</span>
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-5">
                   <DollarSign className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="mb-3 group-hover:text-primary transition-colors">Empréstimos</h3>
                 <p className="text-muted-foreground mb-6 text-lg">
                   Compare taxas de crédito pessoal, consignado e com garantia nas principais instituições.
                 </p>
+                <div className="mb-6 grid grid-cols-2 gap-3">
+                  <div className="rounded-lg border border-border bg-slate-50 px-3 py-2">
+                    <p className="text-[11px] uppercase tracking-wide text-slate-500">Análise inicial</p>
+                    <p className="text-sm font-semibold text-foreground">em minutos</p>
+                  </div>
+                  <div className="rounded-lg border border-border bg-slate-50 px-3 py-2">
+                    <p className="text-[11px] uppercase tracking-wide text-slate-500">Comparação</p>
+                    <p className="text-sm font-semibold text-foreground">50+ bancos</p>
+                  </div>
+                </div>
                 <span className="font-semibold text-primary flex items-center">
                   Comparar ofertas <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </span>
@@ -202,15 +235,26 @@ function HomePage() {
             </Link>
 
             <Link to="/cartoes-de-credito" className="group">
-              <Card className="card-premium h-full overflow-hidden border-0 bg-card relative p-8 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-xl">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-secondary/5 rounded-full blur-3xl -mr-10 -mt-10 transition-all group-hover:bg-secondary/10" />
-                <div className="w-16 h-16 rounded-2xl bg-secondary/10 flex items-center justify-center mb-6">
+              <Card className="card-premium h-full overflow-hidden border-0 bg-card relative p-8 transition-all duration-300 group-hover:-translate-y-1">
+                <div className="absolute top-0 right-0 w-44 h-44 bg-secondary/10 rounded-full blur-3xl -mr-12 -mt-12 transition-all group-hover:bg-secondary/15" />
+                <span className="mb-5 inline-flex rounded-full border border-secondary/20 bg-secondary/5 px-3 py-1 text-xs font-semibold tracking-wide text-secondary">Cartões premium</span>
+                <div className="w-16 h-16 rounded-2xl bg-secondary/10 flex items-center justify-center mb-5">
                   <CreditCard className="w-8 h-8 text-secondary" />
                 </div>
                 <h3 className="mb-3 group-hover:text-secondary transition-colors">Cartões de Crédito</h3>
                 <p className="text-muted-foreground mb-6 text-lg">
                   Filtre por benefícios como milhas, cashback ou ausência de anuidade e peça o seu.
                 </p>
+                <div className="mb-6 grid grid-cols-2 gap-3">
+                  <div className="rounded-lg border border-border bg-slate-50 px-3 py-2">
+                    <p className="text-[11px] uppercase tracking-wide text-slate-500">Sem anuidade</p>
+                    <p className="text-sm font-semibold text-foreground">opções ativas</p>
+                  </div>
+                  <div className="rounded-lg border border-border bg-slate-50 px-3 py-2">
+                    <p className="text-[11px] uppercase tracking-wide text-slate-500">Benefícios</p>
+                    <p className="text-sm font-semibold text-foreground">milhas e cashback</p>
+                  </div>
+                </div>
                 <span className="font-semibold text-secondary flex items-center">
                   Ver melhores cartões <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </span>
@@ -221,6 +265,7 @@ function HomePage() {
           <div className="grid md:grid-cols-3 gap-6">
             <Link to="/financiamento" className="group">
               <Card className="card-premium h-full overflow-hidden border-0 bg-card p-6 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-xl">
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-accent/80">Planejamento patrimonial</p>
                 <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-4">
                   <Home className="w-6 h-6 text-accent" />
                 </div>
@@ -231,6 +276,7 @@ function HomePage() {
             </Link>
             <Link to="/ferramentas" className="group">
               <Card className="card-premium h-full overflow-hidden border-0 bg-card p-6 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-xl">
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-primary/80">Inteligência de cálculo</p>
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                   <Calculator className="w-6 h-6 text-primary" />
                 </div>
@@ -241,6 +287,7 @@ function HomePage() {
             </Link>
             <Link to="/blog" className="group">
               <Card className="card-premium h-full overflow-hidden border-0 bg-card p-6 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-xl">
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-secondary/80">Conteúdo editorial</p>
                 <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center mb-4">
                   <BookOpen className="w-6 h-6 text-secondary" />
                 </div>
@@ -291,15 +338,14 @@ function HomePage() {
             </motion.div>
 
             <motion.div
-              animate={{ y: [0, -3, 0], rotate: [-0.25, -0.55, -0.25] }}
-              transition={{ duration: 13, repeat: Infinity, ease: [0.42, 0, 0.18, 1] }}
-              className="relative mx-auto w-full max-w-[520px]"
+              animate={{ y: [0, -4, 0], rotate: [0, -0.45, 0] }}
+              transition={{ duration: 12.5, repeat: Infinity, ease: [0.42, 0, 0.18, 1] }}
+              className="relative mx-auto w-full max-w-[560px]"
             >
-              <div className="pointer-events-none absolute -inset-x-10 -inset-y-8 rounded-[36px] bg-[radial-gradient(circle_at_50%_34%,rgba(37,99,235,0.20),rgba(30,64,175,0.10)_40%,transparent_72%)]" />
+              <div className="pointer-events-none absolute -inset-x-8 -inset-y-8 rounded-[34px] bg-[radial-gradient(circle_at_55%_42%,rgba(37,99,235,0.22),rgba(30,64,175,0.08)_45%,transparent_74%)]" />
               <div className="pointer-events-none absolute inset-0 translate-y-4 rounded-[30px] bg-[#020617]/45 blur-xl" />
-              <div className="pointer-events-none absolute inset-0 rounded-[30px] bg-gradient-to-tr from-blue-500/18 via-transparent to-indigo-500/16 blur-xl" />
 
-              <div className="relative overflow-hidden rounded-[28px] border border-[#2A3B59] bg-[#070F1E] shadow-[0_50px_95px_-40px_rgba(2,6,23,0.82),0_18px_40px_-28px_rgba(29,78,216,0.45)] md:[transform:perspective(1500px)_rotateY(-2.8deg)]">
+              <div className="relative overflow-hidden rounded-[28px] border border-[#2A3B59] bg-[#070F1E] shadow-[0_46px_92px_-42px_rgba(2,6,23,0.86),0_20px_44px_-28px_rgba(29,78,216,0.45)]">
                 <div className="flex items-center justify-between border-b border-[#273754] bg-[#0A1428] px-4 py-3">
                   <div className="flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-cyan-300/80" />
@@ -310,67 +356,46 @@ function HomePage() {
                     <BarChart3 className="h-3.5 w-3.5 text-cyan-300" />
                     Cote Finance AI
                   </span>
-                  <span className="h-2 w-8 rounded-full bg-slate-600/70" />
+                  <span className="rounded-full border border-slate-600/60 px-2 py-0.5 text-[10px] font-semibold text-slate-300">Live</span>
                 </div>
 
-                <div className="grid grid-cols-[88px,1fr] gap-3 bg-[#050D1D] p-4">
-                  <div className="space-y-2 rounded-xl border border-[#25344F] bg-[#0A152A] p-2.5">
-                    <div className="h-7 rounded-lg bg-[#1C2A43]" />
-                    <div className="h-7 rounded-lg bg-[#18243A]" />
-                    <div className="h-7 rounded-lg bg-[#163056]" />
-                    <div className="h-7 rounded-lg bg-[#18243A]" />
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-3 gap-2.5">
+                <div className="relative bg-[#050D1D] p-3">
+                  <div className="relative overflow-hidden rounded-xl border border-[#263754] bg-[#040B19]">
+                    <img
+                      src={AI_DASHBOARD_ASSET}
+                      alt="Dashboard do Cote Finance AI"
+                      className="h-[250px] w-full object-cover object-top"
+                      loading="lazy"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(2,6,23,0.7),rgba(2,6,23,0.05)_42%,transparent)]" />
+                    <div className="absolute inset-x-3 bottom-3 grid grid-cols-3 gap-2">
                       {[
                         { label: 'Custo total', value: '8.9%' },
-                        { label: 'Aprovação', value: '92%' },
-                        { label: 'Economia', value: 'R$ 640' }
+                        { label: 'Chance de aprovação', value: '92%' },
+                        { label: 'Economia estimada', value: 'R$ 640' }
                       ].map((item) => (
-                        <div key={item.label} className="rounded-lg border border-[#2A3B59] bg-[#0A152A] px-2.5 py-2">
+                        <div key={item.label} className="rounded-lg border border-slate-600/70 bg-[#0A152A]/92 px-2.5 py-2 backdrop-blur-[2px]">
                           <p className="text-[10px] font-medium text-slate-400">{item.label}</p>
-                          <p className="text-sm font-bold text-slate-100">{item.value}</p>
+                          <p className="text-xs font-bold text-slate-100">{item.value}</p>
                         </div>
                       ))}
-                    </div>
-
-                    <div className="rounded-xl border border-[#2A3B59] bg-[#0A152A] p-3">
-                      <div className="mb-3 flex items-center justify-between">
-                        <p className="text-xs font-semibold text-slate-200">Performance de ofertas</p>
-                        <p className="text-[10px] font-semibold uppercase tracking-wide text-cyan-300">Atualizado</p>
-                      </div>
-                      <div className="relative h-[116px] overflow-hidden rounded-lg border border-[#263754] bg-[#040B19] p-2.5">
-                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(56,189,248,0.12),transparent_58%)]" />
-                        <div className="pointer-events-none absolute inset-x-2.5 top-[24%] border-t border-[#274165]/45" />
-                        <div className="pointer-events-none absolute inset-x-2.5 top-[45%] border-t border-[#233554]/40" />
-                        <div className="pointer-events-none absolute inset-x-2.5 top-[66%] border-t border-[#1E2E49]/38" />
-                        <div className="flex h-full items-end gap-1.5">
-                          {[28, 40, 35, 52, 46, 62, 58, 70].map((h, idx) => (
-                            <div key={idx} className="relative flex-1 overflow-hidden rounded-t-md bg-gradient-to-t from-[#1D4ED8] via-[#2563EB] to-[#67E8F9] shadow-[0_0_16px_rgba(37,99,235,0.25)]" style={{ height: `${h}%` }}>
-                              <span className="absolute inset-x-0 top-0 h-[1px] bg-cyan-100/75" />
-                              <span className="absolute inset-x-0 top-1 h-[1px] bg-cyan-200/35" />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
               <motion.div
-                animate={{ y: [0, -1.8, 0], rotate: [0, -0.7, 0] }}
-                transition={{ duration: 9.6, repeat: Infinity, ease: 'easeInOut', delay: 0.1 }}
-                className="absolute -left-7 top-12 hidden rounded-2xl border border-[#2A3B59] bg-[#0A152A] px-3 py-2.5 shadow-[0_22px_42px_-12px_rgba(2,6,23,0.62),0_10px_24px_-10px_rgba(37,99,235,0.3)] md:block"
+                animate={{ y: [0, -2.2, 0], rotate: [0, -0.5, 0] }}
+                transition={{ duration: 9.4, repeat: Infinity, ease: 'easeInOut', delay: 0.1 }}
+                className="absolute -left-8 top-14 hidden rounded-2xl border border-[#2A3B59] bg-[#0A152A] px-3 py-2.5 shadow-[0_22px_42px_-12px_rgba(2,6,23,0.62),0_10px_24px_-10px_rgba(37,99,235,0.3)] md:block"
               >
                 <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Saldo atual</p>
                 <p className="text-sm font-bold text-cyan-300">R$ 7.110</p>
               </motion.div>
 
               <motion.div
-                animate={{ y: [0, 2.6, 0], rotate: [0, 0.75, 0] }}
-                transition={{ duration: 10.2, repeat: Infinity, ease: 'easeInOut', delay: 0.45 }}
+                animate={{ y: [0, 2.8, 0], rotate: [0, 0.65, 0] }}
+                transition={{ duration: 10.3, repeat: Infinity, ease: 'easeInOut', delay: 0.45 }}
                 className="absolute -right-8 bottom-14 hidden items-center gap-2 rounded-2xl border border-[#2A3B59] bg-[#0A152A] px-3 py-2.5 shadow-[0_22px_42px_-12px_rgba(2,6,23,0.62),0_10px_24px_-10px_rgba(37,99,235,0.28)] md:flex"
               >
                 <Activity className="h-4 w-4 text-emerald-400" />
@@ -378,15 +403,6 @@ function HomePage() {
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Meta mensal</p>
                   <p className="text-xs font-bold text-slate-100">67% concluída</p>
                 </div>
-              </motion.div>
-
-              <motion.div
-                animate={{ y: [0, -1.2, 0], rotate: [0, 0.45, 0] }}
-                transition={{ duration: 11.2, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
-                className="absolute -right-6 -top-8 hidden rounded-2xl border border-[#2A3B59] bg-[#0A152A] px-3 py-2 shadow-[0_22px_42px_-12px_rgba(2,6,23,0.62),0_10px_24px_-10px_rgba(37,99,235,0.28)] lg:block"
-              >
-                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Insight IA</p>
-                <p className="text-xs font-semibold text-slate-100">Troca recomendada: -1.4% CET</p>
               </motion.div>
             </motion.div>
           </div>
@@ -403,15 +419,22 @@ function HomePage() {
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((t, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-                <Card className="card-premium bg-card border-border h-full transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl">
+                <Card className="card-premium bg-card border-border h-full transition-all duration-300 hover:-translate-y-1">
                   <CardContent className="p-8 flex flex-col h-full">
-                    <div className="flex items-center gap-1 mb-6">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star key={star} className="w-5 h-5 fill-amber-400 text-amber-400" />
-                      ))}
+                    <div className="mb-5 flex items-center justify-between">
+                      <div className="flex items-center gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star key={star} className="w-5 h-5 fill-amber-400 text-amber-400" />
+                        ))}
+                      </div>
+                      <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-700">{t.badge}</span>
                     </div>
-                    <p className="text-foreground text-lg leading-relaxed mb-8 flex-1 font-medium">"{t.quote}"</p>
-                    <div className="flex items-center gap-4 mt-auto pt-6 border-t border-border">
+                    <p className="mb-7 text-lg font-medium leading-relaxed text-foreground">"{t.quote}"</p>
+                    <div className="mb-7 rounded-xl border border-primary/15 bg-primary/5 px-4 py-3">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-primary/80">Resultado reportado</p>
+                      <p className="text-sm font-bold text-primary">{t.result}</p>
+                    </div>
+                    <div className="mt-auto flex items-center gap-4 border-t border-border pt-6">
                       <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full shadow-sm" />
                       <div>
                         <p className="font-bold text-foreground">{t.name}</p>

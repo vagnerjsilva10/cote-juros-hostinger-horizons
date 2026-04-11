@@ -78,15 +78,15 @@
     background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
   }
   .card-premium {
-    @apply bg-card rounded-[var(--radius-lg)] border border-border transition-all duration-300 ease-out;
-    box-shadow: 0 10px 30px -20px rgba(15, 23, 42, 0.25), 0 2px 8px rgba(15, 23, 42, 0.06);
+    @apply bg-card rounded-[var(--radius-lg)] border border-slate-200/90 transition-all duration-300 ease-out;
+    box-shadow: 0 14px 38px -26px rgba(15, 23, 42, 0.2), 0 4px 14px -10px rgba(15, 23, 42, 0.08);
   }
   .card-premium:hover {
-    box-shadow: 0 24px 50px -26px rgba(15, 23, 42, 0.35), 0 10px 24px -18px rgba(15, 23, 42, 0.22);
-    transform: translateY(-3px);
+    box-shadow: 0 28px 56px -30px rgba(15, 23, 42, 0.28), 0 12px 26px -18px rgba(15, 23, 42, 0.16);
+    transform: translateY(-4px);
   }
   .shadow-premium {
-    box-shadow: 0 20px 40px -24px rgba(15, 23, 42, 0.3);
+    box-shadow: 0 24px 44px -28px rgba(15, 23, 42, 0.28);
   }
   .interactive-element {
     @apply transition-all duration-300 ease-out;
