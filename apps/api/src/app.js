@@ -52,7 +52,12 @@ export const createApp = () => {
     }
 
     console.error(err);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({
+      error: 'Internal server error',
+      name: err?.name || null,
+      code: err?.code || null,
+      message: err?.message || null
+    });
   });
 
   return app;
