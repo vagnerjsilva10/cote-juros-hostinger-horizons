@@ -14,7 +14,7 @@ import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
 
-function Empr?stimosPage() {
+function EmprestimosPage() {
   const [banksData, setBanksData] = useState([]);
   const [loansData, setLoansData] = useState([]);
   const [amount, setAmount] = useState([10000]);
@@ -265,5 +265,5 @@ function Empr?stimosPage() {
   );
 }
 
-export default Empr?stimosPage;
+export default EmprestimosPage;
 
