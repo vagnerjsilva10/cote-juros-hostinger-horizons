@@ -12,8 +12,8 @@ function Header() {
 
   const navItems = [
     { label: 'Home', path: '/' },
-    { label: 'EmprÈstimos', path: '/emprestimos' },
-    { label: 'Cartıes', path: '/cartoes-de-credito' },
+    { label: 'Empr√©stimos', path: '/emprestimos' },
+    { label: 'Cart√µes', path: '/cartoes-de-credito' },
     { label: 'Financiamentos', path: '/financiamento' },
     { label: 'Ferramentas', path: '/ferramentas' },
     { label: 'Blog', path: '/blog' }
@@ -25,7 +25,7 @@ function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-white/95 backdrop-blur-md transition-all duration-200">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           <Link to="/" className="flex items-center interactive-element hover:opacity-80">
@@ -40,7 +40,7 @@ function Header() {
                 className={`px-4 py-2 text-sm font-semibold rounded-full interactive-element ${
                   isActive(item.path)
                     ? 'text-primary bg-primary/5'
-                    : 'text-slate-600 hover:text-primary hover:bg-slate-50'
+                    : 'text-slate-700 hover:text-primary hover:bg-slate-50'
                 }`}
               >
                 {item.label}
@@ -78,7 +78,7 @@ function Header() {
                         className={`px-4 py-3 text-base font-semibold rounded-xl interactive-element ${
                           isActive(item.path)
                             ? 'text-primary bg-primary/5'
-                            : 'text-slate-600 hover:text-primary hover:bg-slate-50'
+                            : 'text-slate-700 hover:text-primary hover:bg-slate-50'
                         }`}
                       >
                         {item.label}
@@ -87,7 +87,7 @@ function Header() {
                     <div className="pt-6 mt-4 border-t border-border">
                       <Link to="/diagnostico-financeiro" onClick={() => setMobileOpen(false)}>
                         <Button className="w-full gradient-fintech-hover text-white border-0 shadow-premium rounded-xl h-12 text-base font-semibold">
-                          Analisar Perfil Gr·tis
+                          Analisar Perfil Gr√°tis
                         </Button>
                       </Link>
                     </div>

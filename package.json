@@ -6,6 +6,7 @@
 		"dev": "npm run dev --prefix apps/web",
 		"dev:api": "npm run dev --prefix apps/api",
 		"build": "npm run build --prefix apps/web",
+		"check:encoding": "node tools/check-encoding.js",
 		"start": "npm run start --prefix apps/web",
 		"start:api": "npm run start --prefix apps/api",
 		"prisma:generate": "npm run prisma:generate --prefix apps/api",

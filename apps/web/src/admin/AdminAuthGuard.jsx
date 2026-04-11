@@ -32,7 +32,7 @@ export default function AdminAuthGuard({ children }) {
         setError('');
         return;
       }
-      setError('Senha inválida.');
+      setError('Senha invÃ¡lida.');
     };
 
     return (
@@ -51,7 +51,7 @@ export default function AdminAuthGuard({ children }) {
               />
               {error ? <p className="text-sm text-red-600">{error}</p> : null}
               <Button type="submit" className="w-full">Entrar</Button>
-              <p className="text-xs text-muted-foreground">Placeholder de proteção. Configure `VITE_ADMIN_PASSCODE` em produção.</p>
+              <p className="text-xs text-muted-foreground">Placeholder de proteÃ§Ã£o. Configure `VITE_ADMIN_PASSCODE` em produÃ§Ã£o.</p>
             </form>
           </CardContent>
         </Card>

@@ -14,7 +14,7 @@ const emptyForm = {
   id: '',
   title: '',
   slug: '',
-  category: 'Finanças Pessoais',
+  category: 'FinanÃ§as Pessoais',
   status: 'draft',
   summary: '',
   excerpt: '',
@@ -48,7 +48,7 @@ export default function AdminArticlesPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="CMS / Articles" description="Operação de artigos com draft/publicação e SEO." actionLabel="Novo artigo" onAction={() => setEditing(emptyForm)} />
+      <AdminPageHeader title="CMS / Articles" description="OperaÃ§Ã£o de artigos com draft/publicaÃ§Ã£o e SEO." actionLabel="Novo artigo" onAction={() => setEditing(emptyForm)} />
 
       <Card className="border-slate-200">
         <CardContent className="pt-6 grid gap-4 md:grid-cols-2">
@@ -70,10 +70,10 @@ export default function AdminArticlesPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Título</TableHead>
+                  <TableHead>TÃ­tulo</TableHead>
                   <TableHead>Categoria</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Ações</TableHead>
+                  <TableHead>AÃ§Ãµes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -89,7 +89,7 @@ export default function AdminArticlesPage() {
                         variant="outline"
                         onClick={async () => {
                           await portalApi.toggleAdminArticlePublish(article.id);
-                          toast.success('Status de publicação atualizado.');
+                          toast.success('Status de publicaÃ§Ã£o atualizado.');
                           loadData();
                         }}
                       >
@@ -106,7 +106,7 @@ export default function AdminArticlesPage() {
         <Card className="border-slate-200">
           <CardContent className="pt-6">
             <form className="space-y-4" onSubmit={handleSave}>
-              <div><Label>Título</Label><Input value={editing.title} onChange={(e) => setEditing((prev) => ({ ...prev, title: e.target.value }))} required /></div>
+              <div><Label>TÃ­tulo</Label><Input value={editing.title} onChange={(e) => setEditing((prev) => ({ ...prev, title: e.target.value }))} required /></div>
               <div><Label>Slug</Label><Input value={editing.slug} onChange={(e) => setEditing((prev) => ({ ...prev, slug: e.target.value }))} /></div>
               <div><Label>Categoria</Label><Input value={editing.category} onChange={(e) => setEditing((prev) => ({ ...prev, category: e.target.value }))} /></div>
               <div>

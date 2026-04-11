@@ -45,7 +45,7 @@ export default function AdminTestimonialsPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Testimonials Management" description="Social proof operacional para seções públicas." actionLabel="Novo depoimento" onAction={() => setEditing(emptyForm)} />
+      <AdminPageHeader title="Testimonials Management" description="Social proof operacional para seÃ§Ãµes pÃºblicas." actionLabel="Novo depoimento" onAction={() => setEditing(emptyForm)} />
 
       <Card className="border-slate-200">
         <CardContent className="pt-6 grid gap-4 md:grid-cols-2">
@@ -72,7 +72,7 @@ export default function AdminTestimonialsPage() {
                   <TableHead>Produto</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Destaque</TableHead>
-                  <TableHead>Ações</TableHead>
+                  <TableHead>AÃ§Ãµes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -82,7 +82,7 @@ export default function AdminTestimonialsPage() {
                     <TableCell>{item.city || item.location || '-'}</TableCell>
                     <TableCell>{item.productType || item.product || '-'}</TableCell>
                     <TableCell>{item.status}</TableCell>
-                    <TableCell>{item.featured ? 'Sim' : 'Não'}</TableCell>
+                    <TableCell>{item.featured ? 'Sim' : 'NÃ£o'}</TableCell>
                     <TableCell className="space-x-2">
                       <Button size="sm" variant="outline" onClick={() => setEditing({ ...emptyForm, ...item, city: item.city || item.location || '', text: item.text || item.quote || '' })}>Editar</Button>
                       <Button

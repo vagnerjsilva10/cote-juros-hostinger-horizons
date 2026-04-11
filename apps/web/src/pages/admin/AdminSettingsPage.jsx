@@ -44,12 +44,12 @@ export default function AdminSettingsPage() {
     event.preventDefault();
     const updated = await portalApi.updateAdminSettings(settings);
     setSettings(updated);
-    toast.success('Configurações atualizadas.');
+    toast.success('ConfiguraÃ§Ãµes atualizadas.');
   };
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Platform Settings" description="Configurações globais de destino, SEO e integrações." />
+      <AdminPageHeader title="Platform Settings" description="ConfiguraÃ§Ãµes globais de destino, SEO e integraÃ§Ãµes." />
 
       <Card className="border-slate-200">
         <CardContent className="pt-6">
@@ -87,7 +87,7 @@ export default function AdminSettingsPage() {
               </div>
             </div>
 
-            <Button type="submit">Salvar configurações</Button>
+            <Button type="submit">Salvar configuraÃ§Ãµes</Button>
           </form>
         </CardContent>
       </Card>

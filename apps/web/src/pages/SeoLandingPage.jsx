@@ -25,7 +25,7 @@ function SeoLandingPage({ title, description, heading, content, type }) {
               <h1 className="mb-6 text-foreground">{heading}</h1>
               <p className="text-xl text-muted-foreground mb-8">{description}</p>
               <Button size="lg" className="h-14 px-8 text-lg rounded-xl gradient-fintech-hover border-0 text-white shadow-md" onClick={() => setModalOpen(true)}>
-                Fazer simulação gratuita
+                Fazer simulaÃ§Ã£o gratuita
               </Button>
             </div>
           </div>
@@ -48,7 +48,7 @@ function SeoLandingPage({ title, description, heading, content, type }) {
               <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-8">
                 <h3 className="mb-4 text-foreground">Pronto para encontrar a melhor oferta?</h3>
                 <ul className="space-y-3 mb-6">
-                  {['Análise de crédito em tempo real', 'Sem impacto no seu Score', 'Comparamos +50 instituições'].map((item, i) => (
+                  {['AnÃ¡lise de crÃ©dito em tempo real', 'Sem impacto no seu Score', 'Comparamos +50 instituiÃ§Ãµes'].map((item, i) => (
                     <li key={i} className="flex items-center gap-3 text-foreground font-medium">
                       <CheckCircle2 className="w-5 h-5 text-primary" /> {item}
                     </li>
@@ -66,15 +66,15 @@ function SeoLandingPage({ title, description, heading, content, type }) {
                 <div className="space-y-4">
                   <div>
                     <h5 className="font-semibold text-primary">100% Gratuito</h5>
-                    <p className="text-sm text-muted-foreground">Você não paga nada para usar nosso comparador.</p>
+                    <p className="text-sm text-muted-foreground">VocÃª nÃ£o paga nada para usar nosso comparador.</p>
                   </div>
                   <div>
                     <h5 className="font-semibold text-secondary">Imparcialidade</h5>
                     <p className="text-sm text-muted-foreground">Mostramos as ofertas com as menores taxas primeiro.</p>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-accent">Segurança LGPD</h5>
-                    <p className="text-sm text-muted-foreground">Seus dados são criptografados de ponta a ponta.</p>
+                    <h5 className="font-semibold text-accent">SeguranÃ§a LGPD</h5>
+                    <p className="text-sm text-muted-foreground">Seus dados sÃ£o criptografados de ponta a ponta.</p>
                   </div>
                 </div>
               </div>

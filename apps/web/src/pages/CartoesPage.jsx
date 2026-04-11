@@ -129,7 +129,7 @@ function CartoesPage() {
                           id={`ben-${ben}`}
                           checked={benefits[ben]}
                           onCheckedChange={(checked) => setBenefits((prev) => ({ ...prev, [ben]: checked }))}
-                          className="data-[state=checked]:bg-secondary data-[state=checked]:text-white border-secondary/50"
+                          className="data-[state=checked]:bg-primary data-[state=checked]:text-white border-primary/50"
                         />
                         <Label htmlFor={`ben-${ben}`} className="font-medium cursor-pointer">{ben === 'VIP' ? 'Acesso Sala VIP' : ben}</Label>
                       </div>
@@ -166,12 +166,12 @@ function CartoesPage() {
 
                 return (
                   <Card key={card.id} className="card-premium flex flex-col transition-all overflow-hidden bg-white">
-                    <div className="h-44 relative overflow-hidden bg-slate-900 group">
+                    <div className="h-44 relative overflow-hidden bg-slate-200 group">
                       <img src={card.image} alt={card.title} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-500" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/45 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/65 to-white/10" />
                       <div className="absolute left-5 bottom-4 right-5 z-10">
-                        <p className="text-xs uppercase tracking-wide text-slate-300 font-semibold">{card.bankName}</p>
-                        <h3 className="text-white text-lg font-bold leading-tight">{card.title}</h3>
+                        <p className="text-xs uppercase tracking-wide text-slate-600 font-semibold">{card.bankName}</p>
+                        <h3 className="text-slate-900 text-lg font-bold leading-tight">{card.title}</h3>
                       </div>
                       {card.category === 'Premium' && (
                         <Badge className="absolute top-4 right-4 bg-amber-500 text-amber-950 border-0 font-bold tracking-wider uppercase text-[10px]">
@@ -182,17 +182,17 @@ function CartoesPage() {
 
                     <CardContent className="flex-1 p-6 flex flex-col">
                       <div className="grid grid-cols-2 gap-4 mb-5">
-                        <div className="rounded-lg border border-border bg-slate-50 p-3">
+                        <div className="rounded-lg border border-border bg-background-secondary p-3">
                           <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Anuidade</p>
                           <p className={`font-bold ${isFree ? 'text-emerald-600' : 'text-foreground'}`}>{isFree ? 'GRATIS' : `R$ ${card.annualFee}/ano`}</p>
                         </div>
-                        <div className="rounded-lg border border-border bg-slate-50 p-3">
+                        <div className="rounded-lg border border-border bg-background-secondary p-3">
                           <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Limite est.</p>
                           <p className="font-bold text-primary">Até R$ {card.maxLimit / 1000}k</p>
                         </div>
                       </div>
 
-                      <div className="mb-5 rounded-xl border border-border bg-slate-50 p-4">
+                      <div className="mb-5 rounded-xl border border-border bg-background-secondary p-4">
                         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Benefício principal</p>
                         <p className="text-sm font-semibold text-foreground">{keyBenefit}</p>
                       </div>
@@ -202,7 +202,7 @@ function CartoesPage() {
                           {card.benefits?.slice(0, 3).map((ben, idx) => {
                             const isCashback = ben.toLowerCase().includes('cashback');
                             const isPoints = ben.toLowerCase().includes('pontos') || ben.toLowerCase().includes('milhas');
-                            const iconColor = isCashback ? 'text-emerald-600' : isPoints ? 'text-secondary' : 'text-primary';
+                            const iconColor = isCashback ? 'text-emerald-600' : 'text-primary';
 
                             return (
                               <li key={idx} className="flex items-start text-sm font-medium text-slate-700">
@@ -215,7 +215,7 @@ function CartoesPage() {
                       </div>
 
                       <div className="mt-6 pt-4">
-                        <Button className="w-full h-12 text-base font-bold gradient-fintech-hover border-0 shadow-md transition-all duration-300 hover:shadow-lg" onClick={() => handleApply(card)}>
+                        <Button className="w-full h-12 text-base font-bold gradient-fintech-hover border-0 shadow-premium transition-all duration-300 hover:shadow-premium" onClick={() => handleApply(card)}>
                           Solicitar agora <ChevronRight className="w-4 h-4 ml-1" />
                         </Button>
                       </div>
@@ -226,7 +226,7 @@ function CartoesPage() {
             </div>
 
             {filteredCards.length === 0 && (
-              <div className="text-center py-20 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
+              <div className="text-center py-20 bg-background-secondary rounded-2xl border border-dashed border-slate-300">
                 <CreditCard className="w-12 h-12 text-slate-300 mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-foreground">Nenhum cartão encontrado</h3>
                 <p className="text-muted-foreground mt-2">Tente desmarcar alguns filtros de benefícios.</p>

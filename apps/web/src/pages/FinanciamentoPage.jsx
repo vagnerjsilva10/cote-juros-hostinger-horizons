@@ -48,9 +48,9 @@ function FinanciamentoPage() {
     return (
       <div className="grid md:grid-cols-2 gap-8 mt-8">
         {data.map((fin) => (
-          <Card key={fin.id} className="card-premium overflow-hidden bg-white border-slate-200">
+          <Card key={fin.id} className="card-premium overflow-hidden bg-white border-border">
             <CardContent className="p-0">
-              <div className="p-6 md:p-8 border-b border-slate-100 flex justify-between items-start bg-slate-50">
+              <div className="p-6 md:p-8 border-b border-border flex justify-between items-start bg-background-secondary">
                 <div>
                   <Badge variant="outline" className="mb-3 bg-white">{fin.category}</Badge>
                   <h3 className="text-2xl font-extrabold text-foreground">{fin.bankName}</h3>
@@ -71,7 +71,7 @@ function FinanciamentoPage() {
                     <p className="text-sm font-semibold text-muted-foreground mb-1 flex items-center gap-1"><Calendar className="w-4 h-4" /> Prazo Max</p>
                     <p className="text-lg font-bold text-foreground">{fin.maxTerm} meses</p>
                   </div>
-                  <div className="col-span-2 bg-slate-50 rounded-lg p-4 border border-slate-100">
+                  <div className="col-span-2 bg-background-secondary rounded-lg p-4 border border-border">
                     <p className="text-sm font-semibold text-muted-foreground mb-1">Condicao de Entrada</p>
                     <p className="text-base font-bold text-foreground">A partir de {fin.minDownPayment}% do valor do bem</p>
                   </div>
@@ -104,11 +104,11 @@ function FinanciamentoPage() {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 max-w-5xl">
         <Tabs defaultValue="veiculos" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 h-16 p-1.5 bg-slate-100 rounded-[var(--radius-lg)]">
+          <TabsList className="grid w-full grid-cols-2 h-16 p-1.5 bg-background-tertiary rounded-[var(--radius-lg)]">
             <TabsTrigger value="veiculos" className="rounded-[var(--radius-md)] text-lg font-bold data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all">
               <Car className="w-5 h-5 mr-2" /> Veículos
             </TabsTrigger>
-            <TabsTrigger value="imobiliario" className="rounded-[var(--radius-md)] text-lg font-bold data-[state=active]:bg-white data-[state=active]:text-secondary data-[state=active]:shadow-sm transition-all">
+            <TabsTrigger value="imobiliario" className="rounded-[var(--radius-md)] text-lg font-bold data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all">
               <Home className="w-5 h-5 mr-2" /> Imóveis
             </TabsTrigger>
           </TabsList>
@@ -124,9 +124,9 @@ function FinanciamentoPage() {
           </TabsContent>
 
           <TabsContent value="imobiliario" className="mt-4 animate-in fade-in-50 slide-in-from-bottom-4 duration-500">
-            <div className="bg-purple-50 border border-purple-100 rounded-[var(--radius-lg)] p-6 mb-8 mt-8 flex items-start gap-4">
-              <ShieldCheck className="w-6 h-6 text-secondary flex-shrink-0 mt-1" />
-              <p className="text-purple-900 font-medium leading-relaxed">
+            <div className="bg-blue-50 border border-blue-100 rounded-[var(--radius-lg)] p-6 mb-8 mt-8 flex items-start gap-4">
+              <ShieldCheck className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+              <p className="text-blue-900 font-medium leading-relaxed">
                 Para o financiamento imobiliário, você pode usar seu FGTS como entrada se o imóvel se enquadrar nas regras do SFH.
               </p>
             </div>

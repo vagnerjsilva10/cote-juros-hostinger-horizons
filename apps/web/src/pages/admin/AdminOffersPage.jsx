@@ -90,7 +90,7 @@ export default function AdminOffersPage() {
 
       <Card className="border-slate-200">
         <CardContent className="pt-6 grid gap-4 md:grid-cols-3">
-          <Input placeholder="Buscar por tÌtulo ou banco" value={filters.search} onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))} />
+          <Input placeholder="Buscar por t√≠tulo ou banco" value={filters.search} onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))} />
           <Select value={filters.productType} onValueChange={(value) => setFilters((prev) => ({ ...prev, productType: value }))}>
             <SelectTrigger><SelectValue placeholder="Produto" /></SelectTrigger>
             <SelectContent>
@@ -117,11 +117,11 @@ export default function AdminOffersPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>TÌtulo</TableHead>
+                  <TableHead>T√≠tulo</TableHead>
                   <TableHead>Banco</TableHead>
                   <TableHead>Produto</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>AÁıes</TableHead>
+                  <TableHead>A√ß√µes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -156,7 +156,7 @@ export default function AdminOffersPage() {
           <CardContent className="pt-6">
             <form className="space-y-4" onSubmit={handleSave}>
               <div>
-                <Label>TÌtulo</Label>
+                <Label>T√≠tulo</Label>
                 <Input value={editing.title} onChange={(e) => setEditing((prev) => ({ ...prev, title: e.target.value }))} required />
               </div>
               <div>
@@ -190,12 +190,12 @@ export default function AdminOffersPage() {
                 <div><Label>Taxa anual (%)</Label><Input type="number" step="0.01" value={editing.annualRate} onChange={(e) => setEditing((prev) => ({ ...prev, annualRate: e.target.value }))} /></div>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div><Label>Valor mÌnimo</Label><Input type="number" value={editing.minValue} onChange={(e) => setEditing((prev) => ({ ...prev, minValue: e.target.value }))} /></div>
-                <div><Label>Valor m·ximo</Label><Input type="number" value={editing.maxValue} onChange={(e) => setEditing((prev) => ({ ...prev, maxValue: e.target.value }))} /></div>
+                <div><Label>Valor m√≠nimo</Label><Input type="number" value={editing.minValue} onChange={(e) => setEditing((prev) => ({ ...prev, minValue: e.target.value }))} /></div>
+                <div><Label>Valor m√°ximo</Label><Input type="number" value={editing.maxValue} onChange={(e) => setEditing((prev) => ({ ...prev, maxValue: e.target.value }))} /></div>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div><Label>Prazo mÌnimo</Label><Input type="number" value={editing.minTerm} onChange={(e) => setEditing((prev) => ({ ...prev, minTerm: e.target.value }))} /></div>
-                <div><Label>Prazo m·ximo</Label><Input type="number" value={editing.maxTerm} onChange={(e) => setEditing((prev) => ({ ...prev, maxTerm: e.target.value }))} /></div>
+                <div><Label>Prazo m√≠nimo</Label><Input type="number" value={editing.minTerm} onChange={(e) => setEditing((prev) => ({ ...prev, minTerm: e.target.value }))} /></div>
+                <div><Label>Prazo m√°ximo</Label><Input type="number" value={editing.maxTerm} onChange={(e) => setEditing((prev) => ({ ...prev, maxTerm: e.target.value }))} /></div>
               </div>
               <div>
                 <Label>Redirect URL</Label>

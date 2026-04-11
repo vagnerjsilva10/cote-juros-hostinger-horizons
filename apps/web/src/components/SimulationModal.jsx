@@ -1,4 +1,4 @@
-
+﻿
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -88,7 +88,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-xl p-0 overflow-hidden bg-white border-0 rounded-[16px] shadow-2xl">
+      <DialogContent className="sm:max-w-xl p-0 overflow-hidden bg-white border-0 rounded-[16px] shadow-[var(--shadow-md)]">
         <DialogTitle className="sr-only">Simulação Financeira</DialogTitle>
         <DialogDescription className="sr-only">Preencha seus dados para receber ofertas.</DialogDescription>
         

@@ -35,7 +35,7 @@ const defaultSettingsSeed = {
   },
   defaultSeo: {
     titleSuffix: ' - Cote Juros',
-    defaultDescription: 'Compare ofertas financeiras com inteligência.'
+    defaultDescription: 'Compare ofertas financeiras com inteligÃªncia.'
   },
   analytics: {
     ga4Key: '',
@@ -182,7 +182,7 @@ const ensureArticleDefaults = (article) => ({
   summary: article.summary || article.excerpt || '',
   excerpt: article.excerpt || article.summary || '',
   content: article.content || '',
-  category: article.category || 'Finanças Pessoais',
+  category: article.category || 'FinanÃ§as Pessoais',
   status: article.status || 'draft',
   seoTitle: article.seoTitle || article.title || 'Novo artigo',
   seoDescription: article.seoDescription || article.summary || '',
@@ -199,7 +199,7 @@ const ensureSeoPageDefaults = (page) => {
     id: page.id || `seo_${Date.now()}`,
     slug,
     path: `/${slug}`,
-    title: page.title || 'Nova página SEO',
+    title: page.title || 'Nova pÃ¡gina SEO',
     description: page.description || '',
     heading: page.heading || page.title || '',
     content: Array.isArray(page.content) ? page.content : [page.heroCopy || '', page.ctaCopy || ''].filter(Boolean),
@@ -344,8 +344,8 @@ export const portalRepository = {
       result = result.filter((offer) => {
         if (!offer.minScore) return true;
         if (offer.minScore === score) return true;
-        if (score === 'Alto' && (offer.minScore === 'Médio' || offer.minScore === 'Baixo')) return true;
-        if (score === 'Médio' && offer.minScore === 'Baixo') return true;
+        if (score === 'Alto' && (offer.minScore === 'MÃ©dio' || offer.minScore === 'Baixo')) return true;
+        if (score === 'MÃ©dio' && offer.minScore === 'Baixo') return true;
         return false;
       });
     }

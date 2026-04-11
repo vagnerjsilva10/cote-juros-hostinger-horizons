@@ -43,7 +43,7 @@ export default function AdminBanksPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Bank Management" description="Cadastro e operação dos bancos." actionLabel="Novo banco" onAction={() => setEditing(emptyForm)} />
+      <AdminPageHeader title="Bank Management" description="Cadastro e operaÃ§Ã£o dos bancos." actionLabel="Novo banco" onAction={() => setEditing(emptyForm)} />
 
       <Card className="border-slate-200">
         <CardContent className="pt-6 grid gap-4 md:grid-cols-2">
@@ -68,7 +68,7 @@ export default function AdminBanksPage() {
                   <TableHead>Nome</TableHead>
                   <TableHead>Website</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Ações</TableHead>
+                  <TableHead>AÃ§Ãµes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

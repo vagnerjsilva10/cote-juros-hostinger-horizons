@@ -94,9 +94,9 @@ function DiagnosticoPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-secondary/30 shadow-md">
+          <Card className="border-primary/20 shadow-[var(--shadow-sm)]">
             <CardContent className="p-8 space-y-4">
-              <div className="text-sm font-semibold uppercase tracking-wider text-secondary">Recomendação de Cartão</div>
+              <div className="text-sm font-semibold uppercase tracking-wider text-primary">Recomendação de Cartão</div>
               <h3 className="text-2xl font-bold">{recomendCard}</h3>
               <p className="text-muted-foreground">Seu perfil se alinha perfeitamente com os benefícios deste cartão. Altas chances de aprovação imediata.</p>
               <Button variant="secondary" className="w-full mt-4">Pedir Cartão</Button>
@@ -184,7 +184,7 @@ function DiagnosticoPage() {
               onChange={handleCpfChange}
             />
             <Button
-              className="w-full h-14 text-lg mt-8 gradient-fintech text-white border-0"
+              className="w-full h-14 text-lg mt-8 gradient-fintech-hover text-white border-0"
               onClick={submitDiagnostico}
               disabled={loading}
             >

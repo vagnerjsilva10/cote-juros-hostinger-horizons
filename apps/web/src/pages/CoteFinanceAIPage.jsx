@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -118,22 +118,22 @@ function CoteFinanceAIPage() {
         />
       </Helmet>
 
-      <section className="relative pt-24 pb-32 overflow-hidden bg-foreground">
-        <div className="absolute inset-0 z-0 gradient-fintech opacity-80" />
+      <section className="relative pt-24 pb-32 overflow-hidden hero-fintech-bg">
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_20%_30%,rgba(37,99,235,0.08),transparent_40%)]" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-              <Badge className="bg-white/20 text-white hover:bg-white/30 border-0 mb-6 px-4 py-1.5 text-sm">
+              <Badge className="bg-white text-primary border border-primary/20 mb-6 px-4 py-1.5 text-sm">
                 <Brain className="w-4 h-4 mr-2" /> Produto Cote Finance AI
               </Badge>
-              <h1 className="text-white mb-6">Visibilidade financeira para decidir melhor</h1>
-              <p className="text-xl text-white/90 mb-8 max-w-xl">
+              <h1 className="text-foreground mb-6">Visibilidade financeira para decidir melhor</h1>
+              <p className="text-xl text-slate-600 mb-8 max-w-xl">
                 O Cote Finance AI ajuda você a organizar sua vida financeira, entender padrões de gastos e agir com mais
                 confiança no dia a dia. Menos achismo, mais clareza sobre o seu dinheiro.
               </p>
               <Button
                 size="lg"
-                className="h-14 px-8 text-lg rounded-xl bg-white text-primary hover:bg-slate-100 shadow-xl"
+                className="h-14 px-8 text-lg rounded-xl gradient-fintech-hover text-white shadow-premium"
                 onClick={handleFinanceAiEntry}
               >
                 Entrar no Cote Finance AI <ArrowRight className="ml-2 w-5 h-5" />
@@ -141,7 +141,7 @@ function CoteFinanceAIPage() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.2 }}>
-              <img src={AI_DASHBOARD_ASSET} alt="Dashboard do Cote Finance AI" className="rounded-2xl shadow-2xl border-4 border-white/10" />
+              <img src={AI_DASHBOARD_ASSET} alt="Dashboard do Cote Finance AI" className="rounded-2xl shadow-[var(--shadow-md)] border border-border" />
             </motion.div>
           </div>
         </div>
@@ -197,7 +197,7 @@ function CoteFinanceAIPage() {
           <div className="space-y-12">
             {steps.map((item, index) => (
               <div key={index} className="flex gap-6 items-start">
-                <div className="w-12 h-12 rounded-full gradient-fintech flex items-center justify-center text-white font-bold text-xl flex-shrink-0 shadow-md">
+                <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl flex-shrink-0 shadow-[var(--shadow-sm)]">
                   {item.step}
                 </div>
                 <div>
@@ -216,7 +216,7 @@ function CoteFinanceAIPage() {
           </div>
 
           <div className="text-center mt-12">
-            <Button size="lg" className="h-14 px-8 text-lg rounded-xl gradient-fintech text-white shadow-xl" onClick={handleFinanceAiEntry}>
+            <Button size="lg" className="h-14 px-8 text-lg rounded-xl gradient-fintech-hover text-white shadow-premium" onClick={handleFinanceAiEntry}>
               Acessar plataforma agora <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </div>

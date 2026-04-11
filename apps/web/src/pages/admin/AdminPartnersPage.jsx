@@ -48,7 +48,7 @@ export default function AdminPartnersPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Partner Management" description="Configuração de links e regras por parceiro." actionLabel="Novo parceiro" onAction={() => setEditing(emptyForm)} />
+      <AdminPageHeader title="Partner Management" description="ConfiguraÃ§Ã£o de links e regras por parceiro." actionLabel="Novo parceiro" onAction={() => setEditing(emptyForm)} />
 
       <Card className="border-slate-200">
         <CardContent className="pt-6 grid gap-4 md:grid-cols-2">
@@ -73,7 +73,7 @@ export default function AdminPartnersPage() {
                   <TableHead>Parceiro</TableHead>
                   <TableHead>Banco</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Ações</TableHead>
+                  <TableHead>AÃ§Ãµes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

@@ -25,12 +25,12 @@ export default function AdminLayout({ title, children }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-secondary-subtle">
       <div className="grid min-h-screen lg:grid-cols-[240px_1fr]">
-        <aside className="border-r border-slate-200 bg-white p-4 lg:p-5">
+        <aside className="border-r border-border bg-white p-4 lg:p-5">
           <Link to="/admin" className="mb-6 flex items-center gap-2 rounded-lg px-2 py-1.5">
             <CoteJurosLogo variant="symbol" className="h-7 w-7" />
-            <span className="font-semibold text-slate-900">Cote Juros Admin</span>
+            <span className="font-semibold text-foreground">Cote Juros Admin</span>
           </Link>
 
           <nav className="space-y-1">
@@ -39,7 +39,7 @@ export default function AdminLayout({ title, children }) {
                 key={item.to}
                 to={item.to}
                 end={item.to === '/admin'}
-                className={({ isActive }) => `block rounded-md px-3 py-2 text-sm font-medium transition-colors ${isActive ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
+                className={({ isActive }) => `block rounded-md px-3 py-2 text-sm font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-slate-600 hover:bg-slate-100 hover:text-foreground'}`}
               >
                 {item.label}
               </NavLink>
@@ -48,11 +48,11 @@ export default function AdminLayout({ title, children }) {
         </aside>
 
         <div className="flex min-w-0 flex-col">
-          <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/90 backdrop-blur">
+          <header className="sticky top-0 z-10 border-b border-border bg-white/95 backdrop-blur">
             <div className="flex h-16 items-center justify-between px-4 lg:px-8">
-              <h1 className="text-lg font-semibold text-slate-900">{title}</h1>
+              <h1 className="text-lg font-semibold text-foreground">{title}</h1>
               <div className="flex items-center gap-2">
-                <Link to="/" className="text-sm text-slate-500 hover:text-slate-900">Ver portal</Link>
+                <Link to="/" className="text-sm text-slate-500 hover:text-foreground">Ver portal</Link>
                 <Button variant="outline" size="sm" onClick={handleLogout}>Sair</Button>
               </div>
             </div>

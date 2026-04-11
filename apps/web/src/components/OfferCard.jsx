@@ -7,12 +7,12 @@ import { Sparkles } from 'lucide-react';
 
 function OfferCard({ offer, isBest }) {
   return (
-    <Card className={`h-full flex flex-col ${isBest ? 'ring-2 ring-primary shadow-lg scale-105' : 'hover:shadow-lg'} transition-all duration-200`}>
+    <Card className={`h-full flex flex-col ${isBest ? 'ring-2 ring-primary/30 shadow-[var(--shadow-md)] scale-105' : 'shadow-[var(--shadow-sm)]'} transition-all duration-200`}>
       <CardHeader>
         <div className="flex items-start justify-between mb-2">
           <CardTitle className="text-lg font-semibold text-balance">{offer.banco}</CardTitle>
           {isBest && (
-            <Badge className="gradient-blue-purple text-white border-0">
+            <Badge className="bg-primary text-white border-0">
               <Sparkles className="h-3 w-3 mr-1" />
               Melhor oferta
             </Badge>
@@ -43,7 +43,7 @@ function OfferCard({ offer, isBest }) {
         </div>
       </CardContent>
       <CardFooter className="mt-auto">
-        <Button className={`w-full transition-all duration-200 active:scale-[0.98] ${isBest ? 'gradient-blue-purple text-white border-0' : ''}`}>
+        <Button className={`w-full transition-all duration-200 active:scale-[0.98] ${isBest ? 'bg-primary text-white border-0 hover:bg-primary-hover' : ''}`}>
           Solicitar oferta
         </Button>
       </CardFooter>

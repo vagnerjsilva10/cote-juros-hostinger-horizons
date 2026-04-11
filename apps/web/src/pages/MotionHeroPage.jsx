@@ -1,4 +1,4 @@
-
+﻿
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
@@ -27,15 +27,15 @@ function MotionHeroPage() {
       </Helmet>
 
       {/* Animated Hero */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-foreground">
-        <div className="absolute inset-0 z-0 gradient-fintech opacity-90" />
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden hero-fintech-bg">
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_20%_30%,rgba(37,99,235,0.08),transparent_40%)]" />
         
         {/* Fluid SVG Shapes */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <motion.svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute w-full h-full opacity-30">
             <motion.path 
               d="M0,50 C20,60 40,40 60,50 C80,60 100,40 100,50 L100,100 L0,100 Z" 
-              fill="rgba(255,255,255,0.1)"
+              fill="rgba(37,99,235,0.08)"
               animate={{ d: ["M0,50 C20,60 40,40 60,50 C80,60 100,40 100,50 L100,100 L0,100 Z", "M0,50 C20,40 40,60 60,40 C80,60 100,40 100,50 L100,100 L0,100 Z"] }}
               transition={{ duration: 10, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
             />
@@ -44,14 +44,14 @@ function MotionHeroPage() {
 
         <div className="container mx-auto px-4 relative z-10 text-center">
           <motion.div initial="hidden" animate="visible" variants={containerVariants} className="max-w-4xl mx-auto">
-            <motion.h1 variants={itemVariants} className="text-white mb-6 drop-shadow-xl">
+            <motion.h1 variants={itemVariants} className="text-foreground mb-6">
               O futuro do crédito é agora.
             </motion.h1>
-            <motion.p variants={itemVariants} className="text-xl md:text-2xl text-white/90 mb-10 font-medium">
+            <motion.p variants={itemVariants} className="text-xl md:text-2xl text-slate-600 mb-10 font-medium">
               Velocidade, segurança e as melhores taxas do mercado em uma única plataforma.
             </motion.p>
             <motion.div variants={itemVariants}>
-              <Button size="lg" className="h-14 px-8 text-lg rounded-xl bg-white text-primary hover:bg-slate-100 shadow-xl shadow-primary/20">
+              <Button size="lg" className="h-14 px-8 text-lg rounded-xl gradient-fintech-hover text-white shadow-premium">
                 Começar agora <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </motion.div>

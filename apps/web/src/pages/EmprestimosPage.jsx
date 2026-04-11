@@ -53,7 +53,7 @@ function EmprestimosPage() {
 
   const getBadgeStyle = (loanType, rate) => {
     if (rate < 2.0) return { icon: Star, text: 'Melhor taxa', color: 'bg-teal-100 text-teal-800 border-teal-200' };
-    if (loanType === 'Negativado') return { icon: ShieldCheck, text: 'Sem consulta', color: 'bg-purple-100 text-purple-800 border-purple-200' };
+    if (loanType === 'Negativado') return { icon: ShieldCheck, text: 'Sem consulta', color: 'bg-blue-100 text-blue-800 border-blue-200' };
     if (loanType === 'Pessoal') return { icon: CheckCircle2, text: 'Aprovação rápida', color: 'bg-green-100 text-green-800 border-green-200' };
     return { icon: Sparkles, text: 'Mais aprovado', color: 'bg-blue-100 text-blue-800 border-blue-200' };
   };
@@ -126,7 +126,7 @@ function EmprestimosPage() {
                 <div className="space-y-3">
                   <Label className="font-semibold text-foreground">Tipo de Crédito</Label>
                   <Select value={type} onValueChange={setType}>
-                    <SelectTrigger className="bg-slate-50">
+                    <SelectTrigger className="bg-background-secondary">
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -195,7 +195,7 @@ function EmprestimosPage() {
                 return (
                   <Card key={loan.id} className="card-premium overflow-hidden group flex flex-col h-full bg-white relative">
                     <CardContent className="p-0 flex flex-col h-full">
-                      <div className="p-5 border-b border-border bg-slate-50/70">
+                      <div className="p-5 border-b border-border bg-background-secondary/70">
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="w-11 h-11 rounded-xl flex items-center justify-center text-lg font-bold shadow-sm shrink-0" style={{ backgroundColor: bank?.color, color: '#fff' }}>
@@ -219,14 +219,14 @@ function EmprestimosPage() {
                           <p className="text-sm text-muted-foreground mt-1">ao mês</p>
                         </div>
 
-                        <div className="mb-6 rounded-xl border border-border bg-slate-50 p-4">
+                        <div className="mb-6 rounded-xl border border-border bg-background-secondary p-4">
                           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Benefício principal</p>
                           <p className="text-sm font-semibold text-foreground">
                             {loan.monthlyRate < 2 ? 'Condição de taxa reduzida para o perfil selecionado.' : 'Oferta com boa chance de aprovação conforme os filtros.'}
                           </p>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 mb-6 pt-3 border-t border-slate-100">
+                        <div className="grid grid-cols-2 gap-3 mb-6 pt-3 border-t border-border">
                           <div>
                             <p className="text-[11px] font-semibold text-muted-foreground uppercase">Valor máximo</p>
                             <p className="font-bold text-foreground text-sm">Até R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
@@ -238,7 +238,7 @@ function EmprestimosPage() {
                         </div>
 
                         <Button
-                          className="w-full h-12 text-base font-bold gradient-fintech-hover border-0 mt-auto shadow-md transition-all duration-300 group-hover:shadow-lg"
+                          className="w-full h-12 text-base font-bold gradient-fintech-hover border-0 mt-auto shadow-[var(--shadow-sm)] transition-all duration-300 group-hover:shadow-[var(--shadow-md)]"
                           onClick={() => handleSimulate(loan)}
                         >
                           Simular oferta <ChevronRight className="w-4 h-4 ml-1" />
@@ -251,7 +251,7 @@ function EmprestimosPage() {
             </div>
 
             {filteredLoans.length === 0 && (
-              <div className="text-center py-20 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
+              <div className="text-center py-20 bg-background-secondary rounded-2xl border border-dashed border-slate-300">
                 <Filter className="w-12 h-12 text-slate-300 mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-foreground">Nenhuma oferta encontrada</h3>
                 <p className="text-muted-foreground mt-2">Ajuste seus filtros para ver mais opções.</p>

@@ -60,7 +60,7 @@ export default function AdminDashboardPage() {
 
         <Card className="border-slate-200">
           <CardHeader>
-            <CardTitle className="text-base">Top p·ginas (origem de lead)</CardTitle>
+            <CardTitle className="text-base">Top p√°ginas (origem de lead)</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {(data.topConvertingPages || []).map((item) => (
@@ -107,7 +107,7 @@ export default function AdminDashboardPage() {
 
       <Card className="border-slate-200">
         <CardHeader>
-          <CardTitle className="text-base">Atividade recente de simulaÁ„o</CardTitle>
+          <CardTitle className="text-base">Atividade recente de simula√ß√£o</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -115,7 +115,7 @@ export default function AdminDashboardPage() {
               <TableRow>
                 <TableHead>Data</TableHead>
                 <TableHead>Produto</TableHead>
-                <TableHead>P·gina</TableHead>
+                <TableHead>P√°gina</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>

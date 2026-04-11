@@ -36,12 +36,12 @@ export default function AdminLeadsPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Lead Management" description="Funil de simulações com status operacional e detalhes de origem." />
+      <AdminPageHeader title="Lead Management" description="Funil de simulaÃ§Ãµes com status operacional e detalhes de origem." />
 
       <Card className="border-slate-200">
         <CardContent className="pt-6 grid gap-4 md:grid-cols-5">
           <div><Label>De</Label><Input type="date" value={filters.from} onChange={(e) => setFilters((prev) => ({ ...prev, from: e.target.value }))} /></div>
-          <div><Label>Até</Label><Input type="date" value={filters.to} onChange={(e) => setFilters((prev) => ({ ...prev, to: e.target.value }))} /></div>
+          <div><Label>AtÃ©</Label><Input type="date" value={filters.to} onChange={(e) => setFilters((prev) => ({ ...prev, to: e.target.value }))} /></div>
           <div>
             <Label>Source page</Label>
             <Select value={filters.sourcePage} onValueChange={(value) => setFilters((prev) => ({ ...prev, sourcePage: value }))}>
