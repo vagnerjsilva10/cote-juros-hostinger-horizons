@@ -1,4 +1,4 @@
-﻿
+
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,7 +19,7 @@ function DiagnosticoPage() {
   const [data, setData] = useState({
     valor: 10000,
     renda: 5000,
-    score: 'MÃ©dio',
+    score: 'Médio',
     dividas: false,
     cpf: ''
   });
@@ -41,7 +41,7 @@ function DiagnosticoPage() {
 
   const submitDiagnostico = async () => {
     if (data.cpf.length !== 14) {
-      toast.error('Por favor, insira um CPF vÃ¡lido.');
+      toast.error('Por favor, insira um CPF válido.');
       return;
     }
     setLoading(true);
@@ -60,20 +60,20 @@ function DiagnosticoPage() {
 
     setLoading(false);
     setShowOffers(true);
-    toast.success(`DiagnÃ³stico concluÃ­do com sucesso! Lead ${lead.id}`);
+    toast.success(`Diagnóstico concluído com sucesso! Lead ${lead.id}`);
   };
 
   const renderOffers = () => {
     // Basic logic mapping based on rules
-    let recomendedLoan = "EmprÃ©stimo Pessoal ItaÃº (Taxa 3.2% a.m)";
-    let recomendCard = "CartÃ£o Nubank (Sem Anuidade)";
+    let recomendedLoan = "Empréstimo Pessoal Itaú (Taxa 3.2% a.m)";
+    let recomendCard = "Cartão Nubank (Sem Anuidade)";
 
     if (data.score === 'Alto' && !data.dividas) {
-      recomendedLoan = "EmprÃ©stimo Consignado Caixa (Taxa 1.2% a.m)";
-      recomendCard = "ItaÃº PersonnalitÃ© Black";
+      recomendedLoan = "Empréstimo Consignado Caixa (Taxa 1.2% a.m)";
+      recomendCard = "Itaú Personnalité Black";
     } else if (data.score === 'Baixo' || data.dividas) {
-      recomendedLoan = "EmprÃ©stimo Garantia Inter (Taxa 1.8% a.m) ou Negativado";
-      recomendCard = "CartÃ£o de CrÃ©dito PrÃ©-pago C6";
+      recomendedLoan = "Empréstimo Garantia Inter (Taxa 1.8% a.m) ou Negativado";
+      recomendCard = "Cartão de Crédito Pré-pago C6";
     }
 
     return (
@@ -82,26 +82,26 @@ function DiagnosticoPage() {
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="w-8 h-8 text-green-600" />
           </div>
-          <h2 className="text-3xl font-bold">DiagnÃ³stico ConcluÃ­do</h2>
-          <p className="text-muted-foreground mt-2">Encontramos opÃ§Ãµes desenhadas para o seu perfil (Score {data.score}).</p>
+          <h2 className="text-3xl font-bold">Diagnóstico Concluído</h2>
+          <p className="text-muted-foreground mt-2">Encontramos opções desenhadas para o seu perfil (Score {data.score}).</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="border-primary/30 shadow-md">
             <CardContent className="p-8 space-y-4">
-              <div className="text-sm font-semibold uppercase tracking-wider text-primary">RecomendaÃ§Ã£o de CrÃ©dito</div>
+              <div className="text-sm font-semibold uppercase tracking-wider text-primary">Recomendação de Crédito</div>
               <h3 className="text-2xl font-bold">{recomendedLoan}</h3>
-              <p className="text-muted-foreground">Com base na sua renda de R$ {data.renda.toLocaleString()} e seu histÃ³rico, esta Ã© a linha de crÃ©dito com melhor Custo Efetivo Total para R$ {data.valor.toLocaleString()}.</p>
-              <Button className="w-full mt-4">Solicitar CrÃ©dito</Button>
+              <p className="text-muted-foreground">Com base na sua renda de R$ {data.renda.toLocaleString()} e seu histórico, esta é a linha de crédito com melhor Custo Efetivo Total para R$ {data.valor.toLocaleString()}.</p>
+              <Button className="w-full mt-4">Solicitar Crédito</Button>
             </CardContent>
           </Card>
 
           <Card className="border-secondary/30 shadow-md">
             <CardContent className="p-8 space-y-4">
-              <div className="text-sm font-semibold uppercase tracking-wider text-secondary">RecomendaÃ§Ã£o de CartÃ£o</div>
+              <div className="text-sm font-semibold uppercase tracking-wider text-secondary">Recomendação de Cartão</div>
               <h3 className="text-2xl font-bold">{recomendCard}</h3>
-              <p className="text-muted-foreground">Seu perfil se alinha perfeitamente com os benefÃ­cios deste cartÃ£o. Altas chances de aprovaÃ§Ã£o imediata.</p>
-              <Button variant="secondary" className="w-full mt-4">Pedir CartÃ£o</Button>
+              <p className="text-muted-foreground">Seu perfil se alinha perfeitamente com os benefícios deste cartão. Altas chances de aprovação imediata.</p>
+              <Button variant="secondary" className="w-full mt-4">Pedir Cartão</Button>
             </CardContent>
           </Card>
         </div>
@@ -121,7 +121,7 @@ function DiagnosticoPage() {
             >
               Continuar no Cote Finance AI
             </Button>
-            <Button variant="outline" onClick={() => {setShowOffers(false); setStep(1);}}>Refazer DiagnÃ³stico</Button>
+            <Button variant="outline" onClick={() => {setShowOffers(false); setStep(1);}}>Refazer Diagnóstico</Button>
           </div>
         </div>
       </motion.div>
@@ -133,7 +133,7 @@ function DiagnosticoPage() {
       case 1:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Qual valor de crÃ©dito vocÃª precisa?</h2>
+            <h2 className="text-2xl font-bold">Qual valor de crédito você precisa?</h2>
             <div className="text-4xl font-bold text-primary py-4">R$ {data.valor.toLocaleString('pt-BR')}</div>
             <Slider value={[data.valor]} onValueChange={v => setData({...data, valor: v[0]})} max={500000} min={1000} step={1000} />
             <Button className="w-full h-12 text-lg mt-8" onClick={nextStep}>Continuar <ArrowRight className="ml-2" /></Button>
@@ -153,10 +153,10 @@ function DiagnosticoPage() {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Qual seu score aproximado?</h2>
             <RadioGroup value={data.score} onValueChange={v => setData({...data, score: v})} className="space-y-3">
-              {['Alto', 'MÃ©dio', 'Baixo'].map(s => (
+              {['Alto', 'Médio', 'Baixo'].map(s => (
                 <div key={s} className={`border rounded-xl p-4 flex items-center space-x-3 cursor-pointer transition-colors ${data.score === s ? 'bg-primary/5 border-primary' : 'hover:bg-muted'}`} onClick={() => setData({...data, score: s})}>
                   <RadioGroupItem value={s} id={s} />
-                  <Label htmlFor={s} className="flex-1 cursor-pointer font-medium text-lg">{s} {s==='Alto'?'(750-1000)':s==='MÃ©dio'?'(550-749)':'(0-549)'}</Label>
+                  <Label htmlFor={s} className="flex-1 cursor-pointer font-medium text-lg">{s} {s==='Alto'?'(750-1000)':s==='Médio'?'(550-749)':'(0-549)'}</Label>
                 </div>
               ))}
             </RadioGroup>
@@ -166,9 +166,9 @@ function DiagnosticoPage() {
       case 4:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">VocÃª possui dÃ­vidas em aberto no momento?</h2>
+            <h2 className="text-2xl font-bold">Você possui dívidas em aberto no momento?</h2>
             <div className="flex items-center justify-between p-6 border rounded-xl bg-card">
-              <Label className="text-lg font-medium cursor-pointer" htmlFor="dividas">Tenho dÃ­vidas pendentes (Negativado)</Label>
+              <Label className="text-lg font-medium cursor-pointer" htmlFor="dividas">Tenho dívidas pendentes (Negativado)</Label>
               <Switch id="dividas" checked={data.dividas} onCheckedChange={c => setData({...data, dividas: c})} />
             </div>
             <Button className="w-full h-12 text-lg mt-8" onClick={nextStep}>Continuar <ArrowRight className="ml-2" /></Button>
@@ -177,8 +177,8 @@ function DiagnosticoPage() {
       case 5:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Ãšltimo passo: Informe seu CPF</h2>
-            <p className="text-muted-foreground">Usamos seu CPF apenas para simular ofertas reais de forma segura. NÃ£o consultamos o Serasa neste momento.</p>
+            <h2 className="text-2xl font-bold">?ltimo passo: Informe seu CPF</h2>
+            <p className="text-muted-foreground">Usamos seu CPF apenas para simular ofertas reais de forma segura. Não consultamos o Serasa neste momento.</p>
             <Input 
               className="h-14 text-xl text-center font-variant-tabular bg-background text-foreground" 
               placeholder="000.000.000-00" 
@@ -201,7 +201,7 @@ function DiagnosticoPage() {
   return (
     <>
       <Helmet>
-        <title>DiagnÃ³stico Financeiro Inteligente - Cote Juros</title>
+        <title>Diagnóstico Financeiro Inteligente - Cote Juros</title>
       </Helmet>
 
       <div className="min-h-[85vh] flex flex-col bg-muted/30 py-12">
@@ -212,7 +212,7 @@ function DiagnosticoPage() {
               <div className="mb-8">
                 <div className="flex justify-between text-sm font-medium mb-2 text-muted-foreground">
                   <span>Passo {step} de 5</span>
-                  <span>{step * 20}% ConcluÃ­do</span>
+                  <span>{step * 20}% Concluído</span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2.5 overflow-hidden">
                   <div className="bg-primary h-2.5 transition-all duration-500 ease-in-out" style={{ width: `${step * 20}%` }}></div>
