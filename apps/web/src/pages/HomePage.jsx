@@ -253,8 +253,8 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="py-14 md:py-16 relative overflow-hidden bg-background border-y border-border">
-        <div className="absolute inset-0 z-0 pointer-events-none">
+      <section className="relative border-y border-border bg-background py-14 md:py-16">
+        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
           <div className="absolute -right-20 top-8 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
           <div className="absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-secondary/10 blur-3xl" />
         </div>
@@ -362,7 +362,7 @@ function HomePage() {
               <motion.div
                 animate={{ y: [0, -1.8, 0], rotate: [0, -0.7, 0] }}
                 transition={{ duration: 9.6, repeat: Infinity, ease: 'easeInOut', delay: 0.1 }}
-                className="absolute -left-7 top-12 hidden rounded-2xl border border-[#2A3B59] bg-[#0A152A] px-3 py-2.5 shadow-[0_18px_34px_-18px_rgba(2,6,23,0.62),0_8px_18px_-14px_rgba(37,99,235,0.3)] md:block"
+                className="absolute -left-7 top-12 hidden rounded-2xl border border-[#2A3B59] bg-[#0A152A] px-3 py-2.5 shadow-[0_22px_42px_-12px_rgba(2,6,23,0.62),0_10px_24px_-10px_rgba(37,99,235,0.3)] md:block"
               >
                 <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Saldo atual</p>
                 <p className="text-sm font-bold text-cyan-300">R$ 7.110</p>
@@ -371,7 +371,7 @@ function HomePage() {
               <motion.div
                 animate={{ y: [0, 2.6, 0], rotate: [0, 0.75, 0] }}
                 transition={{ duration: 10.2, repeat: Infinity, ease: 'easeInOut', delay: 0.45 }}
-                className="absolute -right-8 bottom-14 hidden items-center gap-2 rounded-2xl border border-[#2A3B59] bg-[#0A152A] px-3 py-2.5 shadow-[0_18px_34px_-18px_rgba(2,6,23,0.62),0_8px_18px_-14px_rgba(37,99,235,0.28)] md:flex"
+                className="absolute -right-8 bottom-14 hidden items-center gap-2 rounded-2xl border border-[#2A3B59] bg-[#0A152A] px-3 py-2.5 shadow-[0_22px_42px_-12px_rgba(2,6,23,0.62),0_10px_24px_-10px_rgba(37,99,235,0.28)] md:flex"
               >
                 <Activity className="h-4 w-4 text-emerald-400" />
                 <div>
@@ -383,7 +383,7 @@ function HomePage() {
               <motion.div
                 animate={{ y: [0, -1.2, 0], rotate: [0, 0.45, 0] }}
                 transition={{ duration: 11.2, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
-                className="absolute -right-6 -top-8 hidden rounded-2xl border border-[#2A3B59] bg-[#0A152A] px-3 py-2 shadow-[0_18px_34px_-18px_rgba(2,6,23,0.62),0_8px_18px_-14px_rgba(37,99,235,0.28)] lg:block"
+                className="absolute -right-6 -top-8 hidden rounded-2xl border border-[#2A3B59] bg-[#0A152A] px-3 py-2 shadow-[0_22px_42px_-12px_rgba(2,6,23,0.62),0_10px_24px_-10px_rgba(37,99,235,0.28)] lg:block"
               >
                 <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Insight IA</p>
                 <p className="text-xs font-semibold text-slate-100">Troca recomendada: -1.4% CET</p>
