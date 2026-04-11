@@ -1,60 +1,81 @@
 import { getJurosBaixosConfig } from './config.js';
-import { getPartnerAuthContext } from './auth.js';
+import { extractJwtContext, getPartnerAuthContext } from './auth.js';
 import { jurosBaixosRequest } from './client.js';
+import { JurosBaixosApiError, JurosBaixosValidationError } from './errors.js';
 
 const digitsOnly = (value = '') => String(value).replace(/\D/g, '');
 
-const buildIdentityPayload = ({ lead }) => ({
-  fullName: lead.fullName,
-  name: lead.fullName,
-  cpf: digitsOnly(lead.cpf),
-  email: lead.email || undefined,
-  phone: digitsOnly(lead.phone || ''),
-  source: 'cote_juros',
-  metadata: {
-    productType: lead.productType,
-    sourcePage: lead.sourcePage
-  }
-});
+const buildIdentityPayload = ({ lead }) => {
+  const payload = {
+    name: lead.fullName,
+    cpf: digitsOnly(lead.cpf),
+    email: lead.email || null,
+    mobile_phone: digitsOnly(lead.phone || '')
+  };
 
-const resolveSessionPayload = (payload = {}) => ({
-  externalUserId: payload?.userId || payload?.externalUserId || payload?.data?.userId || payload?.data?.id || payload?.id || null,
-  externalSessionId: payload?.sessionId || payload?.externalSessionId || payload?.data?.sessionId || null,
-  externalJwt: payload?.jwt || payload?.token || payload?.access_token || payload?.data?.jwt || payload?.data?.token || null,
-  tokenExpiresAt:
-    payload?.expiresAt ||
-    payload?.data?.expiresAt ||
-    (payload?.expires_in ? new Date(Date.now() + Number(payload.expires_in) * 1000).toISOString() : null)
-});
+  const missing = Object.entries(payload)
+    .filter(([, value]) => value === null || value === '')
+    .map(([key]) => key);
+
+  if (missing.length) {
+    throw new JurosBaixosValidationError(`Missing Juros Baixos thirdparty create fields: ${missing.join(', ')}.`, {
+      details: { missingFields: missing }
+    });
+  }
+
+  return payload;
+};
+
+const resolveSessionPayload = (payload = {}, fallbackUserId = null) => {
+  const jwtContext = extractJwtContext(payload);
+
+  return {
+    externalUserId: jwtContext.userId || payload?.objectId || fallbackUserId || null,
+    externalSessionId: jwtContext.sessionId || null,
+    externalJwt: jwtContext.token || null,
+    refreshToken: jwtContext.refreshToken || null,
+    tokenExpiresAt: jwtContext.expiresAt ? jwtContext.expiresAt.toISOString() : null
+  };
+};
 
 export const createThirdPartyUser = async ({ lead }) => {
   const config = getJurosBaixosConfig();
   const auth = await getPartnerAuthContext();
 
-  const payload = await jurosBaixosRequest({
-    path: config.endpoints.userCreatePath,
-    method: 'POST',
-    token: auth.token,
-    body: buildIdentityPayload({ lead })
-  });
+  try {
+    const payload = await jurosBaixosRequest({
+      path: config.endpoints.userCreatePath,
+      method: 'POST',
+      authHeaders: auth.authHeaders,
+      body: buildIdentityPayload({ lead })
+    });
 
-  return resolveSessionPayload(payload);
+    return resolveSessionPayload(payload);
+  } catch (error) {
+    if (error instanceof JurosBaixosApiError && error.statusCode === 412) {
+      return resolveSessionPayload(error.details, error.details?.objectId || null);
+    }
+
+    throw error;
+  }
 };
 
-export const authenticateThirdPartyUser = async ({ lead, externalUserId }) => {
+export const authenticateThirdPartyUser = async ({ externalUserId }) => {
   const config = getJurosBaixosConfig();
   const auth = await getPartnerAuthContext();
+
+  if (!externalUserId) {
+    throw new JurosBaixosValidationError('Juros Baixos thirdparty login requires a userId created by /thirdparty/create.');
+  }
 
   const payload = await jurosBaixosRequest({
     path: config.endpoints.userAuthPath,
     method: 'POST',
-    token: auth.token,
+    authHeaders: auth.authHeaders,
     body: {
-      cpf: digitsOnly(lead.cpf),
-      email: lead.email || undefined,
-      externalUserId: externalUserId || undefined
+      userId: externalUserId
     }
   });
 
-  return resolveSessionPayload(payload);
+  return resolveSessionPayload(payload, externalUserId);
 };

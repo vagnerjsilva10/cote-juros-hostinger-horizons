@@ -1,11 +1,11 @@
 import { IntegrationConfigurationError, JurosBaixosNotConfiguredError } from './errors.js';
 
 const DEFAULT_ENDPOINTS = {
-  partnerAuthPath: '/oauth/token',
-  userCreatePath: '/v1/users',
-  userAuthPath: '/v1/users/authenticate',
-  simulationCreatePath: '/v1/credit/simulations',
-  simulationOffersPath: '/v1/credit/simulations/:simulationId/offers'
+  partnerAuthPath: '/thirdparty/login',
+  userCreatePath: '/thirdparty/create',
+  userAuthPath: '/thirdparty/login',
+  simulationCreatePath: '/loans/no-collateral/simulate',
+  simulationOffersPath: '/loans/no-collateral/offers'
 };
 
 let cachedConfig;
@@ -27,7 +27,7 @@ const buildConfig = () => {
   const clientSecret = readString('JUROS_BAIXOS_CLIENT_SECRET');
   const webhookSecret = readString('JUROS_BAIXOS_WEBHOOK_SECRET');
   const hasClientCredentials = Boolean(clientId && clientSecret);
-  const configured = Boolean(baseUrl && (apiKey || hasClientCredentials));
+  const configured = Boolean(baseUrl && hasClientCredentials);
 
   const endpoints = {
     partnerAuthPath: readString('JUROS_BAIXOS_PARTNER_AUTH_PATH') || DEFAULT_ENDPOINTS.partnerAuthPath,
@@ -40,7 +40,7 @@ const buildConfig = () => {
   if (process.env.NODE_ENV === 'production') {
     const missing = [];
     if (!baseUrl) missing.push('JUROS_BAIXOS_BASE_URL');
-    if (!apiKey && !hasClientCredentials) missing.push('JUROS_BAIXOS_API_KEY or JUROS_BAIXOS_CLIENT_ID + JUROS_BAIXOS_CLIENT_SECRET');
+    if (!hasClientCredentials) missing.push('JUROS_BAIXOS_CLIENT_ID + JUROS_BAIXOS_CLIENT_SECRET');
     if (missing.length) {
       throw new IntegrationConfigurationError(`Missing Juros Baixos environment configuration: ${missing.join(', ')}`);
     }
@@ -87,6 +87,6 @@ export const getJurosBaixosHealth = () => {
     hasWebhookSecret: Boolean(config.webhookSecret),
     timeoutMs: config.timeoutMs,
     retryCount: config.retryCount,
-    endpoints: Object.keys(config.endpoints)
+    endpoints: config.endpoints
   };
 };

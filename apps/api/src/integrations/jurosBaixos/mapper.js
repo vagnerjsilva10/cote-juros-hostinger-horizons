@@ -8,6 +8,7 @@ const toNumber = (value) => {
 
 const resolveOfferCollection = (payload = {}) =>
   payload?.offers ||
+  payload?.items ||
   payload?.results ||
   payload?.data?.offers ||
   payload?.data?.results ||
@@ -15,10 +16,14 @@ const resolveOfferCollection = (payload = {}) =>
   [];
 
 const resolveSimulationId = (payload = {}) =>
-  firstDefined(payload?.simulationId, payload?.id, payload?.data?.simulationId, payload?.data?.id, null);
+  firstDefined(payload?.simulationId, payload?.simulation_id, payload?.id, payload?.data?.simulationId, payload?.data?.id, null);
 
 const computeMatchLabel = (offer) => {
-  const monthlyRate = toNumber(firstDefined(offer.monthlyRate, offer.interestRate, offer.taxaMensal));
+  const monthlyRate = toNumber(firstDefined(offer.monthlyRate, offer.interest_rate_monthly, offer.interestRate, offer.taxaMensal));
+  const status = firstDefined(offer.status, offer.sub_status, null);
+
+  if (status === 'VALIDATING') return 'Em validação';
+  if (status === 'ONGOING') return 'Em andamento';
   if (monthlyRate == null) return 'Compatível com seu perfil';
   if (monthlyRate <= 1.99) return 'Melhor taxa';
   if (monthlyRate <= 3.49) return 'Alta aderência';
@@ -26,21 +31,22 @@ const computeMatchLabel = (offer) => {
 };
 
 export const normalizeJurosBaixosOffer = (offer = {}, index = 0) => {
-  const bankName = firstDefined(offer.bankName, offer.bank?.name, offer.institutionName, offer.institution, 'Instituição parceira');
-  const productName = firstDefined(offer.productName, offer.product?.name, offer.modality, offer.type, 'Crédito pessoal');
-  const termMonths = toNumber(firstDefined(offer.termMonths, offer.installments, offer.term, offer.prazo));
+  const bankName = firstDefined(offer.bankName, offer.bank?.name, offer.institutionName, offer.institution, offer.partner, 'Instituição parceira');
+  const productName = firstDefined(offer.productName, offer.product?.name, offer.modality, offer.type, 'Crédito sem garantia');
+  const termMonths = toNumber(firstDefined(offer.termMonths, offer.duration, offer.installments, offer.term, offer.prazo));
+  const amount = toNumber(firstDefined(offer.amount, offer.amount_max, offer.totalAmount, offer.total_value));
 
   return {
-    id: firstDefined(offer.id, offer.offerId, offer.externalOfferId, `jb_offer_${index + 1}`),
-    externalOfferId: firstDefined(offer.externalOfferId, offer.offerId, offer.id, null),
+    id: firstDefined(offer.id, offer.offer_id, offer.offerId, offer.externalOfferId, `jb_offer_${index + 1}`),
+    externalOfferId: firstDefined(offer.externalOfferId, offer.offer_id, offer.offerId, offer.id, null),
     provider: 'juros_baixos',
     bankName,
     productName,
-    monthlyRate: toNumber(firstDefined(offer.monthlyRate, offer.interestRate, offer.taxaMensal)),
-    cet: toNumber(firstDefined(offer.cet, offer.totalEffectiveCost, offer.iofIncludedRate)),
-    installmentAmount: toNumber(firstDefined(offer.installmentAmount, offer.installment_value, offer.parcela)),
-    totalAmount: toNumber(firstDefined(offer.totalAmount, offer.total_value, offer.valorTotal)),
-    approvedAmount: toNumber(firstDefined(offer.approvedAmount, offer.amount, offer.valorAprovado)),
+    monthlyRate: toNumber(firstDefined(offer.monthlyRate, offer.interest_rate_monthly, offer.interestRate, offer.taxaMensal)),
+    cet: toNumber(firstDefined(offer.cet, offer.cet_rate, offer.totalEffectiveCost, offer.iofIncludedRate)),
+    installmentAmount: toNumber(firstDefined(offer.installmentAmount, offer.installment_amount, offer.installment_value, offer.parcela)),
+    totalAmount: amount,
+    approvedAmount: toNumber(firstDefined(offer.approvedAmount, offer.amount, offer.amount_max, offer.valorAprovado)),
     termMonths,
     redirectUrl: firstDefined(offer.redirectUrl, offer.proposalUrl, offer.contractUrl, offer.url, null),
     matchLabel: firstDefined(offer.matchLabel, computeMatchLabel(offer)),

@@ -1,62 +1,60 @@
+import crypto from 'crypto';
 import { getJurosBaixosConfig } from './config.js';
-import { jurosBaixosRequest } from './client.js';
-
-let partnerTokenCache = null;
-
-const resolveTokenFromPayload = (payload = {}) =>
-  payload?.access_token ||
-  payload?.token ||
-  payload?.jwt ||
-  payload?.data?.access_token ||
-  payload?.data?.token ||
-  payload?.data?.jwt ||
-  null;
+import { JurosBaixosValidationError } from './errors.js';
 
 const resolveExpiresAt = (payload = {}) => {
-  const expiresIn =
-    payload?.expires_in ||
-    payload?.expiresIn ||
-    payload?.data?.expires_in ||
-    payload?.data?.expiresIn ||
-    null;
-
+  const expiresIn = payload?.expiresIn || payload?.expires_in || payload?.data?.expiresIn || payload?.data?.expires_in || null;
   if (!expiresIn) return null;
   return new Date(Date.now() + Number(expiresIn) * 1000);
 };
 
-export const getPartnerAccessToken = async ({ forceRefresh = false } = {}) => {
-  const config = getJurosBaixosConfig();
-  if (!config.hasClientCredentials) return null;
+const decodeJwtPayload = (token) => {
+  if (!token) return null;
+  const [, payload] = String(token).split('.');
+  if (!payload) return null;
 
-  if (!forceRefresh && partnerTokenCache?.token && partnerTokenCache.expiresAt && partnerTokenCache.expiresAt > new Date(Date.now() + 60_000)) {
-    return partnerTokenCache;
+  const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+  const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, '=');
+
+  try {
+    return JSON.parse(Buffer.from(padded, 'base64').toString('utf8'));
+  } catch {
+    return null;
+  }
+};
+
+export const createHmacHeaders = () => {
+  const config = getJurosBaixosConfig();
+  if (!config.hasClientCredentials) {
+    throw new JurosBaixosValidationError('Juros Baixos thirdparty endpoints require JUROS_BAIXOS_CLIENT_ID and JUROS_BAIXOS_CLIENT_SECRET.');
   }
 
-  const payload = await jurosBaixosRequest({
-    path: config.endpoints.partnerAuthPath,
-    method: 'POST',
-    body: {
-      grant_type: 'client_credentials',
-      client_id: config.clientId,
-      client_secret: config.clientSecret
-    }
-  });
+  const nonce = String(Date.now());
+  const signature = crypto.createHmac('sha256', config.clientSecret).update(nonce).digest('base64');
 
-  const token = resolveTokenFromPayload(payload);
-  const expiresAt = resolveExpiresAt(payload);
-
-  partnerTokenCache = {
-    token,
-    expiresAt
-  };
-
-  return partnerTokenCache;
-};
-
-export const getPartnerAuthContext = async () => {
-  const partnerToken = await getPartnerAccessToken();
   return {
-    token: partnerToken?.token || null,
-    expiresAt: partnerToken?.expiresAt || null
+    'X-Nonce': nonce,
+    'X-ClientId': config.clientId,
+    'X-Signature': signature
   };
 };
+
+export const extractJwtContext = (payload = {}) => {
+  const token = payload?.accessToken || payload?.token || payload?.jwt || payload?.data?.accessToken || payload?.data?.token || null;
+  const refreshToken = payload?.refreshToken || payload?.data?.refreshToken || null;
+  const expiresAt = resolveExpiresAt(payload);
+  const decoded = decodeJwtPayload(token);
+
+  return {
+    token,
+    refreshToken,
+    expiresAt,
+    decoded,
+    userId: decoded?.sub || null,
+    sessionId: decoded?.sessionId || null
+  };
+};
+
+export const getPartnerAuthContext = async () => ({
+  authHeaders: createHmacHeaders()
+});

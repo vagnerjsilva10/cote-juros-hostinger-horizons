@@ -1,7 +1,7 @@
 import { getJurosBaixosConfig } from './config.js';
 import { JurosBaixosApiError } from './errors.js';
 
-const RETRYABLE_STATUS_CODES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
+const RETRYABLE_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504]);
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -16,19 +16,15 @@ const parseResponsePayload = async (response) => {
   }
 };
 
-const buildHeaders = ({ apiKey, token, headers }) => {
+const buildHeaders = ({ apiKey, token, headers, authHeaders }) => {
   const nextHeaders = {
     Accept: 'application/json',
+    ...authHeaders,
     ...headers
   };
 
-  if (apiKey) {
-    nextHeaders['x-api-key'] = apiKey;
-  }
-
-  if (token) {
-    nextHeaders.Authorization = `Bearer ${token}`;
-  }
+  if (apiKey) nextHeaders['x-api-key'] = apiKey;
+  if (token) nextHeaders.Authorization = `Bearer ${token}`;
 
   return nextHeaders;
 };
@@ -37,6 +33,7 @@ export const jurosBaixosRequest = async ({
   path,
   method = 'GET',
   headers = {},
+  authHeaders = {},
   body,
   token,
   timeoutMs,
@@ -60,6 +57,7 @@ export const jurosBaixosRequest = async ({
         headers: buildHeaders({
           apiKey: config.apiKey,
           token,
+          authHeaders,
           headers: serializedBody && !(body instanceof ArrayBuffer) ? { 'Content-Type': 'application/json', ...headers } : headers
         }),
         body: serializedBody,
@@ -93,9 +91,7 @@ export const jurosBaixosRequest = async ({
         continue;
       }
 
-      if (error instanceof JurosBaixosApiError) {
-        throw error;
-      }
+      if (error instanceof JurosBaixosApiError) throw error;
 
       throw new JurosBaixosApiError(isAbort ? 'Juros Baixos request timed out.' : 'Unexpected Juros Baixos request error.', {
         code: isAbort ? 'JB_TIMEOUT' : 'JB_NETWORK_ERROR',

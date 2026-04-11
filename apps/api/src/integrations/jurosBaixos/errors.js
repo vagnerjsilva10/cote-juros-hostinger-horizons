@@ -26,3 +26,9 @@ export class JurosBaixosNotConfiguredError extends JurosBaixosIntegrationError {
     super(message, { ...options, statusCode: options.statusCode || 503, code: options.code || 'JB_NOT_CONFIGURED' });
   }
 }
+
+export class JurosBaixosValidationError extends JurosBaixosIntegrationError {
+  constructor(message, options = {}) {
+    super(message, { ...options, statusCode: options.statusCode || 422, code: options.code || 'JB_VALIDATION_ERROR' });
+  }
+}
