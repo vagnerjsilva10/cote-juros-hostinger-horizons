@@ -177,7 +177,7 @@ function DiagnosticoPage() {
       case 5:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">?ltimo passo: Informe seu CPF</h2>
+            <h2 className="text-2xl font-bold">Último passo: Informe seu CPF</h2>
             <p className="text-muted-foreground">Usamos seu CPF apenas para simular ofertas reais de forma segura. Não consultamos o Serasa neste momento.</p>
             <Input 
               className="h-14 text-xl text-center font-variant-tabular bg-background text-foreground" 
