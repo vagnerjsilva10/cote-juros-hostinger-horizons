@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, ShieldCheck } from 'lucide-react';
+import { ArrowUpRight, Scale, ShieldCheck } from 'lucide-react';
 import { CoteJurosLogo } from './CoteJurosLogo.jsx';
 
 function Footer() {
@@ -44,15 +44,20 @@ function Footer() {
               <CoteJurosLogo />
             </Link>
             <p className="text-sm leading-7 text-muted-foreground">
-              Um comparador financeiro com interface limpa, simulação objetiva e orientação para crédito com menos ruído.
+              Cote Juros é uma plataforma de comparação financeira criada para trazer clareza às decisões de crédito.
+              Aqui você compara taxas, condições e benefícios de forma organizada antes de contratar qualquer produto financeiro.
             </p>
             <div className="flex flex-wrap gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
-                <ShieldCheck className="h-3.5 w-3.5" />
+                <ShieldCheck className="h-3.5 w-3.5 text-primary" />
                 Experiência segura
               </div>
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
                 LGPD
+              </div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
+                <Scale className="h-3.5 w-3.5 text-primary" />
+                Comparação independente
               </div>
             </div>
           </div>

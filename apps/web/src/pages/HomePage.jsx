@@ -94,94 +94,126 @@ function FinanceAiIllustration() {
   return (
     <div className="relative rounded-[24px] border border-primary/20 bg-white p-5 shadow-[var(--shadow-md)]">
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <div className="ai-ambient-glow h-56 w-56 rounded-full" />
+        <div className="ai-ambient-glow h-64 w-64 rounded-full" />
       </div>
 
       <motion.div
-        animate={{ y: [0, -4, 0] }}
-        transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
-        className="relative z-10 rounded-[18px] border border-border bg-slate-950 p-4"
+        animate={{ y: [0, -5, 0] }}
+        transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut' }}
+        className="relative z-10 space-y-3 rounded-[18px] border border-border bg-background-secondary p-4"
       >
-        <div className="mb-4 flex items-center justify-between">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Cote Finance AI</p>
-          <span className="rounded-full bg-primary/20 px-2 py-1 text-[10px] font-semibold text-primary-foreground">Ativo</span>
+        <div className="mb-1 flex items-center justify-between">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Cote Finance AI</p>
+          <span className="rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-[10px] font-semibold text-primary">
+            Atualizado
+          </span>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-3">
           <motion.div
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, ease: 'easeOut', delay: 0.1 }}
             viewport={{ once: true }}
-            className="rounded-[12px] border border-slate-800 bg-slate-900/70 p-3"
+            transition={{ duration: 0.2, ease: 'easeOut', delay: 0.05 }}
+            className="rounded-[12px] border border-emerald-200 bg-emerald-50 p-3"
           >
-            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Saldo</p>
-            <p className="mt-1 text-sm font-semibold text-emerald-400">R$ 8.438,00</p>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-emerald-700">Saldo</p>
+            <p className="mt-1 text-sm font-semibold text-emerald-700">R$ 8.438,00</p>
           </motion.div>
           <motion.div
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, ease: 'easeOut', delay: 0.18 }}
             viewport={{ once: true }}
-            className="rounded-[12px] border border-slate-800 bg-slate-900/70 p-3"
+            transition={{ duration: 0.2, ease: 'easeOut', delay: 0.13 }}
+            className="rounded-[12px] border border-orange-200 bg-orange-50 p-3"
           >
-            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Despesas</p>
-            <p className="mt-1 text-sm font-semibold text-rose-400">R$ 1.328,00</p>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-orange-700">Despesas</p>
+            <p className="mt-1 text-sm font-semibold text-orange-700">R$ 1.328,00</p>
           </motion.div>
           <motion.div
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, ease: 'easeOut', delay: 0.26 }}
             viewport={{ once: true }}
-            className="rounded-[12px] border border-slate-800 bg-slate-900/70 p-3"
+            transition={{ duration: 0.2, ease: 'easeOut', delay: 0.2 }}
+            className="rounded-[12px] border border-sky-200 bg-sky-50 p-3"
           >
-            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Reserva</p>
-            <p className="mt-1 text-sm font-semibold text-sky-400">R$ 7.110,00</p>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-sky-700">Reserva</p>
+            <p className="mt-1 text-sm font-semibold text-sky-700">R$ 7.110,00</p>
           </motion.div>
         </div>
 
-        <div className="mt-3 rounded-[14px] border border-slate-800 bg-slate-900/70 p-3">
+        <div className="rounded-[14px] border border-border bg-white p-3">
           <div className="mb-3 flex items-center justify-between">
-            <p className="text-xs font-medium text-slate-300">Fluxo mensal</p>
+            <p className="text-xs font-medium text-foreground">Fluxo mensal</p>
             <div className="flex gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-400" />
               <span className="h-2 w-2 rounded-full bg-primary" />
+              <span className="h-2 w-2 rounded-full bg-teal-500" />
+              <span className="h-2 w-2 rounded-full bg-violet-400" />
             </div>
           </div>
           <svg viewBox="0 0 240 90" className="h-[92px] w-full">
-            <path d="M4 68 C28 62, 38 54, 58 56 C86 58, 92 40, 118 41 C142 42, 152 62, 174 58 C196 54, 210 32, 236 18" fill="none" stroke="rgba(37,99,235,0.95)" strokeWidth="2.5" className="chart-draw" />
-            <path d="M4 74 C26 78, 44 72, 64 68 C86 63, 104 62, 126 58 C144 56, 160 50, 178 52 C198 53, 216 48, 236 42" fill="none" stroke="rgba(52,211,153,0.65)" strokeWidth="2" />
-            <circle cx="236" cy="18" r="4" fill="#2563EB" className="chart-pulse" />
+            <path
+              d="M4 70 C26 64, 40 52, 60 54 C84 56, 98 38, 120 40 C146 42, 156 60, 176 56 C198 52, 216 30, 236 20"
+              fill="none"
+              stroke="rgba(37,99,235,0.95)"
+              strokeWidth="2.5"
+              className="chart-draw"
+            />
+            <path
+              d="M4 74 C24 78, 42 72, 62 66 C84 60, 104 60, 126 58 C150 56, 166 50, 188 50 C208 50, 224 46, 236 40"
+              fill="none"
+              stroke="rgba(13,148,136,0.75)"
+              strokeWidth="2"
+            />
+            <path
+              d="M4 80 C30 79, 48 74, 70 74 C92 74, 110 70, 132 68 C156 66, 176 64, 196 60 C216 56, 226 54, 236 50"
+              fill="none"
+              stroke="rgba(139,92,246,0.5)"
+              strokeWidth="1.8"
+            />
+            <circle cx="236" cy="20" r="4" fill="#2563EB" className="chart-pulse" />
           </svg>
         </div>
 
-        <div className="mt-3 grid gap-3 sm:grid-cols-2">
-          <motion.div
-            animate={{ y: [0, -3, 0] }}
-            transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
-            className="rounded-[12px] border border-slate-800 bg-slate-900/70 p-3"
-          >
-            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Transações</p>
-            <ul className="mt-2 space-y-2 text-xs text-slate-300">
-              <li className="flex items-center justify-between"><span>Mercado</span><span className="text-rose-400">-R$ 450</span></li>
-              <li className="flex items-center justify-between"><span>Salário</span><span className="text-emerald-400">+R$ 4.650</span></li>
-            </ul>
-          </motion.div>
+        <div className="grid gap-3 sm:grid-cols-2">
           <motion.div
             animate={{ y: [0, -2, 0] }}
-            transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut', delay: 0.45 }}
-            className="rounded-[12px] border border-slate-800 bg-slate-900/70 p-3"
+            transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
+            className="rounded-[12px] border border-border bg-white p-3"
           >
-            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">Sinal de risco</p>
-            <p className="mt-2 text-xs text-slate-300">
-              Comprometimento sob controle. Continue monitorando gastos variáveis.
-            </p>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Transações</p>
+            <ul className="mt-2 space-y-2 text-xs text-foreground">
+              <li className="flex items-center justify-between">
+                <span>Mercado</span>
+                <span className="font-medium text-orange-600">-R$ 450</span>
+              </li>
+              <li className="flex items-center justify-between">
+                <span>Salário</span>
+                <span className="font-medium text-emerald-600">+R$ 4.650</span>
+              </li>
+            </ul>
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [0, -2, 0] }}
+            transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
+            className="rounded-[12px] border border-border bg-white p-3"
+          >
+            <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Alertas</p>
+            <div className="mt-2 space-y-2 text-xs">
+              <div className="rounded-md bg-amber-50 px-2 py-1.5 text-amber-700">
+                Pico de gasto em alimentação.
+              </div>
+              <div className="rounded-md bg-violet-50 px-2 py-1.5 text-violet-700">
+                Reserva mensal em evolução.
+              </div>
+            </div>
           </motion.div>
         </div>
       </motion.div>
 
       <div className="pointer-events-none absolute left-6 top-8 floating-dot h-3 w-3 rounded-full bg-primary/50" />
-      <div className="pointer-events-none absolute bottom-10 right-8 floating-dot h-2 w-2 rounded-full bg-sky-400/60 [animation-delay:600ms]" />
+      <div className="pointer-events-none absolute bottom-10 right-8 floating-dot h-2 w-2 rounded-full bg-teal-400/60 [animation-delay:600ms]" />
     </div>
   );
 }
@@ -318,6 +350,16 @@ function HomePage() {
 
       <section className="hero-premium relative overflow-hidden border-b border-border">
         <div className="pointer-events-none absolute inset-0 hero-grid-soft opacity-25" />
+        <motion.div
+          className="pointer-events-none absolute left-[18%] top-20 h-28 w-28 rounded-full bg-primary/20 blur-3xl"
+          animate={{ y: [0, -10, 0], opacity: [0.38, 0.55, 0.38] }}
+          transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="pointer-events-none absolute right-[15%] top-28 h-24 w-24 rounded-full bg-sky-300/25 blur-3xl"
+          animate={{ y: [0, 8, 0], opacity: [0.3, 0.48, 0.3] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
         <div className="pointer-events-none absolute left-1/2 top-16 h-72 w-[560px] -translate-x-1/2 hero-premium-glow" />
 
         <div className="page-shell relative py-20 md:py-28">
@@ -482,21 +524,23 @@ function HomePage() {
                 ))}
               </div>
 
-              <Link to="/cote-finance-ai">
-                <Button
-                  size="lg"
-                  onClick={() =>
-                    trackingService.trackCtaClick({
-                      sourcePage: '/',
-                      ctaId: 'home_ai_entry',
-                      ctaLabel: 'Explorar Cote Finance AI',
-                      productType: 'loan'
-                    })
-                  }
-                >
-                  Explorar Cote Finance AI
-                </Button>
-              </Link>
+              <div className="pt-3">
+                <Link to="/cote-finance-ai">
+                  <Button
+                    size="lg"
+                    onClick={() =>
+                      trackingService.trackCtaClick({
+                        sourcePage: '/',
+                        ctaId: 'home_ai_entry',
+                        ctaLabel: 'Explorar Cote Finance AI',
+                        productType: 'loan'
+                      })
+                    }
+                  >
+                    Explorar Cote Finance AI
+                  </Button>
+                </Link>
+              </div>
             </motion.div>
 
             <motion.div

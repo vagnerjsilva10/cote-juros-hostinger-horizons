@@ -213,8 +213,8 @@
 
   .hero-premium {
     background:
-      radial-gradient(circle at 50% 30%, rgba(37, 99, 235, 0.05), transparent 42%),
-      linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+      radial-gradient(circle at 50% 28%, rgba(37, 99, 235, 0.12), transparent 44%),
+      linear-gradient(180deg, #ffffff 0%, #eaf1ff 100%);
   }
 
   .hero-premium-glow {

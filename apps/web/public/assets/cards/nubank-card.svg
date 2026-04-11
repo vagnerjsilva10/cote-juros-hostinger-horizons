@@ -1,0 +1,18 @@
+<svg width="960" height="600" viewBox="0 0 960 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="960" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8A05BE"/>
+      <stop offset="1" stop-color="#5B0A89"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(760 130) rotate(136.2) scale(350 300)">
+      <stop stop-color="#B467D8" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#B467D8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="960" height="600" rx="36" fill="url(#bg)"/>
+  <rect width="960" height="600" rx="36" fill="url(#glow)"/>
+  <rect x="70" y="88" width="92" height="68" rx="12" fill="#EAD6F3" fill-opacity="0.9"/>
+  <text x="76" y="366" fill="white" fill-opacity="0.9" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.08em">•••• 3412</text>
+  <text x="70" y="488" fill="white" fill-opacity="0.95" font-family="Inter, Arial, sans-serif" font-size="62" font-weight="700">Nubank</text>
+  <text x="760" y="512" fill="white" fill-opacity="0.92" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">Mastercard</text>
+</svg>

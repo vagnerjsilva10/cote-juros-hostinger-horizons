@@ -11,7 +11,22 @@ import { AdSpace } from '@/components/AdSpace.jsx';
 import PageHero from '@/components/PageHero.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 
-const CATEGORIES = ['Todas', 'Emprestimos', 'Cartoes de Credito', 'Financas Pessoais', 'Score de Credito', 'Financiamento'];
+const CATEGORIES = ['Todas', 'Empréstimos', 'Cartões de Crédito', 'Finanças Pessoais', 'Score de Crédito', 'Financiamento'];
+
+const CATEGORY_THUMBNAILS = {
+  'Empréstimos': 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80',
+  'Cartões de Crédito': 'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?auto=format&fit=crop&w=1200&q=80',
+  'Finanças Pessoais': 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=1200&q=80',
+  'Score de Crédito': 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80',
+  Financiamento: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80'
+};
+
+const fallbackThumbnail = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80';
+
+const resolveArticleImage = (article) => {
+  if (article?.image && String(article.image).trim().length > 0) return article.image;
+  return CATEGORY_THUMBNAILS[article?.category] || fallbackThumbnail;
+};
 
 function BlogPage() {
   const [articlesData, setArticlesData] = useState([]);
@@ -54,7 +69,7 @@ function BlogPage() {
         centered
         badge="Editorial"
         title="Artigos organizados em uma leitura mais limpa."
-        subtitle="Conteudo financeiro com menos blocos promocionais e mais foco no texto, resumo e contexto de publicacao."
+        subtitle="Conteúdo financeiro com menos blocos promocionais e mais foco em educação, contexto e decisão."
       >
         <div className="relative mx-auto max-w-xl">
           <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -97,7 +112,7 @@ function BlogPage() {
           <Card className="mb-10 overflow-hidden">
             <div className="grid lg:grid-cols-[1.1fr_0.9fr]">
               <div className="min-h-[320px]">
-                <img src={featured.image} alt={featured.title} className="h-full w-full object-cover grayscale" />
+                <img src={resolveArticleImage(featured)} alt={featured.title} className="h-full w-full object-cover" />
               </div>
               <CardContent className="flex flex-col justify-center gap-5 p-10">
                 <Badge variant="outline" className="w-fit">Destaque</Badge>
@@ -105,11 +120,11 @@ function BlogPage() {
                 <p>{featured.summary}</p>
                 <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                   <span className="inline-flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4" />
+                    <CalendarDays className="h-4 w-4 text-primary" />
                     {formatDate(featured.publishDate)}
                   </span>
                   <span className="inline-flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
+                    <Clock className="h-4 w-4 text-primary" />
                     {featured.readTime} min
                   </span>
                 </div>
@@ -127,7 +142,7 @@ function BlogPage() {
               <React.Fragment key={article.id}>
                 <Card className="surface-card overflow-hidden">
                   <div className="h-52">
-                    <img src={article.image} alt={article.title} className="h-full w-full object-cover grayscale" />
+                    <img src={resolveArticleImage(article)} alt={article.title} className="h-full w-full object-cover" />
                   </div>
                   <CardContent className="flex h-full flex-col gap-4 p-8">
                     <div className="flex items-center justify-between gap-3">
@@ -138,7 +153,7 @@ function BlogPage() {
                     <p className="line-clamp-3">{article.summary}</p>
                     <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
                       <span className="text-xs text-muted-foreground">{formatDate(article.publishDate)}</span>
-                      <Button variant="link" className="px-0" onClick={() => setSelectedArticle(article)}>
+                      <Button variant="link" className="px-0 text-primary" onClick={() => setSelectedArticle(article)}>
                         Abrir
                       </Button>
                     </div>
@@ -171,7 +186,7 @@ function BlogPage() {
           {selectedArticle ? (
             <div className="flex flex-col">
               <div className="h-64 border-b border-border sm:h-80">
-                <img src={selectedArticle.image} alt={selectedArticle.title} className="h-full w-full object-cover grayscale" />
+                <img src={resolveArticleImage(selectedArticle)} alt={selectedArticle.title} className="h-full w-full object-cover" />
               </div>
               <div className="space-y-8 p-8 sm:p-10">
                 <div className="space-y-4">

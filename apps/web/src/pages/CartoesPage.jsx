@@ -15,6 +15,28 @@ import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
 
+const bankCardImages = {
+  nubank: '/assets/cards/nubank-card.svg',
+  itau: '/assets/cards/itau-card.svg',
+  santander: '/assets/cards/santander-card.svg',
+  c6: '/assets/cards/c6-card.svg'
+};
+
+const normalizeBankKey = (value = '') =>
+  String(value)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+const resolveCardImage = (card) => {
+  const bankName = normalizeBankKey(card?.bankName);
+  if (bankName.includes('nubank')) return bankCardImages.nubank;
+  if (bankName.includes('itau')) return bankCardImages.itau;
+  if (bankName.includes('santander')) return bankCardImages.santander;
+  if (bankName.includes('c6')) return bankCardImages.c6;
+  return card?.image;
+};
+
 function CartoesPage() {
   const [cardsData, setCardsData] = useState([]);
   const [freeAnnuity, setFreeAnnuity] = useState(false);
@@ -206,7 +228,7 @@ function CartoesPage() {
                 return (
                   <Card key={card.id} className="surface-card h-full overflow-hidden border-border bg-white">
                     <div className="relative h-44 border-b border-border bg-background-secondary">
-                      <img src={card.image} alt={card.title} className="h-full w-full object-cover" />
+                      <img src={resolveCardImage(card)} alt={card.title} className="h-full w-full object-cover" />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/35 via-slate-900/5 to-transparent" />
                       <div className="absolute inset-x-5 bottom-5">
                         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/85">{card.bankName}</p>
