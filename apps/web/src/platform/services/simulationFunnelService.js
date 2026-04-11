@@ -66,6 +66,67 @@ export const simulationFunnelService = {
     });
 
     return lead;
+  },
+
+  async runCreditJourney({
+    sourcePage,
+    productType,
+    requestedAmount,
+    installments,
+    fullName,
+    cpf,
+    phone,
+    email,
+    income,
+    scoreRange,
+    hasRestriction,
+    employmentStatus,
+    utm
+  } = {}) {
+    const start = await portalApi.startCreditJourney({
+      fullName,
+      cpf,
+      phone,
+      email,
+      requestedAmount,
+      income,
+      scoreRange,
+      employmentStatus,
+      hasRestriction,
+      productType,
+      sourcePage,
+      utm_source: utm?.utm_source,
+      utm_medium: utm?.utm_medium,
+      utm_campaign: utm?.utm_campaign
+    });
+
+    const simulation = await portalApi.simulateCredit({
+      leadId: start.lead.id,
+      providerSessionId: start.providerSession?.id,
+      requestedAmount,
+      installments,
+      productType
+    });
+
+    await portalApi.trackCta({
+      sourcePage,
+      ctaId: 'simulation_submit',
+      ctaLabel: 'Enviar simulação',
+      productType,
+      utm,
+      metadata: {
+        leadId: start.lead.id,
+        simulationId: simulation?.simulation?.id,
+        requestedAmount,
+        installments
+      }
+    });
+
+    return {
+      ...simulation,
+      lead: start.lead,
+      providerSession: start.providerSession
+    };
   }
 };
 

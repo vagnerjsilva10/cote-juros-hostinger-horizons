@@ -147,6 +147,157 @@ model SimulationLead {
   @@map("simulation_leads")
 }
 
+model CreditLead {
+  id               String      @id @default(cuid())
+  fullName         String      @map("full_name")
+  cpf              String
+  email            String?
+  phone            String?
+  requestedAmount  Decimal?    @db.Decimal(14, 2) @map("requested_amount")
+  income           Decimal?    @db.Decimal(14, 2)
+  scoreRange       String?     @map("score_range")
+  employmentStatus String?     @map("employment_status")
+  hasRestriction   Boolean?    @map("has_restriction")
+  productType      ProductType @map("product_type")
+  sourcePage       String?     @map("source_page")
+  utmSource        String?     @map("utm_source")
+  utmMedium        String?     @map("utm_medium")
+  utmCampaign      String?     @map("utm_campaign")
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
+
+  providerSessions CreditProviderSession[]
+  simulations      CreditSimulation[]
+
+  @@index([cpf])
+  @@index([productType, createdAt])
+  @@index([sourcePage, createdAt])
+  @@map("credit_leads")
+}
+
+model CreditProviderSession {
+  id                String    @id @default(cuid())
+  leadId            String    @map("lead_id")
+  provider          String    @default("juros_baixos")
+  externalUserId    String?   @map("external_user_id")
+  externalSessionId String?   @map("external_session_id")
+  externalJwt       String?   @db.Text @map("external_jwt")
+  tokenExpiresAt    DateTime? @map("token_expires_at")
+  status            String    @default("pending")
+  lastError         String?   @map("last_error")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  lead        CreditLead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  simulations CreditSimulation[]
+
+  @@index([leadId, provider])
+  @@index([status, updatedAt])
+  @@unique([provider, externalUserId])
+  @@unique([provider, externalSessionId])
+  @@map("credit_provider_sessions")
+}
+
+model CreditSimulation {
+  id                   String      @id @default(cuid())
+  leadId               String      @map("lead_id")
+  providerSessionId    String?     @map("provider_session_id")
+  provider             String      @default("juros_baixos")
+  externalSimulationId String?     @map("external_simulation_id")
+  requestedAmount      Decimal?    @db.Decimal(14, 2) @map("requested_amount")
+  installments         Int?
+  productType          ProductType @map("product_type")
+  status               String      @default("pending")
+  rawRequest           Json?       @map("raw_request")
+  rawResponse          Json?       @map("raw_response")
+  createdAt            DateTime    @default(now()) @map("created_at")
+  updatedAt            DateTime    @updatedAt @map("updated_at")
+
+  lead            CreditLead             @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  providerSession CreditProviderSession? @relation(fields: [providerSessionId], references: [id], onDelete: SetNull)
+  offers          CreditOfferSnapshot[]
+  conversions     CreditConversion[]
+  clicks          CreditOfferClick[]
+
+  @@index([leadId, createdAt])
+  @@index([providerSessionId, createdAt])
+  @@index([provider, status, createdAt])
+  @@unique([provider, externalSimulationId])
+  @@map("credit_simulations")
+}
+
+model CreditOfferSnapshot {
+  id                String    @id @default(cuid())
+  simulationId      String    @map("simulation_id")
+  provider          String    @default("juros_baixos")
+  externalOfferId   String?   @map("external_offer_id")
+  bankName          String    @map("bank_name")
+  productName       String    @map("product_name")
+  monthlyRate       Decimal?  @db.Decimal(10, 4) @map("monthly_rate")
+  cet               Decimal?  @db.Decimal(10, 4)
+  installmentAmount Decimal?  @db.Decimal(14, 2) @map("installment_amount")
+  totalAmount       Decimal?  @db.Decimal(14, 2) @map("total_amount")
+  approvedAmount    Decimal?  @db.Decimal(14, 2) @map("approved_amount")
+  termMonths        Int?      @map("term_months")
+  redirectUrl       String?   @map("redirect_url")
+  rankingScore      Decimal?  @db.Decimal(10, 4) @map("ranking_score")
+  matchLabel        String?   @map("match_label")
+  rawPayload        Json?     @map("raw_payload")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  simulation  CreditSimulation  @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  conversions CreditConversion[]
+  clicks      CreditOfferClick[]
+
+  @@index([simulationId, createdAt])
+  @@index([provider, bankName])
+  @@unique([simulationId, externalOfferId])
+  @@map("credit_offer_snapshots")
+}
+
+model CreditConversion {
+  id                   String    @id @default(cuid())
+  simulationId         String    @map("simulation_id")
+  offerSnapshotId      String?   @map("offer_snapshot_id")
+  provider             String    @default("juros_baixos")
+  externalConversionId String?   @map("external_conversion_id")
+  status               String    @default("pending")
+  commissionAmount     Decimal?  @db.Decimal(14, 2) @map("commission_amount")
+  convertedAt          DateTime? @map("converted_at")
+  rawPayload           Json?     @map("raw_payload")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  simulation   CreditSimulation   @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  offerSnapshot CreditOfferSnapshot? @relation(fields: [offerSnapshotId], references: [id], onDelete: SetNull)
+
+  @@index([simulationId, createdAt])
+  @@index([status, convertedAt])
+  @@unique([provider, externalConversionId])
+  @@map("credit_conversions")
+}
+
+model CreditOfferClick {
+  id             String   @id @default(cuid())
+  simulationId   String   @map("simulation_id")
+  offerSnapshotId String  @map("offer_snapshot_id")
+  provider       String   @default("juros_baixos")
+  sourcePage     String   @map("source_page")
+  utmSource      String?  @map("utm_source")
+  utmMedium      String?  @map("utm_medium")
+  utmCampaign    String?  @map("utm_campaign")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  simulation   CreditSimulation    @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  offerSnapshot CreditOfferSnapshot @relation(fields: [offerSnapshotId], references: [id], onDelete: Cascade)
+
+  @@index([simulationId, createdAt])
+  @@index([offerSnapshotId, createdAt])
+  @@index([provider, createdAt])
+  @@map("credit_offer_clicks")
+}
+
 model ClickEvent {
   id          String   @id @default(cuid())
   offerId     String?  @map("offer_id")

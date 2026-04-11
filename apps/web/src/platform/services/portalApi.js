@@ -30,7 +30,17 @@ const request = async (path, options = {}) => {
   });
 
   if (!response.ok) {
-    throw new Error(`API request failed (${response.status})`);
+    let message = `API request failed (${response.status})`;
+
+    try {
+      const errorPayload = await response.json();
+      if (errorPayload?.message) message = errorPayload.message;
+      else if (errorPayload?.error) message = errorPayload.error;
+    } catch {
+      // ignore non-JSON error bodies
+    }
+
+    throw new Error(message);
   }
 
   const payload = await response.json();
@@ -85,6 +95,47 @@ const normalizeArticleRecord = (article = {}) => ({
     'https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=1200&q=80',
   category: normalizeMojibake(article.category || article.categoryName || article.category?.name || 'Finanças Pessoais')
 });
+
+const normalizeCreditOfferRecord = (offer = {}) => ({
+  id: offer.id,
+  externalOfferId: offer.externalOfferId || offer.id,
+  provider: offer.provider || 'juros_baixos',
+  bankName: normalizeMojibake(offer.bankName || ''),
+  productName: normalizeMojibake(offer.productName || ''),
+  monthlyRate: offer.monthlyRate != null ? Number(offer.monthlyRate) : null,
+  cet: offer.cet != null ? Number(offer.cet) : null,
+  installmentAmount: offer.installmentAmount != null ? Number(offer.installmentAmount) : null,
+  totalAmount: offer.totalAmount != null ? Number(offer.totalAmount) : null,
+  approvedAmount: offer.approvedAmount != null ? Number(offer.approvedAmount) : null,
+  termMonths: offer.termMonths != null ? Number(offer.termMonths) : null,
+  redirectUrl: offer.redirectUrl || null,
+  matchLabel: normalizeMojibake(offer.matchLabel || 'Compatível com seu perfil'),
+  rawPayload: offer.rawPayload || null
+});
+
+const buildLocalCreditOffers = (payload = {}) =>
+  portalRepository
+    .listOffers({
+      productType: payload.productType || 'loan',
+      amount: payload.requestedAmount
+    })
+    .slice(0, 6)
+    .map((offer, index) =>
+      normalizeCreditOfferRecord({
+        id: `local_credit_offer_${index + 1}`,
+        externalOfferId: offer.id,
+        provider: 'catalog_fallback',
+        bankName: offer.bankName,
+        productName: offer.title || offer.category,
+        monthlyRate: offer.monthlyRate,
+        cet: offer.annualRate,
+        approvedAmount: offer.maxValue,
+        termMonths: payload.installments || offer.maxTerm,
+        redirectUrl: offer.redirectUrl,
+        matchLabel: index === 0 ? 'Destaque do portal' : 'Fallback do catálogo',
+        rawPayload: offer
+      })
+    );
 
 export const portalApi = {
   async getBanks() {
@@ -389,5 +440,116 @@ export const portalApi = {
   async getAdminAnalyticsOverview() {
     await wait();
     return portalRepository.getAnalyticsOverview();
+  },
+
+  async startCreditJourney(payload) {
+    if (!useRemote) {
+      await wait();
+      return {
+        lead: {
+          id: `local_credit_lead_${Date.now()}`,
+          fullName: payload.fullName,
+          cpf: payload.cpf,
+          email: payload.email,
+          phone: payload.phone,
+          requestedAmount: payload.requestedAmount,
+          income: payload.income,
+          scoreRange: payload.scoreRange,
+          employmentStatus: payload.employmentStatus,
+          hasRestriction: payload.hasRestriction,
+          productType: payload.productType,
+          sourcePage: payload.sourcePage,
+          createdAt: new Date().toISOString()
+        },
+        providerSession: {
+          id: `local_provider_session_${Date.now()}`,
+          provider: 'catalog_fallback',
+          status: 'not_configured'
+        }
+      };
+    }
+
+    return request('/api/credit/start', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async simulateCredit(payload) {
+    if (!useRemote) {
+      await wait();
+      const simulationId = `local_credit_simulation_${Date.now()}`;
+      return {
+        simulation: {
+          id: simulationId,
+          leadId: payload.leadId,
+          providerSessionId: payload.providerSessionId,
+          provider: 'catalog_fallback',
+          requestedAmount: payload.requestedAmount,
+          installments: payload.installments,
+          productType: payload.productType,
+          status: 'completed',
+          createdAt: new Date().toISOString()
+        },
+        offers: buildLocalCreditOffers(payload),
+        providerConfigured: false
+      };
+    }
+
+    const data = await request('/api/credit/simulate', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+
+    return {
+      ...data,
+      offers: Array.isArray(data?.offers) ? data.offers.map(normalizeCreditOfferRecord) : []
+    };
+  },
+
+  async getCreditSimulation(id) {
+    if (!useRemote) {
+      await wait();
+      return {
+        simulation: {
+          id,
+          provider: 'catalog_fallback',
+          requestedAmount: null,
+          installments: null,
+          productType: 'loan',
+          status: 'completed'
+        },
+        lead: null,
+        providerSession: null,
+        offers: buildLocalCreditOffers({ productType: 'loan' })
+      };
+    }
+
+    const data = await request(`/api/credit/simulations/${id}`);
+    return {
+      ...data,
+      offers: Array.isArray(data?.offers) ? data.offers.map(normalizeCreditOfferRecord) : []
+    };
+  },
+
+  async trackCreditOfferClick({ offerId, sourcePage, utm }) {
+    if (!useRemote) {
+      await wait();
+      return {
+        offerId,
+        redirectUrl: null,
+        provider: 'catalog_fallback'
+      };
+    }
+
+    return request(`/api/credit/offers/${offerId}/click`, {
+      method: 'POST',
+      body: JSON.stringify({
+        sourcePage,
+        utm_source: utm?.utm_source,
+        utm_medium: utm?.utm_medium,
+        utm_campaign: utm?.utm_campaign
+      })
+    });
   }
 };

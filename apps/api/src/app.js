@@ -6,9 +6,13 @@ import simulationsRoutes from './routes/simulations.js';
 import trackingRoutes from './routes/tracking.js';
 import partnersRoutes from './routes/partners.js';
 import integrationRoutes from './routes/integration.js';
+import creditRoutes from './routes/credit.js';
 import { PrismaConfigError } from './lib/prisma.js';
+import { IntegrationConfigurationError, JurosBaixosIntegrationError } from './integrations/jurosBaixos/errors.js';
+import { validateJurosBaixosEnvironment } from './integrations/jurosBaixos/config.js';
 
 export const createApp = () => {
+  validateJurosBaixosEnvironment();
   const app = express();
 
   app.use(
@@ -33,6 +37,7 @@ export const createApp = () => {
   app.use('/api/tracking', trackingRoutes);
   app.use('/api/partners', partnersRoutes);
   app.use('/api/integration', integrationRoutes);
+  app.use('/api/credit', creditRoutes);
 
   app.use((err, req, res, _next) => {
     if (err?.name === 'ZodError') {
@@ -41,6 +46,23 @@ export const createApp = () => {
 
     if (err instanceof PrismaConfigError) {
       return res.status(500).json({ error: 'Database configuration error', message: err.message });
+    }
+
+    if (err instanceof IntegrationConfigurationError) {
+      return res.status(err.statusCode || 500).json({
+        error: 'Integration configuration error',
+        code: err.code || null,
+        message: err.message
+      });
+    }
+
+    if (err instanceof JurosBaixosIntegrationError) {
+      return res.status(err.statusCode || 502).json({
+        error: 'Provider integration error',
+        code: err.code || null,
+        message: err.message,
+        details: err.expose ? err.details : null
+      });
     }
 
     if (err?.name?.startsWith('Prisma')) {

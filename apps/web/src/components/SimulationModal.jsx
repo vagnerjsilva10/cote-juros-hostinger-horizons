@@ -1,7 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, Briefcase, Building2, CheckCircle2, ChevronLeft, ShieldCheck, User, UserMinus, Wallet, XCircle } from 'lucide-react';
+import {
+  ArrowRight,
+  Briefcase,
+  Building2,
+  CheckCircle2,
+  ChevronLeft,
+  LoaderCircle,
+  Mail,
+  Phone,
+  ShieldCheck,
+  User,
+  UserMinus,
+  Wallet,
+  XCircle
+} from 'lucide-react';
+import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -11,13 +26,18 @@ import { simulationFunnelService } from '@/platform/services/simulationFunnelSer
 
 export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
   const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [data, setData] = useState({
     valor: initialAmount,
+    parcelas: 24,
     renda: 5000,
     emprego: '',
     score: '',
     restricao: null,
+    nome: '',
     cpf: '',
+    telefone: '',
+    email: '',
     terms: false
   });
 
@@ -27,7 +47,13 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
     if (!isOpen) return;
 
     setStep(1);
-    setData((previous) => ({ ...previous, valor: initialAmount }));
+    setIsSubmitting(false);
+    setData((previous) => ({
+      ...previous,
+      valor: initialAmount,
+      parcelas: previous.parcelas || 24
+    }));
+
     simulationFunnelService.start({
       sourcePage: window.location.pathname,
       productType: 'loan',
@@ -38,14 +64,19 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
 
   useEffect(() => {
     if (!isOpen) return;
+
     simulationFunnelService.progress({
       sourcePage: window.location.pathname,
       productType: 'loan',
       funnelStep: step,
       amount: data.valor,
-      score: data.score
+      score: data.score,
+      utm: Object.fromEntries(new URLSearchParams(window.location.search).entries()),
+      metadata: {
+        installments: data.parcelas
+      }
     });
-  }, [data.score, data.valor, isOpen, step]);
+  }, [data.parcelas, data.score, data.valor, isOpen, step]);
 
   const employmentTypes = [
     { id: 'CLT', icon: Briefcase },
@@ -55,7 +86,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
     { id: 'Desempregado', icon: UserMinus }
   ];
 
-  const nextStep = () => setStep((current) => Math.min(current + 1, 6));
+  const nextStep = () => setStep((current) => Math.min(current + 1, 7));
   const prevStep = () => setStep((current) => Math.max(current - 1, 1));
 
   const formatCPF = (value) => {
@@ -66,32 +97,63 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
     setData((previous) => ({ ...previous, cpf: next }));
   };
 
-  const handleComplete = async () => {
-    const lead = await simulationFunnelService.submitLead({
-      sourcePage: window.location.pathname,
-      productType: 'loan',
-      amount: data.valor,
-      income: data.renda,
-      score: data.score,
-      hasDebt: data.restricao,
-      employmentType: data.emprego,
-      cpf: data.cpf,
-      funnelStep: 'completed',
-      utm: Object.fromEntries(new URLSearchParams(window.location.search).entries()),
-      metadata: { modal: 'simulation' }
-    });
+  const formatPhone = (value) => {
+    let next = value.replace(/\D/g, '').slice(0, 11);
+    if (next.length > 10) next = next.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    else if (next.length > 6) next = next.replace(/(\d{2})(\d{4,5})(\d{1,4})/, '($1) $2-$3');
+    else if (next.length > 2) next = next.replace(/(\d{2})(\d{1,5})/, '($1) $2');
+    setData((previous) => ({ ...previous, telefone: next }));
+  };
 
-    onClose();
-    navigate(`/emprestimos?lead_id=${lead.id}`);
+  const isIdentityStepValid =
+    data.nome.trim().length >= 3 &&
+    data.cpf.length === 14 &&
+    data.telefone.replace(/\D/g, '').length >= 10 &&
+    /\S+@\S+\.\S+/.test(data.email) &&
+    data.terms;
+
+  const handleComplete = async () => {
+    try {
+      setIsSubmitting(true);
+
+      const utm = Object.fromEntries(new URLSearchParams(window.location.search).entries());
+      const result = await simulationFunnelService.runCreditJourney({
+        sourcePage: window.location.pathname,
+        productType: 'loan',
+        requestedAmount: data.valor,
+        installments: data.parcelas,
+        fullName: data.nome,
+        cpf: data.cpf,
+        phone: data.telefone,
+        email: data.email,
+        income: data.renda,
+        scoreRange: data.score,
+        hasRestriction: data.restricao,
+        employmentStatus: data.emprego,
+        utm
+      });
+
+      onClose();
+      navigate(`/emprestimos?credit_simulation_id=${result.simulation.id}`, {
+        state: {
+          creditJourney: result
+        }
+      });
+    } catch (error) {
+      toast.error(error.message || 'Não foi possível concluir a simulação agora.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const stepTitle = [
     'Valor desejado',
+    'Prazo ideal',
     'Renda mensal',
     'Vínculo principal',
     'Faixa de score',
     'Restrição no nome',
-    'Confirmação final'
+    'Dados finais'
   ];
 
   return (
@@ -109,12 +171,12 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                 </button>
               ) : null}
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Passo {step} de 6</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Passo {step} de 7</p>
                 <p className="text-sm font-medium text-foreground">{stepTitle[step - 1]}</p>
               </div>
             </div>
             <div className="flex gap-2">
-              {[1, 2, 3, 4, 5, 6].map((item) => (
+              {[1, 2, 3, 4, 5, 6, 7].map((item) => (
                 <span
                   key={item}
                   className={`h-1.5 w-8 rounded-full transition-colors duration-200 ${item <= step ? 'bg-foreground' : 'bg-border'}`}
@@ -124,7 +186,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
           </div>
         </div>
 
-        <div className="min-h-[460px] px-8 py-10 sm:px-12">
+        <div className="min-h-[500px] px-8 py-10 sm:px-12">
           <AnimatePresence mode="wait">
             <motion.div
               key={step}
@@ -153,6 +215,22 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
               {step === 2 ? (
                 <>
                   <div className="space-y-3">
+                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Em quantas parcelas você pretende pagar?</h2>
+                    <p className="text-base text-muted-foreground">Usamos essa referência para buscar ofertas mais próximas da sua necessidade.</p>
+                  </div>
+                  <div className="rounded-[16px] border border-border bg-background-secondary px-6 py-8 text-center">
+                    <p className="text-4xl font-semibold tracking-[-0.04em] text-foreground">{data.parcelas}x</p>
+                  </div>
+                  <Slider value={[data.parcelas]} onValueChange={(value) => setData((previous) => ({ ...previous, parcelas: value[0] }))} max={84} min={3} step={1} />
+                  <Button size="lg" className="w-full" onClick={nextStep}>
+                    Continuar <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </>
+              ) : null}
+
+              {step === 3 ? (
+                <>
+                  <div className="space-y-3">
                     <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Qual é a sua renda mensal?</h2>
                     <p className="text-base text-muted-foreground">Usamos esse dado para priorizar ofertas mais compatíveis com o seu contexto.</p>
                   </div>
@@ -166,11 +244,11 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                 </>
               ) : null}
 
-              {step === 3 ? (
+              {step === 4 ? (
                 <>
                   <div className="space-y-3">
                     <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Como você recebe a maior parte da renda?</h2>
-                    <p className="text-base text-muted-foreground">Uma seleção simples, em cards discretos, seguindo a mesma referência visual.</p>
+                    <p className="text-base text-muted-foreground">Uma seleção simples, direta e compatível com o funil atual.</p>
                   </div>
                   <div className="grid gap-3 sm:grid-cols-3">
                     {employmentTypes.map((item) => (
@@ -193,7 +271,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                 </>
               ) : null}
 
-              {step === 4 ? (
+              {step === 5 ? (
                 <>
                   <div className="space-y-3">
                     <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Qual faixa de score mais se aproxima do seu perfil?</h2>
@@ -230,11 +308,11 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                 </>
               ) : null}
 
-              {step === 5 ? (
+              {step === 6 ? (
                 <>
                   <div className="space-y-3">
                     <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Existe alguma restrição em aberto?</h2>
-                    <p className="text-base text-muted-foreground">Mantemos a pergunta direta para não criar atrito desnecessário no fluxo.</p>
+                    <p className="text-base text-muted-foreground">Mantemos a pergunta objetiva para não criar atrito desnecessário.</p>
                   </div>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {[
@@ -260,26 +338,56 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                 </>
               ) : null}
 
-              {step === 6 ? (
+              {step === 7 ? (
                 <>
                   <div className="space-y-3">
-                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Último passo para ver ofertas personalizadas.</h2>
-                    <p className="text-base text-muted-foreground">Coletamos apenas o necessário para concluir a simulação com segurança.</p>
+                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Último passo para buscar suas ofertas.</h2>
+                    <p className="text-base text-muted-foreground">Coletamos apenas os dados necessários para iniciar a jornada real de crédito no backend.</p>
                   </div>
 
                   <div className="space-y-4">
                     <Input
+                      placeholder="Nome completo"
+                      value={data.nome}
+                      onChange={(event) => setData((previous) => ({ ...previous, nome: event.target.value }))}
+                      className="h-14 text-base"
+                    />
+
+                    <Input
                       placeholder="000.000.000-00"
                       value={data.cpf}
                       onChange={(event) => formatCPF(event.target.value)}
-                      className="h-14 text-center text-xl font-semibold tracking-[0.08em]"
+                      className="h-14 text-base"
                     />
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="relative">
+                        <Phone className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          placeholder="(11) 99999-9999"
+                          value={data.telefone}
+                          onChange={(event) => formatPhone(event.target.value)}
+                          className="h-14 pl-11 text-base"
+                        />
+                      </div>
+
+                      <div className="relative">
+                        <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          type="email"
+                          placeholder="voce@exemplo.com"
+                          value={data.email}
+                          onChange={(event) => setData((previous) => ({ ...previous, email: event.target.value }))}
+                          className="h-14 pl-11 text-base"
+                        />
+                      </div>
+                    </div>
 
                     <div className="rounded-[12px] border border-border bg-background-secondary p-4">
                       <div className="flex items-start gap-3">
                         <ShieldCheck className="mt-0.5 h-5 w-5 text-foreground" />
                         <p className="text-sm text-muted-foreground">
-                          Seu CPF será usado apenas para personalizar a consulta. Nesta etapa inicial, o fluxo prioriza segurança e transparência.
+                          Seus dados são enviados apenas para a API da Cote Juros, que controla a integração com o provedor de crédito no backend.
                         </p>
                       </div>
                     </div>
@@ -293,13 +401,17 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                     </label>
                   </div>
 
-                  <Button
-                    size="lg"
-                    className="w-full"
-                    disabled={data.cpf.length !== 14 || !data.terms}
-                    onClick={handleComplete}
-                  >
-                    Ver ofertas personalizadas <ArrowRight className="h-4 w-4" />
+                  <Button size="lg" className="w-full" disabled={!isIdentityStepValid || isSubmitting} onClick={handleComplete}>
+                    {isSubmitting ? (
+                      <>
+                        <LoaderCircle className="h-4 w-4 animate-spin" />
+                        Buscando ofertas
+                      </>
+                    ) : (
+                      <>
+                        Ver ofertas personalizadas <ArrowRight className="h-4 w-4" />
+                      </>
+                    )}
                   </Button>
                 </>
               ) : null}

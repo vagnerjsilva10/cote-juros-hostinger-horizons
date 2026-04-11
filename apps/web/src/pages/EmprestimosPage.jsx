@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ChevronRight, Clock, Filter, LayoutGrid, List, ShieldCheck, Sparkles, Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -27,8 +27,11 @@ const bankAccentById = {
 };
 
 function EmprestimosPage() {
+  const location = useLocation();
   const [banksData, setBanksData] = useState([]);
   const [loansData, setLoansData] = useState([]);
+  const [creditJourney, setCreditJourney] = useState(location.state?.creditJourney || null);
+  const [creditJourneyLoading, setCreditJourneyLoading] = useState(false);
   const [amount, setAmount] = useState([10000]);
   const [type, setType] = useState('Todos');
   const [score, setScore] = useState('Todos');
@@ -42,6 +45,31 @@ function EmprestimosPage() {
       setLoansData(offers);
     });
   }, []);
+
+  useEffect(() => {
+    const simulationId = new URLSearchParams(location.search).get('credit_simulation_id');
+    if (!simulationId) return;
+    if (creditJourney?.simulation?.id === simulationId) return;
+
+    let ignore = false;
+    setCreditJourneyLoading(true);
+
+    portalApi
+      .getCreditSimulation(simulationId)
+      .then((result) => {
+        if (!ignore) setCreditJourney(result);
+      })
+      .catch(() => {
+        if (!ignore) toast.error('Não foi possível carregar a simulação personalizada.');
+      })
+      .finally(() => {
+        if (!ignore) setCreditJourneyLoading(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [creditJourney?.simulation?.id, location.search]);
 
   const filteredLoans = useMemo(() => {
     let result = loansData.filter((loan) => {
@@ -101,6 +129,28 @@ function EmprestimosPage() {
     window.location.href = redirect.resolvedUrl;
   };
 
+  const handleCreditOfferClick = async (offer) => {
+    try {
+      const utm = Object.fromEntries(new URLSearchParams(window.location.search).entries());
+      const tracking = await portalApi.trackCreditOfferClick({
+        offerId: offer.id,
+        sourcePage: '/emprestimos',
+        utm
+      });
+
+      const destinationUrl = tracking?.redirectUrl || offer.redirectUrl;
+      if (!destinationUrl) {
+        toast.error('Essa oferta ainda não possui link de contratação disponível.');
+        return;
+      }
+
+      toast.success(`Oferta registrada para ${offer.bankName}.`);
+      window.location.href = destinationUrl;
+    } catch (error) {
+      toast.error(error.message || 'Não foi possível continuar para a oferta.');
+    }
+  };
+
   const resetFilters = () => {
     setAmount([10000]);
     setType('Todos');
@@ -156,6 +206,103 @@ function EmprestimosPage() {
       </section>
 
       <div className="page-shell py-12" id="resultados-emprestimos">
+        {creditJourneyLoading ? (
+          <div className="mb-8 rounded-[20px] border border-border bg-white px-8 py-10 shadow-[var(--shadow-sm)]">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">Simulação personalizada</p>
+            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-foreground">Carregando suas ofertas reais...</h2>
+          </div>
+        ) : null}
+
+        {creditJourney?.offers?.length ? (
+          <section className="mb-10 rounded-[24px] border border-primary/15 bg-white p-8 shadow-[var(--shadow-md)]">
+            <div className="flex flex-col gap-4 border-b border-border pb-6 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Jornada real de crédito</p>
+                <h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">Ofertas personalizadas para o seu perfil</h2>
+                <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
+                  Resultado da simulação {creditJourney.simulation?.provider === 'catalog_fallback' ? 'em fallback local' : 'integrada ao provedor'} com ofertas já normalizadas pela Cote Juros.
+                </p>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="rounded-[14px] border border-border bg-background-secondary px-4 py-3">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor solicitado</p>
+                  <p className="mt-1 text-sm font-semibold text-foreground">
+                    {creditJourney.simulation?.requestedAmount ? `R$ ${Number(creditJourney.simulation.requestedAmount).toLocaleString('pt-BR')}` : '--'}
+                  </p>
+                </div>
+                <div className="rounded-[14px] border border-border bg-background-secondary px-4 py-3">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Parcelas</p>
+                  <p className="mt-1 text-sm font-semibold text-foreground">{creditJourney.simulation?.installments || '--'}x</p>
+                </div>
+                <div className="rounded-[14px] border border-border bg-background-secondary px-4 py-3">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Ofertas</p>
+                  <p className="mt-1 text-sm font-semibold text-foreground">{creditJourney.offers.length}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {creditJourney.offers.map((offer, index) => (
+                <Card key={offer.id} className="surface-card h-full border-border bg-white">
+                  <CardContent className="flex h-full flex-col gap-6 p-8">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{offer.provider === 'catalog_fallback' ? 'Fallback' : 'Marketplace'}</p>
+                        <p className="mt-2 text-lg font-semibold text-foreground">{offer.bankName}</p>
+                        <p className="text-sm text-muted-foreground">{offer.productName}</p>
+                      </div>
+                      <Badge variant={index === 0 ? 'default' : 'outline'} className={index === 0 ? 'border-0' : 'border-primary/25 bg-primary/10 text-primary'}>
+                        {offer.matchLabel}
+                      </Badge>
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Taxa mensal</p>
+                        <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-primary">
+                          {offer.monthlyRate != null ? `${offer.monthlyRate}%` : '--'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">CET</p>
+                        <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">
+                          {offer.cet != null ? `${offer.cet}%` : '--'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="rounded-[14px] border border-border bg-background-secondary p-4">
+                      <div className="grid gap-4 sm:grid-cols-3">
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor aprovado</p>
+                          <p className="mt-1 text-sm font-semibold text-foreground">
+                            {offer.approvedAmount != null ? `R$ ${offer.approvedAmount.toLocaleString('pt-BR')}` : '--'}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Parcela</p>
+                          <p className="mt-1 text-sm font-semibold text-foreground">
+                            {offer.installmentAmount != null ? `R$ ${offer.installmentAmount.toLocaleString('pt-BR')}` : '--'}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Prazo</p>
+                          <p className="mt-1 text-sm font-semibold text-foreground">{offer.termMonths ? `${offer.termMonths} meses` : '--'}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button className="mt-auto w-full" onClick={() => handleCreditOfferClick(offer)}>
+                      Continuar contratação <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
         <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
           <aside className="lg:sticky lg:top-24 lg:h-fit">
             <Card className="border-border bg-white shadow-[var(--shadow-sm)]">
