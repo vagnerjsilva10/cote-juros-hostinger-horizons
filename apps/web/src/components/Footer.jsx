@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Scale, ShieldCheck } from 'lucide-react';
 import { CoteJurosLogo } from './CoteJurosLogo.jsx';
@@ -11,9 +11,18 @@ function Footer() {
       title: 'Produto',
       links: [
         { label: 'Empréstimos', path: '/emprestimos' },
-        { label: 'Cartões', path: '/cartoes-de-credito' },
-        { label: 'Financiamento', path: '/financiamento' },
+        { label: 'Cartões', path: '/cartoes' },
+        { label: 'Financiamentos', path: '/financiamentos' },
         { label: 'Ferramentas', path: '/ferramentas' }
+      ]
+    },
+    {
+      title: 'Comparadores',
+      links: [
+        { label: 'Comparar tudo', path: '/comparar' },
+        { label: 'Bancos', path: '/bancos' },
+        { label: 'Cartões sem anuidade', path: '/comparar/cartoes-sem-anuidade' },
+        { label: 'Empréstimo online', path: '/comparar/emprestimo-online' }
       ]
     },
     {
@@ -38,7 +47,7 @@ function Footer() {
   return (
     <footer className="border-t border-border bg-background py-20">
       <div className="page-shell">
-        <div className="mb-16 grid gap-12 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
+        <div className="mb-16 grid gap-12 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
           <div className="max-w-md space-y-6">
             <Link to="/" className="inline-block">
               <CoteJurosLogo />

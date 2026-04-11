@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cote-juros-hostinger-horizons-web.vercel.app/sitemap.xml

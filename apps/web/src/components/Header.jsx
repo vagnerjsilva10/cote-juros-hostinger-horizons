@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -12,8 +12,8 @@ function Header() {
   const navItems = [
     { label: 'Home', path: '/' },
     { label: 'Empréstimos', path: '/emprestimos' },
-    { label: 'Cartões', path: '/cartoes-de-credito' },
-    { label: 'Financiamentos', path: '/financiamento' },
+    { label: 'Cartões', path: '/cartoes' },
+    { label: 'Financiamentos', path: '/financiamentos' },
     { label: 'Ferramentas', path: '/ferramentas' },
     { label: 'Blog', path: '/blog' }
   ];
