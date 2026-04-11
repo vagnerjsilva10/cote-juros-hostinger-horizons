@@ -9,7 +9,7 @@ export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
       <img
         src="/assets/logo/logo-icon.png"
         alt="Cote Juros"
-        className={cn('h-10 w-10 object-contain', className)}
+        className={cn('h-14 w-14 object-contain', className)}
         loading="eager"
       />
     );
@@ -23,5 +23,5 @@ export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
 
   const src = variantSrc[variant] || variantSrc.horizontal;
 
-  return <img src={src} alt="Cote Juros" className={cn('h-9 w-auto object-contain', className)} loading="eager" />;
+  return <img src={src} alt="Cote Juros" className={cn('h-14 w-auto object-contain', className)} loading="eager" />;
 }
