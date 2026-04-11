@@ -288,14 +288,14 @@ function HomePage() {
               </div>
               <h2 className="mb-6">Cote Finance AI</h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Nossa inteligência artificial cruza seu perfil com regras de crédito de dezenas de instituições para priorizar ofertas com alta probabilidade de aprovação.
+                Plataforma de organizacao financeira com IA para entender entradas, saidas e padroes de gasto, acompanhar metas, dividas e investimentos e decidir melhor no dia a dia.
               </p>
 
               <div className="space-y-3 mb-8">
                 {[
-                  'Leitura de perfil com foco em elegibilidade',
-                  'Curadoria de ofertas por custo efetivo e chance de aprovação',
-                  'Fluxo orientado para decisão rápida e segura'
+                  'Dashboard financeiro com visao consolidada do mes',
+                  'Insights automaticos para identificar desperdicios e priorizar ajustes',
+                  'Acompanhamento de metas, dividas e carteira com contexto real'
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-2 text-muted-foreground font-medium">
                     <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
@@ -355,9 +355,9 @@ function HomePage() {
                     <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(2,6,23,0.7),rgba(2,6,23,0.05)_42%,transparent)]" />
                     <div className="absolute inset-x-3 bottom-3 grid grid-cols-3 gap-2">
                       {[
-                        { label: 'Custo total', value: '8.9%' },
-                        { label: 'Chance de aprovação', value: '92%' },
-                        { label: 'Economia estimada', value: 'R$ 640' }
+                        { label: 'Entradas', value: 'R$ 5.840' },
+                        { label: 'Saidas', value: 'R$ 4.960' },
+                        { label: 'Margem', value: 'R$ 880' }
                       ].map((item) => (
                         <div key={item.label} className="rounded-lg border border-slate-600/70 bg-[#0A152A]/92 px-2.5 py-2 backdrop-blur-[2px]">
                           <p className="text-[10px] font-medium text-slate-400">{item.label}</p>
