@@ -23,12 +23,24 @@ import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 
 const bankLogos = [
-  { name: 'Nubank', logo: 'https://logo.clearbit.com/nubank.com.br' },
-  { name: 'Itaú', logo: 'https://logo.clearbit.com/itau.com.br' },
-  { name: 'Santander', logo: 'https://logo.clearbit.com/santander.com.br' },
-  { name: 'C6', logo: 'https://logo.clearbit.com/c6bank.com.br' },
-  { name: 'Inter', logo: 'https://logo.clearbit.com/bancointer.com.br' },
-  { name: 'Banco do Brasil', logo: 'https://logo.clearbit.com/bb.com.br' }
+  { name: 'Nubank', logo: '/assets/banks/nubank.svg' },
+  { name: 'Itaú', logo: '/assets/banks/itau.svg' },
+  { name: 'Santander', logo: '/assets/banks/santander.svg' },
+  { name: 'C6', logo: '/assets/banks/c6.svg' },
+  { name: 'Inter', logo: '/assets/banks/inter.svg' },
+  { name: 'Banco do Brasil', logo: '/assets/banks/bb.svg' }
+];
+
+const heroComparisonRows = [
+  { bank: 'Nubank', rate: '2,10% a.m.', limit: 'Até R$ 32.000', best: true },
+  { bank: 'Itaú', rate: '2,40% a.m.', limit: 'Até R$ 28.000' },
+  { bank: 'C6 Bank', rate: '2,60% a.m.', limit: 'Até R$ 25.000' }
+];
+
+const heroFloatingCards = [
+  { bank: 'Nubank', tier: 'Ultravioleta', accent: 'linear-gradient(135deg, #7C23C7 0%, #4A157B 100%)' },
+  { bank: 'Itaú', tier: 'Personnalité', accent: 'linear-gradient(135deg, #F28C18 0%, #E86E00 100%)' },
+  { bank: 'Santander', tier: 'Unique', accent: 'linear-gradient(135deg, #E42A2D 0%, #AD1016 100%)' }
 ];
 
 const fallbackTestimonials = [
@@ -101,6 +113,101 @@ const formatRate = (value, suffix) => {
   if (value == null || Number.isNaN(Number(value))) return '--';
   return `${Number(value).toFixed(2)}% ${suffix}`;
 };
+
+function HeroComparatorShowcase() {
+  return (
+    <div className="relative mx-auto w-full max-w-[560px]">
+      <motion.div
+        id="comparador"
+        initial={{ opacity: 0, y: 24, scale: 0.98 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.45, ease: 'easeOut' }}
+        className="relative overflow-hidden rounded-[24px] border border-sky-200/30 bg-slate-950/75 p-5 shadow-[0_28px_70px_rgba(8,47,123,0.45)] backdrop-blur-xl"
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_0%,rgba(59,130,246,0.28),transparent_42%)]" />
+        <div className="relative z-10 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-200/80">Comparação rápida</p>
+              <p className="mt-1 text-sm text-slate-300">Taxa mensal, limite e melhor escolha em segundos.</p>
+            </div>
+            <span className="rounded-full border border-emerald-300/40 bg-emerald-400/20 px-2.5 py-1 text-[11px] font-semibold text-emerald-100">
+              Atualizado agora
+            </span>
+          </div>
+
+          <div className="space-y-2 rounded-2xl border border-slate-700/80 bg-slate-900/80 p-3">
+            {heroComparisonRows.map((row, index) => (
+              <motion.div
+                key={row.bank}
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.25, ease: 'easeOut', delay: 0.1 + index * 0.08 }}
+                whileHover={{ x: 4 }}
+                className={`flex items-center justify-between rounded-xl border px-3 py-2.5 transition-colors ${
+                  row.best ? 'border-emerald-300/50 bg-emerald-400/12' : 'border-slate-700/80 bg-slate-900/70'
+                }`}
+              >
+                <div>
+                  <p className="text-sm font-semibold text-slate-100">{row.bank}</p>
+                  <p className="text-xs text-slate-400">{row.limit}</p>
+                </div>
+                <div className="text-right">
+                  <p className={`text-sm font-semibold ${row.best ? 'text-emerald-200' : 'text-sky-200'}`}>{row.rate}</p>
+                  {row.best ? (
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-100">Melhor opção</p>
+                  ) : (
+                    <p className="text-[11px] text-slate-400">Condição simulada</p>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="rounded-2xl border border-sky-300/30 bg-sky-500/10 px-3 py-2.5">
+            <p className="text-[11px] uppercase tracking-[0.14em] text-sky-100/80">Decisão recomendada</p>
+            <p className="mt-1 text-sm font-semibold text-white">Nubank com menor taxa mensal e melhor custo total.</p>
+          </div>
+        </div>
+      </motion.div>
+
+      {heroFloatingCards.map((card, index) => (
+        <motion.div
+          key={card.bank}
+          className={`absolute hidden w-[170px] rounded-2xl border border-white/20 p-3 text-white shadow-[0_20px_45px_rgba(2,6,23,0.5)] md:block ${
+            index === 0 ? '-left-16 top-8' : index === 1 ? '-right-14 top-20' : 'left-10 -bottom-8'
+          }`}
+          style={{ background: card.accent }}
+          animate={{ y: [0, index % 2 === 0 ? -8 : 8, 0], rotate: [0, index % 2 === 0 ? -1.2 : 1.2, 0] }}
+          transition={{ duration: 6 + index, repeat: Infinity, ease: 'easeInOut', delay: index * 0.35 }}
+          whileHover={{ scale: 1.03 }}
+        >
+          <p className="text-[11px] uppercase tracking-[0.14em] text-white/75">{card.bank}</p>
+          <p className="mt-2 text-sm font-semibold">{card.tier}</p>
+          <p className="mt-3 text-xs text-white/80">Cartão premium</p>
+        </motion.div>
+      ))}
+
+      <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-3">
+        {bankLogos.map((bank, index) => (
+          <motion.div
+            key={bank.name}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.2, ease: 'easeOut', delay: 0.35 + index * 0.05 }}
+            whileHover={{ y: -2 }}
+            className="flex items-center justify-center rounded-xl border border-slate-700/80 bg-white/95 px-3 py-2.5"
+          >
+            <img src={bank.logo} alt={`Logo ${bank.name}`} className="h-5 w-auto max-w-[96px] object-contain" loading="lazy" />
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function FinanceAiIllustration() {
   return (
@@ -384,7 +491,7 @@ function HomePage() {
 
       <section className="hero-premium-dark relative overflow-hidden border-b border-slate-800">
         <div className="pointer-events-none absolute inset-0 hero-tech-grid-dark opacity-55" />
-        <div className="pointer-events-none absolute inset-0 hero-scanlines opacity-35" />
+        <div className="pointer-events-none absolute inset-0 hero-scanlines opacity-30" />
         <div className="pointer-events-none absolute inset-0 hero-vignette opacity-60" />
         {[14, 34, 56, 78].map((offset, index) => (
           <motion.span
@@ -395,12 +502,12 @@ function HomePage() {
             transition={{ duration: 8 + index, repeat: Infinity, ease: 'easeInOut' }}
           />
         ))}
-        {[1, 2, 3, 4, 5, 6].map((id) => (
+        {[1, 2, 3, 4, 5, 6, 7, 8].map((id) => (
           <motion.span
             key={id}
             className="pointer-events-none absolute h-1.5 w-1.5 rounded-full bg-sky-300/60"
             style={{ left: `${12 + id * 13}%`, top: `${18 + (id % 3) * 18}%` }}
-            animate={{ y: [0, -12, 0], opacity: [0.2, 0.8, 0.2] }}
+            animate={{ y: [0, -12, 0], opacity: [0.18, 0.75, 0.18] }}
             transition={{ duration: 7 + id, repeat: Infinity, ease: 'easeInOut', delay: id * 0.3 }}
           />
         ))}
@@ -419,53 +526,58 @@ function HomePage() {
           className="pointer-events-none absolute left-1/2 top-16 h-72 w-[620px] -translate-x-1/2 hero-premium-glow"
         />
 
-        <div className="page-shell relative py-20 md:py-28">
-          <motion.div {...animationIn} className="mx-auto max-w-5xl text-center">
-            <span className="inline-flex items-center rounded-full border border-sky-300/30 bg-sky-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-200">
-              Comparador financeiro completo
-            </span>
-            <h1 className="mx-auto mb-5 mt-6 max-w-4xl text-white">Cote juros antes de pegar crédito.</h1>
-            <p className="mx-auto max-w-3xl text-lg leading-8 text-slate-300 md:text-xl">
-              Compare taxas, limites e condições de empréstimos, cartões e financiamentos em um único lugar.
-            </p>
+        <div className="page-shell relative py-16 md:py-20 lg:py-24">
+          <motion.div {...animationIn} id="hero-layout" className="grid items-center gap-12 lg:grid-cols-[1.04fr_0.96fr] lg:gap-10">
+            <div className="max-w-[620px] text-center lg:text-left">
+              <span className="inline-flex items-center rounded-full border border-sky-300/30 bg-sky-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-200">
+                Comparador financeiro completo
+              </span>
+              <h1 className="mt-5 text-white" style={{ fontFamily: '"Space Grotesk", "Manrope", sans-serif' }}>
+                Cote juros antes de pegar crédito.
+              </h1>
+              <p className="mt-5 text-lg leading-8 text-slate-300 md:text-xl">
+                Compare taxas, limites e condições de empréstimos, cartões e financiamentos em um único lugar.
+              </p>
 
-            <form onSubmit={handleHeroSubmit} className="mx-auto mt-10 max-w-3xl rounded-[18px] border border-white/15 bg-white/5 p-3 shadow-[0_20px_50px_rgba(2,6,23,0.35)] backdrop-blur-md">
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Input
-                  placeholder="Digite o valor que você quer analisar"
-                  className="h-12 border border-white/20 bg-white/90 text-base shadow-none focus-visible:ring-2 focus-visible:ring-sky-300/60"
-                  value={heroValue}
-                  onChange={(event) => setHeroValue(formatCurrency(event.target.value))}
-                />
-                <Button type="submit" size="lg" className="h-12 min-w-[180px] bg-sky-500 text-white hover:bg-sky-400">
-                  Analisar agora
-                </Button>
+              <form
+                onSubmit={handleHeroSubmit}
+                className="mt-8 rounded-[18px] border border-white/15 bg-white/5 p-3 shadow-[0_24px_60px_rgba(2,6,23,0.4)] backdrop-blur-md"
+              >
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <div className="relative flex-1">
+                    <HandCoins className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                    <Input
+                      placeholder="Digite o valor que você quer analisar"
+                      className="h-12 border border-white/20 bg-white/95 pl-11 text-base shadow-none focus-visible:ring-2 focus-visible:ring-sky-300/60"
+                      value={heroValue}
+                      onChange={(event) => setHeroValue(formatCurrency(event.target.value))}
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="hero-cta-glow h-12 min-w-[180px] bg-sky-500 text-white transition-all duration-200 hover:scale-[1.02] hover:bg-sky-400"
+                  >
+                    Analisar agora
+                  </Button>
+                </div>
+              </form>
+
+              <div className="mt-6 grid gap-2.5 text-left sm:grid-cols-2">
+                {[
+                  `${catalogSize > 30 ? `+${catalogSize}` : '+30'} ofertas analisadas`,
+                  `${Math.max(bankCount || 0, 8)} instituições financeiras`,
+                  'simulação gratuita'
+                ].map((item) => (
+                  <div key={item} className="inline-flex items-center gap-2 text-sm text-slate-200">
+                    <CheckCircle2 className="h-4 w-4 text-sky-300" />
+                    <span>{item}</span>
+                  </div>
+                ))}
               </div>
-            </form>
-
-            <div className="mt-5 inline-flex items-center gap-2 text-sm text-slate-300">
-              <ShieldCheck className="h-4 w-4 text-sky-300" />
-              Simulação gratuita para comparar opções sem pressão comercial.
             </div>
 
-            <div className="mt-12 grid gap-4 sm:grid-cols-3">
-              <div className="rounded-[16px] border border-white/15 bg-white/5 px-5 py-5 text-left backdrop-blur-sm">
-                <p className="text-base font-semibold text-white">Comparação inteligente</p>
-                <p className="mt-1 text-sm text-slate-300">
-                  {catalogSize > 0 ? `${catalogSize}+ ofertas` : 'Ofertas de diferentes perfis'} em um único fluxo visual.
-                </p>
-              </div>
-              <div className="rounded-[16px] border border-white/15 bg-white/5 px-5 py-5 text-left backdrop-blur-sm">
-                <p className="text-base font-semibold text-white">Taxas atualizadas</p>
-                <p className="mt-1 text-sm text-slate-300">
-                  {bankCount > 0 ? `${bankCount}+ instituições` : 'Bancos e fintechs'} para comparar sem termos complicados.
-                </p>
-              </div>
-              <div className="rounded-[16px] border border-white/15 bg-white/5 px-5 py-5 text-left backdrop-blur-sm">
-                <p className="text-base font-semibold text-white">Decisão com segurança</p>
-                <p className="mt-1 text-sm text-slate-300">Taxa, prazo e condições lado a lado para evitar surpresas.</p>
-              </div>
-            </div>
+            <HeroComparatorShowcase />
           </motion.div>
         </div>
       </section>
@@ -473,7 +585,7 @@ function HomePage() {
       <section className="border-b border-border bg-white py-12 md:py-14">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-5xl text-center">
-            <span className="soft-blue-chip mb-5">Bancos disponiveis</span>
+            <span className="soft-blue-chip mb-5">Bancos disponíveis</span>
             <h2 className="mb-3">Instituições que você encontra no Cote Juros</h2>
             <p className="mx-auto max-w-2xl text-muted-foreground">
               Compare ofertas de Nubank, Itaú, Santander, C6, Inter e Banco do Brasil em um único fluxo.
@@ -484,7 +596,7 @@ function HomePage() {
                   <img
                     src={bank.logo}
                     alt={`Logo ${bank.name}`}
-                    className="h-5 w-5 rounded-full object-cover"
+                    className="h-5 w-auto max-w-[84px] object-contain"
                     loading="lazy"
                   />
                   <span>{bank.name}</span>
