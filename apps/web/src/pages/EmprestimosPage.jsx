@@ -2,7 +2,7 @@
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import { ChevronRight, Clock, Filter, ShieldCheck, Sparkles, Star } from 'lucide-react';
+import { ChevronRight, Clock, Filter, LayoutGrid, List, ShieldCheck, Sparkles, Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -34,6 +34,7 @@ function EmprestimosPage() {
   const [score, setScore] = useState('Todos');
   const [term, setTerm] = useState([24]);
   const [sort, setSort] = useState('taxa-baixa');
+  const [viewMode, setViewMode] = useState('grid');
 
   useEffect(() => {
     Promise.all([portalApi.getBanks(), portalApi.getOffers({ productType: 'loan' })]).then(([banks, offers]) => {
@@ -224,6 +225,28 @@ function EmprestimosPage() {
                 {filteredLoans.length} oferta(s) organizadas para facilitar sua decisão.
               </p>
               <div className="flex flex-wrap items-center gap-3">
+                <div className="inline-flex items-center rounded-[10px] border border-border bg-white p-1">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                    className="h-8 gap-1.5 px-3"
+                    onClick={() => setViewMode('grid')}
+                  >
+                    <LayoutGrid className="h-3.5 w-3.5" />
+                    Cards
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant={viewMode === 'list' ? 'default' : 'ghost'}
+                    className="h-8 gap-1.5 px-3"
+                    onClick={() => setViewMode('list')}
+                  >
+                    <List className="h-3.5 w-3.5" />
+                    Lista
+                  </Button>
+                </div>
                 <Label className="whitespace-nowrap">Ordenar</Label>
                 <Select value={sort} onValueChange={setSort}>
                   <SelectTrigger className="w-[220px]">
@@ -241,75 +264,138 @@ function EmprestimosPage() {
               </div>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {filteredLoans.map((loan) => {
-                const bank = banksData.find((item) => item.id === loan.bankId);
-                const badge = getBadge(loan.category, loan.monthlyRate);
-                const BadgeIcon = badge.icon;
-                const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#027DFB';
+            {viewMode === 'grid' ? (
+              <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {filteredLoans.map((loan) => {
+                  const bank = banksData.find((item) => item.id === loan.bankId);
+                  const badge = getBadge(loan.category, loan.monthlyRate);
+                  const BadgeIcon = badge.icon;
+                  const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#2563EB';
 
-                return (
-                  <Card key={loan.id} className="surface-card h-full border-border bg-white">
-                    <CardContent className="flex h-full flex-col gap-6 p-8">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="space-y-2">
-                          <div
-                            className="flex h-11 w-11 items-center justify-center rounded-xl border text-sm font-semibold"
-                            style={{
-                              borderColor: `${bankAccent}40`,
-                              backgroundColor: `${bankAccent}1A`,
-                              color: bankAccent
-                            }}
-                          >
-                            {bank?.name?.charAt(0) || 'B'}
+                  return (
+                    <Card key={loan.id} className="surface-card h-full border-border bg-white">
+                      <CardContent className="flex h-full flex-col gap-6 p-8">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-2">
+                            <div
+                              className="flex h-11 w-11 items-center justify-center rounded-xl border text-sm font-semibold"
+                              style={{
+                                borderColor: `${bankAccent}40`,
+                                backgroundColor: `${bankAccent}1A`,
+                                color: bankAccent
+                              }}
+                            >
+                              {bank?.name?.charAt(0) || 'B'}
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-foreground">{bank?.name || loan.bankName}</p>
+                              <p className="text-sm text-muted-foreground">{loan.category}</p>
+                            </div>
+                          </div>
+                          <Badge variant="outline" className="gap-1 border-primary/25 bg-primary/10 text-primary">
+                            <BadgeIcon className="h-3 w-3" />
+                            {badge.text}
+                          </Badge>
+                        </div>
+
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Taxa mensal</p>
+                          <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-primary">{loan.monthlyRate}%</p>
+                        </div>
+
+                        <div className="rounded-[12px] border border-border bg-background-secondary p-4">
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Resumo da oferta</p>
+                          <p className="mt-2 text-sm text-muted-foreground">
+                            {loan.monthlyRate < 2
+                              ? 'Uma das menores taxas dentro do filtro que você escolheu.'
+                              : 'Boa opção para quem busca aprovação e parcelas previsíveis.'}
+                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 border-t border-border pt-4">
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor máximo</p>
+                            <p className="mt-2 text-sm font-semibold text-foreground">R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-foreground">{bank?.name || loan.bankName}</p>
-                            <p className="text-sm text-muted-foreground">{loan.category}</p>
+                            <p className="flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                              <Clock className="h-3 w-3" />
+                              Prazo
+                            </p>
+                            <p className="mt-2 text-sm font-semibold text-foreground">{loan.maxTerm} meses</p>
                           </div>
                         </div>
-                        <Badge variant="outline" className="gap-1 border-primary/25 bg-primary/10 text-primary">
-                          <BadgeIcon className="h-3 w-3" />
-                          {badge.text}
-                        </Badge>
-                      </div>
 
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Taxa mensal</p>
-                        <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-primary">{loan.monthlyRate}%</p>
-                      </div>
+                        <Button className="mt-auto w-full" onClick={() => handleSimulate(loan)}>
+                          Simular oferta <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredLoans.map((loan) => {
+                  const bank = banksData.find((item) => item.id === loan.bankId);
+                  const badge = getBadge(loan.category, loan.monthlyRate);
+                  const BadgeIcon = badge.icon;
+                  const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#2563EB';
 
-                      <div className="rounded-[12px] border border-border bg-background-secondary p-4">
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Resumo da oferta</p>
-                        <p className="mt-2 text-sm text-muted-foreground">
-                          {loan.monthlyRate < 2
-                            ? 'Uma das menores taxas dentro do filtro que você escolheu.'
-                            : 'Boa opção para quem busca aprovação e parcelas previsíveis.'}
-                        </p>
-                      </div>
+                  return (
+                    <Card key={loan.id} className="border-border bg-white">
+                      <CardContent className="p-6">
+                        <div className="grid items-center gap-5 lg:grid-cols-[1.3fr_0.9fr_0.9fr_220px]">
+                          <div className="flex items-start gap-4">
+                            <div
+                              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-sm font-semibold"
+                              style={{
+                                borderColor: `${bankAccent}40`,
+                                backgroundColor: `${bankAccent}1A`,
+                                color: bankAccent
+                              }}
+                            >
+                              {bank?.name?.charAt(0) || 'B'}
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-foreground">{bank?.name || loan.bankName}</p>
+                              <p className="text-sm text-muted-foreground">{loan.category}</p>
+                              <Badge variant="outline" className="mt-2 gap-1 border-primary/25 bg-primary/10 text-primary">
+                                <BadgeIcon className="h-3 w-3" />
+                                {badge.text}
+                              </Badge>
+                            </div>
+                          </div>
 
-                      <div className="grid grid-cols-2 gap-4 border-t border-border pt-4">
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor máximo</p>
-                          <p className="mt-2 text-sm font-semibold text-foreground">R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Taxa mensal</p>
+                            <p className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-primary">{loan.monthlyRate}%</p>
+                          </div>
+
+                          <div className="grid gap-2">
+                            <div>
+                              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor máximo</p>
+                              <p className="mt-1 text-sm font-semibold text-foreground">R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
+                            </div>
+                            <div>
+                              <p className="flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                                <Clock className="h-3 w-3" />
+                                Prazo
+                              </p>
+                              <p className="mt-1 text-sm font-semibold text-foreground">{loan.maxTerm} meses</p>
+                            </div>
+                          </div>
+
+                          <Button className="w-full lg:justify-center" onClick={() => handleSimulate(loan)}>
+                            Simular oferta <ChevronRight className="h-4 w-4" />
+                          </Button>
                         </div>
-                        <div>
-                          <p className="flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                            <Clock className="h-3 w-3" />
-                            Prazo
-                          </p>
-                          <p className="mt-2 text-sm font-semibold text-foreground">{loan.maxTerm} meses</p>
-                        </div>
-                      </div>
-
-                      <Button className="mt-auto w-full" onClick={() => handleSimulate(loan)}>
-                        Simular oferta <ChevronRight className="h-4 w-4" />
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
 
             {filteredLoans.length === 0 ? (
               <div className="rounded-[16px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center">
@@ -347,4 +433,5 @@ function EmprestimosPage() {
 }
 
 export default EmprestimosPage;
+
 

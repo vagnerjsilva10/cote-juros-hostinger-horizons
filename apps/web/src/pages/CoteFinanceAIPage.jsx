@@ -116,51 +116,57 @@ function CoteFinanceAIPage() {
     });
   };
 
+  const storyFlow = [
+    'Antes: você sente que o dinheiro entra, mas nunca sobra.',
+    'Virada: o sistema revela para onde seu dinheiro está indo, com números reais.',
+    'Depois: você passa a agir com prioridade clara, sem ansiedade e sem adivinhação.'
+  ];
+
   const howItWorks = [
     {
-      title: '1. Organize entradas e saídas',
-      copy: 'Consolide transações e categorias para enxergar com clareza o que entra, o que sai e como está sua margem.'
+      title: '1. Centralize sua vida financeira em um só lugar',
+      copy: 'Você conecta sua rotina e, em poucos minutos, para de depender de memória, print e planilha solta.'
     },
     {
-      title: '2. Detecte saídas invisíveis',
-      copy: 'O sistema aponta gastos recorrentes e hábitos que passam despercebidos, mas pesam no seu mês.'
+      title: '2. Descubra para onde o dinheiro está escapando',
+      copy: 'Recorrências esquecidas, taxas invisíveis e pequenos gastos passam a ter nome, valor e impacto anual.'
     },
     {
-      title: '3. Receba insights com IA',
-      copy: 'A IA transforma dados brutos em recomendações práticas para reduzir desperdícios e melhorar decisões.'
+      title: '3. Receba direcionamento prático com IA',
+      copy: 'Em vez de gráficos frios, você recebe recomendações claras sobre o que cortar, ajustar ou priorizar.'
     },
     {
-      title: '4. Acompanhe evolução em rotina real',
-      copy: 'Use metas, alertas e visão de tendência para manter constância e evoluir mês a mês.'
+      title: '4. Entre no modo evolução contínua',
+      copy: 'Com metas, alertas e previsões, cada mês deixa de ser improviso e vira progresso mensurável.'
     }
   ];
 
   const modules = [
-    { icon: CircleDollarSign, title: 'Entradas e saídas', copy: 'Visão consolidada do fluxo para decisões mais rápidas e conscientes.' },
-    { icon: Goal, title: 'Metas financeiras', copy: 'Planeje objetivos e acompanhe avanço com menos ruído de interface.' },
-    { icon: Landmark, title: 'Dívidas e compromissos', copy: 'Priorize ajustes e mantenha controle do que precisa ser renegociado.' },
-    { icon: Wallet, title: 'Carteira e patrimônio', copy: 'Visualize distribuição financeira com leitura clara e comparável.' },
-    { icon: Brain, title: 'Insights automáticos', copy: 'Sugestões práticas sobre cortes, foco mensal e oportunidades de melhoria.' },
-    { icon: MessageCircleMore, title: 'Resumos e alertas', copy: 'Atualizações em canais como WhatsApp para manter ritmo no dia a dia.' }
+    { icon: CircleDollarSign, title: 'Entradas e saídas', copy: 'Você enxerga o fluxo completo e entende o que sustenta ou aperta seu mês.' },
+    { icon: Goal, title: 'Metas financeiras', copy: 'Objetivos deixam de ser intenção e viram rotina com acompanhamento simples e visual.' },
+    { icon: Landmark, title: 'Dívidas e compromissos', copy: 'Fica claro o que priorizar agora para aliviar pressão e recuperar fôlego financeiro.' },
+    { icon: Wallet, title: 'Carteira e patrimônio', copy: 'Leitura objetiva do seu cenário para apoiar decisões com menos dúvida.' },
+    { icon: Brain, title: 'Insights automáticos', copy: 'A IA traduz números em próximos passos para você agir com segurança e rapidez.' },
+    { icon: MessageCircleMore, title: 'Resumos e alertas', copy: 'Lembretes e resumos no timing certo para manter consistência sem sobrecarga.' }
   ];
 
   const plans = [
     {
       name: 'Free',
       price: 'Grátis',
-      copy: 'Para começar a organizar o financeiro sem fricção.',
+      copy: 'Para quem quer sair do caos financeiro com um primeiro passo leve.',
       bullets: ['Até 50 lançamentos por mês', 'Análise básica de saídas']
     },
     {
       name: 'Pro',
       price: 'R$ 29/mês',
-      copy: 'Para controle completo e insights frequentes com IA.',
+      copy: 'Para transformar organização em crescimento consistente.',
       bullets: ['Lançamentos ilimitados', 'Até 500 interações com IA por mês', 'Relatórios completos e metas ilimitadas']
     },
     {
       name: 'Premium',
       price: 'R$ 49/mês',
-      copy: 'Para quem busca camada estratégica e automação avançada.',
+      copy: 'Para quem quer previsibilidade profunda e decisões estratégicas.',
       bullets: ['IA financeira sem limite mensal', 'Previsão de saldo e alertas inteligentes', 'Automação financeira no WhatsApp']
     }
   ];
@@ -171,7 +177,7 @@ function CoteFinanceAIPage() {
         <title>Cote Finance AI - Assistente financeiro inteligente</title>
         <meta
           name="description"
-          content="Entenda para onde seu dinheiro vai, receba insights com IA e acompanhe sua evolução financeira com clareza no Cote Finance AI."
+          content="Entenda para onde seu dinheiro vai, receba insights com IA e transforme sua rotina financeira em evolução real."
         />
       </Helmet>
 
@@ -184,15 +190,15 @@ function CoteFinanceAIPage() {
                 <Brain className="h-3 w-3" />
                 Cote Finance AI
               </Badge>
-              <h1 className="max-w-3xl">Você não está sem dinheiro. Está sem visibilidade.</h1>
+              <h1 className="max-w-3xl">Todo mês começa com boas intenções. E termina com a sensação de que o dinheiro sumiu.</h1>
               <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
-                Organize, analise, preveja e acompanhe suas finanças com clareza. O sistema mostra para onde seu dinheiro vai e o que ajustar agora.
+                O Cote Finance AI existe para quebrar esse ciclo: você passa a enxergar o que está drenando sua margem, recebe direção clara e volta a decidir com confiança.
               </p>
               <div className="space-y-3">
                 {[
-                  'Descobre saídas invisíveis que drenam sua margem.',
-                  'Transforma dados em recomendações objetivas com IA.',
-                  'Acompanha metas e evolução mensal sem planilhas.'
+                  'Mostra os vazamentos silenciosos que pesam no orçamento.',
+                  'Transforma dados em ações práticas, não em teoria.',
+                  'Cria uma rotina simples para evoluir mês após mês.'
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-3">
                     <ShieldCheck className="mt-0.5 h-5 w-5 text-foreground" />
@@ -214,11 +220,32 @@ function CoteFinanceAIPage() {
 
       <section className="border-b border-border bg-background-secondary py-20 md:py-24">
         <div className="page-shell">
+          <motion.div className="mx-auto mb-10 max-w-3xl text-center" {...animationIn}>
+            <Badge variant="secondary" className="mb-4 gap-2">
+              <TrendingUp className="h-3.5 w-3.5" />
+              Storytelling do produto
+            </Badge>
+            <h2 className="mb-4">A história que se repete: dinheiro entra, mas não sobra.</h2>
+            <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+              A diferença entre estresse financeiro e tranquilidade não é sorte. É visibilidade com método.
+            </p>
+          </motion.div>
+
+          <motion.div className="mx-auto mb-12 grid max-w-4xl gap-4 md:grid-cols-3" {...animationIn}>
+            {storyFlow.map((item) => (
+              <Card key={item} className="surface-card">
+                <CardContent className="p-6">
+                  <p className="text-sm text-muted-foreground">{item}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </motion.div>
+
           <motion.div className="mx-auto mb-12 max-w-3xl text-center" {...animationIn}>
             <span className="section-eyebrow mb-5">Como Funciona</span>
-            <h2 className="mb-4">Fluxo pensado para mostrar exatamente como o produto trabalha no dia a dia.</h2>
+            <h2 className="mb-4">O método em 4 etapas para sair do improviso financeiro.</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              Da organização inicial ao plano de ação com IA, cada etapa reduz ruído e aumenta previsibilidade financeira.
+              Da organização inicial ao plano de ação com IA, cada etapa foi desenhada para transformar clareza em resultado.
             </p>
           </motion.div>
 
@@ -241,9 +268,9 @@ function CoteFinanceAIPage() {
         <div className="page-shell">
           <motion.div className="mx-auto mb-12 max-w-3xl text-center" {...animationIn}>
             <span className="section-eyebrow mb-5">Módulos</span>
-            <h2 className="mb-4">Tudo o que você precisa para sair do escuro e decidir com contexto.</h2>
+            <h2 className="mb-4">Cada módulo responde uma pergunta crítica da sua vida financeira.</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              Estrutura de produto desenhada para clareza, constância e decisões com menos ansiedade.
+              Quanto entra? Quanto sai? O que cortar? O que priorizar? A plataforma existe para responder isso com objetividade.
             </p>
           </motion.div>
 
@@ -271,9 +298,9 @@ function CoteFinanceAIPage() {
         <div className="page-shell">
           <motion.div className="mx-auto mb-12 max-w-3xl text-center" {...animationIn}>
             <span className="section-eyebrow mb-5">Planos</span>
-            <h2 className="mb-4">Modelos de acesso alinhados ao estágio financeiro de cada perfil.</h2>
+            <h2 className="mb-4">Você escolhe o nível de profundidade que seu momento pede.</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              Escolha entre iniciar gratuitamente ou avançar com camadas mais profundas de inteligência e automação.
+              Comece grátis para ganhar visibilidade. Evolua para Pro ou Premium quando quiser acelerar com IA.
             </p>
           </motion.div>
 
@@ -308,9 +335,9 @@ function CoteFinanceAIPage() {
         <div className="page-shell max-w-4xl">
           <motion.div className="space-y-6 rounded-[20px] border border-border bg-background-secondary p-10" {...animationIn}>
             <span className="section-eyebrow">Transparência</span>
-            <h2>O Cote Finance AI organiza e orienta. Não promete enriquecimento rápido.</h2>
+            <h2>Não é sobre promessa milagrosa. É sobre clareza para decidir melhor, todo mês.</h2>
             <p className="text-lg text-muted-foreground">
-              O foco do produto é clareza financeira prática: mostrar gargalos, sugerir ações e acompanhar evolução real com consistência.
+              O foco do Cote Finance AI é prático: mostrar gargalos reais, sugerir ações viáveis e acompanhar evolução com consistência.
             </p>
             <Button size="lg" className="w-fit" onClick={handleFinanceAiEntry}>
               Acessar plataforma <ArrowRight className="h-4 w-4" />
