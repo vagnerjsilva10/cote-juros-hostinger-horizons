@@ -62,6 +62,18 @@ export const createFinanceAiRedirect = async ({
     metadata
   });
 
+  const deepLink = await portalApi.getFinanceAiDeepLink({
+    sourcePage,
+    productType,
+    simulationId: simulationContext?.leadId,
+    campaign,
+    utm
+  });
+
+  if (deepLink?.url) {
+    return { url: deepLink.url, utm };
+  }
+
   const url = buildCoteFinanceAiUrl({
     sourcePage,
     productType,
