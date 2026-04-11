@@ -264,14 +264,13 @@ function CartoesPage() {
                           )}
                         </div>
                       </div>
-                      <div className="absolute inset-x-5 bottom-4">
-                        <p className="inline-flex rounded-full bg-white/82 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-slate-900 shadow-[0_2px_8px_rgba(15,23,42,0.14)] backdrop-blur-sm">
-                          {card.bankName}
-                        </p>
-                      </div>
                     </div>
 
                     <CardContent className="flex h-full flex-col gap-5 p-8">
+                      <div className="border-b border-border pb-3">
+                        <p className="text-sm font-extrabold uppercase tracking-[0.14em] text-slate-900">{card.bankName}</p>
+                      </div>
+
                       <div className="flex items-center justify-between gap-3">
                         <Badge variant="outline" className="border-primary/25 bg-primary/10 text-primary">{card.category}</Badge>
                         {isFree ? <Badge variant="secondary">Sem anuidade</Badge> : null}
