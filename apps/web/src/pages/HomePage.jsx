@@ -23,6 +23,8 @@ import {
   BarChart3,
   Activity
 } from 'lucide-react';
+import { testimonials as testimonialsSeed } from '@/platform/seed/portalSeed.js';
+import { trackingService } from '@/platform/services/trackingService.js';
 
 const AI_DASHBOARD_ASSET = '/assets/cote-finance-ai-dashboard.png';
 
@@ -46,35 +48,7 @@ function HomePage() {
     setModalOpen(true);
   };
 
-  const testimonials = [
-    {
-      name: 'João Silva',
-      location: 'São Paulo, SP',
-      product: 'Financiamento',
-      avatar: 'https://ui-avatars.com/api/?name=Joao+Silva&background=0F62FE&color=fff',
-      quote: 'Economizei mais de R$ 500 por mês no meu financiamento comparando as taxas aqui. O processo foi rápido e transparente.',
-      result: '-R$ 527/mês',
-      badge: 'Perfil verificado'
-    },
-    {
-      name: 'Maria Santos',
-      location: 'Rio de Janeiro, RJ',
-      product: 'Cartão de Crédito',
-      avatar: 'https://ui-avatars.com/api/?name=Maria+Santos&background=7C3AED&color=fff',
-      quote: 'Encontrei um cartão sem anuidade com ótimo limite e cashback. Antes eu pagava taxas abusivas sem saber das opções.',
-      result: '+R$ 230/mês cashback',
-      badge: 'Oferta aprovada'
-    },
-    {
-      name: 'Carlos Oliveira',
-      location: 'Belo Horizonte, MG',
-      product: 'Empréstimo Pessoal',
-      avatar: 'https://ui-avatars.com/api/?name=Carlos+Oliveira&background=14B8A6&color=fff',
-      quote: 'Estava negativado e achei que não conseguiria crédito. A plataforma me mostrou opções reais que couberam no meu bolso.',
-      result: 'Aprovação em 48h',
-      badge: 'Caso concluído'
-    }
-  ];
+  const testimonials = testimonialsSeed;
 
   return (
     <>
@@ -331,7 +305,18 @@ function HomePage() {
               </div>
 
               <Link to="/cote-finance-ai">
-                <Button size="lg" className="h-14 px-8 text-base gradient-fintech-hover border-0 text-white rounded-xl shadow-premium transition-transform duration-300 hover:-translate-y-0.5">
+                <Button
+                  size="lg"
+                  className="h-14 px-8 text-base gradient-fintech-hover border-0 text-white rounded-xl shadow-premium transition-transform duration-300 hover:-translate-y-0.5"
+                  onClick={() =>
+                    trackingService.trackCtaClick({
+                      sourcePage: '/',
+                      ctaId: 'home_ai_analisar',
+                      ctaLabel: 'Analisar minhas finanças',
+                      productType: 'loan'
+                    })
+                  }
+                >
                   Analisar minhas finanças
                 </Button>
               </Link>

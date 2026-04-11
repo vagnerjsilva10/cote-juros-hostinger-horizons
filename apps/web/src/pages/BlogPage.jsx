@@ -1,6 +1,5 @@
-﻿import React, { useState, useMemo } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { articlesData } from '@/data/articlesData.js';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,14 +8,20 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AdSpace } from '@/components/AdSpace.jsx';
 import { Search, Clock, CalendarDays, ArrowRight } from 'lucide-react';
+import { portalApi } from '@/platform/services/portalApi.js';
 
 const CATEGORIES = ['Todas', 'Empréstimos', 'Cartões de Crédito', 'Finanças Pessoais', 'Score de Crédito', 'Financiamento'];
 
 function BlogPage() {
+  const [articlesData, setArticlesData] = useState([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('Todas');
   const [sort, setSort] = useState('recent');
   const [selectedArticle, setSelectedArticle] = useState(null);
+
+  useEffect(() => {
+    portalApi.getArticles().then(setArticlesData);
+  }, []);
 
   const filteredArticles = useMemo(() => {
     let result = articlesData.filter((article) => {
@@ -204,3 +209,5 @@ function BlogPage() {
 }
 
 export default BlogPage;
+
+

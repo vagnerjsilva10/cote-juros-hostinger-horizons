@@ -1,4 +1,4 @@
-
+﻿
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -8,6 +8,7 @@ import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowRight, ChevronLeft, ShieldCheck, CheckCircle2, XCircle, Briefcase, User, Building2, GraduationCap, UserMinus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { simulationFunnelService } from '@/platform/services/simulationFunnelService.js';
 
 export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
   const [step, setStep] = useState(1);
@@ -27,8 +28,25 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
     if (isOpen) {
       setData(prev => ({ ...prev, valor: initialAmount }));
       setStep(1);
+      simulationFunnelService.start({
+        sourcePage: window.location.pathname,
+        productType: 'loan',
+        amount: initialAmount,
+        utm: Object.fromEntries(new URLSearchParams(window.location.search).entries())
+      });
     }
   }, [isOpen, initialAmount]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    simulationFunnelService.progress({
+      sourcePage: window.location.pathname,
+      productType: 'loan',
+      funnelStep: step,
+      amount: data.valor,
+      score: data.score
+    });
+  }, [step, data.valor, data.score, isOpen]);
 
   const handleNext = () => setStep(s => Math.min(s + 1, 6));
   const handlePrev = () => setStep(s => Math.max(s - 1, 1));
@@ -41,15 +59,29 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
     setData({ ...data, cpf: v });
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
+    const lead = await simulationFunnelService.submitLead({
+      sourcePage: window.location.pathname,
+      productType: 'loan',
+      amount: data.valor,
+      income: data.renda,
+      score: data.score,
+      hasDebt: data.restricao,
+      employmentType: data.emprego,
+      cpf: data.cpf,
+      funnelStep: 'completed',
+      utm: Object.fromEntries(new URLSearchParams(window.location.search).entries()),
+      metadata: { modal: 'simulation' }
+    });
+
     onClose();
-    navigate('/emprestimos');
+    navigate(`/emprestimos?lead_id=${lead.id}`);
   };
 
   const employmentTypes = [
     { id: 'CLT', icon: Briefcase },
     { id: 'PJ', icon: Building2 },
-    { id: 'Autônomo', icon: User },
+    { id: 'AutÃ´nomo', icon: User },
     { id: 'Aposentado', icon: GraduationCap },
     { id: 'Desempregado', icon: UserMinus }
   ];
@@ -57,7 +89,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-xl p-0 overflow-hidden bg-white border-0 rounded-[16px] shadow-2xl">
-        <DialogTitle className="sr-only">Simulação Financeira</DialogTitle>
+        <DialogTitle className="sr-only">SimulaÃ§Ã£o Financeira</DialogTitle>
         <DialogDescription className="sr-only">Preencha seus dados para receber ofertas.</DialogDescription>
         
         <div className="bg-slate-50 px-6 py-4 border-b border-border flex items-center justify-between">
@@ -91,7 +123,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
               {step === 1 && (
                 <div className="space-y-8">
                   <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-bold text-foreground">Qual valor você precisa?</h2>
+                    <h2 className="text-3xl font-bold text-foreground">Qual valor vocÃª precisa?</h2>
                     <p className="text-slate-600">Deslize para escolher o valor ideal.</p>
                   </div>
                   <div className="text-5xl font-bold text-primary text-center py-6 font-variant-tabular">
@@ -106,7 +138,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                     className="py-4"
                   />
                   <Button className="w-full h-14 text-lg rounded-xl gradient-fintech-hover border-0 text-white shadow-premium" onClick={handleNext}>
-                    Próximo <ArrowRight className="ml-2 w-5 h-5" />
+                    PrÃ³ximo <ArrowRight className="ml-2 w-5 h-5" />
                   </Button>
                 </div>
               )}
@@ -129,7 +161,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                     className="py-4"
                   />
                   <Button className="w-full h-14 text-lg rounded-xl gradient-fintech-hover border-0 text-white shadow-premium" onClick={handleNext}>
-                    Próximo <ArrowRight className="ml-2 w-5 h-5" />
+                    PrÃ³ximo <ArrowRight className="ml-2 w-5 h-5" />
                   </Button>
                 </div>
               )}
@@ -137,7 +169,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
               {step === 3 && (
                 <div className="space-y-8">
                   <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-bold text-foreground">Qual seu tipo de vínculo?</h2>
+                    <h2 className="text-3xl font-bold text-foreground">Qual seu tipo de vÃ­nculo?</h2>
                     <p className="text-slate-600">Selecione sua principal fonte de renda.</p>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -159,12 +191,12 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                 <div className="space-y-8">
                   <div className="text-center space-y-2">
                     <h2 className="text-3xl font-bold text-foreground">Qual seu score aproximado?</h2>
-                    <p className="text-slate-600">Sua pontuação nos birôs de crédito.</p>
+                    <p className="text-slate-600">Sua pontuaÃ§Ã£o nos birÃ´s de crÃ©dito.</p>
                   </div>
                   <div className="grid gap-4">
                     {[
-                      { id: 'Baixo', range: '300-549', desc: 'Dificuldade em aprovar crédito', color: 'border-slate-200 hover:border-primary hover:bg-slate-50' },
-                      { id: 'Médio', range: '550-749', desc: 'Aprovação com taxas médias', color: 'border-slate-200 hover:border-primary hover:bg-slate-50' },
+                      { id: 'Baixo', range: '300-549', desc: 'Dificuldade em aprovar crÃ©dito', color: 'border-slate-200 hover:border-primary hover:bg-slate-50' },
+                      { id: 'MÃ©dio', range: '550-749', desc: 'AprovaÃ§Ã£o com taxas mÃ©dias', color: 'border-slate-200 hover:border-primary hover:bg-slate-50' },
                       { id: 'Alto', range: '750-1000', desc: 'Melhores taxas do mercado', color: 'border-slate-200 hover:border-primary hover:bg-slate-50' }
                     ].map(s => (
                       <div 
@@ -186,7 +218,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
               {step === 5 && (
                 <div className="space-y-8">
                   <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-bold text-foreground">Possui restrição no nome?</h2>
+                    <h2 className="text-3xl font-bold text-foreground">Possui restriÃ§Ã£o no nome?</h2>
                     <p className="text-slate-600">Contas atrasadas ou nome negativado.</p>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -202,7 +234,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                       className={`p-8 rounded-xl border-2 cursor-pointer transition-all duration-200 text-center flex flex-col items-center gap-3 ${data.restricao === false ? 'ring-2 ring-primary border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-slate-50'}`}
                     >
                       <CheckCircle2 className={`w-10 h-10 ${data.restricao === false ? 'text-primary' : 'text-slate-600'}`} />
-                      <span className="font-bold text-lg text-foreground">Não</span>
+                      <span className="font-bold text-lg text-foreground">NÃ£o</span>
                     </div>
                   </div>
                 </div>
@@ -211,7 +243,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
               {step === 6 && (
                 <div className="space-y-8">
                   <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-bold text-foreground">Quase lá!</h2>
+                    <h2 className="text-3xl font-bold text-foreground">Quase lÃ¡!</h2>
                     <p className="text-slate-600">Insira seu CPF para ver ofertas personalizadas.</p>
                   </div>
                   
@@ -226,7 +258,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                     <div className="bg-blue-50 p-4 rounded-xl flex items-start gap-3 border border-blue-100">
                       <ShieldCheck className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                       <p className="text-xs text-blue-900 leading-relaxed font-medium">
-                        Seu CPF será usado apenas para consultar ofertas de crédito. Não fazemos consultas que reduzam seu Score (Soft Query).
+                        Seu CPF serÃ¡ usado apenas para consultar ofertas de crÃ©dito. NÃ£o fazemos consultas que reduzam seu Score (Soft Query).
                       </p>
                     </div>
 
@@ -237,7 +269,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                         onCheckedChange={(c) => setData({...data, terms: c})} 
                       />
                       <label htmlFor="terms" className="text-sm font-medium leading-none text-slate-600 cursor-pointer">
-                        Concordo com os Termos de Uso e Política de Privacidade.
+                        Concordo com os Termos de Uso e PolÃ­tica de Privacidade.
                       </label>
                     </div>
                   </div>
@@ -261,3 +293,4 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
 }
 
 export default SimulationModal;
+

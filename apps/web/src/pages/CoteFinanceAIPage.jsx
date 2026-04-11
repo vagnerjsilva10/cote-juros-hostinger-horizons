@@ -1,19 +1,42 @@
-
+﻿
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Brain, Zap, ShieldCheck, Target, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Brain, Zap, ShieldCheck, Target, ArrowRight } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { redirectToFinanceAi } from '@/platform/integrations/coteFinanceAI.js';
+import { trackingService } from '@/platform/services/trackingService.js';
+
+const AI_DASHBOARD_ASSET = '/assets/cote-finance-ai-dashboard.png';
 
 function CoteFinanceAIPage() {
+  const location = useLocation();
+
+  const handleFinanceAiEntry = async () => {
+    await trackingService.trackCtaClick({
+      sourcePage: '/cote-finance-ai',
+      ctaId: 'cote_finance_ai_start',
+      ctaLabel: 'Comecar analise gratuita',
+      productType: 'loan',
+      campaign: 'portal_acquisition'
+    });
+
+    await redirectToFinanceAi({
+      sourcePage: '/cote-finance-ai',
+      productType: 'loan',
+      campaign: 'portal_acquisition',
+      search: location.search
+    });
+  };
+
   return (
     <>
       <Helmet>
-        <title>Cote Finance AI - Inteligência Artificial Financeira</title>
-        <meta name="description" content="Use nossa IA para encontrar as melhores ofertas de crédito com alta chance de aprovação." />
+        <title>Cote Finance AI - InteligÃªncia Artificial Financeira</title>
+        <meta name="description" content="Use nossa IA para encontrar as melhores ofertas de crÃ©dito com alta chance de aprovaÃ§Ã£o." />
       </Helmet>
 
       {/* Hero */}
@@ -27,16 +50,14 @@ function CoteFinanceAIPage() {
               </Badge>
               <h1 className="text-white mb-6">Cote Finance AI</h1>
               <p className="text-xl text-white/90 mb-8 max-w-lg">
-                Inteligência artificial para suas decisões financeiras. Cruzamos seu perfil com +50 bancos para encontrar crédito com até 95% de chance de aprovação.
+                InteligÃªncia artificial para suas decisÃµes financeiras. Cruzamos seu perfil com +50 bancos para encontrar crÃ©dito com atÃ© 95% de chance de aprovaÃ§Ã£o.
               </p>
-              <Link to="/diagnostico-financeiro">
-                <Button size="lg" className="h-14 px-8 text-lg rounded-xl bg-white text-primary hover:bg-slate-100 shadow-xl">
-                  Começar análise gratuita <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
+              <Button size="lg" className="h-14 px-8 text-lg rounded-xl bg-white text-primary hover:bg-slate-100 shadow-xl" onClick={handleFinanceAiEntry}>
+                ComeÃ§ar anÃ¡lise gratuita <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
             </motion.div>
             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.2 }}>
-              <img src="https://images.unsplash.com/photo-1644995722044-6cd197ffb440?auto=format&fit=crop&w=800&q=80" alt="AI Dashboard" className="rounded-2xl shadow-2xl border-4 border-white/10" />
+              <img src={AI_DASHBOARD_ASSET} alt="AI Dashboard" className="rounded-2xl shadow-2xl border-4 border-white/10" />
             </motion.div>
           </div>
         </div>
@@ -51,8 +72,8 @@ function CoteFinanceAIPage() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { icon: Zap, title: 'Análise rápida', desc: 'Resultados em menos de 3 minutos.' },
-              { icon: Target, title: 'Ofertas personalizadas', desc: 'Crédito que cabe no seu orçamento.' },
+              { icon: Zap, title: 'AnÃ¡lise rÃ¡pida', desc: 'Resultados em menos de 3 minutos.' },
+              { icon: Target, title: 'Ofertas personalizadas', desc: 'CrÃ©dito que cabe no seu orÃ§amento.' },
               { icon: ShieldCheck, title: 'Sem impacto no score', desc: 'Consultas seguras (Soft Query).' },
               { icon: Brain, title: 'Dados protegidos', desc: 'Criptografia de ponta a ponta.' }
             ].map((b, i) => (
@@ -76,9 +97,9 @@ function CoteFinanceAIPage() {
           <h2 className="text-center mb-16">Como funciona</h2>
           <div className="space-y-12">
             {[
-              { step: '1', title: 'Preencha seu perfil', desc: 'Informe dados básicos como renda e objetivo financeiro.' },
-              { step: '2', title: 'A IA analisa o mercado', desc: 'Nosso algoritmo varre as políticas de crédito de dezenas de bancos.' },
-              { step: '3', title: 'Receba as melhores ofertas', desc: 'Você vê apenas o que tem alta chance de aprovação para você.' }
+              { step: '1', title: 'Preencha seu perfil', desc: 'Informe dados bÃ¡sicos como renda e objetivo financeiro.' },
+              { step: '2', title: 'A IA analisa o mercado', desc: 'Nosso algoritmo varre as polÃ­ticas de crÃ©dito de dezenas de bancos.' },
+              { step: '3', title: 'Receba as melhores ofertas', desc: 'VocÃª vÃª apenas o que tem alta chance de aprovaÃ§Ã£o para vocÃª.' }
             ].map((s, i) => (
               <div key={i} className="flex gap-6 items-start">
                 <div className="w-12 h-12 rounded-full gradient-fintech flex items-center justify-center text-white font-bold text-xl flex-shrink-0 shadow-md">
@@ -98,3 +119,4 @@ function CoteFinanceAIPage() {
 }
 
 export default CoteFinanceAIPage;
+
