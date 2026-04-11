@@ -6,6 +6,7 @@ import Footer from '@/components/Footer.jsx';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BookOpen, TrendingUp, CreditCard, DollarSign, Home, Shield } from 'lucide-react';
+import PageHero from '@/components/PageHero.jsx';
 
 function GuiasPage() {
   const guides = [
@@ -56,17 +57,10 @@ function GuiasPage() {
 
       <div className="min-h-screen bg-background">
         <Header />
-
-        <section className="py-12 bg-secondary">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance" style={{ letterSpacing: '-0.02em' }}>
-              Guias financeiros
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              Aprenda sobre finanças pessoais com nossos guias completos
-            </p>
-          </div>
-        </section>
+        <PageHero
+          title="Guias financeiros"
+          subtitle="Aprenda sobre finanças pessoais com nossos guias completos."
+        />
 
         <section className="py-12">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -116,3 +110,4 @@ function GuiasPage() {
 }
 
 export default GuiasPage;
+

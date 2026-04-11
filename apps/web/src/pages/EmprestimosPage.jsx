@@ -9,11 +9,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Filter, Star, Clock, ShieldCheck, CheckCircle2, ChevronRight, Sparkles } from 'lucide-react';
+import PageHero from '@/components/PageHero.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
 
-function EmprestimosPage() {
+function Empr?stimosPage() {
   const [banksData, setBanksData] = useState([]);
   const [loansData, setLoansData] = useState([]);
   const [amount, setAmount] = useState([10000]);
@@ -53,7 +54,7 @@ function EmprestimosPage() {
   const getBadgeStyle = (loanType, rate) => {
     if (rate < 2.0) return { icon: Star, text: 'Melhor taxa', color: 'bg-teal-100 text-teal-800 border-teal-200' };
     if (loanType === 'Negativado') return { icon: ShieldCheck, text: 'Sem consulta', color: 'bg-purple-100 text-purple-800 border-purple-200' };
-    if (loanType === 'Pessoal') return { icon: CheckCircle2, text: 'Aprovacao rapida', color: 'bg-green-100 text-green-800 border-green-200' };
+    if (loanType === 'Pessoal') return { icon: CheckCircle2, text: 'Aprova??o r?pida', color: 'bg-green-100 text-green-800 border-green-200' };
     return { icon: Sparkles, text: 'Mais aprovado', color: 'bg-blue-100 text-blue-800 border-blue-200' };
   };
 
@@ -93,19 +94,14 @@ function EmprestimosPage() {
   return (
     <>
       <Helmet>
-        <title>Comparador de Emprestimos - Cote Juros</title>
+        <title>Comparador de Empr?stimos - Cote Juros</title>
         <meta name="description" content="Compare as melhores taxas de emprestimos e encontre o credito ideal." />
       </Helmet>
 
-      <div className="bg-slate-50 border-b border-border py-12 lg:py-16 relative overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img src="https://images.unsplash.com/photo-1583223527919-dfb0e34bd4e0?auto=format&fit=crop&w=2000&q=80" alt="Emprestimos" className="w-full h-full object-cover opacity-10 mix-blend-multiply grayscale" />
-        </div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-foreground text-balance">Comparador de Emprestimos</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl font-medium">Filtre por taxas, prazos e valores. Encontre o credito aprovado para o seu perfil em segundos.</p>
-        </div>
-      </div>
+      <PageHero
+        title="Comparador de Empr?stimos"
+        subtitle="Filtre por taxas, prazos e valores. Encontre o credito aprovado para o seu perfil em segundos."
+      />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid lg:grid-cols-12 gap-8">
@@ -128,7 +124,7 @@ function EmprestimosPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <Label className="font-semibold text-foreground">Tipo de Credito</Label>
+                  <Label className="font-semibold text-foreground">Tipo de Cr?dito</Label>
                   <Select value={type} onValueChange={setType}>
                     <SelectTrigger className="bg-slate-50">
                       <SelectValue placeholder="Selecione..." />
@@ -157,7 +153,7 @@ function EmprestimosPage() {
                     {['Todos', 'Alto', 'Médio', 'Baixo'].map((s) => (
                       <div key={s} className="flex items-center space-x-2">
                         <RadioGroupItem value={s} id={`score-${s}`} />
-                        <Label htmlFor={`score-${s}`} className="font-medium cursor-pointer">{s === 'Todos' ? 'Nao sei' : s}</Label>
+                        <Label htmlFor={`score-${s}`} className="font-medium cursor-pointer">{s === 'Todos' ? 'N?o sei' : s}</Label>
                       </div>
                     ))}
                   </RadioGroup>
@@ -220,24 +216,24 @@ function EmprestimosPage() {
                         <div className="mb-6">
                           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Taxa de juros</p>
                           <p className="text-4xl font-extrabold text-primary font-variant-tabular leading-none">{loan.monthlyRate}%</p>
-                          <p className="text-sm text-muted-foreground mt-1">ao mes</p>
+                          <p className="text-sm text-muted-foreground mt-1">ao m?s</p>
                         </div>
 
                         <div className="mb-6 rounded-xl border border-border bg-slate-50 p-4">
                           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Beneficio principal</p>
                           <p className="text-sm font-semibold text-foreground">
-                            {loan.monthlyRate < 2 ? 'Condicao de taxa reduzida para o perfil selecionado.' : 'Oferta com boa chance de aprovacao conforme os filtros.'}
+                            {loan.monthlyRate < 2 ? 'Condição de taxa reduzida para o perfil selecionado.' : 'Oferta com boa chance de aprovação conforme os filtros.'}
                           </p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-3 mb-6 pt-3 border-t border-slate-100">
                           <div>
                             <p className="text-[11px] font-semibold text-muted-foreground uppercase">Valor maximo</p>
-                            <p className="font-bold text-foreground text-sm">Ate R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
+                            <p className="font-bold text-foreground text-sm">At? R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
                           </div>
                           <div>
                             <p className="text-[11px] font-semibold text-muted-foreground uppercase flex items-center gap-1"><Clock className="w-3 h-3" /> Prazo</p>
-                            <p className="font-bold text-foreground text-sm">Ate {loan.maxTerm} meses</p>
+                            <p className="font-bold text-foreground text-sm">At? {loan.maxTerm} meses</p>
                           </div>
                         </div>
 
@@ -258,7 +254,7 @@ function EmprestimosPage() {
               <div className="text-center py-20 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
                 <Filter className="w-12 h-12 text-slate-300 mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-foreground">Nenhuma oferta encontrada</h3>
-                <p className="text-muted-foreground mt-2">Ajuste seus filtros para ver mais opcoes.</p>
+                <p className="text-muted-foreground mt-2">Ajuste seus filtros para ver mais op??es.</p>
                 <Button variant="outline" className="mt-6" onClick={resetFilters}>Limpar todos os filtros</Button>
               </div>
             )}
@@ -269,5 +265,5 @@ function EmprestimosPage() {
   );
 }
 
-export default EmprestimosPage;
+export default Empr?stimosPage;
 

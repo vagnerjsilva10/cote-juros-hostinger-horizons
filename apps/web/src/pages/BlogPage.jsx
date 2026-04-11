@@ -8,6 +8,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AdSpace } from '@/components/AdSpace.jsx';
 import { Search, Clock, CalendarDays, ArrowRight } from 'lucide-react';
+import PageHero from '@/components/PageHero.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 
 const CATEGORIES = ['Todas', 'Empréstimos', 'Cartões de Crédito', 'Finanças Pessoais', 'Score de Crédito', 'Financiamento'];
@@ -50,23 +51,22 @@ function BlogPage() {
         <title>Blog - Educação Financeira - Cote Juros</title>
       </Helmet>
 
-      <div className="bg-card py-16 border-b border-border">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-4xl">
-          <Badge className="mb-4 bg-primary/10 text-primary border-primary/20" variant="outline">Editorial financeiro</Badge>
-          <h1 className="mb-6">Blog Cote Juros</h1>
-          <p className="text-lg text-muted-foreground mb-8">Análises, guias e estratégias para decisões de crédito mais inteligentes.</p>
-
-          <div className="relative max-w-xl mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-            <Input
-              className="h-14 pl-12 rounded-full text-base bg-background text-foreground shadow-sm border-border"
-              placeholder="Buscar artigos..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+      <PageHero
+        centered
+        badge="Editorial financeiro"
+        title="Blog Cote Juros"
+        subtitle="Análises, guias e estratégias para decisões de crédito mais inteligentes."
+      >
+        <div className="relative mx-auto max-w-xl">
+          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            className="h-14 rounded-full border-border bg-background pl-12 text-base text-foreground shadow-sm"
+            placeholder="Buscar artigos..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
-      </div>
+      </PageHero>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-10">

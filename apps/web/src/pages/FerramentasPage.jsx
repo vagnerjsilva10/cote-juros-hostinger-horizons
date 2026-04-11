@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell } from 'recharts';
 import { Calculator, Download, TrendingUp, Home, DollarSign } from 'lucide-react';
 import { toast } from 'sonner';
+import PageHero from '@/components/PageHero.jsx';
 
 function FerramentasPage() {
   // Juros Compostos State
@@ -66,17 +67,16 @@ function FerramentasPage() {
         <title>Ferramentas & Calculadoras Financeiras - Cote Juros</title>
         <meta name="description" content="Calculadoras inteligentes para juros compostos, financiamentos e empréstimos." />
       </Helmet>
-
-      <div className="bg-slate-50 border-b border-border py-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl text-center">
-          <div className="w-16 h-16 bg-white shadow-sm rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <Calculator className="w-8 h-8 text-primary" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-foreground">Ferramentas Premium</h1>
-          <p className="text-lg text-muted-foreground font-medium">Tome controle do seu dinheiro com cálculos precisos, gráficos interativos e projeções confiáveis.</p>
+      <PageHero
+        centered
+        badge="Ferramentas"
+        title="Ferramentas Premium"
+        subtitle="Tome controle do seu dinheiro com cálculos precisos, gráficos interativos e projeções confiáveis."
+      >
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-white/70 bg-white/80 shadow-sm">
+          <Calculator className="h-8 w-8 text-primary" />
         </div>
-      </div>
-
+      </PageHero>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 max-w-6xl">
         <Tabs defaultValue="juros-compostos" className="w-full">
           <TabsList className="flex flex-wrap md:grid w-full grid-cols-1 md:grid-cols-3 h-auto p-1.5 bg-slate-100 rounded-[var(--radius-lg)] gap-1 mb-12">
@@ -269,3 +269,4 @@ function FerramentasPage() {
 }
 
 export default FerramentasPage;
+

@@ -9,6 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { Filter, CheckCircle2, Sparkles, CreditCard, ChevronRight } from 'lucide-react';
+import PageHero from '@/components/PageHero.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
@@ -55,7 +56,7 @@ function CartoesPage() {
     const destinationUrl = 'https://finance.cotejuros.com.br';
 
     await trackingService.trackOfferClick({
-      sourcePage: '/cartoes-de-credito',
+      sourcePage: '/cart?es-de-credito',
       offerId: card.id,
       target: destinationUrl,
       productType: 'credit_card',
@@ -66,7 +67,7 @@ function CartoesPage() {
       partnerId: card.bankId,
       offerId: card.id,
       destinationUrl,
-      sourcePage: '/cartoes-de-credito',
+      sourcePage: '/cart?es-de-credito',
       productType: 'credit_card'
     });
 
@@ -77,19 +78,14 @@ function CartoesPage() {
   return (
     <>
       <Helmet>
-        <title>Comparador de Cartoes de Credito - Cote Juros</title>
-        <meta name="description" content="Encontre o cartao de credito perfeito: sem anuidade, com milhas ou cashback." />
+        <title>Comparador de Cart?es de Cr?dito - Cote Juros</title>
+        <meta name="description" content="Encontre o cart?o de credito perfeito: sem anuidade, com milhas ou cashback." />
       </Helmet>
 
-      <div className="bg-slate-50 border-b border-border py-12 lg:py-16 relative overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img src="https://images.unsplash.com/photo-1674845740155-bb4d20fa1a54?auto=format&fit=crop&w=2000&q=80" alt="Cartoes de Credito" className="w-full h-full object-cover opacity-10 mix-blend-multiply grayscale" />
-        </div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-foreground text-balance">Cartoes de Credito</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl font-medium">Milhas, cashback ou anuidade zero? Compare e escolha o cartao ideal para o seu bolso.</p>
-        </div>
-      </div>
+      <PageHero
+        title="Cart?es de Cr?dito"
+        subtitle="Milhas, cashback ou anuidade zero? Compare e escolha o cart?o ideal para o seu bolso."
+      />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid lg:grid-cols-12 gap-8">
@@ -108,7 +104,7 @@ function CartoesPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="font-semibold text-foreground">Categoria do cartao</Label>
+                  <Label className="font-semibold text-foreground">Categoria do cart?o</Label>
                   <div className="space-y-3">
                     {['Premium', 'Intermediário', 'Básico'].map((cat) => (
                       <div key={cat} className="flex items-center space-x-3">
@@ -125,7 +121,7 @@ function CartoesPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="font-semibold text-foreground">Beneficios desejados</Label>
+                  <Label className="font-semibold text-foreground">Benef?cios desejados</Label>
                   <div className="space-y-3">
                     {['Cashback', 'Milhas', 'VIP'].map((ben) => (
                       <div key={ben} className="flex items-center space-x-3">
@@ -147,7 +143,7 @@ function CartoesPage() {
           <div className="lg:col-span-9">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
               <p className="text-muted-foreground font-medium">
-                Mostrando <span className="text-foreground font-bold">{filteredCards.length}</span> cartoes
+                Mostrando <span className="text-foreground font-bold">{filteredCards.length}</span> cart?es
               </p>
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <Label className="whitespace-nowrap font-medium">Ordenar:</Label>
@@ -192,7 +188,7 @@ function CartoesPage() {
                         </div>
                         <div className="rounded-lg border border-border bg-slate-50 p-3">
                           <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Limite est.</p>
-                          <p className="font-bold text-primary">Ate R$ {card.maxLimit / 1000}k</p>
+                          <p className="font-bold text-primary">At? R$ {card.maxLimit / 1000}k</p>
                         </div>
                       </div>
 
@@ -232,7 +228,7 @@ function CartoesPage() {
             {filteredCards.length === 0 && (
               <div className="text-center py-20 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
                 <CreditCard className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-foreground">Nenhum cartao encontrado</h3>
+                <h3 className="text-xl font-bold text-foreground">Nenhum cart?o encontrado</h3>
                 <p className="text-muted-foreground mt-2">Tente desmarcar alguns filtros de beneficios.</p>
               </div>
             )}

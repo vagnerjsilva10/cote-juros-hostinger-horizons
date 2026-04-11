@@ -6,6 +6,7 @@ import Footer from '@/components/Footer.jsx';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import PageHero from '@/components/PageHero.jsx';
 
 function AnaliseDeMarketPage() {
   const marketData = [
@@ -67,17 +68,10 @@ function AnaliseDeMarketPage() {
 
       <div className="min-h-screen bg-background">
         <Header />
-
-        <section className="py-12 bg-secondary">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance" style={{ letterSpacing: '-0.02em' }}>
-              Análise de mercado
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              Acompanhe as tendências e taxas médias do mercado de crédito brasileiro
-            </p>
-          </div>
-        </section>
+        <PageHero
+          title="Análise de mercado"
+          subtitle="Acompanhe as tendências e taxas médias do mercado de crédito brasileiro."
+        />
 
         <section className="py-12">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -143,3 +137,4 @@ function AnaliseDeMarketPage() {
 }
 
 export default AnaliseDeMarketPage;
+

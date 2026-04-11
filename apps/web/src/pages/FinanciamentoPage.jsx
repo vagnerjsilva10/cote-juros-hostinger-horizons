@@ -3,9 +3,9 @@ import { Helmet } from 'react-helmet';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Home, Car, Calendar, ArrowRight, ShieldCheck } from 'lucide-react';
+import PageHero from '@/components/PageHero.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
@@ -37,7 +37,7 @@ function FinanciamentoPage() {
       productType: 'financing'
     });
 
-    toast.success(`Interesse registrado para simulacao com ${offer.bankName}.`);
+    toast.success(`Interesse registrado para simula??o com ${offer.bankName}.`);
     window.location.href = redirect.resolvedUrl;
   };
 
@@ -64,7 +64,7 @@ function FinanciamentoPage() {
                 <div className="grid grid-cols-2 gap-6">
                   <div>
                     <p className="text-sm font-semibold text-muted-foreground mb-1 flex items-center gap-1"><Car className="w-4 h-4" /> Valor</p>
-                    <p className="text-lg font-bold text-foreground">Ate R$ {(fin.maxValue / 1000).toFixed(0)}k</p>
+                    <p className="text-lg font-bold text-foreground">At? R$ {(fin.maxValue / 1000).toFixed(0)}k</p>
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-muted-foreground mb-1 flex items-center gap-1"><Calendar className="w-4 h-4" /> Prazo Max</p>
@@ -94,31 +94,29 @@ function FinanciamentoPage() {
         <meta name="description" content="Simule o financiamento da sua casa ou carro com as menores taxas." />
       </Helmet>
 
-      <div className="bg-foreground text-background py-16 lg:py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0F62FE]/20 to-[#7C3AED]/20 mix-blend-overlay z-0" />
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center max-w-3xl">
-          <Badge className="bg-white/10 text-white hover:bg-white/20 border-0 mb-6 px-4 py-1.5 text-sm">Financiamentos</Badge>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-6 text-white text-balance">Realize seu sonho pagando menos</h1>
-          <p className="text-xl text-slate-300 font-medium">Compare as taxas de financiamento imobiliario e de veiculos nos maiores bancos do pais.</p>
-        </div>
-      </div>
+      <PageHero
+        badge="Financiamentos"
+        centered
+        title="Realize seu sonho pagando menos"
+        subtitle="Compare as taxas de financiamento imobili?rio e de ve?culos nos maiores bancos do pais."
+      />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 max-w-5xl">
-        <Tabs defaultValue="veiculos" className="w-full">
+        <Tabs defaultValue="ve?culos" className="w-full">
           <TabsList className="grid w-full grid-cols-2 h-16 p-1.5 bg-slate-100 rounded-[var(--radius-lg)]">
-            <TabsTrigger value="veiculos" className="rounded-[var(--radius-md)] text-lg font-bold data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all">
-              <Car className="w-5 h-5 mr-2" /> Veiculos
+            <TabsTrigger value="ve?culos" className="rounded-[var(--radius-md)] text-lg font-bold data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all">
+              <Car className="w-5 h-5 mr-2" /> Ve?culos
             </TabsTrigger>
             <TabsTrigger value="imobiliario" className="rounded-[var(--radius-md)] text-lg font-bold data-[state=active]:bg-white data-[state=active]:text-secondary data-[state=active]:shadow-sm transition-all">
-              <Home className="w-5 h-5 mr-2" /> Imoveis
+              <Home className="w-5 h-5 mr-2" /> Im?veis
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="veiculos" className="mt-4 animate-in fade-in-50 slide-in-from-bottom-4 duration-500">
+          <TabsContent value="ve?culos" className="mt-4 animate-in fade-in-50 slide-in-from-bottom-4 duration-500">
             <div className="bg-blue-50 border border-blue-100 rounded-[var(--radius-lg)] p-6 mb-8 mt-8 flex items-start gap-4">
               <ShieldCheck className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
               <p className="text-blue-900 font-medium leading-relaxed">
-                As taxas para financiamento de veiculos variam de acordo com o ano de fabricacao. Veiculos mais novos costumam ter taxas menores.
+                As taxas para financiamento de ve?culos variam de acordo com o ano de fabrica??o. Ve?culos mais novos costumam ter taxas menores.
               </p>
             </div>
             {renderCards((item) => item.category === 'Carro' || item.category === 'Moto')}
@@ -128,7 +126,7 @@ function FinanciamentoPage() {
             <div className="bg-purple-50 border border-purple-100 rounded-[var(--radius-lg)] p-6 mb-8 mt-8 flex items-start gap-4">
               <ShieldCheck className="w-6 h-6 text-secondary flex-shrink-0 mt-1" />
               <p className="text-purple-900 font-medium leading-relaxed">
-                Para o financiamento imobiliario, voce pode usar seu FGTS como entrada se o imovel se enquadrar nas regras do SFH.
+                Para o financiamento imobili?rio, voce pode usar seu FGTS como entrada se o im?vel se enquadrar nas regras do SFH.
               </p>
             </div>
             {renderCards((item) => item.category !== 'Carro' && item.category !== 'Moto')}
