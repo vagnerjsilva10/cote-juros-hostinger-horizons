@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Button } from '@/components/ui/button';
@@ -23,14 +22,10 @@ function SeoLandingPage({ title, description, heading, content, type }) {
           <div className="absolute right-0 top-0 w-1/3 h-full bg-primary/5 rounded-l-full blur-3xl" />
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="max-w-3xl">
-              <h1 className="mb-6 text-foreground">
-                {heading}
-              </h1>
-              <p className="text-xl text-muted-foreground mb-8">
-                {description}
-              </p>
+              <h1 className="mb-6 text-foreground">{heading}</h1>
+              <p className="text-xl text-muted-foreground mb-8">{description}</p>
               <Button size="lg" className="h-14 px-8 text-lg rounded-xl gradient-fintech-hover border-0 text-white shadow-md" onClick={() => setModalOpen(true)}>
-                Fazer simulaÃ§Ã£o gratuita
+                Fazer simulação gratuita
               </Button>
             </div>
           </div>
@@ -40,7 +35,7 @@ function SeoLandingPage({ title, description, heading, content, type }) {
           <div className="grid md:grid-cols-3 gap-12">
             <div className="md:col-span-2">
               <AdSpace height="90px" className="mb-8" />
-              
+
               <div className="prose prose-lg dark:prose-invert max-w-none text-foreground leading-relaxed">
                 {content.map((paragraph, index) => (
                   <React.Fragment key={index}>
@@ -49,11 +44,11 @@ function SeoLandingPage({ title, description, heading, content, type }) {
                   </React.Fragment>
                 ))}
               </div>
-              
+
               <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-8">
                 <h3 className="mb-4 text-foreground">Pronto para encontrar a melhor oferta?</h3>
                 <ul className="space-y-3 mb-6">
-                  {['AnÃ¡lise de crÃ©dito em tempo real', 'Sem impacto no seu Score', 'Comparamos +50 instituiÃ§Ãµes'].map((item, i) => (
+                  {['Análise de crédito em tempo real', 'Sem impacto no seu Score', 'Comparamos +50 instituições'].map((item, i) => (
                     <li key={i} className="flex items-center gap-3 text-foreground font-medium">
                       <CheckCircle2 className="w-5 h-5 text-primary" /> {item}
                     </li>
@@ -71,15 +66,15 @@ function SeoLandingPage({ title, description, heading, content, type }) {
                 <div className="space-y-4">
                   <div>
                     <h5 className="font-semibold text-primary">100% Gratuito</h5>
-                    <p className="text-sm text-muted-foreground">VocÃª nÃ£o paga nada para usar nosso comparador.</p>
+                    <p className="text-sm text-muted-foreground">Você não paga nada para usar nosso comparador.</p>
                   </div>
                   <div>
                     <h5 className="font-semibold text-secondary">Imparcialidade</h5>
                     <p className="text-sm text-muted-foreground">Mostramos as ofertas com as menores taxas primeiro.</p>
                   </div>
                   <div>
-                    <h5 className="font-semibold text-accent">SeguranÃ§a LGPD</h5>
-                    <p className="text-sm text-muted-foreground">Seus dados sÃ£o criptografados de ponta a ponta.</p>
+                    <h5 className="font-semibold text-accent">Segurança LGPD</h5>
+                    <p className="text-sm text-muted-foreground">Seus dados são criptografados de ponta a ponta.</p>
                   </div>
                 </div>
               </div>

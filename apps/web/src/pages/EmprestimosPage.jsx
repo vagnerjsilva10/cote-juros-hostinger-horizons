@@ -95,12 +95,12 @@ function EmprestimosPage() {
     <>
       <Helmet>
         <title>Comparador de Empréstimos - Cote Juros</title>
-        <meta name="description" content="Compare as melhores taxas de emprestimos e encontre o credito ideal." />
+        <meta name="description" content="Compare as melhores taxas de empréstimos e encontre o crédito ideal." />
       </Helmet>
 
       <PageHero
         title="Comparador de Empréstimos"
-        subtitle="Filtre por taxas, prazos e valores. Encontre o credito aprovado para o seu perfil em segundos."
+        subtitle="Filtre por taxas, prazos e valores. Encontre o crédito aprovado para o seu perfil em segundos."
       />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -220,7 +220,7 @@ function EmprestimosPage() {
                         </div>
 
                         <div className="mb-6 rounded-xl border border-border bg-slate-50 p-4">
-                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Beneficio principal</p>
+                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Benefício principal</p>
                           <p className="text-sm font-semibold text-foreground">
                             {loan.monthlyRate < 2 ? 'Condição de taxa reduzida para o perfil selecionado.' : 'Oferta com boa chance de aprovação conforme os filtros.'}
                           </p>
@@ -228,7 +228,7 @@ function EmprestimosPage() {
 
                         <div className="grid grid-cols-2 gap-3 mb-6 pt-3 border-t border-slate-100">
                           <div>
-                            <p className="text-[11px] font-semibold text-muted-foreground uppercase">Valor maximo</p>
+                            <p className="text-[11px] font-semibold text-muted-foreground uppercase">Valor máximo</p>
                             <p className="font-bold text-foreground text-sm">Até R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
                           </div>
                           <div>
