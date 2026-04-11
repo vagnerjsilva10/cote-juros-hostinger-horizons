@@ -1,6 +1,6 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Linkedin, ShieldCheck, Lock, Building } from 'lucide-react';
+import { ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { CoteJurosLogo } from './CoteJurosLogo.jsx';
 
 function Footer() {
@@ -8,30 +8,20 @@ function Footer() {
 
   const footerSections = [
     {
-      title: 'Comparadores',
+      title: 'Produto',
       links: [
-        { label: 'Melhores empréstimos', path: '/melhores-emprestimos' },
-        { label: 'Melhores cartões', path: '/melhores-cartoes' },
-        { label: 'Melhores financiamentos', path: '/financiamento' },
-        { label: 'Comparador de taxas', path: '/emprestimos' }
+        { label: 'Emprestimos', path: '/emprestimos' },
+        { label: 'Cartoes', path: '/cartoes-de-credito' },
+        { label: 'Financiamento', path: '/financiamento' },
+        { label: 'Ferramentas', path: '/ferramentas' }
       ]
     },
     {
-      title: 'Ferramentas',
-      links: [
-        { label: 'Simuladores', path: '/ferramentas' },
-        { label: 'Calculadoras', path: '/ferramentas' },
-        { label: 'Análise de Perfil', path: '/diagnostico-financeiro' },
-        { label: 'Cote Finance AI', path: '/cote-finance-ai' }
-      ]
-    },
-    {
-      title: 'Educação',
+      title: 'Conteudo',
       links: [
         { label: 'Blog', path: '/blog' },
-        { label: 'Guias', path: '/blog' },
-        { label: 'Como aumentar score', path: '/como-aumentar-score' },
-        { label: 'Dicas financeiras', path: '/blog' }
+        { label: 'Diagnostico', path: '/diagnostico-financeiro' },
+        { label: 'Cote Finance AI', path: '/cote-finance-ai' }
       ]
     },
     {
@@ -39,68 +29,48 @@ function Footer() {
       links: [
         { label: 'Sobre', path: '/sobre-nos' },
         { label: 'Contato', path: '/contato' },
-        { label: 'Carreiras', path: '/sobre-nos' },
-        { label: 'Imprensa', path: '/contato' }
-      ]
-    },
-    {
-      title: 'Legal',
-      links: [
         { label: 'Privacidade', path: '/politica-de-privacidade' },
-        { label: 'Termos', path: '/termos-de-uso' },
-        { label: 'LGPD', path: '/politica-de-privacidade' },
-        { label: 'Aviso', path: '/termos-de-uso' }
+        { label: 'Termos', path: '/termos-de-uso' }
       ]
     }
   ];
 
-  const socialItems = [
-    { label: 'LinkedIn', Icon: Linkedin },
-    { label: 'Twitter', Icon: Twitter },
-    { label: 'Instagram', Icon: Instagram },
-    { label: 'Facebook', Icon: Facebook }
-  ];
-
   return (
-    <footer className="bg-secondary-subtle border-t border-border pt-20 pb-10">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12 mb-16">
-          <div className="col-span-2 lg:col-span-2 space-y-6">
+    <footer className="border-t border-border bg-background py-20">
+      <div className="page-shell">
+        <div className="mb-16 grid gap-12 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
+          <div className="max-w-md space-y-6">
             <Link to="/" className="inline-block">
-              <CoteJurosLogo variant="horizontal" className="h-14 w-auto" />
+              <CoteJurosLogo />
             </Link>
-            <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
-              Comparador financeiro inteligente. Encontre as melhores taxas de empréstimos, cartões e financiamentos do mercado em segundos.
+            <p className="text-sm leading-7 text-muted-foreground">
+              Um comparador financeiro com interface limpa, simulacao objetiva e orientacao para credito com menos ruido.
             </p>
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-2 bg-white rounded-lg py-2 px-3 border border-border shadow-[var(--shadow-sm)]">
-                <ShieldCheck className="w-4 h-4 text-primary" />
-                <span className="text-xs font-semibold text-foreground">SSL Seguro</span>
+            <div className="flex flex-wrap gap-3">
+              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Experiencia segura
               </div>
-              <div className="flex items-center gap-2 bg-white rounded-lg py-2 px-3 border border-border shadow-[var(--shadow-sm)]">
-                <Lock className="w-4 h-4 text-primary" />
-                <span className="text-xs font-semibold text-foreground">LGPD</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white rounded-lg py-2 px-3 border border-border shadow-[var(--shadow-sm)]">
-                <Building className="w-4 h-4 text-primary" />
-                <span className="text-xs font-semibold text-foreground">Bacen</span>
+              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
+                LGPD
               </div>
             </div>
           </div>
 
           {footerSections.map((section) => (
-            <div key={section.title} className="col-span-1">
-              <span className="text-sm font-bold text-foreground uppercase tracking-wider mb-6 block">
+            <div key={section.title}>
+              <span className="mb-5 block text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                 {section.title}
               </span>
-              <ul className="space-y-4">
+              <ul className="space-y-3">
                 {section.links.map((link) => (
                   <li key={link.path}>
                     <Link
                       to={link.path}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 font-medium"
+                      className="group inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
                     >
                       {link.label}
+                      <ArrowUpRight className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
                     </Link>
                   </li>
                 ))}
@@ -109,34 +79,14 @@ function Footer() {
           ))}
         </div>
 
-        <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
-          <div className="flex flex-col items-center md:items-start space-y-2">
-            <p className="text-sm text-muted-foreground font-medium">
-              Cote Juros © {currentYear}. Todos os direitos reservados.
-            </p>
-            <p className="text-xs text-muted-foreground/80">
-              Operação digital no Brasil • Informações societárias no lançamento oficial
+        <div className="flex flex-col gap-4 border-t border-border pt-8 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-sm font-medium text-foreground">Cote Juros © {currentYear}</p>
+            <p className="text-sm text-muted-foreground">
+              Credito explicado com mais clareza, menos excesso visual e foco no que importa.
             </p>
           </div>
-
-          <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full border border-border shadow-[var(--shadow-sm)]">
-            <Lock className="w-3 h-3 text-primary" />
-            <span className="text-xs text-muted-foreground font-medium">Seus dados são protegidos com criptografia SSL</span>
-          </div>
-
-          <div className="flex items-center space-x-5">
-            {socialItems.map(({ label, Icon }) => (
-              <button
-                key={label}
-                type="button"
-                aria-label={`${label} em breve`}
-                title={`${label} em breve`}
-                className="text-muted-foreground/70 transition-colors duration-200 cursor-default"
-              >
-                <Icon className="h-5 w-5" />
-              </button>
-            ))}
-          </div>
+          <p className="text-sm text-muted-foreground">Brasil • Plataforma digital</p>
         </div>
       </div>
     </footer>

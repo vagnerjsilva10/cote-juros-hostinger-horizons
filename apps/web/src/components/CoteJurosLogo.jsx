@@ -1,18 +1,28 @@
-﻿import React from 'react';
+import React from 'react';
+import { cn } from '@/lib/utils.js';
 
 export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
-  const sources = {
-    horizontal: '/assets/logo/logo-primary.svg',
-    horizontalDark: '/assets/logo/logo-dark.svg',
-    square: '/assets/logo/logo-icon.svg',
-    symbol: '/assets/logo/logo-icon.svg',
-    symbolLight: '/assets/logo/logo-icon.svg',
-    grayscale: '/assets/logo/logo-primary.svg'
-  };
+  const isSymbol = ['square', 'symbol', 'symbolLight'].includes(variant);
 
-  const isSymbol = variant === 'square' || variant === 'symbol' || variant === 'symbolLight';
-  const src = sources[variant] || sources.horizontal;
-  const title = isSymbol ? 'Símbolo Cote Juros' : 'Logo Cote Juros';
+  if (isSymbol) {
+    return (
+      <span
+        className={cn(
+          'inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background text-sm font-semibold tracking-[-0.08em] text-foreground shadow-[var(--shadow-sm)]',
+          className
+        )}
+      >
+        CJ
+      </span>
+    );
+  }
 
-  return <img src={src} alt={title} className={className} loading="eager" decoding="async" />;
+  return (
+    <span className={cn('inline-flex items-center gap-3 text-[17px] font-semibold tracking-[-0.04em] text-foreground', className)}>
+      <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background text-sm tracking-[-0.08em] shadow-[var(--shadow-sm)]">
+        CJ
+      </span>
+      <span>Cote Juros</span>
+    </span>
+  );
 }

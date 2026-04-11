@@ -1,5 +1,7 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { toast } from 'sonner';
+import { CheckCircle2, ChevronRight, CreditCard, Filter } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -7,8 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
-import { toast } from 'sonner';
-import { Filter, CheckCircle2, Sparkles, CreditCard, ChevronRight } from 'lucide-react';
 import PageHero from '@/components/PageHero.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
@@ -17,40 +17,42 @@ import { partnerRedirectService } from '@/platform/services/partnerRedirectServi
 function CartoesPage() {
   const [cardsData, setCardsData] = useState([]);
   const [freeAnnuity, setFreeAnnuity] = useState(false);
-  const [categories, setCategories] = useState({ Premium: false, Intermediário: false, Básico: false });
+  const [categories, setCategories] = useState({ Premium: false, Intermediario: false, Basico: false });
   const [benefits, setBenefits] = useState({ Cashback: false, Milhas: false, VIP: false });
   const [sort, setSort] = useState('limite-maior');
 
   useEffect(() => {
-    portalApi.getOffers({ productType: 'credit_card' }).then(setCardsData);
+    portalApi.getOffers({ productType: 'credit_card' }).then((items) => {
+      setCardsData(items);
+    });
   }, []);
 
   const filteredCards = useMemo(() => {
     let result = cardsData.filter((card) => {
       const matchAnnuity = !freeAnnuity || card.annualFee === 0;
-      const activeCats = Object.keys(categories).filter((k) => categories[k]);
+      const activeCats = Object.keys(categories).filter((key) => categories[key]);
       const matchCat = activeCats.length === 0 || activeCats.includes(card.category);
-      const activeBens = Object.keys(benefits).filter((k) => benefits[k]);
+      const activeBenefits = Object.keys(benefits).filter((key) => benefits[key]);
 
-      const matchBens =
-        activeBens.length === 0 ||
-        activeBens.some((ben) =>
+      const matchBenefits =
+        activeBenefits.length === 0 ||
+        activeBenefits.some((benefit) =>
           card.benefits?.some(
-            (cardBen) =>
-              cardBen.toLowerCase().includes(ben.toLowerCase()) ||
-              (ben === 'VIP' && cardBen.toLowerCase().includes('sala')) ||
-              (ben === 'Milhas' && cardBen.toLowerCase().includes('pontos'))
+            (cardBenefit) =>
+              cardBenefit.toLowerCase().includes(benefit.toLowerCase()) ||
+              (benefit === 'VIP' && cardBenefit.toLowerCase().includes('sala')) ||
+              (benefit === 'Milhas' && cardBenefit.toLowerCase().includes('pontos'))
           )
         );
 
-      return matchAnnuity && matchCat && matchBens;
+      return matchAnnuity && matchCat && matchBenefits;
     });
 
     if (sort === 'limite-maior') result = [...result].sort((a, b) => b.maxLimit - a.maxLimit);
     if (sort === 'anuidade-menor') result = [...result].sort((a, b) => a.annualFee - b.annualFee);
 
     return result;
-  }, [cardsData, freeAnnuity, categories, benefits, sort]);
+  }, [benefits, cardsData, categories, freeAnnuity, sort]);
 
   const handleApply = async (card) => {
     const destinationUrl = 'https://finance.cotejuros.com.br';
@@ -78,161 +80,139 @@ function CartoesPage() {
   return (
     <>
       <Helmet>
-        <title>Comparador de Cartões de Crédito - Cote Juros</title>
-        <meta name="description" content="Encontre o cartão de crédito perfeito: sem anuidade, com milhas ou cashback." />
+        <title>Comparador de cartoes - Cote Juros</title>
+        <meta name="description" content="Compare cartoes por anuidade, limite estimado e beneficios em uma interface mais limpa." />
       </Helmet>
 
       <PageHero
-        title="Cartões de Crédito"
-        subtitle="Milhas, cashback ou anuidade zero? Compare e escolha o cartão ideal para o seu bolso."
+        badge="Cartoes"
+        title="Selecione cartoes com leitura mais objetiva."
+        subtitle="Anuidade, limite estimado e beneficios ficam organizados em uma grade mais neutra e mais facil de escanear."
       />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-3 space-y-8">
-            <div className="bg-white border rounded-[var(--radius-lg)] p-6 shadow-sm sticky top-24">
-              <div className="flex items-center justify-between mb-6 border-b pb-4">
-                <h3 className="font-bold text-lg flex items-center gap-2">
-                  <Filter className="w-5 h-5 text-primary" /> Filtros
-                </h3>
-              </div>
+      <div className="page-shell py-12">
+        <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
+          <aside className="lg:sticky lg:top-24 lg:h-fit">
+            <Card>
+              <CardContent className="space-y-8 p-8">
+                <div className="flex items-center gap-2 border-b border-border pb-4">
+                  <Filter className="h-4 w-4 text-foreground" />
+                  <h3 className="text-lg">Filtros</h3>
+                </div>
 
-              <div className="space-y-8">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="free-annuity" className="font-semibold text-foreground cursor-pointer">Apenas sem anuidade</Label>
+                  <Label htmlFor="free-annuity">Apenas sem anuidade</Label>
                   <Switch id="free-annuity" checked={freeAnnuity} onCheckedChange={setFreeAnnuity} />
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="font-semibold text-foreground">Categoria do cartão</Label>
+                  <Label>Categoria</Label>
                   <div className="space-y-3">
-                    {['Premium', 'Intermediário', 'Básico'].map((cat) => (
-                      <div key={cat} className="flex items-center space-x-3">
+                    {['Premium', 'Intermediario', 'Basico'].map((item) => (
+                      <label key={item} className="flex items-center gap-3 rounded-[10px] border border-border px-4 py-3 hover:bg-background-secondary">
                         <Checkbox
-                          id={`cat-${cat}`}
-                          checked={categories[cat]}
-                          onCheckedChange={(checked) => setCategories((prev) => ({ ...prev, [cat]: checked }))}
-                          className="data-[state=checked]:bg-primary data-[state=checked]:text-white"
+                          checked={categories[item]}
+                          onCheckedChange={(checked) => setCategories((previous) => ({ ...previous, [item]: Boolean(checked) }))}
                         />
-                        <Label htmlFor={`cat-${cat}`} className="font-medium cursor-pointer">{cat}</Label>
-                      </div>
+                        <span className="text-sm text-foreground">{item}</span>
+                      </label>
                     ))}
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="font-semibold text-foreground">Benefícios desejados</Label>
+                  <Label>Beneficios</Label>
                   <div className="space-y-3">
-                    {['Cashback', 'Milhas', 'VIP'].map((ben) => (
-                      <div key={ben} className="flex items-center space-x-3">
+                    {['Cashback', 'Milhas', 'VIP'].map((item) => (
+                      <label key={item} className="flex items-center gap-3 rounded-[10px] border border-border px-4 py-3 hover:bg-background-secondary">
                         <Checkbox
-                          id={`ben-${ben}`}
-                          checked={benefits[ben]}
-                          onCheckedChange={(checked) => setBenefits((prev) => ({ ...prev, [ben]: checked }))}
-                          className="data-[state=checked]:bg-primary data-[state=checked]:text-white border-primary/50"
+                          checked={benefits[item]}
+                          onCheckedChange={(checked) => setBenefits((previous) => ({ ...previous, [item]: Boolean(checked) }))}
                         />
-                        <Label htmlFor={`ben-${ben}`} className="font-medium cursor-pointer">{ben === 'VIP' ? 'Acesso Sala VIP' : ben}</Label>
-                      </div>
+                        <span className="text-sm text-foreground">{item === 'VIP' ? 'Sala VIP' : item}</span>
+                      </label>
                     ))}
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
+              </CardContent>
+            </Card>
+          </aside>
 
-          <div className="lg:col-span-9">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-              <p className="text-muted-foreground font-medium">
-                Mostrando <span className="text-foreground font-bold">{filteredCards.length}</span> cartões
-              </p>
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <Label className="whitespace-nowrap font-medium">Ordenar:</Label>
+          <section>
+            <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <p className="text-sm text-muted-foreground">{filteredCards.length} cartao(oes) visiveis na comparacao.</p>
+              <div className="flex items-center gap-3">
+                <Label className="whitespace-nowrap">Ordenar</Label>
                 <Select value={sort} onValueChange={setSort}>
-                  <SelectTrigger className="w-full sm:w-48 bg-white">
+                  <SelectTrigger className="w-[220px]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="limite-maior">Maior Limite (est.)</SelectItem>
+                    <SelectItem value="limite-maior">Maior limite</SelectItem>
                     <SelectItem value="anuidade-menor">Menor anuidade</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {filteredCards.map((card) => {
                 const isFree = card.annualFee === 0;
-                const keyBenefit = card.benefits?.[0];
 
                 return (
-                  <Card key={card.id} className="card-premium flex flex-col transition-all overflow-hidden bg-white">
-                    <div className="h-44 relative overflow-hidden bg-slate-200 group">
-                      <img src={card.image} alt={card.title} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-500" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/65 to-white/10" />
-                      <div className="absolute left-5 bottom-4 right-5 z-10">
-                        <p className="text-xs uppercase tracking-wide text-slate-600 font-semibold">{card.bankName}</p>
-                        <h3 className="text-slate-900 text-lg font-bold leading-tight">{card.title}</h3>
+                  <Card key={card.id} className="surface-card h-full overflow-hidden">
+                    <div className="relative h-44 border-b border-border bg-background-secondary">
+                      <img src={card.image} alt={card.title} className="h-full w-full object-cover grayscale" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-white via-white/85 to-white/30" />
+                      <div className="absolute inset-x-5 bottom-5">
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{card.bankName}</p>
+                        <h3 className="mt-2 text-xl">{card.title}</h3>
                       </div>
-                      {card.category === 'Premium' && (
-                        <Badge className="absolute top-4 right-4 bg-amber-500 text-amber-950 border-0 font-bold tracking-wider uppercase text-[10px]">
-                          Premium <Sparkles className="w-3 h-3 ml-1" />
-                        </Badge>
-                      )}
                     </div>
 
-                    <CardContent className="flex-1 p-6 flex flex-col">
-                      <div className="grid grid-cols-2 gap-4 mb-5">
-                        <div className="rounded-lg border border-border bg-background-secondary p-3">
-                          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Anuidade</p>
-                          <p className={`font-bold ${isFree ? 'text-emerald-600' : 'text-foreground'}`}>{isFree ? 'GRATIS' : `R$ ${card.annualFee}/ano`}</p>
+                    <CardContent className="flex h-full flex-col gap-5 p-8">
+                      <div className="flex items-center justify-between gap-3">
+                        <Badge variant="outline">{card.category}</Badge>
+                        {isFree ? <Badge variant="secondary">Sem anuidade</Badge> : null}
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="rounded-[12px] border border-border bg-background-secondary p-4">
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Anuidade</p>
+                          <p className="mt-2 text-sm font-semibold text-foreground">{isFree ? 'Gratis' : `R$ ${card.annualFee}/ano`}</p>
                         </div>
-                        <div className="rounded-lg border border-border bg-background-secondary p-3">
-                          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Limite est.</p>
-                          <p className="font-bold text-primary">Até R$ {card.maxLimit / 1000}k</p>
+                        <div className="rounded-[12px] border border-border bg-background-secondary p-4">
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Limite estimado</p>
+                          <p className="mt-2 text-sm font-semibold text-foreground">R$ {card.maxLimit / 1000}k</p>
                         </div>
                       </div>
 
-                      <div className="mb-5 rounded-xl border border-border bg-background-secondary p-4">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Benefício principal</p>
-                        <p className="text-sm font-semibold text-foreground">{keyBenefit}</p>
+                      <div className="space-y-3">
+                        {card.benefits?.slice(0, 3).map((benefit, index) => (
+                          <div key={`${benefit}-${index}`} className="flex items-start gap-3">
+                            <CheckCircle2 className="mt-0.5 h-4 w-4 text-foreground" />
+                            <p className="text-sm text-muted-foreground">{benefit}</p>
+                          </div>
+                        ))}
                       </div>
 
-                      <div className="flex-1">
-                        <ul className="space-y-2.5">
-                          {card.benefits?.slice(0, 3).map((ben, idx) => {
-                            const isCashback = ben.toLowerCase().includes('cashback');
-                            const isPoints = ben.toLowerCase().includes('pontos') || ben.toLowerCase().includes('milhas');
-                            const iconColor = isCashback ? 'text-emerald-600' : 'text-primary';
-
-                            return (
-                              <li key={idx} className="flex items-start text-sm font-medium text-slate-700">
-                                <CheckCircle2 className={`w-4 h-4 ${iconColor} mr-2 flex-shrink-0 mt-0.5`} />
-                                <span className="leading-tight">{ben}</span>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-
-                      <div className="mt-6 pt-4">
-                        <Button className="w-full h-12 text-base font-bold gradient-fintech-hover border-0 shadow-premium transition-all duration-300 hover:shadow-premium" onClick={() => handleApply(card)}>
-                          Solicitar agora <ChevronRight className="w-4 h-4 ml-1" />
-                        </Button>
-                      </div>
+                      <Button className="mt-auto w-full" onClick={() => handleApply(card)}>
+                        Solicitar agora <ChevronRight className="h-4 w-4" />
+                      </Button>
                     </CardContent>
                   </Card>
                 );
               })}
             </div>
 
-            {filteredCards.length === 0 && (
-              <div className="text-center py-20 bg-background-secondary rounded-2xl border border-dashed border-slate-300">
-                <CreditCard className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-foreground">Nenhum cartão encontrado</h3>
-                <p className="text-muted-foreground mt-2">Tente desmarcar alguns filtros de benefícios.</p>
+            {filteredCards.length === 0 ? (
+              <div className="rounded-[16px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center">
+                <CreditCard className="mx-auto h-10 w-10 text-muted-foreground" />
+                <h3 className="mt-4 text-2xl">Nenhum cartao encontrado.</h3>
+                <p className="mt-3 text-muted-foreground">Tente reduzir os filtros ativos para ver mais opcoes.</p>
               </div>
-            )}
-          </div>
+            ) : null}
+          </section>
         </div>
       </div>
     </>
@@ -240,4 +220,3 @@ function CartoesPage() {
 }
 
 export default CartoesPage;
-

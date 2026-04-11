@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ScrollToTop from '@/components/ScrollToTop.jsx';
 import Header from '@/components/Header.jsx';
 import Footer from '@/components/Footer.jsx';
@@ -37,7 +37,7 @@ import { Toaster } from '@/components/ui/sonner';
 
 function AppLayout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
+    <div className="min-h-screen flex flex-col bg-background selection:bg-primary/10">
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
@@ -122,12 +122,12 @@ function App() {
             element={
               <AppLayout>
                 <SeoLandingPage
-                  title="Conteúdo Especializado - Cote Juros"
+                  title="Conteudo especializado - Cote Juros"
                   description="Encontre a melhor oferta financeira para o seu perfil. Compare taxas e economize."
-                  heading="Descubra a melhor opção para você"
+                  heading="Descubra a melhor opcao para voce"
                   content={[
-                    'A Cote Juros analisa dezenas de instituições financeiras para entregar a melhor oferta para o seu bolso.',
-                    'Comparamos taxas, prazos e condições para que você tome a melhor decisão de forma gratuita.'
+                    'A Cote Juros analisa dezenas de instituicoes financeiras para entregar a melhor oferta para o seu bolso.',
+                    'Comparamos taxas, prazos e condicoes para que voce tome a melhor decisao de forma gratuita.'
                   ]}
                   type="all"
                 />
@@ -140,16 +140,20 @@ function App() {
           path="*"
           element={
             <AppLayout>
-              <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
-                <h1 className="mb-4 text-foreground">Página não encontrada</h1>
-                <p className="text-slate-600 text-lg mb-8">A página que você está procurando não existe ou foi movida.</p>
-                <a href="/" className="text-primary font-bold hover:underline">Voltar para o Início</a>
+              <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
+                <h1 className="mb-4 text-foreground">Pagina nao encontrada</h1>
+                <p className="mb-8 max-w-xl text-lg text-muted-foreground">
+                  A pagina que voce esta procurando nao existe ou foi movida.
+                </p>
+                <a href="/" className="font-semibold text-foreground hover:underline">
+                  Voltar para o inicio
+                </a>
               </div>
             </AppLayout>
           }
         />
       </Routes>
-      <Toaster position="top-right" richColors />
+      <Toaster position="top-right" />
     </Router>
   );
 }

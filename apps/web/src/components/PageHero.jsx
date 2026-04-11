@@ -10,26 +10,23 @@ function PageHero({
   children
 }) {
   return (
-    <section
-      className={`relative overflow-hidden border-b border-border hero-fintech-bg pt-20 pb-16 md:pt-24 md:pb-20 ${className}`}
-    >
+    <section className={`relative overflow-hidden border-b border-border bg-background pt-20 pb-16 md:pt-24 md:pb-20 ${className}`}>
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-[12%] top-[26%] h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.08)_0%,rgba(37,99,235,0)_72%)]" />
-        <div className="absolute right-[10%] top-[16%] h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.06)_0%,rgba(37,99,235,0)_74%)]" />
+        <div className="hero-grid absolute inset-0 opacity-70" />
+        <div className="absolute left-[8%] top-[18%] h-40 w-40 rounded-full bg-slate-900/5 blur-3xl" />
+        <div className="absolute right-[10%] top-[10%] h-52 w-52 rounded-full bg-slate-900/5 blur-3xl" />
       </div>
 
-      <div className={`container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 ${centered ? 'text-center' : ''}`}>
+      <div className={`page-shell relative z-10 ${centered ? 'text-center' : ''}`}>
         <div className={centered ? 'mx-auto max-w-4xl' : 'max-w-4xl'}>
           {badge ? (
-            <Badge variant="outline" className="mb-5 border-primary/25 bg-white/70 text-primary">
+            <Badge variant="outline" className="mb-6">
               {badge}
             </Badge>
           ) : null}
-          <h1 className="mb-4 text-foreground">
-            {title}
-          </h1>
+          <h1 className="mb-5 max-w-4xl text-foreground">{title}</h1>
           {subtitle ? (
-            <p className="max-w-3xl text-lg font-normal leading-relaxed text-muted-foreground md:text-xl">
+            <p className={`text-lg leading-8 text-muted-foreground md:text-xl ${centered ? 'mx-auto max-w-3xl' : 'max-w-3xl'}`}>
               {subtitle}
             </p>
           ) : null}

@@ -1,13 +1,12 @@
-﻿
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight, Briefcase, Building2, CheckCircle2, ChevronLeft, ShieldCheck, User, UserMinus, Wallet, XCircle } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
-import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowRight, ChevronLeft, ShieldCheck, CheckCircle2, XCircle, Briefcase, User, Building2, GraduationCap, UserMinus } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { simulationFunnelService } from '@/platform/services/simulationFunnelService.js';
 
 export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
@@ -21,21 +20,21 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
     cpf: '',
     terms: false
   });
-  
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isOpen) {
-      setData(prev => ({ ...prev, valor: initialAmount }));
-      setStep(1);
-      simulationFunnelService.start({
-        sourcePage: window.location.pathname,
-        productType: 'loan',
-        amount: initialAmount,
-        utm: Object.fromEntries(new URLSearchParams(window.location.search).entries())
-      });
-    }
-  }, [isOpen, initialAmount]);
+    if (!isOpen) return;
+
+    setStep(1);
+    setData((previous) => ({ ...previous, valor: initialAmount }));
+    simulationFunnelService.start({
+      sourcePage: window.location.pathname,
+      productType: 'loan',
+      amount: initialAmount,
+      utm: Object.fromEntries(new URLSearchParams(window.location.search).entries())
+    });
+  }, [initialAmount, isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -46,17 +45,25 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
       amount: data.valor,
       score: data.score
     });
-  }, [step, data.valor, data.score, isOpen]);
+  }, [data.score, data.valor, isOpen, step]);
 
-  const handleNext = () => setStep(s => Math.min(s + 1, 6));
-  const handlePrev = () => setStep(s => Math.max(s - 1, 1));
+  const employmentTypes = [
+    { id: 'CLT', icon: Briefcase },
+    { id: 'PJ', icon: Building2 },
+    { id: 'Autonomo', icon: User },
+    { id: 'Aposentado', icon: Wallet },
+    { id: 'Desempregado', icon: UserMinus }
+  ];
 
-  const formatCPF = (val) => {
-    let v = val.replace(/\D/g, '').slice(0, 11);
-    if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-    else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, "$1.$2.$3");
-    else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/, "$1.$2");
-    setData({ ...data, cpf: v });
+  const nextStep = () => setStep((current) => Math.min(current + 1, 6));
+  const prevStep = () => setStep((current) => Math.max(current - 1, 1));
+
+  const formatCPF = (value) => {
+    let next = value.replace(/\D/g, '').slice(0, 11);
+    if (next.length > 9) next = next.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    else if (next.length > 6) next = next.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+    else if (next.length > 3) next = next.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+    setData((previous) => ({ ...previous, cpf: next }));
   };
 
   const handleComplete = async () => {
@@ -78,212 +85,224 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
     navigate(`/emprestimos?lead_id=${lead.id}`);
   };
 
-  const employmentTypes = [
-    { id: 'CLT', icon: Briefcase },
-    { id: 'PJ', icon: Building2 },
-    { id: 'Autônomo', icon: User },
-    { id: 'Aposentado', icon: GraduationCap },
-    { id: 'Desempregado', icon: UserMinus }
+  const stepTitle = [
+    'Valor desejado',
+    'Renda mensal',
+    'Vinculo principal',
+    'Faixa de score',
+    'Restricao no nome',
+    'Confirmacao final'
   ];
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-xl p-0 overflow-hidden bg-white border-0 rounded-[16px] shadow-[var(--shadow-md)]">
-        <DialogTitle className="sr-only">Simulação Financeira</DialogTitle>
-        <DialogDescription className="sr-only">Preencha seus dados para receber ofertas.</DialogDescription>
-        
-        <div className="bg-slate-50 px-6 py-4 border-b border-border flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {step > 1 && (
-              <button onClick={handlePrev} className="text-slate-600 hover:text-primary interactive-element">
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-            )}
-            <span className="font-semibold text-sm uppercase tracking-wider text-slate-600">
-              Passo {step} de 6
-            </span>
-          </div>
-          <div className="flex gap-1">
-            {[1,2,3,4,5,6].map(i => (
-              <div key={i} className={`h-1.5 w-6 rounded-full ${i <= step ? 'bg-primary' : 'bg-slate-200'} transition-colors duration-300`} />
-            ))}
+      <DialogContent className="max-w-2xl overflow-hidden border border-border bg-white p-0">
+        <DialogTitle className="sr-only">Simulacao de credito</DialogTitle>
+        <DialogDescription className="sr-only">Preencha seus dados para visualizar ofertas personalizadas.</DialogDescription>
+
+        <div className="border-b border-border bg-background-secondary px-6 py-5">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              {step > 1 ? (
+                <button type="button" onClick={prevStep} className="rounded-full border border-border p-2 text-muted-foreground hover:bg-background hover:text-foreground">
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+              ) : null}
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Passo {step} de 6</p>
+                <p className="text-sm font-medium text-foreground">{stepTitle[step - 1]}</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5, 6].map((item) => (
+                <span
+                  key={item}
+                  className={`h-1.5 w-8 rounded-full transition-colors duration-200 ${item <= step ? 'bg-foreground' : 'bg-border'}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="p-8 sm:p-12 relative min-h-[450px] flex flex-col justify-center bg-white">
+        <div className="min-h-[460px] px-8 py-10 sm:px-12">
           <AnimatePresence mode="wait">
             <motion.div
               key={step}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="w-full"
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="space-y-8"
             >
-              {step === 1 && (
-                <div className="space-y-8">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-bold text-foreground">Qual valor você precisa?</h2>
-                    <p className="text-slate-600">Deslize para escolher o valor ideal.</p>
+              {step === 1 ? (
+                <>
+                  <div className="space-y-3">
+                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Qual valor voce quer comparar?</h2>
+                    <p className="text-base text-muted-foreground">Comece pelo montante real para reduzir ruido nas ofertas seguintes.</p>
                   </div>
-                  <div className="text-5xl font-bold text-primary text-center py-6 font-variant-tabular">
-                    R$ {data.valor.toLocaleString('pt-BR')}
+                  <div className="rounded-[16px] border border-border bg-background-secondary px-6 py-8 text-center">
+                    <p className="text-4xl font-semibold tracking-[-0.04em] text-foreground">R$ {data.valor.toLocaleString('pt-BR')}</p>
                   </div>
-                  <Slider 
-                    value={[data.valor]} 
-                    onValueChange={v => setData({...data, valor: v[0]})} 
-                    max={500000} 
-                    min={1000} 
-                    step={1000} 
-                    className="py-4"
-                  />
-                  <Button className="w-full h-14 text-lg rounded-xl gradient-fintech-hover border-0 text-white shadow-premium" onClick={handleNext}>
-                    Próximo <ArrowRight className="ml-2 w-5 h-5" />
+                  <Slider value={[data.valor]} onValueChange={(value) => setData((previous) => ({ ...previous, valor: value[0] }))} max={500000} min={1000} step={1000} />
+                  <Button size="lg" className="w-full" onClick={nextStep}>
+                    Continuar <ArrowRight className="h-4 w-4" />
                   </Button>
-                </div>
-              )}
+                </>
+              ) : null}
 
-              {step === 2 && (
-                <div className="space-y-8">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-bold text-foreground">Qual sua renda mensal?</h2>
-                    <p className="text-slate-600">Isso nos ajuda a encontrar parcelas que cabem no seu bolso.</p>
+              {step === 2 ? (
+                <>
+                  <div className="space-y-3">
+                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Qual e a sua renda mensal?</h2>
+                    <p className="text-base text-muted-foreground">Usamos esse dado para priorizar ofertas mais compativeis com o seu contexto.</p>
                   </div>
-                  <div className="text-5xl font-bold text-primary text-center py-6 font-variant-tabular">
-                    R$ {data.renda.toLocaleString('pt-BR')}
+                  <div className="rounded-[16px] border border-border bg-background-secondary px-6 py-8 text-center">
+                    <p className="text-4xl font-semibold tracking-[-0.04em] text-foreground">R$ {data.renda.toLocaleString('pt-BR')}</p>
                   </div>
-                  <Slider 
-                    value={[data.renda]} 
-                    onValueChange={v => setData({...data, renda: v[0]})} 
-                    max={50000} 
-                    min={1000} 
-                    step={500} 
-                    className="py-4"
-                  />
-                  <Button className="w-full h-14 text-lg rounded-xl gradient-fintech-hover border-0 text-white shadow-premium" onClick={handleNext}>
-                    Próximo <ArrowRight className="ml-2 w-5 h-5" />
+                  <Slider value={[data.renda]} onValueChange={(value) => setData((previous) => ({ ...previous, renda: value[0] }))} max={50000} min={1000} step={500} />
+                  <Button size="lg" className="w-full" onClick={nextStep}>
+                    Continuar <ArrowRight className="h-4 w-4" />
                   </Button>
-                </div>
-              )}
+                </>
+              ) : null}
 
-              {step === 3 && (
-                <div className="space-y-8">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-bold text-foreground">Qual seu tipo de vínculo?</h2>
-                    <p className="text-slate-600">Selecione sua principal fonte de renda.</p>
+              {step === 3 ? (
+                <>
+                  <div className="space-y-3">
+                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Como voce recebe a maior parte da renda?</h2>
+                    <p className="text-base text-muted-foreground">Uma selecao simples, em cards discretos, seguindo a mesma referencia visual.</p>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {employmentTypes.map(emp => (
-                      <div 
-                        key={emp.id} 
-                        onClick={() => { setData({...data, emprego: emp.id}); setTimeout(handleNext, 300); }}
-                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 flex flex-col items-center gap-2 text-center ${data.emprego === emp.id ? 'ring-2 ring-primary border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-slate-50'}`}
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    {employmentTypes.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          setData((previous) => ({ ...previous, emprego: item.id }));
+                          setTimeout(nextStep, 180);
+                        }}
+                        className={`rounded-[12px] border p-5 text-left transition-all duration-200 ${
+                          data.emprego === item.id ? 'border-foreground bg-background-secondary' : 'border-border bg-background hover:-translate-y-px hover:bg-background-secondary'
+                        }`}
                       >
-                        <emp.icon className={`w-6 h-6 ${data.emprego === emp.id ? 'text-primary' : 'text-slate-600'}`} />
-                        <span className="font-semibold text-sm text-foreground">{emp.id}</span>
-                      </div>
+                        <item.icon className="mb-5 h-5 w-5 text-foreground" />
+                        <p className="text-sm font-semibold text-foreground">{item.id}</p>
+                      </button>
                     ))}
                   </div>
-                </div>
-              )}
+                </>
+              ) : null}
 
-              {step === 4 && (
-                <div className="space-y-8">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-bold text-foreground">Qual seu score aproximado?</h2>
-                    <p className="text-slate-600">Sua pontuação nos birôs de crédito.</p>
+              {step === 4 ? (
+                <>
+                  <div className="space-y-3">
+                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Qual faixa de score mais se aproxima do seu perfil?</h2>
+                    <p className="text-base text-muted-foreground">A informacao ajuda a ordenar as opcoes com mais clareza.</p>
                   </div>
-                  <div className="grid gap-4">
+                  <div className="grid gap-3">
                     {[
-                      { id: 'Baixo', range: '300-549', desc: 'Dificuldade em aprovar crédito', color: 'border-slate-200 hover:border-primary hover:bg-slate-50' },
-                      { id: 'Médio', range: '550-749', desc: 'Aprovação com taxas médias', color: 'border-slate-200 hover:border-primary hover:bg-slate-50' },
-                      { id: 'Alto', range: '750-1000', desc: 'Melhores taxas do mercado', color: 'border-slate-200 hover:border-primary hover:bg-slate-50' }
-                    ].map(s => (
-                      <div 
-                        key={s.id} 
-                        onClick={() => { setData({...data, score: s.id}); setTimeout(handleNext, 300); }}
-                        className={`p-5 rounded-xl border-2 cursor-pointer transition-all duration-200 flex justify-between items-center ${data.score === s.id ? 'ring-2 ring-primary border-primary bg-primary/5' : s.color}`}
+                      { id: 'Baixo', range: '300-549', copy: 'Perfil com aprovacoes mais restritas.' },
+                      { id: 'Medio', range: '550-749', copy: 'Faixa intermediaria com variacao de custo.' },
+                      { id: 'Alto', range: '750-1000', copy: 'Maior chance de taxas mais competitivas.' }
+                    ].map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          setData((previous) => ({ ...previous, score: item.id }));
+                          setTimeout(nextStep, 180);
+                        }}
+                        className={`rounded-[12px] border p-5 text-left transition-all duration-200 ${
+                          data.score === item.id ? 'border-foreground bg-background-secondary' : 'border-border bg-background hover:-translate-y-px hover:bg-background-secondary'
+                        }`}
                       >
-                        <div>
-                          <p className="font-bold text-lg text-foreground">{s.id} <span className="text-sm font-normal text-slate-600 ml-2">({s.range})</span></p>
-                          <p className="text-sm text-slate-600">{s.desc}</p>
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <p className="text-lg font-semibold text-foreground">{item.id}</p>
+                            <p className="text-sm text-muted-foreground">{item.range}</p>
+                            <p className="mt-2 text-sm text-muted-foreground">{item.copy}</p>
+                          </div>
+                          {data.score === item.id ? <CheckCircle2 className="h-5 w-5 text-foreground" /> : null}
                         </div>
-                        {data.score === s.id && <CheckCircle2 className="text-primary w-6 h-6" />}
-                      </div>
+                      </button>
                     ))}
                   </div>
-                </div>
-              )}
+                </>
+              ) : null}
 
-              {step === 5 && (
-                <div className="space-y-8">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-bold text-foreground">Possui restrição no nome?</h2>
-                    <p className="text-slate-600">Contas atrasadas ou nome negativado.</p>
+              {step === 5 ? (
+                <>
+                  <div className="space-y-3">
+                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Existe alguma restricao em aberto?</h2>
+                    <p className="text-base text-muted-foreground">Mantemos a pergunta direta para nao criar atrito desnecessario no fluxo.</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div 
-                      onClick={() => { setData({...data, restricao: true}); setTimeout(handleNext, 300); }}
-                      className={`p-8 rounded-xl border-2 cursor-pointer transition-all duration-200 text-center flex flex-col items-center gap-3 ${data.restricao === true ? 'ring-2 ring-primary border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-slate-50'}`}
-                    >
-                      <XCircle className={`w-10 h-10 ${data.restricao === true ? 'text-primary' : 'text-slate-600'}`} />
-                      <span className="font-bold text-lg text-foreground">Sim</span>
-                    </div>
-                    <div 
-                      onClick={() => { setData({...data, restricao: false}); setTimeout(handleNext, 300); }}
-                      className={`p-8 rounded-xl border-2 cursor-pointer transition-all duration-200 text-center flex flex-col items-center gap-3 ${data.restricao === false ? 'ring-2 ring-primary border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-slate-50'}`}
-                    >
-                      <CheckCircle2 className={`w-10 h-10 ${data.restricao === false ? 'text-primary' : 'text-slate-600'}`} />
-                      <span className="font-bold text-lg text-foreground">Não</span>
-                    </div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {[
+                      { value: true, label: 'Sim, existe restricao', icon: XCircle },
+                      { value: false, label: 'Nao, esta regular', icon: CheckCircle2 }
+                    ].map((item) => (
+                      <button
+                        key={String(item.value)}
+                        type="button"
+                        onClick={() => {
+                          setData((previous) => ({ ...previous, restricao: item.value }));
+                          setTimeout(nextStep, 180);
+                        }}
+                        className={`rounded-[12px] border p-6 text-left transition-all duration-200 ${
+                          data.restricao === item.value ? 'border-foreground bg-background-secondary' : 'border-border bg-background hover:-translate-y-px hover:bg-background-secondary'
+                        }`}
+                      >
+                        <item.icon className="mb-5 h-5 w-5 text-foreground" />
+                        <p className="text-base font-semibold text-foreground">{item.label}</p>
+                      </button>
+                    ))}
                   </div>
-                </div>
-              )}
+                </>
+              ) : null}
 
-              {step === 6 && (
-                <div className="space-y-8">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-bold text-foreground">Quase lá!</h2>
-                    <p className="text-slate-600">Insira seu CPF para ver ofertas personalizadas.</p>
+              {step === 6 ? (
+                <>
+                  <div className="space-y-3">
+                    <h2 className="text-3xl font-semibold tracking-[-0.03em] text-foreground">Ultimo passo para ver ofertas personalizadas.</h2>
+                    <p className="text-base text-muted-foreground">Coletamos apenas o necessario para concluir a simulacao com seguranca.</p>
                   </div>
-                  
+
                   <div className="space-y-4">
-                    <Input 
-                      placeholder="000.000.000-00" 
+                    <Input
+                      placeholder="000.000.000-00"
                       value={data.cpf}
-                      onChange={(e) => formatCPF(e.target.value)}
-                      className="h-16 text-2xl text-center font-bold tracking-wider rounded-xl bg-slate-50 text-foreground border-border focus-visible:ring-primary"
+                      onChange={(event) => formatCPF(event.target.value)}
+                      className="h-14 text-center text-xl font-semibold tracking-[0.08em]"
                     />
-                    
-                    <div className="bg-blue-50 p-4 rounded-xl flex items-start gap-3 border border-blue-100">
-                      <ShieldCheck className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <p className="text-xs text-blue-900 leading-relaxed font-medium">
-                        Seu CPF será usado apenas para consultar ofertas de crédito. Não fazemos consultas que reduzam seu Score (Soft Query).
-                      </p>
+
+                    <div className="rounded-[12px] border border-border bg-background-secondary p-4">
+                      <div className="flex items-start gap-3">
+                        <ShieldCheck className="mt-0.5 h-5 w-5 text-foreground" />
+                        <p className="text-sm text-muted-foreground">
+                          Seu CPF sera usado apenas para personalizar a consulta. Nesta etapa inicial, o fluxo prioriza seguranca e transparencia.
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="flex items-center space-x-2 pt-2">
-                      <Checkbox 
-                        id="terms" 
-                        checked={data.terms} 
-                        onCheckedChange={(c) => setData({...data, terms: c})} 
+                    <label className="flex items-center gap-3 text-sm text-muted-foreground">
+                      <Checkbox
+                        checked={data.terms}
+                        onCheckedChange={(checked) => setData((previous) => ({ ...previous, terms: Boolean(checked) }))}
                       />
-                      <label htmlFor="terms" className="text-sm font-medium leading-none text-slate-600 cursor-pointer">
-                        Concordo com os Termos de Uso e Política de Privacidade.
-                      </label>
-                    </div>
+                      Concordo com os Termos de Uso e Politica de Privacidade.
+                    </label>
                   </div>
 
-                  <Button 
-                    className="w-full h-14 text-lg rounded-xl gradient-fintech-hover border-0 text-white shadow-premium" 
+                  <Button
+                    size="lg"
+                    className="w-full"
                     disabled={data.cpf.length !== 14 || !data.terms}
                     onClick={handleComplete}
                   >
-                    Ver ofertas personalizadas <ArrowRight className="ml-2 w-5 h-5" />
+                    Ver ofertas personalizadas <ArrowRight className="h-4 w-4" />
                   </Button>
-                </div>
-              )}
-
+                </>
+              ) : null}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -293,4 +312,3 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
 }
 
 export default SimulationModal;
-

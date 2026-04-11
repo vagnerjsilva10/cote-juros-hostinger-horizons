@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { SimulationModal } from '@/components/SimulationModal.jsx';
 import { AdSpace } from '@/components/AdSpace.jsx';
-import { CheckCircle2, ArrowRight } from 'lucide-react';
+import PageHero from '@/components/PageHero.jsx';
 
-function SeoLandingPage({ title, description, heading, content, type }) {
+function SeoLandingPage({ title, description, heading, content }) {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
@@ -17,72 +19,62 @@ function SeoLandingPage({ title, description, heading, content, type }) {
 
       <SimulationModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
 
-      <div className="min-h-screen bg-background">
-        <div className="bg-card border-b border-border py-16 md:py-24 relative overflow-hidden">
-          <div className="absolute right-0 top-0 w-1/3 h-full bg-primary/5 rounded-l-full blur-3xl" />
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="max-w-3xl">
-              <h1 className="mb-6 text-foreground">{heading}</h1>
-              <p className="text-xl text-muted-foreground mb-8">{description}</p>
-              <Button size="lg" className="h-14 px-8 text-lg rounded-xl gradient-fintech-hover border-0 text-white shadow-md" onClick={() => setModalOpen(true)}>
-                Fazer simulação gratuita
-              </Button>
-            </div>
-          </div>
-        </div>
+      <PageHero
+        badge="Comparacao"
+        title={heading}
+        subtitle={description}
+      >
+        <Button size="lg" onClick={() => setModalOpen(true)}>
+          Fazer simulacao gratuita
+        </Button>
+      </PageHero>
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="grid md:grid-cols-3 gap-12">
-            <div className="md:col-span-2">
-              <AdSpace height="90px" className="mb-8" />
-
-              <div className="prose prose-lg dark:prose-invert max-w-none text-foreground leading-relaxed">
-                {content.map((paragraph, index) => (
-                  <React.Fragment key={index}>
-                    <p className="mb-6">{paragraph}</p>
-                    {index === 1 && <AdSpace height="250px" className="my-8" />}
-                  </React.Fragment>
-                ))}
-              </div>
-
-              <div className="mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-8">
-                <h3 className="mb-4 text-foreground">Pronto para encontrar a melhor oferta?</h3>
-                <ul className="space-y-3 mb-6">
-                  {['Análise de crédito em tempo real', 'Sem impacto no seu Score', 'Comparamos +50 instituições'].map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-foreground font-medium">
-                      <CheckCircle2 className="w-5 h-5 text-primary" /> {item}
-                    </li>
-                  ))}
-                </ul>
-                <Button className="gradient-fintech-hover border-0 text-white h-12 px-6 rounded-xl" onClick={() => setModalOpen(true)}>
-                  Comparar agora <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <div className="bg-card border border-border rounded-2xl p-6 shadow-sm sticky top-28">
-                <h4 className="font-bold text-lg mb-4 text-foreground">Por que usar o Cote Juros?</h4>
-                <div className="space-y-4">
-                  <div>
-                    <h5 className="font-semibold text-primary">100% Gratuito</h5>
-                    <p className="text-sm text-muted-foreground">Você não paga nada para usar nosso comparador.</p>
-                  </div>
-                  <div>
-                    <h5 className="font-semibold text-secondary">Imparcialidade</h5>
-                    <p className="text-sm text-muted-foreground">Mostramos as ofertas com as menores taxas primeiro.</p>
-                  </div>
-                  <div>
-                    <h5 className="font-semibold text-accent">Segurança LGPD</h5>
-                    <p className="text-sm text-muted-foreground">Seus dados são criptografados de ponta a ponta.</p>
-                  </div>
+      <section className="page-section bg-background">
+        <div className="page-shell grid gap-8 lg:grid-cols-[1fr_320px]">
+          <div className="space-y-8">
+            <AdSpace height="90px" />
+            {content.map((paragraph, index) => (
+              <React.Fragment key={`${paragraph.slice(0, 20)}-${index}`}>
+                <div className="rounded-[16px] border border-border bg-background-secondary p-8">
+                  <p>{paragraph}</p>
                 </div>
-              </div>
-              <AdSpace height="600px" />
-            </div>
+                {index === 1 ? <AdSpace height="220px" /> : null}
+              </React.Fragment>
+            ))}
+
+            <Card>
+              <CardContent className="space-y-5 p-8">
+                <h3>Pronto para comparar com mais clareza?</h3>
+                <div className="space-y-3">
+                  {[
+                    'Analise inicial em fluxo simples.',
+                    'Leitura organizada por taxa e prazo.',
+                    'Comparacao com menos ruido visual.'
+                  ].map((item) => (
+                    <div key={item} className="flex items-start gap-3">
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 text-foreground" />
+                      <p className="text-muted-foreground">{item}</p>
+                    </div>
+                  ))}
+                </div>
+                <Button onClick={() => setModalOpen(true)}>
+                  Comparar agora <ArrowRight className="h-4 w-4" />
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="space-y-6">
+            <Card className="lg:sticky lg:top-24">
+              <CardContent className="space-y-4 p-8">
+                <h4>Por que usar o Cote Juros?</h4>
+                <p className="text-sm text-muted-foreground">A plataforma foi redesenhada para apresentar menos ruído, mais respiro e uma hierarquia de texto muito mais clara.</p>
+              </CardContent>
+            </Card>
+            <AdSpace height="600px" />
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 }

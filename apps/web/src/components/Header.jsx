@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu } from 'lucide-react';
@@ -11,36 +10,30 @@ function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navItems = [
-    { label: 'Home', path: '/' },
-    { label: 'Empréstimos', path: '/emprestimos' },
-    { label: 'Cartões', path: '/cartoes-de-credito' },
-    { label: 'Financiamentos', path: '/financiamento' },
-    { label: 'Ferramentas', path: '/ferramentas' },
-    { label: 'Blog', path: '/blog' }
+    { label: 'Simulador', path: '/diagnostico-financeiro' },
+    { label: 'Como funciona', path: '/ferramentas' },
+    { label: 'Sobre', path: '/sobre-nos' }
   ];
 
-  const isActive = (path) => {
-    if (path === '/' && location.pathname !== '/') return false;
-    return location.pathname.startsWith(path);
-  };
+  const isActive = (path) => location.pathname.startsWith(path);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-white/95 backdrop-blur-md transition-all duration-200">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center justify-between">
-          <Link to="/" className="flex items-center interactive-element hover:opacity-80">
-            <CoteJurosLogo variant="horizontal" className="h-14 w-auto" />
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-white/90 backdrop-blur-xl">
+      <div className="page-shell">
+        <div className="flex h-[72px] items-center justify-between">
+          <Link to="/" className="flex items-center">
+            <CoteJurosLogo />
           </Link>
 
-          <nav className="hidden lg:flex items-center space-x-2">
+          <nav className="hidden items-center gap-2 lg:flex">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-4 py-2 text-sm font-semibold rounded-full interactive-element ${
+                className={`rounded-full px-4 py-2 text-sm font-medium ${
                   isActive(item.path)
-                    ? 'text-primary bg-primary/5'
-                    : 'text-slate-700 hover:text-primary hover:bg-slate-50'
+                    ? 'bg-background-secondary text-foreground'
+                    : 'text-muted-foreground hover:bg-background-secondary hover:text-foreground'
                 }`}
               >
                 {item.label}
@@ -48,10 +41,10 @@ function Header() {
             ))}
           </nav>
 
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden items-center gap-3 lg:flex">
             <Link to="/diagnostico-financeiro">
-              <Button className="gradient-fintech-hover text-white border-0 shadow-premium rounded-full px-6 h-11 font-semibold interactive-element active:scale-[0.98]">
-                Analisar Perfil
+              <Button size="lg" className="rounded-[10px] px-5">
+                Calcular juros
               </Button>
             </Link>
           </div>
@@ -59,36 +52,34 @@ function Header() {
           <div className="flex items-center gap-2 lg:hidden">
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full text-foreground">
-                  <Menu className="h-6 w-6" />
+                <Button variant="outline" size="icon" className="rounded-full">
+                  <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px] border-l border-border bg-white">
-                <div className="flex flex-col space-y-6 mt-8">
-                  <div className="flex items-center space-x-3 pb-6 border-b border-border">
-                    <CoteJurosLogo variant="symbol" className="w-12 h-12" />
-                    <span className="text-lg font-bold text-foreground">Menu</span>
+              <SheetContent side="right" className="w-[320px] border-l border-border bg-white">
+                <div className="mt-10 flex flex-col gap-8">
+                  <div className="border-b border-border pb-6">
+                    <CoteJurosLogo />
                   </div>
-                  <nav className="flex flex-col space-y-2">
+
+                  <nav className="flex flex-col gap-2">
                     {navItems.map((item) => (
                       <Link
                         key={item.path}
                         to={item.path}
                         onClick={() => setMobileOpen(false)}
-                        className={`px-4 py-3 text-base font-semibold rounded-xl interactive-element ${
+                        className={`rounded-[10px] px-4 py-3 text-base font-medium ${
                           isActive(item.path)
-                            ? 'text-primary bg-primary/5'
-                            : 'text-slate-700 hover:text-primary hover:bg-slate-50'
+                            ? 'bg-background-secondary text-foreground'
+                            : 'text-muted-foreground hover:bg-background-secondary hover:text-foreground'
                         }`}
                       >
                         {item.label}
                       </Link>
                     ))}
-                    <div className="pt-6 mt-4 border-t border-border">
+                    <div className="mt-4 border-t border-border pt-6">
                       <Link to="/diagnostico-financeiro" onClick={() => setMobileOpen(false)}>
-                        <Button className="w-full gradient-fintech-hover text-white border-0 shadow-premium rounded-xl h-12 text-base font-semibold">
-                          Analisar Perfil Grátis
-                        </Button>
+                        <Button className="h-12 w-full text-base">Calcular juros</Button>
                       </Link>
                     </div>
                   </nav>
@@ -103,4 +94,3 @@ function Header() {
 }
 
 export default Header;
-

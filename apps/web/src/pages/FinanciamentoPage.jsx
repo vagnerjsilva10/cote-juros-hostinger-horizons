@@ -1,11 +1,11 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { toast } from 'sonner';
+import { ArrowRight, Car, Home, ShieldCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { toast } from 'sonner';
-import { Home, Car, Calendar, ArrowRight, ShieldCheck } from 'lucide-react';
 import PageHero from '@/components/PageHero.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
@@ -38,7 +38,7 @@ function FinanciamentoPage() {
       productType: 'financing'
     });
 
-    toast.success(`Interesse registrado para simulação com ${offer.bankName}.`);
+    toast.success(`Interesse registrado para simulacao com ${offer.bankName}.`);
     window.location.href = redirect.resolvedUrl;
   };
 
@@ -46,41 +46,40 @@ function FinanciamentoPage() {
     const data = financingData.filter(filterFn);
 
     return (
-      <div className="grid md:grid-cols-2 gap-8 mt-8">
-        {data.map((fin) => (
-          <Card key={fin.id} className="card-premium overflow-hidden bg-white border-border">
-            <CardContent className="p-0">
-              <div className="p-6 md:p-8 border-b border-border flex justify-between items-start bg-background-secondary">
+      <div className="grid gap-5 md:grid-cols-2">
+        {data.map((item) => (
+          <Card key={item.id} className="surface-card h-full">
+            <CardContent className="flex h-full flex-col gap-6 p-8">
+              <div className="flex items-start justify-between gap-4">
                 <div>
-                  <Badge variant="outline" className="mb-3 bg-white">{fin.category}</Badge>
-                  <h3 className="text-2xl font-extrabold text-foreground">{fin.bankName}</h3>
+                  <Badge variant="outline">{item.category}</Badge>
+                  <h3 className="mt-4">{item.bankName}</h3>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Taxa a.a.</p>
-                  <p className="text-2xl font-extrabold text-primary">{fin.annualRate}%</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Taxa anual</p>
+                  <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-foreground">{item.annualRate}%</p>
                 </div>
               </div>
 
-              <div className="p-6 md:p-8 space-y-6">
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <p className="text-sm font-semibold text-muted-foreground mb-1 flex items-center gap-1"><Car className="w-4 h-4" /> Valor</p>
-                    <p className="text-lg font-bold text-foreground">Até R$ {(fin.maxValue / 1000).toFixed(0)}k</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-muted-foreground mb-1 flex items-center gap-1"><Calendar className="w-4 h-4" /> Prazo Max</p>
-                    <p className="text-lg font-bold text-foreground">{fin.maxTerm} meses</p>
-                  </div>
-                  <div className="col-span-2 bg-background-secondary rounded-lg p-4 border border-border">
-                    <p className="text-sm font-semibold text-muted-foreground mb-1">Condicao de Entrada</p>
-                    <p className="text-base font-bold text-foreground">A partir de {fin.minDownPayment}% do valor do bem</p>
-                  </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="rounded-[12px] border border-border bg-background-secondary p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor maximo</p>
+                  <p className="mt-2 text-sm font-semibold text-foreground">R$ {(item.maxValue / 1000).toFixed(0)}k</p>
                 </div>
-
-                <Button className="w-full h-14 text-lg font-bold gradient-fintech-hover border-0 shadow-[var(--shadow-sm)]" onClick={() => handleSimulate(fin)}>
-                  Simular Financiamento <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
+                <div className="rounded-[12px] border border-border bg-background-secondary p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Prazo</p>
+                  <p className="mt-2 text-sm font-semibold text-foreground">{item.maxTerm} meses</p>
+                </div>
               </div>
+
+              <div className="rounded-[12px] border border-border bg-background-secondary p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Entrada minima</p>
+                <p className="mt-2 text-sm text-muted-foreground">A partir de {item.minDownPayment}% do valor do bem.</p>
+              </div>
+
+              <Button className="mt-auto w-full" onClick={() => handleSimulate(item)}>
+                Simular financiamento <ArrowRight className="h-4 w-4" />
+              </Button>
             </CardContent>
           </Card>
         ))}
@@ -91,44 +90,50 @@ function FinanciamentoPage() {
   return (
     <>
       <Helmet>
-        <title>Comparador de Financiamentos - Cote Juros</title>
-        <meta name="description" content="Simule o financiamento da sua casa ou carro com as menores taxas." />
+        <title>Comparador de financiamento - Cote Juros</title>
+        <meta name="description" content="Compare financiamento de imoveis e veiculos com uma interface clara e neutra." />
       </Helmet>
 
       <PageHero
-        badge="Financiamentos"
+        badge="Financiamento"
         centered
-        title="Realize seu sonho pagando menos"
-        subtitle="Compare as taxas de financiamento imobiliário e de veículos nos maiores bancos do país."
+        title="Compare financiamento com menos excesso visual."
+        subtitle="A mesma linguagem tipografica do restante do sistema aplicada a veiculos e imoveis."
       />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 max-w-5xl">
+      <div className="page-shell py-12">
         <Tabs defaultValue="veiculos" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 h-16 p-1.5 bg-background-tertiary rounded-[var(--radius-lg)]">
-            <TabsTrigger value="veiculos" className="rounded-[var(--radius-md)] text-lg font-bold data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all">
-              <Car className="w-5 h-5 mr-2" /> Veículos
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="veiculos" className="gap-2">
+              <Car className="h-4 w-4" />
+              Veiculos
             </TabsTrigger>
-            <TabsTrigger value="imobiliario" className="rounded-[var(--radius-md)] text-lg font-bold data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all">
-              <Home className="w-5 h-5 mr-2" /> Imóveis
+            <TabsTrigger value="imobiliario" className="gap-2">
+              <Home className="h-4 w-4" />
+              Imoveis
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="veiculos" className="mt-4 animate-in fade-in-50 slide-in-from-bottom-4 duration-500">
-            <div className="bg-blue-50 border border-blue-100 rounded-[var(--radius-lg)] p-6 mb-8 mt-8 flex items-start gap-4">
-              <ShieldCheck className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-              <p className="text-blue-900 font-medium leading-relaxed">
-                As taxas para financiamento de veículos variam de acordo com o ano de fabricação. Veículos mais novos costumam ter taxas menores.
-              </p>
+          <TabsContent value="veiculos" className="mt-8 space-y-6">
+            <div className="rounded-[12px] border border-border bg-background-secondary p-5">
+              <div className="flex items-start gap-3">
+                <ShieldCheck className="mt-0.5 h-5 w-5 text-foreground" />
+                <p className="text-sm text-muted-foreground">
+                  Veiculos mais novos costumam concentrar taxas menores e prazos mais competitivos.
+                </p>
+              </div>
             </div>
             {renderCards((item) => item.category === 'Carro' || item.category === 'Moto')}
           </TabsContent>
 
-          <TabsContent value="imobiliario" className="mt-4 animate-in fade-in-50 slide-in-from-bottom-4 duration-500">
-            <div className="bg-blue-50 border border-blue-100 rounded-[var(--radius-lg)] p-6 mb-8 mt-8 flex items-start gap-4">
-              <ShieldCheck className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-              <p className="text-blue-900 font-medium leading-relaxed">
-                Para o financiamento imobiliário, você pode usar seu FGTS como entrada se o imóvel se enquadrar nas regras do SFH.
-              </p>
+          <TabsContent value="imobiliario" className="mt-8 space-y-6">
+            <div className="rounded-[12px] border border-border bg-background-secondary p-5">
+              <div className="flex items-start gap-3">
+                <ShieldCheck className="mt-0.5 h-5 w-5 text-foreground" />
+                <p className="text-sm text-muted-foreground">
+                  Em financiamento imobiliario, o uso do FGTS pode reduzir a necessidade de entrada dependendo da regra aplicavel.
+                </p>
+              </div>
             </div>
             {renderCards((item) => item.category !== 'Carro' && item.category !== 'Moto')}
           </TabsContent>
@@ -139,4 +144,3 @@ function FinanciamentoPage() {
 }
 
 export default FinanciamentoPage;
-

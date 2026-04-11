@@ -1,48 +1,47 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Slider } from '@/components/ui/slider';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Switch } from '@/components/ui/switch';
-import { toast } from 'sonner';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, CheckCircle2, ChevronLeft } from 'lucide-react';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
 import { simulationFunnelService } from '@/platform/services/simulationFunnelService.js';
 import { redirectToFinanceAi } from '@/platform/integrations/coteFinanceAI.js';
 
 function DiagnosticoPage() {
   const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [showOffers, setShowOffers] = useState(false);
   const [data, setData] = useState({
     valor: 10000,
     renda: 5000,
-    score: 'Médio',
+    score: 'Medio',
     dividas: false,
     cpf: ''
   });
 
-  const [loading, setLoading] = useState(false);
-  const [showOffers, setShowOffers] = useState(false);
+  const nextStep = () => setStep((value) => Math.min(value + 1, 5));
+  const prevStep = () => setStep((value) => Math.max(value - 1, 1));
 
-  const nextStep = () => setStep((s) => Math.min(s + 1, 5));
-  const prevStep = () => setStep((s) => Math.max(s - 1, 1));
-
-  const handleCpfChange = (e) => {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length > 11) value = value.slice(0, 11);
+  const handleCpfChange = (event) => {
+    let value = event.target.value.replace(/\D/g, '').slice(0, 11);
     if (value.length > 9) value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
     else if (value.length > 6) value = value.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
     else if (value.length > 3) value = value.replace(/(\d{3})(\d{1,3})/, '$1.$2');
-    setData({ ...data, cpf: value });
+    setData((previous) => ({ ...previous, cpf: value }));
   };
 
   const submitDiagnostico = async () => {
     if (data.cpf.length !== 14) {
-      toast.error('Por favor, insira um CPF válido.');
+      toast.error('Insira um CPF valido.');
       return;
     }
+
     setLoading(true);
     const lead = await simulationFunnelService.submitLead({
       sourcePage: '/diagnostico-financeiro',
@@ -59,70 +58,74 @@ function DiagnosticoPage() {
 
     setLoading(false);
     setShowOffers(true);
-    toast.success(`Diagnóstico concluído com sucesso! Lead ${lead.id}`);
+    toast.success(`Diagnostico concluido. Lead ${lead.id}.`);
   };
 
   const renderOffers = () => {
-    let recomendedLoan = 'Empréstimo Pessoal Itaú (Taxa 3.2% a.m)';
-    let recomendCard = 'Cartão Nubank (Sem Anuidade)';
+    let recommendedLoan = 'Emprestimo pessoal com faixa de custo intermediaria';
+    let recommendedCard = 'Cartao sem anuidade com maior aderencia';
 
     if (data.score === 'Alto' && !data.dividas) {
-      recomendedLoan = 'Empréstimo Consignado Caixa (Taxa 1.2% a.m)';
-      recomendCard = 'Itaú Personnalité Black';
+      recommendedLoan = 'Linha com taxa mais competitiva para perfis premium';
+      recommendedCard = 'Cartao com mais beneficios e maior chance de aprovacao';
     } else if (data.score === 'Baixo' || data.dividas) {
-      recomendedLoan = 'Empréstimo Garantia Inter (Taxa 1.8% a.m) ou Negativado';
-      recomendCard = 'Cartão de Crédito Pré-pago C6';
+      recommendedLoan = 'Linha voltada a renegociacao ou credito com garantia';
+      recommendedCard = 'Cartao de entrada com criterios mais acessiveis';
     }
 
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto space-y-8">
+      <div className="mx-auto max-w-5xl space-y-8">
         <div className="text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle2 className="w-8 h-8 text-green-600" />
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-background-secondary">
+            <CheckCircle2 className="h-6 w-6 text-foreground" />
           </div>
-          <h2 className="text-3xl font-bold">Diagnóstico Concluído</h2>
-          <p className="text-muted-foreground mt-2">Encontramos opções desenhadas para o seu perfil (Score {data.score}).</p>
+          <h2 className="mb-3">Diagnostico concluido</h2>
+          <p className="text-lg text-muted-foreground">Encontramos caminhos mais aderentes para o seu perfil atual.</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="border-primary/30 shadow-md">
-            <CardContent className="p-8 space-y-4">
-              <div className="text-sm font-semibold uppercase tracking-wider text-primary">Recomendação de Crédito</div>
-              <h3 className="text-2xl font-bold">{recomendedLoan}</h3>
-              <p className="text-muted-foreground">Com base na sua renda de R$ {data.renda.toLocaleString()} e seu histórico, esta é a linha de crédito com melhor Custo Efetivo Total para R$ {data.valor.toLocaleString()}.</p>
-              <Button className="w-full mt-4">Solicitar Crédito</Button>
+        <div className="grid gap-5 md:grid-cols-2">
+          <Card>
+            <CardContent className="space-y-4 p-8">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Credito</p>
+              <h3>{recommendedLoan}</h3>
+              <p className="text-muted-foreground">
+                Considerando renda, score e presenca de dividas, esta e a direcao mais coerente para iniciar a comparacao.
+              </p>
+              <Button className="w-full">Ver opcoes de credito</Button>
             </CardContent>
           </Card>
 
-          <Card className="border-primary/20 shadow-[var(--shadow-sm)]">
-            <CardContent className="p-8 space-y-4">
-              <div className="text-sm font-semibold uppercase tracking-wider text-primary">Recomendação de Cartão</div>
-              <h3 className="text-2xl font-bold">{recomendCard}</h3>
-              <p className="text-muted-foreground">Seu perfil se alinha perfeitamente com os benefícios deste cartão. Altas chances de aprovação imediata.</p>
-              <Button variant="secondary" className="w-full mt-4">Pedir Cartão</Button>
+          <Card>
+            <CardContent className="space-y-4 p-8">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Cartao</p>
+              <h3>{recommendedCard}</h3>
+              <p className="text-muted-foreground">
+                A leitura combina apetite de aprovacao com menor complexidade visual para a proxima etapa.
+              </p>
+              <Button variant="outline" className="w-full">Ver opcoes de cartao</Button>
             </CardContent>
           </Card>
         </div>
 
-        <div className="text-center pt-8">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Button
-              onClick={() =>
-                redirectToFinanceAi({
-                  sourcePage: '/diagnostico-financeiro',
-                  productType: 'loan',
-                  campaign: 'diagnostico_to_ai',
-                  search: window.location.search,
-                  simulationContext: { amount: data.valor, score: data.score }
-                })
-              }
-            >
-              Continuar no Cote Finance AI
-            </Button>
-            <Button variant="outline" onClick={() => { setShowOffers(false); setStep(1); }}>Refazer Diagnóstico</Button>
-          </div>
+        <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Button
+            onClick={() =>
+              redirectToFinanceAi({
+                sourcePage: '/diagnostico-financeiro',
+                productType: 'loan',
+                campaign: 'diagnostico_to_ai',
+                search: window.location.search,
+                simulationContext: { amount: data.valor, score: data.score }
+              })
+            }
+          >
+            Continuar no Cote Finance AI
+          </Button>
+          <Button variant="outline" onClick={() => { setShowOffers(false); setStep(1); }}>
+            Refazer diagnostico
+          </Button>
         </div>
-      </motion.div>
+      </div>
     );
   };
 
@@ -131,107 +134,102 @@ function DiagnosticoPage() {
       case 1:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Qual valor de crédito você precisa?</h2>
-            <div className="text-4xl font-bold text-primary py-4">R$ {data.valor.toLocaleString('pt-BR')}</div>
-            <Slider value={[data.valor]} onValueChange={(v) => setData({ ...data, valor: v[0] })} max={500000} min={1000} step={1000} />
-            <Button className="w-full h-12 text-lg mt-8" onClick={nextStep}>Continuar <ArrowRight className="ml-2" /></Button>
+            <h3>Qual valor de credito voce precisa?</h3>
+            <p className="text-4xl font-semibold tracking-[-0.04em] text-foreground">R$ {data.valor.toLocaleString('pt-BR')}</p>
+            <Slider value={[data.valor]} onValueChange={(value) => setData((previous) => ({ ...previous, valor: value[0] }))} max={500000} min={1000} step={1000} />
+            <Button className="w-full" onClick={nextStep}>Continuar <ArrowRight className="h-4 w-4" /></Button>
           </div>
         );
       case 2:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Qual a sua renda mensal aproximada?</h2>
-            <div className="text-4xl font-bold text-primary py-4">R$ {data.renda.toLocaleString('pt-BR')}</div>
-            <Slider value={[data.renda]} onValueChange={(v) => setData({ ...data, renda: v[0] })} max={50000} min={1000} step={500} />
-            <Button className="w-full h-12 text-lg mt-8" onClick={nextStep}>Continuar <ArrowRight className="ml-2" /></Button>
+            <h3>Qual a sua renda mensal aproximada?</h3>
+            <p className="text-4xl font-semibold tracking-[-0.04em] text-foreground">R$ {data.renda.toLocaleString('pt-BR')}</p>
+            <Slider value={[data.renda]} onValueChange={(value) => setData((previous) => ({ ...previous, renda: value[0] }))} max={50000} min={1000} step={500} />
+            <Button className="w-full" onClick={nextStep}>Continuar <ArrowRight className="h-4 w-4" /></Button>
           </div>
         );
       case 3:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Qual seu score aproximado?</h2>
-            <RadioGroup value={data.score} onValueChange={(v) => setData({ ...data, score: v })} className="space-y-3">
-              {['Alto', 'Médio', 'Baixo'].map((s) => (
-                <div key={s} className={`border rounded-xl p-4 flex items-center space-x-3 cursor-pointer transition-colors ${data.score === s ? 'bg-primary/5 border-primary' : 'hover:bg-muted'}`} onClick={() => setData({ ...data, score: s })}>
-                  <RadioGroupItem value={s} id={s} />
-                  <Label htmlFor={s} className="flex-1 cursor-pointer font-medium text-lg">{s} {s === 'Alto' ? '(750-1000)' : s === 'Médio' ? '(550-749)' : '(0-549)'}</Label>
-                </div>
+            <h3>Qual score mais combina com o seu momento?</h3>
+            <RadioGroup value={data.score} onValueChange={(value) => setData((previous) => ({ ...previous, score: value }))} className="space-y-3">
+              {['Alto', 'Medio', 'Baixo'].map((item) => (
+                <label key={item} className={`flex items-center gap-3 rounded-[12px] border px-4 py-4 transition-colors ${data.score === item ? 'border-foreground bg-background-secondary' : 'border-border hover:bg-background-secondary'}`}>
+                  <RadioGroupItem value={item} />
+                  <span className="text-sm text-foreground">{item}</span>
+                </label>
               ))}
             </RadioGroup>
-            <Button className="w-full h-12 text-lg mt-8" onClick={nextStep}>Continuar <ArrowRight className="ml-2" /></Button>
+            <Button className="w-full" onClick={nextStep}>Continuar <ArrowRight className="h-4 w-4" /></Button>
           </div>
         );
       case 4:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Você possui dívidas em aberto no momento?</h2>
-            <div className="flex items-center justify-between p-6 border rounded-xl bg-card">
-              <Label className="text-lg font-medium cursor-pointer" htmlFor="dividas">Tenho dívidas pendentes (Negativado)</Label>
-              <Switch id="dividas" checked={data.dividas} onCheckedChange={(c) => setData({ ...data, dividas: c })} />
+            <h3>Voce possui dividas em aberto?</h3>
+            <div className="flex items-center justify-between rounded-[12px] border border-border bg-background-secondary px-5 py-4">
+              <Label htmlFor="dividas" className="text-base text-foreground">Tenho dividas pendentes</Label>
+              <Switch id="dividas" checked={data.dividas} onCheckedChange={(checked) => setData((previous) => ({ ...previous, dividas: checked }))} />
             </div>
-            <Button className="w-full h-12 text-lg mt-8" onClick={nextStep}>Continuar <ArrowRight className="ml-2" /></Button>
+            <Button className="w-full" onClick={nextStep}>Continuar <ArrowRight className="h-4 w-4" /></Button>
           </div>
         );
       case 5:
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Último passo: Informe seu CPF</h2>
-            <p className="text-muted-foreground">Usamos seu CPF apenas para simular ofertas reais de forma segura. Não consultamos o Serasa neste momento.</p>
+            <h3>Ultimo passo: informe seu CPF</h3>
+            <p className="text-muted-foreground">Usamos esse dado para aproximar as ofertas do seu contexto, com mais clareza no proximo passo.</p>
             <Input
-              className="h-14 text-xl text-center font-variant-tabular bg-background text-foreground"
+              className="h-14 text-center text-xl font-semibold tracking-[0.08em]"
               placeholder="000.000.000-00"
               value={data.cpf}
               onChange={handleCpfChange}
             />
-            <Button
-              className="w-full h-14 text-lg mt-8 gradient-fintech-hover text-white border-0"
-              onClick={submitDiagnostico}
-              disabled={loading}
-            >
-              {loading ? 'Analisando perfil...' : 'Gerar Ofertas Personalizadas'}
+            <Button className="w-full" disabled={loading} onClick={submitDiagnostico}>
+              {loading ? 'Analisando...' : 'Gerar leitura personalizada'}
             </Button>
           </div>
         );
-      default: return null;
+      default:
+        return null;
     }
   };
 
   return (
     <>
       <Helmet>
-        <title>Diagnóstico Financeiro Inteligente - Cote Juros</title>
+        <title>Diagnostico financeiro - Cote Juros</title>
       </Helmet>
 
-      <div className="min-h-[85vh] flex flex-col bg-muted/30 py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-center">
-
+      <div className="min-h-[85vh] bg-background-secondary py-16">
+        <div className="page-shell">
           {!showOffers ? (
-            <div className="max-w-xl mx-auto w-full">
-              <div className="mb-8">
-                <div className="flex justify-between text-sm font-medium mb-2 text-muted-foreground">
-                  <span>Passo {step} de 5</span>
-                  <span>{step * 20}% Concluído</span>
-                </div>
-                <div className="w-full bg-muted rounded-full h-2.5 overflow-hidden">
-                  <div className="bg-primary h-2.5 transition-all duration-500 ease-in-out" style={{ width: `${step * 20}%` }}></div>
-                </div>
+            <div className="mx-auto max-w-xl">
+              <div className="mb-6 flex items-center justify-between text-sm text-muted-foreground">
+                <span>Passo {step} de 5</span>
+                <span>{step * 20}% concluido</span>
+              </div>
+              <div className="mb-8 h-1.5 w-full rounded-full bg-border">
+                <div className="h-1.5 rounded-full bg-foreground transition-all duration-300" style={{ width: `${step * 20}%` }} />
               </div>
 
-              <Card className="shadow-lg border-muted">
-                <CardContent className="p-8 sm:p-12 relative">
-                  {step > 1 && (
-                    <button onClick={prevStep} className="absolute top-6 left-6 text-muted-foreground hover:text-foreground transition-colors" aria-label="Voltar">
-                      <ChevronLeft className="w-6 h-6" />
+              <Card>
+                <CardContent className="relative p-10">
+                  {step > 1 ? (
+                    <button type="button" onClick={prevStep} className="absolute left-6 top-6 rounded-full border border-border p-2 text-muted-foreground hover:bg-background-secondary hover:text-foreground">
+                      <ChevronLeft className="h-4 w-4" />
                     </button>
-                  )}
+                  ) : null}
+
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={step}
-                      initial={{ opacity: 0, x: 20 }}
+                      initial={{ opacity: 0, x: 12 }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.3 }}
-                      className="pt-6"
+                      exit={{ opacity: 0, x: -12 }}
+                      transition={{ duration: 0.2, ease: 'easeOut' }}
+                      className="pt-4"
                     >
                       {renderStep()}
                     </motion.div>
@@ -242,7 +240,6 @@ function DiagnosticoPage() {
           ) : (
             renderOffers()
           )}
-
         </div>
       </div>
     </>

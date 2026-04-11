@@ -25,21 +25,24 @@ export default function AdminLayout({ title, children }) {
   };
 
   return (
-    <div className="min-h-screen bg-secondary-subtle">
-      <div className="grid min-h-screen lg:grid-cols-[240px_1fr]">
-        <aside className="border-r border-border bg-white p-4 lg:p-5">
-          <Link to="/admin" className="mb-6 flex items-center gap-2 rounded-lg px-2 py-1.5">
-            <CoteJurosLogo variant="symbol" className="h-7 w-7" />
-            <span className="font-semibold text-foreground">Cote Juros Admin</span>
+    <div className="min-h-screen bg-background-secondary">
+      <div className="grid min-h-screen lg:grid-cols-[260px_1fr]">
+        <aside className="border-r border-border bg-white p-6">
+          <Link to="/admin" className="mb-8 inline-flex">
+            <CoteJurosLogo />
           </Link>
 
-          <nav className="space-y-1">
+          <nav className="space-y-2">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 end={item.to === '/admin'}
-                className={({ isActive }) => `block rounded-md px-3 py-2 text-sm font-medium transition-colors ${isActive ? 'bg-primary/10 text-primary' : 'text-slate-600 hover:bg-slate-100 hover:text-foreground'}`}
+                className={({ isActive }) =>
+                  `block rounded-[10px] px-4 py-3 text-sm font-medium transition-colors ${
+                    isActive ? 'bg-background-secondary text-foreground' : 'text-muted-foreground hover:bg-background-secondary hover:text-foreground'
+                  }`
+                }
               >
                 {item.label}
               </NavLink>
@@ -48,17 +51,20 @@ export default function AdminLayout({ title, children }) {
         </aside>
 
         <div className="flex min-w-0 flex-col">
-          <header className="sticky top-0 z-10 border-b border-border bg-white/95 backdrop-blur">
-            <div className="flex h-16 items-center justify-between px-4 lg:px-8">
-              <h1 className="text-lg font-semibold text-foreground">{title}</h1>
-              <div className="flex items-center gap-2">
-                <Link to="/" className="text-sm text-slate-500 hover:text-foreground">Ver portal</Link>
+          <header className="sticky top-0 z-10 border-b border-border bg-white/90 backdrop-blur-xl">
+            <div className="flex h-[72px] items-center justify-between px-6 lg:px-10">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Admin</p>
+                <h1 className="text-2xl font-semibold tracking-[-0.03em] text-foreground">{title}</h1>
+              </div>
+              <div className="flex items-center gap-3">
+                <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">Ver portal</Link>
                 <Button variant="outline" size="sm" onClick={handleLogout}>Sair</Button>
               </div>
             </div>
           </header>
 
-          <main className="p-4 lg:p-8">{children}</main>
+          <main className="p-6 lg:p-10">{children}</main>
         </div>
       </div>
     </div>

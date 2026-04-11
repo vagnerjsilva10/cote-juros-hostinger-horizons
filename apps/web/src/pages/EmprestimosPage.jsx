@@ -1,5 +1,7 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { toast } from 'sonner';
+import { ChevronRight, Clock, Filter, ShieldCheck, Sparkles, Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -7,8 +9,6 @@ import { Slider } from '@/components/ui/slider';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { toast } from 'sonner';
-import { Filter, Star, Clock, ShieldCheck, CheckCircle2, ChevronRight, Sparkles } from 'lucide-react';
 import PageHero from '@/components/PageHero.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
@@ -37,8 +37,8 @@ function EmprestimosPage() {
       const matchScore =
         score === 'Todos' ||
         loan.minScore === score ||
-        (score === 'Alto' && (loan.minScore === 'Médio' || loan.minScore === 'Baixo')) ||
-        (score === 'Médio' && loan.minScore === 'Baixo');
+        (score === 'Alto' && (loan.minScore === 'Medio' || loan.minScore === 'Baixo')) ||
+        (score === 'Medio' && loan.minScore === 'Baixo');
       const matchTerm = term[0] >= loan.minTerm && term[0] <= loan.maxTerm;
 
       return matchValue && matchType && matchScore && matchTerm;
@@ -49,13 +49,12 @@ function EmprestimosPage() {
     if (sort === 'prazo-maior') result = [...result].sort((a, b) => b.maxTerm - a.maxTerm);
 
     return result;
-  }, [amount, loansData, type, score, term, sort]);
+  }, [amount, loansData, score, sort, term, type]);
 
-  const getBadgeStyle = (loanType, rate) => {
-    if (rate < 2.0) return { icon: Star, text: 'Melhor taxa', color: 'bg-teal-100 text-teal-800 border-teal-200' };
-    if (loanType === 'Negativado') return { icon: ShieldCheck, text: 'Sem consulta', color: 'bg-blue-100 text-blue-800 border-blue-200' };
-    if (loanType === 'Pessoal') return { icon: CheckCircle2, text: 'Aprovação rápida', color: 'bg-green-100 text-green-800 border-green-200' };
-    return { icon: Sparkles, text: 'Mais aprovado', color: 'bg-blue-100 text-blue-800 border-blue-200' };
+  const getBadge = (loanType, rate) => {
+    if (rate < 2) return { icon: Star, text: 'Melhor taxa' };
+    if (loanType === 'Negativado') return { icon: ShieldCheck, text: 'Sem consulta dura' };
+    return { icon: Sparkles, text: 'Mais aderente' };
   };
 
   const handleSimulate = async (loan) => {
@@ -94,171 +93,185 @@ function EmprestimosPage() {
   return (
     <>
       <Helmet>
-        <title>Comparador de Empréstimos - Cote Juros</title>
-        <meta name="description" content="Compare as melhores taxas de empréstimos e encontre o crédito ideal." />
+        <title>Comparador de emprestimos - Cote Juros</title>
+        <meta name="description" content="Compare taxa, prazo e valor maximo para encontrar o emprestimo mais aderente ao seu perfil." />
       </Helmet>
 
       <PageHero
-        title="Comparador de Empréstimos"
-        subtitle="Filtre por taxas, prazos e valores. Encontre o crédito aprovado para o seu perfil em segundos."
+        badge="Emprestimos"
+        title="Um comparador mais claro para emprestimos."
+        subtitle="Filtre por faixa de valor, prazo e score para enxergar custo, limite e aderencia sem ruido visual."
       />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-3 space-y-8">
-            <div className="bg-white border rounded-[var(--radius-lg)] p-6 shadow-sm sticky top-24">
-              <div className="flex items-center justify-between mb-6 border-b pb-4">
-                <h3 className="font-bold text-lg flex items-center gap-2">
-                  <Filter className="w-5 h-5 text-primary" /> Filtros
-                </h3>
-                <button onClick={resetFilters} className="text-sm text-muted-foreground hover:text-primary transition-colors">Limpar</button>
-              </div>
+      <section className="border-b border-border bg-background-secondary py-8">
+        <div className="page-shell grid gap-4 md:grid-cols-3">
+          {[
+            { label: 'Valor em analise', value: `R$ ${amount[0].toLocaleString('pt-BR')}` },
+            { label: 'Prazo selecionado', value: `${term[0]} meses` },
+            { label: 'Ofertas visiveis', value: filteredLoans.length.toString() }
+          ].map((item) => (
+            <div key={item.label} className="rounded-[12px] border border-border bg-white px-5 py-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{item.label}</p>
+              <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{item.value}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-              <div className="space-y-8">
+      <div className="page-shell py-12">
+        <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
+          <aside className="lg:sticky lg:top-24 lg:h-fit">
+            <Card>
+              <CardContent className="space-y-8 p-8">
+                <div className="flex items-center justify-between border-b border-border pb-4">
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-4 w-4 text-foreground" />
+                    <h3 className="text-lg">Filtros</h3>
+                  </div>
+                  <button type="button" onClick={resetFilters} className="text-sm text-muted-foreground hover:text-foreground">
+                    Limpar
+                  </button>
+                </div>
+
                 <div className="space-y-4">
-                  <div className="flex justify-between items-end">
-                    <Label className="font-semibold text-foreground">Valor Desejado</Label>
-                    <span className="font-bold text-primary text-lg font-variant-tabular">R$ {amount[0].toLocaleString('pt-BR')}</span>
+                  <div className="flex items-end justify-between">
+                    <Label>Valor desejado</Label>
+                    <span className="text-sm font-semibold text-foreground">R$ {amount[0].toLocaleString('pt-BR')}</span>
                   </div>
                   <Slider value={amount} onValueChange={setAmount} max={500000} min={1000} step={1000} />
                 </div>
 
                 <div className="space-y-3">
-                  <Label className="font-semibold text-foreground">Tipo de Crédito</Label>
+                  <Label>Tipo de credito</Label>
                   <Select value={type} onValueChange={setType}>
-                    <SelectTrigger className="bg-background-secondary">
+                    <SelectTrigger>
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Todos">Todos os tipos</SelectItem>
                       <SelectItem value="Pessoal">Pessoal</SelectItem>
                       <SelectItem value="Consignado">Consignado</SelectItem>
-                      <SelectItem value="Garantia">Com Garantia</SelectItem>
-                      <SelectItem value="Negativado">Para Negativado</SelectItem>
+                      <SelectItem value="Garantia">Com garantia</SelectItem>
+                      <SelectItem value="Negativado">Negativado</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex justify-between items-end">
-                    <Label className="font-semibold text-foreground">Prazo (Meses)</Label>
-                    <span className="font-bold text-primary font-variant-tabular">{term[0]}x</span>
+                  <div className="flex items-end justify-between">
+                    <Label>Prazo</Label>
+                    <span className="text-sm font-semibold text-foreground">{term[0]} meses</span>
                   </div>
                   <Slider value={term} onValueChange={setTerm} max={84} min={6} step={1} />
                 </div>
 
                 <div className="space-y-3">
-                  <Label className="font-semibold text-foreground">Seu Score</Label>
-                  <RadioGroup value={score} onValueChange={setScore} className="space-y-2">
-                    {['Todos', 'Alto', 'Médio', 'Baixo'].map((s) => (
-                      <div key={s} className="flex items-center space-x-2">
-                        <RadioGroupItem value={s} id={`score-${s}`} />
-                        <Label htmlFor={`score-${s}`} className="font-medium cursor-pointer">{s === 'Todos' ? 'Não sei' : s}</Label>
-                      </div>
+                  <Label>Score aproximado</Label>
+                  <RadioGroup value={score} onValueChange={setScore} className="space-y-3">
+                    {['Todos', 'Alto', 'Medio', 'Baixo'].map((item) => (
+                      <label key={item} className="flex items-center gap-3 rounded-[10px] border border-border px-4 py-3 hover:bg-background-secondary">
+                        <RadioGroupItem value={item} />
+                        <span className="text-sm text-foreground">{item === 'Todos' ? 'Nao sei' : item}</span>
+                      </label>
                     ))}
                   </RadioGroup>
                 </div>
+              </CardContent>
+            </Card>
+          </aside>
 
-                <Button className="w-full h-12 rounded-[var(--radius-md)] bg-primary text-white hover:bg-primary/90" onClick={() => toast.success('Filtros aplicados!')}>
-                  Aplicar filtros
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-9">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-              <p className="text-muted-foreground font-medium">
-                Mostrando <span className="text-foreground font-bold">{filteredLoans.length}</span> ofertas encontradas
+          <section>
+            <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <p className="text-sm text-muted-foreground">
+                {filteredLoans.length} oferta(s) ordenadas por custo e aderencia.
               </p>
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <Label className="whitespace-nowrap font-medium">Ordenar:</Label>
+              <div className="flex items-center gap-3">
+                <Label className="whitespace-nowrap">Ordenar</Label>
                 <Select value={sort} onValueChange={setSort}>
-                  <SelectTrigger className="w-full sm:w-48 bg-white">
+                  <SelectTrigger className="w-[220px]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="taxa-baixa">Menor Taxa</SelectItem>
-                    <SelectItem value="valor-maximo">Maior Valor</SelectItem>
-                    <SelectItem value="prazo-maior">Maior Prazo</SelectItem>
+                    <SelectItem value="taxa-baixa">Menor taxa</SelectItem>
+                    <SelectItem value="valor-maximo">Maior valor</SelectItem>
+                    <SelectItem value="prazo-maior">Maior prazo</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {filteredLoans.map((loan) => {
-                const bank = banksData.find((b) => b.id === loan.bankId);
-                const badgeInfo = getBadgeStyle(loan.category, loan.monthlyRate);
-                const BadgeIcon = badgeInfo.icon;
+                const bank = banksData.find((item) => item.id === loan.bankId);
+                const badge = getBadge(loan.category, loan.monthlyRate);
+                const BadgeIcon = badge.icon;
 
                 return (
-                  <Card key={loan.id} className="card-premium overflow-hidden group flex flex-col h-full bg-white relative">
-                    <CardContent className="p-0 flex flex-col h-full">
-                      <div className="p-5 border-b border-border bg-background-secondary/70">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-11 h-11 rounded-xl flex items-center justify-center text-lg font-bold shadow-sm shrink-0" style={{ backgroundColor: bank?.color, color: '#fff' }}>
-                              {bank?.name?.charAt(0)}
-                            </div>
-                            <div className="min-w-0">
-                              <h3 className="font-bold text-base text-foreground truncate">{bank?.name}</h3>
-                              <p className="text-xs text-muted-foreground font-medium">{loan.category}</p>
-                            </div>
+                  <Card key={loan.id} className="surface-card h-full">
+                    <CardContent className="flex h-full flex-col gap-6 p-8">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-2">
+                          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-background-secondary text-sm font-semibold text-foreground">
+                            {bank?.name?.charAt(0) || 'B'}
                           </div>
-                          <Badge className={`border px-2 py-1 flex items-center gap-1 font-semibold ${badgeInfo.color}`}>
-                            <BadgeIcon className="w-3 h-3" /> {badgeInfo.text}
-                          </Badge>
+                          <div>
+                            <p className="text-sm font-semibold text-foreground">{bank?.name || loan.bankName}</p>
+                            <p className="text-sm text-muted-foreground">{loan.category}</p>
+                          </div>
                         </div>
+                        <Badge variant="outline" className="gap-1">
+                          <BadgeIcon className="h-3 w-3" />
+                          {badge.text}
+                        </Badge>
                       </div>
 
-                      <div className="p-6 flex flex-col h-full">
-                        <div className="mb-6">
-                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Taxa de juros</p>
-                          <p className="text-4xl font-extrabold text-primary font-variant-tabular leading-none">{loan.monthlyRate}%</p>
-                          <p className="text-sm text-muted-foreground mt-1">ao mês</p>
-                        </div>
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Taxa mensal</p>
+                        <p className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-foreground">{loan.monthlyRate}%</p>
+                      </div>
 
-                        <div className="mb-6 rounded-xl border border-border bg-background-secondary p-4">
-                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Benefício principal</p>
-                          <p className="text-sm font-semibold text-foreground">
-                            {loan.monthlyRate < 2 ? 'Condição de taxa reduzida para o perfil selecionado.' : 'Oferta com boa chance de aprovação conforme os filtros.'}
+                      <div className="rounded-[12px] border border-border bg-background-secondary p-4">
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Leitura rapida</p>
+                        <p className="mt-2 text-sm text-muted-foreground">
+                          {loan.monthlyRate < 2
+                            ? 'Oferta com taxa mais competitiva dentro do filtro atual.'
+                            : 'Linha com boa chance de aprovacao para o contexto selecionado.'}
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 border-t border-border pt-4">
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor maximo</p>
+                          <p className="mt-2 text-sm font-semibold text-foreground">R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
+                        </div>
+                        <div>
+                          <p className="flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                            <Clock className="h-3 w-3" />
+                            Prazo
                           </p>
+                          <p className="mt-2 text-sm font-semibold text-foreground">{loan.maxTerm} meses</p>
                         </div>
-
-                        <div className="grid grid-cols-2 gap-3 mb-6 pt-3 border-t border-border">
-                          <div>
-                            <p className="text-[11px] font-semibold text-muted-foreground uppercase">Valor máximo</p>
-                            <p className="font-bold text-foreground text-sm">Até R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
-                          </div>
-                          <div>
-                            <p className="text-[11px] font-semibold text-muted-foreground uppercase flex items-center gap-1"><Clock className="w-3 h-3" /> Prazo</p>
-                            <p className="font-bold text-foreground text-sm">Até {loan.maxTerm} meses</p>
-                          </div>
-                        </div>
-
-                        <Button
-                          className="w-full h-12 text-base font-bold gradient-fintech-hover border-0 mt-auto shadow-[var(--shadow-sm)] transition-all duration-300 group-hover:shadow-[var(--shadow-md)]"
-                          onClick={() => handleSimulate(loan)}
-                        >
-                          Simular oferta <ChevronRight className="w-4 h-4 ml-1" />
-                        </Button>
                       </div>
+
+                      <Button className="mt-auto w-full" onClick={() => handleSimulate(loan)}>
+                        Simular oferta <ChevronRight className="h-4 w-4" />
+                      </Button>
                     </CardContent>
                   </Card>
                 );
               })}
             </div>
 
-            {filteredLoans.length === 0 && (
-              <div className="text-center py-20 bg-background-secondary rounded-2xl border border-dashed border-slate-300">
-                <Filter className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-foreground">Nenhuma oferta encontrada</h3>
-                <p className="text-muted-foreground mt-2">Ajuste seus filtros para ver mais opções.</p>
-                <Button variant="outline" className="mt-6" onClick={resetFilters}>Limpar todos os filtros</Button>
+            {filteredLoans.length === 0 ? (
+              <div className="rounded-[16px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center">
+                <h3 className="text-2xl">Nenhuma oferta encontrada.</h3>
+                <p className="mt-3 text-muted-foreground">Ajuste valor, prazo ou score para ampliar a comparacao.</p>
+                <Button variant="outline" className="mt-6" onClick={resetFilters}>
+                  Limpar filtros
+                </Button>
               </div>
-            )}
-          </div>
+            ) : null}
+          </section>
         </div>
       </div>
     </>
@@ -266,4 +279,3 @@ function EmprestimosPage() {
 }
 
 export default EmprestimosPage;
-
