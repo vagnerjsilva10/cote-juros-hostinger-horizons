@@ -153,6 +153,19 @@ model CreditLead {
   cpf              String
   email            String?
   phone            String?
+  birthDate        DateTime?   @map("birth_date")
+  mothersName      String?     @map("mothers_name")
+  gender           String?
+  maritalStatus    String?     @map("marital_status")
+  educationalLevel String?     @map("educational_level")
+  birthCity        String?     @map("birth_city")
+  birthState       String?     @map("birth_state")
+  address          String?
+  addressNumber    String?     @map("address_number")
+  district         String?
+  city             String?
+  state            String?
+  zipCode          String?     @map("zip_code")
   requestedAmount  Decimal?    @db.Decimal(14, 2) @map("requested_amount")
   income           Decimal?    @db.Decimal(14, 2)
   scoreRange       String?     @map("score_range")

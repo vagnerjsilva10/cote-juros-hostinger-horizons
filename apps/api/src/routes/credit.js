@@ -8,11 +8,69 @@ import { getJurosBaixosConfig, getJurosBaixosHealth } from '../integrations/juro
 
 const router = express.Router();
 
+const stateEnum = z.enum(['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT', 'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO']);
+const genderEnum = z.enum(['MALE', 'FEMALE', 'OTHER']);
+const maritalStatusEnum = z.enum(['SINGLE', 'MARRIED', 'WIDOWED', 'DIVORCED', 'STABLE_UNION']);
+const educationalLevelEnum = z.enum([
+  'INCOMPLETE_ELEMENTARY',
+  'ELEMENTARY',
+  'INCOMPLETE_HIGH',
+  'HIGH',
+  'INCOMPLETE_COLLEGE',
+  'COLLEGE',
+  'INCOMPLETE_POSTGRADUATE',
+  'POSTGRADUATE'
+]);
+
+const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+
 const startSchema = z.object({
   fullName: z.string().min(3),
   cpf: z.string().min(11),
   email: z.string().email().optional(),
   phone: z.string().min(10).optional(),
+  birthDate: dateSchema.optional(),
+  mothersName: z.string().min(3).optional(),
+  gender: genderEnum.optional(),
+  maritalStatus: maritalStatusEnum.optional(),
+  educationalLevel: educationalLevelEnum.optional(),
+  birthCity: z.string().min(2).optional(),
+  birthState: stateEnum.optional(),
+  address: z.string().min(4).optional(),
+  addressNumber: z.string().min(1).optional(),
+  district: z.string().min(2).optional(),
+  city: z.string().min(2).optional(),
+  state: stateEnum.optional(),
+  zipCode: z.string().min(8).optional(),
+  jurosBaixosProfile: z
+    .object({
+      due_date: dateSchema.nullable().optional(),
+      info: z
+        .object({
+          birth_city: z.string().min(2).optional(),
+          birth_date: dateSchema.optional(),
+          birth_state: stateEnum.optional(),
+          mothers_name: z.string().min(3).optional(),
+          gender: genderEnum.optional(),
+          marital_status: maritalStatusEnum.optional(),
+          educationalLevel: educationalLevelEnum.optional()
+        })
+        .partial()
+        .optional(),
+      residence: z
+        .object({
+          address: z.string().min(4).optional(),
+          number: z.string().min(1).optional(),
+          district: z.string().min(2).optional(),
+          city: z.string().min(2).optional(),
+          state: stateEnum.optional(),
+          zip_code: z.string().min(8).optional()
+        })
+        .partial()
+        .optional()
+    })
+    .partial()
+    .optional(),
   requestedAmount: z.number().positive(),
   income: z.number().positive().optional(),
   scoreRange: z.string().optional(),
@@ -30,7 +88,20 @@ const simulateSchema = z.object({
   providerSessionId: z.string().optional(),
   requestedAmount: z.number().positive(),
   installments: z.number().int().positive(),
-  productType: z.enum(['loan', 'credit_card', 'financing'])
+  productType: z.enum(['loan', 'credit_card', 'financing']),
+  birthDate: dateSchema.optional(),
+  mothersName: z.string().min(3).optional(),
+  gender: genderEnum.optional(),
+  maritalStatus: maritalStatusEnum.optional(),
+  educationalLevel: educationalLevelEnum.optional(),
+  birthCity: z.string().min(2).optional(),
+  birthState: stateEnum.optional(),
+  address: z.string().min(4).optional(),
+  addressNumber: z.string().min(1).optional(),
+  district: z.string().min(2).optional(),
+  city: z.string().min(2).optional(),
+  state: stateEnum.optional(),
+  zipCode: z.string().min(8).optional()
 });
 
 const clickSchema = z.object({
@@ -72,7 +143,10 @@ router.post(
   '/simulate',
   asyncHandler(async (req, res) => {
     const payload = simulateSchema.parse(req.body || {});
-    const result = await CreditSimulationService.simulate(payload);
+    const result = await CreditSimulationService.simulate({
+      ...payload,
+      userAgent: req.get('user-agent') || null
+    });
     res.status(201).json({ data: result });
   })
 );

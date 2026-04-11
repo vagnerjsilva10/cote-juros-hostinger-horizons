@@ -59,6 +59,43 @@ const serializeProviderSession = (providerSession) =>
       }
     : null;
 
+const buildDefaultDueDate = () => {
+  const nextMonth = new Date();
+  nextMonth.setUTCMonth(nextMonth.getUTCMonth() + 1, 10);
+  return nextMonth.toISOString().slice(0, 10);
+};
+
+const buildProviderLeadPayload = ({ lead, userAgent }) => ({
+  ...lead,
+  userAgent: userAgent || null,
+  jurosBaixosProfile: {
+    ...(lead.jurosBaixosProfile || {}),
+    due_date: lead.jurosBaixosProfile?.due_date || buildDefaultDueDate(),
+    info: {
+      ...(lead.jurosBaixosProfile?.info || {}),
+      birth_city: lead.birthCity || lead.jurosBaixosProfile?.info?.birth_city || null,
+      birth_date:
+        (lead.birthDate instanceof Date ? lead.birthDate.toISOString().slice(0, 10) : null) ||
+        lead.jurosBaixosProfile?.info?.birth_date ||
+        null,
+      birth_state: lead.birthState || lead.jurosBaixosProfile?.info?.birth_state || null,
+      mothers_name: lead.mothersName || lead.jurosBaixosProfile?.info?.mothers_name || null,
+      gender: lead.gender || lead.jurosBaixosProfile?.info?.gender || null,
+      marital_status: lead.maritalStatus || lead.jurosBaixosProfile?.info?.marital_status || null,
+      educationalLevel: lead.educationalLevel || lead.jurosBaixosProfile?.info?.educationalLevel || null
+    },
+    residence: {
+      ...(lead.jurosBaixosProfile?.residence || {}),
+      address: lead.address || lead.jurosBaixosProfile?.residence?.address || null,
+      number: lead.addressNumber || lead.jurosBaixosProfile?.residence?.number || null,
+      district: lead.district || lead.jurosBaixosProfile?.residence?.district || null,
+      city: lead.city || lead.jurosBaixosProfile?.residence?.city || null,
+      state: lead.state || lead.jurosBaixosProfile?.residence?.state || null,
+      zip_code: lead.zipCode || lead.jurosBaixosProfile?.residence?.zip_code || null
+    }
+  }
+});
+
 const ensureProviderIdentity = async ({ lead, providerSession }) => {
   let session = providerSession;
 
@@ -141,7 +178,7 @@ export class CreditSimulationService {
     }
   }
 
-  static async simulate({ leadId, providerSessionId, requestedAmount, installments, productType }) {
+  static async simulate({ leadId, providerSessionId, requestedAmount, installments, productType, userAgent, ...leadOverrides }) {
     CreditTrackingService.log('CREDIT_SIMULATION_REQUEST', {
       leadId,
       requestedAmount,
@@ -150,9 +187,18 @@ export class CreditSimulationService {
     });
 
     const prisma = getPrisma();
-    const lead = await CreditLeadService.getById(leadId);
+    let lead = await CreditLeadService.getById(leadId);
     if (!lead) {
       throw new Error('Credit lead not found.');
+    }
+
+    if (Object.values(leadOverrides).some((value) => value !== undefined)) {
+      lead = await CreditLeadService.updateById(leadId, {
+        ...lead,
+        ...leadOverrides,
+        requestedAmount,
+        productType
+      });
     }
 
     let providerSession =
@@ -186,11 +232,13 @@ export class CreditSimulationService {
         providerSession = await ensureProviderIdentity({ lead, providerSession });
 
         let providerResponse = await createThirdPartySimulation({
-          lead,
+          lead: buildProviderLeadPayload({ lead, userAgent }),
           simulation: {
             requestedAmount,
             installments,
-            productType
+            productType,
+            externalUserId: providerSession.externalUserId,
+            userAgent
           },
           userToken: providerSession.externalJwt
         });
