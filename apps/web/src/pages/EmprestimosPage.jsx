@@ -229,11 +229,11 @@ function EmprestimosPage() {
                         <div className="grid grid-cols-2 gap-3 mb-6 pt-3 border-t border-slate-100">
                           <div>
                             <p className="text-[11px] font-semibold text-muted-foreground uppercase">Valor maximo</p>
-                            <p className="font-bold text-foreground text-sm">At? R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
+                            <p className="font-bold text-foreground text-sm">Até R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
                           </div>
                           <div>
                             <p className="text-[11px] font-semibold text-muted-foreground uppercase flex items-center gap-1"><Clock className="w-3 h-3" /> Prazo</p>
-                            <p className="font-bold text-foreground text-sm">At? {loan.maxTerm} meses</p>
+                            <p className="font-bold text-foreground text-sm">Até {loan.maxTerm} meses</p>
                           </div>
                         </div>
 

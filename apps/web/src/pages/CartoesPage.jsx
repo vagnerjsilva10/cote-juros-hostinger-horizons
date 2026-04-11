@@ -188,7 +188,7 @@ function CartoesPage() {
                         </div>
                         <div className="rounded-lg border border-border bg-slate-50 p-3">
                           <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Limite est.</p>
-                          <p className="font-bold text-primary">At? R$ {card.maxLimit / 1000}k</p>
+                          <p className="font-bold text-primary">Até R$ {card.maxLimit / 1000}k</p>
                         </div>
                       </div>
 

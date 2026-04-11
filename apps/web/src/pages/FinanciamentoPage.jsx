@@ -2,6 +2,7 @@
 import { Helmet } from 'react-helmet';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { Home, Car, Calendar, ArrowRight, ShieldCheck } from 'lucide-react';
@@ -64,7 +65,7 @@ function FinanciamentoPage() {
                 <div className="grid grid-cols-2 gap-6">
                   <div>
                     <p className="text-sm font-semibold text-muted-foreground mb-1 flex items-center gap-1"><Car className="w-4 h-4" /> Valor</p>
-                    <p className="text-lg font-bold text-foreground">At? R$ {(fin.maxValue / 1000).toFixed(0)}k</p>
+                    <p className="text-lg font-bold text-foreground">Até R$ {(fin.maxValue / 1000).toFixed(0)}k</p>
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-muted-foreground mb-1 flex items-center gap-1"><Calendar className="w-4 h-4" /> Prazo Max</p>
