@@ -20,7 +20,9 @@ const bankCardImages = {
   itau: '/assets/cards/itau-card.svg',
   santander: '/assets/cards/santander-card.svg',
   c6: '/assets/cards/c6-card.svg',
-  inter: '/assets/cards/inter-card.svg'
+  inter: '/assets/cards/inter-card.svg',
+  bradesco: '/assets/cards/bradesco-card.svg',
+  bb: '/assets/cards/bb-card.svg'
 };
 
 const normalizeBankKey = (value = '') =>
@@ -36,6 +38,8 @@ const resolveCardImage = (card) => {
   if (bankName.includes('santander')) return bankCardImages.santander;
   if (bankName.includes('c6')) return bankCardImages.c6;
   if (bankName.includes('inter')) return bankCardImages.inter;
+  if (bankName.includes('bradesco')) return bankCardImages.bradesco;
+  if (bankName.includes('banco do brasil') || bankName.includes('bb')) return bankCardImages.bb;
   return card?.image;
 };
 
@@ -247,15 +251,15 @@ function CartoesPage() {
                       <div className="absolute inset-0 flex items-center justify-center p-4">
                         <div className="relative w-full max-w-[240px] -rotate-[6deg] transition-transform duration-300 hover:-translate-y-1 hover:rotate-[-4deg]">
                           {hasPremiumAsset ? (
-                            <img src={cardImage} alt={card.title} className="h-[148px] w-full rounded-2xl object-cover shadow-[0_16px_34px_rgba(15,23,42,0.28)]" />
+                            <img src={cardImage} alt={card.title} className="h-[148px] w-full rounded-2xl object-contain shadow-[0_16px_34px_rgba(15,23,42,0.28)]" />
                           ) : (
                             <div
                               className="h-[148px] rounded-2xl border border-white/20 p-4 text-white shadow-[0_16px_34px_rgba(15,23,42,0.28)]"
                               style={{ background: `linear-gradient(135deg, ${toneA}, ${toneB})` }}
                             >
-                              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/80">{card.bankName}</p>
-                              <p className="mt-6 text-lg font-semibold leading-tight">{card.title}</p>
-                              <p className="mt-8 text-[11px] uppercase tracking-[0.14em] text-white/80">Crédito</p>
+                              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90 [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]">{card.bankName}</p>
+                              <p className="mt-6 text-lg font-semibold leading-tight text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">{card.title}</p>
+                              <p className="mt-8 text-[11px] uppercase tracking-[0.14em] text-white/90 [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]">Crédito</p>
                             </div>
                           )}
                         </div>
@@ -336,3 +340,4 @@ function CartoesPage() {
 }
 
 export default CartoesPage;
+

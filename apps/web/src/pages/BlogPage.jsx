@@ -1,55 +1,85 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 import { ArrowRight, CalendarDays, Clock, Search } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AdSpace } from '@/components/AdSpace.jsx';
 import PageHero from '@/components/PageHero.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 
-const CATEGORIES = ['Todas', 'Empréstimos', 'Cartões de Crédito', 'Finanças Pessoais', 'Score de Crédito', 'Financiamento'];
-
 const CATEGORY_THUMBNAILS = {
-  'Empréstimos': 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80',
-  'Cartões de Crédito': 'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?auto=format&fit=crop&w=1200&q=80',
-  'Finanças Pessoais': 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=1200&q=80',
-  'Score de Crédito': 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80',
-  Financiamento: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80'
+  emprestimos: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80',
+  cartoes: 'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?auto=format&fit=crop&w=1200&q=80',
+  financas: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=1200&q=80',
+  score: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80',
+  financiamento: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80'
 };
 
 const fallbackThumbnail = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80';
 
+const normalize = (value = '') =>
+  String(value)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+const slugify = (value = '') =>
+  normalize(value)
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+
 const resolveArticleImage = (article) => {
   if (article?.image && String(article.image).trim().length > 0) return article.image;
-  return CATEGORY_THUMBNAILS[article?.category] || fallbackThumbnail;
+
+  const categoryKey = normalize(article?.category || '');
+  if (categoryKey.includes('emprest')) return CATEGORY_THUMBNAILS.emprestimos;
+  if (categoryKey.includes('cart')) return CATEGORY_THUMBNAILS.cartoes;
+  if (categoryKey.includes('finan') && !categoryKey.includes('financi')) return CATEGORY_THUMBNAILS.financas;
+  if (categoryKey.includes('score')) return CATEGORY_THUMBNAILS.score;
+  if (categoryKey.includes('financi')) return CATEGORY_THUMBNAILS.financiamento;
+
+  return fallbackThumbnail;
 };
+
+const resolveArticleSlug = (article) => slugify(article?.slug || article?.title || article?.id || 'artigo');
 
 function BlogPage() {
   const [articlesData, setArticlesData] = useState([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('Todas');
   const [sort, setSort] = useState('recent');
-  const [selectedArticle, setSelectedArticle] = useState(null);
 
   useEffect(() => {
-    portalApi.getArticles().then(setArticlesData);
+    portalApi.getArticles().then((items) => setArticlesData(Array.isArray(items) ? items : []));
   }, []);
+
+  const categories = useMemo(() => {
+    const unique = new Set();
+    articlesData.forEach((article) => {
+      if (article?.category) unique.add(article.category);
+    });
+    return ['Todas', ...Array.from(unique)];
+  }, [articlesData]);
 
   const filteredArticles = useMemo(() => {
     let result = articlesData.filter((article) => {
       const matchCategory = category === 'Todas' || article.category === category;
+      const query = search.toLowerCase();
       const matchSearch =
-        article.title.toLowerCase().includes(search.toLowerCase()) ||
-        article.summary.toLowerCase().includes(search.toLowerCase());
+        article.title.toLowerCase().includes(query) ||
+        article.summary.toLowerCase().includes(query);
+
       return matchCategory && matchSearch;
     });
 
     if (sort === 'recent') result = [...result].sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
-    if (sort === 'read') result = [...result].sort((a, b) => a.title.length - b.title.length);
+    if (sort === 'read') result = [...result].sort((a, b) => (b.readTime || 0) - (a.readTime || 0));
 
     return result;
   }, [articlesData, category, search, sort]);
@@ -57,25 +87,34 @@ function BlogPage() {
   const featured = filteredArticles[0];
   const rest = filteredArticles.slice(1);
 
-  const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+  const formatDate = (date) =>
+    new Date(date).toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
 
   return (
     <>
       <Helmet>
         <title>Blog - Cote Juros</title>
+        <meta
+          name="description"
+          content="Guias e analises para ajudar voce a tomar decisoes financeiras com mais seguranca no dia a dia."
+        />
       </Helmet>
 
       <PageHero
         centered
         badge="Editorial"
-        title="Artigos organizados em uma leitura mais limpa."
-        subtitle="Conteúdo financeiro em linguagem clara para ajudar você a entender escolhas, custos e próximos passos."
+        title="Guias e analises para decidir melhor com seu dinheiro."
+        subtitle="Conteudo em linguagem clara para ajudar voce a comparar opcoes, evitar juros altos e escolher com mais confianca."
       >
         <div className="relative mx-auto max-w-xl">
           <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="h-12 rounded-full bg-background pl-11"
-            placeholder="Buscar artigos..."
+            placeholder="Busque por tema, banco ou tipo de credito"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
@@ -85,7 +124,7 @@ function BlogPage() {
       <div className="page-shell py-12">
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((item) => (
+            {categories.map((item) => (
               <Button
                 key={item}
                 variant={category === item ? 'default' : 'outline'}
@@ -98,7 +137,7 @@ function BlogPage() {
           </div>
 
           <Select value={sort} onValueChange={setSort}>
-            <SelectTrigger className="w-[200px]">
+            <SelectTrigger className="w-[220px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -115,7 +154,7 @@ function BlogPage() {
                 <img src={resolveArticleImage(featured)} alt={featured.title} className="h-full w-full object-cover" />
               </div>
               <CardContent className="flex flex-col justify-center gap-5 p-10">
-                <Badge variant="outline" className="w-fit">Destaque</Badge>
+                <Badge variant="outline" className="w-fit">Destaque da semana</Badge>
                 <h2>{featured.title}</h2>
                 <p>{featured.summary}</p>
                 <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
@@ -125,12 +164,14 @@ function BlogPage() {
                   </span>
                   <span className="inline-flex items-center gap-2">
                     <Clock className="h-4 w-4 text-primary" />
-                    {featured.readTime} min
+                    {featured.readTime} min de leitura
                   </span>
                 </div>
-                <Button className="w-fit" onClick={() => setSelectedArticle(featured)}>
-                  Ler artigo <ArrowRight className="h-4 w-4" />
-                </Button>
+                <Link to={`/blog/${resolveArticleSlug(featured)}`}>
+                  <Button className="w-fit">
+                    Ler artigo completo <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
               </CardContent>
             </div>
           </Card>
@@ -153,9 +194,11 @@ function BlogPage() {
                     <p className="line-clamp-3">{article.summary}</p>
                     <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
                       <span className="text-xs text-muted-foreground">{formatDate(article.publishDate)}</span>
-                      <Button variant="link" className="px-0 text-primary" onClick={() => setSelectedArticle(article)}>
-                        Abrir
-                      </Button>
+                      <Link to={`/blog/${resolveArticleSlug(article)}`}>
+                        <Button variant="link" className="px-0 text-primary">
+                          Ler artigo
+                        </Button>
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>
@@ -180,39 +223,6 @@ function BlogPage() {
           </div>
         </div>
       </div>
-
-      <Dialog open={!!selectedArticle} onOpenChange={(open) => !open && setSelectedArticle(null)}>
-        <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto p-0">
-          {selectedArticle ? (
-            <div className="flex flex-col">
-              <div className="h-64 border-b border-border sm:h-80">
-                <img src={resolveArticleImage(selectedArticle)} alt={selectedArticle.title} className="h-full w-full object-cover" />
-              </div>
-              <div className="space-y-8 p-8 sm:p-10">
-                <div className="space-y-4">
-                  <Badge variant="outline">{selectedArticle.category}</Badge>
-                  <h1 className="text-3xl sm:text-4xl">{selectedArticle.title}</h1>
-                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                    <span>{formatDate(selectedArticle.publishDate)}</span>
-                    <span>{selectedArticle.readTime} min de leitura</span>
-                  </div>
-                </div>
-
-                <AdSpace height="90px" />
-
-                <div className="space-y-6">
-                  {selectedArticle.content.split('\n\n').map((paragraph, index) => (
-                    <React.Fragment key={`${selectedArticle.id}-${index}`}>
-                      <p className="text-base leading-8 text-muted-foreground">{paragraph}</p>
-                      {index === 2 ? <AdSpace height="220px" /> : null}
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ) : null}
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

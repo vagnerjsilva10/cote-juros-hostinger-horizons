@@ -66,14 +66,14 @@ function FerramentasPage() {
     <>
       <Helmet>
         <title>Ferramentas financeiras - Cote Juros</title>
-        <meta name="description" content="Ferramentas tipograficas e objetivas para juros compostos e financiamento." />
+        <meta name="description" content="Use calculadoras simples para entender parcelas, juros e custo total antes de contratar credito." />
       </Helmet>
 
       <PageHero
         centered
         badge="Ferramentas"
-        title="Calculadoras com visual mais claro e silencioso."
-        subtitle="Ferramentas simples para entender juros, parcelas e o impacto real das decisões no seu bolso."
+        title="Calculadoras simples para decidir com mais seguranca."
+        subtitle="Use calculadoras simples para entender quanto voce realmente vai pagar em juros e parcelas antes de tomar uma decisao."
       >
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-white shadow-[var(--shadow-sm)]">
           <Calculator className="h-7 w-7 text-foreground" />
@@ -101,8 +101,8 @@ function FerramentasPage() {
             <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
               <Card>
                 <CardHeader>
-                  <CardTitle>Parametros</CardTitle>
-                  <CardDescription>Preencha os dados e veja como seu dinheiro pode crescer ao longo do tempo.</CardDescription>
+                  <CardTitle>Preencha os dados</CardTitle>
+                  <CardDescription>Ajuste os valores e veja, de forma clara, como o resultado muda ao longo do tempo.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-5">
                   <div className="space-y-2">
@@ -123,8 +123,8 @@ function FerramentasPage() {
               <Card>
                 <CardHeader className="flex flex-col gap-4 border-b border-border sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <CardTitle>Projecao</CardTitle>
-                    <CardDescription>Leitura simples da evolução do valor final ano a ano.</CardDescription>
+                    <CardTitle>Resultado da simulacao</CardTitle>
+                    <CardDescription>Entenda ano a ano quanto vira rendimento e quanto vira saldo final.</CardDescription>
                   </div>
                   <Button variant="outline" onClick={handleExport}>
                     <Download className="h-4 w-4" />
@@ -167,7 +167,7 @@ function FerramentasPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Dados do financiamento</CardTitle>
-                  <CardDescription>Simule entrada, taxa e prazo para entender o peso da parcela.</CardDescription>
+                  <CardDescription>Informe entrada, taxa e prazo para descobrir se a parcela cabe no seu momento.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-5">
                   <div className="space-y-2">
@@ -192,8 +192,8 @@ function FerramentasPage() {
               <Card>
                 <CardHeader className="flex flex-col gap-4 border-b border-border sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <CardTitle>Custo efetivo</CardTitle>
-                    <CardDescription>Veja quanto você paga no valor financiado e quanto vai para juros.</CardDescription>
+                    <CardTitle>Quanto voce paga no total</CardTitle>
+                    <CardDescription>Veja de forma separada o valor financiado, os juros e o total que sai do seu bolso.</CardDescription>
                   </div>
                   <Button variant="outline" onClick={handleExport}>
                     <Download className="h-4 w-4" />
@@ -259,7 +259,7 @@ function FerramentasPage() {
                 <div className="space-y-3">
                   <h3>Comprometimento de renda</h3>
                   <p className="mx-auto max-w-2xl text-muted-foreground">
-                    Descubra se a parcela cabe no seu orçamento com uma leitura rápida e fácil de entender.
+                    Descubra em segundos se a parcela esta confortavel para o seu orcamento mensal.
                   </p>
                 </div>
                 <div className="mx-auto grid max-w-xl gap-4 text-left">
@@ -271,8 +271,8 @@ function FerramentasPage() {
                     <Label>Parcela</Label>
                     <Input type="number" defaultValue="1200" />
                   </div>
-                  <Button size="lg" onClick={() => toast.success('Comprometimento estimado: 24%')}>
-                    Verificar aprovacao
+                  <Button size="lg" onClick={() => toast.success('Comprometimento estimado: 24% da sua renda liquida')}>
+                    Ver resultado
                   </Button>
                 </div>
               </CardContent>
@@ -285,3 +285,4 @@ function FerramentasPage() {
 }
 
 export default FerramentasPage;
+

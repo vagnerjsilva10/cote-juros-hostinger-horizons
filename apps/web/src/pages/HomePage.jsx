@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import {
   ArrowRight,
   BadgeCheck,
@@ -22,7 +22,14 @@ import { SimulationModal } from '@/components/SimulationModal.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 
-const bankLogos = ['Nubank', 'Itaú', 'Santander', 'C6', 'Inter'];
+const bankLogos = [
+  { name: 'Nubank', logo: 'https://logo.clearbit.com/nubank.com.br' },
+  { name: 'Itaú', logo: 'https://logo.clearbit.com/itau.com.br' },
+  { name: 'Santander', logo: 'https://logo.clearbit.com/santander.com.br' },
+  { name: 'C6', logo: 'https://logo.clearbit.com/c6bank.com.br' },
+  { name: 'Inter', logo: 'https://logo.clearbit.com/bancointer.com.br' },
+  { name: 'Banco do Brasil', logo: 'https://logo.clearbit.com/bb.com.br' }
+];
 
 const fallbackTestimonials = [
   {
@@ -309,14 +316,14 @@ function HomePage() {
       title: 'Cartões',
       copy: 'Filtre por anuidade, benefícios e limite estimado no mesmo painel.',
       href: '/cartoes-de-credito',
-      accent: 'from-indigo-100 to-white'
+      accent: 'from-violet-100 to-white'
     },
     {
       icon: Building2,
       title: 'Financiamentos',
       copy: 'Compare bancos, taxas e prazos para descobrir a melhor opção para você.',
       href: '/financiamento',
-      accent: 'from-cyan-100 to-white'
+      accent: 'from-teal-100 to-white'
     },
     {
       icon: Calculator,
@@ -345,6 +352,9 @@ function HomePage() {
     }
   ];
 
+  const { scrollYProgress } = useScroll();
+  const heroParallaxY = useTransform(scrollYProgress, [0, 0.35], [0, 80]);
+
   const handleHeroSubmit = (event) => {
     event.preventDefault();
     trackingService.trackCtaClick({
@@ -372,12 +382,14 @@ function HomePage() {
         initialAmount={heroValue ? parseInt(heroValue.replace(/\D/g, ''), 10) / 100 : 10000}
       />
 
-      <section className="hero-premium relative overflow-hidden border-b border-border">
-        <div className="pointer-events-none absolute inset-0 hero-tech-grid opacity-50" />
+      <section className="hero-premium-dark relative overflow-hidden border-b border-slate-800">
+        <div className="pointer-events-none absolute inset-0 hero-tech-grid-dark opacity-55" />
+        <div className="pointer-events-none absolute inset-0 hero-scanlines opacity-35" />
+        <div className="pointer-events-none absolute inset-0 hero-vignette opacity-60" />
         {[14, 34, 56, 78].map((offset, index) => (
           <motion.span
             key={offset}
-            className="pointer-events-none absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-sky-300/35 to-transparent"
+            className="pointer-events-none absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-sky-300/30 to-transparent"
             style={{ top: `${offset}%` }}
             animate={{ opacity: [0.15, 0.4, 0.15], x: ['-2%', '2%', '-2%'] }}
             transition={{ duration: 8 + index, repeat: Infinity, ease: 'easeInOut' }}
@@ -393,60 +405,65 @@ function HomePage() {
           />
         ))}
         <motion.div
-          className="pointer-events-none absolute left-[16%] top-20 h-32 w-32 rounded-full bg-sky-300/45 blur-3xl"
+          className="pointer-events-none absolute left-[16%] top-20 h-32 w-32 rounded-full bg-sky-300/30 blur-3xl"
           animate={{ y: [0, -10, 0], opacity: [0.28, 0.52, 0.28] }}
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="pointer-events-none absolute right-[15%] top-28 h-28 w-28 rounded-full bg-indigo-200/45 blur-3xl"
+          className="pointer-events-none absolute right-[15%] top-28 h-28 w-28 rounded-full bg-violet-300/30 blur-3xl"
           animate={{ y: [0, 8, 0], opacity: [0.2, 0.4, 0.2] }}
           transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
         />
-        <div className="pointer-events-none absolute left-1/2 top-16 h-72 w-[620px] -translate-x-1/2 hero-premium-glow" />
+        <motion.div
+          style={{ y: heroParallaxY }}
+          className="pointer-events-none absolute left-1/2 top-16 h-72 w-[620px] -translate-x-1/2 hero-premium-glow"
+        />
 
         <div className="page-shell relative py-20 md:py-28">
           <motion.div {...animationIn} className="mx-auto max-w-5xl text-center">
-            <span className="soft-blue-chip mb-6">Comparador financeiro completo</span>
-            <h1 className="mx-auto mb-5 max-w-4xl text-slate-900">Cote juros antes de pegar crédito.</h1>
-            <p className="mx-auto max-w-3xl text-lg leading-8 text-slate-600 md:text-xl">
+            <span className="inline-flex items-center rounded-full border border-sky-300/30 bg-sky-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-200">
+              Comparador financeiro completo
+            </span>
+            <h1 className="mx-auto mb-5 mt-6 max-w-4xl text-white">Cote juros antes de pegar crédito.</h1>
+            <p className="mx-auto max-w-3xl text-lg leading-8 text-slate-300 md:text-xl">
               Compare taxas, limites e condições de empréstimos, cartões e financiamentos em um único lugar.
             </p>
 
-            <form onSubmit={handleHeroSubmit} className="hero-highlight mx-auto mt-10 max-w-3xl rounded-[18px] border border-primary/20 p-3 shadow-[var(--shadow-md)]">
+            <form onSubmit={handleHeroSubmit} className="mx-auto mt-10 max-w-3xl rounded-[18px] border border-white/15 bg-white/5 p-3 shadow-[0_20px_50px_rgba(2,6,23,0.35)] backdrop-blur-md">
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Input
                   placeholder="Digite o valor que você quer analisar"
-                  className="h-12 border border-primary/10 bg-white text-base shadow-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                  className="h-12 border border-white/20 bg-white/90 text-base shadow-none focus-visible:ring-2 focus-visible:ring-sky-300/60"
                   value={heroValue}
                   onChange={(event) => setHeroValue(formatCurrency(event.target.value))}
                 />
-                <Button type="submit" size="lg" className="h-12 min-w-[180px]">
+                <Button type="submit" size="lg" className="h-12 min-w-[180px] bg-sky-500 text-white hover:bg-sky-400">
                   Analisar agora
                 </Button>
               </div>
             </form>
 
-            <div className="mt-5 inline-flex items-center gap-2 text-sm text-slate-600">
-              <ShieldCheck className="h-4 w-4 text-primary" />
+            <div className="mt-5 inline-flex items-center gap-2 text-sm text-slate-300">
+              <ShieldCheck className="h-4 w-4 text-sky-300" />
               Simulação gratuita para comparar opções sem pressão comercial.
             </div>
 
             <div className="mt-12 grid gap-4 sm:grid-cols-3">
-              <div className="interactive-card px-5 py-5 text-left">
-                <p className="text-base font-semibold text-foreground">Comparação inteligente</p>
-                <p className="mt-1 text-sm text-muted-foreground">
+              <div className="rounded-[16px] border border-white/15 bg-white/5 px-5 py-5 text-left backdrop-blur-sm">
+                <p className="text-base font-semibold text-white">Comparação inteligente</p>
+                <p className="mt-1 text-sm text-slate-300">
                   {catalogSize > 0 ? `${catalogSize}+ ofertas` : 'Ofertas de diferentes perfis'} em um único fluxo visual.
                 </p>
               </div>
-              <div className="interactive-card px-5 py-5 text-left">
-                <p className="text-base font-semibold text-foreground">Taxas atualizadas</p>
-                <p className="mt-1 text-sm text-muted-foreground">
+              <div className="rounded-[16px] border border-white/15 bg-white/5 px-5 py-5 text-left backdrop-blur-sm">
+                <p className="text-base font-semibold text-white">Taxas atualizadas</p>
+                <p className="mt-1 text-sm text-slate-300">
                   {bankCount > 0 ? `${bankCount}+ instituições` : 'Bancos e fintechs'} para comparar sem termos complicados.
                 </p>
               </div>
-              <div className="interactive-card px-5 py-5 text-left">
-                <p className="text-base font-semibold text-foreground">Decisão com segurança</p>
-                <p className="mt-1 text-sm text-muted-foreground">Taxa, prazo e condições lado a lado para evitar surpresas.</p>
+              <div className="rounded-[16px] border border-white/15 bg-white/5 px-5 py-5 text-left backdrop-blur-sm">
+                <p className="text-base font-semibold text-white">Decisão com segurança</p>
+                <p className="mt-1 text-sm text-slate-300">Taxa, prazo e condições lado a lado para evitar surpresas.</p>
               </div>
             </div>
           </motion.div>
@@ -455,13 +472,23 @@ function HomePage() {
 
       <section className="border-b border-border bg-white py-12 md:py-14">
         <div className="page-shell">
-          <motion.div {...animationIn} className="text-center">
-            <p className="text-sm font-medium text-slate-600">Compare ofertas de diversas instituições financeiras.</p>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <motion.div {...animationIn} className="mx-auto max-w-5xl text-center">
+            <span className="soft-blue-chip mb-5">Bancos disponiveis</span>
+            <h2 className="mb-3">Instituições que você encontra no Cote Juros</h2>
+            <p className="mx-auto max-w-2xl text-muted-foreground">
+              Compare ofertas de Nubank, Itaú, Santander, C6, Inter e Banco do Brasil em um único fluxo.
+            </p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {bankLogos.map((bank) => (
-                <div key={bank} className="bank-pill">
-                  <BadgeCheck className="h-4 w-4 text-primary" />
-                  <span>{bank}</span>
+                <div key={bank.name} className="bank-pill justify-start px-4 py-3">
+                  <img
+                    src={bank.logo}
+                    alt={`Logo ${bank.name}`}
+                    className="h-5 w-5 rounded-full object-cover"
+                    loading="lazy"
+                  />
+                  <span>{bank.name}</span>
+                  <BadgeCheck className="ml-auto h-4 w-4 text-primary" />
                 </div>
               ))}
             </div>
@@ -472,14 +499,14 @@ function HomePage() {
       <section className="border-b border-border bg-background-secondary py-20 md:py-24">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto mb-14 max-w-3xl text-center">
-            <span className="soft-blue-chip mb-5">Como funciona</span>
-            <h2 className="mb-4">Decida em 3 passos simples.</h2>
+            <span className="soft-blue-chip mb-5">Como o Cote Juros ajuda voce</span>
+            <h2 className="mb-4">Da comparacao a decisao em 3 passos.</h2>
           </motion.div>
           <div className="grid gap-5 md:grid-cols-3">
             {[
-              { title: '1. Compare taxas', copy: 'Veja rapidamente o custo real de empréstimos, cartões e financiamentos.' },
-              { title: '2. Analise condições', copy: 'Entenda limite, prazo e benefícios sem linguagem complicada.' },
-              { title: '3. Escolha com segurança', copy: 'Tome a melhor decisão com visão clara antes de contratar.' }
+              { title: '1. Compare taxas', copy: 'Veja em poucos segundos quanto cada opcao cobra em juros e custo total.' },
+              { title: '2. Entenda as condicoes', copy: 'Entenda limite, prazo, anuidade e regras sem linguagem complicada.' },
+              { title: '3. Escolha com seguranca', copy: 'Tome a melhor decisao com clareza antes de contratar qualquer produto.' }
             ].map((item) => (
               <motion.div key={item.title} {...animationIn}>
                 <Card className="interactive-card h-full">
@@ -680,6 +707,7 @@ function HomePage() {
                 <Card className="interactive-card h-full">
                   <CardContent className="flex h-full flex-col gap-5 p-8">
                     <div className="soft-blue-chip w-fit">{item.badge || 'Cliente'}</div>
+                    <p className="text-base tracking-[0.12em] text-amber-500">★★★★★</p>
                     <p className="text-lg leading-8 text-foreground">"{item.quote}"</p>
                     <div className="mt-auto border-t border-border pt-5">
                       <p className="font-semibold text-foreground">{item.name}</p>
@@ -692,6 +720,25 @@ function HomePage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="border-b border-border bg-background-secondary py-16 md:py-20">
+        <div className="page-shell">
+          <motion.div {...animationIn} className="mx-auto max-w-4xl rounded-[24px] border border-violet-200/70 bg-gradient-to-br from-white via-teal-50/40 to-violet-50/50 px-8 py-10 text-center shadow-[var(--shadow-sm)]">
+            <span className="soft-blue-chip mb-4">Avaliacoes externas</span>
+            <h2 className="mb-3">Sinta o poder das avaliacoes reais.</h2>
+            <p className="mx-auto max-w-2xl text-muted-foreground">
+              Clientes avaliam a experiencia de comparacao com foco em clareza, confianca e decisao financeira segura.
+            </p>
+            <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <div className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700">
+                Trustpilot
+              </div>
+              <div className="text-xl tracking-[0.2em] text-amber-500">★★★★★</div>
+              <p className="text-base font-semibold text-foreground">4.7 de 5 estrelas</p>
+            </div>
+          </motion.div>
         </div>
       </section>
 

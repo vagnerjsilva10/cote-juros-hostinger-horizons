@@ -11,6 +11,7 @@ import FinanciamentoPage from '@/pages/FinanciamentoPage.jsx';
 import FerramentasPage from '@/pages/FerramentasPage.jsx';
 import DiagnosticoPage from '@/pages/DiagnosticoPage.jsx';
 import BlogPage from '@/pages/BlogPage.jsx';
+import BlogArticlePage from '@/pages/BlogArticlePage.jsx';
 import SobreNosPage from '@/pages/SobreNosPage.jsx';
 import ContatoPage from '@/pages/ContatoPage.jsx';
 import PoliticaPrivacidadePage from '@/pages/PoliticaPrivacidadePage.jsx';
@@ -172,7 +173,7 @@ function App() {
           path="/blog/:articleSlug"
           element={
             <AppLayout>
-              <SeoProgrammaticPage mode="blog" />
+              <BlogArticlePage />
             </AppLayout>
           }
         />
