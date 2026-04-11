@@ -429,7 +429,7 @@ function HomePage() {
               >
                 <span className="block">Compare, escolha</span>
                 <span className="block">e contrate seu</span>
-                <span className="block">
+                <span className="block whitespace-nowrap">
                   próximo <span className="hero-word-emphasis">empréstimo.</span>
                 </span>
               </h1>
