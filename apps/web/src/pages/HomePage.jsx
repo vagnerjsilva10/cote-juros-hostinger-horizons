@@ -398,12 +398,10 @@ function HomePage() {
 
       <section className="hero-premium-clean relative overflow-hidden border-b border-slate-200/60">
         <div className="pointer-events-none absolute inset-0 hero-premium-mist" />
-        <div className="pointer-events-none absolute inset-x-0 top-4 mx-auto h-[88%] w-[min(1220px,95%)] hero-aurora-surface" />
-        <div className="pointer-events-none absolute inset-0 hero-dot-texture opacity-45" />
         <motion.div
-          className="pointer-events-none absolute left-1/2 top-[18%] h-36 w-[72%] -translate-x-1/2 hero-light-ribbon"
-          animate={{ opacity: [0.42, 0.64, 0.42], y: [0, -6, 0], scaleX: [1, 1.02, 1] }}
-          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+          className="pointer-events-none absolute left-1/2 top-[14%] h-52 w-[70%] -translate-x-1/2 hero-float-cloud"
+          animate={{ opacity: [0.35, 0.56, 0.35], y: [0, -8, 0], scale: [1, 1.03, 1] }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
         />
         <div className="pointer-events-none absolute -left-24 top-6 h-64 w-64 rounded-full bg-sky-300/30 blur-3xl" />
         <div className="pointer-events-none absolute -right-16 top-0 h-72 w-72 rounded-full bg-indigo-200/30 blur-3xl" />

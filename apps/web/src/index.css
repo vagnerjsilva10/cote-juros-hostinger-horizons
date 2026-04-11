@@ -222,6 +222,7 @@
     background:
       radial-gradient(circle at 14% 18%, #d4e2ff 0%, #e8f0ff 30%, #f4f7fd 56%, #ffffff 76%),
       radial-gradient(circle at 84% 8%, rgba(37, 99, 235, 0.14), transparent 42%),
+      radial-gradient(circle at 52% 12%, rgba(99, 102, 241, 0.09), transparent 40%),
       linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(247, 250, 255, 0.92) 100%);
   }
 
@@ -231,31 +232,12 @@
       radial-gradient(circle at 64% 84%, rgba(20, 184, 166, 0.08), transparent 50%);
   }
 
-  .hero-aurora-surface {
-    border-radius: 34px;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 255, 255, 0.24) 100%),
-      radial-gradient(circle at 18% 22%, rgba(56, 189, 248, 0.12), transparent 42%),
-      radial-gradient(circle at 82% 16%, rgba(99, 102, 241, 0.1), transparent 44%);
-    border: 1px solid rgba(255, 255, 255, 0.72);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.7),
-      0 18px 34px rgba(15, 23, 42, 0.05);
-    backdrop-filter: blur(3px);
-  }
-
-  .hero-dot-texture {
-    background-image: radial-gradient(rgba(37, 99, 235, 0.14) 1px, transparent 1px);
-    background-size: 18px 18px;
-    mask-image: radial-gradient(circle at 50% 28%, rgba(15, 23, 42, 0.32), transparent 72%);
-  }
-
-  .hero-light-ribbon {
+  .hero-float-cloud {
     border-radius: 999px;
     background:
-      radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.22), transparent 55%),
-      radial-gradient(circle at 80% 50%, rgba(20, 184, 166, 0.18), transparent 54%),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0) 100%);
+      radial-gradient(circle at 22% 48%, rgba(59, 130, 246, 0.2), transparent 58%),
+      radial-gradient(circle at 74% 44%, rgba(20, 184, 166, 0.14), transparent 56%),
+      radial-gradient(circle at 52% 50%, rgba(255, 255, 255, 0.46), transparent 72%);
     filter: blur(26px);
   }
 
