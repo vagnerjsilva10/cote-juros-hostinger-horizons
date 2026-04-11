@@ -7,7 +7,7 @@ export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
   if (isSymbol) {
     return (
       <img
-        src="/assets/logo/logo-icon.svg"
+        src="/assets/logo/logo-icon.png"
         alt="Cote Juros"
         className={cn('h-10 w-10 object-contain', className)}
         loading="eager"
@@ -16,9 +16,9 @@ export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
   }
 
   const variantSrc = {
-    dark: '/assets/logo/logo-dark.svg',
-    monochrome: '/assets/logo/logo-monochrome.svg',
-    horizontal: '/assets/logo/logo-primary.svg'
+    dark: '/assets/logo/logo-primary.png',
+    monochrome: '/assets/logo/logo-primary.png',
+    horizontal: '/assets/logo/logo-primary.png'
   };
 
   const src = variantSrc[variant] || variantSrc.horizontal;
