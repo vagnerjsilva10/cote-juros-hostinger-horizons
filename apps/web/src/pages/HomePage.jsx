@@ -291,16 +291,16 @@ function HomePage() {
             </motion.div>
 
             <motion.div
-              animate={{ y: [0, -4, 0], rotate: [0, -0.45, 0] }}
-              transition={{ duration: 11.5, repeat: Infinity, ease: [0.42, 0, 0.18, 1] }}
+              animate={{ y: [0, -3, 0], rotate: [-0.25, -0.55, -0.25] }}
+              transition={{ duration: 13, repeat: Infinity, ease: [0.42, 0, 0.18, 1] }}
               className="relative mx-auto w-full max-w-[520px]"
             >
-              <div className="pointer-events-none absolute -inset-x-8 -inset-y-6 rounded-[34px] bg-[radial-gradient(circle_at_48%_38%,rgba(56,189,248,0.16),rgba(79,70,229,0.06)_45%,transparent_74%)]" />
-              <div className="pointer-events-none absolute inset-0 translate-y-3 rounded-[30px] bg-slate-950/20 blur-xl" />
-              <div className="pointer-events-none absolute inset-0 rounded-[30px] bg-gradient-to-tr from-primary/18 via-cyan-300/8 to-secondary/18 blur-xl" />
+              <div className="pointer-events-none absolute -inset-x-10 -inset-y-8 rounded-[36px] bg-[radial-gradient(circle_at_50%_34%,rgba(37,99,235,0.20),rgba(30,64,175,0.10)_40%,transparent_72%)]" />
+              <div className="pointer-events-none absolute inset-0 translate-y-4 rounded-[30px] bg-[#020617]/45 blur-xl" />
+              <div className="pointer-events-none absolute inset-0 rounded-[30px] bg-gradient-to-tr from-blue-500/18 via-transparent to-indigo-500/16 blur-xl" />
 
-              <div className="relative overflow-hidden rounded-[28px] border border-slate-700/75 bg-[#0B1220] shadow-[0_34px_78px_-32px_rgba(15,98,254,0.5)]">
-                <div className="flex items-center justify-between border-b border-slate-700/70 bg-[#0E1629] px-4 py-3">
+              <div className="relative overflow-hidden rounded-[28px] border border-[#2A3B59] bg-[#070F1E] shadow-[0_42px_95px_-38px_rgba(29,78,216,0.56)] md:[transform:perspective(1500px)_rotateY(-2.8deg)]">
+                <div className="flex items-center justify-between border-b border-[#273754] bg-[#0A1428] px-4 py-3">
                   <div className="flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-cyan-300/80" />
                     <span className="h-2 w-2 rounded-full bg-indigo-300/80" />
@@ -313,12 +313,12 @@ function HomePage() {
                   <span className="h-2 w-8 rounded-full bg-slate-600/70" />
                 </div>
 
-                <div className="grid grid-cols-[88px,1fr] gap-3 bg-[#091124] p-4">
-                  <div className="space-y-2 rounded-xl border border-slate-700/70 bg-[#0D172B] p-2.5">
-                    <div className="h-7 rounded-lg bg-slate-700/60" />
-                    <div className="h-7 rounded-lg bg-slate-700/40" />
-                    <div className="h-7 rounded-lg bg-cyan-400/25" />
-                    <div className="h-7 rounded-lg bg-slate-700/40" />
+                <div className="grid grid-cols-[88px,1fr] gap-3 bg-[#050D1D] p-4">
+                  <div className="space-y-2 rounded-xl border border-[#25344F] bg-[#0A152A] p-2.5">
+                    <div className="h-7 rounded-lg bg-[#1C2A43]" />
+                    <div className="h-7 rounded-lg bg-[#18243A]" />
+                    <div className="h-7 rounded-lg bg-[#163056]" />
+                    <div className="h-7 rounded-lg bg-[#18243A]" />
                   </div>
 
                   <div className="space-y-3">
@@ -328,26 +328,28 @@ function HomePage() {
                         { label: 'Aprovação', value: '92%' },
                         { label: 'Economia', value: 'R$ 640' }
                       ].map((item) => (
-                        <div key={item.label} className="rounded-lg border border-slate-700/70 bg-[#0D172B] px-2.5 py-2">
+                        <div key={item.label} className="rounded-lg border border-[#2A3B59] bg-[#0A152A] px-2.5 py-2">
                           <p className="text-[10px] font-medium text-slate-400">{item.label}</p>
                           <p className="text-sm font-bold text-slate-100">{item.value}</p>
                         </div>
                       ))}
                     </div>
 
-                    <div className="rounded-xl border border-slate-700/70 bg-[#0D172B] p-3">
+                    <div className="rounded-xl border border-[#2A3B59] bg-[#0A152A] p-3">
                       <div className="mb-3 flex items-center justify-between">
                         <p className="text-xs font-semibold text-slate-200">Performance de ofertas</p>
                         <p className="text-[10px] font-semibold uppercase tracking-wide text-cyan-300">Atualizado</p>
                       </div>
-                      <div className="relative h-[116px] overflow-hidden rounded-lg border border-slate-700/60 bg-[#0A1325] p-2.5">
-                        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(56,189,248,0.08),transparent_55%)]" />
-                        <div className="pointer-events-none absolute inset-x-2.5 top-[30%] border-t border-slate-600/30" />
-                        <div className="pointer-events-none absolute inset-x-2.5 top-[58%] border-t border-slate-700/35" />
+                      <div className="relative h-[116px] overflow-hidden rounded-lg border border-[#263754] bg-[#040B19] p-2.5">
+                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(56,189,248,0.12),transparent_58%)]" />
+                        <div className="pointer-events-none absolute inset-x-2.5 top-[24%] border-t border-[#274165]/45" />
+                        <div className="pointer-events-none absolute inset-x-2.5 top-[45%] border-t border-[#233554]/40" />
+                        <div className="pointer-events-none absolute inset-x-2.5 top-[66%] border-t border-[#1E2E49]/38" />
                         <div className="flex h-full items-end gap-1.5">
                           {[28, 40, 35, 52, 46, 62, 58, 70].map((h, idx) => (
-                            <div key={idx} className="relative flex-1 overflow-hidden rounded-t-md bg-gradient-to-t from-blue-600/55 via-blue-500/58 to-cyan-300/78 shadow-[0_0_14px_rgba(56,189,248,0.16)]" style={{ height: `${h}%` }}>
-                              <span className="absolute inset-x-0 top-0 h-[1px] bg-cyan-100/70" />
+                            <div key={idx} className="relative flex-1 overflow-hidden rounded-t-md bg-gradient-to-t from-[#1D4ED8] via-[#2563EB] to-[#67E8F9] shadow-[0_0_16px_rgba(37,99,235,0.25)]" style={{ height: `${h}%` }}>
+                              <span className="absolute inset-x-0 top-0 h-[1px] bg-cyan-100/75" />
+                              <span className="absolute inset-x-0 top-1 h-[1px] bg-cyan-200/35" />
                             </div>
                           ))}
                         </div>
@@ -358,33 +360,33 @@ function HomePage() {
               </div>
 
               <motion.div
-                animate={{ y: [0, -2, 0], rotate: [0, -0.8, 0] }}
-                transition={{ duration: 8.8, repeat: Infinity, ease: 'easeInOut', delay: 0.1 }}
-                className="absolute -left-3 top-10 hidden rounded-2xl border border-slate-200/80 bg-white px-3 py-2.5 shadow-[0_20px_35px_-25px_rgba(15,23,42,0.65)] md:block"
+                animate={{ y: [0, -1.8, 0], rotate: [0, -0.7, 0] }}
+                transition={{ duration: 9.6, repeat: Infinity, ease: 'easeInOut', delay: 0.1 }}
+                className="absolute -left-7 top-12 hidden rounded-2xl border border-[#2A3B59] bg-[#0A152A] px-3 py-2.5 shadow-[0_22px_36px_-24px_rgba(2,6,23,0.72)] md:block"
               >
-                <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate-500">Saldo atual</p>
-                <p className="text-sm font-bold text-slate-900">R$ 7.110</p>
+                <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Saldo atual</p>
+                <p className="text-sm font-bold text-cyan-300">R$ 7.110</p>
               </motion.div>
 
               <motion.div
-                animate={{ y: [0, 3, 0], rotate: [0, 0.9, 0] }}
-                transition={{ duration: 9.4, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
-                className="absolute -right-3 bottom-12 hidden items-center gap-2 rounded-2xl border border-slate-200/80 bg-white px-3 py-2.5 shadow-[0_20px_35px_-25px_rgba(15,23,42,0.65)] md:flex"
+                animate={{ y: [0, 2.6, 0], rotate: [0, 0.75, 0] }}
+                transition={{ duration: 10.2, repeat: Infinity, ease: 'easeInOut', delay: 0.45 }}
+                className="absolute -right-8 bottom-14 hidden items-center gap-2 rounded-2xl border border-[#2A3B59] bg-[#0A152A] px-3 py-2.5 shadow-[0_22px_36px_-24px_rgba(2,6,23,0.72)] md:flex"
               >
-                <Activity className="h-4 w-4 text-emerald-500" />
+                <Activity className="h-4 w-4 text-emerald-400" />
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Meta mensal</p>
-                  <p className="text-xs font-bold text-slate-900">67% concluída</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Meta mensal</p>
+                  <p className="text-xs font-bold text-slate-100">67% concluída</p>
                 </div>
               </motion.div>
 
               <motion.div
-                animate={{ y: [0, -1.5, 0], rotate: [0, 0.55, 0] }}
-                transition={{ duration: 7.9, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
-                className="absolute right-8 top-2 hidden rounded-2xl border border-slate-200/80 bg-white px-3 py-2 shadow-[0_20px_35px_-25px_rgba(15,23,42,0.6)] lg:block"
+                animate={{ y: [0, -1.2, 0], rotate: [0, 0.45, 0] }}
+                transition={{ duration: 11.2, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
+                className="absolute -right-6 -top-8 hidden rounded-2xl border border-[#2A3B59] bg-[#0A152A] px-3 py-2 shadow-[0_22px_36px_-24px_rgba(2,6,23,0.72)] lg:block"
               >
-                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Insight IA</p>
-                <p className="text-xs font-semibold text-slate-800">Troca recomendada: -1.4% CET</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Insight IA</p>
+                <p className="text-xs font-semibold text-slate-100">Troca recomendada: -1.4% CET</p>
               </motion.div>
             </motion.div>
           </div>
