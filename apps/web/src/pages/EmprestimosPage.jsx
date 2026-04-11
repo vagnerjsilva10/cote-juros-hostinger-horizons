@@ -54,7 +54,7 @@ function EmprestimosPage() {
   const getBadgeStyle = (loanType, rate) => {
     if (rate < 2.0) return { icon: Star, text: 'Melhor taxa', color: 'bg-teal-100 text-teal-800 border-teal-200' };
     if (loanType === 'Negativado') return { icon: ShieldCheck, text: 'Sem consulta', color: 'bg-purple-100 text-purple-800 border-purple-200' };
-    if (loanType === 'Pessoal') return { icon: CheckCircle2, text: 'Aprova??o r?pida', color: 'bg-green-100 text-green-800 border-green-200' };
+    if (loanType === 'Pessoal') return { icon: CheckCircle2, text: 'Aprovação rápida', color: 'bg-green-100 text-green-800 border-green-200' };
     return { icon: Sparkles, text: 'Mais aprovado', color: 'bg-blue-100 text-blue-800 border-blue-200' };
   };
 
@@ -94,12 +94,12 @@ function EmprestimosPage() {
   return (
     <>
       <Helmet>
-        <title>Comparador de Empr?stimos - Cote Juros</title>
+        <title>Comparador de Empréstimos - Cote Juros</title>
         <meta name="description" content="Compare as melhores taxas de emprestimos e encontre o credito ideal." />
       </Helmet>
 
       <PageHero
-        title="Comparador de Empr?stimos"
+        title="Comparador de Empréstimos"
         subtitle="Filtre por taxas, prazos e valores. Encontre o credito aprovado para o seu perfil em segundos."
       />
 
@@ -124,7 +124,7 @@ function EmprestimosPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <Label className="font-semibold text-foreground">Tipo de Cr?dito</Label>
+                  <Label className="font-semibold text-foreground">Tipo de Crédito</Label>
                   <Select value={type} onValueChange={setType}>
                     <SelectTrigger className="bg-slate-50">
                       <SelectValue placeholder="Selecione..." />
@@ -153,7 +153,7 @@ function EmprestimosPage() {
                     {['Todos', 'Alto', 'Médio', 'Baixo'].map((s) => (
                       <div key={s} className="flex items-center space-x-2">
                         <RadioGroupItem value={s} id={`score-${s}`} />
-                        <Label htmlFor={`score-${s}`} className="font-medium cursor-pointer">{s === 'Todos' ? 'N?o sei' : s}</Label>
+                        <Label htmlFor={`score-${s}`} className="font-medium cursor-pointer">{s === 'Todos' ? 'Não sei' : s}</Label>
                       </div>
                     ))}
                   </RadioGroup>
@@ -216,7 +216,7 @@ function EmprestimosPage() {
                         <div className="mb-6">
                           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Taxa de juros</p>
                           <p className="text-4xl font-extrabold text-primary font-variant-tabular leading-none">{loan.monthlyRate}%</p>
-                          <p className="text-sm text-muted-foreground mt-1">ao m?s</p>
+                          <p className="text-sm text-muted-foreground mt-1">ao mês</p>
                         </div>
 
                         <div className="mb-6 rounded-xl border border-border bg-slate-50 p-4">
@@ -254,7 +254,7 @@ function EmprestimosPage() {
               <div className="text-center py-20 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
                 <Filter className="w-12 h-12 text-slate-300 mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-foreground">Nenhuma oferta encontrada</h3>
-                <p className="text-muted-foreground mt-2">Ajuste seus filtros para ver mais op??es.</p>
+                <p className="text-muted-foreground mt-2">Ajuste seus filtros para ver mais opções.</p>
                 <Button variant="outline" className="mt-6" onClick={resetFilters}>Limpar todos os filtros</Button>
               </div>
             )}

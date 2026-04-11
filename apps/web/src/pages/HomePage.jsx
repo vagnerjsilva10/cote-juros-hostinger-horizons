@@ -288,14 +288,14 @@ function HomePage() {
               </div>
               <h2 className="mb-6">Cote Finance AI</h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Plataforma de organizacao financeira com IA para entender entradas, saidas e padroes de gasto, acompanhar metas, dividas e investimentos e decidir melhor no dia a dia.
+                Plataforma de organização financeira com IA para entender entradas, saídas e padrões de gasto, acompanhar metas, dívidas e investimentos e decidir melhor no dia a dia.
               </p>
 
               <div className="space-y-3 mb-8">
                 {[
-                  'Dashboard financeiro com visao consolidada do mes',
-                  'Insights automaticos para identificar desperdicios e priorizar ajustes',
-                  'Acompanhamento de metas, dividas e carteira com contexto real'
+                  'Dashboard financeiro com visão consolidada do mês',
+                  'Insights automáticos para identificar desperdícios e priorizar ajustes',
+                  'Acompanhamento de metas, dívidas e carteira com contexto real'
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-2 text-muted-foreground font-medium">
                     <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />

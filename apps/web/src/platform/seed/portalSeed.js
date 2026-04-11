@@ -17,13 +17,13 @@ const normalizeLegacyText = (value = '') =>
     .replaceAll('Ã´', 'ô');
 
 export const categories = [
-  { id: 'cat-loans', code: 'loans', label: 'Emprestimos', kind: 'product' },
-  { id: 'cat-cards', code: 'cards', label: 'Cartoes de Credito', kind: 'product' },
+  { id: 'cat-loans', code: 'loans', label: 'Empréstimos', kind: 'product' },
+  { id: 'cat-cards', code: 'cards', label: 'Cartões de Crédito', kind: 'product' },
   { id: 'cat-financing', code: 'financing', label: 'Financiamento', kind: 'product' },
-  { id: 'cat-content-credit-score', code: 'score', label: 'Score de Credito', kind: 'content' },
-  { id: 'cat-content-personal-finance', code: 'personal-finance', label: 'Financas Pessoais', kind: 'content' },
-  { id: 'cat-seo-loans', code: 'seo-loans', label: 'SEO Emprestimos', kind: 'seo' },
-  { id: 'cat-seo-cards', code: 'seo-cards', label: 'SEO Cartoes', kind: 'seo' }
+  { id: 'cat-content-credit-score', code: 'score', label: 'Score de Crédito', kind: 'content' },
+  { id: 'cat-content-personal-finance', code: 'personal-finance', label: 'Finanças Pessoais', kind: 'content' },
+  { id: 'cat-seo-loans', code: 'seo-loans', label: 'SEO Empréstimos', kind: 'seo' },
+  { id: 'cat-seo-cards', code: 'seo-cards', label: 'SEO Cartões', kind: 'seo' }
 ];
 
 export const banks = banksData.map((bank) => ({
@@ -39,10 +39,10 @@ export const banks = banksData.map((bank) => ({
 }));
 
 export const products = [
-  { id: 'prod-loan-personal', name: 'Emprestimo Pessoal', type: 'loan', categoryId: 'cat-loans', description: 'Credito pessoal para diversos perfis.' },
-  { id: 'prod-loan-consigned', name: 'Emprestimo Consignado', type: 'loan', categoryId: 'cat-loans', description: 'Credito com desconto em folha.' },
-  { id: 'prod-loan-collateral', name: 'Emprestimo com Garantia', type: 'loan', categoryId: 'cat-loans', description: 'Credito com garantia de bem.' },
-  { id: 'prod-credit-card', name: 'Cartao de Credito', type: 'credit_card', categoryId: 'cat-cards', description: 'Comparacao de cartoes por perfil e beneficios.' },
+  { id: 'prod-loan-personal', name: 'Empréstimo Pessoal', type: 'loan', categoryId: 'cat-loans', description: 'Crédito pessoal para diversos perfis.' },
+  { id: 'prod-loan-consigned', name: 'Empréstimo Consignado', type: 'loan', categoryId: 'cat-loans', description: 'Crédito com desconto em folha.' },
+  { id: 'prod-loan-collateral', name: 'Empréstimo com Garantia', type: 'loan', categoryId: 'cat-loans', description: 'Crédito com garantia de bem.' },
+  { id: 'prod-credit-card', name: 'Cartão de Crédito', type: 'credit_card', categoryId: 'cat-cards', description: 'Comparação de cartões por perfil e benefícios.' },
   { id: 'prod-financing-auto', name: 'Financiamento de Veiculo', type: 'financing', categoryId: 'cat-financing', description: 'Financiamento de carros e motos.' },
   { id: 'prod-financing-real-estate', name: 'Financiamento Imobiliario', type: 'financing', categoryId: 'cat-financing', description: 'Financiamento de imoveis e refinanciamento.' }
 ];
@@ -126,9 +126,9 @@ export const seoPages = [
   {
     id: 'seo-emprestimo-negativado',
     path: '/emprestimo-para-negativado',
-    title: 'Emprestimo para Negativado: Compare e Consiga Credito - Cote Juros',
+    title: 'Empréstimo para Negativado: Compare e Consiga Crédito - Cote Juros',
     description: 'Conseguir emprestimo com nome sujo e possivel. Compare opcoes com garantia ou consignado e encontre as menores taxas.',
-    heading: 'Emprestimo para Negativado Seguro e Online',
+    heading: 'Empréstimo para Negativado Seguro e Online',
     content: [
       'Estar negativado nao significa que voce nao pode ter acesso a credito. Muitas instituicoes financeiras oferecem linhas especificas para quem esta com restricoes no CPF.',
       'As modalidades mais comuns para negativados sao o emprestimo consignado e o emprestimo com garantia de veiculo ou imovel.',
@@ -139,9 +139,9 @@ export const seoPages = [
   {
     id: 'seo-cartao-sem-anuidade',
     path: '/cartao-sem-anuidade',
-    title: 'Melhores Cartoes de Credito Sem Anuidade - Cote Juros',
-    description: 'Nao pague taxas! Compare e solicite os melhores cartoes de credito sem anuidade com limite alto e aprovacao na hora.',
-    heading: 'Cartoes Sem Anuidade para o seu Perfil',
+    title: 'Melhores Cartões de Crédito Sem Anuidade - Cote Juros',
+    description: 'Não pague taxas! Compare e solicite os melhores cartões de crédito sem anuidade com limite alto e aprovação na hora.',
+    heading: 'Cartões Sem Anuidade para o seu Perfil',
     content: [
       'Com a ascensao dos bancos digitais, diversas instituicoes oferecem cartoes totalmente isentos de tarifas e com beneficios relevantes.',
       'Alem da economia anual, muitos desses cartoes oferecem programas de cashback, descontos em parceiros e controle total via aplicativo.',
@@ -167,18 +167,18 @@ export const testimonials = [
     location: 'Sao Paulo, SP',
     product: 'Financiamento',
     avatar: 'https://ui-avatars.com/api/?name=Joao+Silva&background=0F62FE&color=fff',
-    quote: 'Economizei mais de R$ 500 por mes no meu financiamento comparando as taxas aqui. O processo foi rapido e transparente.',
-    result: '-R$ 527/mes',
+    quote: 'Economizei mais de R$ 500 por mês no meu financiamento comparando as taxas aqui. O processo foi rápido e transparente.',
+    result: '-R$ 527/mês',
     badge: 'Perfil verificado'
   },
   {
     id: 't-maria',
     name: 'Maria Santos',
     location: 'Rio de Janeiro, RJ',
-    product: 'Cartao de Credito',
+    product: 'Cartão de Crédito',
     avatar: 'https://ui-avatars.com/api/?name=Maria+Santos&background=7C3AED&color=fff',
     quote: 'Encontrei um cartao sem anuidade com otimo limite e cashback. Antes eu pagava taxas abusivas sem saber das opcoes.',
-    result: '+R$ 230/mes cashback',
+    result: '+R$ 230/mês cashback',
     badge: 'Oferta aprovada'
   },
   {
@@ -188,7 +188,7 @@ export const testimonials = [
     product: 'Emprestimo Pessoal',
     avatar: 'https://ui-avatars.com/api/?name=Carlos+Oliveira&background=14B8A6&color=fff',
     quote: 'Estava negativado e achei que nao conseguiria credito. A plataforma me mostrou opcoes reais que couberam no meu bolso.',
-    result: 'Aprovacao em 48h',
+    result: 'Aprovação em 48h',
     badge: 'Caso concluido'
   }
 ];

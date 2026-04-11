@@ -56,7 +56,7 @@ function CartoesPage() {
     const destinationUrl = 'https://finance.cotejuros.com.br';
 
     await trackingService.trackOfferClick({
-      sourcePage: '/cart?es-de-credito',
+      sourcePage: '/cartoes-de-credito',
       offerId: card.id,
       target: destinationUrl,
       productType: 'credit_card',
@@ -67,7 +67,7 @@ function CartoesPage() {
       partnerId: card.bankId,
       offerId: card.id,
       destinationUrl,
-      sourcePage: '/cart?es-de-credito',
+      sourcePage: '/cartoes-de-credito',
       productType: 'credit_card'
     });
 
@@ -78,13 +78,13 @@ function CartoesPage() {
   return (
     <>
       <Helmet>
-        <title>Comparador de Cart?es de Cr?dito - Cote Juros</title>
-        <meta name="description" content="Encontre o cart?o de credito perfeito: sem anuidade, com milhas ou cashback." />
+        <title>Comparador de Cartões de Crédito - Cote Juros</title>
+        <meta name="description" content="Encontre o cartão de crédito perfeito: sem anuidade, com milhas ou cashback." />
       </Helmet>
 
       <PageHero
-        title="Cart?es de Cr?dito"
-        subtitle="Milhas, cashback ou anuidade zero? Compare e escolha o cart?o ideal para o seu bolso."
+        title="Cartões de Crédito"
+        subtitle="Milhas, cashback ou anuidade zero? Compare e escolha o cartão ideal para o seu bolso."
       />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -104,7 +104,7 @@ function CartoesPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="font-semibold text-foreground">Categoria do cart?o</Label>
+                  <Label className="font-semibold text-foreground">Categoria do cartão</Label>
                   <div className="space-y-3">
                     {['Premium', 'Intermediário', 'Básico'].map((cat) => (
                       <div key={cat} className="flex items-center space-x-3">
@@ -121,7 +121,7 @@ function CartoesPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="font-semibold text-foreground">Benef?cios desejados</Label>
+                  <Label className="font-semibold text-foreground">Benefícios desejados</Label>
                   <div className="space-y-3">
                     {['Cashback', 'Milhas', 'VIP'].map((ben) => (
                       <div key={ben} className="flex items-center space-x-3">
@@ -143,7 +143,7 @@ function CartoesPage() {
           <div className="lg:col-span-9">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
               <p className="text-muted-foreground font-medium">
-                Mostrando <span className="text-foreground font-bold">{filteredCards.length}</span> cart?es
+                Mostrando <span className="text-foreground font-bold">{filteredCards.length}</span> cartões
               </p>
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <Label className="whitespace-nowrap font-medium">Ordenar:</Label>
@@ -228,7 +228,7 @@ function CartoesPage() {
             {filteredCards.length === 0 && (
               <div className="text-center py-20 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
                 <CreditCard className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-foreground">Nenhum cart?o encontrado</h3>
+                <h3 className="text-xl font-bold text-foreground">Nenhum cartão encontrado</h3>
                 <p className="text-muted-foreground mt-2">Tente desmarcar alguns filtros de beneficios.</p>
               </div>
             )}

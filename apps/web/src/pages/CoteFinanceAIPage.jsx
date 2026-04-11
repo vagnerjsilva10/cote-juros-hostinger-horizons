@@ -42,13 +42,13 @@ function CoteFinanceAIPage() {
   const audienceCards = [
     {
       icon: Wallet,
-      title: 'Para quem quer organizar o mes',
-      description: 'Centralize entradas e saidas para enxergar o fluxo financeiro com clareza.'
+      title: 'Para quem quer organizar o mês',
+      description: 'Centralize entradas e saídas para enxergar o fluxo financeiro com clareza.'
     },
     {
       icon: Brain,
-      title: 'Para quem busca decisoes com contexto',
-      description: 'Receba analises sobre padroes de gasto e prioridades de ajuste.'
+      title: 'Para quem busca decisões com contexto',
+      description: 'Receba análises sobre padrões de gasto e prioridades de ajuste.'
     },
     {
       icon: ShieldCheck,
@@ -61,60 +61,60 @@ function CoteFinanceAIPage() {
     {
       icon: ChartColumnIncreasing,
       title: 'Dashboard financeiro',
-      description: 'Visao consolidada de entradas, saidas, margem e evolucao do periodo.'
+      description: 'Visão consolidada de entradas, saídas, margem e evolução do período.'
     },
     {
       icon: CircleDollarSign,
       title: 'Controle de receitas e despesas',
-      description: 'Lancamentos por categoria para identificar para onde o dinheiro esta indo.'
+      description: 'Lançamentos por categoria para identificar para onde o dinheiro está indo.'
     },
     {
       icon: Goal,
       title: 'Metas financeiras',
-      description: 'Acompanhe objetivos e progresso com contexto do seu mes.'
+      description: 'Acompanhe objetivos e progresso com contexto do seu mês.'
     },
     {
       icon: Landmark,
-      title: 'Acompanhamento de dividas',
+      title: 'Acompanhamento de dívidas',
       description: 'Monitore compromissos financeiros para priorizar ajustes com impacto real.'
     },
     {
       icon: Wallet,
       title: 'Investimentos e carteira',
-      description: 'Tenha visibilidade do patrimonio e da distribuicao dos seus recursos.'
+      description: 'Tenha visibilidade do patrimônio e da distribuição dos seus recursos.'
     },
     {
       icon: MessageCircleMore,
       title: 'Insights e alertas',
-      description: 'Receba direcionamentos automaticos e, nos planos elegiveis, alertas via WhatsApp.'
+      description: 'Receba direcionamentos automáticos e, nos planos elegíveis, alertas via WhatsApp.'
     }
   ];
 
   const steps = [
     {
       step: '1',
-      title: 'Organize suas informacoes financeiras',
-      description: 'Cadastre movimentacoes e tenha tudo em um unico lugar.'
+      title: 'Organize suas informações financeiras',
+      description: 'Cadastre movimentações e tenha tudo em um único lugar.'
     },
     {
       step: '2',
       title: 'Entenda seu comportamento financeiro',
-      description: 'A plataforma identifica padroes de gasto e pontos de atencao.'
+      description: 'A plataforma identifica padrões de gasto e pontos de atenção.'
     },
     {
       step: '3',
       title: 'Aja com plano claro',
-      description: 'Priorize ajustes e acompanhe sua evolucao mes a mes.'
+      description: 'Priorize ajustes e acompanhe sua evolução mês a mês.'
     }
   ];
 
   return (
     <>
       <Helmet>
-        <title>Cote Finance AI - Controle Financeiro com Inteligencia</title>
+        <title>Cote Finance AI - Controle Financeiro com Inteligência</title>
         <meta
           name="description"
-          content="Organize entradas e saidas, acompanhe metas, dividas e investimentos com o Cote Finance AI. Tenha clareza para decidir melhor no seu financeiro."
+          content="Organize entradas e saídas, acompanhe metas, dívidas e investimentos com o Cote Finance AI. Tenha clareza para decidir melhor no seu financeiro."
         />
       </Helmet>
 
@@ -128,8 +128,8 @@ function CoteFinanceAIPage() {
               </Badge>
               <h1 className="text-white mb-6">Visibilidade financeira para decidir melhor</h1>
               <p className="text-xl text-white/90 mb-8 max-w-xl">
-                O Cote Finance AI ajuda voce a organizar sua vida financeira, entender padroes de gastos e agir com mais
-                confianca no dia a dia. Menos achismo, mais clareza sobre o seu dinheiro.
+                O Cote Finance AI ajuda você a organizar sua vida financeira, entender padrões de gastos e agir com mais
+                confiança no dia a dia. Menos achismo, mais clareza sobre o seu dinheiro.
               </p>
               <Button
                 size="lg"
@@ -150,8 +150,8 @@ function CoteFinanceAIPage() {
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2>Para quem o Cote Finance AI e indicado</h2>
-            <p className="text-muted-foreground mt-4 text-lg">Um assistente financeiro para quem quer controle real do mes.</p>
+            <h2>Para quem o Cote Finance AI é indicado</h2>
+            <p className="text-muted-foreground mt-4 text-lg">Um assistente financeiro para quem quer controle real do mês.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {audienceCards.map((item, index) => (
@@ -172,8 +172,8 @@ function CoteFinanceAIPage() {
       <section className="py-24 bg-card border-y border-border">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2>O que voce encontra na plataforma</h2>
-            <p className="text-muted-foreground mt-4 text-lg">Modulos praticos para acompanhar e melhorar sua vida financeira.</p>
+            <h2>O que você encontra na plataforma</h2>
+            <p className="text-muted-foreground mt-4 text-lg">Módulos práticos para acompanhar e melhorar sua vida financeira.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featureCards.map((feature, index) => (
@@ -210,8 +210,8 @@ function CoteFinanceAIPage() {
 
           <div className="mt-16 p-6 rounded-2xl border border-border bg-card">
             <p className="text-muted-foreground text-sm leading-relaxed">
-              O Cote Finance AI e uma plataforma de organizacao financeira. Esta pagina nao promete aprovacao de credito,
-              previsao de score ou correspondencia automatica com bancos.
+              O Cote Finance AI é uma plataforma de organização financeira. Esta página não promete aprovação de crédito,
+              previsão de score ou correspondência automática com bancos.
             </p>
           </div>
 
