@@ -1,4 +1,4 @@
-﻿import { portalRepository } from '@/platform/repositories/portalRepository.js';
+import { portalRepository } from '@/platform/repositories/portalRepository.js';
 
 const wait = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
@@ -79,7 +79,7 @@ const normalizeArticleRecord = (article = {}) => ({
   image:
     article.image ||
     'https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=1200&q=80',
-  category: article.category || article.categoryName || article.category?.name || 'Finanças Pessoais'
+  category: article.category || article.categoryName || article.category?.name || 'Finan�as Pessoais'
 });
 
 export const portalApi = {
@@ -270,5 +270,120 @@ export const portalApi = {
     } catch {
       return null;
     }
+  },
+
+  async getAdminOffers(filters) {
+    await wait();
+    return portalRepository.listAdminOffers(filters);
+  },
+
+  async saveAdminOffer(payload) {
+    await wait();
+    return portalRepository.saveAdminOffer(payload);
+  },
+
+  async toggleAdminOfferStatus(id) {
+    await wait();
+    return portalRepository.toggleOfferStatus(id);
+  },
+
+  async getAdminBanks(filters) {
+    await wait();
+    return portalRepository.listAdminBanks(filters);
+  },
+
+  async saveAdminBank(payload) {
+    await wait();
+    return portalRepository.saveAdminBank(payload);
+  },
+
+  async toggleAdminBankStatus(id) {
+    await wait();
+    return portalRepository.toggleBankStatus(id);
+  },
+
+  async getAdminPartners(filters) {
+    await wait();
+    return portalRepository.listAdminPartners(filters);
+  },
+
+  async saveAdminPartner(payload) {
+    await wait();
+    return portalRepository.saveAdminPartner(payload);
+  },
+
+  async toggleAdminPartnerStatus(id) {
+    await wait();
+    return portalRepository.togglePartnerStatus(id);
+  },
+
+  async getAdminArticles(filters) {
+    await wait();
+    return portalRepository.listAdminArticles(filters);
+  },
+
+  async saveAdminArticle(payload) {
+    await wait();
+    return portalRepository.saveAdminArticle(payload);
+  },
+
+  async toggleAdminArticlePublish(id) {
+    await wait();
+    return portalRepository.toggleArticlePublish(id);
+  },
+
+  async getAdminSeoPages(filters) {
+    await wait();
+    return portalRepository.listAdminSeoPages(filters);
+  },
+
+  async saveAdminSeoPage(payload) {
+    await wait();
+    return portalRepository.saveAdminSeoPage(payload);
+  },
+
+  async toggleAdminSeoPublish(id) {
+    await wait();
+    return portalRepository.toggleSeoPagePublish(id);
+  },
+
+  async getAdminLeads(filters) {
+    await wait();
+    return portalRepository.listSimulationLeads(filters);
+  },
+
+  async updateAdminLeadStatus(id, status) {
+    await wait();
+    return portalRepository.updateSimulationLeadStatus(id, status);
+  },
+
+  async getAdminTestimonials(filters) {
+    await wait();
+    return portalRepository.listAdminTestimonials(filters);
+  },
+
+  async saveAdminTestimonial(payload) {
+    await wait();
+    return portalRepository.saveAdminTestimonial(payload);
+  },
+
+  async toggleAdminTestimonialStatus(id) {
+    await wait();
+    return portalRepository.toggleTestimonialStatus(id);
+  },
+
+  async getAdminSettings() {
+    await wait();
+    return portalRepository.getSettings();
+  },
+
+  async updateAdminSettings(payload) {
+    await wait();
+    return portalRepository.updateSettings(payload);
+  },
+
+  async getAdminAnalyticsOverview() {
+    await wait();
+    return portalRepository.getAnalyticsOverview();
   }
 };
