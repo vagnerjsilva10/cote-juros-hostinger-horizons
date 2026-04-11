@@ -9,14 +9,16 @@ export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
 
   const icon = (
     <span
-      className={cn('inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50')}
+      className={cn(
+        'inline-flex h-[52px] w-[52px] items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 shadow-[0_1px_2px_rgba(15,23,42,0.04)]'
+      )}
       aria-hidden="true"
     >
-      <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 20 20" className="h-6 w-6" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M3 13.5L7.1 9.7L10.3 11.8L15.2 6.9M15.2 6.9V9.6M15.2 6.9H12.5"
-          stroke={isMonochrome ? '#334155' : '#5B8EF7'}
-          strokeWidth="2"
+          stroke={isMonochrome ? '#334155' : '#2563EB'}
+          strokeWidth="2.2"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
@@ -36,8 +38,8 @@ export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
     <span className={cn('inline-flex items-center gap-3', className)} aria-label="Cote Juros">
       {icon}
       <span className="flex flex-col leading-none">
-        <span className={cn('text-[20px] font-semibold tracking-[-0.03em]', titleColor)}>Cote Juros</span>
-        <span className={cn('mt-1 text-[11px] font-medium tracking-[-0.01em]', subtitleColor)}>By Cote</span>
+        <span className={cn('text-[22px] font-bold tracking-[-0.03em]', titleColor)}>Cote Juros</span>
+        <span className={cn('mt-1 text-[11px] font-medium tracking-[-0.01em]', subtitleColor)}>By Cote Finance</span>
       </span>
     </span>
   );
