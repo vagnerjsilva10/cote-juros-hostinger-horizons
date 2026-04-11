@@ -398,8 +398,8 @@ function HomePage() {
 
       <section className="hero-premium-clean relative overflow-hidden border-b border-slate-200/60">
         <div className="pointer-events-none absolute inset-0 hero-premium-mist" />
-        <div className="pointer-events-none absolute -left-24 top-8 h-64 w-64 rounded-full bg-sky-200/40 blur-3xl" />
-        <div className="pointer-events-none absolute -right-16 top-0 h-72 w-72 rounded-full bg-indigo-100/40 blur-3xl" />
+        <div className="pointer-events-none absolute -left-24 top-8 h-64 w-64 rounded-full bg-sky-200/35 blur-3xl" />
+        <div className="pointer-events-none absolute -right-16 top-0 h-72 w-72 rounded-full bg-indigo-100/35 blur-3xl" />
         <div className="pointer-events-none absolute bottom-[-90px] left-1/2 h-56 w-[540px] -translate-x-1/2 rounded-full bg-white/70 blur-3xl" />
 
         <div className="page-shell relative py-14 md:py-20 lg:py-24">
@@ -425,7 +425,7 @@ function HomePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.35, ease: 'easeOut' }}
-              className="hero-simulation-card mx-auto w-full max-w-[560px] rounded-[24px] border border-slate-200/80 bg-white/95 p-6 shadow-[0_30px_90px_rgba(15,23,42,0.09)] backdrop-blur-sm sm:p-8"
+              className="hero-simulation-card mx-auto mt-6 w-full max-w-[476px] rounded-[22px] border border-slate-200/80 bg-white/95 p-5 shadow-[0_24px_64px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:p-6 lg:mt-10"
             >
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Simulador principal</p>
               <form
@@ -437,7 +437,7 @@ function HomePage() {
                   <div className="relative">
                     <Input
                       placeholder="R$ 2.000,00"
-                      className="h-12 rounded-xl border-slate-200 bg-white text-base font-medium text-slate-800 shadow-none focus-visible:ring-2 focus-visible:ring-sky-200"
+                      className="h-11 rounded-xl border-slate-200 bg-white text-[15px] font-medium text-slate-800 shadow-none focus-visible:ring-2 focus-visible:ring-sky-200"
                       value={heroValue}
                       onChange={(event) => setHeroValue(formatCurrency(event.target.value))}
                     />
@@ -449,7 +449,7 @@ function HomePage() {
                   <select
                     value={heroInstallments}
                     onChange={(event) => setHeroInstallments(Number(event.target.value))}
-                    className="h-12 w-full rounded-xl border border-slate-200 bg-white px-3 text-base font-medium text-slate-800 outline-none transition-all focus:border-sky-300 focus:ring-2 focus:ring-sky-100"
+                    className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-[15px] font-medium text-slate-800 outline-none transition-all focus:border-sky-300 focus:ring-2 focus:ring-sky-100"
                   >
                     {INSTALLMENT_OPTIONS.map((item) => (
                       <option key={item.value} value={item.value}>
@@ -462,7 +462,7 @@ function HomePage() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="h-12 w-full rounded-xl bg-[#2563EB] text-base font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_20px_rgba(37,99,235,0.28)] transition-all duration-200 hover:bg-[#1D4ED8] hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_10px_24px_rgba(29,78,216,0.32)]"
+                  className="h-11 w-full rounded-xl bg-[#2563EB] text-[15px] font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_20px_rgba(37,99,235,0.26)] transition-all duration-200 hover:bg-[#1D4ED8] hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_10px_24px_rgba(29,78,216,0.3)]"
                 >
                   Simular agora
                 </Button>
@@ -473,7 +473,7 @@ function HomePage() {
                 </p>
               </form>
 
-              <div className="mt-6 grid gap-2.5 border-t border-slate-100 pt-5 sm:grid-cols-3">
+              <div className="mt-5 grid gap-2 border-t border-slate-100 pt-4 sm:grid-cols-3">
                 {[
                   'Simulação gratuita',
                   'Comparação em segundos',
