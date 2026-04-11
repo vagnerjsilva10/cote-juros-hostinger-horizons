@@ -193,7 +193,7 @@ function CartoesPage() {
                       </div>
 
                       <div className="mb-5 rounded-xl border border-border bg-slate-50 p-4">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Beneficio principal</p>
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Benefício principal</p>
                         <p className="text-sm font-semibold text-foreground">{keyBenefit}</p>
                       </div>
 
@@ -229,7 +229,7 @@ function CartoesPage() {
               <div className="text-center py-20 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
                 <CreditCard className="w-12 h-12 text-slate-300 mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-foreground">Nenhum cartão encontrado</h3>
-                <p className="text-muted-foreground mt-2">Tente desmarcar alguns filtros de beneficios.</p>
+                <p className="text-muted-foreground mt-2">Tente desmarcar alguns filtros de benefícios.</p>
               </div>
             )}
           </div>

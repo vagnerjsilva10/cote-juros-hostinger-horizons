@@ -1,4 +1,4 @@
-import { portalRepository } from '@/platform/repositories/portalRepository.js';
+﻿import { portalRepository } from '@/platform/repositories/portalRepository.js';
 
 const wait = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
@@ -54,9 +54,9 @@ const normalizeOfferRecord = (offer = {}) => {
   if (productType === 'credit_card') {
     base.annualFee = base.annualFee ?? 0;
     base.maxLimit = base.maxLimit ?? (base.maxValue != null ? Number(base.maxValue) : undefined);
-    base.image = base.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(bankName || 'Cartao')}&background=0f172a&color=fff&size=512`;
-    base.benefits = base.benefits ?? ['Limite personalizado', 'Gestao digital', 'Pagamento por aproximacao'];
-    base.category = base.category || 'Intermediario';
+    base.image = base.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(bankName || 'Cartão')}&background=0f172a&color=fff&size=512`;
+    base.benefits = base.benefits ?? ['Limite personalizado', 'Gestão digital', 'Pagamento por aproximação'];
+    base.category = base.category || 'Intermediário';
   }
 
   if (productType === 'financing') {
@@ -79,7 +79,7 @@ const normalizeArticleRecord = (article = {}) => ({
   image:
     article.image ||
     'https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=1200&q=80',
-  category: article.category || article.categoryName || article.category?.name || 'Finan�as Pessoais'
+  category: article.category || article.categoryName || article.category?.name || 'Finanças Pessoais'
 });
 
 export const portalApi = {
@@ -387,3 +387,4 @@ export const portalApi = {
     return portalRepository.getAnalyticsOverview();
   }
 };
+

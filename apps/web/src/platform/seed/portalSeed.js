@@ -4,17 +4,7 @@ import { creditCardsData } from '@/data/creditCardsData.js';
 import { financingData } from '@/data/financingData.js';
 import { articlesData } from '@/data/articlesData.js';
 
-const normalizeLegacyText = (value = '') =>
-  value
-    .replaceAll('Ã©', 'é')
-    .replaceAll('Ã£', 'ã')
-    .replaceAll('Ã¡', 'á')
-    .replaceAll('Ãª', 'ê')
-    .replaceAll('Ã³', 'ó')
-    .replaceAll('Ã§', 'ç')
-    .replaceAll('Ã­', 'í')
-    .replaceAll('Ãº', 'ú')
-    .replaceAll('Ã´', 'ô');
+const normalizeLegacyText = (value = '') => String(value);
 
 export const categories = [
   { id: 'cat-loans', code: 'loans', label: 'Empréstimos', kind: 'product' },
@@ -43,8 +33,8 @@ export const products = [
   { id: 'prod-loan-consigned', name: 'Empréstimo Consignado', type: 'loan', categoryId: 'cat-loans', description: 'Crédito com desconto em folha.' },
   { id: 'prod-loan-collateral', name: 'Empréstimo com Garantia', type: 'loan', categoryId: 'cat-loans', description: 'Crédito com garantia de bem.' },
   { id: 'prod-credit-card', name: 'Cartão de Crédito', type: 'credit_card', categoryId: 'cat-cards', description: 'Comparação de cartões por perfil e benefícios.' },
-  { id: 'prod-financing-auto', name: 'Financiamento de Veiculo', type: 'financing', categoryId: 'cat-financing', description: 'Financiamento de carros e motos.' },
-  { id: 'prod-financing-real-estate', name: 'Financiamento Imobiliario', type: 'financing', categoryId: 'cat-financing', description: 'Financiamento de imoveis e refinanciamento.' }
+  { id: 'prod-financing-auto', name: 'Financiamento de Veículo', type: 'financing', categoryId: 'cat-financing', description: 'Financiamento de carros e motos.' },
+  { id: 'prod-financing-real-estate', name: 'Financiamento Imobiliário', type: 'financing', categoryId: 'cat-financing', description: 'Financiamento de imóveis e refinanciamento.' }
 ];
 
 const resolveLoanProductId = (type) => {
@@ -54,7 +44,7 @@ const resolveLoanProductId = (type) => {
 };
 
 const resolveFinancingProductId = (type) => {
-  if (type === 'Imobiliario' || type === 'Refinanciamento') return 'prod-financing-real-estate';
+  if (type === 'Imobiliário' || type === 'Refinanciamento') return 'prod-financing-real-estate';
   return 'prod-financing-auto';
 };
 
@@ -127,12 +117,12 @@ export const seoPages = [
     id: 'seo-emprestimo-negativado',
     path: '/emprestimo-para-negativado',
     title: 'Empréstimo para Negativado: Compare e Consiga Crédito - Cote Juros',
-    description: 'Conseguir emprestimo com nome sujo e possivel. Compare opcoes com garantia ou consignado e encontre as menores taxas.',
+    description: 'Conseguir empréstimo com nome sujo é possível. Compare opções com garantia ou consignado e encontre as menores taxas.',
     heading: 'Empréstimo para Negativado Seguro e Online',
     content: [
-      'Estar negativado nao significa que voce nao pode ter acesso a credito. Muitas instituicoes financeiras oferecem linhas especificas para quem esta com restricoes no CPF.',
-      'As modalidades mais comuns para negativados sao o emprestimo consignado e o emprestimo com garantia de veiculo ou imovel.',
-      'Antes de fechar negocio, tome cuidado com fraudes: nenhuma instituicao financeira seria cobra valores antecipados para liberar credito.'
+      'Estar negativado não significa que você não pode ter acesso a crédito. Muitas instituições financeiras oferecem linhas específicas para quem está com restrições no CPF.',
+      'As modalidades mais comuns para negativados são o empréstimo consignado e o empréstimo com garantia de veículo ou imóvel.',
+      'Antes de fechar negócio, tome cuidado com fraudes: nenhuma instituição financeira séria cobra valores antecipados para liberar crédito.'
     ],
     type: 'loans'
   },
@@ -143,9 +133,9 @@ export const seoPages = [
     description: 'Não pague taxas! Compare e solicite os melhores cartões de crédito sem anuidade com limite alto e aprovação na hora.',
     heading: 'Cartões Sem Anuidade para o seu Perfil',
     content: [
-      'Com a ascensao dos bancos digitais, diversas instituicoes oferecem cartoes totalmente isentos de tarifas e com beneficios relevantes.',
-      'Alem da economia anual, muitos desses cartoes oferecem programas de cashback, descontos em parceiros e controle total via aplicativo.',
-      'Para escolher o melhor, avalie quais beneficios fazem sentido para sua rotina e compare o custo efetivo de cada opcao.'
+      'Com a ascensão dos bancos digitais, diversas instituições oferecem cartões totalmente isentos de tarifas e com benefícios relevantes.',
+      'Além da economia anual, muitos desses cartões oferecem programas de cashback, descontos em parceiros e controle total via aplicativo.',
+      'Para escolher o melhor, avalie quais benefícios fazem sentido para sua rotina e compare o custo efetivo de cada opção.'
     ],
     type: 'cards'
   }
@@ -163,10 +153,10 @@ export const seoFallbackPaths = [
 export const testimonials = [
   {
     id: 't-joao',
-    name: 'Joao Silva',
-    location: 'Sao Paulo, SP',
+    name: 'João Silva',
+    location: 'São Paulo, SP',
     product: 'Financiamento',
-    avatar: 'https://ui-avatars.com/api/?name=Joao+Silva&background=0F62FE&color=fff',
+    avatar: 'https://ui-avatars.com/api/?name=João+Silva&background=0F62FE&color=fff',
     quote: 'Economizei mais de R$ 500 por mês no meu financiamento comparando as taxas aqui. O processo foi rápido e transparente.',
     result: '-R$ 527/mês',
     badge: 'Perfil verificado'
@@ -177,7 +167,7 @@ export const testimonials = [
     location: 'Rio de Janeiro, RJ',
     product: 'Cartão de Crédito',
     avatar: 'https://ui-avatars.com/api/?name=Maria+Santos&background=7C3AED&color=fff',
-    quote: 'Encontrei um cartao sem anuidade com otimo limite e cashback. Antes eu pagava taxas abusivas sem saber das opcoes.',
+    quote: 'Encontrei um cartão sem anuidade com ótimo limite e cashback. Antes eu pagava taxas abusivas sem saber das opções.',
     result: '+R$ 230/mês cashback',
     badge: 'Oferta aprovada'
   },
@@ -185,11 +175,11 @@ export const testimonials = [
     id: 't-carlos',
     name: 'Carlos Oliveira',
     location: 'Belo Horizonte, MG',
-    product: 'Emprestimo Pessoal',
+    product: 'Empréstimo Pessoal',
     avatar: 'https://ui-avatars.com/api/?name=Carlos+Oliveira&background=14B8A6&color=fff',
-    quote: 'Estava negativado e achei que nao conseguiria credito. A plataforma me mostrou opcoes reais que couberam no meu bolso.',
+    quote: 'Estava negativado e achei que não conseguiria crédito. A plataforma me mostrou opções reais que couberam no meu bolso.',
     result: 'Aprovação em 48h',
-    badge: 'Caso concluido'
+    badge: 'Caso concluído'
   }
 ];
 
