@@ -398,11 +398,11 @@ function HomePage() {
 
       <section className="hero-premium-clean relative overflow-hidden border-b border-slate-200/60">
         <div className="pointer-events-none absolute inset-0 hero-premium-mist" />
-        <div className="pointer-events-none absolute -left-24 top-8 h-64 w-64 rounded-full bg-sky-200/35 blur-3xl" />
-        <div className="pointer-events-none absolute -right-16 top-0 h-72 w-72 rounded-full bg-indigo-100/35 blur-3xl" />
-        <div className="pointer-events-none absolute bottom-[-90px] left-1/2 h-56 w-[540px] -translate-x-1/2 rounded-full bg-white/70 blur-3xl" />
+        <div className="pointer-events-none absolute -left-24 top-6 h-64 w-64 rounded-full bg-sky-300/30 blur-3xl" />
+        <div className="pointer-events-none absolute -right-16 top-0 h-72 w-72 rounded-full bg-indigo-200/30 blur-3xl" />
+        <div className="pointer-events-none absolute bottom-[-90px] left-1/2 h-56 w-[540px] -translate-x-1/2 rounded-full bg-white/65 blur-3xl" />
 
-        <div className="page-shell relative py-14 md:py-20 lg:py-24">
+        <div className="page-shell relative pb-16 pt-8 md:pb-20 md:pt-12 lg:pb-24 lg:pt-14">
           <motion.div {...animationIn} id="hero-layout" className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-12">
             <div className="max-w-[580px] text-center lg:text-left">
               <span className="inline-flex items-center rounded-full border border-sky-200/80 bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-700 transition-all duration-200">
@@ -425,19 +425,19 @@ function HomePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.35, ease: 'easeOut' }}
-              className="hero-simulation-card mx-auto mt-6 w-full max-w-[476px] rounded-[22px] border border-slate-200/80 bg-white/95 p-5 shadow-[0_24px_64px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:p-6 lg:mt-10"
+              className="hero-simulation-card mx-auto mt-8 w-full max-w-[460px] rounded-[20px] border border-slate-200/80 bg-white/95 p-4 shadow-[0_20px_56px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:p-5 lg:mt-12"
             >
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Simulador principal</p>
               <form
                 onSubmit={handleHeroSubmit}
-                className="mt-4 space-y-4"
+                className="mt-3.5 space-y-3.5"
               >
                 <label className="block space-y-2">
                   <span className="text-sm font-medium text-slate-700">Quanto você deseja?</span>
                   <div className="relative">
                     <Input
                       placeholder="R$ 2.000,00"
-                      className="h-11 rounded-xl border-slate-200 bg-white text-[15px] font-medium text-slate-800 shadow-none focus-visible:ring-2 focus-visible:ring-sky-200"
+                      className="h-10 rounded-xl border-slate-200 bg-white text-[14px] font-medium text-slate-800 shadow-none focus-visible:ring-2 focus-visible:ring-sky-200"
                       value={heroValue}
                       onChange={(event) => setHeroValue(formatCurrency(event.target.value))}
                     />
@@ -449,7 +449,7 @@ function HomePage() {
                   <select
                     value={heroInstallments}
                     onChange={(event) => setHeroInstallments(Number(event.target.value))}
-                    className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-[15px] font-medium text-slate-800 outline-none transition-all focus:border-sky-300 focus:ring-2 focus:ring-sky-100"
+                    className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-[14px] font-medium text-slate-800 outline-none transition-all focus:border-sky-300 focus:ring-2 focus:ring-sky-100"
                   >
                     {INSTALLMENT_OPTIONS.map((item) => (
                       <option key={item.value} value={item.value}>
@@ -462,7 +462,7 @@ function HomePage() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="h-11 w-full rounded-xl bg-[#2563EB] text-[15px] font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_20px_rgba(37,99,235,0.26)] transition-all duration-200 hover:bg-[#1D4ED8] hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_10px_24px_rgba(29,78,216,0.3)]"
+                  className="h-10 w-full rounded-xl bg-[#2563EB] text-[14px] font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_20px_rgba(37,99,235,0.26)] transition-all duration-200 hover:bg-[#1D4ED8] hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_10px_24px_rgba(29,78,216,0.3)]"
                 >
                   Simular agora
                 </Button>
@@ -473,20 +473,20 @@ function HomePage() {
                 </p>
               </form>
 
-              <div className="mt-5 grid gap-2 border-t border-slate-100 pt-4 sm:grid-cols-3">
+              <div className="mt-4 grid gap-2 border-t border-slate-100 pt-3.5 sm:grid-cols-3">
                 {[
                   'Simulação gratuita',
                   'Comparação em segundos',
                   'Múltiplas instituições'
                 ].map((item) => (
-                  <div key={item} className="inline-flex items-center gap-2 text-sm text-slate-600 transition-all duration-200">
+                  <div key={item} className="inline-flex items-center gap-1.5 text-[13px] text-slate-600 transition-all duration-200">
                     <CheckCircle2 className="h-4 w-4 text-[#14B8A6]" />
                     <span>{item}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-4 rounded-xl border border-sky-100 bg-sky-50/65 px-3.5 py-2.5 text-sm font-medium text-sky-900">
+              <div className="mt-3.5 rounded-xl border border-sky-100 bg-sky-50/70 px-3 py-2 text-[13px] font-medium text-sky-900">
                 {`${heroInstallments}x de ${formatBrl(estimatedInstallment)}`}
               </div>
             </motion.div>

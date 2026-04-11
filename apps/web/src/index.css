@@ -220,14 +220,14 @@
 
   .hero-premium-clean {
     background:
-      radial-gradient(circle at 15% 20%, #e8eeff 0%, #f5f7fb 40%, #ffffff 70%),
-      radial-gradient(circle at 82% 10%, rgba(37, 99, 235, 0.07), transparent 40%);
+      radial-gradient(circle at 15% 20%, #dfe9ff 0%, #edf3ff 34%, #f7f9fd 58%, #ffffff 74%),
+      radial-gradient(circle at 84% 8%, rgba(37, 99, 235, 0.1), transparent 42%);
   }
 
   .hero-premium-mist {
     background:
-      radial-gradient(circle at 24% 14%, rgba(59, 130, 246, 0.07), transparent 45%),
-      radial-gradient(circle at 64% 84%, rgba(20, 184, 166, 0.04), transparent 48%);
+      radial-gradient(circle at 24% 14%, rgba(59, 130, 246, 0.1), transparent 46%),
+      radial-gradient(circle at 64% 84%, rgba(20, 184, 166, 0.06), transparent 50%);
   }
 
   .hero-premium-dark {

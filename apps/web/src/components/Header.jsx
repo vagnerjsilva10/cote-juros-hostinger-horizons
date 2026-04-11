@@ -28,7 +28,7 @@ function Header() {
     <header
       className={`sticky top-0 z-50 w-full backdrop-blur-xl transition-colors ${
         isHome
-          ? 'border-b border-slate-200/70 bg-gradient-to-b from-white/95 via-[#f7faff]/90 to-[#eef4ff]/75'
+          ? 'border-b border-slate-200/80 bg-gradient-to-b from-[#eef4ff]/95 via-[#e8f0ff]/92 to-[#f4f8ff]/88'
           : 'border-b border-border bg-white/95'
       }`}
     >
