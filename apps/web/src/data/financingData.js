@@ -1,4 +1,3 @@
-
 export const financingData = [
   { id: 'f1', bankId: 'itau', bankName: 'Itaú', type: 'Carro', monthlyRate: 1.6, annualRate: 21.0, minDownPayment: 20, maxDownPayment: 80, minTerm: 12, maxTerm: 60, minValue: 15000, maxValue: 300000 },
   { id: 'f2', bankId: 'santander', bankName: 'Santander', type: 'Carro', monthlyRate: 1.4, annualRate: 18.1, minDownPayment: 10, maxDownPayment: 90, minTerm: 24, maxTerm: 72, minValue: 20000, maxValue: 500000 },

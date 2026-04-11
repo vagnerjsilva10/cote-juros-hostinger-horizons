@@ -1,4 +1,3 @@
-
 export const creditCardsData = [
   { id: 'c1', bankId: 'itau', bankName: 'Itaú', name: 'Personnalité Black', annualFee: 1200, minLimit: 10000, maxLimit: 50000, category: 'Premium', benefits: ['Acesso Sala VIP', 'Pontos Sempre Presente', 'Seguro Viagem'], image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=400&q=80' },
   { id: 'c2', bankId: 'nubank', bankName: 'Nubank', name: 'Mastercard Gold', annualFee: 0, minLimit: 500, maxLimit: 15000, category: 'Básico', benefits: ['Sem Anuidade', 'App Intuitivo', 'Descontos Mastercard'], image: 'https://images.unsplash.com/photo-1589758438368-0ad531db3366?auto=format&fit=crop&w=400&q=80' },

@@ -1,4 +1,3 @@
-
 export const loansData = [
   { id: 'l1', bankId: 'nubank', bankName: 'Nubank', type: 'Pessoal', monthlyRate: 2.5, annualRate: 34.4, minValue: 1000, maxValue: 50000, minTerm: 6, maxTerm: 48, minScore: 'Médio', minIncome: 1500, requirements: ['Conta ativa', 'Análise de crédito'] },
   { id: 'l2', bankId: 'itau', bankName: 'Itaú', type: 'Pessoal', monthlyRate: 3.2, annualRate: 45.9, minValue: 500, maxValue: 80000, minTerm: 12, maxTerm: 60, minScore: 'Alto', minIncome: 2500, requirements: ['Correntista', 'Comprovante de renda'] },

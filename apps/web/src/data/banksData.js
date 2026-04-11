@@ -1,4 +1,3 @@
-
 export const banksData = [
   { id: 'itau', name: 'Itaú', logo: 'https://logo.clearbit.com/itau.com.br', color: '#EC7000', website: 'itau.com.br', phone: '4004-4828', established: 1945 },
   { id: 'bradesco', name: 'Bradesco', logo: 'https://logo.clearbit.com/bradesco.com.br', color: '#CC092F', website: 'bradesco.com.br', phone: '4002-0022', established: 1943 },
