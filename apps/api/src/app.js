@@ -6,6 +6,7 @@ import simulationsRoutes from './routes/simulations.js';
 import trackingRoutes from './routes/tracking.js';
 import partnersRoutes from './routes/partners.js';
 import integrationRoutes from './routes/integration.js';
+import { PrismaConfigError } from './lib/prisma.js';
 
 export const createApp = () => {
   const app = express();
@@ -18,7 +19,12 @@ export const createApp = () => {
   app.use(express.json({ limit: '1mb' }));
 
   app.get('/health', (req, res) => {
-    res.json({ ok: true, service: 'cote-juros-api', timestamp: new Date().toISOString() });
+    res.json({
+      ok: true,
+      service: 'cote-juros-api',
+      databaseConfigured: Boolean(process.env.DATABASE_URL),
+      timestamp: new Date().toISOString()
+    });
   });
 
   app.use('/api/offers', offersRoutes);
@@ -33,10 +39,13 @@ export const createApp = () => {
       return res.status(400).json({ error: 'Validation error', details: err.issues });
     }
 
+    if (err instanceof PrismaConfigError) {
+      return res.status(500).json({ error: 'Database configuration error', message: err.message });
+    }
+
     console.error(err);
     return res.status(500).json({ error: 'Internal server error' });
   });
 
   return app;
 };
-

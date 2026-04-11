@@ -1,8 +1,8 @@
-﻿import { prisma } from '../lib/prisma.js';
+import { getPrisma } from '../lib/prisma.js';
 
 export class SimulationService {
   static async createLead(payload) {
-    return prisma.simulationLead.create({
+    return getPrisma().simulationLead.create({
       data: {
         productType: payload.productType,
         requestedAmount: payload.requestedAmount,
@@ -19,7 +19,9 @@ export class SimulationService {
   }
 
   static async getById(id) {
-    return prisma.simulationLead.findUnique({ where: { id } });
+    return getPrisma().simulationLead.findUnique({ where: { id } });
   }
 }
+
+
 

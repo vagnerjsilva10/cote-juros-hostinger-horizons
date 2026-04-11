@@ -1,4 +1,4 @@
-﻿const FINANCE_APP_BASE = 'https://finance.cotejuros.com.br/app';
+const FINANCE_APP_BASE = 'https://finance.cotejuros.com.br/app';
 
 export class AppIntegrationService {
   static buildDeepLink({ sourcePage, productType, simulationId, utm = {}, campaign } = {}) {

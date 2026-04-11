@@ -1,4 +1,4 @@
-﻿import express from 'express';
+import express from 'express';
 import { asyncHandler } from '../lib/http.js';
 import { ArticleService } from '../services/articleService.js';
 

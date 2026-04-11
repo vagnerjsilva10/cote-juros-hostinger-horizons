@@ -1,4 +1,4 @@
-﻿import { prisma } from '../lib/prisma.js';
+import { getPrisma } from '../lib/prisma.js';
 
 const ensureProtocol = (url) => (url && !url.startsWith('http') ? `https://${url}` : url);
 
@@ -19,7 +19,7 @@ export class PartnerService {
   }
 
   static async registerRedirect({ partnerId, offerId, sourcePage, destinationUrl }) {
-    return prisma.partnerRedirect.create({
+    return getPrisma().partnerRedirect.create({
       data: {
         partnerId,
         offerId: offerId || null,
@@ -29,4 +29,6 @@ export class PartnerService {
     });
   }
 }
+
+
 

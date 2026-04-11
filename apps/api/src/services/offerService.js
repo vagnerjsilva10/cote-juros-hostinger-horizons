@@ -1,4 +1,4 @@
-﻿import { prisma } from '../lib/prisma.js';
+import { getPrisma } from '../lib/prisma.js';
 
 export class OfferService {
   static async list(filters = {}) {
@@ -14,7 +14,7 @@ export class OfferService {
       where.isFeatured = filters.isFeatured === 'true' || filters.isFeatured === true;
     }
 
-    const offers = await prisma.offer.findMany({
+    const offers = await getPrisma().offer.findMany({
       where,
       include: {
         bank: true,
@@ -28,7 +28,7 @@ export class OfferService {
   }
 
   static async getById(id) {
-    return prisma.offer.findUnique({
+    return getPrisma().offer.findUnique({
       where: { id },
       include: {
         bank: true,
@@ -60,4 +60,6 @@ export class OfferService {
     });
   }
 }
+
+
 

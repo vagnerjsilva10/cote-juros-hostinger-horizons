@@ -1,4 +1,4 @@
-﻿import express from 'express';
+import express from 'express';
 import { z } from 'zod';
 import { asyncHandler } from '../lib/http.js';
 import { PartnerService } from '../services/partnerService.js';

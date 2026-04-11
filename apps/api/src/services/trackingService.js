@@ -1,8 +1,8 @@
-﻿import { prisma } from '../lib/prisma.js';
+import { getPrisma } from '../lib/prisma.js';
 
 export class TrackingService {
   static async recordClick(payload) {
-    return prisma.clickEvent.create({
+    return getPrisma().clickEvent.create({
       data: {
         offerId: payload.offerId || null,
         sourcePage: payload.sourcePage,
@@ -14,7 +14,7 @@ export class TrackingService {
   }
 
   static async recordCta(payload) {
-    return prisma.ctaEvent.create({
+    return getPrisma().ctaEvent.create({
       data: {
         sourcePage: payload.sourcePage,
         ctaName: payload.ctaName,
@@ -24,7 +24,7 @@ export class TrackingService {
   }
 
   static async recordAppIntegration(payload) {
-    return prisma.appIntegrationEvent.create({
+    return getPrisma().appIntegrationEvent.create({
       data: {
         sourcePage: payload.sourcePage,
         productContext: payload.productContext || null,
@@ -33,4 +33,6 @@ export class TrackingService {
     });
   }
 }
+
+
 

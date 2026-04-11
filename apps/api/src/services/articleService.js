@@ -1,4 +1,4 @@
-﻿import { prisma } from '../lib/prisma.js';
+import { getPrisma } from '../lib/prisma.js';
 
 export class ArticleService {
   static async list({ category, status = 'published', limit = 100 } = {}) {
@@ -11,7 +11,7 @@ export class ArticleService {
       ];
     }
 
-    return prisma.article.findMany({
+    return getPrisma().article.findMany({
       where,
       include: { category: true },
       orderBy: [{ publishedAt: 'desc' }, { createdAt: 'desc' }],
@@ -20,7 +20,7 @@ export class ArticleService {
   }
 
   static async getBySlug(slug) {
-    return prisma.article.findUnique({
+    return getPrisma().article.findUnique({
       where: { slug },
       include: { category: true }
     });
@@ -30,4 +30,6 @@ export class ArticleService {
     return this.list({ category });
   }
 }
+
+
 

@@ -1,4 +1,4 @@
-﻿import express from 'express';
+import express from 'express';
 import { z } from 'zod';
 import { asyncHandler, pickUtm } from '../lib/http.js';
 import { SimulationService } from '../services/simulationService.js';
