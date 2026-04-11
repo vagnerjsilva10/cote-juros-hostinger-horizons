@@ -291,13 +291,15 @@ function HomePage() {
             </motion.div>
 
             <motion.div
-              animate={{ y: [0, -6, 0], rotate: [0, -0.6, 0] }}
-              transition={{ duration: 10, repeat: Infinity, ease: [0.42, 0, 0.18, 1] }}
-              className="relative mx-auto w-full max-w-[560px]"
+              animate={{ y: [0, -4, 0], rotate: [0, -0.45, 0] }}
+              transition={{ duration: 11.5, repeat: Infinity, ease: [0.42, 0, 0.18, 1] }}
+              className="relative mx-auto w-full max-w-[520px]"
             >
-              <div className="pointer-events-none absolute inset-0 rounded-[30px] bg-gradient-to-tr from-primary/20 via-cyan-400/8 to-secondary/20 blur-2xl" />
+              <div className="pointer-events-none absolute -inset-x-8 -inset-y-6 rounded-[34px] bg-[radial-gradient(circle_at_48%_38%,rgba(56,189,248,0.16),rgba(79,70,229,0.06)_45%,transparent_74%)]" />
+              <div className="pointer-events-none absolute inset-0 translate-y-3 rounded-[30px] bg-slate-950/20 blur-xl" />
+              <div className="pointer-events-none absolute inset-0 rounded-[30px] bg-gradient-to-tr from-primary/18 via-cyan-300/8 to-secondary/18 blur-xl" />
 
-              <div className="relative overflow-hidden rounded-[28px] border border-slate-700/70 bg-[#0B1220] shadow-[0_28px_70px_-30px_rgba(15,98,254,0.45)]">
+              <div className="relative overflow-hidden rounded-[28px] border border-slate-700/75 bg-[#0B1220] shadow-[0_34px_78px_-32px_rgba(15,98,254,0.5)]">
                 <div className="flex items-center justify-between border-b border-slate-700/70 bg-[#0E1629] px-4 py-3">
                   <div className="flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-cyan-300/80" />
@@ -338,10 +340,15 @@ function HomePage() {
                         <p className="text-xs font-semibold text-slate-200">Performance de ofertas</p>
                         <p className="text-[10px] font-semibold uppercase tracking-wide text-cyan-300">Atualizado</p>
                       </div>
-                      <div className="h-[116px] rounded-lg bg-[#0A1325] p-2.5">
+                      <div className="relative h-[116px] overflow-hidden rounded-lg border border-slate-700/60 bg-[#0A1325] p-2.5">
+                        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(56,189,248,0.08),transparent_55%)]" />
+                        <div className="pointer-events-none absolute inset-x-2.5 top-[30%] border-t border-slate-600/30" />
+                        <div className="pointer-events-none absolute inset-x-2.5 top-[58%] border-t border-slate-700/35" />
                         <div className="flex h-full items-end gap-1.5">
                           {[28, 40, 35, 52, 46, 62, 58, 70].map((h, idx) => (
-                            <div key={idx} className="flex-1 rounded-t-md bg-gradient-to-t from-blue-500/45 to-cyan-300/60" style={{ height: `${h}%` }} />
+                            <div key={idx} className="relative flex-1 overflow-hidden rounded-t-md bg-gradient-to-t from-blue-600/55 via-blue-500/58 to-cyan-300/78 shadow-[0_0_14px_rgba(56,189,248,0.16)]" style={{ height: `${h}%` }}>
+                              <span className="absolute inset-x-0 top-0 h-[1px] bg-cyan-100/70" />
+                            </div>
                           ))}
                         </div>
                       </div>
@@ -351,8 +358,8 @@ function HomePage() {
               </div>
 
               <motion.div
-                animate={{ y: [0, -4, 0], rotate: [0, -1, 0] }}
-                transition={{ duration: 7.5, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
+                animate={{ y: [0, -2, 0], rotate: [0, -0.8, 0] }}
+                transition={{ duration: 8.8, repeat: Infinity, ease: 'easeInOut', delay: 0.1 }}
                 className="absolute -left-3 top-10 hidden rounded-2xl border border-slate-200/80 bg-white px-3 py-2.5 shadow-[0_20px_35px_-25px_rgba(15,23,42,0.65)] md:block"
               >
                 <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate-500">Saldo atual</p>
@@ -360,8 +367,8 @@ function HomePage() {
               </motion.div>
 
               <motion.div
-                animate={{ y: [0, 5, 0], rotate: [0, 1, 0] }}
-                transition={{ duration: 8.2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                animate={{ y: [0, 3, 0], rotate: [0, 0.9, 0] }}
+                transition={{ duration: 9.4, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
                 className="absolute -right-3 bottom-12 hidden items-center gap-2 rounded-2xl border border-slate-200/80 bg-white px-3 py-2.5 shadow-[0_20px_35px_-25px_rgba(15,23,42,0.65)] md:flex"
               >
                 <Activity className="h-4 w-4 text-emerald-500" />
@@ -372,8 +379,8 @@ function HomePage() {
               </motion.div>
 
               <motion.div
-                animate={{ y: [0, -3, 0], rotate: [0, 0.8, 0] }}
-                transition={{ duration: 6.8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+                animate={{ y: [0, -1.5, 0], rotate: [0, 0.55, 0] }}
+                transition={{ duration: 7.9, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
                 className="absolute right-8 top-2 hidden rounded-2xl border border-slate-200/80 bg-white px-3 py-2 shadow-[0_20px_35px_-25px_rgba(15,23,42,0.6)] lg:block"
               >
                 <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Insight IA</p>
