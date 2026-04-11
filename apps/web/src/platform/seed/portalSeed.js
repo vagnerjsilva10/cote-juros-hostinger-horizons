@@ -3,8 +3,9 @@ import { loansData } from '@/data/loansData.js';
 import { creditCardsData } from '@/data/creditCardsData.js';
 import { financingData } from '@/data/financingData.js';
 import { articlesData } from '@/data/articlesData.js';
+import { normalizeMojibake } from '@/lib/textEncoding.js';
 
-const normalizeLegacyText = (value = '') => String(value);
+const normalizeLegacyText = (value = '') => normalizeMojibake(String(value));
 
 export const categories = [
   { id: 'cat-loans', code: 'loans', label: 'Empréstimos', kind: 'product' },
@@ -191,4 +192,3 @@ export const appIntegrationSources = [
   { id: 'src-cards', sourcePage: '/cartoes-de-credito', ctaId: 'offer_apply', productType: 'credit_card' },
   { id: 'src-financing', sourcePage: '/financiamento', ctaId: 'offer_financing_simulate', productType: 'financing' }
 ];
-

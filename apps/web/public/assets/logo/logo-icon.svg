@@ -1,14 +1,18 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+﻿<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Símbolo Cote Juros">
   <defs>
-    <linearGradient id="icon_back" x1="25.5" y1="49.5" x2="50.5" y2="24.5" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0F62FE"/>
-      <stop offset="1" stop-color="#3B82F6"/>
+    <linearGradient id="icon_bg" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A1A34"/>
+      <stop offset="1" stop-color="#1E4ED8"/>
     </linearGradient>
-    <linearGradient id="icon_front" x1="7.5" y1="46.5" x2="35" y2="16" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#38BDF8"/>
-      <stop offset="1" stop-color="#0F62FE"/>
+    <linearGradient id="icon_glow" x1="22" y1="19" x2="52" y2="43" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#67E8F9" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#67E8F9" stop-opacity="0"/>
     </linearGradient>
   </defs>
-  <path d="M39.5 15L57 32.5L39.5 50L22 32.5L39.5 15Z" fill="url(#icon_back)"/>
-  <path d="M7.5 33.5L24.5 16.5H35V10L50 25L35 40V33.5H24.5L7.5 50.5L14.5 57.5L29 43H41V37.5L57 21.5L48.5 13H41V16.5H20.5L0.5 36.5L7.5 33.5Z" fill="url(#icon_front)"/>
+
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#icon_bg)"/>
+  <path d="M15 40L27 31L34 36L48 22" stroke="#F8FAFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="48" cy="22" r="3" fill="#67E8F9"/>
+  <path d="M15 24C18 19.5 22.5 16.5 28.5 15" stroke="#CFF7FF" stroke-opacity="0.6" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="42" cy="41" rx="10" ry="8" fill="url(#icon_glow)"/>
 </svg>

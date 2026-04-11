@@ -1,15 +1,22 @@
-<svg width="420" height="88" viewBox="0 0 420 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+﻿<svg width="430" height="96" viewBox="0 0 430 96" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cote Juros">
   <defs>
-    <linearGradient id="dark_back" x1="29" y1="66" x2="60" y2="35" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0F62FE"/>
-      <stop offset="1" stop-color="#3B82F6"/>
+    <linearGradient id="logo_bg_dark" x1="12" y1="12" x2="84" y2="84" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#13284E"/>
+      <stop offset="1" stop-color="#2563EB"/>
     </linearGradient>
-    <linearGradient id="dark_front" x1="8" y1="60" x2="43" y2="24" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#38BDF8"/>
-      <stop offset="1" stop-color="#0F62FE"/>
+    <linearGradient id="logo_glow_dark" x1="30" y1="28" x2="74" y2="68" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#93F7FF" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#93F7FF" stop-opacity="0"/>
     </linearGradient>
   </defs>
-  <path d="M45 18L67 40L45 62L23 40L45 18Z" fill="url(#dark_back)"/>
-  <path d="M6 41L27 20H40V12L58 30L40 48V41H27L6 62L14 70L31 53H47V46L66 27L56 17H47V20H23L0 43L6 41Z" fill="url(#dark_front)"/>
-  <text x="82" y="58" fill="#EAF0FF" font-family="Inter, Manrope, system-ui, sans-serif" font-size="56" font-weight="600" letter-spacing="-0.015em">CoteJuros</text>
+
+  <g>
+    <rect x="8" y="8" width="80" height="80" rx="24" fill="url(#logo_bg_dark)"/>
+    <path d="M24 57.5L40.5 45L50.5 52L71 32.5" stroke="#F8FAFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="71" cy="32.5" r="4.5" fill="#93F7FF"/>
+    <path d="M24 35C28 28 34 23.5 42.5 21.5" stroke="#DFFBFF" stroke-opacity="0.65" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="62" cy="58" rx="18" ry="14" fill="url(#logo_glow_dark)"/>
+  </g>
+
+  <text x="106" y="60" fill="#EAF1FF" font-family="Sora, Manrope, 'Segoe UI', sans-serif" font-size="44" font-weight="600" letter-spacing="-0.02em">CoteJuros</text>
 </svg>

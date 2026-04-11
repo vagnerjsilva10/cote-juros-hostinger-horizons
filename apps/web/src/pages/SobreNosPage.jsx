@@ -1,5 +1,4 @@
-
-import React from 'react';
+﻿import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Target, Users, Award, Shield } from 'lucide-react';
@@ -111,4 +110,3 @@ function SobreNosPage() {
 }
 
 export default SobreNosPage;
-

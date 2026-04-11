@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
@@ -23,19 +22,19 @@ function DiagnosticoPage() {
     dividas: false,
     cpf: ''
   });
-  
+
   const [loading, setLoading] = useState(false);
   const [showOffers, setShowOffers] = useState(false);
 
-  const nextStep = () => setStep(s => Math.min(s + 1, 5));
-  const prevStep = () => setStep(s => Math.max(s - 1, 1));
+  const nextStep = () => setStep((s) => Math.min(s + 1, 5));
+  const prevStep = () => setStep((s) => Math.max(s - 1, 1));
 
   const handleCpfChange = (e) => {
     let value = e.target.value.replace(/\D/g, '');
-    if (value.length > 11) value = value.slice(0,11);
-    if (value.length > 9) value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-    else if (value.length > 6) value = value.replace(/(\d{3})(\d{3})(\d{1,3})/, "$1.$2.$3");
-    else if (value.length > 3) value = value.replace(/(\d{3})(\d{1,3})/, "$1.$2");
+    if (value.length > 11) value = value.slice(0, 11);
+    if (value.length > 9) value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    else if (value.length > 6) value = value.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+    else if (value.length > 3) value = value.replace(/(\d{3})(\d{1,3})/, '$1.$2');
     setData({ ...data, cpf: value });
   };
 
@@ -64,20 +63,19 @@ function DiagnosticoPage() {
   };
 
   const renderOffers = () => {
-    // Basic logic mapping based on rules
-    let recomendedLoan = "Empréstimo Pessoal Itaú (Taxa 3.2% a.m)";
-    let recomendCard = "Cartão Nubank (Sem Anuidade)";
+    let recomendedLoan = 'Empréstimo Pessoal Itaú (Taxa 3.2% a.m)';
+    let recomendCard = 'Cartão Nubank (Sem Anuidade)';
 
     if (data.score === 'Alto' && !data.dividas) {
-      recomendedLoan = "Empréstimo Consignado Caixa (Taxa 1.2% a.m)";
-      recomendCard = "Itaú Personnalité Black";
+      recomendedLoan = 'Empréstimo Consignado Caixa (Taxa 1.2% a.m)';
+      recomendCard = 'Itaú Personnalité Black';
     } else if (data.score === 'Baixo' || data.dividas) {
-      recomendedLoan = "Empréstimo Garantia Inter (Taxa 1.8% a.m) ou Negativado";
-      recomendCard = "Cartão de Crédito Pré-pago C6";
+      recomendedLoan = 'Empréstimo Garantia Inter (Taxa 1.8% a.m) ou Negativado';
+      recomendCard = 'Cartão de Crédito Pré-pago C6';
     }
 
     return (
-      <motion.div initial={{ opacity:0, y: 20 }} animate={{ opacity:1, y:0 }} className="max-w-4xl mx-auto space-y-8">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto space-y-8">
         <div className="text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="w-8 h-8 text-green-600" />
@@ -121,7 +119,7 @@ function DiagnosticoPage() {
             >
               Continuar no Cote Finance AI
             </Button>
-            <Button variant="outline" onClick={() => {setShowOffers(false); setStep(1);}}>Refazer Diagnóstico</Button>
+            <Button variant="outline" onClick={() => { setShowOffers(false); setStep(1); }}>Refazer Diagnóstico</Button>
           </div>
         </div>
       </motion.div>
@@ -135,7 +133,7 @@ function DiagnosticoPage() {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Qual valor de crédito você precisa?</h2>
             <div className="text-4xl font-bold text-primary py-4">R$ {data.valor.toLocaleString('pt-BR')}</div>
-            <Slider value={[data.valor]} onValueChange={v => setData({...data, valor: v[0]})} max={500000} min={1000} step={1000} />
+            <Slider value={[data.valor]} onValueChange={(v) => setData({ ...data, valor: v[0] })} max={500000} min={1000} step={1000} />
             <Button className="w-full h-12 text-lg mt-8" onClick={nextStep}>Continuar <ArrowRight className="ml-2" /></Button>
           </div>
         );
@@ -144,7 +142,7 @@ function DiagnosticoPage() {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Qual a sua renda mensal aproximada?</h2>
             <div className="text-4xl font-bold text-primary py-4">R$ {data.renda.toLocaleString('pt-BR')}</div>
-            <Slider value={[data.renda]} onValueChange={v => setData({...data, renda: v[0]})} max={50000} min={1000} step={500} />
+            <Slider value={[data.renda]} onValueChange={(v) => setData({ ...data, renda: v[0] })} max={50000} min={1000} step={500} />
             <Button className="w-full h-12 text-lg mt-8" onClick={nextStep}>Continuar <ArrowRight className="ml-2" /></Button>
           </div>
         );
@@ -152,11 +150,11 @@ function DiagnosticoPage() {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Qual seu score aproximado?</h2>
-            <RadioGroup value={data.score} onValueChange={v => setData({...data, score: v})} className="space-y-3">
-              {['Alto', 'Médio', 'Baixo'].map(s => (
-                <div key={s} className={`border rounded-xl p-4 flex items-center space-x-3 cursor-pointer transition-colors ${data.score === s ? 'bg-primary/5 border-primary' : 'hover:bg-muted'}`} onClick={() => setData({...data, score: s})}>
+            <RadioGroup value={data.score} onValueChange={(v) => setData({ ...data, score: v })} className="space-y-3">
+              {['Alto', 'Médio', 'Baixo'].map((s) => (
+                <div key={s} className={`border rounded-xl p-4 flex items-center space-x-3 cursor-pointer transition-colors ${data.score === s ? 'bg-primary/5 border-primary' : 'hover:bg-muted'}`} onClick={() => setData({ ...data, score: s })}>
                   <RadioGroupItem value={s} id={s} />
-                  <Label htmlFor={s} className="flex-1 cursor-pointer font-medium text-lg">{s} {s==='Alto'?'(750-1000)':s==='Médio'?'(550-749)':'(0-549)'}</Label>
+                  <Label htmlFor={s} className="flex-1 cursor-pointer font-medium text-lg">{s} {s === 'Alto' ? '(750-1000)' : s === 'Médio' ? '(550-749)' : '(0-549)'}</Label>
                 </div>
               ))}
             </RadioGroup>
@@ -169,7 +167,7 @@ function DiagnosticoPage() {
             <h2 className="text-2xl font-bold">Você possui dívidas em aberto no momento?</h2>
             <div className="flex items-center justify-between p-6 border rounded-xl bg-card">
               <Label className="text-lg font-medium cursor-pointer" htmlFor="dividas">Tenho dívidas pendentes (Negativado)</Label>
-              <Switch id="dividas" checked={data.dividas} onCheckedChange={c => setData({...data, dividas: c})} />
+              <Switch id="dividas" checked={data.dividas} onCheckedChange={(c) => setData({ ...data, dividas: c })} />
             </div>
             <Button className="w-full h-12 text-lg mt-8" onClick={nextStep}>Continuar <ArrowRight className="ml-2" /></Button>
           </div>
@@ -179,14 +177,14 @@ function DiagnosticoPage() {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Último passo: Informe seu CPF</h2>
             <p className="text-muted-foreground">Usamos seu CPF apenas para simular ofertas reais de forma segura. Não consultamos o Serasa neste momento.</p>
-            <Input 
-              className="h-14 text-xl text-center font-variant-tabular bg-background text-foreground" 
-              placeholder="000.000.000-00" 
-              value={data.cpf} 
-              onChange={handleCpfChange} 
+            <Input
+              className="h-14 text-xl text-center font-variant-tabular bg-background text-foreground"
+              placeholder="000.000.000-00"
+              value={data.cpf}
+              onChange={handleCpfChange}
             />
-            <Button 
-              className="w-full h-14 text-lg mt-8 gradient-fintech text-white border-0" 
+            <Button
+              className="w-full h-14 text-lg mt-8 gradient-fintech text-white border-0"
               onClick={submitDiagnostico}
               disabled={loading}
             >
@@ -196,7 +194,7 @@ function DiagnosticoPage() {
         );
       default: return null;
     }
-  }
+  };
 
   return (
     <>
@@ -206,7 +204,7 @@ function DiagnosticoPage() {
 
       <div className="min-h-[85vh] flex flex-col bg-muted/30 py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-center">
-          
+
           {!showOffers ? (
             <div className="max-w-xl mx-auto w-full">
               <div className="mb-8">
@@ -252,4 +250,3 @@ function DiagnosticoPage() {
 }
 
 export default DiagnosticoPage;
-

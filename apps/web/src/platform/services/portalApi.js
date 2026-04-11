@@ -1,4 +1,5 @@
 ﻿import { portalRepository } from '@/platform/repositories/portalRepository.js';
+import { normalizeMojibake, normalizeMojibakeDeep } from '@/lib/textEncoding.js';
 
 const wait = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
@@ -33,39 +34,40 @@ const request = async (path, options = {}) => {
   }
 
   const payload = await response.json();
-  return payload?.data;
+  return normalizeMojibakeDeep(payload?.data);
 };
 
 const normalizeOfferRecord = (offer = {}) => {
-  const bankName = offer.bankName || offer.bank?.name || '';
+  const bankName = normalizeMojibake(offer.bankName || offer.bank?.name || '');
   const productType = offer.productType || offer.product?.type || null;
   const base = {
     ...offer,
     bankName,
     productType,
+    category: normalizeMojibake(offer.category || offer.product?.name || ''),
     monthlyRate: offer.monthlyRate ?? (offer.interestRate != null ? Number(offer.interestRate) : undefined),
     annualRate: offer.annualRate ?? (offer.cet != null ? Number(offer.cet) : undefined),
     minValue: offer.minValue ?? (offer.minAmount != null ? Number(offer.minAmount) : undefined),
     maxValue: offer.maxValue ?? (offer.maxAmount != null ? Number(offer.maxAmount) : undefined),
-    minScore: offer.minScore ?? offer.scoreRequirement,
-    title: offer.title || [offer.product?.name, bankName].filter(Boolean).join(' ')
+    minScore: normalizeMojibake(offer.minScore ?? offer.scoreRequirement),
+    title: normalizeMojibake(offer.title || [offer.product?.name, bankName].filter(Boolean).join(' '))
   };
 
   if (productType === 'credit_card') {
     base.annualFee = base.annualFee ?? 0;
     base.maxLimit = base.maxLimit ?? (base.maxValue != null ? Number(base.maxValue) : undefined);
     base.image = base.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(bankName || 'Cartão')}&background=0f172a&color=fff&size=512`;
-    base.benefits = base.benefits ?? ['Limite personalizado', 'Gestão digital', 'Pagamento por aproximação'];
-    base.category = base.category || 'Intermediário';
+    base.benefits = (base.benefits ?? ['Limite personalizado', 'Gestão digital', 'Pagamento por aproximação']).map(normalizeMojibake);
+    base.category = normalizeMojibake(base.category || 'Intermediário');
   }
 
   if (productType === 'financing') {
     base.minDownPayment = base.minDownPayment ?? 20;
-    base.category = base.category || offer.product?.name || 'Financiamento';
+    base.category = normalizeMojibake(base.category || offer.product?.name || 'Financiamento');
   }
 
   if (productType === 'loan') {
-    base.category = base.category || offer.product?.name || 'Pessoal';
+    base.category = normalizeMojibake(base.category || offer.product?.name || 'Pessoal');
   }
 
   return base;
@@ -73,13 +75,15 @@ const normalizeOfferRecord = (offer = {}) => {
 
 const normalizeArticleRecord = (article = {}) => ({
   ...article,
-  summary: article.summary || article.excerpt || '',
+  title: normalizeMojibake(article.title || ''),
+  summary: normalizeMojibake(article.summary || article.excerpt || ''),
+  content: normalizeMojibake(article.content || ''),
   publishDate: article.publishDate || article.publishedAt || article.createdAt || new Date().toISOString(),
   readTime: article.readTime || 6,
   image:
     article.image ||
     'https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=1200&q=80',
-  category: article.category || article.categoryName || article.category?.name || 'Finanças Pessoais'
+  category: normalizeMojibake(article.category || article.categoryName || article.category?.name || 'Finanças Pessoais')
 });
 
 export const portalApi = {
@@ -387,4 +391,3 @@ export const portalApi = {
     return portalRepository.getAnalyticsOverview();
   }
 };
-
