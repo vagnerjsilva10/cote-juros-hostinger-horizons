@@ -402,10 +402,10 @@ function HomePage() {
         <div className="pointer-events-none absolute -right-16 top-0 h-72 w-72 rounded-full bg-indigo-100/40 blur-3xl" />
         <div className="pointer-events-none absolute bottom-[-90px] left-1/2 h-56 w-[540px] -translate-x-1/2 rounded-full bg-white/70 blur-3xl" />
 
-        <div className="page-shell relative py-12 md:py-16 lg:py-20">
+        <div className="page-shell relative py-14 md:py-20 lg:py-24">
           <motion.div {...animationIn} id="hero-layout" className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-12">
             <div className="max-w-[580px] text-center lg:text-left">
-              <span className="inline-flex items-center rounded-full border border-sky-200/80 bg-white/85 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-700">
+              <span className="inline-flex items-center rounded-full border border-sky-200/80 bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-700 transition-all duration-200">
                 Simulação com clareza
               </span>
               <h1
@@ -462,7 +462,7 @@ function HomePage() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="h-12 w-full rounded-xl bg-[#2563EB] text-base font-semibold text-white shadow-[0_12px_30px_rgba(37,99,235,0.28)] transition-all duration-200 hover:bg-[#1D4ED8] hover:shadow-[0_16px_34px_rgba(29,78,216,0.34)]"
+                  className="h-12 w-full rounded-xl bg-[#2563EB] text-base font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_20px_rgba(37,99,235,0.28)] transition-all duration-200 hover:bg-[#1D4ED8] hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_10px_24px_rgba(29,78,216,0.32)]"
                 >
                   Simular agora
                 </Button>
@@ -473,14 +473,14 @@ function HomePage() {
                 </p>
               </form>
 
-              <div className="mt-5 grid gap-2.5 border-t border-slate-100 pt-5 sm:grid-cols-3">
+              <div className="mt-6 grid gap-2.5 border-t border-slate-100 pt-5 sm:grid-cols-3">
                 {[
                   'Simulação gratuita',
                   'Comparação em segundos',
                   'Múltiplas instituições'
                 ].map((item) => (
-                  <div key={item} className="inline-flex items-center gap-2 text-sm text-slate-600">
-                    <CheckCircle2 className="h-4 w-4 text-sky-600" />
+                  <div key={item} className="inline-flex items-center gap-2 text-sm text-slate-600 transition-all duration-200">
+                    <CheckCircle2 className="h-4 w-4 text-[#14B8A6]" />
                     <span>{item}</span>
                   </div>
                 ))}
@@ -492,7 +492,7 @@ function HomePage() {
             </motion.div>
           </motion.div>
 
-          <motion.div {...animationIn} className="mt-8 text-center">
+          <motion.div {...animationIn} className="mt-10 text-center">
             <p className="text-sm text-slate-500">
               {`${catalogSize || 30}+ ofertas ativas e ${bankCount || 8} instituições financeiras para comparar.`}
             </p>
@@ -500,7 +500,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-border bg-white py-12 md:py-14">
+      <section className="border-b border-border bg-white py-16 md:py-20">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-5xl text-center">
             <span className="soft-blue-chip mb-5">Instituições</span>
@@ -521,7 +521,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-border bg-background-secondary py-20 md:py-24">
+      <section className="border-b border-border bg-background-secondary py-24 md:py-28">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto mb-14 max-w-3xl text-center">
             <span className="soft-blue-chip mb-5">Como o Cote Juros ajuda você</span>
@@ -546,7 +546,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-border bg-background py-20 md:py-24">
+      <section className="border-b border-border bg-background py-24 md:py-28">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto mb-14 max-w-3xl text-center">
             <span className="soft-blue-chip mb-5">Produtos</span>
@@ -582,7 +582,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-border bg-background-secondary py-20 md:py-24">
+      <section className="border-b border-border bg-background-secondary py-24 md:py-28">
         <div className="page-shell">
           <motion.div {...animationIn} className="mb-10 max-w-3xl">
             <span className="soft-blue-chip mb-5">Comparação visual</span>
@@ -633,7 +633,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-border bg-background py-20 md:py-24">
+      <section className="border-b border-border bg-background py-24 md:py-28">
         <div className="page-shell">
           <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
             <motion.div {...animationIn} className="space-y-6">
@@ -650,7 +650,7 @@ function HomePage() {
                   'Recomendações simples para reduzir risco de juros abusivos.'
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-3">
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary" />
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 text-[#14B8A6]" />
                     <p className="text-base text-muted-foreground">{item}</p>
                   </div>
                 ))}
@@ -660,6 +660,7 @@ function HomePage() {
                 <Link to="/cote-finance-ai">
                   <Button
                     size="lg"
+                    className="bg-[#2563EB] text-white transition-all duration-200 hover:bg-[#1D4ED8]"
                     onClick={() =>
                       trackingService.trackCtaClick({
                         sourcePage: '/',
@@ -695,7 +696,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-border bg-background-secondary py-20 md:py-24">
+      <section className="border-b border-border bg-background-secondary py-24 md:py-28">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto mb-14 max-w-3xl text-center">
             <span className="soft-blue-chip mb-5">Insights financeiros</span>
@@ -719,7 +720,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-border bg-background py-20 md:py-24">
+      <section className="border-b border-border bg-background py-24 md:py-28">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto mb-14 max-w-3xl text-center">
             <span className="soft-blue-chip mb-5">Depoimentos</span>
@@ -748,7 +749,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-border bg-background-secondary py-16 md:py-20">
+      <section className="border-b border-border bg-background-secondary py-20 md:py-24">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-4xl rounded-[24px] border border-violet-200/70 bg-gradient-to-br from-white via-teal-50/40 to-violet-50/50 px-8 py-10 text-center shadow-[var(--shadow-sm)]">
             <span className="soft-blue-chip mb-4">Avaliações externas</span>
@@ -767,7 +768,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="bg-background-secondary py-20 md:py-24">
+      <section className="bg-background-secondary py-24 md:py-28">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-4xl rounded-[24px] border border-primary/20 bg-white px-8 py-12 text-center shadow-[var(--shadow-md)]">
             <span className="soft-blue-chip mb-6">Análise final</span>
@@ -778,6 +779,7 @@ function HomePage() {
             <div className="flex flex-col justify-center gap-3 sm:flex-row">
               <Button
                 size="lg"
+                className="bg-[#2563EB] text-white transition-all duration-200 hover:bg-[#1D4ED8]"
                 onClick={() => {
                   trackingService.trackCtaClick({
                     sourcePage: '/',

@@ -58,7 +58,7 @@ function Header() {
             <Link to="/diagnostico-financeiro">
               <Button
                 size="lg"
-                className={`rounded-[10px] px-5 ${isHome ? 'bg-slate-900 text-white hover:bg-slate-800' : ''}`}
+                className="rounded-[10px] bg-[#111827] px-5 text-white shadow-[0_1px_2px_rgba(0,0,0,0.06),0_6px_16px_rgba(0,0,0,0.14)] transition-all duration-200 hover:bg-slate-800"
               >
                 Analisar perfil
               </Button>
@@ -95,7 +95,9 @@ function Header() {
                     ))}
                     <div className="mt-4 border-t border-border pt-6">
                       <Link to="/diagnostico-financeiro" onClick={() => setMobileOpen(false)}>
-                        <Button className="h-12 w-full text-base">Analisar perfil</Button>
+                        <Button className="h-12 w-full bg-[#111827] text-base text-white transition-all duration-200 hover:bg-slate-800">
+                          Analisar perfil
+                        </Button>
                       </Link>
                     </div>
                   </nav>
