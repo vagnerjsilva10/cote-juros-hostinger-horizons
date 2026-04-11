@@ -29,7 +29,7 @@ function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           <Link to="/" className="flex items-center interactive-element hover:opacity-80">
-            <CoteJurosLogo variant="horizontal" className="h-9 w-auto" />
+            <CoteJurosLogo variant="horizontal" className="h-11 w-auto" />
           </Link>
 
           <nav className="hidden lg:flex items-center space-x-2">
@@ -66,7 +66,7 @@ function Header() {
               <SheetContent side="right" className="w-[300px] sm:w-[400px] border-l border-border bg-white">
                 <div className="flex flex-col space-y-6 mt-8">
                   <div className="flex items-center space-x-3 pb-6 border-b border-border">
-                    <CoteJurosLogo variant="symbol" className="w-10 h-10" />
+                    <CoteJurosLogo variant="symbol" className="w-12 h-12" />
                     <span className="text-lg font-bold text-foreground">Menu</span>
                   </div>
                   <nav className="flex flex-col space-y-2">

@@ -67,7 +67,7 @@ function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12 mb-16">
           <div className="col-span-2 lg:col-span-2 space-y-6">
             <Link to="/" className="inline-block">
-              <CoteJurosLogo variant="horizontal" className="h-9 w-auto" />
+              <CoteJurosLogo variant="horizontal" className="h-12 w-auto" />
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-sm">
               Comparador financeiro inteligente. Encontre as melhores taxas de empréstimos, cartões e financiamentos do mercado em segundos.
