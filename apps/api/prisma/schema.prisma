@@ -1,0 +1,209 @@
+﻿generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum ProductType {
+  loan
+  credit_card
+  financing
+}
+
+enum CategoryType {
+  blog
+  product
+}
+
+enum RecordStatus {
+  draft
+  published
+  archived
+  active
+  inactive
+}
+
+model Bank {
+  id        String   @id @default(cuid())
+  name      String
+  logo      String?
+  website   String?
+  status    RecordStatus @default(active)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  offers Offer[]
+
+  @@index([name])
+  @@map("banks")
+}
+
+model Category {
+  id        String       @id @default(cuid())
+  name      String
+  slug      String       @unique
+  type      CategoryType
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  products FinancialProduct[]
+  articles Article[]
+
+  @@index([type])
+  @@map("categories")
+}
+
+model FinancialProduct {
+  id          String      @id @default(cuid())
+  type        ProductType
+  name        String
+  description String?
+  categoryId  String?     @map("category_id")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  offers   Offer[]
+
+  @@index([type])
+  @@index([categoryId])
+  @@map("financial_products")
+}
+
+model Offer {
+  id                 String       @id @default(cuid())
+  bankId             String       @map("bank_id")
+  productId          String       @map("product_id")
+  interestRate       Decimal?     @db.Decimal(10, 4) @map("interest_rate")
+  cet                Decimal?     @db.Decimal(10, 4)
+  minAmount          Decimal?     @db.Decimal(14, 2) @map("min_amount")
+  maxAmount          Decimal?     @db.Decimal(14, 2) @map("max_amount")
+  minTerm            Int?         @map("min_term")
+  maxTerm            Int?         @map("max_term")
+  scoreRequirement   String?      @map("score_requirement")
+  redirectUrl        String       @map("redirect_url")
+  partnerTrackingUrl String?      @map("partner_tracking_url")
+  isFeatured         Boolean      @default(false) @map("is_featured")
+  status             RecordStatus @default(active)
+  createdAt          DateTime     @default(now()) @map("created_at")
+  updatedAt          DateTime     @updatedAt @map("updated_at")
+
+  bank     Bank             @relation(fields: [bankId], references: [id], onDelete: Cascade)
+  product  FinancialProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  clicks   ClickEvent[]
+  redirects PartnerRedirect[]
+
+  @@index([bankId])
+  @@index([productId])
+  @@index([status, isFeatured])
+  @@map("offers")
+}
+
+model Article {
+  id             String       @id @default(cuid())
+  slug           String       @unique
+  title          String
+  content        String
+  excerpt        String?
+  categoryId     String?      @map("category_id")
+  author         String?
+  seoTitle       String?      @map("seo_title")
+  seoDescription String?      @map("seo_description")
+  publishedAt    DateTime?    @map("published_at")
+  status         RecordStatus @default(draft)
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@index([status, publishedAt])
+  @@index([categoryId])
+  @@map("articles")
+}
+
+model SimulationLead {
+  id               String      @id @default(cuid())
+  productType      ProductType @map("product_type")
+  requestedAmount  Decimal?    @db.Decimal(14, 2) @map("requested_amount")
+  income           Decimal?    @db.Decimal(14, 2)
+  scoreRange       String?     @map("score_range")
+  employmentStatus String?     @map("employment_status")
+  hasRestriction   Boolean?    @map("has_restriction")
+  utmSource        String?     @map("utm_source")
+  utmMedium        String?     @map("utm_medium")
+  utmCampaign      String?     @map("utm_campaign")
+  originPage       String?     @map("origin_page")
+  createdAt        DateTime    @default(now()) @map("created_at")
+
+  appIntegrationEvents AppIntegrationEvent[]
+
+  @@index([productType])
+  @@index([originPage])
+  @@index([createdAt])
+  @@map("simulation_leads")
+}
+
+model ClickEvent {
+  id          String   @id @default(cuid())
+  offerId     String?  @map("offer_id")
+  sourcePage  String   @map("source_page")
+  utmSource   String?  @map("utm_source")
+  utmMedium   String?  @map("utm_medium")
+  utmCampaign String?  @map("utm_campaign")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  offer Offer? @relation(fields: [offerId], references: [id], onDelete: SetNull)
+
+  @@index([offerId])
+  @@index([sourcePage])
+  @@index([createdAt])
+  @@map("click_events")
+}
+
+model CtaEvent {
+  id          String   @id @default(cuid())
+  sourcePage  String   @map("source_page")
+  ctaName     String   @map("cta_name")
+  destination String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([sourcePage])
+  @@index([ctaName])
+  @@index([createdAt])
+  @@map("cta_events")
+}
+
+model AppIntegrationEvent {
+  id             String   @id @default(cuid())
+  sourcePage     String   @map("source_page")
+  productContext String?  @map("product_context")
+  simulationId   String?  @map("simulation_id")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  simulation SimulationLead? @relation(fields: [simulationId], references: [id], onDelete: SetNull)
+
+  @@index([sourcePage])
+  @@index([simulationId])
+  @@index([createdAt])
+  @@map("app_integration_events")
+}
+
+model PartnerRedirect {
+  id          String   @id @default(cuid())
+  partnerId   String   @map("partner_id")
+  offerId     String?  @map("offer_id")
+  sourcePage  String   @map("source_page")
+  destination String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  offer Offer? @relation(fields: [offerId], references: [id], onDelete: SetNull)
+
+  @@index([partnerId])
+  @@index([offerId])
+  @@index([createdAt])
+  @@map("partner_redirects")
+}
