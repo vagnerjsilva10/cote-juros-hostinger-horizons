@@ -84,6 +84,7 @@
     font-family: 'Manrope', 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     line-height: 1.62;
+    overflow-x: hidden;
     background-image:
       radial-gradient(circle at 20% -10%, rgba(37, 99, 235, 0.12), transparent 35%),
       radial-gradient(circle at 80% -20%, rgba(37, 99, 235, 0.08), transparent 30%);
@@ -172,7 +173,7 @@
   }
 
   .page-shell {
-    @apply container mx-auto px-4 sm:px-5 lg:px-8;
+    @apply container mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-10;
   }
 
   .section-eyebrow {
@@ -437,6 +438,30 @@
 
   .chart-pulse {
     animation: pulse-dot 2.8s ease-out infinite;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-proof-pill {
+    border-radius: 20px;
+    font-size: 0.74rem;
+    line-height: 1.45;
+  }
+
+  .institution-chip {
+    width: 100%;
+    justify-content: center;
+    padding: 0.7rem 1rem;
+    font-size: 0.88rem;
+  }
+
+  .product-illustration {
+    height: 76px;
+  }
+
+  .interactive-card,
+  .surface-card {
+    border-radius: 14px;
   }
 }
 

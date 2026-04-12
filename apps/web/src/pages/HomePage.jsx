@@ -418,26 +418,26 @@ function HomePage() {
           transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
         />
 
-        <div className="page-shell relative pb-16 pt-8 md:pb-20 md:pt-12 lg:pb-24 lg:pt-14">
-          <motion.div {...animationIn} id="hero-layout" className="grid items-center gap-12 lg:grid-cols-[0.96fr_1.04fr] lg:gap-14">
-            <div className="max-w-[610px] text-center lg:text-left">
-              <span className="inline-flex items-center rounded-full border border-sky-200/80 bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-700 transition-all duration-200">
+        <div className="page-shell relative pb-12 pt-6 sm:pb-14 sm:pt-8 md:pb-20 md:pt-12 lg:pb-24 lg:pt-14">
+          <motion.div {...animationIn} id="hero-layout" className="grid items-center gap-8 sm:gap-10 lg:grid-cols-[0.96fr_1.04fr] lg:gap-14">
+            <div className="mx-auto max-w-[610px] text-center lg:mx-0 lg:text-left">
+              <span className="inline-flex max-w-full items-center rounded-full border border-sky-200/80 bg-white/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-sky-700 transition-all duration-200 sm:text-[11px]">
                 Simulação com clareza
               </span>
               <h1
-                className="mt-5 text-[clamp(2.7rem,5.8vw,4.1rem)] font-bold leading-[1.03] tracking-[-0.03em] text-slate-900"
+                className="mt-4 text-[clamp(2.15rem,10vw,4.1rem)] font-bold leading-[1.02] tracking-[-0.04em] text-slate-900 sm:mt-5"
                 style={{ fontFamily: '"Space Grotesk", "Manrope", sans-serif' }}
               >
-                <span className="block">Compare, escolha</span>
-                <span className="block">e contrate seu</span>
-                <span className="block whitespace-nowrap">
+                <span className="block sm:inline">Compare, escolha </span>
+                <span className="block sm:inline">e contrate seu </span>
+                <span className="block">
                   próximo <span className="hero-word-emphasis">empréstimo.</span>
                 </span>
               </h1>
-              <p className="mt-5 text-base font-normal leading-8 text-slate-600 md:text-lg">
+              <p className="mt-4 max-w-[34rem] text-sm font-normal leading-7 text-slate-600 sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
                 A plataforma aumenta suas chances reais de aprovação e conecta você às opções de crédito mais aderentes ao seu perfil.
               </p>
-              <div className="hero-proof-pill mx-auto mt-6 inline-flex flex-wrap items-center justify-center gap-2.5 lg:mx-0 lg:justify-start">
+              <div className="hero-proof-pill mx-auto mt-5 flex w-full max-w-[34rem] flex-wrap items-center justify-center gap-2 px-4 py-3 text-center lg:mx-0 lg:justify-start lg:text-left">
                 <span>Taxa + CET no mesmo lugar</span>
                 <span className="hero-proof-dot" />
                 <span>Condições traduzidas</span>
@@ -451,7 +451,7 @@ function HomePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.35, ease: 'easeOut' }}
-              className="hero-simulation-card mx-auto mt-8 w-full max-w-[472px] rounded-[20px] border border-slate-200/80 bg-white/95 p-4 shadow-[0_20px_56px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:p-5 lg:mt-12"
+              className="hero-simulation-card mx-auto w-full max-w-[472px] rounded-[20px] border border-slate-200/80 bg-white/95 p-4 shadow-[0_20px_56px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:p-5 lg:mt-8"
             >
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Simulador principal</p>
               <form
@@ -463,7 +463,7 @@ function HomePage() {
                   <div className="relative">
                     <Input
                       placeholder="R$ 2.000,00"
-                      className="h-10 rounded-xl border-slate-200 bg-white text-[14px] font-medium text-slate-800 shadow-none focus-visible:ring-2 focus-visible:ring-sky-200"
+                      className="h-11 rounded-xl border-slate-200 bg-white text-[15px] font-medium text-slate-800 shadow-none focus-visible:ring-2 focus-visible:ring-sky-200 sm:h-10 sm:text-[14px]"
                       value={heroValue}
                       onChange={(event) => setHeroValue(formatCurrency(event.target.value))}
                     />
@@ -475,7 +475,7 @@ function HomePage() {
                   <select
                     value={heroInstallments}
                     onChange={(event) => setHeroInstallments(Number(event.target.value))}
-                    className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-[14px] font-medium text-slate-800 outline-none transition-all focus:border-sky-300 focus:ring-2 focus:ring-sky-100"
+                    className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-[15px] font-medium text-slate-800 outline-none transition-all focus:border-sky-300 focus:ring-2 focus:ring-sky-100 sm:h-10 sm:text-[14px]"
                   >
                     {INSTALLMENT_OPTIONS.map((item) => (
                       <option key={item.value} value={item.value}>
@@ -488,12 +488,12 @@ function HomePage() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="h-10 w-full rounded-xl bg-[#2563EB] text-[14px] font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_20px_rgba(37,99,235,0.26)] transition-all duration-200 hover:bg-[#1D4ED8] hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_10px_24px_rgba(29,78,216,0.3)]"
+                  className="h-11 w-full rounded-xl bg-[#2563EB] text-[15px] font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_20px_rgba(37,99,235,0.26)] transition-all duration-200 hover:bg-[#1D4ED8] hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_10px_24px_rgba(29,78,216,0.3)] sm:h-10 sm:text-[14px]"
                 >
                   Simular agora
                 </Button>
 
-                <p className="text-xs leading-6 text-slate-500">
+                <p className="text-xs leading-5 text-slate-500 sm:leading-6">
                   Parcela estimada com taxa de referência de 3,99% ao mês. Os valores podem variar conforme o perfil e cada
                   instituição financeira.
                 </p>
@@ -505,21 +505,21 @@ function HomePage() {
                   'Comparação em segundos',
                   'Múltiplas instituições'
                 ].map((item) => (
-                  <div key={item} className="inline-flex items-center gap-1.5 text-[13px] text-slate-600 transition-all duration-200">
+                  <div key={item} className="inline-flex items-center gap-1.5 text-[13px] leading-5 text-slate-600 transition-all duration-200">
                     <CheckCircle2 className="h-4 w-4 text-[#14B8A6]" />
                     <span>{item}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-3.5 rounded-xl border border-sky-100 bg-sky-50/70 px-3 py-2 text-[13px] font-medium text-sky-900">
+              <div className="mt-3.5 rounded-xl border border-sky-100 bg-sky-50/70 px-3 py-2.5 text-[13px] font-medium text-sky-900">
                 {`${heroInstallments}x de ${formatBrl(estimatedInstallment)}`}
               </div>
             </motion.div>
           </motion.div>
 
-          <motion.div {...animationIn} className="mt-10 text-center">
-            <p className="text-sm text-slate-500">
+          <motion.div {...animationIn} className="mt-8 text-center sm:mt-10">
+            <p className="text-sm leading-6 text-slate-500">
               {`${catalogSize || 30}+ ofertas ativas e ${bankCount || 8} instituições financeiras para comparar.`}
             </p>
           </motion.div>
