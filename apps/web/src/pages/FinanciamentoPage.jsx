@@ -102,16 +102,15 @@ function FinanciamentoPage() {
   return (
     <>
       <Helmet>
-        <title>Financiamento: compare taxa, entrada e prazo | Cote Juros</title>
-        <meta name="description" content="Compare financiamento imobiliário e de veículos por taxa, entrada mínima e prazo. Entenda o custo real antes de contratar." />
-        <link rel="canonical" href="https://cotejuros.com.br/financiamento" />
+        <title>Comparador de financiamento - Cote Juros</title>
+        <meta name="description" content="Compare financiamento de imóveis e veículos com leitura premium de taxa, prazo e entrada mínima." />
       </Helmet>
 
       <PageHero
         badge="Comparador de financiamentos"
         centered
         title="Compare financiamento com clareza de taxa, entrada e prazo."
-        subtitle="Compare bancos, taxas e prazos de financiamento imobiliário e de veículos para descobrir qual opção faz mais sentido para você."
+        subtitle="Compare bancos, taxas e prazos para descobrir qual financiamento faz mais sentido para você."
       >
         <div className="flex flex-col justify-center gap-3 sm:flex-row">
           <Link to="/diagnostico-financeiro">

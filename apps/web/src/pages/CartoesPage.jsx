@@ -129,15 +129,14 @@ function CartoesPage() {
   return (
     <>
       <Helmet>
-        <title>Cartões de crédito: compare anuidade, limite e benefícios | Cote Juros</title>
-        <meta name="description" content="Compare cartões de crédito por anuidade, limite estimado e benefícios. Veja opções sem anuidade, cashback e milhas." />
-        <link rel="canonical" href="https://cotejuros.com.br/cartoes-de-credito" />
+        <title>Comparador de cartões - Cote Juros</title>
+        <meta name="description" content="Compare cartões por anuidade, limite estimado e benefícios em uma interface premium e objetiva." />
       </Helmet>
 
       <PageHero
         badge="Comparador de cartões"
-        title="Compare cartões de crédito com leitura clara de custo e benefício."
-        subtitle="Compare anuidade, limite, cashback, milhas e benefícios reais em uma leitura simples para decidir com segurança."
+        title="Encontre o cartão ideal com leitura clara de custo e benefício."
+        subtitle="Compare anuidade, limite e benefícios reais em uma leitura simples para decidir com segurança."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link to="/diagnostico-financeiro">

@@ -162,18 +162,17 @@ function EmprestimosPage() {
   return (
     <>
       <Helmet>
-        <title>Empréstimos: compare juros, CET e parcelas | Cote Juros</title>
+        <title>Comparador de empréstimos - Cote Juros</title>
         <meta
           name="description"
-          content="Compare empréstimos por juros, CET, prazo e valor liberado. Veja o custo do crédito com mais clareza antes de contratar."
+          content="Compare taxa, prazo e valor máximo para encontrar o empréstimo mais aderente ao seu perfil."
         />
-        <link rel="canonical" href="https://cotejuros.com.br/emprestimos" />
       </Helmet>
 
       <PageHero
         badge="Comparador de empréstimos"
-        title="Compare empréstimos com foco em juros, CET e custo total."
-        subtitle="Veja ofertas de empréstimo pessoal, consignado e outras linhas com leitura clara de taxa, prazo e custo real antes de contratar."
+        title="Compare empréstimos com foco em taxa e custo total."
+        subtitle="Veja em poucos segundos as ofertas que cabem no seu momento e entenda o custo real antes de contratar."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link to="/diagnostico-financeiro">
