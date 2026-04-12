@@ -4,7 +4,7 @@ import { ArrowUpRight, CalendarDays, Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { getArticleSummary, normalizeArticleSlug } from '@/lib/content/articles.js';
+import { getArticleSummary, getEditorialTitle, normalizeArticleSlug } from '@/lib/content/articles.js';
 
 function BlogArticleCard({
   article,
@@ -16,6 +16,7 @@ function BlogArticleCard({
 }) {
   const slug = normalizeArticleSlug(article);
   const href = `/blog/${slug}`;
+  const title = getEditorialTitle(article);
 
   return (
     <Link
@@ -29,7 +30,7 @@ function BlogArticleCard({
         <div className={cn('overflow-hidden bg-slate-100', compact ? 'h-40' : 'h-52')}>
           <img
             src={image}
-            alt={article.title}
+            alt={title}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           />
         </div>
@@ -45,7 +46,7 @@ function BlogArticleCard({
 
           <div className="space-y-3">
             <h3 className={cn('text-balance text-foreground transition-colors group-hover:text-primary', compact ? 'text-lg' : 'text-xl')}>
-              {article.title}
+              {title}
             </h3>
             <p className={cn('text-muted-foreground', compact ? 'line-clamp-3 text-sm leading-6' : 'line-clamp-3 leading-7')}>
               {getArticleSummary(article)}

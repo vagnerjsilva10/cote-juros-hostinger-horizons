@@ -29,4 +29,13 @@ router.get(
   })
 );
 
+router.get(
+  '/:slug',
+  asyncHandler(async (req, res) => {
+    const article = await ArticleService.getBySlug(req.params.slug);
+    if (!article) return res.status(404).json({ error: 'Article not found' });
+    res.json({ data: article });
+  })
+);
+
 export default router;
