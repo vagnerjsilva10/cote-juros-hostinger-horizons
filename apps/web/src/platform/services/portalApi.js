@@ -1,6 +1,5 @@
-import { portalRepository } from '@/platform/repositories/portalRepository.js';
+﻿import { portalRepository } from '@/platform/repositories/portalRepository.js';
 import { normalizeMojibake, normalizeMojibakeDeep } from '@/lib/textEncoding.js';
-import { findArticleBySlug } from '@/lib/content/articles.js';
 
 const wait = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
@@ -123,37 +122,6 @@ const normalizeArticleRecord = (article = {}) => ({
   category: normalizeMojibake(article.category || article.categoryName || article.category?.name || 'Finanças Pessoais')
 });
 
-const fetchLocalArticleBySlug = async (slug) => {
-  try {
-    const directResponse = await fetch(`/content/seo/articles/${slug}.json`);
-    if (directResponse.ok) {
-      const payload = await directResponse.json();
-      return normalizeArticleRecord(payload);
-    }
-  } catch {
-    // ignore and fallback below
-  }
-
-  try {
-    const indexResponse = await fetch('/content/seo/articles/index.json');
-    if (indexResponse.ok) {
-      const indexPayload = await indexResponse.json();
-      const list = Array.isArray(indexPayload) ? indexPayload.map(normalizeArticleRecord) : [];
-      const matched = findArticleBySlug(list, slug);
-      if (matched?.slug) {
-        const aliasResponse = await fetch(`/content/seo/articles/${matched.slug}.json`);
-        if (aliasResponse.ok) {
-          const payload = await aliasResponse.json();
-          return normalizeArticleRecord(payload);
-        }
-      }
-    }
-  } catch {
-    // ignore and fallback below
-  }
-
-  return portalRepository.getArticleBySlug(slug);
-};
 const normalizeCreditOfferRecord = (offer = {}) => ({
   id: offer.id,
   externalOfferId: offer.externalOfferId || offer.id,
@@ -245,15 +213,35 @@ export const portalApi = {
     if (!slug) return null;
 
     if (!useRemote) {
+      try {
+        const response = await fetch(`/content/seo/articles/${slug}.json`);
+        if (response.ok) {
+          const payload = await response.json();
+          return normalizeArticleRecord(payload);
+        }
+      } catch {
+        // fallback below
+      }
+
       await wait();
-      return fetchLocalArticleBySlug(slug);
+      return portalRepository.getArticleBySlug(slug);
     }
 
     try {
-      const data = await request(`/api/articles/slug/${slug}`);
+      const data = await request(`/api/articles/${slug}`);
       return data ? normalizeArticleRecord(data) : null;
     } catch {
-      return fetchLocalArticleBySlug(slug);
+      try {
+        const response = await fetch(`/content/seo/articles/${slug}.json`);
+        if (response.ok) {
+          const payload = await response.json();
+          return normalizeArticleRecord(payload);
+        }
+      } catch {
+        // ignore and fallback
+      }
+
+      return portalRepository.getArticleBySlug(slug);
     }
   },
 
@@ -641,3 +629,4 @@ export const portalApi = {
     });
   }
 };
+
