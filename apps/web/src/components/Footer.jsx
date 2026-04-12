@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Scale, ShieldCheck } from 'lucide-react';
-import { FINANCE_AI_QUIZ_URL } from '@/platform/integrations/coteFinanceAI.js';
 import { CoteJurosLogo } from './CoteJurosLogo.jsx';
 
 function Footer() {
@@ -31,7 +30,7 @@ function Footer() {
       links: [
         { label: 'Blog', path: '/blog' },
         { label: 'Diagnóstico', path: '/diagnostico-financeiro' },
-        { label: 'Testar Cote Finance AI', href: FINANCE_AI_QUIZ_URL }
+        { label: 'Testar Cote Finance AI', path: '/cote-finance-ai' }
       ]
     },
     {

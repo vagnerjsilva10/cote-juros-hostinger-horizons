@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -18,7 +18,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { SimulationModal } from '@/components/SimulationModal.jsx';
-import { redirectToFinanceAi } from '@/platform/integrations/coteFinanceAI.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 
@@ -243,6 +242,7 @@ function FinanceAiIllustration() {
 }
 
 function HomePage() {
+  const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [heroValue, setHeroValue] = useState('R$ 2.000,00');
   const [heroInstallments, setHeroInstallments] = useState(24);
@@ -384,11 +384,12 @@ function HomePage() {
   return (
     <>
       <Helmet>
-        <title>Cote Juros - Comparador financeiro de crédito</title>
+        <title>Cote Juros - Compare juros, crédito e financiamento</title>
         <meta
           name="description"
-          content="Compare juros antes de contratar crédito. Veja taxas, custos e condições com clareza para decidir com mais segurança."
+          content="Compare juros, empréstimos, cartões de crédito e financiamento com mais clareza. Veja taxa, CET, parcela e custo total antes de contratar."
         />
+        <link rel="canonical" href="https://cotejuros.com.br/" />
       </Helmet>
 
       <SimulationModal
@@ -422,7 +423,7 @@ function HomePage() {
           <motion.div {...animationIn} id="hero-layout" className="grid items-center gap-8 sm:gap-10 lg:grid-cols-[0.96fr_1.04fr] lg:gap-14">
             <div className="mx-auto max-w-[610px] text-center lg:mx-0 lg:text-left">
               <span className="inline-flex max-w-full items-center rounded-full border border-sky-200/80 bg-white/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-sky-700 transition-all duration-200 sm:text-[11px]">
-                Simulação com clareza
+                Comparar juros com clareza
               </span>
               <h1
                 className="mt-4 text-[clamp(2.15rem,10vw,4.1rem)] font-bold leading-[1.02] tracking-[-0.04em] text-slate-900 sm:mt-5"
@@ -431,16 +432,16 @@ function HomePage() {
                 <span className="block sm:inline">Compare, escolha </span>
                 <span className="block sm:inline">e contrate seu </span>
                 <span className="block">
-                  próximo <span className="hero-word-emphasis">empréstimo.</span>
+                  próximo <span className="hero-word-emphasis">crédito.</span>
                 </span>
               </h1>
               <p className="mt-4 max-w-[34rem] text-sm font-normal leading-7 text-slate-600 sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
-                A plataforma aumenta suas chances reais de aprovação e conecta você às opções de crédito mais aderentes ao seu perfil.
+                Compare juros de empréstimo, cartão de crédito e financiamento em um só lugar, com leitura simples de taxa, CET, parcela e custo total.
               </p>
               <div className="hero-proof-pill mx-auto mt-5 flex w-full max-w-[34rem] flex-wrap items-center justify-center gap-2 px-4 py-3 text-center lg:mx-0 lg:justify-start lg:text-left">
-                <span>Taxa + CET no mesmo lugar</span>
+                <span>Compare juros e CET</span>
                 <span className="hero-proof-dot" />
-                <span>Condições traduzidas</span>
+                <span>Taxas de crédito traduzidas</span>
                 <span className="hero-proof-dot" />
                 <span>Decisão com segurança</span>
               </div>
@@ -531,10 +532,10 @@ function HomePage() {
           <motion.div {...animationIn} className="mx-auto max-w-5xl text-center">
             <span className="soft-blue-chip mb-5">Instituições</span>
             <h2 className="mb-3 text-[clamp(2rem,3.5vw,2.7rem)] font-semibold tracking-[-0.025em]">
-              Instituições financeiras analisadas em um só lugar
+              Instituições financeiras para comparar crédito em um só lugar
             </h2>
             <p className="mx-auto max-w-2xl text-[1.03rem] font-normal leading-8 text-slate-600">
-              Compare bancos digitais e tradicionais com o mesmo critério de análise.
+              Compare bancos digitais e tradicionais com o mesmo critério para empréstimos, cartões e financiamentos.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               {bankInstitutions.map((bank) => (
@@ -551,12 +552,12 @@ function HomePage() {
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto mb-14 max-w-3xl text-center">
             <span className="soft-blue-chip mb-5">Como o Cote Juros ajuda você</span>
-            <h2 className="mb-4">Do comparativo à decisão, sem complicação.</h2>
+            <h2 className="mb-4">Compare juros, crédito e financiamento sem complicação.</h2>
           </motion.div>
           <div className="grid gap-5 md:grid-cols-3">
             {[
-              { title: '1. Compare taxas e CET', copy: 'Entenda o custo real de cada opção, não só a taxa de vitrine.' },
-              { title: '2. Leia condições com clareza', copy: 'Prazo, encargos e regras em linguagem direta.' },
+              { title: '1. Compare taxas e CET', copy: 'Veja o custo real do crédito, não só a taxa de vitrine.' },
+              { title: '2. Entenda a parcela e o prazo', copy: 'Leia condições de empréstimo e financiamento com mais clareza.' },
               { title: '3. Escolha com segurança', copy: 'Contrate sabendo o impacto da parcela no seu mês.' }
             ].map((item) => (
               <motion.div key={item.title} {...animationIn}>
@@ -576,7 +577,7 @@ function HomePage() {
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto mb-14 max-w-3xl text-center">
             <span className="soft-blue-chip mb-5">Produtos</span>
-            <h2 className="mb-4">Áreas do produto para cada decisão de crédito.</h2>
+            <h2 className="mb-4">Áreas do portal para comparar cada tipo de crédito.</h2>
           </motion.div>
 
           <div className="grid gap-5 md:grid-cols-2">
@@ -612,8 +613,8 @@ function HomePage() {
         <div className="page-shell">
           <motion.div {...animationIn} className="mb-10 max-w-3xl">
             <span className="soft-blue-chip mb-5">Comparação visual</span>
-            <h2 className="mb-4">Compare lado a lado e enxergue o que muda no custo final.</h2>
-            <p className="section-copy">Transparência para identificar juros abusivos e escolher a opção mais equilibrada.</p>
+            <h2 className="mb-4">Compare lado a lado e entenda o custo final do crédito.</h2>
+            <p className="section-copy">Transparência para identificar juros altos, comparar taxas de crédito e escolher a opção mais equilibrada.</p>
           </motion.div>
 
           <motion.div {...animationIn} className="overflow-hidden rounded-[18px] border border-border bg-white shadow-[var(--shadow-sm)]">
@@ -693,12 +694,7 @@ function HomePage() {
                       ctaLabel: 'Testar Cote Finance AI',
                       productType: 'loan'
                     });
-                    await redirectToFinanceAi({
-                      sourcePage: '/',
-                      productType: 'loan',
-                      campaign: 'home_ai_entry',
-                      search: window.location.search
-                    });
+                    navigate(`/cote-finance-ai${window.location.search || ''}`);
                   }}
                 >
                   Testar Cote Finance AI
@@ -730,7 +726,7 @@ function HomePage() {
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto mb-14 max-w-3xl text-center">
             <span className="soft-blue-chip mb-5">Conteúdo</span>
-            <h2 className="mb-4">Educação financeira para pagar menos juros.</h2>
+            <h2 className="mb-4">Educação financeira para comparar crédito e pagar menos juros.</h2>
           </motion.div>
           <div className="grid gap-5 md:grid-cols-3">
             {insights.map((item) => (
@@ -754,7 +750,7 @@ function HomePage() {
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto mb-14 max-w-3xl text-center">
             <span className="soft-blue-chip mb-5">Depoimentos</span>
-            <h2 className="mb-4">Quem compara antes, decide com mais tranquilidade.</h2>
+            <h2 className="mb-4">Quem compara juros antes decide com mais tranquilidade.</h2>
           </motion.div>
 
           <div className="grid gap-5 md:grid-cols-3">
@@ -783,7 +779,7 @@ function HomePage() {
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-4xl rounded-[24px] border border-violet-200/70 bg-gradient-to-br from-white via-teal-50/40 to-violet-50/50 px-8 py-10 text-center shadow-[var(--shadow-sm)]">
             <span className="soft-blue-chip mb-4">Avaliações externas</span>
-            <h2 className="mb-3">Sinta o poder das avaliações reais.</h2>
+            <h2 className="mb-3">Confiança para comparar crédito com mais segurança.</h2>
             <p className="mx-auto max-w-2xl text-muted-foreground">
               Clientes avaliam a experiência de comparação com foco em clareza, confiança e decisão financeira segura.
             </p>
@@ -802,9 +798,9 @@ function HomePage() {
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-4xl rounded-[24px] border border-primary/20 bg-white px-8 py-12 text-center shadow-[var(--shadow-md)]">
             <span className="soft-blue-chip mb-6">Análise final</span>
-            <h2 className="mb-4">Antes de assumir um crédito, entenda o custo real.</h2>
+            <h2 className="mb-4">Antes de assumir um crédito, compare juros e entenda o custo real.</h2>
             <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground">
-              Compare opções, analise seu cenário financeiro e descubra se há juros abusivos antes de fechar contrato.
+              Compare empréstimos, cartões de crédito e financiamento, analise seu cenário financeiro e descubra se há juros abusivos antes de fechar contrato.
             </p>
             <div className="flex flex-col justify-center gap-3 sm:flex-row">
               <Button
