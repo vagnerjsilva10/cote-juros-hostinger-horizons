@@ -31,7 +31,7 @@ function FinanciamentoPage() {
   }, [financingData]);
 
   const handleSimulate = async (offer) => {
-    const destinationUrl = 'https://finance.cotejuros.com.br';
+    const destinationUrl = 'https://finance.cotejuros.com.br/quiz';
 
     await trackingService.trackOfferClick({
       sourcePage: '/financiamento',

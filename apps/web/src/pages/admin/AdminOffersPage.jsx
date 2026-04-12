@@ -23,7 +23,7 @@ const emptyForm = {
   minTerm: '',
   maxTerm: '',
   minScore: '',
-  redirectUrl: 'https://finance.cotejuros.com.br',
+  redirectUrl: 'https://finance.cotejuros.com.br/quiz',
   partnerTrackingUrl: '',
   isFeatured: false,
   status: 'active'

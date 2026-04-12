@@ -105,7 +105,7 @@ function CoteFinanceAIPage() {
     await trackingService.trackCtaClick({
       sourcePage: '/cote-finance-ai',
       ctaId: 'cote_finance_ai_start',
-      ctaLabel: 'Entrar no Cote Finance AI',
+      ctaLabel: 'Fazer diagnóstico financeiro',
       campaign: 'portal_finance_ai_page'
     });
 
@@ -207,7 +207,7 @@ function CoteFinanceAIPage() {
                 ))}
               </div>
               <Button size="lg" onClick={handleFinanceAiEntry}>
-                Começar diagnóstico <ArrowRight className="h-4 w-4" />
+                Fazer diagnóstico financeiro <ArrowRight className="h-4 w-4" />
               </Button>
             </motion.div>
 
@@ -340,7 +340,7 @@ function CoteFinanceAIPage() {
               O Cote Finance AI ajuda você a entender sua vida financeira com mais calma, menos ruído e mais segurança no dia a dia.
             </p>
             <Button size="lg" className="w-fit" onClick={handleFinanceAiEntry}>
-              Começar agora <ArrowRight className="h-4 w-4" />
+              Testar Cote Finance AI <ArrowRight className="h-4 w-4" />
             </Button>
           </motion.div>
         </div>

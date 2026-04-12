@@ -106,7 +106,7 @@ function EmprestimosPage() {
 
   const handleSimulate = async (loan) => {
     const bank = banksData.find((item) => item.id === loan.bankId);
-    const destinationUrl = bank?.website ? `https://${bank.website}` : 'https://finance.cotejuros.com.br';
+    const destinationUrl = bank?.website ? `https://${bank.website}` : 'https://finance.cotejuros.com.br/quiz';
 
     await trackingService.trackOfferClick({
       sourcePage: '/emprestimos',

@@ -104,7 +104,7 @@ function CartoesPage() {
   }, [filteredCards]);
 
   const handleApply = async (card) => {
-    const destinationUrl = 'https://finance.cotejuros.com.br';
+    const destinationUrl = 'https://finance.cotejuros.com.br/quiz';
 
     await trackingService.trackOfferClick({
       sourcePage: '/cartoes-de-credito',

@@ -1,6 +1,6 @@
 import { portalApi } from '@/platform/services/portalApi.js';
 
-const FINANCE_APP_BASE = 'https://finance.cotejuros.com.br/app';
+export const FINANCE_AI_QUIZ_URL = 'https://finance.cotejuros.com.br/quiz';
 
 const parseUtmFromSearch = (search = '') => {
   const params = new URLSearchParams(search);
@@ -22,25 +22,7 @@ export const buildCoteFinanceAiUrl = ({
   simulationContext,
   timezone = 'America/Sao_Paulo'
 } = {}) => {
-  const url = new URL(FINANCE_APP_BASE);
-  url.searchParams.set('auth', 'login');
-  url.searchParams.set('period', 'this_month');
-  url.searchParams.set('tz', timezone);
-  url.searchParams.set('tab', 'dashboard');
-
-  if (sourcePage) url.searchParams.set('source_page', sourcePage);
-  if (productType) url.searchParams.set('product_type', productType);
-  if (campaign) url.searchParams.set('campaign', campaign);
-
-  Object.entries(utm).forEach(([key, value]) => {
-    if (value) url.searchParams.set(key, value);
-  });
-
-  if (simulationContext?.leadId) url.searchParams.set('lead_id', simulationContext.leadId);
-  if (simulationContext?.amount != null) url.searchParams.set('sim_amount', String(simulationContext.amount));
-  if (simulationContext?.score) url.searchParams.set('sim_score', simulationContext.score);
-
-  return url.toString();
+  return FINANCE_AI_QUIZ_URL;
 };
 
 export const createFinanceAiRedirect = async ({
@@ -71,7 +53,14 @@ export const createFinanceAiRedirect = async ({
   });
 
   if (deepLink?.url) {
-    return { url: deepLink.url, utm };
+    try {
+      const parsed = new URL(deepLink.url);
+      if (parsed.origin === 'https://finance.cotejuros.com.br' && parsed.pathname === '/quiz') {
+        return { url: FINANCE_AI_QUIZ_URL, utm };
+      }
+    } catch {
+      // Fall back to the standardized quiz entry.
+    }
   }
 
   const url = buildCoteFinanceAiUrl({

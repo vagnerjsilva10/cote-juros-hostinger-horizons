@@ -17,15 +17,15 @@ const defaultPartnersSeed = banksSeed.map((bank) => ({
   status: 'active',
   productTypes: ['loan', 'credit_card', 'financing'],
   redirectRules: 'default',
-  trackingLink: `https://finance.cotejuros.com.br/?partner=${bank.id}`,
+  trackingLink: `https://finance.cotejuros.com.br/quiz?partner=${bank.id}`,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString()
 }));
 
 const defaultSettingsSeed = {
-  defaultCtaDestination: 'https://finance.cotejuros.com.br',
-  coteFinanceAiBaseUrl: 'https://finance.cotejuros.com.br',
-  coteFinanceAiDashboardUrl: 'https://finance.cotejuros.com.br/dashboard',
+  defaultCtaDestination: 'https://finance.cotejuros.com.br/quiz',
+  coteFinanceAiBaseUrl: 'https://finance.cotejuros.com.br/quiz',
+  coteFinanceAiDashboardUrl: 'https://finance.cotejuros.com.br/quiz',
   supportEmail: 'suporte@cotejuros.com.br',
   socialLinks: {
     linkedin: '',
@@ -228,7 +228,7 @@ const ensureOfferDefaults = (offer) => ({
   maxTerm: offer.maxTerm != null ? Number(offer.maxTerm) : null,
   minScore: offer.minScore || '',
   minDownPayment: offer.minDownPayment != null ? Number(offer.minDownPayment) : null,
-  redirectUrl: offer.redirectUrl || 'https://finance.cotejuros.com.br',
+  redirectUrl: offer.redirectUrl || 'https://finance.cotejuros.com.br/quiz',
   partnerTrackingUrl: offer.partnerTrackingUrl || '',
   isFeatured: Boolean(offer.isFeatured),
   status: offer.status || 'active',

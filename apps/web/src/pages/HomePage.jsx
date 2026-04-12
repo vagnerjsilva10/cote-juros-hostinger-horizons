@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { SimulationModal } from '@/components/SimulationModal.jsx';
+import { redirectToFinanceAi } from '@/platform/integrations/coteFinanceAI.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 
@@ -682,22 +683,26 @@ function HomePage() {
               </div>
 
               <div className="pt-3">
-                <Link to="/cote-finance-ai">
-                  <Button
-                    size="lg"
-                    className="bg-[#2563EB] text-white transition-all duration-200 hover:bg-[#1D4ED8]"
-                    onClick={() =>
-                      trackingService.trackCtaClick({
-                        sourcePage: '/',
-                        ctaId: 'home_ai_entry',
-                        ctaLabel: 'Explorar Cote Finance AI',
-                        productType: 'loan'
-                      })
-                    }
-                  >
-                    Explorar Cote Finance AI
-                  </Button>
-                </Link>
+                <Button
+                  size="lg"
+                  className="bg-[#2563EB] text-white transition-all duration-200 hover:bg-[#1D4ED8]"
+                  onClick={async () => {
+                    await trackingService.trackCtaClick({
+                      sourcePage: '/',
+                      ctaId: 'home_ai_entry',
+                      ctaLabel: 'Testar Cote Finance AI',
+                      productType: 'loan'
+                    });
+                    await redirectToFinanceAi({
+                      sourcePage: '/',
+                      productType: 'loan',
+                      campaign: 'home_ai_entry',
+                      search: window.location.search
+                    });
+                  }}
+                >
+                  Testar Cote Finance AI
+                </Button>
               </div>
             </motion.div>
 
