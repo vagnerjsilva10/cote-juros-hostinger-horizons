@@ -1,7 +1,20 @@
-import React, { useEffect, useMemo, useState } from 'react';
+ï»¿import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, Briefcase, Building2, CalendarDays, CheckCircle2, ChevronLeft, Home, LoaderCircle, ShieldCheck, User, UserMinus, Wallet, X } from 'lucide-react';
+import {
+  ArrowRight,
+  Briefcase,
+  Building2,
+  CalendarDays,
+  ChevronLeft,
+  Home,
+  LoaderCircle,
+  ShieldCheck,
+  User,
+  UserMinus,
+  Wallet,
+  X
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -24,24 +37,24 @@ const STATES = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG'
 const JOBS = [
   { id: 'CLT', label: 'CLT', icon: Briefcase },
   { id: 'PJ', label: 'PJ', icon: Building2 },
-  { id: 'Autonomo', label: 'Autônomo', icon: User },
+  { id: 'Autonomo', label: 'AutÃ´nomo', icon: User },
   { id: 'Aposentado', label: 'Aposentado', icon: Wallet },
   { id: 'Desempregado', label: 'Desempregado', icon: UserMinus }
 ];
 const SCORES = [
-  { id: 'Baixo', title: 'Baixo', copy: 'Para uma análise mais conservadora.' },
-  { id: 'Medio', title: 'Médio', copy: 'Faixa intermediária de aprovação.' },
+  { id: 'Baixo', title: 'Baixo', copy: 'Para uma anÃ¡lise mais conservadora.' },
+  { id: 'Medio', title: 'MÃ©dio', copy: 'Faixa intermediÃ¡ria de aprovaÃ§Ã£o.' },
   { id: 'Alto', title: 'Alto', copy: 'Melhor chance de acessar taxas menores.' }
 ];
 const GENDERS = [['MALE', 'Masculino'], ['FEMALE', 'Feminino'], ['OTHER', 'Outro']];
-const MARITAL = [['SINGLE', 'Solteiro(a)'], ['MARRIED', 'Casado(a)'], ['DIVORCED', 'Divorciado(a)'], ['WIDOWED', 'Viúvo(a)'], ['STABLE_UNION', 'União estável']];
-const EDUCATION = [['INCOMPLETE_ELEMENTARY', 'Fundamental incompleto'], ['ELEMENTARY', 'Fundamental completo'], ['INCOMPLETE_HIGH', 'Médio incompleto'], ['HIGH', 'Médio completo'], ['INCOMPLETE_COLLEGE', 'Superior incompleto'], ['COLLEGE', 'Superior completo'], ['INCOMPLETE_POSTGRADUATE', 'Pós incompleta'], ['POSTGRADUATE', 'Pós completa']];
+const MARITAL = [['SINGLE', 'Solteiro(a)'], ['MARRIED', 'Casado(a)'], ['DIVORCED', 'Divorciado(a)'], ['WIDOWED', 'ViÃºvo(a)'], ['STABLE_UNION', 'UniÃ£o estÃ¡vel']];
+const EDUCATION = [['INCOMPLETE_ELEMENTARY', 'Fundamental incompleto'], ['ELEMENTARY', 'Fundamental completo'], ['INCOMPLETE_HIGH', 'MÃ©dio incompleto'], ['HIGH', 'MÃ©dio completo'], ['INCOMPLETE_COLLEGE', 'Superior incompleto'], ['COLLEGE', 'Superior completo'], ['INCOMPLETE_POSTGRADUATE', 'PÃ³s incompleta'], ['POSTGRADUATE', 'PÃ³s completa']];
 const STEPS = [
-  { id: 'intention', eyebrow: 'Simulação real', title: 'Quanto você quer contratar?', subtitle: 'Defina valor e prazo para buscar ofertas mais aderentes.', cta: 'Continuar' },
-  { id: 'financial', eyebrow: 'Perfil financeiro', title: 'Como está seu perfil hoje?', subtitle: 'Esses dados ajudam a priorizar ofertas mais compatíveis.', cta: 'Continuar' },
-  { id: 'personal', eyebrow: 'Dados pessoais', title: 'Agora, seus dados básicos', subtitle: 'Só pedimos o necessário para seguir com a simulação real.', cta: 'Continuar' },
-  { id: 'residence', eyebrow: 'Cadastro', title: 'Nascimento e endereço', subtitle: 'Completamos o cadastro com o que o provedor realmente exige.', cta: 'Continuar' },
-  { id: 'review', eyebrow: 'Revisão final', title: 'Revise antes de buscar ofertas', subtitle: 'Confira os dados e inicie a análise das ofertas disponíveis.', cta: 'Buscar ofertas' }
+  { id: 'intention', eyebrow: 'SimulaÃ§Ã£o real', title: 'Quanto vocÃª quer contratar?', subtitle: 'Defina valor e prazo para buscar ofertas mais aderentes.', cta: 'Continuar' },
+  { id: 'financial', eyebrow: 'Perfil financeiro', title: 'Como estÃ¡ seu perfil hoje?', subtitle: 'Esses dados ajudam a priorizar ofertas mais compatÃ­veis.', cta: 'Continuar' },
+  { id: 'personal', eyebrow: 'Dados pessoais', title: 'Agora, seus dados bÃ¡sicos', subtitle: 'SÃ³ pedimos o necessÃ¡rio para seguir com a simulaÃ§Ã£o real.', cta: 'Continuar' },
+  { id: 'residence', eyebrow: 'Cadastro', title: 'Nascimento e endereÃ§o', subtitle: 'Completamos o cadastro com o que o provedor realmente exige.', cta: 'Continuar' },
+  { id: 'review', eyebrow: 'RevisÃ£o final', title: 'Revise antes de buscar ofertas', subtitle: 'Confira os dados e inicie a anÃ¡lise das ofertas disponÃ­veis.', cta: 'Buscar ofertas' }
 ];
 
 const initialData = (initialAmount = 10000) => ({
@@ -119,15 +132,22 @@ const maskedCpf = (value = '') => {
 };
 const readStored = () => {
   if (typeof window === 'undefined') return null;
-  try { return JSON.parse(window.localStorage.getItem(STORAGE_KEY) || 'null'); } catch { return null; }
+  try {
+    return JSON.parse(window.localStorage.getItem(STORAGE_KEY) || 'null');
+  } catch {
+    return null;
+  }
 };
 const writeStored = (value) => {
   if (typeof window === 'undefined') return;
-  try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(value)); } catch {}
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+  } catch {}
 };
 const clearStored = () => {
   if (typeof window !== 'undefined') window.localStorage.removeItem(STORAGE_KEY);
 };
+
 const Field = ({ label, hint, error, children }) => (
   <div className="space-y-2">
     <div className="flex items-center justify-between gap-3">
@@ -138,8 +158,13 @@ const Field = ({ label, hint, error, children }) => (
     {error ? <p className="text-xs text-rose-600">{error}</p> : null}
   </div>
 );
+
 const SegmentedOption = ({ active, onClick, title, copy }) => (
-  <button type="button" onClick={onClick} className={`rounded-2xl border px-4 py-4 text-left transition-all ${active ? 'border-primary bg-primary/5 shadow-[0_8px_24px_rgba(37,99,235,0.10)]' : 'border-border bg-white hover:border-primary/30 hover:bg-background-secondary'}`}>
+  <button
+    type="button"
+    onClick={onClick}
+    className={`rounded-2xl border px-4 py-4 text-left transition-all ${active ? 'border-primary bg-primary/5 shadow-[0_8px_24px_rgba(37,99,235,0.10)]' : 'border-border bg-white hover:border-primary/30 hover:bg-background-secondary'}`}
+  >
     <p className="text-sm font-semibold text-foreground">{title}</p>
     {copy ? <p className="mt-1 text-xs leading-5 text-muted-foreground">{copy}</p> : null}
   </button>
@@ -154,14 +179,27 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
   const [incomeInput, setIncomeInput] = useState(formatCurrencyInput(5000));
   const current = STEPS[step];
 
-  useEffect(() => { writeStored(data); }, [data]);
-  useEffect(() => { setAmountInput(formatCurrencyInput(data.intention.requestedAmount)); }, [data.intention.requestedAmount]);
-  useEffect(() => { setIncomeInput(formatCurrencyInput(data.financial.income)); }, [data.financial.income]);
+  useEffect(() => {
+    writeStored(data);
+  }, [data]);
+
+  useEffect(() => {
+    setAmountInput(formatCurrencyInput(data.intention.requestedAmount));
+  }, [data.intention.requestedAmount]);
+
+  useEffect(() => {
+    setIncomeInput(formatCurrencyInput(data.financial.income));
+  }, [data.financial.income]);
+
   useEffect(() => {
     if (!isOpen) return;
     const stored = readStored();
     const nextData = { ...initialData(initialAmount), ...(stored || {}) };
-    nextData.intention = { ...initialData(initialAmount).intention, ...(stored?.intention || {}), requestedAmount: stored?.intention?.requestedAmount || initialAmount };
+    nextData.intention = {
+      ...initialData(initialAmount).intention,
+      ...(stored?.intention || {}),
+      requestedAmount: stored?.intention?.requestedAmount || initialAmount
+    };
     nextData.financial = { ...initialData(initialAmount).financial, ...(stored?.financial || {}) };
     setStep(0);
     setIsSubmitting(false);
@@ -189,38 +227,52 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
     });
   }, [current.id, data.financial.scoreRange, data.intention.installments, data.intention.productType, data.intention.requestedAmount, isOpen]);
 
-  const setSection = (section, field, value) => setData((previous) => ({ ...previous, [section]: { ...previous[section], [field]: value } }));
+  const setSection = (section, field, value) => {
+    setData((previous) => ({
+      ...previous,
+      [section]: {
+        ...previous[section],
+        [field]: value
+      }
+    }));
+  };
 
   const intentionErrors = {
-    requestedAmount: data.intention.requestedAmount < MIN_AMOUNT || data.intention.requestedAmount > MAX_AMOUNT ? `Escolha um valor entre ${formatCurrency(MIN_AMOUNT)} e ${formatCurrency(MAX_AMOUNT)}.` : '',
-    installments: data.intention.installments < MIN_INSTALLMENTS || data.intention.installments > MAX_INSTALLMENTS ? `Escolha um prazo entre ${MIN_INSTALLMENTS}x e ${MAX_INSTALLMENTS}x.` : ''
+    requestedAmount:
+      data.intention.requestedAmount < MIN_AMOUNT || data.intention.requestedAmount > MAX_AMOUNT
+        ? `Escolha um valor entre ${formatCurrency(MIN_AMOUNT)} e ${formatCurrency(MAX_AMOUNT)}.`
+        : '',
+    installments:
+      data.intention.installments < MIN_INSTALLMENTS || data.intention.installments > MAX_INSTALLMENTS
+        ? `Escolha um prazo entre ${MIN_INSTALLMENTS}x e ${MAX_INSTALLMENTS}x.`
+        : ''
   };
   const financialErrors = {
     income: data.financial.income < MIN_INCOME ? `Informe uma renda a partir de ${formatCurrency(MIN_INCOME)}.` : '',
-    employmentStatus: data.financial.employmentStatus ? '' : 'Selecione sua situação profissional.',
+    employmentStatus: data.financial.employmentStatus ? '' : 'Selecione sua situaÃ§Ã£o profissional.',
     scoreRange: data.financial.scoreRange ? '' : 'Selecione a faixa de score.',
-    hasRestriction: typeof data.financial.hasRestriction === 'boolean' ? '' : 'Informe se há restrição no nome.'
+    hasRestriction: typeof data.financial.hasRestriction === 'boolean' ? '' : 'Informe se hÃ¡ restriÃ§Ã£o no nome.'
   };
   const personalErrors = {
     fullName: trim(data.personal.fullName).length >= 3 ? '' : 'Informe seu nome completo.',
-    cpf: validCpf(data.personal.cpf) ? '' : 'Digite um CPF válido.',
-    phone: validPhone(data.personal.phone) ? '' : 'Digite um telefone válido com DDD.',
-    email: validEmail(data.personal.email) ? '' : 'Digite um e-mail válido.',
-    birthDate: validDate(data.personal.birthDate) ? '' : 'Digite uma data de nascimento válida.',
-    mothersName: trim(data.personal.mothersName).length >= 3 ? '' : 'Informe o nome da sua mãe.',
-    gender: data.personal.gender ? '' : 'Selecione o gênero.',
+    cpf: validCpf(data.personal.cpf) ? '' : 'Digite um CPF vÃ¡lido.',
+    phone: validPhone(data.personal.phone) ? '' : 'Digite um telefone vÃ¡lido com DDD.',
+    email: validEmail(data.personal.email) ? '' : 'Digite um e-mail vÃ¡lido.',
+    birthDate: validDate(data.personal.birthDate) ? '' : 'Digite uma data de nascimento vÃ¡lida.',
+    mothersName: trim(data.personal.mothersName).length >= 3 ? '' : 'Informe o nome da sua mÃ£e.',
+    gender: data.personal.gender ? '' : 'Selecione o gÃªnero.',
     maritalStatus: data.personal.maritalStatus ? '' : 'Selecione o estado civil.',
     educationalLevel: data.personal.educationalLevel ? '' : 'Selecione a escolaridade.'
   };
   const residenceErrors = {
     birthCity: trim(data.residence.birthCity).length >= 2 ? '' : 'Informe a cidade de nascimento.',
     birthState: data.residence.birthState ? '' : 'Selecione o estado de nascimento.',
-    address: trim(data.residence.address).length >= 4 ? '' : 'Informe o endereço.',
-    number: trim(data.residence.number).length >= 1 ? '' : 'Informe o número.',
+    address: trim(data.residence.address).length >= 4 ? '' : 'Informe o endereÃ§o.',
+    number: trim(data.residence.number).length >= 1 ? '' : 'Informe o nÃºmero.',
     district: trim(data.residence.district).length >= 2 ? '' : 'Informe o bairro.',
     city: trim(data.residence.city).length >= 2 ? '' : 'Informe a cidade.',
     state: data.residence.state ? '' : 'Selecione o estado.',
-    zipCode: validZip(data.residence.zipCode) ? '' : 'Digite um CEP válido.'
+    zipCode: validZip(data.residence.zipCode) ? '' : 'Digite um CEP vÃ¡lido.'
   };
 
   const intentionValid = !Object.values(intentionErrors).some(Boolean);
@@ -232,34 +284,48 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
 
   const primaryHint = useMemo(() => {
     if (step === 0) return 'Valor e prazo podem ser ajustados a qualquer momento.';
-    if (step === 1) return 'Quanto mais preciso o perfil, melhor a ordenação das ofertas.';
+    if (step === 1) return 'Quanto mais preciso o perfil, melhor a ordenaÃ§Ã£o das ofertas.';
     if (step === 2) return 'Seus dados ficam protegidos e seguem para a API apenas no backend.';
-    if (step === 3) return 'Esses dados são exigidos pelo provedor para simulação real.';
+    if (step === 3) return 'Esses dados sÃ£o exigidos pelo provedor para simulaÃ§Ã£o real.';
     return 'Revise tudo antes de seguir para as ofertas.';
   }, [step]);
 
-  const review = useMemo(() => ([
-    ['Valor desejado', formatCurrency(data.intention.requestedAmount)],
-    ['Parcelas', `${data.intention.installments}x`],
-    ['Renda', formatCurrency(data.financial.income)],
-    ['Nome', data.personal.fullName || '--'],
-    ['CPF', maskedCpf(data.personal.cpf) || '--'],
-    ['Telefone', data.personal.phone || '--'],
-    ['E-mail', data.personal.email || '--'],
-    ['Endereço', [data.residence.address && `${data.residence.address}, ${data.residence.number}`, data.residence.district, data.residence.city && `${data.residence.city}/${data.residence.state}`].filter(Boolean).join(' • ') || '--']
-  ]), [data]);
+  const review = useMemo(
+    () => [
+      ['Valor desejado', formatCurrency(data.intention.requestedAmount)],
+      ['Parcelas', `${data.intention.installments}x`],
+      ['Renda', formatCurrency(data.financial.income)],
+      ['Nome', data.personal.fullName || '--'],
+      ['CPF', maskedCpf(data.personal.cpf) || '--'],
+      ['Telefone', data.personal.phone || '--'],
+      ['E-mail', data.personal.email || '--'],
+      [
+        'EndereÃ§o',
+        [
+          data.residence.address && `${data.residence.address}, ${data.residence.number}`,
+          data.residence.district,
+          data.residence.city && `${data.residence.city}/${data.residence.state}`
+        ]
+          .filter(Boolean)
+          .join(' Â· ') || '--'
+      ]
+    ],
+    [data]
+  );
 
   const handleAmountChange = (value) => {
     const parsed = parseCurrencyInput(value);
     setAmountInput(value === '' ? '' : formatCurrencyInput(parsed));
     if (parsed !== '') setSection('intention', 'requestedAmount', parsed);
   };
+
   const handleAmountBlur = () => {
     const parsed = parseCurrencyInput(amountInput);
     const next = parsed === '' ? MIN_AMOUNT : parsed;
     setSection('intention', 'requestedAmount', next);
     setAmountInput(formatCurrencyInput(next));
   };
+
   const handleIncomeChange = (value) => {
     const numeric = digits(value);
     if (!numeric) {
@@ -270,11 +336,15 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
     setIncomeInput(formatCurrencyInput(next));
     setSection('financial', 'income', next);
   };
+
   const handleIncomeBlur = () => {
-    const normalized = digits(incomeInput) ? clamp(parseInt(digits(incomeInput), 10) / 100, MIN_INCOME, MAX_INCOME) : MIN_INCOME;
+    const normalized = digits(incomeInput)
+      ? clamp(parseInt(digits(incomeInput), 10) / 100, MIN_INCOME, MAX_INCOME)
+      : MIN_INCOME;
     setSection('financial', 'income', normalized);
     setIncomeInput(formatCurrencyInput(normalized));
   };
+
   const nextStep = () => {
     if (!validations[step]) {
       toast.error('Revise os campos destacados para continuar.');
@@ -282,6 +352,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
     }
     setStep((currentStep) => Math.min(currentStep + 1, STEPS.length - 1));
   };
+
   const previousStep = () => setStep((currentStep) => Math.max(currentStep - 1, 0));
 
   const submit = async () => {
@@ -289,6 +360,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
       toast.error('Confirme os dados e aceite os termos para continuar.');
       return;
     }
+
     try {
       setIsSubmitting(true);
       const utm = Object.fromEntries(new URLSearchParams(window.location.search).entries());
@@ -324,62 +396,119 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
       onClose();
       navigate(`/emprestimos?credit_simulation_id=${result.simulation.id}`, { state: { creditJourney: result } });
     } catch (error) {
-      toast.error(error.message || 'Não foi possível concluir a simulação agora.');
+      toast.error(error.message || 'NÃ£o foi possÃ­vel concluir a simulaÃ§Ã£o agora.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const progress = ((step + 1) / STEPS.length) * 100;
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-h-[92vh] w-[calc(100vw-1.5rem)] max-w-[880px] overflow-hidden border border-border bg-white p-0 shadow-[0_24px_80px_rgba(15,23,42,0.18)]">
-        <DialogTitle className="sr-only">Simulação de crédito</DialogTitle>
+        <DialogTitle className="sr-only">SimulaÃ§Ã£o de crÃ©dito</DialogTitle>
         <DialogDescription className="sr-only">Preencha seus dados para visualizar ofertas personalizadas.</DialogDescription>
 
         <div className="border-b border-border bg-[linear-gradient(135deg,#f8fafc_0%,#ffffff_60%,#f7f3ec_100%)] px-5 py-4 sm:px-6">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="rounded-full border border-primary/15 bg-primary/5 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">{current.eyebrow}</span>
+                <span className="rounded-full border border-primary/15 bg-primary/5 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
+                  {current.eyebrow}
+                </span>
                 <span className="text-xs font-medium text-muted-foreground">Passo {step + 1} de {STEPS.length}</span>
               </div>
               <div className="mt-3 flex items-center gap-3">
-                {step > 0 ? <button type="button" onClick={previousStep} className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-white text-muted-foreground transition-colors hover:bg-background-secondary hover:text-foreground" aria-label="Voltar"><ChevronLeft className="h-4 w-4" /></button> : null}
+                {step > 0 ? (
+                  <button
+                    type="button"
+                    onClick={previousStep}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-white text-muted-foreground transition-colors hover:bg-background-secondary hover:text-foreground"
+                    aria-label="Voltar"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                ) : null}
                 <div className="min-w-0">
                   <h2 className="text-xl font-semibold tracking-[-0.03em] text-foreground sm:text-2xl">{current.title}</h2>
                   <p className="mt-1 text-sm text-muted-foreground">{current.subtitle}</p>
                 </div>
               </div>
             </div>
-            <button type="button" onClick={onClose} className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-white text-muted-foreground transition-colors hover:bg-background-secondary hover:text-foreground" aria-label="Fechar"><X className="h-4 w-4" /></button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-white text-muted-foreground transition-colors hover:bg-background-secondary hover:text-foreground"
+              aria-label="Fechar"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
 
           <div className="mt-4 space-y-2">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>{primaryHint}</span>
+            <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
+              <span className="min-w-0 truncate">{primaryHint}</span>
               <span>{Math.round(progress)}%</span>
             </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-border"><div className="h-full rounded-full bg-foreground transition-all duration-300" style={{ width: `${progress}%` }} /></div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-border">
+              <div className="h-full rounded-full bg-foreground transition-all duration-300" style={{ width: `${progress}%` }} />
+            </div>
           </div>
         </div>
 
         <div className="overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
           <AnimatePresence mode="wait">
-            <motion.div key={current.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18, ease: 'easeOut' }} className="space-y-5">
+            <motion.div
+              key={current.id}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+              className="space-y-5"
+            >
               {current.id === 'intention' ? (
                 <div className="space-y-5">
                   <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
                     <div className="rounded-3xl border border-border bg-background-secondary p-4 sm:p-5">
                       <Field label="Valor desejado" hint={`De ${formatCurrency(MIN_AMOUNT)} a ${formatCurrency(MAX_AMOUNT)}`} error={intentionErrors.requestedAmount}>
-                        <Input inputMode="numeric" value={amountInput} onChange={(event) => handleAmountChange(event.target.value)} onBlur={handleAmountBlur} className="h-14 rounded-2xl border-border bg-white text-xl font-semibold tracking-[-0.03em] text-foreground" />
+                        <Input
+                          inputMode="numeric"
+                          value={amountInput}
+                          onChange={(event) => handleAmountChange(event.target.value)}
+                          onBlur={handleAmountBlur}
+                          className="h-14 rounded-2xl border-border bg-white text-xl font-semibold tracking-[-0.03em] text-foreground"
+                        />
                       </Field>
                       <div className="mt-4">
-                        <Slider value={[data.intention.requestedAmount]} onValueChange={(value) => setSection('intention', 'requestedAmount', value[0])} min={MIN_AMOUNT} max={MAX_AMOUNT} step={500} className="py-2" />
-                        <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground"><span>{formatCurrency(MIN_AMOUNT)}</span><span>{formatCurrency(MAX_AMOUNT)}</span></div>
+                        <Slider
+                          value={[data.intention.requestedAmount]}
+                          onValueChange={(value) => setSection('intention', 'requestedAmount', value[0])}
+                          min={MIN_AMOUNT}
+                          max={MAX_AMOUNT}
+                          step={500}
+                          className="py-2"
+                        />
+                        <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+                          <span>{formatCurrency(MIN_AMOUNT)}</span>
+                          <span>{formatCurrency(MAX_AMOUNT)}</span>
+                        </div>
                       </div>
                       <div className="mt-4 flex flex-wrap gap-2">
-                        {QUICK_AMOUNTS.map((value) => <button key={value} type="button" onClick={() => setSection('intention', 'requestedAmount', value)} className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${data.intention.requestedAmount === value ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-white text-muted-foreground hover:border-primary/25 hover:text-foreground'}`}>{formatCurrency(value)}</button>)}
+                        {QUICK_AMOUNTS.map((value) => (
+                          <button
+                            key={value}
+                            type="button"
+                            onClick={() => setSection('intention', 'requestedAmount', value)}
+                            className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
+                              data.intention.requestedAmount === value
+                                ? 'border-primary bg-primary/10 text-primary'
+                                : 'border-border bg-white text-muted-foreground hover:border-primary/25 hover:text-foreground'
+                            }`}
+                          >
+                            {formatCurrency(value)}
+                          </button>
+                        ))}
                       </div>
                     </div>
 
@@ -392,11 +521,34 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                         </div>
                       </Field>
                       <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4">
-                        {POPULAR_INSTALLMENTS.map((item) => <button key={item} type="button" onClick={() => setSection('intention', 'installments', item)} className={`rounded-2xl border px-3 py-3 text-sm font-medium transition-all ${data.intention.installments === item ? 'border-primary bg-primary text-white' : 'border-border bg-white text-foreground hover:border-primary/30 hover:bg-background-secondary'}`}>{item}x</button>)}
+                        {POPULAR_INSTALLMENTS.map((item) => (
+                          <button
+                            key={item}
+                            type="button"
+                            onClick={() => setSection('intention', 'installments', item)}
+                            className={`rounded-2xl border px-3 py-3 text-sm font-medium transition-all ${
+                              data.intention.installments === item
+                                ? 'border-primary bg-primary text-white'
+                                : 'border-border bg-white text-foreground hover:border-primary/30 hover:bg-background-secondary'
+                            }`}
+                          >
+                            {item}x
+                          </button>
+                        ))}
                       </div>
                       <div className="mt-4">
-                        <Slider value={[data.intention.installments]} onValueChange={(value) => setSection('intention', 'installments', value[0])} min={MIN_INSTALLMENTS} max={MAX_INSTALLMENTS} step={1} className="py-2" />
-                        <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground"><span>{MIN_INSTALLMENTS}x</span><span>{MAX_INSTALLMENTS}x</span></div>
+                        <Slider
+                          value={[data.intention.installments]}
+                          onValueChange={(value) => setSection('intention', 'installments', value[0])}
+                          min={MIN_INSTALLMENTS}
+                          max={MAX_INSTALLMENTS}
+                          step={1}
+                          className="py-2"
+                        />
+                        <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+                          <span>{MIN_INSTALLMENTS}x</span>
+                          <span>{MAX_INSTALLMENTS}x</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -408,58 +560,169 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                   <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
                     <div className="rounded-3xl border border-border bg-background-secondary p-4 sm:p-5">
                       <Field label="Renda mensal" hint={`A partir de ${formatCurrency(MIN_INCOME)}`} error={financialErrors.income}>
-                        <Input inputMode="numeric" value={incomeInput} onChange={(event) => handleIncomeChange(event.target.value)} onBlur={handleIncomeBlur} className="h-14 rounded-2xl border-border bg-white text-xl font-semibold tracking-[-0.03em] text-foreground" />
+                        <Input
+                          inputMode="numeric"
+                          value={incomeInput}
+                          onChange={(event) => handleIncomeChange(event.target.value)}
+                          onBlur={handleIncomeBlur}
+                          className="h-14 rounded-2xl border-border bg-white text-xl font-semibold tracking-[-0.03em] text-foreground"
+                        />
                       </Field>
                       <div className="mt-4">
-                        <Slider value={[data.financial.income]} onValueChange={(value) => setSection('financial', 'income', value[0])} min={MIN_INCOME} max={MAX_INCOME} step={500} className="py-2" />
-                        <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground"><span>{formatCurrency(MIN_INCOME)}</span><span>{formatCurrency(MAX_INCOME)}</span></div>
+                        <Slider
+                          value={[data.financial.income]}
+                          onValueChange={(value) => setSection('financial', 'income', value[0])}
+                          min={MIN_INCOME}
+                          max={MAX_INCOME}
+                          step={500}
+                          className="py-2"
+                        />
+                        <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+                          <span>{formatCurrency(MIN_INCOME)}</span>
+                          <span>{formatCurrency(MAX_INCOME)}</span>
+                        </div>
                       </div>
                     </div>
 
                     <div className="space-y-4">
-                      <Field label="Situação profissional" error={financialErrors.employmentStatus}>
-                        <div className="grid grid-cols-2 gap-2 xl:grid-cols-3">{JOBS.map((job) => <SegmentedOption key={job.id} active={data.financial.employmentStatus === job.id} onClick={() => setSection('financial', 'employmentStatus', job.id)} title={job.label} />)}</div>
+                      <Field label="SituaÃ§Ã£o profissional" error={financialErrors.employmentStatus}>
+                        <div className="grid grid-cols-2 gap-2 xl:grid-cols-3">
+                          {JOBS.map((job) => (
+                            <SegmentedOption
+                              key={job.id}
+                              active={data.financial.employmentStatus === job.id}
+                              onClick={() => setSection('financial', 'employmentStatus', job.id)}
+                              title={job.label}
+                            />
+                          ))}
+                        </div>
                       </Field>
                       <Field label="Faixa de score" error={financialErrors.scoreRange}>
-                        <div className="grid gap-2 sm:grid-cols-3">{SCORES.map((score) => <SegmentedOption key={score.id} active={data.financial.scoreRange === score.id} onClick={() => setSection('financial', 'scoreRange', score.id)} title={score.title} copy={score.copy} />)}</div>
+                        <div className="grid gap-2 sm:grid-cols-3">
+                          {SCORES.map((score) => (
+                            <SegmentedOption
+                              key={score.id}
+                              active={data.financial.scoreRange === score.id}
+                              onClick={() => setSection('financial', 'scoreRange', score.id)}
+                              title={score.title}
+                              copy={score.copy}
+                            />
+                          ))}
+                        </div>
                       </Field>
                     </div>
                   </div>
-                  <Field label="Existe restrição no nome?" error={financialErrors.hasRestriction}>
-                    <div className="grid gap-2 sm:grid-cols-2">{[{ value: false, title: 'Não', copy: 'Meu nome está regular.' }, { value: true, title: 'Sim', copy: 'Tenho alguma restrição.' }].map((item) => <SegmentedOption key={String(item.value)} active={data.financial.hasRestriction === item.value} onClick={() => setSection('financial', 'hasRestriction', item.value)} title={item.title} copy={item.copy} />)}</div>
+                  <Field label="Existe restriÃ§Ã£o no nome?" error={financialErrors.hasRestriction}>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {[
+                        { value: false, title: 'NÃ£o', copy: 'Meu nome estÃ¡ regular.' },
+                        { value: true, title: 'Sim', copy: 'Tenho alguma restriÃ§Ã£o.' }
+                      ].map((item) => (
+                        <SegmentedOption
+                          key={String(item.value)}
+                          active={data.financial.hasRestriction === item.value}
+                          onClick={() => setSection('financial', 'hasRestriction', item.value)}
+                          title={item.title}
+                          copy={item.copy}
+                        />
+                      ))}
+                    </div>
                   </Field>
                 </div>
               ) : null}
+
               {current.id === 'personal' ? (
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Nome completo" error={personalErrors.fullName}><Input placeholder="Seu nome completo" value={data.personal.fullName} onChange={(event) => setSection('personal', 'fullName', event.target.value)} className="h-12 rounded-2xl" /></Field>
-                  <Field label="CPF" error={personalErrors.cpf}><Input inputMode="numeric" placeholder="000.000.000-00" value={data.personal.cpf} onChange={(event) => setSection('personal', 'cpf', formatCpf(event.target.value))} className="h-12 rounded-2xl" /></Field>
-                  <Field label="Telefone" error={personalErrors.phone}><Input inputMode="tel" placeholder="(11) 99999-9999" value={data.personal.phone} onChange={(event) => setSection('personal', 'phone', formatPhone(event.target.value))} className="h-12 rounded-2xl" /></Field>
-                  <Field label="E-mail" error={personalErrors.email}><Input type="email" placeholder="voce@exemplo.com" value={data.personal.email} onChange={(event) => setSection('personal', 'email', event.target.value)} className="h-12 rounded-2xl" /></Field>
-                  <Field label="Data de nascimento" error={personalErrors.birthDate}><div className="relative"><CalendarDays className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" /><Input inputMode="numeric" placeholder="dd/mm/aaaa" value={data.personal.birthDate} onChange={(event) => setSection('personal', 'birthDate', formatDate(event.target.value))} className="h-12 rounded-2xl pl-11" /></div></Field>
-                  <Field label="Nome da mãe" error={personalErrors.mothersName}><Input placeholder="Nome completo da sua mãe" value={data.personal.mothersName} onChange={(event) => setSection('personal', 'mothersName', event.target.value)} className="h-12 rounded-2xl" /></Field>
-                  <Field label="Gênero" error={personalErrors.gender}><Select value={data.personal.gender} onValueChange={(value) => setSection('personal', 'gender', value)}><SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Selecione" /></SelectTrigger><SelectContent>{GENDERS.map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectContent></Select></Field>
-                  <Field label="Estado civil" error={personalErrors.maritalStatus}><Select value={data.personal.maritalStatus} onValueChange={(value) => setSection('personal', 'maritalStatus', value)}><SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Selecione" /></SelectTrigger><SelectContent>{MARITAL.map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectContent></Select></Field>
-                  <div className="sm:col-span-2"><Field label="Escolaridade" error={personalErrors.educationalLevel}><Select value={data.personal.educationalLevel} onValueChange={(value) => setSection('personal', 'educationalLevel', value)}><SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Selecione" /></SelectTrigger><SelectContent>{EDUCATION.map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectContent></Select></Field></div>
+                  <Field label="Nome completo" error={personalErrors.fullName}>
+                    <Input placeholder="Seu nome completo" value={data.personal.fullName} onChange={(event) => setSection('personal', 'fullName', event.target.value)} className="h-12 rounded-2xl" />
+                  </Field>
+                  <Field label="CPF" error={personalErrors.cpf}>
+                    <Input inputMode="numeric" placeholder="000.000.000-00" value={data.personal.cpf} onChange={(event) => setSection('personal', 'cpf', formatCpf(event.target.value))} className="h-12 rounded-2xl" />
+                  </Field>
+                  <Field label="Telefone" error={personalErrors.phone}>
+                    <Input inputMode="tel" placeholder="(11) 99999-9999" value={data.personal.phone} onChange={(event) => setSection('personal', 'phone', formatPhone(event.target.value))} className="h-12 rounded-2xl" />
+                  </Field>
+                  <Field label="E-mail" error={personalErrors.email}>
+                    <Input type="email" placeholder="voce@exemplo.com" value={data.personal.email} onChange={(event) => setSection('personal', 'email', event.target.value)} className="h-12 rounded-2xl" />
+                  </Field>
+                  <Field label="Data de nascimento" error={personalErrors.birthDate}>
+                    <div className="relative">
+                      <CalendarDays className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input inputMode="numeric" placeholder="dd/mm/aaaa" value={data.personal.birthDate} onChange={(event) => setSection('personal', 'birthDate', formatDate(event.target.value))} className="h-12 rounded-2xl pl-11" />
+                    </div>
+                  </Field>
+                  <Field label="Nome da mÃ£e" error={personalErrors.mothersName}>
+                    <Input placeholder="Nome completo da sua mÃ£e" value={data.personal.mothersName} onChange={(event) => setSection('personal', 'mothersName', event.target.value)} className="h-12 rounded-2xl" />
+                  </Field>
+                  <Field label="GÃªnero" error={personalErrors.gender}>
+                    <Select value={data.personal.gender} onValueChange={(value) => setSection('personal', 'gender', value)}>
+                      <SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                      <SelectContent>{GENDERS.map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectContent>
+                    </Select>
+                  </Field>
+                  <Field label="Estado civil" error={personalErrors.maritalStatus}>
+                    <Select value={data.personal.maritalStatus} onValueChange={(value) => setSection('personal', 'maritalStatus', value)}>
+                      <SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                      <SelectContent>{MARITAL.map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectContent>
+                    </Select>
+                  </Field>
+                  <div className="sm:col-span-2">
+                    <Field label="Escolaridade" error={personalErrors.educationalLevel}>
+                      <Select value={data.personal.educationalLevel} onValueChange={(value) => setSection('personal', 'educationalLevel', value)}>
+                        <SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                        <SelectContent>{EDUCATION.map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectContent>
+                      </Select>
+                    </Field>
+                  </div>
                 </div>
               ) : null}
 
               {current.id === 'residence' ? (
                 <div className="space-y-5">
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <Field label="Cidade de nascimento" error={residenceErrors.birthCity}><Input placeholder="Ex.: São Paulo" value={data.residence.birthCity} onChange={(event) => setSection('residence', 'birthCity', event.target.value)} className="h-12 rounded-2xl" /></Field>
-                    <Field label="Estado de nascimento" error={residenceErrors.birthState}><Select value={data.residence.birthState} onValueChange={(value) => setSection('residence', 'birthState', value)}><SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Selecione" /></SelectTrigger><SelectContent>{STATES.map((state) => <SelectItem key={state} value={state}>{state}</SelectItem>)}</SelectContent></Select></Field>
+                    <Field label="Cidade de nascimento" error={residenceErrors.birthCity}>
+                      <Input placeholder="Ex.: SÃ£o Paulo" value={data.residence.birthCity} onChange={(event) => setSection('residence', 'birthCity', event.target.value)} className="h-12 rounded-2xl" />
+                    </Field>
+                    <Field label="Estado de nascimento" error={residenceErrors.birthState}>
+                      <Select value={data.residence.birthState} onValueChange={(value) => setSection('residence', 'birthState', value)}>
+                        <SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                        <SelectContent>{STATES.map((state) => <SelectItem key={state} value={state}>{state}</SelectItem>)}</SelectContent>
+                      </Select>
+                    </Field>
                   </div>
 
                   <div className="rounded-3xl border border-border bg-background-secondary p-4 sm:p-5">
-                    <div className="mb-4 flex items-start gap-3"><div className="rounded-full border border-border bg-white p-2"><Home className="h-4 w-4 text-foreground" /></div><div><p className="text-sm font-semibold text-foreground">Endereço residencial</p><p className="text-sm text-muted-foreground">Informe o endereço onde você mora hoje.</p></div></div>
+                    <div className="mb-4 flex items-start gap-3">
+                      <div className="rounded-full border border-border bg-white p-2"><Home className="h-4 w-4 text-foreground" /></div>
+                      <div>
+                        <p className="text-sm font-semibold text-foreground">EndereÃ§o residencial</p>
+                        <p className="text-sm text-muted-foreground">Informe o endereÃ§o onde vocÃª mora hoje.</p>
+                      </div>
+                    </div>
                     <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="sm:col-span-2"><Field label="Endereço" error={residenceErrors.address}><Input placeholder="Rua, avenida, alameda..." value={data.residence.address} onChange={(event) => setSection('residence', 'address', event.target.value)} className="h-12 rounded-2xl" /></Field></div>
-                      <Field label="Número" error={residenceErrors.number}><Input placeholder="123" value={data.residence.number} onChange={(event) => setSection('residence', 'number', event.target.value)} className="h-12 rounded-2xl" /></Field>
-                      <Field label="Bairro" error={residenceErrors.district}><Input placeholder="Seu bairro" value={data.residence.district} onChange={(event) => setSection('residence', 'district', event.target.value)} className="h-12 rounded-2xl" /></Field>
-                      <Field label="Cidade" error={residenceErrors.city}><Input placeholder="Sua cidade" value={data.residence.city} onChange={(event) => setSection('residence', 'city', event.target.value)} className="h-12 rounded-2xl" /></Field>
-                      <Field label="UF" error={residenceErrors.state}><Select value={data.residence.state} onValueChange={(value) => setSection('residence', 'state', value)}><SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Selecione" /></SelectTrigger><SelectContent>{STATES.map((state) => <SelectItem key={state} value={state}>{state}</SelectItem>)}</SelectContent></Select></Field>
-                      <Field label="CEP" error={residenceErrors.zipCode}><Input inputMode="numeric" placeholder="00000-000" value={data.residence.zipCode} onChange={(event) => setSection('residence', 'zipCode', formatZip(event.target.value))} className="h-12 rounded-2xl" /></Field>
+                      <div className="sm:col-span-2">
+                        <Field label="EndereÃ§o" error={residenceErrors.address}>
+                          <Input placeholder="Rua, avenida, alameda..." value={data.residence.address} onChange={(event) => setSection('residence', 'address', event.target.value)} className="h-12 rounded-2xl" />
+                        </Field>
+                      </div>
+                      <Field label="NÃºmero" error={residenceErrors.number}>
+                        <Input placeholder="123" value={data.residence.number} onChange={(event) => setSection('residence', 'number', event.target.value)} className="h-12 rounded-2xl" />
+                      </Field>
+                      <Field label="Bairro" error={residenceErrors.district}>
+                        <Input placeholder="Seu bairro" value={data.residence.district} onChange={(event) => setSection('residence', 'district', event.target.value)} className="h-12 rounded-2xl" />
+                      </Field>
+                      <Field label="Cidade" error={residenceErrors.city}>
+                        <Input placeholder="Sua cidade" value={data.residence.city} onChange={(event) => setSection('residence', 'city', event.target.value)} className="h-12 rounded-2xl" />
+                      </Field>
+                      <Field label="UF" error={residenceErrors.state}>
+                        <Select value={data.residence.state} onValueChange={(value) => setSection('residence', 'state', value)}>
+                          <SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                          <SelectContent>{STATES.map((state) => <SelectItem key={state} value={state}>{state}</SelectItem>)}</SelectContent>
+                        </Select>
+                      </Field>
+                      <Field label="CEP" error={residenceErrors.zipCode}>
+                        <Input inputMode="numeric" placeholder="00000-000" value={data.residence.zipCode} onChange={(event) => setSection('residence', 'zipCode', formatZip(event.target.value))} className="h-12 rounded-2xl" />
+                      </Field>
                     </div>
                   </div>
                 </div>
@@ -467,9 +730,26 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
 
               {current.id === 'review' ? (
                 <div className="space-y-5">
-                  <div className="rounded-3xl border border-border bg-white p-4 sm:p-5"><div className="grid gap-3 sm:grid-cols-2">{review.map(([label, value]) => <div key={label} className="rounded-2xl border border-border bg-background-secondary px-4 py-3"><p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">{label}</p><p className="mt-1 text-sm font-semibold text-foreground">{value}</p></div>)}</div></div>
-                  <div className="rounded-2xl border border-border bg-background-secondary p-4"><div className="flex items-start gap-3"><ShieldCheck className="mt-0.5 h-5 w-5 text-foreground" /><p className="text-sm text-muted-foreground">Seus dados são enviados apenas para a API da Cote Juros. A integração com o provedor acontece somente no backend.</p></div></div>
-                  <label className="flex items-start gap-3 rounded-2xl border border-border bg-white px-4 py-4 text-sm text-muted-foreground"><Checkbox checked={data.termsAccepted} onCheckedChange={(checked) => setData((previous) => ({ ...previous, termsAccepted: Boolean(checked) }))} /><span>Concordo com os Termos de Uso e Política de Privacidade para iniciar a análise das ofertas.</span></label>
+                  <div className="rounded-3xl border border-border bg-white p-4 sm:p-5">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {review.map(([label, value]) => (
+                        <div key={label} className="rounded-2xl border border-border bg-background-secondary px-4 py-3">
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">{label}</p>
+                          <p className="mt-1 text-sm font-semibold text-foreground">{value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="rounded-2xl border border-border bg-background-secondary p-4">
+                    <div className="flex items-start gap-3">
+                      <ShieldCheck className="mt-0.5 h-5 w-5 text-foreground" />
+                      <p className="text-sm text-muted-foreground">Seus dados sÃ£o enviados apenas para a API da Cote Juros. A integraÃ§Ã£o com o provedor acontece somente no backend.</p>
+                    </div>
+                  </div>
+                  <label className="flex items-start gap-3 rounded-2xl border border-border bg-white px-4 py-4 text-sm text-muted-foreground">
+                    <Checkbox checked={data.termsAccepted} onCheckedChange={(checked) => setData((previous) => ({ ...previous, termsAccepted: Boolean(checked) }))} />
+                    <span>Concordo com os Termos de Uso e PolÃ­tica de Privacidade para iniciar a anÃ¡lise das ofertas.</span>
+                  </label>
                   {!data.termsAccepted ? <p className="text-xs text-rose-600">Aceite os termos para buscar as ofertas.</p> : null}
                 </div>
               ) : null}
@@ -479,14 +759,32 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
 
         <div className="border-t border-border bg-white px-5 py-4 sm:px-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-muted-foreground">{step < STEPS.length - 1 ? 'Você pode voltar e ajustar qualquer etapa sem perder o que já preencheu.' : 'Tudo pronto. Agora vamos buscar as melhores ofertas para o seu perfil.'}</p>
+            <p className="text-sm text-muted-foreground">
+              {step < STEPS.length - 1
+                ? 'VocÃª pode voltar e ajustar qualquer etapa sem perder o que jÃ¡ preencheu.'
+                : 'Tudo pronto. Agora vamos buscar as melhores ofertas para o seu perfil.'}
+            </p>
             <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-              {step > 0 ? <Button type="button" variant="outline" className="w-full sm:w-auto" onClick={previousStep}>Voltar</Button> : null}
+              {step > 0 ? (
+                <Button type="button" variant="outline" className="w-full sm:w-auto" onClick={previousStep}>
+                  Voltar
+                </Button>
+              ) : null}
               {step < STEPS.length - 1 ? (
-                <Button type="button" className="w-full sm:w-auto" disabled={!validations[step]} onClick={nextStep}>{current.cta} <ArrowRight className="h-4 w-4" /></Button>
+                <Button type="button" className="w-full sm:w-auto" disabled={!validations[step]} onClick={nextStep}>
+                  {current.cta} <ArrowRight className="h-4 w-4" />
+                </Button>
               ) : (
                 <Button type="button" className="w-full sm:w-auto" disabled={!reviewValid || isSubmitting} onClick={submit}>
-                  {isSubmitting ? <><LoaderCircle className="h-4 w-4 animate-spin" /> Buscando ofertas</> : <>Buscar ofertas <ArrowRight className="h-4 w-4" /></>}
+                  {isSubmitting ? (
+                    <>
+                      <LoaderCircle className="h-4 w-4 animate-spin" /> Buscar ofertas
+                    </>
+                  ) : (
+                    <>
+                      Buscar ofertas <ArrowRight className="h-4 w-4" />
+                    </>
+                  )}
                 </Button>
               )}
             </div>
