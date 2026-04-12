@@ -1,15 +1,36 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, CalendarDays, Clock, ExternalLink, User } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CalendarDays, Clock, ExternalLink, Home, User } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb.jsx';
 import { AdSpace, ADSENSE_SLOT_IDS } from '@/components/AdSpace.jsx';
+import BlogArticleCard from '@/components/BlogArticleCard.jsx';
+import BlogFeedbackCard from '@/components/BlogFeedbackCard.jsx';
+import BlogTableOfContents from '@/components/BlogTableOfContents.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
-import { getArticleImage, getArticleSummary, normalizeArticleSlug } from '@/lib/content/articles.js';
+import { buildArticleToc, getArticleCategoryKey, getArticleImage, getArticleSummary, normalizeArticleSlug } from '@/lib/content/articles.js';
 
 const fallbackThumbnail = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=80';
+
+const CATEGORY_ROUTES = [
+  { match: 'emprest', path: '/emprestimos', label: 'Empréstimos' },
+  { match: 'cart', path: '/cartoes-de-credito', label: 'Cartões de crédito' },
+  { match: 'score', path: '/educacao-financeira', label: 'Score de crédito' },
+  { match: 'financi', path: '/financiamento', label: 'Financiamento' },
+  { match: 'divid', path: '/juros-abusivos', label: 'Dívidas e renegociação' },
+  { match: 'educ', path: '/educacao-financeira', label: 'Educação financeira' },
+  { match: 'organiz', path: '/educacao-financeira', label: 'Organização financeira' }
+];
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString('pt-BR', {
@@ -35,6 +56,11 @@ const toFaqSchema = (article) => {
   };
 };
 
+const getCategoryRoute = (article) => {
+  const key = getArticleCategoryKey(article);
+  return CATEGORY_ROUTES.find((item) => key.includes(item.match)) || { path: '/blog', label: article?.category || 'Blog' };
+};
+
 function BlogArticlePage() {
   const { articleSlug } = useParams();
   const [articles, setArticles] = useState([]);
@@ -50,18 +76,39 @@ function BlogArticlePage() {
       .finally(() => setLoading(false));
   }, [articleSlug]);
 
+  const categoryRoute = useMemo(() => getCategoryRoute(article), [article]);
+
   const relatedArticles = useMemo(() => {
     if (!article) return [];
+    const currentCategory = getArticleCategoryKey(article);
+
     return articles
       .filter((item) => normalizeArticleSlug(item) !== normalizeArticleSlug(article))
       .sort((a, b) => {
-        const aSameCategory = a.category === article.category ? 1 : 0;
-        const bSameCategory = b.category === article.category ? 1 : 0;
-        if (aSameCategory !== bSameCategory) return bSameCategory - aSameCategory;
+        const aCategoryScore = getArticleCategoryKey(a).includes(currentCategory) ? 2 : 0;
+        const bCategoryScore = getArticleCategoryKey(b).includes(currentCategory) ? 2 : 0;
+        const aKeywordScore = (a.keywords || []).some((keyword) => (article.keywords || []).includes(keyword)) ? 1 : 0;
+        const bKeywordScore = (b.keywords || []).some((keyword) => (article.keywords || []).includes(keyword)) ? 1 : 0;
+        if (aCategoryScore !== bCategoryScore) return bCategoryScore - aCategoryScore;
+        if (aKeywordScore !== bKeywordScore) return bKeywordScore - aKeywordScore;
         return new Date(b.publishDate) - new Date(a.publishDate);
       })
       .slice(0, 4);
   }, [article, articles]);
+
+  const orderedArticles = useMemo(
+    () => [...articles].sort((a, b) => new Date(a.publishDate) - new Date(b.publishDate)),
+    [articles]
+  );
+
+  const currentIndex = useMemo(
+    () => orderedArticles.findIndex((item) => normalizeArticleSlug(item) === articleSlug),
+    [orderedArticles, articleSlug]
+  );
+
+  const previousArticle = currentIndex > 0 ? orderedArticles[currentIndex - 1] : null;
+  const nextArticle = currentIndex >= 0 && currentIndex < orderedArticles.length - 1 ? orderedArticles[currentIndex + 1] : null;
+  const tocItems = useMemo(() => buildArticleToc(article), [article]);
 
   if (loading) {
     return (
@@ -99,22 +146,53 @@ function BlogArticlePage() {
         {faqSchema ? <script type="application/ld+json">{JSON.stringify(faqSchema)}</script> : null}
       </Helmet>
 
-      <section className="relative overflow-hidden border-b border-border bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900 py-16 md:py-20">
+      <section className="relative overflow-hidden border-b border-border bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900 py-14 md:py-18">
         <div className="pointer-events-none absolute inset-0 hero-tech-grid opacity-40" />
-        <div className="page-shell relative z-10">
-          <Link to="/blog" className="mb-6 inline-flex items-center gap-2 text-sm text-slate-300 transition-colors hover:text-white">
+        <div className="page-shell relative z-10 space-y-6">
+          <Breadcrumb>
+            <BreadcrumbList className="text-slate-300">
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/" className="inline-flex items-center gap-2">
+                    <Home className="h-4 w-4" />
+                    Início
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/blog">Blog</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to={categoryRoute.path}>{categoryRoute.label}</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{article.title}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+
+          <Link to="/blog" className="inline-flex items-center gap-2 text-sm text-slate-300 transition-colors hover:text-white">
             <ArrowLeft className="h-4 w-4" />
             Voltar para o blog
           </Link>
 
-          <Badge variant="outline" className="mb-5 border-white/20 bg-white/10 text-white">
+          <Badge variant="outline" className="border-white/20 bg-white/10 text-white">
             {article.category}
           </Badge>
 
-          <h1 className="max-w-4xl text-white">{article.h1 || article.title}</h1>
-          <p className="mt-5 max-w-3xl text-lg text-slate-300">{getArticleSummary(article)}</p>
+          <div className="space-y-5">
+            <h1 className="max-w-4xl text-white">{article.h1 || article.title}</h1>
+            <p className="max-w-3xl text-lg leading-8 text-slate-300">{getArticleSummary(article)}</p>
+          </div>
 
-          <div className="mt-7 flex flex-wrap gap-5 text-sm text-slate-300">
+          <div className="flex flex-wrap gap-5 text-sm text-slate-300">
             <span className="inline-flex items-center gap-2">
               <User className="h-4 w-4 text-sky-300" />
               {article.author}
@@ -131,15 +209,17 @@ function BlogArticlePage() {
         </div>
       </section>
 
-      <section className="bg-background py-12 md:py-14">
-        <div className="page-shell grid gap-10 lg:grid-cols-[1fr_300px]">
-          <article className="min-w-0">
-            <div className="mb-8 overflow-hidden rounded-[18px] border border-border bg-white">
+      <section className="bg-background py-10 md:py-12">
+        <div className="page-shell grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
+          <article className="min-w-0 space-y-8">
+            <div className="overflow-hidden rounded-[20px] border border-border bg-white">
               <img src={getArticleImage(article, fallbackThumbnail)} alt={article.title} className="h-full max-h-[460px] w-full object-cover" />
             </div>
 
+            {tocItems.length >= 3 ? <div className="lg:hidden"><BlogTableOfContents items={tocItems} /></div> : null}
+
             <Card className="border-border bg-white">
-              <CardContent className="space-y-8 p-7 md:p-10">
+              <CardContent className="space-y-8 p-6 md:p-10">
                 {Array.isArray(article.intro)
                   ? article.intro.map((paragraph, index) => (
                     <React.Fragment key={`intro-${index}`}>
@@ -151,7 +231,7 @@ function BlogArticlePage() {
 
                 {Array.isArray(article.sections)
                   ? article.sections.map((section, index) => (
-                    <section key={section.heading} className="space-y-4">
+                    <section key={section.heading} id={`secao-${index + 1}`} className="scroll-mt-28 space-y-4">
                       <h2 className="text-2xl text-foreground">{section.heading}</h2>
                       {section.paragraphs?.map((paragraph, paragraphIndex) => (
                         <p key={`${section.heading}-${paragraphIndex}`} className="text-base leading-8 text-muted-foreground md:text-lg">
@@ -171,7 +251,7 @@ function BlogArticlePage() {
                   : null}
 
                 {Array.isArray(article.faq) && article.faq.length ? (
-                  <section className="space-y-4 rounded-[18px] border border-border bg-background-secondary p-6 md:p-8">
+                  <section id="faq" className="scroll-mt-28 space-y-4 rounded-[18px] border border-border bg-background-secondary p-6 md:p-8">
                     <h2 className="text-2xl text-foreground">Perguntas frequentes</h2>
                     <div className="space-y-5">
                       {article.faq.map((item) => (
@@ -185,7 +265,7 @@ function BlogArticlePage() {
                 ) : null}
 
                 {Array.isArray(article.conclusion) ? (
-                  <section className="space-y-4">
+                  <section id="conclusao" className="scroll-mt-28 space-y-4">
                     <h2 className="text-2xl text-foreground">Conclusão</h2>
                     {article.conclusion.map((paragraph, index) => (
                       <p key={`conclusion-${index}`} className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
@@ -198,20 +278,23 @@ function BlogArticlePage() {
                     <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">{article.cta.eyebrow}</p>
                     <h2 className="mt-3 text-2xl text-foreground">{article.cta.title}</h2>
                     <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground">{article.cta.description}</p>
-                    <div className="mt-5">
+                    <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                       <a href={article.cta.href} className="inline-flex">
                         <Button>
                           {article.cta.label}
                           <ExternalLink className="h-4 w-4" />
                         </Button>
                       </a>
+                      <Link to="/cote-finance-ai" className="inline-flex">
+                        <Button variant="outline">Conhecer o Cote Finance AI</Button>
+                      </Link>
                     </div>
                   </section>
                 ) : null}
 
                 {Array.isArray(article.internalLinks) && article.internalLinks.length ? (
                   <section className="space-y-4 border-t border-border pt-6">
-                    <h2 className="text-2xl text-foreground">Leituras relacionadas</h2>
+                    <h2 className="text-2xl text-foreground">Continue a leitura</h2>
                     <div className="grid gap-3 md:grid-cols-2">
                       {article.internalLinks.map((item) => (
                         <Link
@@ -227,52 +310,93 @@ function BlogArticlePage() {
                   </section>
                 ) : null}
 
+                <BlogFeedbackCard />
                 <AdSpace height="150px" adSlot={ADSENSE_SLOT_IDS.articleFooter} />
               </CardContent>
             </Card>
+
+            {(previousArticle || nextArticle) ? (
+              <section className="grid gap-4 md:grid-cols-2">
+                {previousArticle ? (
+                  <Link
+                    to={`/blog/${normalizeArticleSlug(previousArticle)}`}
+                    className="rounded-[20px] border border-border bg-white p-5 transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Artigo anterior</p>
+                    <div className="mt-3 flex items-start gap-3">
+                      <ArrowLeft className="mt-1 h-4 w-4 text-primary" />
+                      <div>
+                        <h3 className="text-lg text-foreground">{previousArticle.title}</h3>
+                        <p className="mt-1 text-sm text-muted-foreground">{getArticleSummary(previousArticle)}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ) : <div />}
+
+                {nextArticle ? (
+                  <Link
+                    to={`/blog/${normalizeArticleSlug(nextArticle)}`}
+                    className="rounded-[20px] border border-border bg-white p-5 text-left transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Próximo artigo</p>
+                    <div className="mt-3 flex items-start gap-3">
+                      <div>
+                        <h3 className="text-lg text-foreground">{nextArticle.title}</h3>
+                        <p className="mt-1 text-sm text-muted-foreground">{getArticleSummary(nextArticle)}</p>
+                      </div>
+                      <ArrowRight className="mt-1 h-4 w-4 text-primary" />
+                    </div>
+                  </Link>
+                ) : null}
+              </section>
+            ) : null}
           </article>
 
           <aside className="space-y-6 lg:sticky lg:top-24 lg:h-fit">
-            <AdSpace height="320px" adSlot={ADSENSE_SLOT_IDS.sidebar} />
+            {tocItems.length >= 3 ? <BlogTableOfContents items={tocItems} /> : null}
 
             <Card className="border-border bg-white">
               <CardContent className="space-y-3 p-6">
-                <h3 className="text-xl">Continue sua leitura</h3>
+                <h3 className="text-xl">Próximos passos</h3>
                 <p className="text-sm text-muted-foreground">
-                  Veja comparadores, simuladores e guias práticos para decidir com mais clareza antes de contratar crédito.
+                  Depois da leitura, você pode explorar comparadores, simuladores e um diagnóstico financeiro mais completo.
                 </p>
-                <Link to="/ferramentas">
-                  <Button variant="outline" className="w-full">Abrir ferramentas</Button>
-                </Link>
+                <div className="flex flex-col gap-3">
+                  <Link to={categoryRoute.path}>
+                    <Button variant="outline" className="w-full">Explorar {categoryRoute.label}</Button>
+                  </Link>
+                  <Link to="/ferramentas">
+                    <Button variant="outline" className="w-full">Abrir ferramentas</Button>
+                  </Link>
+                  <a href="https://finance.cotejuros.com.br/quiz">
+                    <Button className="w-full">Fazer diagnóstico financeiro</Button>
+                  </a>
+                </div>
               </CardContent>
             </Card>
+
+            <AdSpace height="320px" adSlot={ADSENSE_SLOT_IDS.sidebar} />
           </aside>
         </div>
       </section>
 
       {relatedArticles.length ? (
         <section className="border-t border-border bg-background-secondary py-16">
-          <div className="page-shell">
-            <div className="mb-8">
-              <h2 className="mb-3">Artigos relacionados</h2>
-              <p className="text-muted-foreground">Mais leituras para você continuar sua jornada financeira.</p>
+          <div className="page-shell space-y-8">
+            <div className="space-y-3">
+              <h2>Artigos relacionados</h2>
+              <p className="text-muted-foreground">Mais leituras do mesmo tema ou de assuntos próximos para manter a navegação fluida.</p>
             </div>
 
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
               {relatedArticles.map((item) => (
-                <Card key={item.id} className="surface-card overflow-hidden">
-                  <div className="h-40">
-                    <img src={getArticleImage(item, fallbackThumbnail)} alt={item.title} className="h-full w-full object-cover" />
-                  </div>
-                  <CardContent className="flex h-full flex-col gap-4 p-6">
-                    <Badge variant="outline" className="w-fit">{item.category}</Badge>
-                    <h3 className="text-xl">{item.title}</h3>
-                    <p className="line-clamp-3 text-sm text-muted-foreground">{getArticleSummary(item)}</p>
-                    <Link to={`/blog/${normalizeArticleSlug(item)}`} className="mt-auto">
-                      <Button variant="link" className="px-0 text-primary">Ler artigo</Button>
-                    </Link>
-                  </CardContent>
-                </Card>
+                <BlogArticleCard
+                  key={item.id}
+                  article={item}
+                  image={getArticleImage(item, fallbackThumbnail)}
+                  formatDate={formatDate}
+                  compact
+                />
               ))}
             </div>
           </div>
