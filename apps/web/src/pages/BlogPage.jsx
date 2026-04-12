@@ -10,16 +10,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { AdSpace, ADSENSE_SLOT_IDS } from '@/components/AdSpace.jsx';
 import PageHero from '@/components/PageHero.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
+import { getArticleImage, getArticleSummary, normalizeArticleSlug } from '@/lib/content/articles.js';
 
 const CATEGORY_THUMBNAILS = {
   emprestimos: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80',
   cartoes: 'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?auto=format&fit=crop&w=1200&q=80',
   financas: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=1200&q=80',
   score: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80',
-  financiamento: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80'
+  financiamento: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80',
+  educacao: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80'
 };
 
-const fallbackThumbnail = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80';
+const fallbackThumbnail = CATEGORY_THUMBNAILS.educacao;
 
 const normalize = (value = '') =>
   String(value)
@@ -27,27 +29,20 @@ const normalize = (value = '') =>
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
 
-const slugify = (value = '') =>
-  normalize(value)
-    .replace(/[^a-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
-
 const resolveArticleImage = (article) => {
-  if (article?.image && String(article.image).trim().length > 0) return article.image;
+  const existing = getArticleImage(article, '');
+  if (existing) return existing;
 
   const categoryKey = normalize(article?.category || '');
   if (categoryKey.includes('emprest')) return CATEGORY_THUMBNAILS.emprestimos;
   if (categoryKey.includes('cart')) return CATEGORY_THUMBNAILS.cartoes;
-  if (categoryKey.includes('finan') && !categoryKey.includes('financi')) return CATEGORY_THUMBNAILS.financas;
   if (categoryKey.includes('score')) return CATEGORY_THUMBNAILS.score;
   if (categoryKey.includes('financi')) return CATEGORY_THUMBNAILS.financiamento;
+  if (categoryKey.includes('educ') || categoryKey.includes('organiz')) return CATEGORY_THUMBNAILS.educacao;
+  if (categoryKey.includes('finan')) return CATEGORY_THUMBNAILS.financas;
 
   return fallbackThumbnail;
 };
-
-const resolveArticleSlug = (article) => slugify(article?.slug || article?.title || article?.id || 'artigo');
 
 function BlogPage() {
   const [articlesData, setArticlesData] = useState([]);
@@ -71,11 +66,8 @@ function BlogPage() {
     let result = articlesData.filter((article) => {
       const matchCategory = category === 'Todas' || article.category === category;
       const query = search.toLowerCase();
-      const matchSearch =
-        article.title.toLowerCase().includes(query) ||
-        article.summary.toLowerCase().includes(query);
-
-      return matchCategory && matchSearch;
+      const haystack = `${article.title || ''} ${getArticleSummary(article)}`.toLowerCase();
+      return matchCategory && haystack.includes(query);
     });
 
     if (sort === 'recent') result = [...result].sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
@@ -97,25 +89,25 @@ function BlogPage() {
   return (
     <>
       <Helmet>
-        <title>Blog Cote Juros - guias sobre crédito, juros e financiamento</title>
+        <title>Blog Cote Juros | guias sobre crédito, juros, cartão e financiamento</title>
         <meta
           name="description"
-          content="Guias sobre empréstimo, cartão de crédito, financiamento, juros abusivos e educação financeira para decidir com mais segurança."
+          content="Veja guias em português sobre empréstimo, cartão de crédito, score, financiamento, juros abusivos e educação financeira prática."
         />
-        <link rel="canonical" href="https://cotejuros.com.br/blog" />
+        <link rel="canonical" href="https://www.cotejuros.com.br/blog" />
       </Helmet>
 
       <PageHero
         centered
         badge="Editorial"
-        title="Guias e análises para comparar crédito e decidir melhor."
-        subtitle="Conteúdo em linguagem clara para ajudar você a comparar empréstimos, cartões, financiamento e evitar juros altos."
+        title="Guias práticos para comparar crédito com mais clareza."
+        subtitle="Conteúdo em português, com leitura simples e útil para decidir melhor sobre empréstimos, cartões, score, dívidas e financiamento."
       >
         <div className="relative mx-auto max-w-xl">
           <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="h-12 rounded-full bg-background pl-11"
-            placeholder="Busque por tema, banco ou tipo de crédito"
+            placeholder="Busque por empréstimo, score, cartão ou financiamento"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
@@ -143,7 +135,7 @@ function BlogPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="recent">Mais recente</SelectItem>
-              <SelectItem value="read">Mais lido</SelectItem>
+              <SelectItem value="read">Leitura mais longa</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -155,9 +147,9 @@ function BlogPage() {
                 <img src={resolveArticleImage(featured)} alt={featured.title} className="h-full w-full object-cover" />
               </div>
               <CardContent className="flex flex-col justify-center gap-5 p-10">
-                <Badge variant="outline" className="w-fit">Destaque da semana</Badge>
+                <Badge variant="outline" className="w-fit">Destaque do blog</Badge>
                 <h2>{featured.title}</h2>
-                <p>{featured.summary}</p>
+                <p>{getArticleSummary(featured)}</p>
                 <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                   <span className="inline-flex items-center gap-2">
                     <CalendarDays className="h-4 w-4 text-primary" />
@@ -168,7 +160,7 @@ function BlogPage() {
                     {featured.readTime} min de leitura
                   </span>
                 </div>
-                <Link to={`/blog/${resolveArticleSlug(featured)}`}>
+                <Link to={`/blog/${normalizeArticleSlug(featured)}`}>
                   <Button className="w-fit">
                     Ler artigo completo <ArrowRight className="h-4 w-4" />
                   </Button>
@@ -192,10 +184,10 @@ function BlogPage() {
                       <span className="text-xs text-muted-foreground">{article.readTime} min</span>
                     </div>
                     <h3>{article.title}</h3>
-                    <p className="line-clamp-3">{article.summary}</p>
+                    <p className="line-clamp-3">{getArticleSummary(article)}</p>
                     <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
                       <span className="text-xs text-muted-foreground">{formatDate(article.publishDate)}</span>
-                      <Link to={`/blog/${resolveArticleSlug(article)}`}>
+                      <Link to={`/blog/${normalizeArticleSlug(article)}`}>
                         <Button variant="link" className="px-0 text-primary">
                           Ler artigo
                         </Button>
@@ -214,7 +206,7 @@ function BlogPage() {
             {filteredArticles.length === 0 ? (
               <div className="rounded-[16px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center md:col-span-2">
                 <h3 className="text-2xl">Nenhum artigo encontrado.</h3>
-                <p className="mt-3 text-muted-foreground">Tente outro termo de busca ou escolha uma categoria diferente.</p>
+                <p className="mt-3 text-muted-foreground">Tente outro termo ou escolha uma categoria diferente.</p>
               </div>
             ) : null}
           </div>

@@ -1,0 +1,21 @@
+{
+  "cta": {
+    "eyebrow": "Diagnóstico financeiro",
+    "title": "Faça um diagnóstico financeiro gratuito",
+    "description": "Entenda melhor seu momento, organize prioridades e veja próximos passos com o Cote Finance AI.",
+    "label": "Fazer diagnóstico financeiro",
+    "href": "https://finance.cotejuros.com.br/quiz"
+  },
+  "editorial": {
+    "voice": "clara, confiável, útil e humana",
+    "forbiddenTerms": [
+      "solução disruptiva",
+      "otimizar resultados",
+      "transformar dados em ações",
+      "revolucionário"
+    ],
+    "targetWordCount": 1400,
+    "minFaqItems": 3,
+    "defaultAuthor": "Equipe Cote Juros"
+  }
+}

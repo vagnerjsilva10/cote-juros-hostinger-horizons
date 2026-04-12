@@ -88,6 +88,32 @@ const normalizeArticleRecord = (article = {}) => ({
   title: normalizeMojibake(article.title || ''),
   summary: normalizeMojibake(article.summary || article.excerpt || ''),
   content: normalizeMojibake(article.content || ''),
+  seoTitle: normalizeMojibake(article.seoTitle || article.title || ''),
+  metaDescription: normalizeMojibake(article.metaDescription || article.summary || ''),
+  h1: normalizeMojibake(article.h1 || article.title || ''),
+  intro: Array.isArray(article.intro) ? article.intro.map((item) => normalizeMojibake(item)) : undefined,
+  sections: Array.isArray(article.sections)
+    ? article.sections.map((section) => ({
+      ...section,
+      heading: normalizeMojibake(section.heading || ''),
+      paragraphs: Array.isArray(section.paragraphs) ? section.paragraphs.map((item) => normalizeMojibake(item)) : [],
+      bullets: Array.isArray(section.bullets) ? section.bullets.map((item) => normalizeMojibake(item)) : []
+    }))
+    : undefined,
+  faq: Array.isArray(article.faq)
+    ? article.faq.map((item) => ({
+      question: normalizeMojibake(item.question || ''),
+      answer: normalizeMojibake(item.answer || '')
+    }))
+    : undefined,
+  conclusion: Array.isArray(article.conclusion) ? article.conclusion.map((item) => normalizeMojibake(item)) : undefined,
+  internalLinks: Array.isArray(article.internalLinks)
+    ? article.internalLinks.map((item) => ({
+      ...item,
+      title: normalizeMojibake(item.title || ''),
+      anchor: normalizeMojibake(item.anchor || '')
+    }))
+    : undefined,
   publishDate: article.publishDate || article.publishedAt || article.createdAt || new Date().toISOString(),
   readTime: article.readTime || 6,
   image:
@@ -180,6 +206,42 @@ export const portalApi = {
       return Array.isArray(data) ? data.map(normalizeArticleRecord) : [];
     } catch {
       return portalRepository.listArticles(filters);
+    }
+  },
+
+  async getArticleBySlug(slug) {
+    if (!slug) return null;
+
+    if (!useRemote) {
+      try {
+        const response = await fetch(`/content/seo/articles/${slug}.json`);
+        if (response.ok) {
+          const payload = await response.json();
+          return normalizeArticleRecord(payload);
+        }
+      } catch {
+        // fallback below
+      }
+
+      await wait();
+      return portalRepository.getArticleBySlug(slug);
+    }
+
+    try {
+      const data = await request(`/api/articles/${slug}`);
+      return data ? normalizeArticleRecord(data) : null;
+    } catch {
+      try {
+        const response = await fetch(`/content/seo/articles/${slug}.json`);
+        if (response.ok) {
+          const payload = await response.json();
+          return normalizeArticleRecord(payload);
+        }
+      } catch {
+        // ignore and fallback
+      }
+
+      return portalRepository.getArticleBySlug(slug);
     }
   },
 

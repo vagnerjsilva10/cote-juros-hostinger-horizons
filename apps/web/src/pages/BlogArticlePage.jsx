@@ -1,51 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, CalendarDays, Clock, User } from 'lucide-react';
+import { ArrowLeft, CalendarDays, Clock, ExternalLink, User } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AdSpace, ADSENSE_SLOT_IDS } from '@/components/AdSpace.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
-import { getBlogEditorialPage } from '@/seo/seoCatalog.js';
-
-const CATEGORY_THUMBNAILS = {
-  emprestimos: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1600&q=80',
-  cartoes: 'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?auto=format&fit=crop&w=1600&q=80',
-  financas: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=1600&q=80',
-  score: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1600&q=80',
-  financiamento: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1600&q=80'
-};
+import { getArticleImage, getArticleSummary, normalizeArticleSlug } from '@/lib/content/articles.js';
 
 const fallbackThumbnail = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=80';
-
-const normalize = (value = '') =>
-  String(value)
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
-
-const slugify = (value = '') =>
-  normalize(value)
-    .replace(/[^a-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
-
-const resolveArticleSlug = (article) => slugify(article?.slug || article?.title || article?.id || 'artigo');
-
-const resolveArticleImage = (article) => {
-  if (article?.image && String(article.image).trim().length > 0) return article.image;
-
-  const categoryKey = normalize(article?.category || '');
-  if (categoryKey.includes('emprest')) return CATEGORY_THUMBNAILS.emprestimos;
-  if (categoryKey.includes('cart')) return CATEGORY_THUMBNAILS.cartoes;
-  if (categoryKey.includes('finan') && !categoryKey.includes('financi')) return CATEGORY_THUMBNAILS.financas;
-  if (categoryKey.includes('score')) return CATEGORY_THUMBNAILS.score;
-  if (categoryKey.includes('financi')) return CATEGORY_THUMBNAILS.financiamento;
-
-  return fallbackThumbnail;
-};
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString('pt-BR', {
@@ -54,63 +18,42 @@ const formatDate = (date) =>
     year: 'numeric'
   });
 
+const toFaqSchema = (article) => {
+  if (!Array.isArray(article?.faq) || !article.faq.length) return null;
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: article.faq.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer
+      }
+    }))
+  };
+};
+
 function BlogArticlePage() {
   const { articleSlug } = useParams();
   const [articles, setArticles] = useState([]);
+  const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    portalApi
-      .getArticles({ sort: 'recent' })
-      .then((items) => setArticles(Array.isArray(items) ? items : []))
+    Promise.all([portalApi.getArticles({ sort: 'recent' }), portalApi.getArticleBySlug(articleSlug)])
+      .then(([items, articleData]) => {
+        setArticles(Array.isArray(items) ? items : []);
+        setArticle(articleData ? { ...articleData, author: articleData.author || 'Equipe Cote Juros' } : null);
+      })
       .finally(() => setLoading(false));
-  }, []);
-
-  const article = useMemo(() => {
-    const fromList = articles.find((item) => resolveArticleSlug(item) === articleSlug);
-    if (fromList) {
-      return {
-        ...fromList,
-        author: fromList.author || 'Equipe Cote Juros',
-        source: 'editorial'
-      };
-    }
-
-    const fromSeo = getBlogEditorialPage(`/blog/${articleSlug}`);
-    if (!fromSeo) return null;
-
-    const content = Array.isArray(fromSeo.body) ? fromSeo.body.join('\n\n') : '';
-    const words = content.split(/\s+/).filter(Boolean).length;
-
-    return {
-      id: `seo-${articleSlug}`,
-      title: fromSeo.heading,
-      summary: fromSeo.description,
-      content,
-      category: fromSeo.articleCategory || 'Editorial',
-      readTime: Math.max(4, Math.round(words / 220)),
-      publishDate: new Date().toISOString(),
-      image: fallbackThumbnail,
-      author: 'Equipe Cote Juros',
-      slug: articleSlug,
-      source: 'seo'
-    };
-  }, [articles, articleSlug]);
-
-  const paragraphs = useMemo(() => {
-    if (!article?.content) return [];
-    return String(article.content)
-      .split(/\n+/)
-      .map((item) => item.trim())
-      .filter(Boolean);
-  }, [article]);
+  }, [articleSlug]);
 
   const relatedArticles = useMemo(() => {
     if (!article) return [];
-
-    const currentSlug = resolveArticleSlug(article);
     return articles
-      .filter((item) => resolveArticleSlug(item) !== currentSlug)
+      .filter((item) => normalizeArticleSlug(item) !== normalizeArticleSlug(article))
       .sort((a, b) => {
         const aSameCategory = a.category === article.category ? 1 : 0;
         const bSameCategory = b.category === article.category ? 1 : 0;
@@ -134,7 +77,7 @@ function BlogArticlePage() {
         <Card className="mx-auto max-w-2xl border-border bg-white text-center">
           <CardContent className="space-y-4 p-10">
             <h1 className="text-3xl">Artigo não encontrado</h1>
-            <p className="text-muted-foreground">Esse conteúdo pode ter sido movido ou removido.</p>
+            <p className="text-muted-foreground">Esse conteúdo pode ter sido movido, renomeado ou removido.</p>
             <Link to="/blog">
               <Button>Voltar para o blog</Button>
             </Link>
@@ -144,14 +87,16 @@ function BlogArticlePage() {
     );
   }
 
-  const canonicalPath = `/blog/${resolveArticleSlug(article)}`;
+  const canonicalUrl = article.canonicalUrl || `https://www.cotejuros.com.br/blog/${normalizeArticleSlug(article)}`;
+  const faqSchema = toFaqSchema(article);
 
   return (
     <>
       <Helmet>
-        <title>{`${article.title} | Blog Cote Juros`}</title>
-        <meta name="description" content={article.summary || 'Guia financeiro completo do Cote Juros.'} />
-        <link rel="canonical" href={canonicalPath} />
+        <title>{article.seoTitle || `${article.title} | Blog Cote Juros`}</title>
+        <meta name="description" content={article.metaDescription || getArticleSummary(article)} />
+        <link rel="canonical" href={canonicalUrl} />
+        {faqSchema ? <script type="application/ld+json">{JSON.stringify(faqSchema)}</script> : null}
       </Helmet>
 
       <section className="relative overflow-hidden border-b border-border bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900 py-16 md:py-20">
@@ -166,9 +111,8 @@ function BlogArticlePage() {
             {article.category}
           </Badge>
 
-          <h1 className="max-w-4xl text-white">{article.title}</h1>
-
-          <p className="mt-5 max-w-3xl text-lg text-slate-300">{article.summary}</p>
+          <h1 className="max-w-4xl text-white">{article.h1 || article.title}</h1>
+          <p className="mt-5 max-w-3xl text-lg text-slate-300">{getArticleSummary(article)}</p>
 
           <div className="mt-7 flex flex-wrap gap-5 text-sm text-slate-300">
             <span className="inline-flex items-center gap-2">
@@ -189,20 +133,99 @@ function BlogArticlePage() {
 
       <section className="bg-background py-12 md:py-14">
         <div className="page-shell grid gap-10 lg:grid-cols-[1fr_300px]">
-          <article>
+          <article className="min-w-0">
             <div className="mb-8 overflow-hidden rounded-[18px] border border-border bg-white">
-              <img src={resolveArticleImage(article)} alt={article.title} className="h-full max-h-[460px] w-full object-cover" />
+              <img src={getArticleImage(article, fallbackThumbnail)} alt={article.title} className="h-full max-h-[460px] w-full object-cover" />
             </div>
 
             <Card className="border-border bg-white">
-              <CardContent className="space-y-6 p-7 md:p-10">
-                {paragraphs.map((paragraph, index) => (
-                  <React.Fragment key={`${article.id}-${index}`}>
-                    <p className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
-                    {index === 0 ? <AdSpace height="120px" adSlot={ADSENSE_SLOT_IDS.articleTop} /> : null}
-                    {index === Math.floor(paragraphs.length / 2) && index > 0 ? <AdSpace height="220px" adSlot={ADSENSE_SLOT_IDS.articleInline} /> : null}
-                  </React.Fragment>
-                ))}
+              <CardContent className="space-y-8 p-7 md:p-10">
+                {Array.isArray(article.intro)
+                  ? article.intro.map((paragraph, index) => (
+                    <React.Fragment key={`intro-${index}`}>
+                      <p className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
+                      {index === 0 ? <AdSpace height="120px" adSlot={ADSENSE_SLOT_IDS.articleTop} /> : null}
+                    </React.Fragment>
+                  ))
+                  : null}
+
+                {Array.isArray(article.sections)
+                  ? article.sections.map((section, index) => (
+                    <section key={section.heading} className="space-y-4">
+                      <h2 className="text-2xl text-foreground">{section.heading}</h2>
+                      {section.paragraphs?.map((paragraph, paragraphIndex) => (
+                        <p key={`${section.heading}-${paragraphIndex}`} className="text-base leading-8 text-muted-foreground md:text-lg">
+                          {paragraph}
+                        </p>
+                      ))}
+                      {section.bullets?.length ? (
+                        <ul className="space-y-3 pl-5 text-base text-muted-foreground marker:text-primary">
+                          {section.bullets.map((bullet) => (
+                            <li key={bullet} className="pl-1">{bullet}</li>
+                          ))}
+                        </ul>
+                      ) : null}
+                      {index === 1 ? <AdSpace height="220px" adSlot={ADSENSE_SLOT_IDS.articleInline} /> : null}
+                    </section>
+                  ))
+                  : null}
+
+                {Array.isArray(article.faq) && article.faq.length ? (
+                  <section className="space-y-4 rounded-[18px] border border-border bg-background-secondary p-6 md:p-8">
+                    <h2 className="text-2xl text-foreground">Perguntas frequentes</h2>
+                    <div className="space-y-5">
+                      {article.faq.map((item) => (
+                        <div key={item.question} className="space-y-2">
+                          <h3 className="text-lg text-foreground">{item.question}</h3>
+                          <p className="text-base leading-7 text-muted-foreground">{item.answer}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
+
+                {Array.isArray(article.conclusion) ? (
+                  <section className="space-y-4">
+                    <h2 className="text-2xl text-foreground">Conclusão</h2>
+                    {article.conclusion.map((paragraph, index) => (
+                      <p key={`conclusion-${index}`} className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
+                    ))}
+                  </section>
+                ) : null}
+
+                {article.cta ? (
+                  <section className="rounded-[22px] border border-primary/15 bg-primary/[0.03] p-6 md:p-8">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">{article.cta.eyebrow}</p>
+                    <h2 className="mt-3 text-2xl text-foreground">{article.cta.title}</h2>
+                    <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground">{article.cta.description}</p>
+                    <div className="mt-5">
+                      <a href={article.cta.href} className="inline-flex">
+                        <Button>
+                          {article.cta.label}
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </a>
+                    </div>
+                  </section>
+                ) : null}
+
+                {Array.isArray(article.internalLinks) && article.internalLinks.length ? (
+                  <section className="space-y-4 border-t border-border pt-6">
+                    <h2 className="text-2xl text-foreground">Leituras relacionadas</h2>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      {article.internalLinks.map((item) => (
+                        <Link
+                          key={`${item.path}-${item.anchor}`}
+                          to={item.path}
+                          className="rounded-[16px] border border-border bg-background-secondary px-4 py-4 transition-colors hover:border-primary/40 hover:bg-primary/[0.03]"
+                        >
+                          <p className="text-sm font-medium text-foreground">{item.anchor}</p>
+                          <p className="mt-1 text-sm text-muted-foreground">{item.title}</p>
+                        </Link>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
 
                 <AdSpace height="150px" adSlot={ADSENSE_SLOT_IDS.articleFooter} />
               </CardContent>
@@ -211,11 +234,12 @@ function BlogArticlePage() {
 
           <aside className="space-y-6 lg:sticky lg:top-24 lg:h-fit">
             <AdSpace height="320px" adSlot={ADSENSE_SLOT_IDS.sidebar} />
+
             <Card className="border-border bg-white">
               <CardContent className="space-y-3 p-6">
                 <h3 className="text-xl">Continue sua leitura</h3>
                 <p className="text-sm text-muted-foreground">
-                  Compare opções de crédito e veja guias práticos para decidir com mais segurança.
+                  Veja comparadores, simuladores e guias práticos para decidir com mais clareza antes de contratar crédito.
                 </p>
                 <Link to="/ferramentas">
                   <Button variant="outline" className="w-full">Abrir ferramentas</Button>
@@ -238,13 +262,13 @@ function BlogArticlePage() {
               {relatedArticles.map((item) => (
                 <Card key={item.id} className="surface-card overflow-hidden">
                   <div className="h-40">
-                    <img src={resolveArticleImage(item)} alt={item.title} className="h-full w-full object-cover" />
+                    <img src={getArticleImage(item, fallbackThumbnail)} alt={item.title} className="h-full w-full object-cover" />
                   </div>
                   <CardContent className="flex h-full flex-col gap-4 p-6">
                     <Badge variant="outline" className="w-fit">{item.category}</Badge>
                     <h3 className="text-xl">{item.title}</h3>
-                    <p className="line-clamp-3 text-sm text-muted-foreground">{item.summary}</p>
-                    <Link to={`/blog/${resolveArticleSlug(item)}`} className="mt-auto">
+                    <p className="line-clamp-3 text-sm text-muted-foreground">{getArticleSummary(item)}</p>
+                    <Link to={`/blog/${normalizeArticleSlug(item)}`} className="mt-auto">
                       <Button variant="link" className="px-0 text-primary">Ler artigo</Button>
                     </Link>
                   </CardContent>

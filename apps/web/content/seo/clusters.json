@@ -1,0 +1,449 @@
+﻿[
+  {
+    "id": "emprestimos",
+    "label": "Empréstimos",
+    "category": "Empréstimos",
+    "hubPath": "/emprestimos",
+    "primaryKeyword": "empréstimo",
+    "articleImage": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1600&q=80",
+    "supportPaths": [
+      "/emprestimos",
+      "/emprestimos-pessoal",
+      "/emprestimos-consignado",
+      "/melhores-emprestimos",
+      "/simulador-emprestimo"
+    ],
+    "relatedClusters": ["comparadores-simulacoes", "score", "dividas-renegociacao"],
+    "decisionChecklist": [
+      "taxa mensal e CET",
+      "prazo total e valor final pago",
+      "impacto da parcela na renda mensal",
+      "exigências de score, renda e vínculo"
+    ],
+    "commonMistakes": [
+      "olhar só a parcela e ignorar o custo total",
+      "aceitar a primeira oferta sem comparar bancos",
+      "pedir crédito acima do que cabe no orçamento"
+    ],
+    "stepFramework": [
+      "defina o valor que realmente precisa",
+      "compare pelo CET e não só pela taxa de vitrine",
+      "simule cenários com prazos diferentes",
+      "escolha a opção que preserva sua margem mensal"
+    ],
+    "faqThemes": [
+      "Quando vale a pena contratar {keyword}?",
+      "Qual a diferença entre taxa e CET em {keyword}?",
+      "Como comparar propostas de {keyword} com mais segurança?"
+    ],
+    "topics": {
+      "static": [
+        { "slug": "como-funciona-emprestimo-pessoal", "keyword": "como funciona empréstimo pessoal", "title": "Como funciona empréstimo pessoal e o que avaliar antes de contratar", "intent": "informacional", "angle": "explicar o fluxo completo da contratação e mostrar os principais critérios de comparação" },
+        { "slug": "emprestimo-para-negativado-como-avaliar", "keyword": "empréstimo para negativado", "title": "Empréstimo para negativado: como avaliar custo, risco e chance real de aprovação", "intent": "alta-intencao", "angle": "explicar quando a modalidade faz sentido e como evitar promessas ruins" },
+        { "slug": "emprestimo-consignado-ou-pessoal", "keyword": "empréstimo consignado ou pessoal", "title": "Empréstimo consignado ou pessoal: qual pesa menos no bolso", "intent": "comparacao", "angle": "comparar taxa, flexibilidade e impacto no orçamento" },
+        { "slug": "melhor-emprestimo-pessoal-como-escolher", "keyword": "melhor empréstimo pessoal", "title": "Melhor empréstimo pessoal: como escolher sem cair em juros altos", "intent": "alta-intencao", "angle": "dar um roteiro objetivo para escolher a melhor linha para cada perfil" },
+        { "slug": "emprestimo-online-seguro", "keyword": "empréstimo online seguro", "title": "Empréstimo online seguro: checklist para comparar antes de contratar", "intent": "alta-intencao", "angle": "orientar uma contratação digital com foco em segurança e leitura de custos" },
+        { "slug": "como-reduzir-juros-do-emprestimo", "keyword": "como reduzir juros do empréstimo", "title": "Como reduzir juros do empréstimo antes de fechar contrato", "intent": "informacional", "angle": "mostrar alavancas práticas de negociação e comparação" },
+        { "slug": "emprestimo-com-garantia-vale-a-pena", "keyword": "empréstimo com garantia vale a pena", "title": "Empréstimo com garantia vale a pena? Quando ele faz sentido", "intent": "informacional", "angle": "explicar quando a garantia realmente compensa em relação ao custo" },
+        { "slug": "como-saber-se-um-emprestimo-vale-a-pena", "keyword": "como saber se um empréstimo vale a pena", "title": "Como saber se um empréstimo vale a pena para o seu momento", "intent": "informacional", "angle": "ajudar o leitor a decidir com base em objetivo, parcela e custo total" }
+      ],
+      "amount": {
+        "keywordPattern": "empréstimo de {value} reais",
+        "titlePattern": "Empréstimo de {value} reais: como comparar parcelas, juros e custo total",
+        "anglePattern": "mostrar como analisar um pedido de {value} reais sem decidir só pela aprovação rápida",
+        "values": [2000, 3000, 5000, 7000]
+      },
+      "profiles": {
+        "keywordPattern": "empréstimo para {value}",
+        "titlePattern": "Empréstimo para {value}: o que muda na análise e na aprovação",
+        "anglePattern": "explicar como o perfil {value} costuma ser avaliado pelas instituições",
+        "values": ["MEI", "autônomo", "CLT", "aposentado", "score baixo", "renda de 2 salários mínimos"]
+      }
+    }
+  },
+  {
+    "id": "cartoes",
+    "label": "Cartões de Crédito",
+    "category": "Cartões de Crédito",
+    "hubPath": "/cartoes-de-credito",
+    "primaryKeyword": "cartão de crédito",
+    "articleImage": "https://images.unsplash.com/photo-1601597111158-2fceff292cdc?auto=format&fit=crop&w=1600&q=80",
+    "supportPaths": [
+      "/cartoes-de-credito",
+      "/melhores-cartoes-de-credito",
+      "/cartao-sem-anuidade",
+      "/cartao-com-cashback",
+      "/cartao-com-milhas"
+    ],
+    "relatedClusters": ["score", "organizacao-financeira", "educacao-financeira-pratica"],
+    "decisionChecklist": [
+      "anuidade, benefícios e critério de isenção",
+      "limite inicial e política de aumento",
+      "perfil de aprovação e exigência de renda",
+      "riscos do rotativo e do parcelamento da fatura"
+    ],
+    "commonMistakes": [
+      "escolher só pelo nome do banco",
+      "ignorar o custo do rotativo e do atraso",
+      "solicitar muitos cartões ao mesmo tempo"
+    ],
+    "stepFramework": [
+      "defina o benefício que faz sentido para sua rotina",
+      "compare custo, limite e chance de aprovação",
+      "avalie se a fatura cabe no seu mês",
+      "use o cartão para construir histórico e não para apertar o orçamento"
+    ],
+    "faqThemes": [
+      "Como escolher {keyword} sem errar no custo?",
+      "Qual cartão faz mais sentido para quem está começando crédito?",
+      "Quando um cartão com benefício compensa a anuidade?"
+    ],
+    "topics": {
+      "static": [
+        { "slug": "melhor-cartao-sem-anuidade", "keyword": "melhor cartão sem anuidade", "title": "Melhor cartão sem anuidade: como comparar limite, aprovação e benefícios", "intent": "alta-intencao", "angle": "ajudar o leitor a escolher um cartão enxuto e bom para o dia a dia" },
+        { "slug": "cartao-com-cashback-vale-a-pena", "keyword": "cartão com cashback vale a pena", "title": "Cartão com cashback vale a pena? Como analisar retorno real nas compras", "intent": "informacional", "angle": "mostrar quando cashback supera anuidade e quando não faz sentido" },
+        { "slug": "cartao-com-milhas-como-escolher", "keyword": "cartão com milhas", "title": "Cartão com milhas: como escolher sem pagar caro por benefícios que você não usa", "intent": "alta-intencao", "angle": "explicar como comparar pontuação, anuidade e utilidade prática" },
+        { "slug": "como-aumentar-limite-do-cartao", "keyword": "como aumentar limite do cartão", "title": "Como aumentar limite do cartão com mais consistência", "intent": "informacional", "angle": "mostrar como bancos avaliam comportamento e renda" },
+        { "slug": "como-controlar-gastos-no-cartao", "keyword": "como controlar gastos no cartão", "title": "Como controlar gastos no cartão de crédito sem perder o controle do mês", "intent": "educacional", "angle": "trazer práticas de uso saudável para não depender do rotativo" },
+        { "slug": "rotativo-do-cartao-como-funciona", "keyword": "rotativo do cartão de crédito", "title": "Rotativo do cartão de crédito: como funciona e por que ele pesa tanto", "intent": "informacional", "angle": "explicar o risco de carregar saldo e mostrar alternativas" },
+        { "slug": "cartao-para-negativado-como-avaliar", "keyword": "cartão para negativado", "title": "Cartão para negativado: como avaliar opções sem cair em armadilhas", "intent": "alta-intencao", "angle": "orientar a escolher cartões de entrada com foco em reconstrução de crédito" }
+      ],
+      "score": {
+        "keywordPattern": "cartão de crédito para score {value}",
+        "titlePattern": "Cartão de crédito para score {value}: o que observar antes de pedir",
+        "anglePattern": "explicar o que um score em torno de {value} costuma sinalizar para os emissores",
+        "values": [300, 500, 600, 700]
+      },
+      "profiles": {
+        "keywordPattern": "cartão para {value}",
+        "titlePattern": "Cartão para {value}: como escolher sem comprometer o orçamento",
+        "anglePattern": "mostrar como o perfil {value} pode buscar um cartão mais aderente",
+        "values": ["MEI", "autônomo", "universitário", "renda de até 2 mil", "score baixo", "primeiro cartão"]
+      }
+    }
+  },
+  {
+    "id": "score",
+    "label": "Score de Crédito",
+    "category": "Score de Crédito",
+    "hubPath": "/educacao-financeira",
+    "primaryKeyword": "score de crédito",
+    "articleImage": "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1600&q=80",
+    "supportPaths": [
+      "/educacao-financeira",
+      "/cartoes-de-credito",
+      "/emprestimos",
+      "/simulador-emprestimo"
+    ],
+    "relatedClusters": ["cartoes", "emprestimos", "dividas-renegociacao"],
+    "decisionChecklist": [
+      "histórico de pagamentos em dia",
+      "volume de consultas recentes ao CPF",
+      "nível de endividamento e uso do limite",
+      "cadastro atualizado e relacionamento com instituições"
+    ],
+    "commonMistakes": [
+      "esperar melhora imediata sem mudar comportamento",
+      "pedir muitos cartões e empréstimos em sequência",
+      "ignorar contas básicas que também ajudam a formar histórico"
+    ],
+    "stepFramework": [
+      "organize as contas que vencem todo mês",
+      "reduza atrasos e pagamentos mínimos",
+      "mantenha cadastro atualizado nos bureaus",
+      "use crédito de forma estável para construir histórico positivo"
+    ],
+    "faqThemes": [
+      "Quanto tempo leva para melhorar {keyword}?",
+      "Qual score costuma facilitar aprovação de crédito?",
+      "O que mais derruba score de crédito no dia a dia?"
+    ],
+    "topics": {
+      "static": [
+        { "slug": "como-aumentar-score-de-credito", "keyword": "como aumentar score de crédito", "title": "Como aumentar score de crédito com medidas que realmente contam", "intent": "informacional", "angle": "explicar o que muda score na prática e o que é mito" },
+        { "slug": "score-baixo-como-conseguir-credito", "keyword": "score baixo como conseguir crédito", "title": "Score baixo: como buscar crédito sem piorar sua situação", "intent": "alta-intencao", "angle": "mostrar caminhos realistas para quem precisa de crédito com score menor" },
+        { "slug": "score-de-credito-como-funciona", "keyword": "score de crédito como funciona", "title": "Score de crédito: como funciona e por que ele muda tanto", "intent": "informacional", "angle": "explicar os fatores de cálculo e leitura do mercado" },
+        { "slug": "quanto-de-score-e-bom", "keyword": "quanto de score é bom", "title": "Quanto de score é bom para cartão, empréstimo e financiamento", "intent": "informacional", "angle": "traduzir faixas de score para diferentes produtos" },
+        { "slug": "score-baixo-atrapalha-financiamento", "keyword": "score baixo atrapalha financiamento", "title": "Score baixo atrapalha financiamento? O que muda na aprovação", "intent": "informacional", "angle": "mostrar impacto do score em operações de prazo longo" },
+        { "slug": "consultar-score-de-credito", "keyword": "consultar score de crédito", "title": "Consultar score de crédito: quando faz sentido e como usar essa informação", "intent": "educacional", "angle": "orientar o leitor a usar score como diagnóstico, não como fim em si" }
+      ],
+      "profiles": {
+        "keywordPattern": "score de crédito para {value}",
+        "titlePattern": "Score de crédito para {value}: o que costuma pesar na análise",
+        "anglePattern": "explicar como o contexto de {value} pode influenciar leitura de risco e acesso ao crédito",
+        "values": ["MEI", "autônomo", "quem está negativado", "primeiro cartão", "quem atrasou a fatura", "quem quer financiar imóvel"]
+      }
+    }
+  },
+  {
+    "id": "organizacao-financeira",
+    "label": "Organização Financeira",
+    "category": "Organização Financeira",
+    "hubPath": "/educacao-financeira",
+    "primaryKeyword": "organização financeira",
+    "articleImage": "https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=1600&q=80",
+    "supportPaths": [
+      "/educacao-financeira",
+      "/ferramentas",
+      "/diagnostico-financeiro"
+    ],
+    "relatedClusters": ["dividas-renegociacao", "cartoes", "educacao-financeira-pratica"],
+    "decisionChecklist": [
+      "clareza de entradas e saídas do mês",
+      "reserva para imprevistos",
+      "nível de dívidas de curto prazo",
+      "espaço real para assumir novas parcelas"
+    ],
+    "commonMistakes": [
+      "controlar só uma parte dos gastos",
+      "deixar assinaturas e pequenos custos invisíveis",
+      "misturar metas de curto e longo prazo sem prioridade"
+    ],
+    "stepFramework": [
+      "mapear o que entra e sai todo mês",
+      "separar gastos fixos, variáveis e dívidas",
+      "definir prioridades do mês e do trimestre",
+      "acompanhar a evolução com rotina simples"
+    ],
+    "faqThemes": [
+      "Por onde começar a melhorar {keyword}?",
+      "Qual o primeiro ajuste quando falta dinheiro no fim do mês?",
+      "Como manter disciplina financeira sem planilha complexa?"
+    ],
+    "topics": {
+      "static": [
+        { "slug": "como-organizar-financas-pessoais", "keyword": "como organizar finanças pessoais", "title": "Como organizar finanças pessoais sem complicar a rotina", "intent": "educacional", "angle": "ensinar um método simples e sustentável para o dia a dia" },
+        { "slug": "como-reduzir-gastos-mensais", "keyword": "como reduzir gastos mensais", "title": "Como reduzir gastos mensais sem cortar tudo de uma vez", "intent": "educacional", "angle": "ajudar o leitor a encontrar desperdícios e priorizar ajustes" },
+        { "slug": "como-fazer-orcamento-mensal", "keyword": "como fazer orçamento mensal", "title": "Como fazer orçamento mensal que funcione na prática", "intent": "educacional", "angle": "mostrar um orçamento realista que dialoga com contas e metas" },
+        { "slug": "reserva-de-emergencia-como-montar", "keyword": "como montar reserva de emergência", "title": "Reserva de emergência: como montar e onde deixar o dinheiro", "intent": "educacional", "angle": "orientar a criação de caixa para imprevistos antes de tomar crédito" },
+        { "slug": "como-controlar-gastos-do-dia-a-dia", "keyword": "como controlar gastos do dia a dia", "title": "Como controlar gastos do dia a dia sem transformar tudo em planilha", "intent": "educacional", "angle": "trazer práticas de controle leve e recorrente" },
+        { "slug": "como-parar-de-gastar-por-impulso", "keyword": "como parar de gastar por impulso", "title": "Como parar de gastar por impulso e ganhar previsibilidade financeira", "intent": "educacional", "angle": "ligar comportamento de consumo a decisões financeiras melhores" }
+      ],
+      "profiles": {
+        "keywordPattern": "organização financeira para {value}",
+        "titlePattern": "Organização financeira para {value}: prioridades para colocar a vida em ordem",
+        "anglePattern": "adaptar a rotina financeira ao contexto de {value}",
+        "values": ["casais", "autônomos", "MEI", "quem está endividado", "quem recebe por comissão", "quem quer sair do cheque especial"]
+      }
+    }
+  },
+  {
+    "id": "comparadores-simulacoes",
+    "label": "Comparadores e Simulações",
+    "category": "Comparadores e Simulações",
+    "hubPath": "/ferramentas",
+    "primaryKeyword": "simulador de empréstimo",
+    "articleImage": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=80",
+    "supportPaths": [
+      "/ferramentas",
+      "/simulador-emprestimo",
+      "/calculadora-juros",
+      "/calculadora-cet",
+      "/calculadora-parcela"
+    ],
+    "relatedClusters": ["emprestimos", "financiamento-credito", "educacao-financeira-pratica"],
+    "decisionChecklist": [
+      "valor líquido que você realmente precisa",
+      "parcela máxima saudável para o orçamento",
+      "custo total entre cenários de prazo",
+      "diferença entre taxa anunciada e CET"
+    ],
+    "commonMistakes": [
+      "simular sem considerar tarifas e seguros",
+      "escolher o maior prazo sem comparar o total pago",
+      "usar simulador sem revisar a renda disponível"
+    ],
+    "stepFramework": [
+      "defina valor, prazo e objetivo do crédito",
+      "simule pelo menos três cenários",
+      "compare CET, parcela e total pago",
+      "volte ao valor ideal antes de contratar"
+    ],
+    "faqThemes": [
+      "Como usar {keyword} para decidir melhor?",
+      "O que muda quando o prazo aumenta em uma simulação?",
+      "Simulador substitui análise de contrato?"
+    ],
+    "topics": {
+      "static": [
+        { "slug": "simulador-de-emprestimo-online-como-usar", "keyword": "simulador de empréstimo online", "title": "Simulador de empréstimo online: como usar para comparar propostas de verdade", "intent": "alta-intencao", "angle": "ensinar a transformar simulação em decisão prática" },
+        { "slug": "como-calcular-juros-de-emprestimo", "keyword": "como calcular juros de empréstimo", "title": "Como calcular juros de empréstimo sem olhar só a parcela", "intent": "educacional", "angle": "explicar o cálculo com foco em entendimento do custo total" },
+        { "slug": "como-comparar-taxas-de-juros", "keyword": "como comparar taxas de juros", "title": "Como comparar taxas de juros sem cair em leituras incompletas", "intent": "educacional", "angle": "ensinar a comparação padronizada entre bancos" },
+        { "slug": "calculadora-de-cet-como-usar", "keyword": "calculadora de CET", "title": "Calculadora de CET: como usar para enxergar o custo real do crédito", "intent": "educacional", "angle": "mostrar por que CET é mais decisivo que taxa isolada" },
+        { "slug": "simulacao-de-financiamento-como-ler", "keyword": "simulação de financiamento", "title": "Simulação de financiamento: como ler taxa, entrada e valor final", "intent": "informacional", "angle": "explicar os campos que mais impactam uma operação longa" },
+        { "slug": "como-escolher-prazo-do-emprestimo", "keyword": "como escolher prazo do empréstimo", "title": "Como escolher o prazo do empréstimo sem pagar caro demais", "intent": "educacional", "angle": "mostrar o equilíbrio entre parcela e juros totais" }
+      ],
+      "amount": {
+        "keywordPattern": "simulação de empréstimo de {value} reais",
+        "titlePattern": "Simulação de empréstimo de {value} reais: o que olhar antes de contratar",
+        "anglePattern": "explicar como uma simulação de {value} reais muda conforme prazo, taxa e renda",
+        "values": [2000, 5000, 10000, 20000, 30000, 50000]
+      }
+    }
+  },
+  {
+    "id": "dividas-renegociacao",
+    "label": "Dívidas e Renegociação",
+    "category": "Dívidas e Renegociação",
+    "hubPath": "/juros-abusivos",
+    "primaryKeyword": "renegociar dívidas",
+    "articleImage": "https://images.unsplash.com/photo-1554224154-22dec7ec8818?auto=format&fit=crop&w=1600&q=80",
+    "supportPaths": [
+      "/juros-abusivos",
+      "/educacao-financeira",
+      "/calculadora-cet"
+    ],
+    "relatedClusters": ["organizacao-financeira", "cartoes", "emprestimos"],
+    "decisionChecklist": [
+      "valor total da dívida e encargos acumulados",
+      "ordem de prioridade entre dívidas caras e urgentes",
+      "capacidade real de pagamento após renegociação",
+      "alternativas com taxa menor para substituir dívidas caras"
+    ],
+    "commonMistakes": [
+      "renegociar sem revisar orçamento",
+      "parcelar fatura ou dívida sem comparar o custo final",
+      "trocar uma dívida cara por outra igualmente ruim"
+    ],
+    "stepFramework": [
+      "mapear todas as dívidas e custos",
+      "priorizar as mais caras ou urgentes",
+      "negociar com proposta que caiba no fluxo mensal",
+      "acompanhar para não reabrir o problema"
+    ],
+    "faqThemes": [
+      "Quando renegociar dívida realmente vale a pena?",
+      "Como organizar prioridades quando existem várias dívidas?",
+      "Qual o risco de usar novo crédito para quitar dívida antiga?"
+    ],
+    "topics": {
+      "static": [
+        { "slug": "como-sair-das-dividas", "keyword": "como sair das dívidas", "title": "Como sair das dívidas com um plano que funcione no mundo real", "intent": "educacional", "angle": "mostrar uma ordem prática para reorganizar a vida financeira" },
+        { "slug": "como-renegociar-divida-do-cartao", "keyword": "como renegociar dívida do cartão", "title": "Como renegociar dívida do cartão sem trocar um problema por outro", "intent": "educacional", "angle": "orientar uma renegociação focada em custo e previsibilidade" },
+        { "slug": "como-quitar-dividas-com-score-baixo", "keyword": "como quitar dívidas com score baixo", "title": "Como quitar dívidas com score baixo sem piorar a situação", "intent": "educacional", "angle": "explicar como sair do ciclo de atraso e reconstruir crédito" },
+        { "slug": "parcelamento-da-fatura-vale-a-pena", "keyword": "parcelamento da fatura vale a pena", "title": "Parcelamento da fatura vale a pena? O que comparar antes de aceitar", "intent": "informacional", "angle": "mostrar quando o parcelamento alivia e quando apenas posterga o problema" },
+        { "slug": "juros-abusivos-no-cartao", "keyword": "juros abusivos no cartão", "title": "Juros abusivos no cartão: como identificar sinais de alerta", "intent": "informacional", "angle": "explicar quando desconfiar do custo e como comparar alternativas" },
+        { "slug": "como-priorizar-dividas", "keyword": "como priorizar dívidas", "title": "Como priorizar dívidas quando não dá para pagar tudo ao mesmo tempo", "intent": "educacional", "angle": "ensinar uma ordem lógica entre urgência, custo e impacto emocional" },
+        { "slug": "emprestimo-para-quitar-dividas-vale-a-pena", "keyword": "empréstimo para quitar dívidas vale a pena", "title": "Empréstimo para quitar dívidas vale a pena? Quando faz sentido", "intent": "informacional", "angle": "mostrar quando trocar dívida pode reduzir custo de forma saudável" }
+      ],
+      "profiles": {
+        "keywordPattern": "renegociação de dívidas para {value}",
+        "titlePattern": "Renegociação de dívidas para {value}: como organizar a saída",
+        "anglePattern": "adaptar a renegociação ao contexto de {value}",
+        "values": ["quem usa rotativo", "quem está no cheque especial", "MEI", "famílias com renda apertada", "quem atrasou empréstimo", "quem quer limpar o nome"]
+      }
+    }
+  },
+  {
+    "id": "financiamento-credito",
+    "label": "Financiamento e Crédito",
+    "category": "Financiamento",
+    "hubPath": "/financiamento",
+    "primaryKeyword": "financiamento",
+    "articleImage": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1600&q=80",
+    "supportPaths": [
+      "/financiamento",
+      "/financiamento-imobiliario",
+      "/calculadora-financiamento",
+      "/calculadora-parcela"
+    ],
+    "relatedClusters": ["comparadores-simulacoes", "emprestimos", "educacao-financeira-pratica"],
+    "decisionChecklist": [
+      "entrada disponível e reserva pós-compra",
+      "sistema de amortização e custo total",
+      "prazo, CET e peso da parcela",
+      "segurança para manter a operação no longo prazo"
+    ],
+    "commonMistakes": [
+      "decidir só pela parcela inicial",
+      "entrar em prazo muito longo sem simular o total pago",
+      "comprometer toda a folga financeira com a entrada"
+    ],
+    "stepFramework": [
+      "defina o bem ou objetivo do financiamento",
+      "simule diferentes entradas e prazos",
+      "compare CET e sistema de amortização",
+      "assine apenas se a prestação couber com margem"
+    ],
+    "faqThemes": [
+      "Qual a diferença entre empréstimo e {keyword}?",
+      "Como comparar bancos em um financiamento?",
+      "Quando a entrada maior compensa no financiamento?"
+    ],
+    "topics": {
+      "static": [
+        { "slug": "diferenca-entre-emprestimo-e-financiamento", "keyword": "diferença entre empréstimo e financiamento", "title": "Diferença entre empréstimo e financiamento: quando cada um faz sentido", "intent": "comparacao", "angle": "explicar em quais objetivos cada modalidade costuma ser mais adequada" },
+        { "slug": "financiamento-imobiliario-como-comparar", "keyword": "financiamento imobiliário", "title": "Financiamento imobiliário: como comparar taxa, entrada e sistema de amortização", "intent": "alta-intencao", "angle": "orientar uma leitura completa de uma operação longa" },
+        { "slug": "financiamento-de-veiculo-como-analisar", "keyword": "financiamento de veículo", "title": "Financiamento de veículo: como analisar parcela, entrada e custo final", "intent": "alta-intencao", "angle": "mostrar como comparar cenários de carro novo e usado" },
+        { "slug": "tabela-sac-ou-price", "keyword": "tabela SAC ou Price", "title": "Tabela SAC ou Price: qual pesa menos no financiamento", "intent": "informacional", "angle": "explicar como o sistema de amortização muda o custo do contrato" },
+        { "slug": "financiamento-sem-entrada-vale-a-pena", "keyword": "financiamento sem entrada vale a pena", "title": "Financiamento sem entrada vale a pena? Quando ele aumenta o risco", "intent": "informacional", "angle": "mostrar o peso de entrada menor no custo final" },
+        { "slug": "como-reduzir-custo-do-financiamento", "keyword": "como reduzir custo do financiamento", "title": "Como reduzir o custo do financiamento antes de fechar contrato", "intent": "educacional", "angle": "apresentar alavancas práticas como entrada, prazo e comparação entre bancos" },
+        { "slug": "refinanciamento-de-imovel-como-avaliar", "keyword": "refinanciamento de imóvel", "title": "Refinanciamento de imóvel: como avaliar se faz sentido para o seu momento", "intent": "informacional", "angle": "explicar benefício, risco e contexto de uso" }
+      ],
+      "amount": {
+        "keywordPattern": "financiamento de {value} reais",
+        "titlePattern": "Financiamento de {value} reais: como comparar entrada, prazo e CET",
+        "anglePattern": "explicar como um financiamento de {value} reais muda conforme o prazo e a entrada",
+        "values": [80000, 150000, 250000]
+      },
+      "profiles": {
+        "keywordPattern": "financiamento para {value}",
+        "titlePattern": "Financiamento para {value}: o que costuma pesar na aprovação",
+        "anglePattern": "mostrar o que instituições avaliam ao financiar para {value}",
+        "values": ["autônomo", "MEI", "score baixo", "quem já tem outro financiamento"]
+      }
+    }
+  },
+  {
+    "id": "educacao-financeira-pratica",
+    "label": "Educação Financeira Prática",
+    "category": "Educação Financeira",
+    "hubPath": "/educacao-financeira",
+    "primaryKeyword": "educação financeira",
+    "articleImage": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=80",
+    "supportPaths": [
+      "/educacao-financeira",
+      "/cote-finance-ai",
+      "/diagnostico-financeiro"
+    ],
+    "relatedClusters": ["organizacao-financeira", "comparadores-simulacoes", "dividas-renegociacao"],
+    "decisionChecklist": [
+      "objetivo financeiro do mês e do trimestre",
+      "folga no orçamento para metas e imprevistos",
+      "uso atual de crédito e endividamento",
+      "hábitos que ajudam ou atrapalham a consistência"
+    ],
+    "commonMistakes": [
+      "tentar mudar tudo de uma vez",
+      "ignorar pequenas despesas recorrentes",
+      "não medir progresso mês a mês"
+    ],
+    "stepFramework": [
+      "entender a fotografia atual do dinheiro",
+      "escolher poucas prioridades claras",
+      "criar uma rotina simples de acompanhamento",
+      "ajustar decisões com base nos números do mês"
+    ],
+    "faqThemes": [
+      "Como aplicar {keyword} no dia a dia?",
+      "Qual hábito financeiro gera mais impacto no começo?",
+      "Como usar tecnologia para acompanhar a vida financeira?"
+    ],
+    "topics": {
+      "static": [
+        { "slug": "como-montar-reserva-de-emergencia", "keyword": "como montar reserva de emergência", "title": "Como montar uma reserva de emergência sem travar o orçamento", "intent": "educacional", "angle": "explicar um plano gradual e realista para criar segurança financeira" },
+        { "slug": "como-fazer-diagnostico-financeiro-pessoal", "keyword": "diagnóstico financeiro pessoal", "title": "Diagnóstico financeiro pessoal: como entender seu momento com clareza", "intent": "educacional", "angle": "mostrar como ler sinais do orçamento antes de decidir por crédito" },
+        { "slug": "como-definir-metas-financeiras", "keyword": "como definir metas financeiras", "title": "Como definir metas financeiras que você consegue acompanhar", "intent": "educacional", "angle": "ligar metas a orçamento, prazo e priorização" },
+        { "slug": "como-parar-de-viver-no-limite", "keyword": "como parar de viver no limite", "title": "Como parar de viver no limite do orçamento todos os meses", "intent": "educacional", "angle": "ajudar o leitor a recuperar folga financeira e previsibilidade" },
+        { "slug": "como-usar-tecnologia-para-organizar-financas", "keyword": "tecnologia para organizar finanças", "title": "Como usar tecnologia para organizar finanças sem criar mais ruído", "intent": "educacional", "angle": "mostrar como ferramentas podem simplificar decisões" },
+        { "slug": "como-tomar-decisoes-financeiras-melhores", "keyword": "como tomar decisões financeiras melhores", "title": "Como tomar decisões financeiras melhores com base no seu contexto", "intent": "educacional", "angle": "ensinar uma lógica de decisão mais calma e baseada em números" }
+      ],
+      "profiles": {
+        "keywordPattern": "educação financeira para {value}",
+        "titlePattern": "Educação financeira para {value}: prioridades para avançar com clareza",
+        "anglePattern": "adaptar decisões financeiras ao contexto de {value}",
+        "values": ["quem ganha pouco", "quem quer sair das dívidas", "quem usa muito cartão", "MEI", "casais", "quem quer financiar imóvel"]
+      }
+    }
+  }
+]

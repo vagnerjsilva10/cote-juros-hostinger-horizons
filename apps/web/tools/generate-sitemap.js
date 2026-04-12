@@ -17,7 +17,7 @@ const publicDir = resolve(__dirname, '../public');
 const sitemapPath = resolve(publicDir, 'sitemap.xml');
 const robotsPath = resolve(publicDir, 'robots.txt');
 
-const siteUrl = (process.env.SITE_URL || process.env.VITE_SITE_URL || 'https://cote-juros-hostinger-horizons-web.vercel.app').replace(/\/$/, '');
+const siteUrl = (process.env.SITE_URL || process.env.VITE_SITE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
 const now = new Date().toISOString();
 
 const fixedRoutes = [

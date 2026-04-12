@@ -8,6 +8,10 @@
     "build": "node tools/generate-llms.js || true && node tools/generate-sitemap.js && vite build --outDir dist",
     "start": "vite preview --outDir dist --host :: --port 3000",
     "sitemap": "node tools/generate-sitemap.js",
+    "seo:generate": "node tools/generate-seo-articles.js --all",
+    "seo:links": "node tools/generate-internal-links.js",
+    "seo:sitemap": "node tools/update-sitemap.js",
+    "seo:all": "node tools/generate-seo-articles.js --all && node tools/update-sitemap.js",
     "lint": "eslint . --quiet",
     "lint:warn": "eslint ."
   },

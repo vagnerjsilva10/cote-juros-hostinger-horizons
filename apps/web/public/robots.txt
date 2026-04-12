@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://cote-juros-hostinger-horizons-web.vercel.app/sitemap.xml
+Sitemap: https://www.cotejuros.com.br/sitemap.xml

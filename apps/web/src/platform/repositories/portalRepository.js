@@ -53,7 +53,7 @@ const defaultSettingsSeed = {
 const STORAGE_KEYS = {
   banks: 'cj.banks',
   offers: 'cj.offers',
-  articles: 'cj.articles',
+  articles: 'cj.articles.v2',
   seoPages: 'cj.seoPages',
   seoFallbackPaths: 'cj.seoFallbackPaths',
   testimonials: 'cj.testimonials',
@@ -391,9 +391,13 @@ export const portalRepository = {
     }
 
     if (sort === 'recent') result = [...result].sort((a, b) => sortByDateDesc(a, b, 'publishDate'));
-    if (sort === 'read') result = [...result].sort((a, b) => (a.readTime ?? 0) - (b.readTime ?? 0));
+    if (sort === 'read') result = [...result].sort((a, b) => (b.readTime ?? 0) - (a.readTime ?? 0));
 
     return result;
+  },
+
+  getArticleBySlug(slug) {
+    return safeRead('articles').find((article) => toSlug(article.slug || article.title || article.id) === toSlug(slug)) || null;
   },
 
   listSeoPages() {
