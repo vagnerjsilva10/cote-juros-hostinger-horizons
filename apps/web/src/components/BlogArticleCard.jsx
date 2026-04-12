@@ -18,9 +18,15 @@ function BlogArticleCard({
   const href = `/blog/${slug}`;
 
   return (
-    <Link to={href} className={cn('group block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 rounded-[22px]', className)}>
+    <Link
+      to={href}
+      className={cn(
+        'group block h-full rounded-[24px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
+        className
+      )}
+    >
       <Card className="surface-card relative h-full overflow-hidden border-border transition-all duration-200 group-hover:-translate-y-1 group-hover:border-primary/35 group-hover:shadow-[0_18px_45px_rgba(15,23,42,0.1)] group-focus-visible:border-primary/35">
-        <div className={cn('overflow-hidden', compact ? 'h-40' : 'h-52')}>
+        <div className={cn('overflow-hidden bg-slate-100', compact ? 'h-40' : 'h-52')}>
           <img
             src={image}
             alt={article.title}
@@ -28,7 +34,7 @@ function BlogArticleCard({
           />
         </div>
 
-        <CardContent className={cn('flex h-full flex-col gap-4', compact ? 'p-5' : 'p-8')}>
+        <CardContent className={cn('flex h-full flex-col gap-4', compact ? 'p-5' : 'p-6 md:p-7')}>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Badge variant="outline" className="max-w-full truncate">{article.category}</Badge>
             <span className="inline-flex items-center gap-2 text-xs text-muted-foreground">
@@ -41,7 +47,7 @@ function BlogArticleCard({
             <h3 className={cn('text-balance text-foreground transition-colors group-hover:text-primary', compact ? 'text-lg' : 'text-xl')}>
               {article.title}
             </h3>
-            <p className={cn('text-muted-foreground', compact ? 'line-clamp-3 text-sm' : 'line-clamp-3')}>
+            <p className={cn('text-muted-foreground', compact ? 'line-clamp-3 text-sm leading-6' : 'line-clamp-3 leading-7')}>
               {getArticleSummary(article)}
             </p>
           </div>

@@ -1,58 +1,45 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Search, Sparkles } from 'lucide-react';
+import { ArrowRight, Search, Sparkles, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent } from '@/components/ui/card';
 import { AdSpace, ADSENSE_SLOT_IDS } from '@/components/AdSpace.jsx';
 import PageHero from '@/components/PageHero.jsx';
 import BlogArticleCard from '@/components/BlogArticleCard.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
-import { getArticleCategoryKey, getArticleImage, getArticleSummary } from '@/lib/content/articles.js';
+import { getArticleCategoryKey, getArticleImage, getArticleSummary, normalizeArticleSlug } from '@/lib/content/articles.js';
 
-const CATEGORY_THUMBNAILS = {
-  emprestimos: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80',
-  cartoes: 'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?auto=format&fit=crop&w=1200&q=80',
-  financas: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=1200&q=80',
-  score: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80',
-  financiamento: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80',
-  educacao: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80'
-};
-
-const fallbackThumbnail = CATEGORY_THUMBNAILS.educacao;
 const PAGE_SIZE = 9;
 
-const normalize = (value = '') =>
-  String(value)
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
-
-const resolveArticleImage = (article) => {
-  const existing = getArticleImage(article, '');
-  if (existing) return existing;
-
-  const categoryKey = getArticleCategoryKey(article);
-  if (categoryKey.includes('emprest')) return CATEGORY_THUMBNAILS.emprestimos;
-  if (categoryKey.includes('cart')) return CATEGORY_THUMBNAILS.cartoes;
-  if (categoryKey.includes('score')) return CATEGORY_THUMBNAILS.score;
-  if (categoryKey.includes('financi')) return CATEGORY_THUMBNAILS.financiamento;
-  if (categoryKey.includes('educ') || categoryKey.includes('organiz')) return CATEGORY_THUMBNAILS.educacao;
-  if (categoryKey.includes('finan')) return CATEGORY_THUMBNAILS.financas;
-
-  return fallbackThumbnail;
+const CATEGORY_DESCRIPTIONS = {
+  emprestimos: 'Leituras para comparar taxa, CET, parcela e custo total com mais critério.',
+  cartoes: 'Guias sobre limite, anuidade, score, benefícios e uso saudável do cartão.',
+  score: 'Conteúdo para entender aprovação, histórico financeiro e construção de crédito.',
+  financiamento: 'Explicações sobre entrada, prazo, amortização, CET e custo final.',
+  organizacao: 'Textos para reorganizar o orçamento, priorizar metas e recuperar margem.',
+  dividas: 'Rotas práticas para renegociação, quitação e redução de pressão financeira.'
 };
 
-const getCategoryDescription = (category) => {
-  const key = normalize(category);
-  if (key.includes('emprest')) return 'Análises sobre taxa, CET, prazo e comparação entre propostas.';
-  if (key.includes('cart')) return 'Guias sobre anuidade, limite, score e uso responsável do cartão.';
-  if (key.includes('score')) return 'Conteúdo para entender score, aprovação e construção de histórico.';
-  if (key.includes('financi')) return 'Leituras sobre entrada, amortização, CET e custo total.';
-  if (key.includes('divid')) return 'Estratégias para reorganizar dívidas, renegociar e recuperar fôlego.';
-  return 'Conteúdo editorial para tomar decisões financeiras com mais clareza.';
+const fallbackImage =
+  'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=80';
+
+const getCategoryDescription = (articleCategory = '') => {
+  const categoryKey = String(articleCategory)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+
+  if (categoryKey.includes('emprest')) return CATEGORY_DESCRIPTIONS.emprestimos;
+  if (categoryKey.includes('cart')) return CATEGORY_DESCRIPTIONS.cartoes;
+  if (categoryKey.includes('score')) return CATEGORY_DESCRIPTIONS.score;
+  if (categoryKey.includes('financi')) return CATEGORY_DESCRIPTIONS.financiamento;
+  if (categoryKey.includes('organiz')) return CATEGORY_DESCRIPTIONS.organizacao;
+  if (categoryKey.includes('divid')) return CATEGORY_DESCRIPTIONS.dividas;
+  return 'Conteúdo editorial para decidir melhor antes de contratar crédito.';
 };
 
 function BlogPage() {
@@ -76,6 +63,7 @@ function BlogPage() {
       if (!article?.category) return;
       grouped.set(article.category, (grouped.get(article.category) || 0) + 1);
     });
+
     return [
       { label: 'Todas', count: articlesData.length },
       ...Array.from(grouped.entries()).map(([label, count]) => ({ label, count }))
@@ -98,7 +86,8 @@ function BlogPage() {
   }, [articlesData, category, search, sort]);
 
   const featured = filteredArticles[0];
-  const visibleArticles = filteredArticles.slice(1, visibleCount + 1);
+  const popularGuides = [...filteredArticles].slice(1).sort((a, b) => (b.readTime || 0) - (a.readTime || 0)).slice(0, 3);
+  const latestArticles = filteredArticles.slice(1, visibleCount + 1);
   const hasMore = filteredArticles.length > visibleCount + 1;
   const selectedCategory = categories.find((item) => item.label === category);
 
@@ -115,16 +104,16 @@ function BlogPage() {
         <title>Blog Cote Juros | guias sobre crédito, juros, cartão e financiamento</title>
         <meta
           name="description"
-          content="Veja guias em português sobre empréstimo, cartão de crédito, score, financiamento, juros abusivos e educação financeira prática."
+          content="Explore guias da Cote Juros sobre empréstimo, cartões, score, renegociação, financiamento e educação financeira prática."
         />
         <link rel="canonical" href="https://www.cotejuros.com.br/blog" />
       </Helmet>
 
       <PageHero
         centered
-        badge="Editorial"
-        title="Um hub editorial para comparar crédito com mais clareza."
-        subtitle="Explore guias sobre empréstimos, cartões, score, dívidas e financiamento com navegação simples, leitura objetiva e próximos passos sempre disponíveis."
+        badge="Editorial Cote Juros"
+        title="Guias para comparar crédito, juros e financiamento com mais clareza."
+        subtitle="O blog da Cote Juros reúne análises, comparações e explicações práticas para quem quer decidir melhor antes de contratar crédito."
       >
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
           <div className="relative">
@@ -152,17 +141,17 @@ function BlogPage() {
         </div>
       </PageHero>
 
-      <div className="page-shell space-y-12 py-10 md:py-12">
+      <div className="page-shell space-y-10 py-10 md:space-y-12 md:py-12">
         <section className="grid gap-4 rounded-[24px] border border-border bg-white p-5 md:grid-cols-[1fr_240px] md:p-6">
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-3">
               <Badge variant="outline">{selectedCategory?.label || 'Todas'}</Badge>
               <span className="text-sm text-muted-foreground">{filteredArticles.length} artigos encontrados</span>
             </div>
-            <h2 className="text-2xl text-foreground">Navegue por tema, compare contextos e continue a leitura com facilidade.</h2>
+            <h2 className="text-2xl text-foreground">Navegação editorial clara, com rotas de leitura que fazem sentido.</h2>
             <p className="max-w-3xl text-muted-foreground">
               {category === 'Todas'
-                ? 'O blog foi organizado como um hub editorial para ajudar você a descobrir artigos relacionados, voltar para categorias e seguir para simuladores e diagnósticos quando fizer sentido.'
+                ? 'Comece pelo destaque editorial, aprofunde com os guias mais lidos e siga por categoria até encontrar o conteúdo mais próximo do seu momento.'
                 : getCategoryDescription(category)}
             </p>
           </div>
@@ -174,7 +163,7 @@ function BlogPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="recent">Mais recentes</SelectItem>
-                <SelectItem value="read">Leituras mais longas</SelectItem>
+                <SelectItem value="read">Guias mais completos</SelectItem>
                 <SelectItem value="title">Ordem alfabética</SelectItem>
               </SelectContent>
             </Select>
@@ -188,14 +177,18 @@ function BlogPage() {
         </section>
 
         {featured ? (
-          <section className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+          <section className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
             <Link
-              to={`/blog/${featured.slug}`}
+              to={`/blog/${normalizeArticleSlug(featured)}`}
               className="group relative overflow-hidden rounded-[28px] border border-border bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)] transition-all duration-200 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_24px_60px_rgba(15,23,42,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
             >
-              <div className="grid h-full lg:grid-cols-[1.05fr_0.95fr]">
-                <div className="min-h-[280px] overflow-hidden">
-                  <img src={resolveArticleImage(featured)} alt={featured.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
+              <div className="grid h-full lg:grid-cols-[1.03fr_0.97fr]">
+                <div className="min-h-[280px] overflow-hidden bg-slate-100">
+                  <img
+                    src={getArticleImage(featured, fallbackImage)}
+                    alt={featured.title}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  />
                 </div>
                 <div className="flex flex-col justify-center gap-5 p-6 md:p-8">
                   <Badge variant="outline" className="w-fit">Destaque editorial</Badge>
@@ -218,26 +211,49 @@ function BlogPage() {
               </div>
             </Link>
 
-            <div className="flex flex-col gap-4">
-              <div className="rounded-[24px] border border-border bg-background-secondary p-6">
-                <div className="flex items-center gap-2 text-primary">
-                  <Sparkles className="h-4 w-4" />
-                  <p className="text-sm font-semibold uppercase tracking-[0.18em]">Próximo passo</p>
-                </div>
-                <h3 className="mt-3 text-2xl text-foreground">Quer entender seu caso com mais contexto?</h3>
-                <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                  O Cote Finance AI ajuda você a organizar o momento financeiro, enxergar onde o dinheiro está indo e priorizar decisões antes de contratar crédito.
-                </p>
-                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                  <a href="https://finance.cotejuros.com.br/quiz" className="inline-flex">
-                    <Button>Fazer diagnóstico financeiro</Button>
-                  </a>
-                  <Link to="/cote-finance-ai" className="inline-flex">
-                    <Button variant="outline">Entender como funciona</Button>
-                  </Link>
-                </div>
-              </div>
-              <AdSpace height="220px" adSlot={ADSENSE_SLOT_IDS.inContent} />
+            <div className="space-y-4">
+              <Card className="border-border bg-background-secondary">
+                <CardContent className="space-y-4 p-6">
+                  <div className="flex items-center gap-2 text-primary">
+                    <TrendingUp className="h-4 w-4" />
+                    <p className="text-sm font-semibold uppercase tracking-[0.18em]">Guias em alta</p>
+                  </div>
+                  <div className="space-y-4">
+                    {popularGuides.map((article) => (
+                      <Link
+                        key={article.id}
+                        to={`/blog/${normalizeArticleSlug(article)}`}
+                        className="block rounded-[18px] border border-border bg-white px-4 py-4 transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
+                      >
+                        <p className="text-sm text-muted-foreground">{article.category}</p>
+                        <h3 className="mt-2 text-lg text-foreground">{article.title}</h3>
+                        <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">{getArticleSummary(article)}</p>
+                      </Link>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-border bg-white">
+                <CardContent className="space-y-4 p-6">
+                  <div className="flex items-center gap-2 text-primary">
+                    <Sparkles className="h-4 w-4" />
+                    <p className="text-sm font-semibold uppercase tracking-[0.18em]">Próximo passo</p>
+                  </div>
+                  <h3 className="text-2xl text-foreground">Quer entender seu caso antes de contratar crédito?</h3>
+                  <p className="text-sm leading-7 text-muted-foreground">
+                    Faça um diagnóstico gratuito no Cote Finance AI para organizar o momento financeiro, visualizar prioridades e decidir com mais contexto.
+                  </p>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <a href="https://finance.cotejuros.com.br/quiz" className="inline-flex">
+                      <Button>Fazer diagnóstico financeiro</Button>
+                    </a>
+                    <Link to="/cote-finance-ai" className="inline-flex">
+                      <Button variant="outline">Entender como funciona</Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </section>
         ) : null}
@@ -245,16 +261,20 @@ function BlogPage() {
         <section className="grid gap-8 lg:grid-cols-[1fr_280px]">
           <div className="space-y-8">
             <div className="space-y-3">
-              <h2 className="text-2xl text-foreground">Artigos recentes e relacionados</h2>
+              <h2 className="text-2xl text-foreground">Artigos recentes</h2>
               <p className="text-muted-foreground">
-                Todos os cards abaixo são clicáveis e pensados para manter a leitura fluida, com descoberta contínua entre temas próximos.
+                Conteúdo organizado para manter a leitura fluida, com cards clicáveis, títulos mais úteis e rotas claras para continuar navegando.
               </p>
             </div>
 
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {visibleArticles.map((article, index) => (
+              {latestArticles.map((article, index) => (
                 <React.Fragment key={article.id}>
-                  <BlogArticleCard article={article} image={resolveArticleImage(article)} formatDate={formatDate} />
+                  <BlogArticleCard
+                    article={article}
+                    image={getArticleImage(article, fallbackImage)}
+                    formatDate={formatDate}
+                  />
                   {(index + 1) % 6 === 0 ? (
                     <div className="md:col-span-2 xl:col-span-3">
                       <AdSpace height="150px" adSlot={ADSENSE_SLOT_IDS.feed} />
@@ -264,9 +284,9 @@ function BlogPage() {
               ))}
 
               {filteredArticles.length === 0 ? (
-                <div className="rounded-[16px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center md:col-span-2 xl:col-span-3">
-                  <h3 className="text-2xl">Nenhum artigo encontrado.</h3>
-                  <p className="mt-3 text-muted-foreground">Tente outro termo de busca ou escolha uma categoria diferente.</p>
+                <div className="rounded-[18px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center md:col-span-2 xl:col-span-3">
+                  <h3 className="text-2xl text-foreground">Nenhum artigo encontrado</h3>
+                  <p className="mt-3 text-muted-foreground">Tente outro termo ou escolha uma categoria diferente.</p>
                 </div>
               ) : null}
             </div>
@@ -281,22 +301,38 @@ function BlogPage() {
           </div>
 
           <aside className="space-y-5 lg:sticky lg:top-24 lg:h-fit">
-            <div className="rounded-[22px] border border-border bg-white p-5">
-              <h3 className="text-xl text-foreground">Categorias do hub</h3>
-              <div className="mt-4 space-y-3">
-                {categories.slice(1).map((item) => (
-                  <button
-                    key={item.label}
-                    type="button"
-                    onClick={() => setCategory(item.label)}
-                    className="flex w-full items-center justify-between rounded-[14px] border border-border px-4 py-3 text-left transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
-                  >
-                    <span className="text-sm font-medium text-foreground">{item.label}</span>
-                    <span className="text-xs text-muted-foreground">{item.count}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
+            <Card className="border-border bg-white">
+              <CardContent className="space-y-4 p-5">
+                <h3 className="text-xl text-foreground">Navegue por assunto</h3>
+                <div className="space-y-3">
+                  {categories.slice(1).map((item) => (
+                    <button
+                      key={item.label}
+                      type="button"
+                      onClick={() => setCategory(item.label)}
+                      className="flex w-full items-center justify-between rounded-[14px] border border-border px-4 py-3 text-left transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
+                    >
+                      <span className="pr-4 text-sm font-medium text-foreground">{item.label}</span>
+                      <span className="text-xs text-muted-foreground">{item.count}</span>
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border bg-background-secondary">
+              <CardContent className="space-y-3 p-5">
+                <h3 className="text-xl text-foreground">Rotas de leitura</h3>
+                <p className="text-sm leading-7 text-muted-foreground">
+                  Se você está comparando crédito agora, vale seguir por score, cartões e ferramentas de simulação para fechar a leitura com mais contexto.
+                </p>
+                <div className="space-y-2">
+                  <Link to="/emprestimos" className="block text-sm font-medium text-primary hover:underline">Explorar empréstimos</Link>
+                  <Link to="/cartoes-de-credito" className="block text-sm font-medium text-primary hover:underline">Explorar cartões de crédito</Link>
+                  <Link to="/ferramentas" className="block text-sm font-medium text-primary hover:underline">Abrir simuladores e calculadoras</Link>
+                </div>
+              </CardContent>
+            </Card>
 
             <AdSpace height="600px" adSlot={ADSENSE_SLOT_IDS.sidebar} />
           </aside>

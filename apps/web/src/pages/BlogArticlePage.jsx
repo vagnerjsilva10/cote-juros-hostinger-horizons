@@ -20,7 +20,8 @@ import BlogTableOfContents from '@/components/BlogTableOfContents.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { buildArticleToc, getArticleCategoryKey, getArticleImage, getArticleSummary, normalizeArticleSlug } from '@/lib/content/articles.js';
 
-const fallbackThumbnail = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=80';
+const fallbackThumbnail =
+  'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=80';
 
 const CATEGORY_ROUTES = [
   { match: 'emprest', path: '/emprestimos', label: 'Empréstimos' },
@@ -68,27 +69,43 @@ function BlogArticlePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let active = true;
+
     Promise.all([portalApi.getArticles({ sort: 'recent' }), portalApi.getArticleBySlug(articleSlug)])
       .then(([items, articleData]) => {
-        setArticles(Array.isArray(items) ? items : []);
-        setArticle(articleData ? { ...articleData, author: articleData.author || 'Equipe Cote Juros' } : null);
+        if (!active) return;
+
+        const articleList = Array.isArray(items) ? items : [];
+        const listMatch = articleList.find((item) => normalizeArticleSlug(item) === articleSlug);
+
+        setArticles(articleList);
+        setArticle(articleData || listMatch || null);
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, [articleSlug]);
 
   const categoryRoute = useMemo(() => getCategoryRoute(article), [article]);
+  const tocItems = useMemo(() => buildArticleToc(article), [article]);
 
   const relatedArticles = useMemo(() => {
     if (!article) return [];
     const currentCategory = getArticleCategoryKey(article);
+    const currentKeywords = new Set(article.keywords || []);
 
     return articles
       .filter((item) => normalizeArticleSlug(item) !== normalizeArticleSlug(article))
       .sort((a, b) => {
         const aCategoryScore = getArticleCategoryKey(a).includes(currentCategory) ? 2 : 0;
         const bCategoryScore = getArticleCategoryKey(b).includes(currentCategory) ? 2 : 0;
-        const aKeywordScore = (a.keywords || []).some((keyword) => (article.keywords || []).includes(keyword)) ? 1 : 0;
-        const bKeywordScore = (b.keywords || []).some((keyword) => (article.keywords || []).includes(keyword)) ? 1 : 0;
+        const aKeywordScore = (a.keywords || []).some((keyword) => currentKeywords.has(keyword)) ? 1 : 0;
+        const bKeywordScore = (b.keywords || []).some((keyword) => currentKeywords.has(keyword)) ? 1 : 0;
+
         if (aCategoryScore !== bCategoryScore) return bCategoryScore - aCategoryScore;
         if (aKeywordScore !== bKeywordScore) return bKeywordScore - aKeywordScore;
         return new Date(b.publishDate) - new Date(a.publishDate);
@@ -108,7 +125,6 @@ function BlogArticlePage() {
 
   const previousArticle = currentIndex > 0 ? orderedArticles[currentIndex - 1] : null;
   const nextArticle = currentIndex >= 0 && currentIndex < orderedArticles.length - 1 ? orderedArticles[currentIndex + 1] : null;
-  const tocItems = useMemo(() => buildArticleToc(article), [article]);
 
   if (loading) {
     return (
@@ -123,7 +139,7 @@ function BlogArticlePage() {
       <section className="page-shell py-20">
         <Card className="mx-auto max-w-2xl border-border bg-white text-center">
           <CardContent className="space-y-4 p-10">
-            <h1 className="text-3xl">Artigo não encontrado</h1>
+            <h1 className="text-3xl text-foreground">Artigo não encontrado</h1>
             <p className="text-muted-foreground">Esse conteúdo pode ter sido movido, renomeado ou removido.</p>
             <Link to="/blog">
               <Button>Voltar para o blog</Button>
@@ -183,7 +199,7 @@ function BlogArticlePage() {
             Voltar para o blog
           </Link>
 
-          <Badge variant="outline" className="border-white/20 bg-white/10 text-white">
+          <Badge variant="outline" className="w-fit border-white/20 bg-white/10 text-white">
             {article.category}
           </Badge>
 
@@ -195,7 +211,7 @@ function BlogArticlePage() {
           <div className="flex flex-wrap gap-5 text-sm text-slate-300">
             <span className="inline-flex items-center gap-2">
               <User className="h-4 w-4 text-sky-300" />
-              {article.author}
+              {article.author || 'Equipe Cote Juros'}
             </span>
             <span className="inline-flex items-center gap-2">
               <CalendarDays className="h-4 w-4 text-sky-300" />
@@ -212,11 +228,15 @@ function BlogArticlePage() {
       <section className="bg-background py-10 md:py-12">
         <div className="page-shell grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
           <article className="min-w-0 space-y-8">
-            <div className="overflow-hidden rounded-[20px] border border-border bg-white">
+            <div className="overflow-hidden rounded-[22px] border border-border bg-white">
               <img src={getArticleImage(article, fallbackThumbnail)} alt={article.title} className="h-full max-h-[460px] w-full object-cover" />
             </div>
 
-            {tocItems.length >= 3 ? <div className="lg:hidden"><BlogTableOfContents items={tocItems} /></div> : null}
+            {tocItems.length >= 3 ? (
+              <div className="lg:hidden">
+                <BlogTableOfContents items={tocItems} />
+              </div>
+            ) : null}
 
             <Card className="border-border bg-white">
               <CardContent className="space-y-8 p-6 md:p-10">
@@ -239,7 +259,7 @@ function BlogArticlePage() {
                         </p>
                       ))}
                       {section.bullets?.length ? (
-                        <ul className="space-y-3 pl-5 text-base text-muted-foreground marker:text-primary">
+                        <ul className="space-y-3 pl-5 text-base leading-7 text-muted-foreground marker:text-primary">
                           {section.bullets.map((bullet) => (
                             <li key={bullet} className="pl-1">{bullet}</li>
                           ))}
@@ -286,7 +306,7 @@ function BlogArticlePage() {
                         </Button>
                       </a>
                       <Link to="/cote-finance-ai" className="inline-flex">
-                        <Button variant="outline">Conhecer o Cote Finance AI</Button>
+                        <Button variant="outline">Entender como funciona</Button>
                       </Link>
                     </div>
                   </section>
@@ -331,7 +351,9 @@ function BlogArticlePage() {
                       </div>
                     </div>
                   </Link>
-                ) : <div />}
+                ) : (
+                  <div />
+                )}
 
                 {nextArticle ? (
                   <Link
@@ -356,17 +378,17 @@ function BlogArticlePage() {
             {tocItems.length >= 3 ? <BlogTableOfContents items={tocItems} /> : null}
 
             <Card className="border-border bg-white">
-              <CardContent className="space-y-3 p-6">
-                <h3 className="text-xl">Próximos passos</h3>
-                <p className="text-sm text-muted-foreground">
-                  Depois da leitura, você pode explorar comparadores, simuladores e um diagnóstico financeiro mais completo.
+              <CardContent className="space-y-4 p-6">
+                <h3 className="text-xl text-foreground">Próximos passos</h3>
+                <p className="text-sm leading-7 text-muted-foreground">
+                  Depois da leitura, você pode aprofundar por categoria, abrir ferramentas de comparação ou fazer um diagnóstico financeiro para entender o seu momento com mais contexto.
                 </p>
                 <div className="flex flex-col gap-3">
                   <Link to={categoryRoute.path}>
                     <Button variant="outline" className="w-full">Explorar {categoryRoute.label}</Button>
                   </Link>
                   <Link to="/ferramentas">
-                    <Button variant="outline" className="w-full">Abrir ferramentas</Button>
+                    <Button variant="outline" className="w-full">Abrir simuladores e calculadoras</Button>
                   </Link>
                   <a href="https://finance.cotejuros.com.br/quiz">
                     <Button className="w-full">Fazer diagnóstico financeiro</Button>
@@ -385,7 +407,7 @@ function BlogArticlePage() {
           <div className="page-shell space-y-8">
             <div className="space-y-3">
               <h2>Artigos relacionados</h2>
-              <p className="text-muted-foreground">Mais leituras do mesmo tema ou de assuntos próximos para manter a navegação fluida.</p>
+              <p className="text-muted-foreground">Continue por temas próximos para aprofundar a leitura sem sair do contexto.</p>
             </div>
 
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">

@@ -53,7 +53,7 @@ const defaultSettingsSeed = {
 const STORAGE_KEYS = {
   banks: 'cj.banks',
   offers: 'cj.offers',
-  articles: 'cj.articles.v2',
+  articles: 'cj.articles.v3',
   seoPages: 'cj.seoPages',
   seoFallbackPaths: 'cj.seoFallbackPaths',
   testimonials: 'cj.testimonials',
