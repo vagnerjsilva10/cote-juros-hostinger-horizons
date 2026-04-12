@@ -406,7 +406,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-h-[92vh] w-[calc(100vw-1.5rem)] max-w-[880px] overflow-hidden border border-border bg-white p-0 shadow-[0_24px_80px_rgba(15,23,42,0.18)]">
+      <DialogContent className="flex max-h-[92vh] w-[calc(100vw-1.5rem)] max-w-[880px] flex-col overflow-hidden border border-border bg-white p-0 shadow-[0_24px_80px_rgba(15,23,42,0.18)]">
         <DialogTitle className="sr-only">Simulação de crédito</DialogTitle>
         <DialogDescription className="sr-only">Preencha seus dados para visualizar ofertas personalizadas.</DialogDescription>
 
@@ -457,7 +457,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
           </div>
         </div>
 
-        <div className="overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
+        <div className="flex-1 overflow-y-auto px-4 pb-28 pt-4 sm:px-6 sm:pb-20 sm:pt-6">
           <AnimatePresence mode="wait">
             <motion.div
               key={current.id}
@@ -469,15 +469,15 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
             >
               {current.id === 'intention' ? (
                 <div className="space-y-5">
-                  <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-                    <div className="rounded-3xl border border-border bg-background-secondary p-4 sm:p-5">
+                  <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+                    <div className="rounded-3xl border border-border bg-white p-4 sm:p-5">
                       <Field label="Valor desejado" hint={`De ${formatCurrency(MIN_AMOUNT)} a ${formatCurrency(MAX_AMOUNT)}`} error={intentionErrors.requestedAmount}>
                         <Input
                           inputMode="numeric"
                           value={amountInput}
                           onChange={(event) => handleAmountChange(event.target.value)}
                           onBlur={handleAmountBlur}
-                          className="h-14 rounded-2xl border-border bg-white text-xl font-semibold tracking-[-0.03em] text-foreground"
+                          className="h-14 rounded-2xl border-border bg-background-secondary text-2xl font-semibold tracking-[-0.03em] text-foreground sm:h-16 sm:text-3xl"
                         />
                       </Field>
                       <div className="mt-4">
@@ -488,6 +488,8 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                           max={MAX_AMOUNT}
                           step={500}
                           className="py-2"
+                          trackClassName="h-2"
+                          thumbClassName="h-6 w-6 sm:h-5 sm:w-5"
                         />
                         <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
                           <span>{formatCurrency(MIN_AMOUNT)}</span>
@@ -500,7 +502,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                             key={value}
                             type="button"
                             onClick={() => setSection('intention', 'requestedAmount', value)}
-                            className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
+                            className={`min-h-[44px] rounded-full border px-4 text-sm font-medium transition-colors ${
                               data.intention.requestedAmount === value
                                 ? 'border-primary bg-primary/10 text-primary'
                                 : 'border-border bg-white text-muted-foreground hover:border-primary/25 hover:text-foreground'
@@ -514,28 +516,11 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
 
                     <div className="rounded-3xl border border-border bg-white p-4 sm:p-5">
                       <Field label="Prazo" hint={`De ${MIN_INSTALLMENTS}x a ${MAX_INSTALLMENTS}x`} error={intentionErrors.installments}>
-                        <div className="rounded-2xl border border-border bg-background-secondary px-4 py-4">
-                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Parcelas selecionadas</p>
-                          <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">{data.intention.installments}x</p>
-                          <p className="mt-1 text-sm text-muted-foreground">Ajuste o prazo para refinar a busca das ofertas.</p>
+                        <div className="flex items-center justify-between rounded-2xl border border-border bg-background-secondary px-4 py-3">
+                          <p className="text-sm text-muted-foreground">Parcelas</p>
+                          <p className="text-3xl font-semibold tracking-[-0.04em] text-foreground">{data.intention.installments}x</p>
                         </div>
                       </Field>
-                      <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4">
-                        {POPULAR_INSTALLMENTS.map((item) => (
-                          <button
-                            key={item}
-                            type="button"
-                            onClick={() => setSection('intention', 'installments', item)}
-                            className={`rounded-2xl border px-3 py-3 text-sm font-medium transition-all ${
-                              data.intention.installments === item
-                                ? 'border-primary bg-primary text-white'
-                                : 'border-border bg-white text-foreground hover:border-primary/30 hover:bg-background-secondary'
-                            }`}
-                          >
-                            {item}x
-                          </button>
-                        ))}
-                      </div>
                       <div className="mt-4">
                         <Slider
                           value={[data.intention.installments]}
@@ -544,6 +529,8 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                           max={MAX_INSTALLMENTS}
                           step={1}
                           className="py-2"
+                          trackClassName="h-2"
+                          thumbClassName="h-6 w-6 sm:h-5 sm:w-5"
                         />
                         <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
                           <span>{MIN_INSTALLMENTS}x</span>
@@ -576,6 +563,8 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                           max={MAX_INCOME}
                           step={500}
                           className="py-2"
+                          trackClassName="h-2"
+                          thumbClassName="h-6 w-6 sm:h-5 sm:w-5"
                         />
                         <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
                           <span>{formatCurrency(MIN_INCOME)}</span>
@@ -757,7 +746,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
           </AnimatePresence>
         </div>
 
-        <div className="border-t border-border bg-white px-5 py-4 sm:px-6">
+        <div className="sticky bottom-0 z-20 border-t border-border bg-white/95 px-4 py-3 backdrop-blur sm:px-6 sm:py-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-muted-foreground">
               {step < STEPS.length - 1
