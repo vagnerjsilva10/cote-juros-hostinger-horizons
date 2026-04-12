@@ -264,8 +264,8 @@ const buildDefaultCopy = (model, offersCount) => {
 
   if (model.pageType === 'hub' && model.path === '/comparar') {
     return [
-      'A seção de comparadores reúne páginas por intenção de busca para crédito, cartões e financiamentos. Isso facilita encontrar uma rota de decisão alinhada ao seu objetivo.',
-      'Cada comparador apresenta taxas, benefícios, condições e FAQs para reduzir incerteza antes da contratação.'
+      'A seção de comparadores reúne páginas criadas para intenções reais de busca, como comparar juros de empréstimo, escolher cartão de crédito e analisar financiamento com mais clareza.',
+      'Cada comparador apresenta taxa, CET, benefícios, condições e FAQs para reduzir incerteza antes da contratação. O objetivo é ajudar você a comparar crédito com método, e não por impulso.'
     ];
   }
 
@@ -273,6 +273,20 @@ const buildDefaultCopy = (model, offersCount) => {
     return [
       'O hub de bancos organiza instituições por oferta de cartão, crédito pessoal e financiamento. Assim, você compara banco contra banco com o mesmo critério.',
       'A proposta é eliminar comparação superficial e mostrar o que realmente pesa: taxa, custo efetivo total, prazo e aderência ao perfil.'
+    ];
+  }
+
+  if (model.pageType === 'hub' && model.path === '/juros-abusivos') {
+    return [
+      'O hub de juros abusivos foi estruturado para ajudar você a identificar sinais de alerta em empréstimos, cartão de crédito e financiamento. A leitura parte de taxa, CET, prazo e custo total.',
+      'Antes de concluir se um contrato é abusivo, compare propostas equivalentes, consulte referências públicas e use ferramentas para medir o impacto do crédito no orçamento.'
+    ];
+  }
+
+  if (model.pageType === 'hub' && model.path === '/educacao-financeira') {
+    return [
+      'A área de educação financeira conecta conteúdos sobre crédito, juros, dívidas e comparação de produtos para fortalecer sua decisão antes da contratação.',
+      'Em vez de conteúdo genérico, o foco aqui é explicar o que muda na prática: quanto a parcela pesa, como comparar CET e como evitar juros altos.'
     ];
   }
 
@@ -291,6 +305,25 @@ const buildDefaultCopy = (model, offersCount) => {
 
 const buildStructuredData = ({ model, canonicalUrl, offers, faqItems }) => {
   const schemas = [];
+
+  schemas.push({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Cote Juros',
+        item: resolveSiteUrl()
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: model.badge || 'Página',
+        item: canonicalUrl
+      }
+    ]
+  });
 
   schemas.push({
     '@context': 'https://schema.org',
@@ -400,6 +433,24 @@ const buildStructuredData = ({ model, canonicalUrl, offers, faqItems }) => {
     });
   }
 
+  if (model.pageType === 'blog-article') {
+    schemas.push({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: model.heading,
+      description: model.description,
+      mainEntityOfPage: canonicalUrl,
+      publisher: {
+        '@type': 'Organization',
+        name: 'Cote Juros'
+      },
+      author: {
+        '@type': 'Organization',
+        name: 'Equipe Cote Juros'
+      }
+    });
+  }
+
   return schemas;
 };
 
@@ -460,6 +511,7 @@ function InternalLinkGroups() {
   const quickLinks = getQuickLinks();
 
   const groups = [
+    { title: 'Hubs principais', icon: Landmark, links: quickLinks.hubs.slice(0, 5) },
     { title: 'Comparadores', icon: Sparkles, links: quickLinks.comparadores.slice(0, 4) },
     { title: 'Bancos', icon: Building2, links: quickLinks.bancos.slice(0, 4) },
     { title: 'Ferramentas', icon: Calculator, links: quickLinks.ferramentas.slice(0, 4) },

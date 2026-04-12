@@ -3,9 +3,20 @@ const DEFAULT_SITE_URL = 'https://cote-juros-hostinger-horizons-web.vercel.app';
 export const corePillarPaths = [
   '/',
   '/emprestimos',
+  '/emprestimos-pessoal',
+  '/emprestimos-consignado',
+  '/melhores-emprestimos',
   '/cartoes',
+  '/cartoes-de-credito',
+  '/melhores-cartoes-de-credito',
   '/financiamentos',
+  '/financiamento',
+  '/financiamento-imobiliario',
   '/ferramentas',
+  '/simulador-emprestimo',
+  '/calculadora-juros',
+  '/juros-abusivos',
+  '/educacao-financeira',
   '/comparar',
   '/bancos',
   '/blog'
@@ -22,6 +33,14 @@ export const requiredBankRoutes = [
 ];
 
 export const comparePageDefinitions = [
+  {
+    slug: 'melhores-cartoes-de-credito',
+    heading: 'Compare os melhores cartões de crédito por anuidade, limite e benefícios.',
+    title: 'Melhores cartões de crédito para comparar em 2026 | Cote Juros',
+    description: 'Veja os melhores cartões de crédito por custo, limite e benefícios em uma comparação clara.',
+    productType: 'credit_card',
+    offerFilter: { sortBy: 'maxLimit' }
+  },
   {
     slug: 'cartoes-sem-anuidade',
     heading: 'Compare cartões sem anuidade por limite e benefícios.',
@@ -47,6 +66,14 @@ export const comparePageDefinitions = [
     offerFilter: { benefitsAny: ['milhas', 'pontos'], sortBy: 'maxLimit' }
   },
   {
+    slug: 'melhores-emprestimos',
+    heading: 'Compare os melhores empréstimos por taxa, CET e prazo.',
+    title: 'Melhores empréstimos para comparar em 2026 | Cote Juros',
+    description: 'Encontre os melhores empréstimos com leitura de taxa mensal, CET, prazo e valor liberado.',
+    productType: 'loan',
+    offerFilter: { sortBy: 'monthlyRate' }
+  },
+  {
     slug: 'emprestimo-negativado',
     heading: 'Compare empréstimo para negativado com mais segurança.',
     title: 'Comparar empréstimo para negativado: taxas e condições | Cote Juros',
@@ -63,6 +90,13 @@ export const comparePageDefinitions = [
     offerFilter: { categoriesAny: ['Pessoal', 'Garantia', 'Consignado'], sortBy: 'monthlyRate' }
   },
   {
+    slug: 'juros-abusivos',
+    heading: 'Entenda juros abusivos em empréstimos, cartão de crédito e financiamento.',
+    title: 'Juros abusivos: como identificar e comparar taxas | Cote Juros',
+    description: 'Aprenda como identificar juros abusivos e comparar o custo real do crédito antes de contratar.',
+    productType: null
+  },
+  {
     slug: 'financiamento-veiculo',
     heading: 'Compare financiamento de veículo por taxa, entrada e prazo.',
     title: 'Comparar financiamento de veículo: bancos e taxas | Cote Juros',
@@ -73,6 +107,13 @@ export const comparePageDefinitions = [
 ];
 
 export const toolPageDefinitions = [
+  {
+    path: '/simulador-emprestimo',
+    heading: 'Simulador de empréstimo para comparar parcelas, juros e custo total.',
+    title: 'Simulador de empréstimo online e gratuito | Cote Juros',
+    description: 'Use o simulador de empréstimo para comparar parcelas, taxa de juros e impacto no orçamento.',
+    toolType: 'simulador-emprestimo'
+  },
   {
     path: '/calculadora-juros',
     heading: 'Calculadora de juros para simular custo total do crédito.',
@@ -119,6 +160,42 @@ export const toolPageDefinitions = [
 
 export const blogEditorialDefinitions = [
   {
+    path: '/juros-abusivos/cartao-de-credito',
+    heading: 'Juros abusivos no cartão de crédito: entenda quando desconfiar.',
+    title: 'Juros abusivos no cartão de crédito: guia prático | Cote Juros',
+    description: 'Saiba como analisar juros abusivos no cartão de crédito e compare alternativas mais seguras.',
+    articleCategory: 'Juros abusivos',
+    body: [
+      'Juros abusivos no cartão de crédito costumam aparecer quando a dívida entra no rotativo e cresce mais rápido do que a capacidade de pagamento. O primeiro passo é olhar o custo total, e não só a parcela mínima.',
+      'Antes de renegociar, compare alternativas como parcelamento da fatura, portabilidade ou empréstimo com taxa menor. Em muitos casos, trocar uma dívida cara por outra mais previsível já reduz o dano financeiro.',
+      'Use dados do Banco Central, CET e histórico da fatura para entender se a proposta recebida faz sentido. Quanto maior a clareza sobre taxa e prazo, menor o risco de cair em nova armadilha.'
+    ]
+  },
+  {
+    path: '/juros-abusivos/emprestimo-pessoal',
+    heading: 'Juros abusivos em empréstimo pessoal: como avaliar seu contrato.',
+    title: 'Juros abusivos em empréstimo pessoal: o que analisar | Cote Juros',
+    description: 'Veja como identificar juros abusivos em empréstimo pessoal e comparar contratos com mais segurança.',
+    articleCategory: 'Juros abusivos',
+    body: [
+      'No empréstimo pessoal, juros abusivos nem sempre são percebidos de imediato. Muitas vezes o problema aparece no custo efetivo total, nas tarifas e no peso da parcela ao longo do contrato.',
+      'A melhor análise combina taxa nominal, CET, prazo e valor final pago. Quando uma oferta parece boa no início, mas fica muito mais cara no total, a comparação ajuda a expor esse desequilíbrio.',
+      'Antes de assinar, compare propostas equivalentes entre bancos e use simuladores para entender quanto cada ponto percentual muda no resultado final.'
+    ]
+  },
+  {
+    path: '/juros-abusivos/financiamento',
+    heading: 'Juros abusivos em financiamento: compare antes de assumir dívida longa.',
+    title: 'Juros abusivos em financiamento: sinais de alerta | Cote Juros',
+    description: 'Entenda como analisar juros abusivos em financiamento e reduzir risco de contratar mal.',
+    articleCategory: 'Juros abusivos',
+    body: [
+      'Em financiamentos, o risco de pagar caro aumenta porque o prazo é longo. Uma pequena diferença de taxa pode virar um impacto grande no valor total do contrato.',
+      'A análise correta passa por entrada, sistema de amortização, CET e saldo total ao fim do financiamento. Não basta olhar só a prestação inicial.',
+      'Comparar propostas lado a lado é a forma mais segura de perceber quando um banco está cobrando acima do que faz sentido para o seu perfil.'
+    ]
+  },
+  {
     path: '/blog/melhor-cartao-de-credito',
     heading: 'Melhor cartão de crédito: como escolher para o seu perfil.',
     title: 'Melhor cartão de crédito: guia completo para comparar | Cote Juros',
@@ -128,6 +205,54 @@ export const blogEditorialDefinitions = [
       'O melhor cartão de crédito não é o mais famoso, e sim o que combina com seu momento financeiro. Para decidir com segurança, compare limite inicial, política de aumento de limite, anuidade e benefícios reais.',
       'No Cote Juros, você consegue cruzar custo e benefício em um único painel. A recomendação prática é começar por cartões sem anuidade e só migrar para opções premium quando os benefícios realmente compensarem.',
       'Antes de solicitar, avalie o impacto do cartão no seu orçamento mensal. Cartão bom é aquele que melhora sua rotina e não compromete sua margem de pagamento.'
+    ]
+  },
+  {
+    path: '/blog/como-calcular-juros-de-emprestimo',
+    heading: 'Como calcular juros de empréstimo sem errar na conta.',
+    title: 'Como calcular juros de empréstimo: guia simples | Cote Juros',
+    description: 'Aprenda como calcular juros de empréstimo e comparar custo total antes de contratar.',
+    articleCategory: 'Educação financeira',
+    body: [
+      'Calcular juros de empréstimo é o passo mais importante para entender quanto o crédito realmente vai custar. O erro mais comum é olhar apenas a parcela e ignorar o total pago ao fim do contrato.',
+      'Para comparar opções, você precisa observar taxa mensal, CET, prazo e valor final. Duas ofertas parecidas podem ter custo muito diferente quando o prazo muda.',
+      'Use uma calculadora de juros ou simulador de empréstimo para testar cenários antes de fechar contrato. Isso reduz o risco de escolher uma dívida mais cara do que parece.'
+    ]
+  },
+  {
+    path: '/blog/como-comparar-credito-corretamente',
+    heading: 'Como comparar crédito corretamente antes de contratar.',
+    title: 'Como comparar crédito corretamente: checklist prático | Cote Juros',
+    description: 'Veja como comparar crédito pessoal, cartão e financiamento com mais clareza.',
+    articleCategory: 'Educação financeira',
+    body: [
+      'Comparar crédito corretamente exige ir além da taxa anunciada. O ponto central é reunir em uma mesma visão taxa, CET, prazo, parcela e custo total.',
+      'Quando você compara só a taxa de vitrine, perde detalhes importantes como seguros, tarifas e diferenças de prazo que mudam bastante o valor final.',
+      'A melhor prática é montar uma comparação padronizada, analisar se a parcela cabe no orçamento e considerar o motivo real do crédito antes de contratar.'
+    ]
+  },
+  {
+    path: '/blog/o-que-sao-juros-abusivos',
+    heading: 'O que são juros abusivos e como identificar na prática.',
+    title: 'O que são juros abusivos: guia para identificar | Cote Juros',
+    description: 'Entenda o que são juros abusivos em empréstimos, cartão de crédito e financiamento.',
+    articleCategory: 'Juros abusivos',
+    body: [
+      'Juros abusivos são cobranças que, no contexto do contrato, se mostram excessivas ou desproporcionais ao risco da operação. Para o consumidor, o sinal mais claro é o custo crescer muito além do esperado.',
+      'A análise prática depende de contexto, modalidade e comparação com outras propostas disponíveis no mercado. Por isso, olhar fontes públicas e comparar bancos é tão importante.',
+      'Antes de concluir que um contrato é abusivo, compare CET, valor total, prazo e encargos adicionais. Essa visão completa evita decisões precipitadas.'
+    ]
+  },
+  {
+    path: '/blog/como-saber-se-um-emprestimo-vale-a-pena',
+    heading: 'Como saber se um empréstimo vale a pena para o seu momento.',
+    title: 'Como saber se um empréstimo vale a pena | Cote Juros',
+    description: 'Aprenda a avaliar parcela, custo total e impacto no orçamento antes de contratar empréstimo.',
+    articleCategory: 'Empréstimos',
+    body: [
+      'Um empréstimo vale a pena quando resolve um problema real sem comprometer sua estabilidade financeira. Para isso, a parcela precisa caber no orçamento e o custo total precisa ser compreendido.',
+      'Avalie o motivo do crédito, o tempo de pagamento e o impacto da dívida sobre suas despesas mensais. Em muitos casos, adiar a contratação ou buscar outra modalidade faz mais sentido.',
+      'Simular e comparar propostas é a forma mais segura de transformar uma decisão emocional em uma decisão racional.'
     ]
   },
   {
@@ -182,12 +307,36 @@ export const blogEditorialDefinitions = [
 
 const loanCluster = [
   {
+    path: '/emprestimos-pessoal',
+    heading: 'Empréstimo pessoal para comparar juros, CET e parcela no mesmo lugar.',
+    title: 'Empréstimo pessoal: compare juros e CET | Cote Juros',
+    description: 'Veja empréstimo pessoal com comparação de taxa, CET, prazo e custo total antes de contratar.',
+    productType: 'loan',
+    offerFilter: { categoriesAny: ['Pessoal'], sortBy: 'monthlyRate' }
+  },
+  {
+    path: '/emprestimos-consignado',
+    heading: 'Empréstimo consignado com foco em taxa menor e parcela previsível.',
+    title: 'Empréstimo consignado: compare taxas e bancos | Cote Juros',
+    description: 'Compare empréstimo consignado por taxa, prazo e custo total com leitura mais clara.',
+    productType: 'loan',
+    offerFilter: { categoriesAny: ['Consignado'], sortBy: 'monthlyRate' }
+  },
+  {
     path: '/emprestimo-pessoal',
     heading: 'Empréstimo pessoal com comparação clara de taxas e condições.',
     title: 'Empréstimo pessoal: compare taxas antes de contratar | Cote Juros',
     description: 'Compare empréstimo pessoal por taxa mensal, valor liberado e prazo máximo.',
     productType: 'loan',
     offerFilter: { categoriesAny: ['Pessoal'], sortBy: 'monthlyRate' }
+  },
+  {
+    path: '/melhores-emprestimos',
+    heading: 'Melhores empréstimos para comparar por perfil e custo total.',
+    title: 'Melhores empréstimos: comparação clara de juros | Cote Juros',
+    description: 'Analise os melhores empréstimos por taxa mensal, CET, prazo e valor liberado.',
+    productType: 'loan',
+    offerFilter: { sortBy: 'monthlyRate' }
   },
   {
     path: '/emprestimo-consignado',
@@ -248,6 +397,14 @@ const loanCluster = [
 ];
 
 const cardCluster = [
+  {
+    path: '/cartoes-de-credito',
+    heading: 'Cartões de crédito para comparar anuidade, limite e benefícios.',
+    title: 'Cartões de crédito: compare limite, anuidade e benefícios | Cote Juros',
+    description: 'Compare cartões de crédito com leitura clara de anuidade, limite e benefícios reais.',
+    productType: 'credit_card',
+    offerFilter: { sortBy: 'maxLimit' }
+  },
   {
     path: '/melhores-cartoes-de-credito',
     heading: 'Melhores cartões de crédito com comparação por perfil.',
@@ -316,6 +473,22 @@ const cardCluster = [
 
 const financingCluster = [
   {
+    path: '/financiamento',
+    heading: 'Financiamento com comparação de taxa, entrada e prazo.',
+    title: 'Financiamento: compare bancos, taxa e parcela | Cote Juros',
+    description: 'Compare financiamento com foco em taxa anual, entrada mínima e prazo total.',
+    productType: 'financing',
+    offerFilter: { sortBy: 'annualRate' }
+  },
+  {
+    path: '/financiamento-imobiliario',
+    heading: 'Financiamento imobiliário para comparar taxa, prazo e entrada.',
+    title: 'Financiamento imobiliário: compare bancos e juros | Cote Juros',
+    description: 'Veja financiamento imobiliário com leitura de taxa, prazo e custo total do contrato.',
+    productType: 'financing',
+    offerFilter: { categoriesAny: ['Imobiliário', 'Refinanciamento'], sortBy: 'annualRate' }
+  },
+  {
     path: '/financiamento-veiculo',
     heading: 'Financiamento de veículo com comparação por taxa e entrada.',
     title: 'Financiamento de veículo: compare bancos e parcelas | Cote Juros',
@@ -359,6 +532,20 @@ const financingCluster = [
 
 const hubPages = [
   {
+    path: '/juros-abusivos',
+    heading: 'Juros abusivos: compare taxas e entenda quando desconfiar.',
+    title: 'Juros abusivos em crédito e financiamento | Cote Juros',
+    description: 'Aprenda como analisar juros abusivos em empréstimos, cartão de crédito e financiamento.',
+    pageType: 'hub'
+  },
+  {
+    path: '/educacao-financeira',
+    heading: 'Educação financeira para comparar crédito com mais segurança.',
+    title: 'Educação financeira: guias sobre juros, crédito e dívidas | Cote Juros',
+    description: 'Acesse conteúdos sobre crédito, juros, endividamento e decisões financeiras mais inteligentes.',
+    pageType: 'hub'
+  },
+  {
     path: '/comparar',
     heading: 'Comparadores financeiros para escolher com clareza.',
     title: 'Comparar crédito, cartões e financiamento | Cote Juros',
@@ -390,7 +577,7 @@ export const seoStaticPages = [
 export const reservedSeoStaticPaths = seoStaticPages.map((page) => page.path);
 
 const quickLinkPresets = {
-  comparadores: comparePageDefinitions.slice(0, 4).map((page) => ({
+  comparadores: comparePageDefinitions.slice(0, 6).map((page) => ({
     label: page.heading,
     path: `/comparar/${page.slug}`
   })),
@@ -402,10 +589,17 @@ const quickLinkPresets = {
     label: tool.heading,
     path: tool.path
   })),
-  artigos: blogEditorialDefinitions.map((article) => ({
+  artigos: blogEditorialDefinitions.slice(0, 8).map((article) => ({
     label: article.heading,
     path: article.path
-  }))
+  })),
+  hubs: [
+    { label: 'Comparar empréstimos', path: '/emprestimos' },
+    { label: 'Comparar cartões de crédito', path: '/cartoes-de-credito' },
+    { label: 'Comparar financiamentos', path: '/financiamento' },
+    { label: 'Entender juros abusivos', path: '/juros-abusivos' },
+    { label: 'Explorar educação financeira', path: '/educacao-financeira' }
+  ]
 };
 
 export function slugify(value = '') {
