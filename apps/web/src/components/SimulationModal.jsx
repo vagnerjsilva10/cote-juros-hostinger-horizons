@@ -406,7 +406,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="flex max-h-[92vh] w-[calc(100vw-1.5rem)] max-w-[880px] flex-col overflow-hidden border border-border bg-white p-0 shadow-[0_24px_80px_rgba(15,23,42,0.18)]">
+      <DialogContent showClose={false} className="flex max-h-[92vh] w-[calc(100vw-1.5rem)] max-w-[880px] flex-col overflow-hidden border border-border bg-white p-0 shadow-[0_24px_80px_rgba(15,23,42,0.18)]">
         <DialogTitle className="sr-only">Simulação de crédito</DialogTitle>
         <DialogDescription className="sr-only">Preencha seus dados para visualizar ofertas personalizadas.</DialogDescription>
 
