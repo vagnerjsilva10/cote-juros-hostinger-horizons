@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Scale, ShieldCheck } from 'lucide-react';
+import { FINANCE_AI_QUIZ_URL } from '@/platform/integrations/coteFinanceAI.js';
 import { CoteJurosLogo } from './CoteJurosLogo.jsx';
 
 function Footer() {
@@ -30,7 +31,7 @@ function Footer() {
       links: [
         { label: 'Blog', path: '/blog' },
         { label: 'Diagnóstico', path: '/diagnostico-financeiro' },
-        { label: 'Cote Finance AI', path: '/cote-finance-ai' }
+        { label: 'Testar Cote Finance AI', href: FINANCE_AI_QUIZ_URL }
       ]
     },
     {
@@ -45,9 +46,9 @@ function Footer() {
   ];
 
   return (
-    <footer className="border-t border-border bg-background py-20">
+    <footer className="border-t border-border bg-background py-14 sm:py-16 lg:py-20">
       <div className="page-shell">
-        <div className="mb-16 grid gap-12 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
+        <div className="mb-10 grid gap-10 lg:mb-16 lg:grid-cols-[1.4fr_repeat(4,1fr)] lg:gap-12">
           <div className="max-w-md space-y-6">
             <Link to="/" className="inline-block">
               <CoteJurosLogo />
@@ -76,16 +77,26 @@ function Footer() {
               <span className="mb-5 block text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                 {section.title}
               </span>
-              <ul className="space-y-3">
+              <ul className="space-y-2.5">
                 {section.links.map((link) => (
-                  <li key={link.path}>
-                    <Link
-                      to={link.path}
-                      className="link-animated group inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-                    >
-                      {link.label}
-                      <ArrowUpRight className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
-                    </Link>
+                  <li key={link.href || link.path}>
+                    {link.href ? (
+                      <a
+                        href={link.href}
+                        className="link-animated group inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                      >
+                        {link.label}
+                        <ArrowUpRight className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
+                      </a>
+                    ) : (
+                      <Link
+                        to={link.path}
+                        className="link-animated group inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                      >
+                        {link.label}
+                        <ArrowUpRight className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -93,7 +104,7 @@ function Footer() {
           ))}
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-border pt-8 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-3 border-t border-border pt-6 md:flex-row md:items-center md:justify-between md:pt-8">
           <div>
             <p className="text-sm font-medium text-foreground">Cote Juros © {currentYear}</p>
             <p className="text-sm text-muted-foreground">

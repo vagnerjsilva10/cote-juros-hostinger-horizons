@@ -119,7 +119,7 @@ function DiagnosticoPage() {
               })
             }
           >
-            Continuar no Cote Finance AI
+            Testar Cote Finance AI
           </Button>
           <Button variant="outline" onClick={() => { setShowOffers(false); setStep(1); }}>
             Refazer diagnóstico
@@ -202,7 +202,7 @@ function DiagnosticoPage() {
         <title>Diagnóstico financeiro - Cote Juros</title>
       </Helmet>
 
-      <div className="min-h-[85vh] bg-background-secondary py-16">
+      <div className="min-h-[85vh] bg-background-secondary py-10 sm:py-12 md:py-16">
         <div className="page-shell">
           {!showOffers ? (
             <div className="mx-auto max-w-xl">
@@ -215,9 +215,9 @@ function DiagnosticoPage() {
               </div>
 
               <Card>
-                <CardContent className="relative p-10">
+                <CardContent className="relative p-5 sm:p-8 md:p-10">
                   {step > 1 ? (
-                    <button type="button" onClick={prevStep} className="absolute left-6 top-6 rounded-full border border-border p-2 text-muted-foreground hover:bg-background-secondary hover:text-foreground">
+                    <button type="button" onClick={prevStep} className="absolute left-4 top-4 rounded-full border border-border p-2 text-muted-foreground hover:bg-background-secondary hover:text-foreground sm:left-6 sm:top-6">
                       <ChevronLeft className="h-4 w-4" />
                     </button>
                   ) : null}
@@ -229,7 +229,7 @@ function DiagnosticoPage() {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -12 }}
                       transition={{ duration: 0.2, ease: 'easeOut' }}
-                      className="pt-4"
+                      className="pt-3 sm:pt-4"
                     >
                       {renderStep()}
                     </motion.div>

@@ -33,7 +33,7 @@ function Header() {
       }`}
     >
       <div className="page-shell">
-        <div className="flex h-[74px] items-center justify-between">
+        <div className="flex h-[66px] items-center justify-between sm:h-[72px]">
           <Link to="/" className="flex items-center">
             <CoteJurosLogo />
           </Link>
@@ -68,13 +68,13 @@ function Header() {
           <div className="flex items-center gap-2 lg:hidden">
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon" className="rounded-full">
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-full">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[320px] border-l border-border bg-white">
-                <div className="mt-10 flex flex-col gap-8">
-                  <div className="border-b border-border pb-6">
+              <SheetContent side="right" className="w-[88vw] max-w-[320px] border-l border-border bg-white px-5">
+                <div className="mt-8 flex flex-col gap-6">
+                  <div className="border-b border-border pb-5">
                     <CoteJurosLogo />
                   </div>
 
@@ -84,7 +84,7 @@ function Header() {
                         key={item.path}
                         to={item.path}
                         onClick={() => setMobileOpen(false)}
-                        className={`rounded-[10px] px-4 py-3 text-base font-medium ${
+                        className={`rounded-[12px] px-4 py-3 text-base font-medium ${
                           isActive(item.path)
                             ? 'bg-primary/10 text-primary'
                             : 'text-muted-foreground hover:bg-background-secondary hover:text-foreground'
@@ -93,7 +93,7 @@ function Header() {
                         {item.label}
                       </Link>
                     ))}
-                    <div className="mt-4 border-t border-border pt-6">
+                    <div className="mt-3 border-t border-border pt-5">
                       <Link to="/diagnostico-financeiro" onClick={() => setMobileOpen(false)}>
                         <Button className="h-12 w-full bg-[#111827] text-base text-white transition-all duration-200 hover:bg-slate-800">
                           Analisar perfil
