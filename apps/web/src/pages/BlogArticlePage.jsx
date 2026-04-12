@@ -5,7 +5,7 @@ import { ArrowLeft, CalendarDays, Clock, User } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { AdSpace } from '@/components/AdSpace.jsx';
+import { AdSpace, ADSENSE_SLOT_IDS } from '@/components/AdSpace.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { getBlogEditorialPage } from '@/seo/seoCatalog.js';
 
@@ -199,18 +199,18 @@ function BlogArticlePage() {
                 {paragraphs.map((paragraph, index) => (
                   <React.Fragment key={`${article.id}-${index}`}>
                     <p className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
-                    {index === 0 ? <AdSpace height="120px" /> : null}
-                    {index === Math.floor(paragraphs.length / 2) && index > 0 ? <AdSpace height="220px" /> : null}
+                    {index === 0 ? <AdSpace height="120px" adSlot={ADSENSE_SLOT_IDS.articleTop} /> : null}
+                    {index === Math.floor(paragraphs.length / 2) && index > 0 ? <AdSpace height="220px" adSlot={ADSENSE_SLOT_IDS.articleInline} /> : null}
                   </React.Fragment>
                 ))}
 
-                <AdSpace height="150px" />
+                <AdSpace height="150px" adSlot={ADSENSE_SLOT_IDS.articleFooter} />
               </CardContent>
             </Card>
           </article>
 
           <aside className="space-y-6 lg:sticky lg:top-24 lg:h-fit">
-            <AdSpace height="320px" />
+            <AdSpace height="320px" adSlot={ADSENSE_SLOT_IDS.sidebar} />
             <Card className="border-border bg-white">
               <CardContent className="space-y-3 p-6">
                 <h3 className="text-xl">Continue sua leitura</h3>

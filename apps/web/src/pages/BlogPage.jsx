@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AdSpace } from '@/components/AdSpace.jsx';
+import { AdSpace, ADSENSE_SLOT_IDS } from '@/components/AdSpace.jsx';
 import PageHero from '@/components/PageHero.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 
@@ -97,18 +97,19 @@ function BlogPage() {
   return (
     <>
       <Helmet>
-        <title>Blog - Cote Juros</title>
+        <title>Blog Cote Juros - guias sobre crédito, juros e financiamento</title>
         <meta
           name="description"
-          content="Guias e análises para ajudar você a tomar decisões financeiras com mais segurança no dia a dia."
+          content="Guias sobre empréstimo, cartão de crédito, financiamento, juros abusivos e educação financeira para decidir com mais segurança."
         />
+        <link rel="canonical" href="https://cotejuros.com.br/blog" />
       </Helmet>
 
       <PageHero
         centered
         badge="Editorial"
-        title="Guias e análises para decidir melhor com seu dinheiro."
-        subtitle="Conteúdo em linguagem clara para ajudar você a comparar opções, evitar juros altos e escolher com mais confiança."
+        title="Guias e análises para comparar crédito e decidir melhor."
+        subtitle="Conteúdo em linguagem clara para ajudar você a comparar empréstimos, cartões, financiamento e evitar juros altos."
       >
         <div className="relative mx-auto max-w-xl">
           <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -204,7 +205,7 @@ function BlogPage() {
                 </Card>
                 {(index + 1) % 4 === 0 ? (
                   <div className="md:col-span-2">
-                    <AdSpace height="150px" />
+                    <AdSpace height="150px" adSlot={ADSENSE_SLOT_IDS.feed} />
                   </div>
                 ) : null}
               </React.Fragment>
@@ -219,7 +220,7 @@ function BlogPage() {
           </div>
 
           <div className="hidden lg:block">
-            <AdSpace height="600px" />
+            <AdSpace height="600px" adSlot={ADSENSE_SLOT_IDS.sidebar} />
           </div>
         </div>
       </div>

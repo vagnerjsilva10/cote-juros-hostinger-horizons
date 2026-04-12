@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ScrollToTop from '@/components/ScrollToTop.jsx';
 import Header from '@/components/Header.jsx';
 import Footer from '@/components/Footer.jsx';
+import AdSenseScript from '@/components/AdSenseScript.tsx';
 
 import HomePage from '@/pages/HomePage.jsx';
 import EmprestimosPage from '@/pages/EmprestimosPage.jsx';
@@ -96,6 +97,7 @@ function App() {
 
   return (
     <Router>
+      <AdSenseScript />
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<AppLayout><HomePage /></AppLayout>} />
