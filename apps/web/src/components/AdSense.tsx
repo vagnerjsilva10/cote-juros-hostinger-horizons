@@ -12,6 +12,8 @@ export type AdSenseProps = {
   style?: CSSProperties;
   format?: 'auto' | 'fluid' | string;
   responsive?: boolean;
+  layoutKey?: string;
+  layout?: string;
 };
 
 export function AdSense({
@@ -19,7 +21,9 @@ export function AdSense({
   className = '',
   style,
   format = 'auto',
-  responsive = true
+  responsive = true,
+  layoutKey,
+  layout
 }: AdSenseProps) {
   const adRef = useRef<HTMLElement | null>(null);
   const hasPushedRef = useRef(false);
@@ -61,7 +65,9 @@ export function AdSense({
       style={mergedStyle}
       data-ad-client="ca-pub-2873725911890738"
       data-ad-slot={adSlot}
+      data-ad-layout={layout}
       data-ad-format={format}
+      data-ad-layout-key={layoutKey}
       data-full-width-responsive={responsive ? 'true' : 'false'}
     />
   );
