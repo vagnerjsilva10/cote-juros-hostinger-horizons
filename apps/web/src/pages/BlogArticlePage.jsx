@@ -6,18 +6,20 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import BlogArticleCard from '@/components/BlogArticleCard.jsx';
+import ArticleComments from '@/components/blog/ArticleComments.jsx';
 import ArticleCoverImage from '@/components/blog/ArticleCoverImage.jsx';
+import BlogArticleSkeleton from '@/components/blog/BlogArticleSkeleton.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import {
   buildArticleToc,
-  findArticleBySlug,
   getArticleCategoryKey,
   getArticleImage,
   getArticleParagraphs,
   getArticleSummary,
   getEditorialTitle,
   normalizeArticleData,
-  normalizeArticleSlug
+  normalizeArticleSlug,
+  resolveArticleBySlug
 } from '@/lib/content/articles.js';
 
 const BLOG_BASE_URL = 'https://www.cotejuros.com.br/blog';
@@ -78,7 +80,11 @@ function BlogArticlePage() {
         if (!active) return;
 
         const articleList = Array.isArray(items) ? items.map((item) => normalizeArticleData(item)) : [];
-        const safeArticle = articleData ? normalizeArticleData(articleData) : findArticleBySlug(articleList, articleSlug);
+        const safeArticle = resolveArticleBySlug({
+          slug: articleSlug,
+          directArticle: articleData,
+          articles: articleList
+        });
 
         setArticles(articleList);
         setArticle(safeArticle || null);
@@ -100,8 +106,11 @@ function BlogArticlePage() {
   }, [articleSlug]);
 
   const safeArticle = useMemo(() => (article ? normalizeArticleData(article) : null), [article]);
-  const categoryRoute = useMemo(() => getCategoryRoute(safeArticle), [safeArticle]);
-  const tocItems = useMemo(() => buildArticleToc(safeArticle), [safeArticle]);
+  const categoryRoute = useMemo(
+    () => (safeArticle ? getCategoryRoute(safeArticle) : { path: '/blog', label: 'Blog' }),
+    [safeArticle]
+  );
+  const tocItems = useMemo(() => (safeArticle ? buildArticleToc(safeArticle) : []), [safeArticle]);
 
   const relatedArticles = useMemo(() => {
     if (!safeArticle) return [];
@@ -116,7 +125,7 @@ function BlogArticlePage() {
         if (categoryA !== categoryB) return categoryB - categoryA;
         return new Date(b.publishedAt) - new Date(a.publishedAt);
       })
-      .slice(0, 4);
+      .slice(0, 3);
   }, [safeArticle, articles]);
 
   const orderedArticles = useMemo(
@@ -133,11 +142,7 @@ function BlogArticlePage() {
   const nextArticle = currentIndex >= 0 && currentIndex < orderedArticles.length - 1 ? orderedArticles[currentIndex + 1] : null;
 
   if (loading) {
-    return (
-      <section className="page-shell py-20">
-        <p className="text-center text-muted-foreground">Carregando artigo...</p>
-      </section>
-    );
+    return <BlogArticleSkeleton />;
   }
 
   if (!safeArticle) {
@@ -145,6 +150,7 @@ function BlogArticlePage() {
       <section className="page-shell py-20">
         <Card className="mx-auto max-w-2xl border-border bg-white text-center">
           <CardContent className="space-y-4 p-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary/80">Blog Cote Juros</p>
             <h1 className="text-3xl text-foreground">Artigo não encontrado</h1>
             <p className="text-muted-foreground">{loadError || 'Esse conteúdo pode ter sido movido, renomeado ou removido.'}</p>
             <Link to="/blog">
@@ -257,7 +263,7 @@ function BlogArticlePage() {
             </span>
             <span className="inline-flex items-center gap-2">
               <Clock className="h-4 w-4 text-primary" />
-              {safeArticle.readTime || 6} min de leitura
+              {safeArticle.readingTime || safeArticle.readTime || 6} min de leitura
             </span>
             <span>{safeArticle.author}</span>
             <Link to={categoryRoute.path} className="inline-flex items-center gap-2 text-primary hover:underline">
@@ -279,6 +285,23 @@ function BlogArticlePage() {
               {introParagraphs.map((paragraph, index) => (
                 <p key={`intro-${index}`} className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
               ))}
+
+              {tocItems.length ? (
+                <section className="rounded-[18px] border border-border bg-background-secondary p-5 md:p-6">
+                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">Neste artigo você vai aprender</p>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    {tocItems.slice(0, 6).map((item) => (
+                      <a
+                        key={item.id}
+                        href={`#${item.id}`}
+                        className="rounded-[14px] border border-border bg-white px-4 py-4 text-sm text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
+                      >
+                        {item.label}
+                      </a>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
 
               {Array.isArray(safeArticle.sections)
                 ? safeArticle.sections.map((section, index) => (
@@ -340,37 +363,24 @@ function BlogArticlePage() {
                   ))}
                 </section>
               ) : null}
-
-              {tocItems.length >= 3 ? (
-                <section className="space-y-3 border-t border-border pt-6">
-                  <h2 className="text-2xl text-foreground">Neste artigo</h2>
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    {tocItems.map((item) => (
-                      <a key={item.id} href={`#${item.id}`} className="rounded-[12px] border border-border px-4 py-3 text-sm text-foreground hover:border-primary/35 hover:bg-primary/[0.03]">
-                        {item.label}
-                      </a>
-                    ))}
-                  </div>
-                </section>
-              ) : null}
             </div>
           </article>
 
           <section className="rounded-[22px] border border-primary/15 bg-primary/[0.04] p-6 md:p-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Diagnóstico financeiro</p>
-            <h2 className="mt-3 text-2xl text-foreground">Quer saber o melhor próximo passo para o seu caso?</h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Cote Finance AI</p>
+            <h2 className="mt-3 text-2xl text-foreground">Quer um próximo passo mais claro para o seu momento financeiro?</h2>
             <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
-              Faça um diagnóstico gratuito e receba orientações práticas para organizar sua vida financeira antes de contratar crédito.
+              Faça um diagnóstico gratuito, entenda seu cenário e descubra caminhos mais seguros antes de contratar crédito ou reorganizar suas finanças.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <a href="https://finance.cotejuros.com.br/quiz" className="inline-flex">
                 <Button>
-                  Ir para o diagnóstico
+                  Analisar meu perfil
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </a>
               <Link to="/ferramentas" className="inline-flex">
-                <Button variant="outline">Ver simuladores</Button>
+                <Button variant="outline">Ver ferramentas</Button>
               </Link>
             </div>
           </section>
@@ -386,7 +396,7 @@ function BlogArticlePage() {
                   <h3 className="mt-2 text-lg text-foreground">{getEditorialTitle(previousArticle)}</h3>
                 </Link>
               ) : (
-                <div />
+                <div className="hidden md:block" />
               )}
 
               {nextArticle ? (
@@ -400,14 +410,19 @@ function BlogArticlePage() {
               ) : null}
             </section>
           ) : null}
+
+          <ArticleComments articleSlug={safeArticle.slug} />
         </div>
       </section>
 
       {relatedArticles.length ? (
         <section className="border-t border-border bg-background-secondary py-12 md:py-14">
           <div className="page-shell space-y-6">
-            <h2 className="text-2xl text-foreground">Artigos relacionados</h2>
-            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Veja também</p>
+              <h2 className="text-2xl text-foreground">Mais conteúdos da mesma jornada financeira</h2>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {relatedArticles.map((item) => (
                 <BlogArticleCard
                   key={item.slug}

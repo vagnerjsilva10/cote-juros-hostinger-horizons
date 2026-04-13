@@ -7,6 +7,7 @@ function ArticleCoverImage({
   alt,
   className,
   imageClassName,
+  aspectRatio = '16 / 9',
   loading = 'lazy',
   decoding = 'async'
 }) {
@@ -29,7 +30,7 @@ function ArticleCoverImage({
   };
 
   return (
-    <div className={cn('relative overflow-hidden bg-slate-100', className)}>
+    <div className={cn('relative overflow-hidden bg-slate-100', className)} style={{ aspectRatio }}>
       <img
         src={currentSrc}
         alt={resolvedAlt}
@@ -43,4 +44,3 @@ function ArticleCoverImage({
 }
 
 export default ArticleCoverImage;
-

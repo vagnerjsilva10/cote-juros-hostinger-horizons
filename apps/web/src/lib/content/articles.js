@@ -1,6 +1,11 @@
 import { normalizeMojibake } from '@/lib/textEncoding.js';
 import { resolveArticleImageAlt, resolveArticleImageSources } from '@/lib/content/blogImages.js';
 
+const FALLBACK_AUTHOR = 'Equipe Cote Juros';
+const FALLBACK_CATEGORY = 'Finanças pessoais';
+
+const isObjectRecord = (value) => Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+
 const normalizeText = (value = '') =>
   String(value)
     .normalize('NFD')
@@ -11,6 +16,13 @@ const normalizeText = (value = '') =>
 const sanitizeInlineText = (value = '') => normalizeMojibake(String(value || '')).replace(/\s+/g, ' ').trim();
 const sanitizeRichText = (value = '') => normalizeMojibake(String(value || '')).trim();
 
+const slugify = (value = '') =>
+  normalizeText(value)
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+
 const sanitizeStringArray = (value) => {
   if (Array.isArray(value)) {
     return value
@@ -20,7 +32,7 @@ const sanitizeStringArray = (value) => {
 
   if (typeof value === 'string') {
     return value
-      .split(/[\n,|]/)
+      .split(/\n+/)
       .map((item) => sanitizeInlineText(item))
       .filter(Boolean);
   }
@@ -28,38 +40,92 @@ const sanitizeStringArray = (value) => {
   return [];
 };
 
-const slugify = (value = '') =>
-  normalizeText(value)
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
-
 const sanitizeDate = (value, fallback = new Date().toISOString()) => {
   const date = new Date(value || fallback);
   return Number.isNaN(date.getTime()) ? fallback : date.toISOString();
 };
 
-const estimateReadTime = (article = {}) => {
-  const source = [
-    sanitizeRichText(article.content),
-    ...sanitizeStringArray(article.intro),
-    ...sanitizeStringArray(article.conclusion),
-    ...(Array.isArray(article.sections)
-      ? article.sections.flatMap((section) => [...sanitizeStringArray(section?.paragraphs), ...sanitizeStringArray(section?.bullets)])
-      : []),
-    ...sanitizeStringArray(article.faq?.flatMap?.((item) => [item?.question, item?.answer]) || [])
-  ]
-    .join(' ')
-    .trim();
+const buildDefaultSummary = (title, category) =>
+  `Entenda ${title.toLowerCase()} com uma leitura clara, prática e focada em ${category.toLowerCase()}.`;
 
-  const wordCount = source ? source.split(/\s+/).length : 0;
-  return Math.max(4, Math.round(wordCount / 190) || 6);
+const buildFallbackIntro = (title, category) => [
+  `${title} é um tema que costuma aparecer quando a pessoa quer decidir com mais clareza, reduzir ruído e ganhar controle sobre o próprio dinheiro.`,
+  `Neste guia da Cote Juros, você vai ver os pontos que mais importam em ${category.toLowerCase()}, erros comuns e próximos passos para agir com segurança.`
+];
+
+const buildFallbackSections = (title, category, tags = []) => {
+  const theme = tags[0] || category.toLowerCase();
+
+  return [
+    {
+      heading: `O que ${title.toLowerCase()} significa na prática`,
+      paragraphs: [
+        `Na prática, ${title.toLowerCase()} não é só teoria. O ponto principal é entender como esse tema afeta seu orçamento, sua margem mensal e suas escolhas de crédito.`,
+        `Quando você organiza a leitura por contexto, custo e impacto real no dia a dia, fica mais fácil filtrar promessas exageradas e tomar decisões mais consistentes.`
+      ],
+      bullets: []
+    },
+    {
+      heading: 'Como analisar com mais clareza',
+      paragraphs: [
+        `Antes de seguir, vale colocar este assunto ao lado da sua realidade financeira atual: renda, despesas fixas, uso de crédito e prioridades dos próximos meses.`,
+        `Esse tipo de leitura evita decisões tomadas no impulso e ajuda a entender se ${theme} está alinhado com o momento que você vive hoje.`
+      ],
+      bullets: [
+        'defina o objetivo financeiro por trás da decisão',
+        'compare custo, prazo e impacto no orçamento',
+        'evite avançar sem entender o cenário completo'
+      ]
+    },
+    {
+      heading: 'Próximos passos para colocar em prática',
+      paragraphs: [
+        `O caminho mais seguro costuma ser simples: entender seu ponto de partida, priorizar poucas ações e revisar o resultado mês a mês.`,
+        `Se ainda houver dúvida, use simuladores, conteúdos relacionados e um diagnóstico financeiro antes de contratar qualquer produto.`
+      ],
+      bullets: [
+        'registre o cenário atual',
+        'acompanhe evolução de forma simples',
+        'ajuste a estratégia com base em números reais'
+      ]
+    }
+  ];
 };
 
-const normalizeCategoryLabel = (value) => {
-  const label = sanitizeInlineText(typeof value === 'string' ? value : value?.name || value?.label || '');
-  return label || 'Finanças pessoais';
+const normalizeSectionHeading = (heading, title) => {
+  const clean = sanitizeInlineText(heading);
+  if (!clean) return '';
+
+  const replacements = new Map([
+    ['o que comparar antes de seguir', 'O que observar antes de tomar uma decisão'],
+    ['como analisar com mais segurança', 'Como analisar com mais segurança e menos ruído'],
+    ['erros que costumam sair caro', 'Erros que mais atrapalham no dia a dia']
+  ]);
+
+  return replacements.get(clean.toLowerCase()) || clean || `Pontos importantes sobre ${title}`;
+};
+
+const normalizeSections = (sections, title) => {
+  if (!Array.isArray(sections)) return [];
+
+  return sections
+    .map((section) => ({
+      heading: normalizeSectionHeading(section?.heading || section?.title || '', title),
+      paragraphs: sanitizeStringArray(section?.paragraphs),
+      bullets: sanitizeStringArray(section?.bullets)
+    }))
+    .filter((section) => section.heading || section.paragraphs.length || section.bullets.length);
+};
+
+const normalizeFaq = (faq) => {
+  if (!Array.isArray(faq)) return [];
+
+  return faq
+    .map((item) => ({
+      question: sanitizeInlineText(item?.question || item?.name || ''),
+      answer: sanitizeInlineText(item?.answer || item?.text || '')
+    }))
+    .filter((item) => item.question && item.answer);
 };
 
 const normalizeInternalLinks = (links) => {
@@ -74,92 +140,136 @@ const normalizeInternalLinks = (links) => {
     .filter((item) => item.path && item.title);
 };
 
-const normalizeFaq = (faq) => {
-  if (!Array.isArray(faq)) return [];
+const estimateReadTime = ({ intro = [], sections = [], faq = [], conclusion = [], content = '' }) => {
+  const source = [
+    sanitizeRichText(content),
+    ...intro,
+    ...conclusion,
+    ...sections.flatMap((section) => [...section.paragraphs, ...section.bullets]),
+    ...faq.flatMap((item) => [item.question, item.answer])
+  ]
+    .join(' ')
+    .trim();
 
-  return faq
-    .map((item) => ({
-      question: sanitizeInlineText(item?.question || item?.name || ''),
-      answer: sanitizeInlineText(item?.answer || item?.text || '')
-    }))
-    .filter((item) => item.question && item.answer);
+  const wordCount = source ? source.split(/\s+/).length : 0;
+  return Math.max(4, Math.round(wordCount / 190) || 6);
 };
 
-const normalizeSections = (sections) => {
-  if (!Array.isArray(sections)) return [];
+const buildEditorialContent = ({ title, category, intro, sections, conclusion, tags, content }) => {
+  const safeIntro = intro.length ? intro : buildFallbackIntro(title, category);
+  const safeSections = sections.length ? sections : buildFallbackSections(title, category, tags);
+  const safeConclusion =
+    conclusion.length
+      ? conclusion
+      : [
+          `O mais importante em ${title.toLowerCase()} é sair da leitura com mais clareza do que entrou: o que observar, o que evitar e qual próximo passo faz sentido agora.`,
+          'Quando o conteúdo é usado como apoio à decisão, o blog passa a ser uma ferramenta prática e não apenas mais uma referência aberta no navegador.'
+        ];
 
-  return sections
-    .map((section) => ({
-      heading: sanitizeInlineText(section?.heading || section?.title || ''),
-      paragraphs: sanitizeStringArray(section?.paragraphs),
-      bullets: sanitizeStringArray(section?.bullets)
-    }))
-    .filter((section) => section.heading || section.paragraphs.length || section.bullets.length);
+  const fallbackContent =
+    sanitizeRichText(content) ||
+    [...safeIntro, ...safeSections.flatMap((section) => [section.heading, ...section.paragraphs, ...section.bullets]), ...safeConclusion].join('\n\n');
+
+  return {
+    intro: safeIntro,
+    sections: safeSections,
+    conclusion: safeConclusion,
+    content: fallbackContent
+  };
 };
 
 export const normalizeArticleSlug = (article = {}) =>
-  slugify(article.slug || article.title || article.h1 || article.id || 'artigo');
+  slugify(
+    (isObjectRecord(article) ? article.slug || article.title || article.h1 || article.id : '') || 'artigo'
+  );
 
 export const normalizeArticleData = (article = {}, options = {}) => {
+  const source = isObjectRecord(article) ? article : {};
   const nowIso = options.nowIso || new Date().toISOString();
-  const title = sanitizeInlineText(article.title || article.h1 || article.seoTitle || article.metaTitle || 'Artigo Cote Juros');
-  const slug = normalizeArticleSlug({ ...article, title });
-  const excerpt = sanitizeInlineText(article.excerpt || article.summary || article.metaDescription || '');
-  const category = normalizeCategoryLabel(article.category || article.categoryName || article.clusterLabel);
-  const intro = sanitizeStringArray(article.intro);
-  const sections = normalizeSections(article.sections);
-  const faq = normalizeFaq(article.faq || article.faqSchema);
-  const conclusion = sanitizeStringArray(article.conclusion);
-  const content = sanitizeRichText(article.content || '');
-  const tags = sanitizeStringArray(article.tags || article.keywords);
-  const coverImage = sanitizeInlineText(article.coverImage || article.image || article.imageUrl || article.featuredImage || '');
-  const coverImageAlt = sanitizeInlineText(article.coverImageAlt || article.imageAlt || article.alt || '');
-  const publishedAt = sanitizeDate(article.publishedAt || article.publishDate || article.createdAt, nowIso);
-  const updatedAt = sanitizeDate(article.updatedAt || article.modifiedAt || publishedAt, publishedAt);
-  const author = sanitizeInlineText(article.author || article.authorName || 'Equipe Cote Juros');
-  const readTime = Number.isFinite(Number(article.readTime)) && Number(article.readTime) > 0 ? Number(article.readTime) : estimateReadTime(article);
+  const title = sanitizeInlineText(source.title || source.h1 || source.seoTitle || source.metaTitle || 'Artigo Cote Juros');
+  const slug = normalizeArticleSlug({ ...source, title });
+  const category = sanitizeInlineText(source.category || source.categoryName || source.clusterLabel || FALLBACK_CATEGORY) || FALLBACK_CATEGORY;
+  const excerpt =
+    sanitizeInlineText(source.excerpt || source.summary || source.metaDescription) || buildDefaultSummary(title, category);
+  const intro = sanitizeStringArray(source.intro);
+  const sections = normalizeSections(source.sections, title);
+  const faq = normalizeFaq(source.faq || source.faqSchema);
+  const conclusion = sanitizeStringArray(source.conclusion);
+  const tags = sanitizeStringArray(source.tags || source.keywords);
+  const editorial = buildEditorialContent({
+    title,
+    category,
+    intro,
+    sections,
+    conclusion,
+    tags,
+    content: source.content
+  });
+  const author = sanitizeInlineText(source.author || source.authorName || FALLBACK_AUTHOR) || FALLBACK_AUTHOR;
+  const publishedAt = sanitizeDate(source.publishedAt || source.publishDate || source.createdAt, nowIso);
+  const updatedAt = sanitizeDate(source.updatedAt || source.modifiedAt || publishedAt, publishedAt);
+  const readTime = Number.isFinite(Number(source.readTime)) && Number(source.readTime) > 0
+    ? Number(source.readTime)
+    : estimateReadTime(editorial);
 
   const normalized = {
-    ...article,
-    id: sanitizeInlineText(article.id || `article-${slug}`),
-    title,
+    ...source,
+    id: sanitizeInlineText(source.id || `article-${slug}`),
     slug,
-    h1: sanitizeInlineText(article.h1 || title),
+    title,
+    h1: sanitizeInlineText(source.h1 || title) || title,
+    description: sanitizeInlineText(source.metaDescription || excerpt) || excerpt,
     excerpt,
     summary: excerpt,
-    seoTitle: sanitizeInlineText(article.seoTitle || article.metaTitle || `${title} | Blog Cote Juros`),
-    metaTitle: sanitizeInlineText(article.metaTitle || ''),
-    metaDescription:
-      sanitizeInlineText(article.metaDescription || excerpt) ||
-      `Leia ${title} no blog da Cote Juros e compare melhor suas decisões financeiras.`,
     category,
     categoryKey: normalizeText(category),
     author,
-    tags,
-    keywords: tags,
-    coverImage,
-    coverImageAlt: coverImageAlt || `Capa editorial do artigo ${title}`,
-    image: coverImage,
-    imageAlt: coverImageAlt || `Capa editorial do artigo ${title}`,
     publishedAt,
     publishDate: publishedAt,
+    date: publishedAt,
     updatedAt,
+    readingTime: readTime,
     readTime,
-    intro,
-    sections,
+    tags,
+    keywords: tags,
+    intro: editorial.intro,
+    sections: editorial.sections,
+    conclusion: editorial.conclusion,
     faq,
-    conclusion,
-    content,
-    canonicalUrl: sanitizeInlineText(article.canonicalUrl || ''),
-    internalLinks: normalizeInternalLinks(article.internalLinks),
-    status: sanitizeInlineText(article.status || 'published') || 'published'
+    content: editorial.content,
+    internalLinks: normalizeInternalLinks(source.internalLinks),
+    metaTitle: sanitizeInlineText(source.metaTitle || ''),
+    seoTitle: sanitizeInlineText(source.seoTitle || source.metaTitle || `${title} | Blog Cote Juros`) || `${title} | Blog Cote Juros`,
+    metaDescription:
+      sanitizeInlineText(source.metaDescription || excerpt) ||
+      `Guia da Cote Juros sobre ${title.toLowerCase()} com foco em clareza, organização e decisões financeiras mais seguras.`,
+    coverImage: sanitizeInlineText(source.coverImage || source.image || source.imageUrl || source.featuredImage || ''),
+    coverImageAlt: sanitizeInlineText(source.coverImageAlt || source.imageAlt || source.alt || '') || `Capa editorial do artigo ${title}`,
+    image: sanitizeInlineText(source.coverImage || source.image || source.imageUrl || source.featuredImage || ''),
+    imageAlt: sanitizeInlineText(source.coverImageAlt || source.imageAlt || source.alt || '') || `Capa editorial do artigo ${title}`,
+    canonicalUrl: sanitizeInlineText(source.canonicalUrl || ''),
+    status: sanitizeInlineText(source.status || 'published') || 'published'
   };
 
-  if (!normalized.coverImage && import.meta.env.DEV) {
-    console.warn('[blog-article-normalizer] artigo sem imagem explícita, usando fallback', normalized.slug);
-  }
-
   return normalized;
+};
+
+export const resolveArticleBySlug = ({ slug = '', directArticle = null, articles = [] } = {}) => {
+  try {
+    const normalizedSlug = slugify(slug);
+    if (!normalizedSlug) return null;
+
+    if (isObjectRecord(directArticle)) {
+      const normalized = normalizeArticleData(directArticle);
+      if (normalized.slug === normalizedSlug) return normalized;
+    }
+
+    const list = Array.isArray(articles) ? articles : [];
+    return list.map((item) => normalizeArticleData(item)).find((item) => item.slug === normalizedSlug) || null;
+  } catch (error) {
+    console.error('[blog-article-resolver] falha ao resolver artigo', { slug, error });
+    return null;
+  }
 };
 
 const SLUG_SUFFIX_VARIANTS = [
@@ -187,41 +297,28 @@ const buildSlugVariants = (slug = '') => {
 export const getArticleSummary = (article = {}) => normalizeArticleData(article).summary;
 
 export const getEditorialTitle = (article = {}) => {
+  if (!isObjectRecord(article)) return '';
   const normalizedArticle = normalizeArticleData(article);
   const originalTitle = normalizedArticle.title;
   if (!originalTitle) return '';
 
   const slug = normalizedArticle.slug;
-
   const directOverrides = {
     'educacao-financeira-para-quem-ganha-pouco': 'Como organizar suas finanças mesmo ganhando pouco',
     'educacao-financeira-para-quem-quer-financiar-imovel': 'Como financiar um imóvel sem comprometer sua renda'
   };
 
   if (directOverrides[slug]) return directOverrides[slug];
-
-  const normalized = normalizeText(originalTitle);
-
-  if (normalized.startsWith('educacao financeira para ')) {
-    const audience = originalTitle.slice('Educação financeira para '.length).replace(/:.*/g, '').trim();
-    if (audience) return `Como melhorar sua vida financeira: guia prático para ${audience}`;
-  }
-
-  if (normalized.startsWith('organizacao financeira para ')) {
-    const audience = originalTitle.slice('Organização financeira para '.length).replace(/:.*/g, '').trim();
-    if (audience) return `Organização financeira para ${audience}: passo a passo para sair do aperto`;
-  }
-
   return originalTitle;
 };
 
 export const getArticleImage = (article = {}) => resolveArticleImageSources(normalizeArticleData(article)).primary;
 export const getArticleImageCandidates = (article = {}) => resolveArticleImageSources(normalizeArticleData(article));
 export const getArticleImageAlt = (article = {}) => resolveArticleImageAlt(normalizeArticleData(article));
-
-export const getArticleCategoryKey = (article = {}) => normalizeArticleData(article).categoryKey;
+export const getArticleCategoryKey = (article = {}) => (isObjectRecord(article) ? normalizeArticleData(article).categoryKey : '');
 
 export const getArticleParagraphs = (article = {}) => {
+  if (!isObjectRecord(article)) return [];
   const normalizedArticle = normalizeArticleData(article);
   if (normalizedArticle.intro.length) return normalizedArticle.intro;
 
@@ -236,38 +333,36 @@ export const getArticleParagraphs = (article = {}) => {
 };
 
 export const buildArticleToc = (article = {}) => {
+  if (!isObjectRecord(article)) return [];
   const normalizedArticle = normalizeArticleData(article);
-  const items = [];
+  const items = normalizedArticle.sections
+    .map((section, index) =>
+      section.heading
+        ? {
+            id: `secao-${index + 1}`,
+            label: section.heading
+          }
+        : null
+    )
+    .filter(Boolean);
 
-  normalizedArticle.sections.forEach((section, index) => {
-    if (!section.heading) return;
-    items.push({
-      id: `secao-${index + 1}`,
-      label: section.heading
-    });
-  });
-
-  if (normalizedArticle.faq.length) {
-    items.push({ id: 'faq', label: 'Perguntas frequentes' });
-  }
-
-  if (normalizedArticle.conclusion.length) {
-    items.push({ id: 'conclusao', label: 'Conclusão' });
-  }
-
+  if (normalizedArticle.faq.length) items.push({ id: 'faq', label: 'Perguntas frequentes' });
+  if (normalizedArticle.conclusion.length) items.push({ id: 'conclusao', label: 'Conclusão' });
   return items;
 };
 
 export const isArticleSlugMatch = (article = {}, slug = '') => {
+  if (!isObjectRecord(article)) return false;
   const articleSlug = normalizeArticleSlug(normalizeArticleData(article));
   const requestedSlug = slugify(slug);
   if (!articleSlug || !requestedSlug) return false;
 
   const articleVariants = buildSlugVariants(articleSlug);
   const requestedVariants = buildSlugVariants(requestedSlug);
-
   return articleVariants.some((variant) => requestedVariants.includes(variant));
 };
 
 export const findArticleBySlug = (articles = [], slug = '') =>
-  articles.map(normalizeArticleData).find((article) => isArticleSlugMatch(article, slug)) || null;
+  (Array.isArray(articles) ? articles : [])
+    .map((article) => normalizeArticleData(article))
+    .find((article) => isArticleSlugMatch(article, slug)) || null;

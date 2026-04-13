@@ -9,6 +9,7 @@ import PageHero from '@/components/PageHero.jsx';
 import BlogArticleCard from '@/components/BlogArticleCard.jsx';
 import ArticleCoverImage from '@/components/blog/ArticleCoverImage.jsx';
 import { AdSlotHorizontal, AdSlotInline, AdSlotResponsive } from '@/components/blog/AdSlot.jsx';
+import BlogGridSkeleton from '@/components/blog/BlogGridSkeleton.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import {
   getArticleImage,
@@ -30,6 +31,12 @@ const blogBaseSchema = {
       name: 'Cote Juros',
       url: 'https://www.cotejuros.com.br',
       logo: 'https://www.cotejuros.com.br/assets/logo/logo-primary.png'
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://www.cotejuros.com.br/#website',
+      name: 'Cote Juros',
+      url: 'https://www.cotejuros.com.br'
     },
     {
       '@type': 'BreadcrumbList',
@@ -55,8 +62,7 @@ function BlogPage() {
       .getArticles({ sort: 'recent' })
       .then((items) => {
         if (!active) return;
-        const normalized = Array.isArray(items) ? items.map((item) => normalizeArticleData(item)) : [];
-        setArticlesData(normalized);
+        setArticlesData(Array.isArray(items) ? items.map((item) => normalizeArticleData(item)) : []);
       })
       .catch((error) => {
         console.error('[blog-page] erro ao carregar artigos', error);
@@ -79,9 +85,8 @@ function BlogPage() {
     const grouped = new Map();
 
     articlesData.forEach((article) => {
-      const label = normalizeArticleData(article).category;
-      if (!label) return;
-      grouped.set(label, (grouped.get(label) || 0) + 1);
+      if (!article.category) return;
+      grouped.set(article.category, (grouped.get(article.category) || 0) + 1);
     });
 
     return [
@@ -96,14 +101,12 @@ function BlogPage() {
     const query = search.trim().toLowerCase();
 
     return articlesData
-      .map((article) => normalizeArticleData(article))
       .filter((article) => {
         const inCategory = category === 'Todas' || article.category === category;
         if (!inCategory) return false;
-
         if (!query) return true;
 
-        const haystack = `${getEditorialTitle(article)} ${getArticleSummary(article)} ${(article.tags || []).join(' ')}`.toLowerCase();
+        const haystack = `${getEditorialTitle(article)} ${getArticleSummary(article)} ${article.tags.join(' ')}`.toLowerCase();
         return haystack.includes(query);
       })
       .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
@@ -231,9 +234,12 @@ function BlogPage() {
         </section>
 
         {loading ? (
-          <section className="rounded-[20px] border border-border bg-white px-6 py-14 text-center">
-            <p className="text-muted-foreground">Carregando conteúdos do blog...</p>
-          </section>
+          <>
+            <section className="rounded-[20px] border border-border bg-white px-6 py-14 text-center">
+              <p className="text-muted-foreground">Carregando conteúdos do blog...</p>
+            </section>
+            <BlogGridSkeleton items={6} />
+          </>
         ) : null}
 
         {featured ? (
@@ -248,7 +254,7 @@ function BlogPage() {
               className="group grid overflow-hidden rounded-[26px] border border-border bg-white md:grid-cols-[1.1fr_0.9fr]"
             >
               <ArticleCoverImage
-                article={{ ...featured, coverImage: getArticleImage(featured) }}
+                article={featured}
                 className="min-h-[250px] md:min-h-[360px]"
                 imageClassName="transition-transform duration-300 group-hover:scale-[1.03]"
               />
@@ -260,7 +266,7 @@ function BlogPage() {
                 <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
                   <span>{formatDate(featured.publishedAt)}</span>
                   <span>•</span>
-                  <span>{featured.readTime || 6} min de leitura</span>
+                  <span>{featured.readingTime || featured.readTime || 6} min de leitura</span>
                 </div>
                 <span className="inline-flex items-center gap-2 font-medium text-primary">
                   Ler artigo

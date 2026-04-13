@@ -44,29 +44,111 @@ export const BLOG_CATEGORY_FALLBACKS = {
   default: '/assets/blog/fallbacks/editorial-global.svg'
 };
 
-export const BLOG_ARTICLE_IMAGE_MANIFEST = {
-  // Estrutura pronta para overrides por slug com assets locais versionados.
-  // Exemplo:
-  // 'nubank-cartao-como-escolher': '/assets/blog/articles/nubank-cartao-como-escolher.webp'
+const STOCK_IMAGE_POOLS = {
+  emprestimos: [
+    'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1579621970795-87facc2f976d?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1589758438368-0ad531db3366?auto=format&fit=crop&w=1600&q=80'
+  ],
+  cartoes: [
+    'https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1518458028785-8fbcd101ebb9?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1556742393-d75f468bfcb0?auto=format&fit=crop&w=1600&q=80'
+  ],
+  financiamento: [
+    'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1501183638710-841dd1904471?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=80'
+  ],
+  score: [
+    'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1554224154-22dec7ec8818?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1604594849809-dfedbc827105?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=1600&q=80'
+  ],
+  educacao: [
+    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1600&q=80'
+  ],
+  default: [
+    'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=1600&q=80'
+  ]
 };
 
-export const getBlogCategoryImage = (category = '') => {
+const KEYWORD_IMAGE_OVERRIDES = {
+  tecnologia: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80',
+  aplicativo: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1600&q=80',
+  cartao: 'https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?auto=format&fit=crop&w=1600&q=80',
+  score: 'https://images.unsplash.com/photo-1554224154-22dec7ec8818?auto=format&fit=crop&w=1600&q=80',
+  financiamento: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1600&q=80',
+  veiculo: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=80',
+  imovel: 'https://images.unsplash.com/photo-1501183638710-841dd1904471?auto=format&fit=crop&w=1600&q=80',
+  divida: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80',
+  reserva: 'https://images.unsplash.com/photo-1579621970795-87facc2f976d?auto=format&fit=crop&w=1600&q=80',
+  orcamento: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=80'
+};
+
+export const BLOG_ARTICLE_IMAGE_MANIFEST = {
+  'como-usar-tecnologia-para-organizar-financas':
+    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80'
+};
+
+const getCategoryKey = (category = '') => {
   const key = normalizeText(category);
-  if (key.includes('emprest')) return BLOG_CATEGORY_FALLBACKS.emprestimos;
-  if (key.includes('cart')) return BLOG_CATEGORY_FALLBACKS.cartoes;
-  if (key.includes('financi')) return BLOG_CATEGORY_FALLBACKS.financiamento;
-  if (key.includes('score')) return BLOG_CATEGORY_FALLBACKS.score;
-  if (key.includes('divid') || key.includes('renegoci')) return BLOG_CATEGORY_FALLBACKS.dividas;
-  return BLOG_CATEGORY_FALLBACKS.default;
+  if (key.includes('emprest')) return 'emprestimos';
+  if (key.includes('cart')) return 'cartoes';
+  if (key.includes('financi')) return 'financiamento';
+  if (key.includes('score')) return 'score';
+  if (key.includes('educ') || key.includes('organiz')) return 'educacao';
+  if (key.includes('divid') || key.includes('renegoci')) return 'dividas';
+  return 'default';
+};
+
+export const getBlogCategoryImage = (category = '') => BLOG_CATEGORY_FALLBACKS[getCategoryKey(category)] || BLOG_CATEGORY_FALLBACKS.default;
+
+const getTopicKeywords = (article = {}) => {
+  const raw = `${article.slug || ''} ${article.title || ''} ${article.category || ''} ${(article.tags || article.keywords || []).join(' ')}`;
+  return normalizeText(raw).split(/\s+/).filter(Boolean);
+};
+
+const buildStockProviderImage = (article = {}) => {
+  const keywords = getTopicKeywords(article);
+  const override = keywords.find((keyword) => KEYWORD_IMAGE_OVERRIDES[keyword]);
+  if (override) return KEYWORD_IMAGE_OVERRIDES[override];
+
+  const categoryKey = getCategoryKey(article.category || article.clusterLabel);
+  const pool = STOCK_IMAGE_POOLS[categoryKey] || STOCK_IMAGE_POOLS.default;
+  const seed = hashString(slugify(article.slug || article.title || article.id || 'cote-juros'));
+  return pool[seed % pool.length];
 };
 
 const getImagePalette = (category = '') => {
-  const key = normalizeText(category);
-  if (key.includes('emprest')) return { primary: '#2563eb', soft: '#dbeafe', accent: '#0f172a', eyebrow: 'EMPRESTIMOS' };
-  if (key.includes('cart')) return { primary: '#0f766e', soft: '#ccfbf1', accent: '#0f172a', eyebrow: 'CARTOES' };
-  if (key.includes('financi')) return { primary: '#ea580c', soft: '#fed7aa', accent: '#7c2d12', eyebrow: 'FINANCIAMENTO' };
-  if (key.includes('score')) return { primary: '#7c3aed', soft: '#ddd6fe', accent: '#3b0764', eyebrow: 'SCORE' };
-  if (key.includes('divid') || key.includes('renegoci')) return { primary: '#dc2626', soft: '#fecaca', accent: '#450a0a', eyebrow: 'DIVIDAS' };
+  const key = getCategoryKey(category);
+  if (key === 'emprestimos') return { primary: '#2563eb', soft: '#dbeafe', accent: '#0f172a', eyebrow: 'EMPRESTIMOS' };
+  if (key === 'cartoes') return { primary: '#0f766e', soft: '#ccfbf1', accent: '#0f172a', eyebrow: 'CARTOES' };
+  if (key === 'financiamento') return { primary: '#ea580c', soft: '#fed7aa', accent: '#7c2d12', eyebrow: 'FINANCIAMENTO' };
+  if (key === 'score') return { primary: '#7c3aed', soft: '#ddd6fe', accent: '#3b0764', eyebrow: 'SCORE' };
+  if (key === 'dividas') return { primary: '#dc2626', soft: '#fecaca', accent: '#450a0a', eyebrow: 'DIVIDAS' };
   return { primary: '#1d4ed8', soft: '#dbeafe', accent: '#0f172a', eyebrow: 'BLOG COTE JUROS' };
 };
 
@@ -106,19 +188,16 @@ export const buildGeneratedArticleImage = (article = {}) => {
 export const resolveArticleImageSources = (article = {}) => {
   const slug = slugify(article.slug || article.title || article.id || 'artigo');
   const manifestImage = BLOG_ARTICLE_IMAGE_MANIFEST[slug];
-  const explicitImageCandidates = [
-    article.coverImage,
-    article.image,
-    article.imageUrl,
-    article.featuredImage
-  ].filter(isRenderableImage);
+  const explicitImageCandidates = [article.coverImage, article.image, article.imageUrl, article.featuredImage].filter(isRenderableImage);
+  const stockImage = buildStockProviderImage(article);
   const categoryFallback = getBlogCategoryImage(article.category || article.clusterLabel);
   const globalFallback = BLOG_CATEGORY_FALLBACKS.default;
   const generatedFallback = buildGeneratedArticleImage(article);
 
   const ordered = [
-    ...explicitImageCandidates,
     manifestImage,
+    ...explicitImageCandidates.filter((image) => !String(image).startsWith('data:image/')),
+    stockImage,
     categoryFallback,
     globalFallback,
     generatedFallback
@@ -140,5 +219,5 @@ export const resolveArticleImageAlt = (article = {}) => {
         ? article.imageAlt.trim()
         : '';
 
-  return explicitAlt || `Capa editorial do artigo ${String(article.title || article.h1 || 'Cote Juros').trim()}`;
+  return explicitAlt || `Imagem editorial sobre ${String(article.title || article.h1 || 'Cote Juros').trim()}`;
 };
