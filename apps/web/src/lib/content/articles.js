@@ -217,15 +217,21 @@ const estimateReadTime = ({ intro = [], sections = [], faq = [], conclusion = []
 };
 
 const buildEditorialContent = ({ title, category, intro, sections, conclusion, tags, content }) => {
-  const safeIntro = intro.length ? intro : buildFallbackIntro(title, category);
-  const safeSections = sections.length ? sections : buildFallbackSections(title, category, tags);
+  const safeIntro = (intro.length ? intro : buildFallbackIntro(title, category)).map((item) => sanitizeInlineText(item)).filter(Boolean);
+  const safeSections = (sections.length ? sections : buildFallbackSections(title, category, tags))
+    .map((section) => ({
+      heading: sanitizeInlineText(section.heading),
+      paragraphs: sanitizeStringArray(section.paragraphs),
+      bullets: sanitizeStringArray(section.bullets)
+    }))
+    .filter((section) => section.heading || section.paragraphs.length || section.bullets.length);
   const safeConclusion =
-    conclusion.length
+    (conclusion.length
       ? conclusion
       : [
           `O mais importante em ${title.toLowerCase()} é sair da leitura com mais clareza do que entrou: o que observar, o que evitar e qual próximo passo faz sentido agora.`,
           'Quando o conteúdo é usado como apoio à decisão, o blog passa a ser uma ferramenta prática e não apenas mais uma referência aberta no navegador.'
-        ];
+        ]).map((item) => sanitizeInlineText(item)).filter(Boolean);
 
   const fallbackContent =
     sanitizeRichText(content) ||
@@ -237,6 +243,220 @@ const buildEditorialContent = ({ title, category, intro, sections, conclusion, t
     conclusion: safeConclusion,
     content: fallbackContent
   };
+};
+
+const countWords = (chunks = []) =>
+  chunks
+    .join(' ')
+    .split(/\s+/)
+    .filter(Boolean).length;
+
+const resolveEditorialTopic = ({ title = '', category = '', tags = [], slug = '' }) => {
+  const haystack = normalizeText([title, category, slug, ...tags].join(' '));
+  if (haystack.includes('cart')) return 'cartoes';
+  if (haystack.includes('score') || haystack.includes('serasa')) return 'score';
+  if (haystack.includes('financi') || haystack.includes('imovel') || haystack.includes('veiculo') || haystack.includes('carro')) return 'financiamento';
+  if (haystack.includes('emprest') || haystack.includes('consignado') || haystack.includes('credito')) return 'emprestimos';
+  if (haystack.includes('orcamento') || haystack.includes('gasto') || haystack.includes('meta') || haystack.includes('reserva')) return 'organizacao';
+  if (haystack.includes('pix') || haystack.includes('golpe') || haystack.includes('fraude')) return 'seguranca';
+  return 'educacao';
+};
+
+const getTopicLexicon = (topic) => {
+  if (topic === 'cartoes') {
+    return {
+      comparator: 'anuidade, limite inicial, regras de aumento de limite e custo do rotativo',
+      scenario: 'uma pessoa que concentra gastos recorrentes, evita parcelamentos longos e acompanha a data de vencimento',
+      mistakes: ['ignorar o custo do rotativo', 'olhar sÃ³ o limite e esquecer a anuidade', 'parcelar compras sem revisar o fluxo do mÃªs'],
+      checklist: ['comparar anuidade, juros e benefÃ­cios no mesmo quadro', 'checar se a renda comporta a fatura integral', 'usar alertas para vencimento e fechamento'],
+      alternatives: 'cartÃµes sem anuidade, dÃ©bito, Pix e renegociaÃ§Ã£o da fatura'
+    };
+  }
+
+  if (topic === 'score') {
+    return {
+      comparator: 'histÃ³rico de pagamentos, cadastros atualizados, uso de crÃ©dito e volume de consultas recentes',
+      scenario: 'alguÃ©m que atrasou contas no passado, renegociou dÃ­vidas e agora quer reconstruir credibilidade no mercado',
+      mistakes: ['abrir muitos pedidos em pouco tempo', 'deixar cadastros desatualizados', 'focar sÃ³ no nÃºmero sem corrigir o comportamento financeiro'],
+      checklist: ['pagar contas em dia por alguns ciclos', 'manter dados cadastrais completos', 'acompanhar relatÃ³rios e evitar pedidos impulsivos'],
+      alternatives: 'linhas com garantia, consignado, reorganizaÃ§Ã£o do orÃ§amento e diagnÃ³stico financeiro'
+    };
+  }
+
+  if (topic === 'financiamento') {
+    return {
+      comparator: 'entrada, prazo, CET, valor total pago e impacto da parcela no orÃ§amento',
+      scenario: 'uma famÃ­lia que precisa financiar um bem sem comprometer a reserva nem empurrar o custo total para um patamar ruim',
+      mistakes: ['aceitar prazo longo sem olhar custo total', 'subestimar seguro e tarifas', 'ignorar o valor de entrada que reduziria juros'],
+      checklist: ['simular pelo menos trÃªs cenÃ¡rios de prazo', 'somar entrada, parcelas e custos acessÃ³rios', 'validar se sobra margem para imprevistos'],
+      alternatives: 'compra Ã  vista futura, consÃ³rcio, bem usado ou reforÃ§o de entrada'
+    };
+  }
+
+  if (topic === 'organizacao') {
+    return {
+      comparator: 'receita, despesas fixas, despesas variÃ¡veis, metas e previsibilidade do caixa',
+      scenario: 'alguÃ©m que quer sair do piloto automÃ¡tico e transformar informaÃ§Ã£o financeira em rotina simples de acompanhamento',
+      mistakes: ['anotar por poucos dias e desistir', 'misturar gastos essenciais com impulsivos', 'nÃ£o revisar o plano no fim do mÃªs'],
+      checklist: ['separar despesas por prioridade', 'definir uma meta financeira por vez', 'criar uma revisÃ£o semanal curta e objetiva'],
+      alternatives: 'planilhas simples, apps de controle, automaÃ§Ã£o de contas e metas de curto prazo'
+    };
+  }
+
+  if (topic === 'seguranca') {
+    return {
+      comparator: 'origem da oferta, urgÃªncia artificial, pedido de dados sensÃ­veis e evidÃªncias de confiabilidade',
+      scenario: 'uma pessoa que recebe contato por mensagem ou redes sociais e precisa decidir rÃ¡pido sem cair em fraude',
+      mistakes: ['clicar em link sem verificar domÃ­nio', 'pagar taxa antecipada', 'compartilhar senha ou cÃ³digo de confirmaÃ§Ã£o'],
+      checklist: ['validar site e canal oficial', 'desconfiar de pressÃ£o por pagamento imediato', 'confirmar informaÃ§Ãµes em fontes independentes'],
+      alternatives: 'contato pelo canal oficial, comparaÃ§Ã£o em portais confiÃ¡veis e consulta a reputaÃ§Ã£o da empresa'
+    };
+  }
+
+  return {
+    comparator: 'taxa, CET, prazo, risco e aderÃªncia ao seu momento financeiro',
+    scenario: 'uma pessoa que precisa tomar decisÃ£o sem pressa, comparando custo, utilidade e impacto no orÃ§amento',
+    mistakes: ['decidir sÃ³ pela urgÃªncia', 'comparar pouco antes de contratar', 'ignorar o custo total da escolha'],
+    checklist: ['colocar custo, prazo e objetivo lado a lado', 'validar se a parcela cabe com folga', 'usar comparaÃ§Ãµes e conteÃºdos de apoio antes de fechar'],
+    alternatives: 'diagnÃ³stico financeiro, comparaÃ§Ão entre ofertas e ajuste do plano de gastos'
+  };
+};
+
+const buildSupplementalSections = ({ title, category, tags = [], slug = '' }) => {
+  const topic = resolveEditorialTopic({ title, category, tags, slug });
+  const lexicon = getTopicLexicon(topic);
+
+  return [
+    {
+      heading: 'Como avaliar este tema com mais clareza no dia a dia',
+      paragraphs: [
+        `Um bom ponto de partida Ã© transformar ${title.toLowerCase()} em perguntas objetivas. Em vez de buscar apenas uma resposta rÃ¡pida, vale comparar ${lexicon.comparator}. Esse recorte reduz ruÃ­do e deixa a decisÃ£o mais aderente ao que realmente importa para o seu bolso.`,
+        `Na prÃ¡tica, isso significa sair da leitura abstrata e levar o tema para nÃºmeros concretos: quanto custa, quanto tempo dura, qual risco existe e o que muda no seu caixa a partir do prÃ³ximo mÃªs. Quando essa leitura acontece antes da contrataÃ§Ã£o, o conteÃºdo vira ferramenta de decisÃ£o e nÃ£o sÃ³ mais um artigo aberto no navegador.`
+      ],
+      bullets: [
+        `compare ${lexicon.comparator}`,
+        'registre os cenÃ¡rios mais provÃ¡veis antes de decidir',
+        'priorize opÃ§Ãµes com leitura simples e custo transparente'
+      ]
+    },
+    {
+      heading: 'Exemplo prÃ¡tico para sair da teoria',
+      paragraphs: [
+        `Imagine ${lexicon.scenario}. Nesse contexto, olhar apenas a promessa comercial quase sempre leva a uma leitura incompleta. O que muda o jogo Ã© projetar a decisÃ£o para a rotina: qual parcela ou compromisso entra no mÃªs, que margem sobra para imprevistos e o que acontece se a renda oscilar.`,
+        `Quando vocÃª coloca esse tipo de cenÃ¡rio na mesa, fica mais fÃ¡cil perceber se a soluÃ§Ã£o Ã© sustentÃ¡vel. Muitas vezes a melhor decisÃ£o nÃ£o Ã© a mais rÃ¡pida, e sim a que preserva liquidez, previsibilidade e capacidade de ajuste caso o contexto mude nas prÃ³ximas semanas.`
+      ],
+      bullets: [
+        'simule um cenÃ¡rio conservador e outro realista',
+        'revise o impacto da decisÃ£o em 30, 60 e 90 dias',
+        'considere custos indiretos que normalmente passam despercebidos'
+      ]
+    },
+    {
+      heading: 'Erros que mais custam caro nesse tipo de decisÃ£o',
+      paragraphs: [
+        `Parte dos problemas nasce menos da falta de informaÃ§Ã£o e mais da leitura apressada. Isso acontece quando a pessoa contrata ou muda de estratÃ©gia antes de entender o custo total e a utilidade real da escolha.`,
+        `Outro ponto crÃ­tico Ã© confundir facilidade com adequaÃ§Ã£o. Uma aprovaÃ§Ã£o rÃ¡pida, um limite maior ou uma condiÃ§Ã£o aparentemente acessÃ­vel nÃ£o significam, por si sÃ³, que a soluÃ§Ã£o faz sentido para o seu momento financeiro.`
+      ],
+      bullets: lexicon.mistakes
+    },
+    {
+      heading: 'Checklist editorial antes de seguir',
+      paragraphs: [
+        `Se a ideia Ã© tomar uma decisÃ£o melhor, vale encerrar a leitura com um checklist enxuto. Esse processo simples aumenta a qualidade da escolha e diminui o risco de arrependimento, principalmente em temas financeiros que afetam vÃ¡rios meses do orÃ§amento.`
+      ],
+      bullets: lexicon.checklist
+    },
+    {
+      heading: 'Alternativas e prÃ³ximos passos que valem consideraÃ§Ã£o',
+      paragraphs: [
+        `Nem sempre a melhor resposta estÃ¡ na primeira opÃ§Ã£o analisada. Muitas vezes, as alternativas mais saudÃ¡veis surgem quando vocÃª compara o tema central do artigo com outros caminhos possÃ­veis, como ${lexicon.alternatives}.`,
+        `Esse tipo de comparaÃ§Ã£o amplia a visÃ£o estratÃ©gica e ajuda a construir uma decisÃ£o mais robusta. Quanto maior a clareza sobre objetivo, custo e risco, menor a chance de assumir um compromisso que pesa demais depois.`
+      ],
+      bullets: [
+        'faÃ§a uma nova rodada de comparaÃ§Ã£o com foco em custo total',
+        'avalie se existe uma opÃ§Ã£o mais simples para o mesmo objetivo',
+        'use o diagnÃ³stico financeiro como etapa final antes de contratar'
+      ]
+    }
+  ].map((section) => ({
+    heading: sanitizeInlineText(section.heading),
+    paragraphs: section.paragraphs.map((paragraph) => sanitizeInlineText(paragraph)).filter(Boolean),
+    bullets: section.bullets.map((bullet) => sanitizeInlineText(bullet)).filter(Boolean)
+  }));
+};
+
+const buildFallbackFaq = ({ title, category, tags = [], slug = '' }) => {
+  const topic = resolveEditorialTopic({ title, category, tags, slug });
+  const lexicon = getTopicLexicon(topic);
+
+  return [
+    {
+      question: `Como saber se ${title.toLowerCase()} faz sentido para o meu momento?`,
+      answer: `O caminho mais seguro Ã© comparar ${lexicon.comparator} e validar se a decisÃ£o melhora sua rotina financeira sem apertar o caixa dos prÃ³ximos meses.`
+    },
+    {
+      question: 'Qual erro mais comum nesse tipo de escolha?',
+      answer: `O erro mais frequente Ã© decidir com pressa e sem olhar custo total. Em geral, isso aparece quando a pessoa ignora pontos como ${lexicon.mistakes[0]} e segue apenas a promessa mais chamativa.`
+    },
+    {
+      question: 'Vale comparar alternativas antes de seguir?',
+      answer: `Sim. Comparar alternativas reduz risco e melhora a qualidade da decisÃ£o, especialmente quando existem caminhos como ${lexicon.alternatives}.`
+    }
+  ].map((item) => ({
+    question: sanitizeInlineText(item.question),
+    answer: sanitizeInlineText(item.answer)
+  }));
+};
+
+const ensureEditorialDepth = ({ title, category, slug, tags, intro, sections, conclusion, faq, content }) => {
+  const minWords = 1200;
+  const supplementalSections = buildSupplementalSections({ title, category, slug, tags });
+  const nextSections = [...sections];
+  const nextFaq = faq.length ? faq : buildFallbackFaq({ title, category, slug, tags });
+
+  let currentWordCount = countWords([
+    content,
+    ...intro,
+    ...conclusion,
+    ...nextFaq.flatMap((item) => [item.question, item.answer]),
+    ...nextSections.flatMap((section) => [section.heading, ...section.paragraphs, ...section.bullets])
+  ]);
+
+  supplementalSections.forEach((section) => {
+    if (currentWordCount >= minWords) return;
+    if (nextSections.some((item) => normalizeText(item.heading) === normalizeText(section.heading))) return;
+
+    nextSections.push(section);
+    currentWordCount = countWords([
+      content,
+      ...intro,
+      ...conclusion,
+      ...nextFaq.flatMap((item) => [item.question, item.answer]),
+      ...nextSections.flatMap((item) => [item.heading, ...item.paragraphs, ...item.bullets])
+    ]);
+  });
+
+  return {
+    sections: nextSections,
+    faq: nextFaq
+  };
+};
+
+const buildFallbackInternalLinks = ({ category = '', routePath = '' }) => {
+  const topic = resolveEditorialTopic({ category, slug: routePath });
+  const routeMap = {
+    emprestimos: ['/emprestimos', '/diagnostico-financeiro', '/cote-finance-ai'],
+    cartoes: ['/cartoes', '/diagnostico-financeiro', '/blog'],
+    financiamento: ['/financiamentos', '/ferramentas', '/blog'],
+    score: ['/diagnostico-financeiro', '/blog', '/cote-finance-ai'],
+    organizacao: ['/ferramentas', '/diagnostico-financeiro', '/blog'],
+    seguranca: ['/blog', '/ferramentas', '/diagnostico-financeiro'],
+    educacao: ['/ferramentas', '/blog', '/cote-finance-ai']
+  };
+
+  return (routeMap[topic] || routeMap.educacao)
+    .filter((path) => path !== routePath)
+    .map((path) => ({ path }));
 };
 
 export const normalizeArticleSlug = (article = {}) =>
@@ -271,12 +491,31 @@ export const normalizeArticleData = (article = {}, options = {}) => {
     tags,
     content: source.content
   });
+  const depth = ensureEditorialDepth({
+    title,
+    category,
+    slug,
+    tags,
+    intro: editorial.intro,
+    sections: editorial.sections,
+    conclusion: editorial.conclusion,
+    faq,
+    content: editorial.content
+  });
   const author = sanitizeInlineText(source.author || source.authorName || FALLBACK_AUTHOR) || FALLBACK_AUTHOR;
   const publishedAt = sanitizeDate(source.publishedAt || source.publishDate || source.createdAt, nowIso);
   const updatedAt = sanitizeDate(source.updatedAt || source.modifiedAt || publishedAt, publishedAt);
   const readTime = Number.isFinite(Number(source.readTime)) && Number(source.readTime) > 0
     ? Number(source.readTime)
-    : estimateReadTime(editorial);
+    : estimateReadTime({
+      ...editorial,
+      sections: depth.sections,
+      faq: depth.faq
+    });
+  const normalizedInternalLinks = normalizeInternalLinks(source.internalLinks);
+  const mergedInternalLinks = [...normalizedInternalLinks, ...normalizeInternalLinks(buildFallbackInternalLinks({ category, routePath }))].filter(
+    (item, index, list) => item.path && list.findIndex((entry) => entry.path === item.path) === index
+  );
 
   const normalized = {
     ...source,
@@ -299,11 +538,11 @@ export const normalizeArticleData = (article = {}, options = {}) => {
     tags,
     keywords: tags,
     intro: editorial.intro,
-    sections: editorial.sections,
+    sections: depth.sections,
     conclusion: editorial.conclusion,
-    faq,
+    faq: depth.faq,
     content: editorial.content,
-    internalLinks: normalizeInternalLinks(source.internalLinks),
+    internalLinks: mergedInternalLinks,
     metaTitle: sanitizeInlineText(source.metaTitle || ''),
     seoTitle: sanitizeInlineText(source.seoTitle || source.metaTitle || `${title} | Blog Cote Juros`) || `${title} | Blog Cote Juros`,
     metaDescription:

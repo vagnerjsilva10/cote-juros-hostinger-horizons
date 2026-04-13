@@ -30,14 +30,14 @@ function ArticleCoverImage({
   };
 
   return (
-    <div className={cn('relative overflow-hidden bg-slate-100', className)} style={{ aspectRatio }}>
+    <div className={cn('relative w-full overflow-hidden bg-slate-100', className)} style={aspectRatio ? { aspectRatio } : undefined}>
       <img
         src={currentSrc}
         alt={resolvedAlt}
         loading={loading}
         decoding={decoding}
         onError={handleError}
-        className={cn('h-full w-full object-cover', imageClassName)}
+        className={cn('h-full w-full object-cover object-center', imageClassName)}
       />
     </div>
   );

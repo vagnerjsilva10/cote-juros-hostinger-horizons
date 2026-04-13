@@ -13,10 +13,10 @@ import BlogGridSkeleton from '@/components/blog/BlogGridSkeleton.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import {
   getArticleImage,
+  getArticlePath,
   getArticleSummary,
   getEditorialTitle,
-  normalizeArticleData,
-  normalizeArticleSlug
+  normalizeArticleData
 } from '@/lib/content/articles.js';
 
 const PAGE_SIZE = 12;
@@ -130,13 +130,13 @@ function BlogPage() {
       '@type': 'Blog',
       '@id': `${BLOG_URL}#blog`,
       name: 'Blog Cote Juros',
-      description: 'Guias editoriais da Cote Juros sobre crédito, score, cartões, financiamento e organização financeira.',
+      description: 'Guias e dicas da Cote Juros sobre crédito, score, cartões, financiamento e organização financeira.',
       url: BLOG_URL,
       blogPost: filteredArticles.slice(0, 12).map((article, index) => ({
         '@type': 'BlogPosting',
         position: index + 1,
         headline: article.metaTitle || getEditorialTitle(article),
-        url: `${BLOG_URL}/${normalizeArticleSlug(article)}`,
+        url: `https://www.cotejuros.com.br${getArticlePath(article)}`,
         datePublished: article.publishedAt,
         dateModified: article.updatedAt,
         image: getArticleImage(article),
@@ -155,14 +155,14 @@ function BlogPage() {
         <title>Blog Cote Juros | Guias financeiros para crédito, score e planejamento</title>
         <meta
           name="description"
-          content="Leia guias editoriais da Cote Juros sobre empréstimo, cartões, score, financiamento, dívidas e organização financeira com estrutura técnica forte para SEO."
+          content="Leia guias e dicas da Cote Juros sobre empréstimo, cartões, score, financiamento, dívidas e organização financeira."
         />
         <meta name="robots" content="index,follow,max-image-preview:large" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Blog Cote Juros | Guias financeiros para crédito, score e planejamento" />
         <meta
           property="og:description"
-          content="Conteúdo editorial para comparar custos, evitar armadilhas e organizar melhor suas finanças."
+          content="Guias e dicas para comparar custos, evitar armadilhas e cuidar melhor do seu dinheiro."
         />
         <meta property="og:url" content={BLOG_URL} />
         <meta property="og:image" content="https://www.cotejuros.com.br/assets/blog/fallbacks/editorial-global.svg" />
@@ -170,7 +170,7 @@ function BlogPage() {
         <meta name="twitter:title" content="Blog Cote Juros | Guias financeiros para crédito, score e planejamento" />
         <meta
           name="twitter:description"
-          content="Guias editoriais sobre crédito, score, cartões, financiamento e organização financeira."
+          content="Guias e dicas sobre crédito, score, cartões, financiamento e organização financeira."
         />
         <link rel="canonical" href={BLOG_URL} />
         <script type="application/ld+json">{JSON.stringify(blogBaseSchema)}</script>
@@ -179,9 +179,9 @@ function BlogPage() {
 
       <PageHero
         centered
-        badge="Editorial Cote Juros"
+        badge="Blog Cote Juros"
         title="Guias financeiros para decidir com clareza antes de contratar crédito"
-        subtitle="Conteúdo direto para comparar taxas, evitar armadilhas e organizar suas finanças no dia a dia."
+        subtitle="Textos simples e úteis para comparar bancos, entender crédito e cuidar melhor do seu dinheiro."
       >
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
           <div className="relative">
@@ -212,10 +212,10 @@ function BlogPage() {
       <div className="page-shell space-y-10 py-10 md:space-y-14 md:py-14">
         <section className="grid gap-4 rounded-[24px] border border-border bg-white p-5 md:grid-cols-[1.3fr_0.7fr] md:p-7">
           <div className="space-y-3">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Hub editorial</p>
-            <h2 className="text-2xl text-foreground md:text-3xl">Blog premium para tráfego orgânico e decisão financeira clara</h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Guias e dicas</p>
+            <h2 className="text-2xl text-foreground md:text-3xl">Conteúdo para entender crédito, comparar bancos e decidir com mais segurança</h2>
             <p className="max-w-3xl text-base leading-7 text-muted-foreground">
-              Navegue por categorias, encontre comparativos editoriais e aprofunde os próximos passos com segurança.
+              Explore os temas mais importantes do dia a dia financeiro e encontre explicações claras para avançar com mais tranquilidade.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-1">
@@ -250,7 +250,7 @@ function BlogPage() {
             </div>
 
             <Link
-              to={`/blog/${normalizeArticleSlug(featured)}`}
+              to={getArticlePath(featured)}
               className="group grid overflow-hidden rounded-[26px] border border-border bg-white md:grid-cols-[1.1fr_0.9fr]"
             >
               <ArticleCoverImage
@@ -260,7 +260,7 @@ function BlogPage() {
               />
 
               <div className="flex flex-col justify-center gap-4 p-6 md:p-8">
-                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-primary">Featured article</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-primary">Leitura em destaque</p>
                 <h3 className="text-3xl text-foreground">{getEditorialTitle(featured)}</h3>
                 <p className="text-base leading-7 text-muted-foreground">{getArticleSummary(featured)}</p>
                 <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
@@ -279,8 +279,8 @@ function BlogPage() {
 
         <AdSlotHorizontal
           slot="blog-home-hero"
-          title="Slot editorial horizontal"
-          description="Estrutura discreta pronta para AdSense entre o destaque e os blocos de navegação."
+          title="Espaço para anúncio"
+          description="Área discreta reservada para anúncio entre o destaque e os blocos do blog."
         />
 
         {trendingGuides.length ? (
@@ -321,8 +321,8 @@ function BlogPage() {
 
         <AdSlotInline
           slot="blog-home-inline"
-          title="Slot editorial inline"
-          description="Ponto discreto para monetização sem poluir o fluxo visual do blog."
+          title="Espaço para anúncio"
+          description="Área discreta reservada para anúncio sem atrapalhar a leitura."
         />
 
         <section className="space-y-5">

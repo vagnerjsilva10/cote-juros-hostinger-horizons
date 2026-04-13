@@ -51,7 +51,7 @@ function BlogFeedbackCard() {
                 <Button>Fazer diagnóstico financeiro</Button>
               </a>
               <p className="text-xs text-muted-foreground">
-                Ou, se preferir, volte para o <Link to="/blog" className="font-medium text-primary hover:underline">hub editorial do blog</Link>.
+                Ou, se preferir, volte para a <Link to="/blog" className="font-medium text-primary hover:underline">página principal do blog</Link>.
               </p>
             </div>
           </div>

@@ -78,12 +78,12 @@ const buildModelFromRoute = ({ mode, pagePath, params, banks, articles, offers }
     const pretty = params.comparisonSlug.split('-').join(' ');
     return {
       path: `/comparar/${params.comparisonSlug}`,
-      heading: `Comparar ${pretty} com leitura de taxas e condições.`,
+      heading: `Compare ${pretty} com mais clareza.`,
       title: `Comparar ${pretty} | Cote Juros`,
-      description: 'Página comparativa para análise de bancos, taxas, benefícios e condições.',
+      description: 'Veja taxas, condições e diferenças importantes antes de escolher.',
       productType: null,
       pageType: 'compare',
-      badge: 'Página de comparação'
+      badge: 'Comparação'
     };
   }
 
@@ -95,11 +95,11 @@ const buildModelFromRoute = ({ mode, pagePath, params, banks, articles, offers }
 
     return {
       path: `/banco/${params.bankSlug}`,
-      heading: `${bankName}: cartões, empréstimos e financiamento para comparar.`,
+      heading: `${bankName}: cartões, empréstimos e financiamento em um só lugar.`,
       title: `${bankName}: comparação de crédito e cartões | Cote Juros`,
-      description: `Veja produtos financeiros do ${bankName} com leitura de taxa, benefícios e condições no mesmo painel.`,
+      description: `Veja os principais produtos do ${bankName} e compare o que faz mais sentido para o seu momento.`,
       pageType: 'bank',
-      badge: 'Página de banco',
+      badge: 'Banco',
       bankId,
       productType: null
     };
@@ -113,11 +113,11 @@ const buildModelFromRoute = ({ mode, pagePath, params, banks, articles, offers }
 
     return {
       path: `/cartao/${params.cardSlug}`,
-      heading: `${cardName}: comparação de benefícios e custo total.`,
+      heading: `${cardName}: veja custos e benefícios com clareza.`,
       title: `${cardName}: detalhes, benefícios e comparação | Cote Juros`,
-      description: `Analise o cartão ${cardName} com limite, anuidade e benefícios comparados.`,
+      description: `Entenda como funciona o cartão ${cardName} e veja os pontos mais importantes antes de pedir.`,
       pageType: 'card-detail',
-      badge: 'Página de cartão',
+      badge: 'Cartão',
       productType: 'credit_card',
       offerFilter: { titleContains: [cardName], sortBy: 'maxLimit' }
     };
@@ -208,8 +208,8 @@ const buildHighlights = (model, offers) => {
   if (!offers.length) {
     return [
       { label: 'Ofertas mapeadas', value: '0' },
-      { label: 'Leitura de taxa', value: 'Atualizando' },
-      { label: 'Condições comparáveis', value: 'Ativo' }
+      { label: 'Taxas e condições', value: 'Atualizando' },
+      { label: 'Situação da página', value: 'Disponível' }
     ];
   }
 
@@ -245,16 +245,16 @@ const buildHighlights = (model, offers) => {
 
   return [
     { label: 'Entradas avaliadas', value: String(offers.length) },
-    { label: 'Comparadores ativos', value: '100%' },
-    { label: 'Atualização de dados', value: 'Recorrente' }
+    { label: 'Opções encontradas', value: 'Disponíveis' },
+    { label: 'Dados revisados', value: 'Atualizados' }
   ];
 };
 
 const buildDefaultCopy = (model, offersCount) => {
   if (model.pageType === 'tool') {
     return [
-      'Esta ferramenta foi criada para transformar decisão financeira em leitura prática. Você simula cenários, entende impacto de juros e escolhe com mais clareza.',
-      'Use os cálculos como base para negociar melhores condições e depois compare ofertas reais nos nossos comparadores indexáveis.'
+      'Esta ferramenta ajuda você a fazer contas com mais calma antes de contratar crédito ou assumir um compromisso financeiro.',
+      'Use a simulação para entender o peso da parcela, comparar cenários e tomar uma decisão mais segura.'
     ];
   }
 
@@ -264,28 +264,28 @@ const buildDefaultCopy = (model, offersCount) => {
 
   if (model.pageType === 'hub' && model.path === '/comparar') {
     return [
-      'A seção de comparadores reúne páginas por intenção de busca para crédito, cartões e financiamentos. Isso facilita encontrar uma rota de decisão alinhada ao seu objetivo.',
-      'Cada comparador apresenta taxas, benefícios, condições e FAQs para reduzir incerteza antes da contratação.'
+      'Aqui você encontra páginas para comparar crédito, cartões e financiamentos de forma mais simples.',
+      'A ideia é ajudar você a olhar taxas, condições e pontos importantes antes de seguir com qualquer contratação.'
     ];
   }
 
   if (model.pageType === 'hub' && model.path === '/bancos') {
     return [
-      'O hub de bancos organiza instituições por oferta de cartão, crédito pessoal e financiamento. Assim, você compara banco contra banco com o mesmo critério.',
-      'A proposta é eliminar comparação superficial e mostrar o que realmente pesa: taxa, custo efetivo total, prazo e aderência ao perfil.'
+      'Esta página reúne bancos e produtos financeiros para facilitar a comparação entre opções parecidas.',
+      'Em vez de olhar só a propaganda, você consegue comparar pontos que realmente pesam no bolso, como taxa, prazo e custo total.'
     ];
   }
 
   if (model.pageType === 'bank') {
     return [
-      `Nesta página você compara os principais produtos financeiros do ${model.heading.split(':')[0]} com foco em clareza de taxa, benefícios e custo total.`,
-      'A leitura foi pensada para reduzir fricção na decisão: menos ruído visual, mais objetividade e links para comparadores relacionados.'
+      `Nesta página você encontra os principais produtos financeiros do ${model.heading.split(':')[0]} para comparar com mais clareza.`,
+      'O objetivo é ajudar você a entender custos, benefícios e diferenças práticas antes de escolher.'
     ];
   }
 
   return [
-    `Esta página foi estruturada para intenção de busca específica e já conecta comparação de taxa, benefício e condição em um único fluxo.`,
-    `No momento, há ${offersCount} oferta(s) elegível(is) para esta busca, com atualização contínua de contexto para apoiar uma decisão financeira mais segura.`
+    'Esta página foi organizada para responder de forma direta ao que você está procurando.',
+    `No momento, encontramos ${offersCount} opção(ões) relacionada(s) a esta busca para ajudar na sua comparação.`
   ];
 };
 
@@ -375,7 +375,7 @@ const buildStructuredData = ({ model, canonicalUrl, offers, faqItems }) => {
       '@context': 'https://schema.org',
       '@type': 'Comparison',
       name: `Comparação financeira: ${model.heading}`,
-      description: 'Comparação de taxas, condições e benefícios para apoio à decisão de crédito.',
+      description: 'Comparação de taxas, condições e benefícios para ajudar na escolha do crédito.',
       url: canonicalUrl
     });
 
@@ -396,7 +396,7 @@ const buildStructuredData = ({ model, canonicalUrl, offers, faqItems }) => {
         name: 'Equipe Cote Juros'
       },
       reviewBody:
-        'Comparação baseada em taxa, custo efetivo total, condições e benefícios para apoiar uma decisão de crédito mais segura.'
+        'Comparação baseada em taxa, custo total, condições e benefícios para ajudar em uma escolha mais segura.'
     });
   }
 
@@ -530,9 +530,9 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
       <section className="page-section">
         <div className="page-shell">
           <div className="mx-auto max-w-3xl rounded-[16px] border border-border bg-white p-10 text-center">
-            <h1 className="text-3xl">Página SEO não encontrada</h1>
+            <h1 className="text-3xl">Página não encontrada</h1>
             <p className="mt-4 text-muted-foreground">
-              Esta rota ainda não possui template publicado. Você pode continuar pelos hubs principais.
+              Esta página ainda não está disponível. Você pode continuar pelas páginas principais do portal.
             </p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Link to="/comparar">
