@@ -16,6 +16,17 @@ const normalizeText = (value = '') =>
 const sanitizeInlineText = (value = '') => normalizeMojibake(String(value || '')).replace(/\s+/g, ' ').trim();
 const sanitizeRichText = (value = '') => normalizeMojibake(String(value || '')).trim();
 
+const ROUTE_LABELS = {
+  '/educacao-financeira': 'Educação Financeira',
+  '/diagnostico-financeiro': 'Diagnóstico Financeiro',
+  '/cote-finance-ai': 'Cote Finance AI',
+  '/emprestimos': 'Empréstimos',
+  '/cartoes': 'Cartões',
+  '/financiamentos': 'Financiamentos',
+  '/ferramentas': 'Ferramentas',
+  '/blog': 'Blog Cote Juros'
+};
+
 const slugify = (value = '') =>
   normalizeText(value)
     .replace(/[^a-z0-9\s-]/g, '')
@@ -39,6 +50,32 @@ const sanitizeStringArray = (value) => {
 
   return [];
 };
+
+const startCase = (value = '') =>
+  sanitizeInlineText(value)
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
+const prettifySlugLabel = (value = '') => {
+  const normalized = String(value || '').replace(/^\/+|\/+$/g, '');
+  if (!normalized) return '';
+
+  const mapped = ROUTE_LABELS[`/${normalized}`];
+  if (mapped) return mapped;
+
+  const plain = normalized
+    .split('/')
+    .pop()
+    ?.replace(/-/g, ' ') || '';
+
+  const title = startCase(plain);
+  return normalizeMojibake(title);
+};
+
+const isSlugLikeLabel = (value = '') => /^[a-z0-9/-]+$/i.test(String(value || '').trim()) || !/[A-ZÀ-Ý]/.test(String(value || '').trim());
+const startsWithExplore = (value = '') => /^explor(ar|e)\b/i.test(sanitizeInlineText(value));
 
 const sanitizeDate = (value, fallback = new Date().toISOString()) => {
   const date = new Date(value || fallback);
@@ -132,11 +169,35 @@ const normalizeInternalLinks = (links) => {
   if (!Array.isArray(links)) return [];
 
   return links
-    .map((item) => ({
-      path: sanitizeInlineText(item?.path || item?.href || ''),
-      title: sanitizeInlineText(item?.title || item?.label || item?.anchor || ''),
-      anchor: sanitizeInlineText(item?.anchor || item?.title || item?.label || '')
-    }))
+    .map((item) => {
+      const path = sanitizeInlineText(item?.path || item?.href || '');
+      const routeLabel = prettifySlugLabel(path);
+      const rawTitle = sanitizeInlineText(item?.title || item?.label || item?.anchor || '');
+      const rawAnchor = sanitizeInlineText(item?.anchor || item?.title || item?.label || '');
+      const isKnownRouteLink = Boolean(ROUTE_LABELS[path]);
+      const titleLooksGenerated =
+        !rawTitle ||
+        isSlugLikeLabel(rawTitle) ||
+        (routeLabel && normalizeText(rawTitle) === normalizeText(routeLabel));
+      const title = isKnownRouteLink ? routeLabel : titleLooksGenerated ? routeLabel || rawTitle : rawTitle;
+      const anchorLooksGenerated =
+        !rawAnchor ||
+        isSlugLikeLabel(rawAnchor) ||
+        startsWithExplore(rawAnchor) ||
+        (title && normalizeText(rawAnchor) === normalizeText(title));
+      const anchorBase = isKnownRouteLink ? title : anchorLooksGenerated ? title || routeLabel || rawAnchor : rawAnchor;
+      const safeAnchorBase = normalizeMojibake(anchorBase);
+
+      return {
+        path,
+        title: normalizeMojibake(title),
+        anchor: safeAnchorBase
+          ? startsWithExplore(safeAnchorBase)
+            ? safeAnchorBase.charAt(0).toUpperCase() + safeAnchorBase.slice(1)
+            : `Explore ${safeAnchorBase.charAt(0).toLowerCase()}${safeAnchorBase.slice(1)}`
+          : ''
+      };
+    })
     .filter((item) => item.path && item.title);
 };
 
