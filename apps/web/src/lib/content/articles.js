@@ -249,6 +249,11 @@ export const normalizeArticleData = (article = {}, options = {}) => {
   const nowIso = options.nowIso || new Date().toISOString();
   const title = sanitizeInlineText(source.title || source.h1 || source.seoTitle || source.metaTitle || 'Artigo Cote Juros');
   const slug = normalizeArticleSlug({ ...source, title });
+  const explicitRoutePath = sanitizeInlineText(source.routePath || source.path || '');
+  const routePath = explicitRoutePath || (sanitizeInlineText(source.sourceType) === 'wordpress' ? `/${slug}` : `/blog/${slug}`);
+  const canonicalUrl =
+    sanitizeInlineText(source.canonicalUrl || '') ||
+    `https://www.cotejuros.com.br${routePath}${routePath.endsWith('/') ? '' : '/'}`;
   const category = sanitizeInlineText(source.category || source.categoryName || source.clusterLabel || FALLBACK_CATEGORY) || FALLBACK_CATEGORY;
   const excerpt =
     sanitizeInlineText(source.excerpt || source.summary || source.metaDescription) || buildDefaultSummary(title, category);
@@ -308,7 +313,10 @@ export const normalizeArticleData = (article = {}, options = {}) => {
     coverImageAlt: sanitizeInlineText(source.coverImageAlt || source.imageAlt || source.alt || '') || `Capa editorial do artigo ${title}`,
     image: sanitizeInlineText(source.coverImage || source.image || source.imageUrl || source.featuredImage || ''),
     imageAlt: sanitizeInlineText(source.coverImageAlt || source.imageAlt || source.alt || '') || `Capa editorial do artigo ${title}`,
-    canonicalUrl: sanitizeInlineText(source.canonicalUrl || ''),
+    routePath,
+    canonicalUrl,
+    legacyUrl: sanitizeInlineText(source.legacyUrl || ''),
+    sourceType: sanitizeInlineText(source.sourceType || 'editorial') || 'editorial',
     status: sanitizeInlineText(source.status || 'published') || 'published'
   };
 
@@ -377,6 +385,7 @@ export const getArticleImage = (article = {}) => resolveArticleImageSources(norm
 export const getArticleImageCandidates = (article = {}) => resolveArticleImageSources(normalizeArticleData(article));
 export const getArticleImageAlt = (article = {}) => resolveArticleImageAlt(normalizeArticleData(article));
 export const getArticleCategoryKey = (article = {}) => (isObjectRecord(article) ? normalizeArticleData(article).categoryKey : '');
+export const getArticlePath = (article = {}) => (isObjectRecord(article) ? normalizeArticleData(article).routePath : '/blog');
 
 export const getArticleParagraphs = (article = {}) => {
   if (!isObjectRecord(article)) return [];

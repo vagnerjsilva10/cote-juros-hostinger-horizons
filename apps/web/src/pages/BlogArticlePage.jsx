@@ -14,11 +14,11 @@ import {
   buildArticleToc,
   getArticleCategoryKey,
   getArticleImage,
+  getArticlePath,
   getArticleParagraphs,
   getArticleSummary,
   getEditorialTitle,
   normalizeArticleData,
-  normalizeArticleSlug,
   resolveArticleBySlug
 } from '@/lib/content/articles.js';
 
@@ -63,8 +63,9 @@ const getCategoryRoute = (article) => {
   return CATEGORY_ROUTES.find((item) => key.includes(item.match)) || { path: '/blog', label: article?.category || 'Blog' };
 };
 
-function BlogArticlePage() {
+function BlogArticlePage({ articleSlugOverride = '' }) {
   const { articleSlug } = useParams();
+  const resolvedSlug = articleSlugOverride || articleSlug;
   const [articles, setArticles] = useState([]);
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -75,13 +76,13 @@ function BlogArticlePage() {
     setLoading(true);
     setLoadError('');
 
-    Promise.all([portalApi.getArticles({ sort: 'recent' }), portalApi.getArticleBySlug(articleSlug)])
+    Promise.all([portalApi.getArticles({ sort: 'recent' }), portalApi.getArticleBySlug(resolvedSlug)])
       .then(([items, articleData]) => {
         if (!active) return;
 
         const articleList = Array.isArray(items) ? items.map((item) => normalizeArticleData(item)) : [];
         const safeArticle = resolveArticleBySlug({
-          slug: articleSlug,
+          slug: resolvedSlug,
           directArticle: articleData,
           articles: articleList
         });
@@ -103,7 +104,7 @@ function BlogArticlePage() {
     return () => {
       active = false;
     };
-  }, [articleSlug]);
+  }, [resolvedSlug]);
 
   const safeArticle = useMemo(() => (article ? normalizeArticleData(article) : null), [article]);
   const categoryRoute = useMemo(
@@ -118,7 +119,7 @@ function BlogArticlePage() {
     const currentCategory = getArticleCategoryKey(safeArticle);
 
     return articles
-      .filter((item) => normalizeArticleSlug(item) !== normalizeArticleSlug(safeArticle))
+      .filter((item) => item.slug !== safeArticle.slug)
       .sort((a, b) => {
         const categoryA = getArticleCategoryKey(a).includes(currentCategory) ? 1 : 0;
         const categoryB = getArticleCategoryKey(b).includes(currentCategory) ? 1 : 0;
@@ -134,8 +135,8 @@ function BlogArticlePage() {
   );
 
   const currentIndex = useMemo(
-    () => orderedArticles.findIndex((item) => normalizeArticleSlug(item) === normalizeArticleSlug(safeArticle || { slug: articleSlug })),
-    [orderedArticles, safeArticle, articleSlug]
+    () => orderedArticles.findIndex((item) => item.slug === (safeArticle?.slug || resolvedSlug)),
+    [orderedArticles, safeArticle, resolvedSlug]
   );
 
   const previousArticle = currentIndex > 0 ? orderedArticles[currentIndex - 1] : null;
@@ -163,7 +164,7 @@ function BlogArticlePage() {
   }
 
   const editorialTitle = getEditorialTitle(safeArticle);
-  const canonicalUrl = safeArticle.canonicalUrl || `${BLOG_BASE_URL}/${normalizeArticleSlug(safeArticle)}`;
+  const canonicalUrl = safeArticle.canonicalUrl || `https://www.cotejuros.com.br${getArticlePath(safeArticle)}/`;
   const socialImage = getArticleImage(safeArticle);
   const faqSchema = toFaqSchema(safeArticle);
   const introParagraphs = getArticleParagraphs(safeArticle);
@@ -388,8 +389,8 @@ function BlogArticlePage() {
           {(previousArticle || nextArticle) ? (
             <section className="grid gap-4 md:grid-cols-2">
               {previousArticle ? (
-                <Link
-                  to={`/blog/${normalizeArticleSlug(previousArticle)}`}
+                  <Link
+                  to={getArticlePath(previousArticle)}
                   className="rounded-[16px] border border-border bg-white p-5 transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
                 >
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Artigo anterior</p>
@@ -400,8 +401,8 @@ function BlogArticlePage() {
               )}
 
               {nextArticle ? (
-                <Link
-                  to={`/blog/${normalizeArticleSlug(nextArticle)}`}
+                  <Link
+                  to={getArticlePath(nextArticle)}
                   className="rounded-[16px] border border-border bg-white p-5 text-left transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
                 >
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Próximo artigo</p>

@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import ArticleCoverImage from '@/components/blog/ArticleCoverImage.jsx';
-import { getArticleSummary, getEditorialTitle, normalizeArticleData, normalizeArticleSlug } from '@/lib/content/articles.js';
+import { getArticlePath, getArticleSummary, getEditorialTitle, normalizeArticleData } from '@/lib/content/articles.js';
 
 function BlogArticleCard({
   article,
@@ -16,8 +16,7 @@ function BlogArticleCard({
   label = 'Ler artigo'
 }) {
   const safeArticle = normalizeArticleData(article);
-  const slug = normalizeArticleSlug(safeArticle);
-  const href = `/blog/${slug}`;
+  const href = getArticlePath(safeArticle);
   const title = getEditorialTitle(safeArticle);
 
   return (

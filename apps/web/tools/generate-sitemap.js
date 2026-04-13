@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { articlesData } from '../src/data/articlesData.js';
 import { creditCardsData } from '../src/data/creditCardsData.js';
+import { wordpressMigratedArticlePaths } from '../src/data/wordpressMigratedArticles.js';
 import {
   blogEditorialDefinitions,
   comparePageDefinitions,
@@ -37,8 +38,11 @@ const bankRoutes = requiredBankRoutes.map((bank) => `/banco/${bank.slug}`);
 const cardRoutes = creditCardsData.map((card) => `/cartao/${slugify(card.name || '')}`);
 const blogRoutes = [
   ...blogEditorialDefinitions.map((article) => article.path),
-  ...articlesData.map((article) => `/blog/${slugify(article.slug || article.title || '')}`)
+  ...articlesData
+    .filter((article) => article?.sourceType !== 'wordpress')
+    .map((article) => `/blog/${slugify(article.slug || article.title || '')}`)
 ];
+const importedWordpressRoutes = wordpressMigratedArticlePaths;
 
 const allRoutes = Array.from(
   new Set([
@@ -47,7 +51,8 @@ const allRoutes = Array.from(
     ...comparisonRoutes,
     ...bankRoutes,
     ...cardRoutes,
-    ...blogRoutes
+    ...blogRoutes,
+    ...importedWordpressRoutes
   ])
 ).filter(Boolean);
 

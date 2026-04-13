@@ -39,6 +39,7 @@ import { seoFallbackPaths as seedFallbackPaths, seoPages as seedSeoPages } from 
 import { portalApi } from '@/platform/services/portalApi.js';
 import { Toaster } from '@/components/ui/sonner';
 import { corePillarPaths, reservedSeoStaticPaths } from '@/seo/seoCatalog.js';
+import { wordpressMigratedArticles, wordpressMigratedArticlePaths } from '@/data/wordpressMigratedArticles.js';
 
 function AppLayout({ children }) {
   return (
@@ -70,6 +71,7 @@ function App() {
 
   const blockedSeedSeoPaths = useMemo(() => {
     const blocked = new Set([...reservedSeoStaticPaths, ...corePillarPaths]);
+    wordpressMigratedArticlePaths.forEach((path) => blocked.add(path));
     blocked.add('/cartoes-de-credito');
     blocked.add('/financiamento');
     blocked.add('/diagnostico-financeiro');
@@ -197,6 +199,19 @@ function App() {
             </AppLayout>
           }
         />
+        {wordpressMigratedArticles.map((article) => (
+          <Route
+            key={`wp-article-${article.slug}`}
+            path={article.routePath}
+            element={
+              <AppLayout>
+                <BlogBoundary>
+                  <BlogArticlePage articleSlugOverride={article.slug} />
+                </BlogBoundary>
+              </AppLayout>
+            }
+          />
+        ))}
 
         <Route path="/admin/login" element={<AdminAuthGuard />} />
         <Route path="/admin" element={<AdminRoute title="Dashboard"><AdminDashboardPage /></AdminRoute>} />

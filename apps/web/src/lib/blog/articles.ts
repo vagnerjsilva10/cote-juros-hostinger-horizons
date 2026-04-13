@@ -6,6 +6,7 @@ export {
   getEditorialTitle,
   getArticleImage,
   getArticleImageAlt,
+  getArticlePath,
   getArticleCategoryKey,
   getArticleParagraphs,
   buildArticleToc,
