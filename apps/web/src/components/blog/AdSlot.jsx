@@ -1,55 +1,102 @@
 import React from 'react';
 import { cn } from '@/lib/utils.js';
+import AdSense from '@/components/AdSense.tsx';
+import AdSenseScript from '@/components/AdSenseScript.tsx';
 
-function AdSlot({
-  slot,
+function AdSlotShell({
   label = 'Publicidade',
-  title = 'Espaço editorial para anúncio',
-  description = 'Estrutura pronta para AdSense, desativável sem quebrar o layout.',
+  title,
+  description,
   minHeight = '120px',
-  className
+  className,
+  children
 }) {
-  const adsEnabled = import.meta.env.VITE_ADSENSE_ENABLED === 'true';
-
   return (
     <aside
       aria-label={label}
-      data-slot={slot}
       className={cn(
-        'overflow-hidden rounded-[20px] border border-dashed border-border bg-white/80',
+        'overflow-hidden rounded-[20px] border border-border bg-white/90',
         className
       )}
       style={{ minHeight }}
     >
-      <div className="flex h-full flex-col justify-center gap-2 px-5 py-5 text-center sm:px-6">
-        <span className="mx-auto w-fit rounded-full border border-border bg-background px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+      <div className="border-b border-border/70 px-5 py-3 sm:px-6">
+        <span className="inline-flex rounded-full border border-border bg-background px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           {label}
         </span>
-        <p className="text-sm font-semibold text-foreground">{title}</p>
-        <p className="mx-auto max-w-2xl text-sm leading-6 text-muted-foreground">
-          {adsEnabled ? 'Slot habilitado para integração real.' : description}
-        </p>
+      </div>
+
+      <div className="relative">
+        {children}
+
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center px-4 pb-3">
+          <div className="rounded-full bg-white/90 px-3 py-1 text-[11px] text-muted-foreground shadow-sm">
+            {title}
+            {description ? ` • ${description}` : ''}
+          </div>
+        </div>
       </div>
     </aside>
   );
 }
 
-export const AdSlotInline = (props) => <AdSlot {...props} minHeight={props.minHeight || '120px'} />;
-
-export const AdSlotHorizontal = (props) => (
-  <AdSlot
-    {...props}
-    minHeight={props.minHeight || '156px'}
-    className={cn('bg-background-secondary/70', props.className)}
-  />
+export const AdSlotHorizontal = ({ className }) => (
+  <AdSlotShell
+    className={cn('bg-background-secondary/70', className)}
+    minHeight="156px"
+    title="Bloco blog Cote Juros"
+    description="slot horizontal"
+  >
+    <AdSenseScript />
+    <div className="px-4 py-5 sm:px-6 sm:py-6">
+      <AdSense
+        adSlot="9247942893"
+        format="auto"
+        responsive
+        style={{ minHeight: 96 }}
+      />
+    </div>
+  </AdSlotShell>
 );
 
-export const AdSlotResponsive = (props) => (
-  <AdSlot
-    {...props}
-    minHeight={props.minHeight || '180px'}
-    className={cn('sm:min-h-[156px] md:min-h-[180px]', props.className)}
-  />
+export const AdSlotInline = ({ className }) => (
+  <AdSlotShell
+    className={className}
+    minHeight="120px"
+    title="Bloco fluido"
+    description="entre seções editoriais"
+  >
+    <AdSenseScript />
+    <div className="px-4 py-5 sm:px-6">
+      <AdSense
+        adSlot="1892315338"
+        format="fluid"
+        responsive={false}
+        layoutKey="-fb+5w+4e-db+86"
+        style={{ minHeight: 90 }}
+      />
+    </div>
+  </AdSlotShell>
 );
 
-export default AdSlot;
+export const AdSlotResponsive = ({ className }) => (
+  <AdSlotShell
+    className={cn('sm:min-h-[156px] md:min-h-[180px]', className)}
+    minHeight="180px"
+    title="Bloco in-article"
+    description="responsivo"
+  >
+    <AdSenseScript />
+    <div className="px-4 py-5 sm:px-6 sm:py-6">
+      <AdSense
+        adSlot="7825185943"
+        format="fluid"
+        layout="in-article"
+        responsive={false}
+        style={{ minHeight: 120, textAlign: 'center' }}
+      />
+    </div>
+  </AdSlotShell>
+);
+
+export default AdSlotShell;
