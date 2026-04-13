@@ -7,22 +7,68 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import PageHero from '@/components/PageHero.jsx';
 import BlogArticleCard from '@/components/BlogArticleCard.jsx';
+import ArticleCoverImage from '@/components/blog/ArticleCoverImage.jsx';
+import { AdSlotHorizontal, AdSlotInline, AdSlotResponsive } from '@/components/blog/AdSlot.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
-import { getArticleImage, getArticleSummary, getEditorialTitle, normalizeArticleSlug } from '@/lib/content/articles.js';
+import {
+  getArticleImage,
+  getArticleSummary,
+  getEditorialTitle,
+  normalizeArticleData,
+  normalizeArticleSlug
+} from '@/lib/content/articles.js';
 
 const PAGE_SIZE = 12;
+const BLOG_URL = 'https://www.cotejuros.com.br/blog';
 
-const fallbackImage =
-  'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=80';
+const blogBaseSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': 'https://www.cotejuros.com.br/#organization',
+      name: 'Cote Juros',
+      url: 'https://www.cotejuros.com.br',
+      logo: 'https://www.cotejuros.com.br/assets/logo/logo-primary.png'
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://www.cotejuros.com.br/' },
+        { '@type': 'ListItem', position: 2, name: 'Blog', item: BLOG_URL }
+      ]
+    }
+  ]
+};
 
 function BlogPage() {
   const [articlesData, setArticlesData] = useState([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('Todas');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    portalApi.getArticles({ sort: 'recent' }).then((items) => setArticlesData(Array.isArray(items) ? items : []));
+    let active = true;
+
+    portalApi
+      .getArticles({ sort: 'recent' })
+      .then((items) => {
+        if (!active) return;
+        const normalized = Array.isArray(items) ? items.map((item) => normalizeArticleData(item)) : [];
+        setArticlesData(normalized);
+      })
+      .catch((error) => {
+        console.error('[blog-page] erro ao carregar artigos', error);
+        if (active) setArticlesData([]);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -33,7 +79,7 @@ function BlogPage() {
     const grouped = new Map();
 
     articlesData.forEach((article) => {
-      const label = typeof article.category === 'string' ? article.category : article.category?.name;
+      const label = normalizeArticleData(article).category;
       if (!label) return;
       grouped.set(label, (grouped.get(label) || 0) + 1);
     });
@@ -50,20 +96,20 @@ function BlogPage() {
     const query = search.trim().toLowerCase();
 
     return articlesData
+      .map((article) => normalizeArticleData(article))
       .filter((article) => {
-        const label = typeof article.category === 'string' ? article.category : article.category?.name;
-        const inCategory = category === 'Todas' || label === category;
+        const inCategory = category === 'Todas' || article.category === category;
         if (!inCategory) return false;
 
         if (!query) return true;
 
-        const haystack = `${getEditorialTitle(article)} ${getArticleSummary(article)} ${(article.keywords || []).join(' ')}`.toLowerCase();
+        const haystack = `${getEditorialTitle(article)} ${getArticleSummary(article)} ${(article.tags || []).join(' ')}`.toLowerCase();
         return haystack.includes(query);
       })
-      .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+      .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
   }, [articlesData, category, search]);
 
-  const featured = filteredArticles[0];
+  const featured = filteredArticles[0] || null;
   const trendingGuides = filteredArticles.slice(1, 4);
   const recentArticles = filteredArticles.slice(4, 4 + visibleCount);
   const hasMore = filteredArticles.length > 4 + visibleCount;
@@ -75,15 +121,57 @@ function BlogPage() {
       year: 'numeric'
     });
 
+  const itemListSchema = useMemo(
+    () => ({
+      '@context': 'https://schema.org',
+      '@type': 'Blog',
+      '@id': `${BLOG_URL}#blog`,
+      name: 'Blog Cote Juros',
+      description: 'Guias editoriais da Cote Juros sobre crédito, score, cartões, financiamento e organização financeira.',
+      url: BLOG_URL,
+      blogPost: filteredArticles.slice(0, 12).map((article, index) => ({
+        '@type': 'BlogPosting',
+        position: index + 1,
+        headline: article.metaTitle || getEditorialTitle(article),
+        url: `${BLOG_URL}/${normalizeArticleSlug(article)}`,
+        datePublished: article.publishedAt,
+        dateModified: article.updatedAt,
+        image: getArticleImage(article),
+        author: {
+          '@type': 'Person',
+          name: article.author
+        }
+      }))
+    }),
+    [filteredArticles]
+  );
+
   return (
     <>
       <Helmet>
         <title>Blog Cote Juros | Guias financeiros para crédito, score e planejamento</title>
         <meta
           name="description"
-          content="Leia guias editoriais da Cote Juros sobre empréstimo, cartões, score, financiamento, organização financeira e negociação de dívidas."
+          content="Leia guias editoriais da Cote Juros sobre empréstimo, cartões, score, financiamento, dívidas e organização financeira com estrutura técnica forte para SEO."
         />
-        <link rel="canonical" href="https://www.cotejuros.com.br/blog" />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Blog Cote Juros | Guias financeiros para crédito, score e planejamento" />
+        <meta
+          property="og:description"
+          content="Conteúdo editorial para comparar custos, evitar armadilhas e organizar melhor suas finanças."
+        />
+        <meta property="og:url" content={BLOG_URL} />
+        <meta property="og:image" content="https://www.cotejuros.com.br/assets/blog/fallbacks/editorial-global.svg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Blog Cote Juros | Guias financeiros para crédito, score e planejamento" />
+        <meta
+          name="twitter:description"
+          content="Guias editoriais sobre crédito, score, cartões, financiamento e organização financeira."
+        />
+        <link rel="canonical" href={BLOG_URL} />
+        <script type="application/ld+json">{JSON.stringify(blogBaseSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(itemListSchema)}</script>
       </Helmet>
 
       <PageHero
@@ -118,7 +206,36 @@ function BlogPage() {
         </div>
       </PageHero>
 
-      <div className="page-shell space-y-12 py-10 md:space-y-14 md:py-14">
+      <div className="page-shell space-y-10 py-10 md:space-y-14 md:py-14">
+        <section className="grid gap-4 rounded-[24px] border border-border bg-white p-5 md:grid-cols-[1.3fr_0.7fr] md:p-7">
+          <div className="space-y-3">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Hub editorial</p>
+            <h2 className="text-2xl text-foreground md:text-3xl">Blog premium para tráfego orgânico e decisão financeira clara</h2>
+            <p className="max-w-3xl text-base leading-7 text-muted-foreground">
+              Navegue por categorias, encontre comparativos editoriais e aprofunde os próximos passos com segurança.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-1">
+            {categories.slice(1, 4).map((item) => (
+              <button
+                key={item.label}
+                type="button"
+                onClick={() => setCategory(item.label)}
+                className="rounded-[18px] border border-border bg-background-secondary px-4 py-4 text-left transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
+              >
+                <span className="block text-sm font-semibold text-foreground">{item.label}</span>
+                <span className="mt-1 block text-sm text-muted-foreground">{item.count} artigos</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {loading ? (
+          <section className="rounded-[20px] border border-border bg-white px-6 py-14 text-center">
+            <p className="text-muted-foreground">Carregando conteúdos do blog...</p>
+          </section>
+        ) : null}
+
         {featured ? (
           <section className="space-y-5">
             <div className="flex items-center justify-between gap-4">
@@ -130,20 +247,18 @@ function BlogPage() {
               to={`/blog/${normalizeArticleSlug(featured)}`}
               className="group grid overflow-hidden rounded-[26px] border border-border bg-white md:grid-cols-[1.1fr_0.9fr]"
             >
-              <div className="min-h-[250px] overflow-hidden bg-slate-100 md:min-h-[360px]">
-                <img
-                  src={getArticleImage(featured, fallbackImage)}
-                  alt={getEditorialTitle(featured)}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                />
-              </div>
+              <ArticleCoverImage
+                article={{ ...featured, coverImage: getArticleImage(featured) }}
+                className="min-h-[250px] md:min-h-[360px]"
+                imageClassName="transition-transform duration-300 group-hover:scale-[1.03]"
+              />
 
               <div className="flex flex-col justify-center gap-4 p-6 md:p-8">
                 <p className="text-sm font-semibold uppercase tracking-[0.14em] text-primary">Featured article</p>
                 <h3 className="text-3xl text-foreground">{getEditorialTitle(featured)}</h3>
                 <p className="text-base leading-7 text-muted-foreground">{getArticleSummary(featured)}</p>
                 <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-                  <span>{formatDate(featured.publishDate)}</span>
+                  <span>{formatDate(featured.publishedAt)}</span>
                   <span>•</span>
                   <span>{featured.readTime || 6} min de leitura</span>
                 </div>
@@ -156,15 +271,21 @@ function BlogPage() {
           </section>
         ) : null}
 
+        <AdSlotHorizontal
+          slot="blog-home-hero"
+          title="Slot editorial horizontal"
+          description="Estrutura discreta pronta para AdSense entre o destaque e os blocos de navegação."
+        />
+
         {trendingGuides.length ? (
           <section className="space-y-5">
             <h2 className="text-2xl text-foreground">Guias em alta</h2>
             <div className="grid gap-5 md:grid-cols-3">
               {trendingGuides.map((article) => (
                 <BlogArticleCard
-                  key={article.id}
+                  key={article.slug}
                   article={article}
-                  image={getArticleImage(article, fallbackImage)}
+                  image={getArticleImage(article)}
                   formatDate={formatDate}
                   label="Ler guia"
                 />
@@ -174,7 +295,10 @@ function BlogPage() {
         ) : null}
 
         <section className="space-y-4">
-          <h2 className="text-2xl text-foreground">Navegue por categoria</h2>
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="text-2xl text-foreground">Navegue por categoria</h2>
+            <span className="text-sm text-muted-foreground">{filteredArticles.length} artigos</span>
+          </div>
           <div className="flex flex-wrap gap-2">
             {categories.slice(1).map((item) => (
               <button
@@ -189,6 +313,12 @@ function BlogPage() {
           </div>
         </section>
 
+        <AdSlotInline
+          slot="blog-home-inline"
+          title="Slot editorial inline"
+          description="Ponto discreto para monetização sem poluir o fluxo visual do blog."
+        />
+
         <section className="space-y-5">
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-2xl text-foreground">Artigos recentes</h2>
@@ -197,13 +327,18 @@ function BlogPage() {
 
           {recentArticles.length ? (
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              {recentArticles.map((article) => (
-                <BlogArticleCard
-                  key={article.id}
-                  article={article}
-                  image={getArticleImage(article, fallbackImage)}
-                  formatDate={formatDate}
-                />
+              {recentArticles.map((article, index) => (
+                <React.Fragment key={article.slug}>
+                  <BlogArticleCard article={article} image={getArticleImage(article)} formatDate={formatDate} />
+                  {index === 2 ? (
+                    <AdSlotResponsive
+                      slot="blog-home-feed"
+                      className="sm:col-span-2 xl:col-span-3"
+                      title="Slot responsivo entre blocos"
+                      description="Pronto para futura integração com AdSense na listagem principal."
+                    />
+                  ) : null}
+                </React.Fragment>
               ))}
             </div>
           ) : (
@@ -246,4 +381,3 @@ function BlogPage() {
 }
 
 export default BlogPage;
-

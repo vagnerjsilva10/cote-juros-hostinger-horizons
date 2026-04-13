@@ -4,8 +4,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 function ComparisonTable({ data, onSimulate }) {
   return (
-    <div className="overflow-hidden rounded-lg border bg-card">
-      <Table>
+    <div className="overflow-x-auto rounded-lg border bg-card">
+      <Table className="min-w-[760px]">
         <TableHeader>
           <TableRow>
             <TableHead>Banco</TableHead>

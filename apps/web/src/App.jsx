@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import ScrollToTop from '@/components/ScrollToTop.jsx';
 import Header from '@/components/Header.jsx';
 import Footer from '@/components/Footer.jsx';
@@ -13,6 +13,7 @@ import FerramentasPage from '@/pages/FerramentasPage.jsx';
 import DiagnosticoPage from '@/pages/DiagnosticoPage.jsx';
 import BlogPage from '@/pages/BlogPage.jsx';
 import BlogArticlePage from '@/pages/BlogArticlePage.jsx';
+import BlogRouteBoundary from '@/components/blog/BlogRouteBoundary.jsx';
 import SobreNosPage from '@/pages/SobreNosPage.jsx';
 import ContatoPage from '@/pages/ContatoPage.jsx';
 import PoliticaPrivacidadePage from '@/pages/PoliticaPrivacidadePage.jsx';
@@ -55,6 +56,12 @@ function AdminRoute({ title, children }) {
       <AdminLayout title={title}>{children}</AdminLayout>
     </AdminAuthGuard>
   );
+}
+
+function BlogBoundary({ children }) {
+  const location = useLocation();
+
+  return <BlogRouteBoundary resetKey={location.pathname}>{children}</BlogRouteBoundary>;
 }
 
 function App() {
@@ -108,7 +115,16 @@ function App() {
         <Route path="/financiamento" element={<AppLayout><FinanciamentoPage /></AppLayout>} />
         <Route path="/ferramentas" element={<AppLayout><FerramentasPage /></AppLayout>} />
         <Route path="/diagnostico-financeiro" element={<AppLayout><DiagnosticoPage /></AppLayout>} />
-        <Route path="/blog" element={<AppLayout><BlogPage /></AppLayout>} />
+        <Route
+          path="/blog"
+          element={
+            <AppLayout>
+              <BlogBoundary>
+                <BlogPage />
+              </BlogBoundary>
+            </AppLayout>
+          }
+        />
         <Route path="/sobre-nos" element={<AppLayout><SobreNosPage /></AppLayout>} />
         <Route path="/contato" element={<AppLayout><ContatoPage /></AppLayout>} />
         <Route path="/politica-de-privacidade" element={<AppLayout><PoliticaPrivacidadePage /></AppLayout>} />
@@ -175,7 +191,9 @@ function App() {
           path="/blog/:articleSlug"
           element={
             <AppLayout>
-              <BlogArticlePage />
+              <BlogBoundary>
+                <BlogArticlePage />
+              </BlogBoundary>
             </AppLayout>
           }
         />

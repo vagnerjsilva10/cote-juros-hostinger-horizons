@@ -1,6 +1,6 @@
 import { portalRepository } from '@/platform/repositories/portalRepository.js';
 import { normalizeMojibake, normalizeMojibakeDeep } from '@/lib/textEncoding.js';
-import { findArticleBySlug } from '@/lib/content/articles.js';
+import { findArticleBySlug, normalizeArticleData } from '@/lib/content/articles.js';
 
 const wait = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
@@ -84,14 +84,16 @@ const normalizeOfferRecord = (offer = {}) => {
   return base;
 };
 
-const normalizeArticleRecord = (article = {}) => ({
-  ...article,
-  title: normalizeMojibake(article.title || ''),
-  summary: normalizeMojibake(article.summary || article.excerpt || ''),
-  content: normalizeMojibake(article.content || ''),
-  seoTitle: normalizeMojibake(article.seoTitle || article.title || ''),
-  metaDescription: normalizeMojibake(article.metaDescription || article.summary || ''),
-  h1: normalizeMojibake(article.h1 || article.title || ''),
+const normalizeArticleRecord = (article = {}) =>
+  normalizeArticleData({
+    ...article,
+    title: normalizeMojibake(article.title || ''),
+    summary: normalizeMojibake(article.summary || article.excerpt || ''),
+    excerpt: normalizeMojibake(article.excerpt || article.summary || ''),
+    content: normalizeMojibake(article.content || ''),
+    seoTitle: normalizeMojibake(article.seoTitle || article.title || ''),
+    metaDescription: normalizeMojibake(article.metaDescription || article.summary || ''),
+    h1: normalizeMojibake(article.h1 || article.title || ''),
   intro: Array.isArray(article.intro) ? article.intro.map((item) => normalizeMojibake(item)) : undefined,
   sections: Array.isArray(article.sections)
     ? article.sections.map((section) => ({

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" fill="none">
+  <rect width="1200" height="720" fill="#F0FDFA" />
+  <rect x="56" y="56" width="1088" height="608" rx="34" fill="white" fill-opacity="0.9" />
+  <rect x="92" y="96" width="184" height="40" rx="20" fill="#CCFBF1" />
+  <text x="122" y="122" fill="#0F766E" font-family="Arial, sans-serif" font-size="22" font-weight="700">CARTÕES</text>
+  <text x="92" y="224" fill="#0F172A" font-family="Arial, sans-serif" font-size="58" font-weight="700">Limite, anuidade e benefícios</text>
+  <text x="92" y="282" fill="#475569" font-family="Arial, sans-serif" font-size="30">Leitura editorial para escolher com menos ruído.</text>
+  <rect x="734" y="156" width="320" height="214" rx="26" fill="#0F766E" fill-opacity="0.08" />
+  <rect x="774" y="198" width="242" height="154" rx="22" fill="#0F766E" />
+  <circle cx="982" cy="246" r="18" fill="#5EEAD4" />
+  <rect x="804" y="244" width="92" height="12" rx="6" fill="#99F6E4" />
+  <rect x="804" y="276" width="132" height="12" rx="6" fill="#CCFBF1" />
+  <rect x="92" y="548" width="286" height="16" rx="8" fill="#CCFBF1" />
+  <rect x="92" y="582" width="344" height="16" rx="8" fill="#E2E8F0" />
+</svg>

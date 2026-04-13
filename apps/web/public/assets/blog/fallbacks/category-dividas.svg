@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" fill="none">
+  <rect width="1200" height="720" fill="#FEF2F2" />
+  <rect x="56" y="56" width="1088" height="608" rx="34" fill="white" fill-opacity="0.9" />
+  <rect x="92" y="96" width="220" height="40" rx="20" fill="#FECACA" />
+  <text x="122" y="122" fill="#B91C1C" font-family="Arial, sans-serif" font-size="22" font-weight="700">DÍVIDAS</text>
+  <text x="92" y="224" fill="#0F172A" font-family="Arial, sans-serif" font-size="58" font-weight="700">Renegociação sem improviso</text>
+  <text x="92" y="282" fill="#475569" font-family="Arial, sans-serif" font-size="30">Priorize contas e reduza o risco de apertar ainda mais o caixa.</text>
+  <rect x="742" y="158" width="308" height="236" rx="26" fill="#FEE2E2" />
+  <path d="M802 222H992" stroke="#EF4444" stroke-width="14" stroke-linecap="round" />
+  <path d="M802 272H952" stroke="#F87171" stroke-width="14" stroke-linecap="round" />
+  <path d="M802 322H922" stroke="#FCA5A5" stroke-width="14" stroke-linecap="round" />
+  <circle cx="998" cy="322" r="18" fill="#EF4444" />
+  <rect x="92" y="548" width="286" height="16" rx="8" fill="#FECACA" />
+  <rect x="92" y="582" width="344" height="16" rx="8" fill="#E2E8F0" />
+</svg>

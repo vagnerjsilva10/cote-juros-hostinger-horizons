@@ -144,6 +144,23 @@
     @apply transition-colors duration-200 ease-out;
   }
 
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  button,
+  [role='button'],
+  a {
+    touch-action: manipulation;
+  }
+
   a.link-animated {
     position: relative;
     text-decoration: none;
@@ -442,6 +459,11 @@
 }
 
 @media (max-width: 767px) {
+  html,
+  body {
+    overflow-x: clip;
+  }
+
   .hero-proof-pill {
     border-radius: 20px;
     font-size: 0.74rem;

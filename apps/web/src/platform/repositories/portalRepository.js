@@ -9,6 +9,7 @@ import {
   seoPages as seoPagesSeed,
   testimonials as testimonialsSeed
 } from '@/platform/seed/portalSeed.js';
+import { normalizeArticleData } from '@/lib/content/articles.js';
 
 const defaultPartnersSeed = banksSeed.map((bank) => ({
   id: `partner-${bank.id}`,
@@ -53,7 +54,7 @@ const defaultSettingsSeed = {
 const STORAGE_KEYS = {
   banks: 'cj.banks',
   offers: 'cj.offers',
-  articles: 'cj.articles.v3',
+  articles: 'cj.articles.v4',
   seoPages: 'cj.seoPages',
   seoFallbackPaths: 'cj.seoFallbackPaths',
   testimonials: 'cj.testimonials',
@@ -89,13 +90,18 @@ const deepClone = (value) => JSON.parse(JSON.stringify(value));
 const initialDataFor = (key) => {
   if (key === 'banks') return deepClone(banksSeed);
   if (key === 'offers') return deepClone(offersSeed);
-  if (key === 'articles') return deepClone(articlesSeed);
+  if (key === 'articles') return deepClone(articlesSeed.map((article) => normalizeArticleData(article)));
   if (key === 'seoPages') return deepClone(seoPagesSeed.map((page) => ({ ...page, status: page.status || 'published' })));
   if (key === 'seoFallbackPaths') return deepClone(seoFallbackPathsSeed);
   if (key === 'testimonials') return deepClone(testimonialsSeed.map((item) => ({ ...item, status: item.status || 'active', featured: item.featured ?? true })));
   if (key === 'partners') return deepClone(defaultPartnersSeed);
   if (key === 'settings') return deepClone(defaultSettingsSeed);
   return [];
+};
+
+const normalizeStoredCollection = (key, value) => {
+  if (key !== 'articles' || !Array.isArray(value)) return value;
+  return value.map((article) => normalizeArticleData(article));
 };
 
 const safeRead = (key) => {
@@ -107,7 +113,7 @@ const safeRead = (key) => {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEYS[key]);
     if (!raw) return initialDataFor(key);
-    return JSON.parse(raw);
+    return normalizeStoredCollection(key, JSON.parse(raw));
   } catch {
     return initialDataFor(key);
   }
@@ -175,13 +181,14 @@ const sortByDateDesc = (a, b, field = 'createdAt') => {
 
 const withUpdatedAt = (value) => ({ ...value, updatedAt: new Date().toISOString() });
 
-const ensureArticleDefaults = (article) => ({
-  id: article.id || `article_${Date.now()}`,
-  title: article.title || 'Novo artigo',
-  slug: article.slug || toSlug(article.title || 'novo-artigo'),
-  summary: article.summary || article.excerpt || '',
-  excerpt: article.excerpt || article.summary || '',
-  content: article.content || '',
+const ensureArticleDefaults = (article) =>
+  normalizeArticleData({
+    id: article.id || `article_${Date.now()}`,
+    title: article.title || 'Novo artigo',
+    slug: article.slug || toSlug(article.title || 'novo-artigo'),
+    summary: article.summary || article.excerpt || '',
+    excerpt: article.excerpt || article.summary || '',
+    content: article.content || '',
   category: article.category || 'Finanças Pessoais',
   status: article.status || 'draft',
   seoTitle: article.seoTitle || article.title || 'Novo artigo',
@@ -393,11 +400,12 @@ export const portalRepository = {
     if (sort === 'recent') result = [...result].sort((a, b) => sortByDateDesc(a, b, 'publishDate'));
     if (sort === 'read') result = [...result].sort((a, b) => (b.readTime ?? 0) - (a.readTime ?? 0));
 
-    return result;
+    return result.map((article) => normalizeArticleData(article));
   },
 
   getArticleBySlug(slug) {
-    return safeRead('articles').find((article) => toSlug(article.slug || article.title || article.id) === toSlug(slug)) || null;
+    const matched = safeRead('articles').find((article) => toSlug(article.slug || article.title || article.id) === toSlug(slug)) || null;
+    return matched ? normalizeArticleData(matched) : null;
   },
 
   listSeoPages() {

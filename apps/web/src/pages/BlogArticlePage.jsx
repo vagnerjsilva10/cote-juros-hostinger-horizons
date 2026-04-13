@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, CalendarDays, Clock } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CalendarDays, Clock, Home } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import BlogArticleCard from '@/components/BlogArticleCard.jsx';
+import ArticleCoverImage from '@/components/blog/ArticleCoverImage.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import {
   buildArticleToc,
@@ -15,11 +16,11 @@ import {
   getArticleParagraphs,
   getArticleSummary,
   getEditorialTitle,
+  normalizeArticleData,
   normalizeArticleSlug
 } from '@/lib/content/articles.js';
 
-const fallbackThumbnail =
-  'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=80';
+const BLOG_BASE_URL = 'https://www.cotejuros.com.br/blog';
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString('pt-BR', {
@@ -65,19 +66,29 @@ function BlogArticlePage() {
   const [articles, setArticles] = useState([]);
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
     let active = true;
+    setLoading(true);
+    setLoadError('');
 
     Promise.all([portalApi.getArticles({ sort: 'recent' }), portalApi.getArticleBySlug(articleSlug)])
       .then(([items, articleData]) => {
         if (!active) return;
 
-        const articleList = Array.isArray(items) ? items : [];
-        const fallbackMatch = findArticleBySlug(articleList, articleSlug);
+        const articleList = Array.isArray(items) ? items.map((item) => normalizeArticleData(item)) : [];
+        const safeArticle = articleData ? normalizeArticleData(articleData) : findArticleBySlug(articleList, articleSlug);
 
         setArticles(articleList);
-        setArticle(articleData || fallbackMatch || null);
+        setArticle(safeArticle || null);
+      })
+      .catch((error) => {
+        console.error('[blog-article-page] erro ao carregar artigo', error);
+        if (!active) return;
+        setLoadError('Não foi possível carregar este artigo agora.');
+        setArticles([]);
+        setArticle(null);
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -88,33 +99,34 @@ function BlogArticlePage() {
     };
   }, [articleSlug]);
 
-  const categoryRoute = useMemo(() => getCategoryRoute(article), [article]);
-  const tocItems = useMemo(() => buildArticleToc(article), [article]);
+  const safeArticle = useMemo(() => (article ? normalizeArticleData(article) : null), [article]);
+  const categoryRoute = useMemo(() => getCategoryRoute(safeArticle), [safeArticle]);
+  const tocItems = useMemo(() => buildArticleToc(safeArticle), [safeArticle]);
 
   const relatedArticles = useMemo(() => {
-    if (!article) return [];
+    if (!safeArticle) return [];
 
-    const currentCategory = getArticleCategoryKey(article);
+    const currentCategory = getArticleCategoryKey(safeArticle);
 
     return articles
-      .filter((item) => normalizeArticleSlug(item) !== normalizeArticleSlug(article))
+      .filter((item) => normalizeArticleSlug(item) !== normalizeArticleSlug(safeArticle))
       .sort((a, b) => {
         const categoryA = getArticleCategoryKey(a).includes(currentCategory) ? 1 : 0;
         const categoryB = getArticleCategoryKey(b).includes(currentCategory) ? 1 : 0;
         if (categoryA !== categoryB) return categoryB - categoryA;
-        return new Date(b.publishDate) - new Date(a.publishDate);
+        return new Date(b.publishedAt) - new Date(a.publishedAt);
       })
       .slice(0, 4);
-  }, [article, articles]);
+  }, [safeArticle, articles]);
 
   const orderedArticles = useMemo(
-    () => [...articles].sort((a, b) => new Date(a.publishDate) - new Date(b.publishDate)),
+    () => [...articles].sort((a, b) => new Date(a.publishedAt) - new Date(b.publishedAt)),
     [articles]
   );
 
   const currentIndex = useMemo(
-    () => orderedArticles.findIndex((item) => normalizeArticleSlug(item) === normalizeArticleSlug(article || { slug: articleSlug })),
-    [orderedArticles, article, articleSlug]
+    () => orderedArticles.findIndex((item) => normalizeArticleSlug(item) === normalizeArticleSlug(safeArticle || { slug: articleSlug })),
+    [orderedArticles, safeArticle, articleSlug]
   );
 
   const previousArticle = currentIndex > 0 ? orderedArticles[currentIndex - 1] : null;
@@ -128,13 +140,13 @@ function BlogArticlePage() {
     );
   }
 
-  if (!article) {
+  if (!safeArticle) {
     return (
       <section className="page-shell py-20">
         <Card className="mx-auto max-w-2xl border-border bg-white text-center">
           <CardContent className="space-y-4 p-10">
             <h1 className="text-3xl text-foreground">Artigo não encontrado</h1>
-            <p className="text-muted-foreground">Esse conteúdo pode ter sido movido, renomeado ou removido.</p>
+            <p className="text-muted-foreground">{loadError || 'Esse conteúdo pode ter sido movido, renomeado ou removido.'}</p>
             <Link to="/blog">
               <Button>Voltar para o blog</Button>
             </Link>
@@ -144,43 +156,110 @@ function BlogArticlePage() {
     );
   }
 
-  const editorialTitle = getEditorialTitle(article);
-  const canonicalUrl = article.canonicalUrl || `https://www.cotejuros.com.br/blog/${normalizeArticleSlug(article)}`;
-  const faqSchema = toFaqSchema(article);
-  const introParagraphs = getArticleParagraphs(article);
+  const editorialTitle = getEditorialTitle(safeArticle);
+  const canonicalUrl = safeArticle.canonicalUrl || `${BLOG_BASE_URL}/${normalizeArticleSlug(safeArticle)}`;
+  const socialImage = getArticleImage(safeArticle);
+  const faqSchema = toFaqSchema(safeArticle);
+  const introParagraphs = getArticleParagraphs(safeArticle);
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://www.cotejuros.com.br/' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: BLOG_BASE_URL },
+      { '@type': 'ListItem', position: 3, name: editorialTitle, item: canonicalUrl }
+    ]
+  };
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: safeArticle.metaTitle || editorialTitle,
+    description: safeArticle.metaDescription || getArticleSummary(safeArticle),
+    image: [socialImage],
+    datePublished: safeArticle.publishedAt,
+    dateModified: safeArticle.updatedAt,
+    mainEntityOfPage: canonicalUrl,
+    author: {
+      '@type': 'Person',
+      name: safeArticle.author
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Cote Juros',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.cotejuros.com.br/assets/logo/logo-primary.png'
+      }
+    },
+    articleSection: safeArticle.category,
+    keywords: safeArticle.tags.join(', ')
+  };
 
   return (
     <>
       <Helmet>
-        <title>{article.seoTitle || `${editorialTitle} | Blog Cote Juros`}</title>
-        <meta name="description" content={article.metaDescription || getArticleSummary(article)} />
+        <title>{safeArticle.metaTitle || safeArticle.seoTitle || `${editorialTitle} | Blog Cote Juros`}</title>
+        <meta name="description" content={safeArticle.metaDescription || getArticleSummary(safeArticle)} />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={safeArticle.metaTitle || editorialTitle} />
+        <meta property="og:description" content={safeArticle.metaDescription || getArticleSummary(safeArticle)} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={socialImage} />
+        <meta property="article:published_time" content={safeArticle.publishedAt} />
+        <meta property="article:modified_time" content={safeArticle.updatedAt} />
+        <meta property="article:author" content={safeArticle.author} />
+        <meta property="article:section" content={safeArticle.category} />
+        {safeArticle.tags.slice(0, 8).map((tag) => (
+          <meta key={tag} property="article:tag" content={tag} />
+        ))}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={safeArticle.metaTitle || editorialTitle} />
+        <meta name="twitter:description" content={safeArticle.metaDescription || getArticleSummary(safeArticle)} />
+        <meta name="twitter:image" content={socialImage} />
         <link rel="canonical" href={canonicalUrl} />
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
         {faqSchema ? <script type="application/ld+json">{JSON.stringify(faqSchema)}</script> : null}
       </Helmet>
 
       <section className="border-b border-border bg-background py-10 md:py-12">
         <div className="page-shell space-y-6">
+          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+            <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground">
+              <Home className="h-4 w-4" />
+              Início
+            </Link>
+            <span>/</span>
+            <Link to="/blog" className="hover:text-foreground">
+              Blog
+            </Link>
+            <span>/</span>
+            <span className="text-foreground">{editorialTitle}</span>
+          </nav>
+
           <Link to="/blog" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
             <ArrowLeft className="h-4 w-4" />
             Voltar para o blog
           </Link>
 
-          <Badge variant="outline" className="w-fit">{article.category}</Badge>
+          <Badge variant="outline" className="w-fit">{safeArticle.category}</Badge>
 
           <div className="space-y-4">
-            <h1 className="max-w-4xl text-foreground">{article.h1 || editorialTitle}</h1>
-            <p className="max-w-3xl text-lg leading-8 text-muted-foreground">{getArticleSummary(article)}</p>
+            <h1 className="max-w-4xl text-foreground">{safeArticle.h1 || editorialTitle}</h1>
+            <p className="max-w-3xl text-lg leading-8 text-muted-foreground">{getArticleSummary(safeArticle)}</p>
           </div>
 
           <div className="flex flex-wrap gap-5 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-2">
               <CalendarDays className="h-4 w-4 text-primary" />
-              {formatDate(article.publishDate)}
+              {formatDate(safeArticle.publishedAt)}
             </span>
             <span className="inline-flex items-center gap-2">
               <Clock className="h-4 w-4 text-primary" />
-              {article.readTime || 6} min de leitura
+              {safeArticle.readTime || 6} min de leitura
             </span>
+            <span>{safeArticle.author}</span>
             <Link to={categoryRoute.path} className="inline-flex items-center gap-2 text-primary hover:underline">
               Mais em {categoryRoute.label}
               <ArrowRight className="h-4 w-4" />
@@ -192,7 +271,7 @@ function BlogArticlePage() {
       <section className="bg-background py-8 md:py-10">
         <div className="page-shell space-y-8">
           <div className="overflow-hidden rounded-[20px] border border-border bg-white">
-            <img src={getArticleImage(article, fallbackThumbnail)} alt={editorialTitle} className="h-full max-h-[460px] w-full object-cover" />
+            <ArticleCoverImage article={safeArticle} className="max-h-[460px]" />
           </div>
 
           <article className="rounded-[20px] border border-border bg-white p-6 md:p-10">
@@ -201,8 +280,8 @@ function BlogArticlePage() {
                 <p key={`intro-${index}`} className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
               ))}
 
-              {Array.isArray(article.sections)
-                ? article.sections.map((section, index) => (
+              {Array.isArray(safeArticle.sections)
+                ? safeArticle.sections.map((section, index) => (
                   <section key={`section-${index}`} id={`secao-${index + 1}`} className="scroll-mt-28 space-y-4">
                     <h2 className="text-2xl text-foreground">{section.heading}</h2>
                     {section.paragraphs?.map((paragraph, paragraphIndex) => (
@@ -221,11 +300,29 @@ function BlogArticlePage() {
                 ))
                 : null}
 
-              {Array.isArray(article.faq) && article.faq.length ? (
+              {safeArticle.internalLinks.length ? (
+                <section className="rounded-[18px] border border-border bg-background-secondary p-5 md:p-6">
+                  <h2 className="text-2xl text-foreground">Veja também</h2>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    {safeArticle.internalLinks.slice(0, 6).map((item) => (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        className="rounded-[14px] border border-border bg-white px-4 py-4 text-sm text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
+                      >
+                        <span className="font-semibold">{item.title}</span>
+                        <span className="mt-1 block text-muted-foreground">{item.anchor}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+
+              {Array.isArray(safeArticle.faq) && safeArticle.faq.length ? (
                 <section id="faq" className="scroll-mt-28 space-y-4 rounded-[16px] border border-border bg-background-secondary p-5 md:p-6">
                   <h2 className="text-2xl text-foreground">Perguntas frequentes</h2>
                   <div className="space-y-5">
-                    {article.faq.map((item, index) => (
+                    {safeArticle.faq.map((item, index) => (
                       <div key={`faq-${index}`} className="space-y-2">
                         <h3 className="text-lg text-foreground">{item.question}</h3>
                         <p className="text-base leading-7 text-muted-foreground">{item.answer}</p>
@@ -235,10 +332,10 @@ function BlogArticlePage() {
                 </section>
               ) : null}
 
-              {Array.isArray(article.conclusion) && article.conclusion.length ? (
+              {Array.isArray(safeArticle.conclusion) && safeArticle.conclusion.length ? (
                 <section id="conclusao" className="scroll-mt-28 space-y-4">
                   <h2 className="text-2xl text-foreground">Conclusão</h2>
-                  {article.conclusion.map((paragraph, index) => (
+                  {safeArticle.conclusion.map((paragraph, index) => (
                     <p key={`conclusion-${index}`} className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
                   ))}
                 </section>
@@ -313,9 +410,8 @@ function BlogArticlePage() {
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
               {relatedArticles.map((item) => (
                 <BlogArticleCard
-                  key={item.id}
+                  key={item.slug}
                   article={item}
-                  image={getArticleImage(item, fallbackThumbnail)}
                   formatDate={formatDate}
                   compact
                 />
@@ -329,4 +425,3 @@ function BlogArticlePage() {
 }
 
 export default BlogArticlePage;
-
