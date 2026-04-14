@@ -41,12 +41,12 @@ function ArticleComments({ articleSlug }) {
   };
 
   return (
-    <section className="rounded-[20px] border border-border bg-white p-6 md:p-8">
-      <div className="flex items-center gap-3">
+    <section className="min-w-0 rounded-[20px] border border-border bg-white p-5 sm:p-6 md:p-8">
+      <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center">
         <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/[0.08] text-primary">
           <MessageSquare className="h-5 w-5" />
         </div>
-        <div>
+        <div className="min-w-0">
           <h2 className="text-2xl text-foreground">Comentários</h2>
           <p className="text-sm text-muted-foreground">
             Use este espaço para deixar uma dúvida ou contar se o conteúdo ajudou no seu caso.
@@ -54,8 +54,8 @@ function ArticleComments({ articleSlug }) {
         </div>
       </div>
 
-      <form className="mt-6 grid gap-4" onSubmit={handleSubmit}>
-        <div className="grid gap-4 md:grid-cols-2">
+      <form className="mt-6 grid min-w-0 gap-4" onSubmit={handleSubmit}>
+        <div className="grid min-w-0 gap-4 md:grid-cols-2">
           <Input value={form.name} onChange={handleChange('name')} placeholder="Seu nome" aria-label="Seu nome" />
           <Input value={form.email} onChange={handleChange('email')} placeholder="Seu e-mail" type="email" aria-label="Seu e-mail" />
         </div>
@@ -67,14 +67,14 @@ function ArticleComments({ articleSlug }) {
           className="min-h-[140px]"
         />
         <div className="flex justify-end">
-          <Button type="submit">Enviar comentário</Button>
+          <Button type="submit" className="w-full sm:w-auto">Enviar comentário</Button>
         </div>
       </form>
 
       <div className="mt-8 space-y-4">
         {comments.length ? (
           comments.map((comment) => (
-            <article key={comment.id} className="rounded-[16px] border border-border bg-background-secondary p-4">
+            <article key={comment.id} className="min-w-0 rounded-[16px] border border-border bg-background-secondary p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <strong className="text-sm text-foreground">{comment.name}</strong>
                 <span className="text-xs text-muted-foreground">
@@ -85,7 +85,7 @@ function ArticleComments({ articleSlug }) {
             </article>
           ))
         ) : (
-          <div className="rounded-[16px] border border-dashed border-border bg-background-secondary p-5 text-sm text-muted-foreground">
+          <div className="min-w-0 rounded-[16px] border border-dashed border-border bg-background-secondary p-5 text-sm text-muted-foreground">
             Ainda não há comentários neste artigo. Se quiser, você pode ser a primeira pessoa a compartilhar uma dúvida ou experiência.
           </div>
         )}

@@ -415,8 +415,8 @@ function OfferComparisonTable({ model, offers }) {
   }
 
   return (
-    <div className="overflow-x-auto rounded-[14px] border border-border bg-white shadow-[var(--shadow-sm)]">
-      <Table className="min-w-[680px]">
+    <div className="max-w-full min-w-0 overflow-x-auto rounded-[14px] border border-border bg-white shadow-[var(--shadow-sm)]">
+      <Table className="min-w-[560px] sm:min-w-[680px]">
         <TableHeader>
           <TableRow>
             <TableHead>Banco</TableHead>
@@ -469,19 +469,19 @@ function InternalLinkGroups() {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
+    <div className="grid min-w-0 gap-4 md:grid-cols-2 lg:grid-cols-1">
       {groups.map((group) => {
         const GroupIcon = group.icon;
         return (
-          <Card key={group.title} className="surface-card border-border bg-white">
-            <CardContent className="space-y-4 p-5 sm:p-6">
+          <Card key={group.title} className="surface-card min-w-0 border-border bg-white">
+            <CardContent className="min-w-0 space-y-4 p-5 sm:p-6">
               <div className="flex items-center justify-center gap-2 text-center">
                 <GroupIcon className="h-4 w-4 text-primary" />
                 <h4 className="text-lg">{group.title}</h4>
               </div>
               <div className="space-y-2">
                 {group.links.map((link) => (
-                  <Link key={link.path} to={link.path} className="block rounded-[12px] border border-border bg-background-secondary px-4 py-3 text-sm leading-6 text-muted-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03] hover:text-foreground">
+                  <Link key={link.path} to={link.path} className="block min-w-0 break-words rounded-[12px] border border-border bg-background-secondary px-4 py-3 text-sm leading-6 text-muted-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03] hover:text-foreground">
                     {link.label}
                   </Link>
                 ))}
@@ -594,9 +594,9 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
       </PageHero>
 
       <section className="border-b border-border bg-background-secondary py-8">
-        <div className="page-shell grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="page-shell grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {highlights.map((item) => (
-            <div key={item.label} className="interactive-card px-5 py-4 text-center sm:text-left">
+            <div key={item.label} className="interactive-card min-w-0 px-5 py-4 text-center sm:text-left">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{item.label}</p>
               <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{item.value}</p>
             </div>
@@ -605,10 +605,10 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
       </section>
 
       <section className="page-section bg-background">
-        <div className="page-shell grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div className="space-y-8">
-            <Card className="border-border bg-white">
-              <CardContent className="space-y-5 p-5 sm:p-6 md:p-8">
+        <div className="page-shell grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-8">
+          <div className="min-w-0 space-y-6 md:space-y-8">
+            <Card className="min-w-0 border-border bg-white">
+              <CardContent className="min-w-0 space-y-5 p-5 sm:p-6 md:p-8">
                 {bodyCopy.map((paragraph, index) => (
                   <p key={`${model.path}-paragraph-${index}`}>{paragraph}</p>
                 ))}
@@ -616,8 +616,8 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
             </Card>
 
             {model.pageType === 'tool' ? (
-              <Card className="border-border bg-white">
-                <CardContent className="space-y-6 p-5 sm:p-6 md:p-8">
+              <Card className="min-w-0 border-border bg-white">
+                <CardContent className="min-w-0 space-y-6 p-5 sm:p-6 md:p-8">
                   <div className="flex items-center gap-2">
                     <Calculator className="h-4 w-4 text-primary" />
                     <h3>Simulação orientada para decisão</h3>
@@ -635,8 +635,8 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
             ) : null}
 
             {model.pageType !== 'tool' && model.pageType !== 'blog-article' ? (
-              <Card className="border-border bg-white">
-                <CardContent className="space-y-6 p-5 sm:p-6 md:p-8">
+              <Card className="min-w-0 border-border bg-white">
+                <CardContent className="min-w-0 space-y-6 p-5 sm:p-6 md:p-8">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <h3>Tabela comparativa</h3>
                     <Badge variant="outline" className="border-primary/25 bg-primary/10 text-primary">
@@ -648,8 +648,8 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               </Card>
             ) : null}
 
-            <Card className="border-border bg-white">
-              <CardContent className="space-y-5 p-5 sm:p-6 md:p-8">
+            <Card className="min-w-0 border-border bg-white">
+              <CardContent className="min-w-0 space-y-5 p-5 sm:p-6 md:p-8">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="h-4 w-4 text-primary" />
                   <h3>Perguntas frequentes</h3>
@@ -666,9 +666,9 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
             </Card>
           </div>
 
-          <aside className="space-y-6 lg:sticky lg:top-24 lg:h-fit">
-            <Card className="border-border bg-white">
-              <CardContent className="space-y-4 p-5 sm:p-6 md:p-8">
+          <aside className="min-w-0 space-y-6 lg:sticky lg:top-24 lg:h-fit">
+            <Card className="min-w-0 border-border bg-white">
+              <CardContent className="min-w-0 space-y-4 p-5 sm:p-6 md:p-8">
                 <div className="flex items-center justify-center gap-2 text-center">
                   <Landmark className="h-4 w-4 text-primary" />
                   <h4>Como usar esta comparação</h4>

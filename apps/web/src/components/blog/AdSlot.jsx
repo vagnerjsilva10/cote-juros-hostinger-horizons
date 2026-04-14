@@ -13,7 +13,7 @@ function AdSlotShell({
     <aside
       aria-label={label}
       className={cn(
-        'overflow-hidden rounded-[20px] border border-border bg-white/90',
+        'min-w-0 overflow-hidden rounded-[20px] border border-border bg-white/90',
         className
       )}
       style={{ minHeight }}

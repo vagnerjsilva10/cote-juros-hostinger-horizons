@@ -236,8 +236,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         {faqSchema ? <script type="application/ld+json">{JSON.stringify(faqSchema)}</script> : null}
       </Helmet>
 
-      <section className="border-b border-border bg-background py-8 md:py-10">
-        <div className="page-shell space-y-5 md:space-y-6">
+      <section className="border-b border-border bg-background py-6 md:py-10">
+        <div className="page-shell min-w-0 space-y-5 md:space-y-6">
           <nav aria-label="Breadcrumb" className="flex min-w-0 flex-wrap items-center gap-2 text-xs text-muted-foreground sm:text-sm">
             <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground">
               <Home className="h-4 w-4" />
@@ -280,24 +280,24 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
             </Link>
           </div>
 
-          <div className="grid gap-5 pt-2 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+          <div className="grid min-w-0 gap-5 pt-2 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
             <ArticleCoverImage
               article={safeArticle}
-              className="w-full max-h-[430px] rounded-[18px] border border-border md:rounded-[20px]"
+              className="min-w-0 w-full max-h-[430px] rounded-[18px] border border-border md:rounded-[20px]"
               aspectRatio="16 / 9"
             />
 
             {safeArticle.internalLinks.length ? (
-              <aside className="rounded-[18px] border border-border bg-white p-5 md:p-6">
+              <aside className="min-w-0 rounded-[18px] border border-border bg-white p-4 sm:p-5 md:p-6">
                 <h2 className="text-xl text-foreground">Continue a leitura</h2>
                 <div className="mt-4 space-y-3">
                   {safeArticle.internalLinks.slice(0, 3).map((item) => (
                     <Link
                       key={`hero-aside-${item.path}`}
                       to={item.path}
-                      className="block rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
+                      className="block min-w-0 rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
                     >
-                      <span className="font-semibold text-foreground">{item.title}</span>
+                      <span className="block break-words font-semibold text-foreground">{item.title}</span>
                       <span className="mt-1 block leading-6 text-muted-foreground">{item.anchor}</span>
                     </Link>
                   ))}
@@ -309,10 +309,10 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
       </section>
 
       <section className="bg-background py-6 md:py-10">
-        <div className="page-shell space-y-8">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-            <div className="space-y-8">
-              <article className="rounded-[18px] border border-border bg-white p-5 sm:p-6 md:rounded-[20px] md:p-10">
+        <div className="page-shell min-w-0 space-y-8">
+          <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-8">
+            <div className="min-w-0 space-y-6 md:space-y-8">
+              <article className="min-w-0 rounded-[18px] border border-border bg-white p-4 sm:p-6 md:rounded-[20px] md:p-10">
                 <div className="space-y-7 md:space-y-8">
                   {introParagraphs.map((paragraph, index) => (
                     <p key={`intro-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{paragraph}</p>
@@ -321,14 +321,14 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   <AdSlotResponsive />
 
                   {tocItems.length ? (
-                    <section className="rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
+                    <section className="min-w-0 rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
                       <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">Neste artigo você vai encontrar</p>
                       <div className="mt-4 grid gap-3 sm:grid-cols-2">
                         {tocItems.slice(0, 6).map((item) => (
                           <a
                             key={item.id}
                             href={`#${item.id}`}
-                            className="rounded-[14px] border border-border bg-white px-4 py-4 text-sm leading-6 text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
+                            className="min-w-0 rounded-[14px] border border-border bg-white px-4 py-4 text-sm leading-6 text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
                           >
                             {item.label}
                           </a>
@@ -339,7 +339,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
                   {sections.map((section, index) => (
                     <React.Fragment key={`section-${index}`}>
-                      <section id={`secao-${index + 1}`} className="scroll-mt-28 space-y-4 md:space-y-5">
+                      <section id={`secao-${index + 1}`} className="min-w-0 scroll-mt-28 space-y-4 md:space-y-5">
                         <h2 className="text-xl leading-tight text-foreground sm:text-2xl">{section.heading}</h2>
                         {section.paragraphs?.map((paragraph, paragraphIndex) => (
                           <p key={`section-${index}-p-${paragraphIndex}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">
@@ -360,16 +360,16 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   ))}
 
                   {safeArticle.internalLinks.length ? (
-                    <section className="rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
+                    <section className="min-w-0 rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
                       <h2 className="text-xl text-foreground sm:text-2xl">Leituras recomendadas</h2>
                       <div className="mt-4 grid gap-3 sm:grid-cols-2">
                         {safeArticle.internalLinks.slice(0, 6).map((item) => (
                           <Link
                             key={item.path}
                             to={item.path}
-                            className="rounded-[14px] border border-border bg-white px-4 py-4 text-sm leading-6 text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
+                            className="min-w-0 rounded-[14px] border border-border bg-white px-4 py-4 text-sm leading-6 text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
                           >
-                            <span className="font-semibold">{item.title}</span>
+                            <span className="block break-words font-semibold">{item.title}</span>
                             <span className="mt-1 block text-muted-foreground">{item.anchor}</span>
                           </Link>
                         ))}
@@ -380,7 +380,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   {showPreConclusionAd ? <AdSlotHorizontal /> : null}
 
                   {Array.isArray(safeArticle.faq) && safeArticle.faq.length ? (
-                    <section id="faq" className="scroll-mt-28 space-y-4 rounded-[16px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
+                    <section id="faq" className="min-w-0 scroll-mt-28 space-y-4 rounded-[16px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
                       <h2 className="text-xl text-foreground sm:text-2xl">Perguntas frequentes</h2>
                       <div className="space-y-5">
                         {safeArticle.faq.map((item, index) => (
@@ -404,7 +404,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                 </div>
               </article>
 
-              <section className="rounded-[22px] border border-primary/15 bg-primary/[0.04] p-5 sm:p-6 md:p-8">
+              <section className="min-w-0 rounded-[22px] border border-primary/15 bg-primary/[0.04] p-5 sm:p-6 md:p-8">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Diagnóstico financeiro</p>
                 <h2 className="mt-3 text-xl text-foreground sm:text-2xl">Quer dar o próximo passo com mais clareza?</h2>
                 <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
@@ -424,11 +424,11 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
               </section>
 
               {(previousArticle || nextArticle) ? (
-                <section className="grid gap-4 md:grid-cols-2">
+                <section className="grid min-w-0 gap-4 md:grid-cols-2">
                   {previousArticle ? (
                     <Link
                       to={getArticlePath(previousArticle)}
-                      className="rounded-[16px] border border-border bg-white p-5 transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
+                      className="min-w-0 rounded-[16px] border border-border bg-white p-5 transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
                     >
                       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Artigo anterior</p>
                       <h3 className="mt-2 text-lg text-foreground">{getEditorialTitle(previousArticle)}</h3>
@@ -440,7 +440,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   {nextArticle ? (
                     <Link
                       to={getArticlePath(nextArticle)}
-                      className="rounded-[16px] border border-border bg-white p-5 text-left transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
+                      className="min-w-0 rounded-[16px] border border-border bg-white p-5 text-left transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
                     >
                       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Próximo artigo</p>
                       <h3 className="mt-2 text-lg text-foreground">{getEditorialTitle(nextArticle)}</h3>
@@ -452,7 +452,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
               <ArticleComments articleSlug={safeArticle.slug} />
             </div>
 
-            <aside className="space-y-6 lg:sticky lg:top-24 lg:h-fit">
+            <aside className="min-w-0 space-y-6 lg:sticky lg:top-24 lg:h-fit">
               <AdSlotResponsive />
             </aside>
           </div>
@@ -461,12 +461,12 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
       {relatedArticles.length ? (
         <section className="border-t border-border bg-background-secondary py-12 md:py-14">
-          <div className="page-shell space-y-6">
+          <div className="page-shell min-w-0 space-y-6">
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Leia também</p>
               <h2 className="text-2xl text-foreground">Mais conteúdos sobre o mesmo assunto</h2>
             </div>
-            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid min-w-0 gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {relatedArticles.map((item) => (
                 <BlogArticleCard
                   key={item.slug}
