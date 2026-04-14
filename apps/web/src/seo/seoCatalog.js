@@ -1,3 +1,5 @@
+import { merchantMachineComparePages, merchantMachineStaticPages } from '@/seo/merchantMachinesCatalog.js';
+
 const DEFAULT_SITE_URL = 'https://cote-juros-hostinger-horizons-web.vercel.app';
 
 export const corePillarPaths = [
@@ -69,7 +71,8 @@ export const comparePageDefinitions = [
     description: 'Avalie financiamento de carro por custo total, entrada mínima e prazo máximo.',
     productType: 'financing',
     offerFilter: { categoriesAny: ['Carro', 'Moto'], sortBy: 'annualRate' }
-  }
+  },
+  ...merchantMachineComparePages
 ];
 
 export const toolPageDefinitions = [
@@ -378,6 +381,7 @@ export const seoStaticPages = [
   ...loanCluster,
   ...cardCluster,
   ...financingCluster,
+  ...merchantMachineStaticPages,
   ...toolPageDefinitions.map((tool) => ({ ...tool, pageType: 'tool' })),
   ...blogEditorialDefinitions.map((article) => ({ ...article, pageType: 'blog-article' })),
   ...hubPages
