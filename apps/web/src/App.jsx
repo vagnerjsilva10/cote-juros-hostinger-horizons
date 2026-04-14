@@ -152,7 +152,7 @@ function App() {
         />
 
         {reservedSeoStaticPaths
-          .filter((path) => !['/comparar', '/bancos'].includes(path))
+          .filter((path) => !['/comparar', '/bancos', '/emprestimo-para-negativado'].includes(path))
           .map((path) => (
             <Route
               key={`seo-static-${path}`}

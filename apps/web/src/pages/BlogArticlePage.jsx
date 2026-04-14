@@ -283,8 +283,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
       <section className="bg-background py-8 md:py-10">
         <div className="page-shell space-y-8">
-          <div className="overflow-hidden rounded-[20px] border border-border bg-white">
-            <ArticleCoverImage article={safeArticle} className="w-full" aspectRatio="16 / 9" />
+          <div className="mx-auto max-w-5xl overflow-hidden rounded-[20px] border border-border bg-white">
+            <ArticleCoverImage article={safeArticle} className="w-full max-h-[430px]" aspectRatio="16 / 9" />
           </div>
 
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -324,7 +324,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                           </p>
                         ))}
                         {section.bullets?.length ? (
-                          <ul className="space-y-2 pl-5 text-base leading-7 text-muted-foreground marker:text-primary">
+                          <ul className="list-disc space-y-2 pl-6 text-base leading-7 text-muted-foreground marker:text-primary">
                             {section.bullets.map((bullet, bulletIndex) => (
                               <li key={`section-${index}-b-${bulletIndex}`} className="pl-1">{bullet}</li>
                             ))}
