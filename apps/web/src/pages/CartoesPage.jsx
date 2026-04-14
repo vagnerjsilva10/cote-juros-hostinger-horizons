@@ -163,13 +163,14 @@ function CartoesPage() {
       </Helmet>
 
       <PageHero
+        eyebrow="Comparação premium"
         badge="Comparador de cartões"
         title="Encontre o cartão ideal com leitura clara de custo e benefício."
         subtitle="Compare anuidade, limite e benefícios reais em uma leitura simples para decidir com segurança."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button size="lg" onClick={() => setQuickModalOpen(true)}>
-            Ver minhas opcoes agora
+            Ver minhas opções agora
           </Button>
           <a href="#resultados-cartoes">
             <Button size="lg" variant="outline">Ver cartões agora</Button>
@@ -281,7 +282,7 @@ function CartoesPage() {
                   </SelectContent>
                 </Select>
                 <Button variant="outline" onClick={() => setQuickModalOpen(true)}>
-                  Ver opcoes para meu perfil
+                  Ver opções para meu perfil
                 </Button>
               </div>
             </div>
@@ -362,7 +363,7 @@ function CartoesPage() {
                 <h3 className="mt-4 text-2xl">Nenhum cartão encontrado.</h3>
                 <p className="mt-3 text-muted-foreground">Tente reduzir os filtros ativos para ver mais opções.</p>
                 <div className="mt-6">
-                  <Button onClick={() => setQuickModalOpen(true)}>Ver minhas opcoes agora</Button>
+                  <Button onClick={() => setQuickModalOpen(true)}>Ver minhas opções agora</Button>
                 </div>
               </div>
             ) : null}
@@ -398,7 +399,7 @@ function CartoesPage() {
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
               Responda o básico sobre o seu momento e veja caminhos que podem combinar melhor com o seu perfil, sem compromisso e sem cobrança antecipada.
             </p>
-            <Button size="lg" onClick={() => setQuickModalOpen(true)}>Ver minhas opcoes agora</Button>
+            <Button size="lg" onClick={() => setQuickModalOpen(true)}>Ver minhas opções agora</Button>
           </div>
         </div>
       </section>

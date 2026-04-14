@@ -11,8 +11,8 @@ function Header() {
   const isHome = location.pathname === '/';
 
   const navItems = [
-    { label: 'Emprestimos', path: '/emprestimos' },
-    { label: 'Cartoes', path: '/cartoes' },
+    { label: 'Empréstimos', path: '/emprestimos' },
+    { label: 'Cartões', path: '/cartoes' },
     { label: 'Financiamentos', path: '/financiamentos' },
     { label: 'Blog', path: '/blog' }
   ];
@@ -40,8 +40,8 @@ function Header() {
                 to={item.path}
                 className={`rounded-full px-4 py-2 text-sm font-medium ${
                   isActive(item.path)
-                    ? 'bg-slate-900/10 text-slate-900'
-                    : 'text-muted-foreground hover:bg-background-secondary hover:text-foreground'
+                    ? 'bg-slate-900 text-white shadow-[0_12px_28px_rgba(15,23,42,0.14)]'
+                    : 'text-muted-foreground hover:bg-white hover:text-foreground hover:shadow-[0_10px_24px_rgba(15,23,42,0.06)]'
                 }`}
               >
                 {item.label}
@@ -53,9 +53,9 @@ function Header() {
             <Link to="/emprestimos">
               <Button
                 size="lg"
-                className="rounded-[10px] bg-[#111827] px-5 text-white shadow-[0_1px_2px_rgba(0,0,0,0.06),0_6px_16px_rgba(0,0,0,0.14)] transition-all duration-200 hover:bg-slate-800"
+                className="px-5"
               >
-                Ver opcoes agora
+                Ver opções agora
               </Button>
             </Link>
           </div>
@@ -81,7 +81,7 @@ function Header() {
                         onClick={() => setMobileOpen(false)}
                         className={`rounded-[12px] px-4 py-3 text-base font-medium ${
                           isActive(item.path)
-                            ? 'bg-primary/10 text-primary'
+                            ? 'bg-slate-900 text-white'
                             : 'text-muted-foreground hover:bg-background-secondary hover:text-foreground'
                         }`}
                       >
@@ -90,8 +90,8 @@ function Header() {
                     ))}
                     <div className="mt-3 border-t border-border pt-5">
                       <Link to="/emprestimos" onClick={() => setMobileOpen(false)}>
-                        <Button className="h-12 w-full bg-[#111827] text-base text-white transition-all duration-200 hover:bg-slate-800">
-                          Ver opcoes agora
+                        <Button className="h-12 w-full text-base">
+                          Ver opções agora
                         </Button>
                       </Link>
                     </div>

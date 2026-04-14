@@ -8,16 +8,16 @@ function Footer() {
 
   const footerSections = [
     {
-      title: 'Credito',
+      title: 'Crédito',
       links: [
-        { label: 'Emprestimos', path: '/emprestimos' },
-        { label: 'Cartoes', path: '/cartoes' },
+        { label: 'Empréstimos', path: '/emprestimos' },
+        { label: 'Cartões', path: '/cartoes' },
         { label: 'Financiamentos', path: '/financiamentos' },
-        { label: 'Comparar emprestimo online', path: '/comparar/emprestimo-online' }
+        { label: 'Comparar empréstimo online', path: '/comparar/emprestimo-online' }
       ]
     },
     {
-      title: 'Conteudo',
+      title: 'Conteúdo',
       links: [
         { label: 'Blog', path: '/blog' },
         { label: 'Como funciona', path: '/sobre-nos' },
@@ -35,9 +35,7 @@ function Footer() {
     },
     {
       title: 'Ecossistema',
-      links: [
-        { label: 'Cote Finance', path: '/cote-finance-ai' }
-      ]
+      links: [{ label: 'Cote Finance', path: '/cote-finance-ai' }]
     }
   ];
 
@@ -50,15 +48,16 @@ function Footer() {
               <CoteJurosLogo />
             </Link>
             <p className="text-sm leading-7 text-muted-foreground">
-              A Cote Juros ajuda voce a encontrar opcoes de credito que podem fazer sentido para o seu perfil, com mais clareza e sem promessa falsa.
+              A Cote Juros ajuda você a encontrar opções de crédito que podem fazer sentido para o seu perfil, com mais
+              clareza e sem promessa falsa.
             </p>
             <div className="flex flex-wrap gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
                 <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-                Sem cobranca antecipada
+                Sem cobrança antecipada
               </div>
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
-                Nao somos banco
+                Não somos banco
               </div>
             </div>
           </div>
@@ -89,10 +88,10 @@ function Footer() {
           <div>
             <p className="text-sm font-medium text-foreground">Cote Juros © {currentYear}</p>
             <p className="text-sm text-muted-foreground">
-              A Cote Juros nao e banco, nao concede credito diretamente e nao garante aprovacao.
+              A Cote Juros não é banco, não concede crédito diretamente e não garante aprovação.
             </p>
           </div>
-          <p className="text-sm text-muted-foreground">Sem compromisso e sem cobranca antecipada</p>
+          <p className="text-sm text-muted-foreground">Sem compromisso e sem cobrança antecipada</p>
         </div>
       </div>
     </footer>

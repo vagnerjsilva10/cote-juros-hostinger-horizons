@@ -220,12 +220,13 @@ function EmprestimosPage() {
       />
 
       <PageHero
+        eyebrow="Crédito com clareza"
         badge="Comparador de empréstimos"
-        title="Veja opcoes de emprestimo que podem fazer sentido para voce."
-        subtitle="Comece por uma jornada simples, entenda caminhos possiveis e compare com mais calma antes de decidir."
+        title="Veja opções de empréstimo que podem fazer sentido para você."
+        subtitle="Comece por uma jornada simples, entenda caminhos possíveis e compare com mais calma antes de decidir."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button size="lg" onClick={() => setQuickModalOpen(true)}>Ver minhas opcoes agora</Button>
+          <Button size="lg" onClick={() => setQuickModalOpen(true)}>Ver minhas opções agora</Button>
           <a href="#resultados-emprestimos">
             <Button size="lg" variant="outline">Ver ofertas agora</Button>
           </a>
@@ -237,10 +238,10 @@ function EmprestimosPage() {
           <div className="page-shell">
             <div className="rounded-[18px] border border-primary/15 bg-primary/[0.04] px-5 py-4">
               <p className="text-sm font-semibold text-foreground">
-                {quickLeadContext.fullName ? `${quickLeadContext.fullName}, estas opcoes` : 'Estas opcoes'} podem ser um bom ponto de partida para voce.
+                {quickLeadContext.fullName ? `${quickLeadContext.fullName}, estas opções` : 'Estas opções'} podem ser um bom ponto de partida para você.
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Use os filtros para comparar com calma. A aprovacao final depende do parceiro e do seu perfil.
+                Use os filtros para comparar com calma. A aprovação final depende do parceiro e do seu perfil.
               </p>
             </div>
           </div>
@@ -274,7 +275,7 @@ function EmprestimosPage() {
             <SuperSimOfferCard
               offer={belowHeroSupersimOffer}
               title="SuperSim como recomendacao editorial"
-              description="Uma leitura objetiva para quem quer avancar para a simulacao sem sair do contexto do comparador de emprestimos."
+              description="Uma leitura objetiva para quem quer avançar para a simulação sem sair do contexto do comparador de empréstimos."
               onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
             />
           ) : null}
@@ -360,7 +361,7 @@ function EmprestimosPage() {
                     <div className="rounded-[14px] border border-border bg-background-secondary p-4">
                       <div className="grid gap-4 sm:grid-cols-3">
                         <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor possivel</p>
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor possível</p>
                           <p className="mt-1 text-sm font-semibold text-foreground">
                             {offer.approvedAmount != null ? `R$ ${offer.approvedAmount.toLocaleString('pt-BR')}` : '--'}
                           </p>
@@ -506,7 +507,7 @@ function EmprestimosPage() {
                     <SelectItem value="prazo-maior">Maior prazo</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant="outline" onClick={() => setQuickModalOpen(true)}>Refazer busca rapida</Button>
+                <Button variant="outline" onClick={() => setQuickModalOpen(true)}>Refazer busca rápida</Button>
               </div>
             </div>
 
@@ -554,7 +555,7 @@ function EmprestimosPage() {
                           <p className="mt-2 text-sm text-muted-foreground">
                             {loan.monthlyRate < 2
                               ? 'Uma das menores taxas dentro do filtro que você escolheu.'
-                              : 'Boa opcao para comparar custo, prazo e parcela com mais calma.'}
+                              : 'Boa opção para comparar custo, prazo e parcela com mais calma.'}
                           </p>
                         </div>
 
@@ -651,7 +652,7 @@ function EmprestimosPage() {
                   <Button variant="outline" onClick={resetFilters}>
                     Limpar filtros
                   </Button>
-                  <Button onClick={() => setQuickModalOpen(true)}>Refazer busca rapida</Button>
+                  <Button onClick={() => setQuickModalOpen(true)}>Refazer busca rápida</Button>
                 </div>
               </div>
             ) : null}
@@ -684,8 +685,8 @@ function EmprestimosPage() {
               {beforeFaqSupersimOffer ? (
                 <SuperSimOfferCard
                   offer={beforeFaqSupersimOffer}
-                  title="SuperSim antes da decisao final"
-                  description="Bloco editorial para quem ja comparou ofertas e quer seguir para uma simulacao com CTA claro e badges visuais."
+                  title="SuperSim antes da decisão final"
+                  description="Bloco editorial para quem já comparou ofertas e quer seguir para uma simulação com CTA claro e badges visuais."
                   onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
                 />
               ) : null}
@@ -702,11 +703,11 @@ function EmprestimosPage() {
           ) : null}
 
           <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
-            <h2 className="mb-3">Quer ver outras opcoes para o seu perfil?</h2>
+            <h2 className="mb-3">Quer ver outras opções para o seu perfil?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
-              Refaça a busca com alguns dados basicos e veja caminhos que podem combinar melhor com o seu momento.
+              Refaça a busca com alguns dados básicos e veja caminhos que podem combinar melhor com o seu momento.
             </p>
-            <Button size="lg" onClick={() => setQuickModalOpen(true)}>Ver minhas opcoes agora</Button>
+            <Button size="lg" onClick={() => setQuickModalOpen(true)}>Ver minhas opções agora</Button>
           </div>
         </div>
       </section>
