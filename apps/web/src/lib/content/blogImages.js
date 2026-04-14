@@ -121,88 +121,23 @@ const STOCK_IMAGE_POOLS = {
   ]
 };
 
-const TOPIC_IMAGE_POOLS = {
-  credito: [
-    'https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1556742031-c6961e8560b0?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=1600&q=80'
-  ],
-  dinheiro: [
-    'https://images.unsplash.com/photo-1579621970795-87facc2f976d?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=80'
-  ],
-  emprestimo: [
-    'https://images.unsplash.com/photo-1554224155-a1487473ffd9?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1589758438368-0ad531db3366?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1556155092-490a1ba16284?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1600&q=80'
-  ],
-  cartao: [
-    'https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1518458028785-8fbcd101ebb9?auto=format&fit=crop&w=1600&q=80'
-  ],
-  score: [
-    'https://images.unsplash.com/photo-1554224154-22dec7ec8818?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1604594849809-dfedbc827105?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1543286386-2e659306cd6c?auto=format&fit=crop&w=1600&q=80'
-  ],
-  orcamento: [
-    'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1600&q=80'
-  ],
-  financiamento: [
-    'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1501183638710-841dd1904471?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1600&q=80'
-  ],
-  veiculo: [
-    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1472220625704-91e1462799b2?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1560185007-5f0bb1866cab?auto=format&fit=crop&w=1600&q=80'
-  ],
-  golpes: [
-    'https://images.unsplash.com/photo-1563013544-33c9d8d5b9e3?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=1600&q=80'
-  ],
-  tecnologia: [
-    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1600&q=80'
-  ]
+const KEYWORD_IMAGE_OVERRIDES = {
+  tecnologia: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80',
+  aplicativo: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1600&q=80',
+  cartao: 'https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?auto=format&fit=crop&w=1600&q=80',
+  score: 'https://images.unsplash.com/photo-1554224154-22dec7ec8818?auto=format&fit=crop&w=1600&q=80',
+  financiamento: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1600&q=80',
+  veiculo: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=80',
+  imovel: 'https://images.unsplash.com/photo-1501183638710-841dd1904471?auto=format&fit=crop&w=1600&q=80',
+  divida: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80',
+  reserva: 'https://images.unsplash.com/photo-1579621970795-87facc2f976d?auto=format&fit=crop&w=1600&q=80',
+  orcamento: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=80'
 };
 
 export const BLOG_ARTICLE_IMAGE_MANIFEST = {
   'como-usar-tecnologia-para-organizar-financas':
-    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80',
-  'entendendo-os-juros-compostos-como-pequenas-dividas-podem-se-tornar-grandes-problemas-financeiros':
-    'https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=1600&q=80'
+    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80'
 };
-
-const TOPIC_IMAGE_MATCHERS = [
-  { key: 'tecnologia', terms: ['tecnologia', 'app', 'aplicativo', 'digital', 'drex'] },
-  { key: 'golpes', terms: ['golpe', 'fraude', 'pix', 'seguranca', 'phishing'] },
-  { key: 'cartao', terms: ['cartao', 'fatura', 'anuidade', 'cashback', 'milhas', 'rotativo'] },
-  { key: 'score', terms: ['score', 'serasa', 'credito-pessoal-score'] },
-  { key: 'financiamento', terms: ['financiamento', 'imovel', 'casa', 'apartamento'] },
-  { key: 'veiculo', terms: ['veiculo', 'carro', 'moto', 'fipe', 'placa', 'apreensao'] },
-  { key: 'emprestimo', terms: ['emprestimo', 'consignado', 'clt', 'mei', 'autonomo'] },
-  { key: 'dinheiro', terms: ['dinheiro', 'renda', 'rescisao', 'reserva', 'salario', 'demissao'] },
-  { key: 'orcamento', terms: ['orcamento', 'financas', 'economizar', 'gastos', 'metas', 'planejamento'] },
-  { key: 'credito', terms: ['credito', 'juros', 'cdi', 'cet', 'banco'] }
-];
 
 const getCategoryKey = (category = '') => {
   const key = normalizeText(category);
@@ -222,23 +157,16 @@ const getTopicKeywords = (article = {}) => {
   return normalizeText(raw).split(/\s+/).filter(Boolean);
 };
 
-const resolveTopicImagePoolKey = (article = {}) => {
-  const keywords = getTopicKeywords(article);
-  const haystack = keywords.join(' ');
-  const matched = TOPIC_IMAGE_MATCHERS.find(({ terms }) => terms.some((term) => haystack.includes(term)));
-  return matched?.key || '';
-};
-
 const buildStockProviderImage = (article = {}) => {
-  const topicKey = resolveTopicImagePoolKey(article);
-  const topicPool = TOPIC_IMAGE_POOLS[topicKey];
+  const keywords = getTopicKeywords(article);
+  const override = keywords.find((keyword) => KEYWORD_IMAGE_OVERRIDES[keyword]);
+  if (override) return KEYWORD_IMAGE_OVERRIDES[override];
+
   const categoryKey = getCategoryKey(article.category || article.clusterLabel);
-  const pool = topicPool?.length ? topicPool : STOCK_IMAGE_POOLS[categoryKey] || STOCK_IMAGE_POOLS.default;
+  const pool = STOCK_IMAGE_POOLS[categoryKey] || STOCK_IMAGE_POOLS.default;
   const seed = hashString(slugify(article.slug || article.title || article.id || 'cote-juros'));
   return pool[seed % pool.length];
 };
-
-const shouldPreferGeneratedPrimary = (article = {}) => normalizeText(article?.sourceType || '') !== 'wordpress';
 
 const getImagePalette = (category = '') => {
   const key = getCategoryKey(category);
@@ -294,7 +222,6 @@ export const resolveArticleImageSources = (article = {}) => {
 
   const ordered = [
     manifestImage,
-    shouldPreferGeneratedPrimary(article) ? generatedFallback : null,
     ...explicitImageCandidates.filter((image) => !String(image).startsWith('data:image/')),
     stockImage,
     categoryFallback,
