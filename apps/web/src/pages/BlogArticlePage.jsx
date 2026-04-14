@@ -280,10 +280,12 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
             </Link>
           </div>
 
-          <div className="grid gap-5 pt-2 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-stretch">
-            <div className="overflow-hidden rounded-[18px] border border-border bg-white md:rounded-[20px]">
-              <ArticleCoverImage article={safeArticle} className="w-full max-h-[430px]" aspectRatio="16 / 9" />
-            </div>
+          <div className="grid gap-5 pt-2 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+            <ArticleCoverImage
+              article={safeArticle}
+              className="w-full max-h-[430px] rounded-[18px] border border-border md:rounded-[20px]"
+              aspectRatio="16 / 9"
+            />
 
             {safeArticle.internalLinks.length ? (
               <aside className="rounded-[18px] border border-border bg-white p-5 md:p-6">
