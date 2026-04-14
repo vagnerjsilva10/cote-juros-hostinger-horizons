@@ -76,8 +76,6 @@ const prettifySlugLabel = (value = '') => {
 };
 
 const isSlugLikeLabel = (value = '') => /^[a-z0-9/-]+$/i.test(String(value || '').trim()) || !/[A-ZÀ-Ý]/.test(String(value || '').trim());
-const startsWithExplore = (value = '') => /^explor(ar|e)\b/i.test(sanitizeInlineText(value));
-
 const sanitizeDate = (value, fallback = new Date().toISOString()) => {
   const date = new Date(value || fallback);
   return Number.isNaN(date.getTime()) ? fallback : date.toISOString();
@@ -151,6 +149,11 @@ const normalizeSections = (sections, title) => {
       heading: normalizeSectionHeading(section?.heading || section?.title || '', title),
       paragraphs: sanitizeStringArray(section?.paragraphs),
       bullets: sanitizeStringArray(section?.bullets)
+        .map((bullet) => {
+          const capitalized = bullet ? bullet.charAt(0).toUpperCase() + bullet.slice(1) : '';
+          return /[.!?;:]$/.test(capitalized) ? capitalized : `${capitalized}.`;
+        })
+        .filter(Boolean)
     }))
     .filter((section) => section.heading || section.paragraphs.length || section.bullets.length);
 };

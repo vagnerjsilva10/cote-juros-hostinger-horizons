@@ -50,13 +50,13 @@ const toFaqSchema = (article) => {
 };
 
 const CATEGORY_ROUTES = [
-  { match: 'emprest', path: '/emprestimos', label: 'Emprestimos' },
-  { match: 'cart', path: '/cartoes-de-credito', label: 'Cartoes de credito' },
-  { match: 'score', path: '/educacao-financeira', label: 'Score de credito' },
+  { match: 'emprest', path: '/emprestimos', label: 'Empréstimos' },
+  { match: 'cart', path: '/cartoes-de-credito', label: 'Cartões de crédito' },
+  { match: 'score', path: '/educacao-financeira', label: 'Score de crédito' },
   { match: 'financi', path: '/financiamento', label: 'Financiamento' },
-  { match: 'divid', path: '/juros-abusivos', label: 'Dividas e renegociacao' },
-  { match: 'educ', path: '/educacao-financeira', label: 'Educacao financeira' },
-  { match: 'organiz', path: '/educacao-financeira', label: 'Organizacao financeira' }
+  { match: 'divid', path: '/juros-abusivos', label: 'Dívidas e renegociação' },
+  { match: 'educ', path: '/educacao-financeira', label: 'Educação financeira' },
+  { match: 'organiz', path: '/educacao-financeira', label: 'Organização financeira' }
 ];
 
 const getCategoryRoute = (article) => {
@@ -94,7 +94,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
       .catch((error) => {
         console.error('[blog-article-page] erro ao carregar artigo', error);
         if (!active) return;
-        setLoadError('Nao foi possivel carregar este artigo agora.');
+        setLoadError('Não foi possível carregar este artigo agora.');
         setArticles([]);
         setArticle(null);
       })
@@ -153,8 +153,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         <Card className="mx-auto max-w-2xl border-border bg-white text-center">
           <CardContent className="space-y-4 p-10">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary/80">Blog Cote Juros</p>
-            <h1 className="text-3xl text-foreground">Artigo nao encontrado</h1>
-            <p className="text-muted-foreground">{loadError || 'Esse conteudo pode ter sido movido, renomeado ou removido.'}</p>
+            <h1 className="text-3xl text-foreground">Artigo não encontrado</h1>
+            <p className="text-muted-foreground">{loadError || 'Esse conteúdo pode ter sido movido, renomeado ou removido.'}</p>
             <Link to="/blog">
               <Button>Voltar para o blog</Button>
             </Link>
@@ -177,7 +177,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://www.cotejuros.com.br/' },
+      { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://www.cotejuros.com.br/' },
       { '@type': 'ListItem', position: 2, name: 'Blog', item: BLOG_BASE_URL },
       { '@type': 'ListItem', position: 3, name: editorialTitle, item: canonicalUrl }
     ]
@@ -241,7 +241,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
           <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
             <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground">
               <Home className="h-4 w-4" />
-              Inicio
+              Início
             </Link>
             <span>/</span>
             <Link to="/blog" className="hover:text-foreground">
@@ -284,7 +284,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
       <section className="bg-background py-8 md:py-10">
         <div className="page-shell space-y-8">
           <div className="overflow-hidden rounded-[20px] border border-border bg-white">
-            <ArticleCoverImage article={safeArticle} className="max-h-[460px]" />
+            <ArticleCoverImage article={safeArticle} className="w-full" aspectRatio="16 / 9" />
           </div>
 
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -299,7 +299,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
                   {tocItems.length ? (
                     <section className="rounded-[18px] border border-border bg-background-secondary p-5 md:p-6">
-                      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">Neste artigo voce vai encontrar</p>
+                      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">Neste artigo você vai encontrar</p>
                       <div className="mt-4 grid gap-3 sm:grid-cols-2">
                         {tocItems.slice(0, 6).map((item) => (
                           <a
@@ -372,7 +372,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
                   {Array.isArray(safeArticle.conclusion) && safeArticle.conclusion.length ? (
                     <section id="conclusao" className="scroll-mt-28 space-y-4">
-                      <h2 className="text-2xl text-foreground">Conclusao</h2>
+                      <h2 className="text-2xl text-foreground">Conclusão</h2>
                       {safeArticle.conclusion.map((paragraph, index) => (
                         <p key={`conclusion-${index}`} className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
                       ))}
@@ -382,10 +382,10 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
               </article>
 
               <section className="rounded-[22px] border border-primary/15 bg-primary/[0.04] p-6 md:p-8">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Diagnostico financeiro</p>
-                <h2 className="mt-3 text-2xl text-foreground">Quer dar o proximo passo com mais clareza?</h2>
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Diagnóstico financeiro</p>
+                <h2 className="mt-3 text-2xl text-foreground">Quer dar o próximo passo com mais clareza?</h2>
                 <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
-                  Faca um diagnostico gratuito, entenda seu cenario e descubra caminhos mais seguros antes de contratar credito ou reorganizar suas financas.
+                  Faça um diagnóstico gratuito, entenda seu cenário e descubra caminhos mais seguros antes de contratar crédito ou reorganizar suas finanças.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-3">
                   <a href="https://finance.cotejuros.com.br/quiz" className="inline-flex">
@@ -419,7 +419,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                       to={getArticlePath(nextArticle)}
                       className="rounded-[16px] border border-border bg-white p-5 text-left transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
                     >
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Proximo artigo</p>
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Próximo artigo</p>
                       <h3 className="mt-2 text-lg text-foreground">{getEditorialTitle(nextArticle)}</h3>
                     </Link>
                   ) : null}
@@ -456,8 +456,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         <section className="border-t border-border bg-background-secondary py-12 md:py-14">
           <div className="page-shell space-y-6">
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Leia tambem</p>
-              <h2 className="text-2xl text-foreground">Mais conteudos sobre o mesmo assunto</h2>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Leia também</p>
+              <h2 className="text-2xl text-foreground">Mais conteúdos sobre o mesmo assunto</h2>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {relatedArticles.map((item) => (

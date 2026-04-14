@@ -42,7 +42,7 @@ const blogBaseSchema = {
     {
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://www.cotejuros.com.br/' },
+        { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://www.cotejuros.com.br/' },
         { '@type': 'ListItem', position: 2, name: 'Blog', item: BLOG_URL }
       ]
     }
@@ -135,7 +135,7 @@ function BlogPage() {
       '@type': 'Blog',
       '@id': `${BLOG_URL}#blog`,
       name: 'Blog Cote Juros',
-      description: 'Conteudos sobre credito, cartoes, score, financiamento e organizacao financeira.',
+      description: 'Conteúdos sobre crédito, cartões, score, financiamento e organização financeira.',
       url: BLOG_URL,
       blogPost: filteredArticles.slice(0, 12).map((article, index) => ({
         '@type': 'BlogPosting',
@@ -160,7 +160,7 @@ function BlogPage() {
         <title>Blog Cote Juros | Dicas para cuidar melhor do seu dinheiro</title>
         <meta
           name="description"
-          content="Leia conteudos sobre emprestimo, cartao, score, dividas, financiamento e organizacao financeira com explicacoes claras e exemplos do dia a dia."
+          content="Leia conteúdos sobre empréstimo, cartão, score, dívidas, financiamento e organização financeira com explicações claras e exemplos do dia a dia."
         />
         <meta name="robots" content="index,follow,max-image-preview:large" />
         <meta property="og:type" content="website" />
@@ -175,7 +175,7 @@ function BlogPage() {
         <meta name="twitter:title" content="Blog Cote Juros | Dicas para cuidar melhor do seu dinheiro" />
         <meta
           name="twitter:description"
-          content="Conteudos sobre credito, cartoes, score, financiamento e organizacao financeira em linguagem simples."
+          content="Conteúdos sobre crédito, cartões, score, financiamento e organização financeira em linguagem simples."
         />
         <link rel="canonical" href={BLOG_URL} />
         <script type="application/ld+json">{JSON.stringify(blogBaseSchema)}</script>
@@ -186,14 +186,14 @@ function BlogPage() {
         centered
         badge="Blog Cote Juros"
         title="Entenda melhor seu dinheiro antes de contratar qualquer produto"
-        subtitle="Guias simples para comparar taxas, organizar o orcamento e tomar decisoes com mais calma."
+        subtitle="Guias simples para comparar taxas, organizar o orçamento e tomar decisões com mais calma."
       >
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               className="h-12 rounded-full bg-background pl-11"
-              placeholder="Busque por score, emprestimo, cartao, dividas ou orcamento"
+              placeholder="Busque por score, empréstimo, cartão, dívidas ou orçamento"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
             />
@@ -241,7 +241,7 @@ function BlogPage() {
         {loading ? (
           <>
             <section className="rounded-[20px] border border-border bg-white px-6 py-14 text-center">
-              <p className="text-muted-foreground">Carregando conteudos do blog...</p>
+              <p className="text-muted-foreground">Carregando conteúdos do blog...</p>
             </section>
             <BlogGridSkeleton items={6} />
           </>
@@ -260,7 +260,8 @@ function BlogPage() {
             >
               <ArticleCoverImage
                 article={featured}
-                className="min-h-[250px] md:min-h-[360px]"
+                className="h-full w-full"
+                aspectRatio="16 / 10"
                 imageClassName="transition-transform duration-300 group-hover:scale-[1.03]"
               />
 
@@ -356,15 +357,15 @@ function BlogPage() {
         </section>
 
         <section className="rounded-[24px] border border-primary/15 bg-primary/[0.04] p-6 md:p-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Proximo passo</p>
-          <h2 className="mt-3 text-2xl text-foreground">Faca um diagnostico financeiro gratuito</h2>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Próximo passo</p>
+          <h2 className="mt-3 text-2xl text-foreground">Faça um diagnóstico financeiro gratuito</h2>
           <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
-            Descubra quais ajustes priorizar agora para melhorar score, reduzir custos e contratar credito com mais seguranca.
+            Descubra quais ajustes priorizar agora para melhorar score, reduzir custos e contratar crédito com mais segurança.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <a href="https://finance.cotejuros.com.br/quiz" className="inline-flex">
               <Button>
-                Ir para o diagnostico
+                Ir para o diagnóstico
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </a>

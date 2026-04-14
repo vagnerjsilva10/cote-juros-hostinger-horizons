@@ -47,9 +47,9 @@ function ArticleComments({ articleSlug }) {
           <MessageSquare className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="text-2xl text-foreground">Comentarios</h2>
+          <h2 className="text-2xl text-foreground">Comentários</h2>
           <p className="text-sm text-muted-foreground">
-            Use este espaco para deixar uma duvida ou contar se o conteudo ajudou no seu caso.
+            Use este espaço para deixar uma dúvida ou contar se o conteúdo ajudou no seu caso.
           </p>
         </div>
       </div>
@@ -62,12 +62,12 @@ function ArticleComments({ articleSlug }) {
         <Textarea
           value={form.comment}
           onChange={handleChange('comment')}
-          placeholder="Escreva seu comentario"
-          aria-label="Escreva seu comentario"
+          placeholder="Escreva seu comentário"
+          aria-label="Escreva seu comentário"
           className="min-h-[140px]"
         />
         <div className="flex justify-end">
-          <Button type="submit">Enviar comentario</Button>
+          <Button type="submit">Enviar comentário</Button>
         </div>
       </form>
 
@@ -86,7 +86,7 @@ function ArticleComments({ articleSlug }) {
           ))
         ) : (
           <div className="rounded-[16px] border border-dashed border-border bg-background-secondary p-5 text-sm text-muted-foreground">
-            Ainda nao ha comentarios neste artigo. Se quiser, voce pode ser a primeira pessoa a compartilhar uma duvida ou experiencia.
+            Ainda não há comentários neste artigo. Se quiser, você pode ser a primeira pessoa a compartilhar uma dúvida ou experiência.
           </div>
         )}
       </div>

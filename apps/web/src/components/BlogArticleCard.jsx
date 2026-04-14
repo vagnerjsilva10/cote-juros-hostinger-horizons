@@ -27,14 +27,15 @@ function BlogArticleCard({
         className
       )}
     >
-      <Card className="surface-card relative h-full overflow-hidden border-border transition-all duration-200 group-hover:-translate-y-1 group-hover:border-primary/35 group-hover:shadow-[0_18px_45px_rgba(15,23,42,0.1)] group-focus-visible:border-primary/35">
+      <Card className="surface-card relative flex h-full flex-col overflow-hidden border-border transition-all duration-200 group-hover:-translate-y-1 group-hover:border-primary/35 group-hover:shadow-[0_18px_45px_rgba(15,23,42,0.1)] group-focus-visible:border-primary/35">
         <ArticleCoverImage
           article={{ ...safeArticle, coverImage: image || safeArticle.coverImage }}
-          className={cn(compact ? 'h-40' : 'h-52')}
+          className="w-full"
+          aspectRatio={compact ? '16 / 10' : '16 / 10'}
           imageClassName="transition-transform duration-300 group-hover:scale-[1.03]"
         />
 
-        <CardContent className={cn('flex h-full flex-col gap-4', compact ? 'p-5' : 'p-6 md:p-7')}>
+        <CardContent className={cn('flex flex-1 flex-col gap-4', compact ? 'p-5' : 'p-6 md:p-7')}>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Badge variant="outline" className="max-w-full truncate">{safeArticle.category}</Badge>
             <span className="inline-flex items-center gap-2 text-xs text-muted-foreground">

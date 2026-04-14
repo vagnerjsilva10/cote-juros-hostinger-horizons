@@ -34,6 +34,89 @@ export const BLOG_PRIORITY_IMAGE_MANIFEST = {
     'https://wordpress.cotejuros.com.br/wp-content/uploads/2026/01/Calculo-de-rescisao-trabalhista-1024x683.png'
 };
 
+export const BLOG_PRIORITY_IMAGE_LIBRARY = {
+  'bancos-digitais-para-credito-rapido': {
+    sourceType: 'manifesto-por-slug',
+    activeProvider: 'wordpress',
+    currentUrl: BLOG_PRIORITY_IMAGE_MANIFEST['bancos-digitais-para-credito-rapido'],
+    fallbackPolicy: 'editorial-category-fallback',
+    freepikStatus: 'pendente-mapeamento-manual',
+    plannedAssetPath: '/assets/blog/editorial/bancos-digitais-para-credito-rapido.webp'
+  },
+  '10-melhores-bancos-para-solicitar-emprestimo': {
+    sourceType: 'manifesto-por-slug',
+    activeProvider: 'wordpress',
+    currentUrl: BLOG_PRIORITY_IMAGE_MANIFEST['10-melhores-bancos-para-solicitar-emprestimo'],
+    fallbackPolicy: 'editorial-category-fallback',
+    freepikStatus: 'pendente-mapeamento-manual',
+    plannedAssetPath: '/assets/blog/editorial/10-melhores-bancos-para-solicitar-emprestimo.webp'
+  },
+  'emprestimo-para-negativado': {
+    sourceType: 'manifesto-por-slug',
+    activeProvider: 'wordpress',
+    currentUrl: BLOG_PRIORITY_IMAGE_MANIFEST['emprestimo-para-negativado'],
+    fallbackPolicy: 'editorial-category-fallback',
+    freepikStatus: 'pendente-mapeamento-manual',
+    plannedAssetPath: '/assets/blog/editorial/emprestimo-para-negativado.webp'
+  },
+  'taxa-cdi': {
+    sourceType: 'manifesto-por-slug',
+    activeProvider: 'wordpress',
+    currentUrl: BLOG_PRIORITY_IMAGE_MANIFEST['taxa-cdi'],
+    fallbackPolicy: 'editorial-category-fallback',
+    freepikStatus: 'pendente-mapeamento-manual',
+    plannedAssetPath: '/assets/blog/editorial/taxa-cdi.webp'
+  },
+  'reserva-de-emergencia': {
+    sourceType: 'manifesto-por-slug',
+    activeProvider: 'wordpress',
+    currentUrl: BLOG_PRIORITY_IMAGE_MANIFEST['reserva-de-emergencia'],
+    fallbackPolicy: 'editorial-category-fallback',
+    freepikStatus: 'pendente-mapeamento-manual',
+    plannedAssetPath: '/assets/blog/editorial/reserva-de-emergencia.webp'
+  },
+  '15-formas-de-conseguir-dinheiro-rapido-opcoes-e-riscos': {
+    sourceType: 'manifesto-por-slug',
+    activeProvider: 'wordpress',
+    currentUrl: BLOG_PRIORITY_IMAGE_MANIFEST['15-formas-de-conseguir-dinheiro-rapido-opcoes-e-riscos'],
+    fallbackPolicy: 'editorial-category-fallback',
+    freepikStatus: 'pendente-mapeamento-manual',
+    plannedAssetPath: '/assets/blog/editorial/15-formas-de-conseguir-dinheiro-rapido-opcoes-e-riscos.webp'
+  },
+  'carro-sem-entrada': {
+    sourceType: 'manifesto-por-slug',
+    activeProvider: 'wordpress',
+    currentUrl: BLOG_PRIORITY_IMAGE_MANIFEST['carro-sem-entrada'],
+    fallbackPolicy: 'editorial-category-fallback',
+    freepikStatus: 'pendente-mapeamento-manual',
+    plannedAssetPath: '/assets/blog/editorial/carro-sem-entrada.webp'
+  },
+  'calculadora-do-cidadao': {
+    sourceType: 'manifesto-por-slug',
+    activeProvider: 'wordpress',
+    currentUrl: BLOG_PRIORITY_IMAGE_MANIFEST['calculadora-do-cidadao'],
+    fallbackPolicy: 'editorial-category-fallback',
+    freepikStatus: 'pendente-mapeamento-manual',
+    plannedAssetPath: '/assets/blog/editorial/calculadora-do-cidadao.webp'
+  },
+  'calculadora-de-rescisao-por-pedido-de-demissao': {
+    sourceType: 'manifesto-por-slug',
+    activeProvider: 'wordpress',
+    currentUrl: BLOG_PRIORITY_IMAGE_MANIFEST['calculadora-de-rescisao-por-pedido-de-demissao'],
+    fallbackPolicy: 'editorial-category-fallback',
+    freepikStatus: 'pendente-mapeamento-manual',
+    plannedAssetPath: '/assets/blog/editorial/calculadora-de-rescisao-por-pedido-de-demissao.webp'
+  },
+  'calculo-de-rescisao-trabalhista': {
+    sourceType: 'manifesto-por-slug',
+    activeProvider: 'wordpress',
+    currentUrl: BLOG_PRIORITY_IMAGE_MANIFEST['calculo-de-rescisao-trabalhista'],
+    fallbackPolicy: 'editorial-category-fallback',
+    freepikStatus: 'pendente-mapeamento-manual',
+    plannedAssetPath: '/assets/blog/editorial/calculo-de-rescisao-trabalhista.webp'
+  }
+};
+
 export const BLOG_EDITORIAL_OVERRIDES = {
   'bancos-digitais-para-credito-rapido': {
     category: 'Empréstimos',
@@ -138,7 +221,7 @@ export const BLOG_EDITORIAL_OVERRIDES = {
       {
         path: '/taxa-cdi',
         title: 'Taxa CDI',
-        anchor: 'Revise o cenario de juros antes de comparar propostas de credito.'
+        anchor: 'Revise o cenário de juros antes de comparar propostas de crédito.'
       }
     ]
   },
@@ -245,7 +328,7 @@ export const BLOG_EDITORIAL_OVERRIDES = {
       {
         path: '/carro-sem-entrada',
         title: 'Carro sem entrada',
-        anchor: 'Veja como a comparacao muda quando o credito envolve financiamento.'
+        anchor: 'Veja como a comparação muda quando o crédito envolve financiamento.'
       }
     ]
   },
@@ -346,13 +429,13 @@ export const BLOG_EDITORIAL_OVERRIDES = {
       },
       {
         path: '/reserva-de-emergencia',
-        title: 'Reserva de emergencia',
-        anchor: 'Entenda como montar protecao financeira para nao depender de credito toda hora.'
+        title: 'Reserva de emergência',
+        anchor: 'Entenda como montar proteção financeira para não depender de crédito toda hora.'
       },
       {
         path: '/15-formas-de-conseguir-dinheiro-rapido-opcoes-e-riscos',
-        title: 'Formas de conseguir dinheiro rapido',
-        anchor: 'Compare alternativas de renda e evite solucoes que pioram o aperto.'
+        title: 'Formas de conseguir dinheiro rápido',
+        anchor: 'Compare alternativas de renda e evite soluções que pioram o aperto.'
       }
     ]
   },
@@ -453,227 +536,227 @@ export const BLOG_EDITORIAL_OVERRIDES = {
       },
       {
         path: '/10-melhores-bancos-para-solicitar-emprestimo',
-        title: 'Melhores bancos para solicitar emprestimo',
-        anchor: 'Veja como o ambiente de juros tambem pesa nas ofertas de credito.'
+        title: 'Melhores bancos para solicitar empréstimo',
+        anchor: 'Veja como o ambiente de juros também pesa nas ofertas de crédito.'
       },
       {
         path: '/calculadora-do-cidadao',
-        title: 'Calculadora do Cidadao',
-        anchor: 'Use ferramentas de simulacao para comparar melhor juros e parcelas.'
+        title: 'Calculadora do Cidadão',
+        anchor: 'Use ferramentas de simulação para comparar melhor juros e parcelas.'
       }
     ]
   },
   'reserva-de-emergencia': {
-    category: 'Educacao Financeira',
-    title: 'Reserva de emergencia: quanto guardar, onde deixar e quando usar',
-    h1: 'Reserva de emergencia: quanto guardar, onde deixar e quando usar',
-    metaTitle: 'Reserva de emergencia: guia pratico para comecar',
-    seoTitle: 'Reserva de emergencia: guia pratico para comecar | Cote Juros',
+    category: 'Educação Financeira',
+    title: 'Reserva de emergência: quanto guardar, onde deixar e quando usar',
+    h1: 'Reserva de emergência: quanto guardar, onde deixar e quando usar',
+    metaTitle: 'Reserva de emergência: guia prático para começar',
+    seoTitle: 'Reserva de emergência: guia prático para começar | Cote Juros',
     metaDescription:
-      'Entenda quanto guardar na reserva de emergencia, onde deixar o dinheiro e em quais situacoes vale usar essa protecao financeira.',
+      'Entenda quanto guardar na reserva de emergência, onde deixar o dinheiro e em quais situações vale usar essa proteção financeira.',
     summary:
-      'A reserva de emergencia evita que imprevistos virem divida cara. Veja quanto juntar, onde aplicar e como usar esse dinheiro sem desorganizar o plano.',
+      'A reserva de emergência evita que imprevistos virem dívida cara. Veja quanto juntar, onde aplicar e como usar esse dinheiro sem desorganizar o plano.',
     canonicalUrl: 'https://www.cotejuros.com.br/reserva-de-emergencia/',
     coverImage: BLOG_PRIORITY_IMAGE_MANIFEST['reserva-de-emergencia'],
     coverImageAlt:
-      'Pessoa organizando dinheiro e calculadora para montar reserva de emergencia.',
+      'Pessoa organizando dinheiro e calculadora para montar reserva de emergência.',
     intro: [
-      'Reserva de emergencia nao e um dinheiro parado sem funcao. Ela existe para proteger o seu mes quando algo sai do planejado: uma despesa medica, um conserto urgente, a perda de renda ou qualquer situacao que nao pode esperar.',
-      'Quem monta essa reserva com calma costuma depender menos de cheque especial, cartao rotativo e emprestimo caro. O objetivo nao e investir melhor do que todo mundo. O objetivo e ter liquidez e seguranca quando a vida aperta.'
+      'Reserva de emergência não é um dinheiro parado sem função. Ela existe para proteger o seu mês quando algo sai do planejado: uma despesa médica, um conserto urgente, a perda de renda ou qualquer situação que não pode esperar.',
+      'Quem monta essa reserva com calma costuma depender menos de cheque especial, cartão rotativo e empréstimo caro. O objetivo não é investir melhor do que todo mundo. O objetivo é ter liquidez e segurança quando a vida aperta.'
     ],
     sections: [
       {
-        heading: 'O que entra como emergencia de verdade',
+        heading: 'O que entra como emergência de verdade',
         paragraphs: [
-          'Emergencia e o gasto que aparece sem aviso e que nao pode ser adiado. Exames, remedios, reparo essencial da casa, manutencao do carro usado para trabalhar e meses de transicao sem renda entram nessa conta.',
-          'Promocao, viagem e compra por impulso nao entram. Misturar desejo com emergencia e um dos erros mais comuns, porque faz a reserva desaparecer quando o problema real ainda nem chegou.'
+          'Emergência é o gasto que aparece sem aviso e que não pode ser adiado. Exames, remédios, reparo essencial da casa, manutenção do carro usado para trabalhar e meses de transição sem renda entram nessa conta.',
+          'Promoção, viagem e compra por impulso não entram. Misturar desejo com emergência é um dos erros mais comuns, porque faz a reserva desaparecer quando o problema real ainda nem chegou.'
         ],
         bullets: [
-          'despesa inesperada e necessaria',
-          'queda de renda ou desemprego',
-          'nao use a reserva para consumo planejavel'
+          'Despesa inesperada e necessária',
+          'Queda de renda ou desemprego',
+          'Não use a reserva para consumo planejável'
         ]
       },
       {
         heading: 'Quanto guardar para ter uma base segura',
         paragraphs: [
-          'A referencia mais conhecida fica entre tres e seis meses do seu custo mensal essencial. Para quem tem renda instavel, trabalha por conta ou sustenta a casa sozinho, esse numero pode precisar ser maior.',
-          'Se o valor total parecer distante, comecar pequeno continua valendo. A reserva nasce em etapas. Juntar o primeiro mes de despesas ja muda o nivel de tranquilidade e reduz a pressa em contratar credito ruim.'
+          'A referência mais conhecida fica entre três e seis meses do seu custo mensal essencial. Para quem tem renda instável, trabalha por conta ou sustenta a casa sozinho, esse número pode precisar ser maior.',
+          'Se o valor total parecer distante, começar pequeno continua valendo. A reserva nasce em etapas. Juntar o primeiro mês de despesas já muda o nível de tranquilidade e reduz a pressa em contratar crédito ruim.'
         ],
         bullets: [
-          'calcule o custo essencial do mes e nao o padrao completo de consumo',
-          'quem tem renda variavel costuma precisar de colchao maior',
-          'comece pelo primeiro objetivo viavel e avance por etapas'
+          'Calcule o custo essencial do mês, e não o padrão completo de consumo',
+          'Quem tem renda variável costuma precisar de colchão maior',
+          'Comece pelo primeiro objetivo viável e avance por etapas'
         ]
       },
       {
         heading: 'Onde deixar a reserva sem complicar',
         paragraphs: [
-          'Reserva de emergencia pede acesso facil e baixo risco. Em geral, o mais importante e encontrar um produto com liquidez, previsibilidade e boa seguranca, mesmo que ele nao seja o campeao de rentabilidade.',
-          'Na pratica, muita gente usa conta remunerada, CDB com liquidez diaria ou Tesouro Selic. A escolha depende do seu conforto com o produto, mas a logica e a mesma: dinheiro acessivel, simples de resgatar e sem surpresas.'
+          'Reserva de emergência pede acesso fácil e baixo risco. Em geral, o mais importante é encontrar um produto com liquidez, previsibilidade e boa segurança, mesmo que ele não seja o campeão de rentabilidade.',
+          'Na prática, muita gente usa conta remunerada, CDB com liquidez diária ou Tesouro Selic. A escolha depende do seu conforto com o produto, mas a lógica é a mesma: dinheiro acessível, simples de resgatar e sem surpresas.'
         ],
         bullets: [
-          'liquidez vale mais do que buscar o maior rendimento possivel',
-          'prefira produtos simples e conhecidos por voce',
-          'evite deixar a reserva presa em investimentos com resgate dificil'
+          'Liquidez vale mais do que buscar o maior rendimento possível',
+          'Prefira produtos simples e conhecidos por você',
+          'Evite deixar a reserva presa em investimentos com resgate difícil'
         ]
       },
       {
         heading: 'Como usar a reserva sem desmontar tudo',
         paragraphs: [
-          'Quando a reserva for usada, o ideal e definir desde o inicio um plano de recomposicao. Sem isso, o dinheiro some e nunca mais volta para o lugar.',
-          'Vale tambem registrar por que o saque aconteceu. Esse historico ajuda a perceber se o problema foi um imprevisto real ou se o seu orcamento mensal ainda esta mal dimensionado.'
+          'Quando a reserva for usada, o ideal é definir desde o início um plano de recomposição. Sem isso, o dinheiro some e nunca mais volta para o lugar.',
+          'Vale também registrar por que o saque aconteceu. Esse histórico ajuda a perceber se o problema foi um imprevisto real ou se o seu orçamento mensal ainda está mal dimensionado.'
         ],
         bullets: [
-          'saque com criterio e com motivo claro',
-          'recomponha a reserva assim que o fluxo de caixa melhorar',
-          'use o historico para ajustar o planejamento do ano'
+          'Saque com critério e com motivo claro',
+          'Recomponha a reserva assim que o fluxo de caixa melhorar',
+          'Use o histórico para ajustar o planejamento do ano'
         ]
       }
     ],
     faq: [
       {
-        question: 'Preciso esperar juntar muito dinheiro para comecar?',
+        question: 'Preciso esperar juntar muito dinheiro para começar?',
         answer:
-          'Nao. O melhor caminho e iniciar com um valor possivel agora e transformar o aporte em rotina.'
+          'Não. O melhor caminho é iniciar com um valor possível agora e transformar o aporte em rotina.'
       },
       {
-        question: 'Reserva de emergencia rende menos do que outros investimentos?',
+        question: 'Reserva de emergência rende menos do que outros investimentos?',
         answer:
-          'Muitas vezes sim, porque a prioridade aqui e liquidez e seguranca. O papel dela nao e maximizar retorno, e proteger voce.'
+          'Muitas vezes sim, porque a prioridade aqui é liquidez e segurança. O papel dela não é maximizar retorno, e sim proteger você.'
       },
       {
-        question: 'Posso usar cartao de credito no lugar da reserva?',
+        question: 'Posso usar cartão de crédito no lugar da reserva?',
         answer:
-          'Nao e o ideal. O cartao pode ajudar na operacao do mes, mas nao substitui um dinheiro ja disponivel para enfrentar imprevistos.'
+          'Não é o ideal. O cartão pode ajudar na operação do mês, mas não substitui um dinheiro já disponível para enfrentar imprevistos.'
       }
     ],
     conclusion: [
-      'Reserva de emergencia e a base da organizacao financeira porque reduz a dependencia de credito caro em momentos de pressao. Ela nao resolve tudo, mas muda a qualidade das decisoes quando o imprevisto aparece.',
-      'Se voce ainda nao tem esse colchao, comecar pequeno ja e melhor do que esperar o momento perfeito. A consistencia pesa mais do que o aporte ideal.'
+      'Reserva de emergência é a base da organização financeira porque reduz a dependência de crédito caro em momentos de pressão. Ela não resolve tudo, mas muda a qualidade das decisões quando o imprevisto aparece.',
+      'Se você ainda não tem esse colchão, começar pequeno já é melhor do que esperar o momento perfeito. A consistência pesa mais do que o aporte ideal.'
     ],
     internalLinks: [
       {
         path: '/taxa-cdi',
         title: 'Taxa CDI',
-        anchor: 'Entenda a referencia usada em muitos produtos conservadores.'
+        anchor: 'Entenda a referência usada em muitos produtos conservadores.'
       },
       {
         path: '/calculadora-do-cidadao',
-        title: 'Calculadora do Cidadao',
-        anchor: 'Use simulacoes para comparar rendimento e juros com mais clareza.'
+        title: 'Calculadora do Cidadão',
+        anchor: 'Use simulações para comparar rendimento e juros com mais clareza.'
       },
       {
         path: '/emprestimo-para-negativado',
-        title: 'Emprestimo para negativado',
-        anchor: 'Veja por que depender de credito em emergencia pode sair caro.'
+        title: 'Empréstimo para negativado',
+        anchor: 'Veja por que depender de crédito em emergência pode sair caro.'
       }
     ]
   },
   '15-formas-de-conseguir-dinheiro-rapido-opcoes-e-riscos': {
-    category: 'Educacao Financeira',
-    title: '15 formas de conseguir dinheiro rapido: o que ajuda de verdade e o que pede cuidado',
-    h1: '15 formas de conseguir dinheiro rapido: o que ajuda de verdade e o que pede cuidado',
-    metaTitle: '15 formas de conseguir dinheiro rapido com menos risco',
-    seoTitle: '15 formas de conseguir dinheiro rapido com menos risco | Cote Juros',
+    category: 'Educação Financeira',
+    title: '15 formas de conseguir dinheiro rápido: o que ajuda de verdade e o que pede cuidado',
+    h1: '15 formas de conseguir dinheiro rápido: o que ajuda de verdade e o que pede cuidado',
+    metaTitle: '15 formas de conseguir dinheiro rápido com menos risco',
+    seoTitle: '15 formas de conseguir dinheiro rápido com menos risco | Cote Juros',
     metaDescription:
-      'Veja 15 formas de conseguir dinheiro rapido, quais costumam funcionar no curto prazo e quais alternativas exigem mais cautela para nao virar problema.',
+      'Veja 15 formas de conseguir dinheiro rápido, quais costumam funcionar no curto prazo e quais alternativas exigem mais cautela para não virar problema.',
     summary:
-      'Nem toda forma de conseguir dinheiro rapido vale a pena. Veja opcoes praticas, riscos mais comuns e como escolher a alternativa menos prejudicial.',
+      'Nem toda forma de conseguir dinheiro rápido vale a pena. Veja opções práticas, riscos mais comuns e como escolher a alternativa menos prejudicial.',
     canonicalUrl: 'https://www.cotejuros.com.br/15-formas-de-conseguir-dinheiro-rapido-opcoes-e-riscos/',
     coverImage: BLOG_PRIORITY_IMAGE_MANIFEST['15-formas-de-conseguir-dinheiro-rapido-opcoes-e-riscos'],
     coverImageAlt:
-      'Cedulas de dinheiro sobre mesa, representando alternativas para levantar renda no curto prazo.',
+      'Cédulas de dinheiro sobre a mesa, representando alternativas para levantar renda no curto prazo.',
     intro: [
-      'Quando a conta vence e o dinheiro nao entrou, a busca por uma solucao rapida costuma vir acompanhada de ansiedade. E justamente nessa pressa que surgem escolhas ruins, como vender algo importante por pouco, aceitar trabalho mal pago ou contratar credito sem comparar.',
-      'Existem maneiras honestas de levantar dinheiro no curto prazo, mas elas nao entregam o mesmo resultado nem servem para qualquer situacao. O mais importante e separar o que pode aliviar o aperto agora do que apenas empurra o problema para frente.'
+      'Quando a conta vence e o dinheiro não entrou, a busca por uma solução rápida costuma vir acompanhada de ansiedade. É justamente nessa pressa que surgem escolhas ruins, como vender algo importante por pouco, aceitar trabalho mal pago ou contratar crédito sem comparar.',
+      'Existem maneiras honestas de levantar dinheiro no curto prazo, mas elas não entregam o mesmo resultado nem servem para qualquer situação. O mais importante é separar o que pode aliviar o aperto agora do que apenas empurra o problema para frente.'
     ],
     sections: [
       {
-        heading: 'Opcoes mais imediatas para levantar dinheiro',
+        heading: 'Opções mais imediatas para levantar dinheiro',
         paragraphs: [
-          'As alternativas mais rapidas costumam ser vender itens que voce nao usa mais, adiantar servicos para conhecidos, fazer bicos pontuais, pegar freela, trabalhar com entrega ou oferecer tarefas simples na sua vizinhanca.',
-          'Elas funcionam melhor porque dependem menos de burocracia e mais do que voce ja tem: tempo, habilidade, objetos parados ou rede de contatos.'
+          'As alternativas mais rápidas costumam ser vender itens que você não usa mais, adiantar serviços para conhecidos, fazer bicos pontuais, pegar freela, trabalhar com entrega ou oferecer tarefas simples na sua vizinhança.',
+          'Elas funcionam melhor porque dependem menos de burocracia e mais do que você já tem: tempo, habilidade, objetos parados ou rede de contatos.'
         ],
         bullets: [
-          'vender usados com bom anuncio e preco realista',
-          'pegar trabalho temporario ou bico por diaria',
-          'oferecer servicos simples como faxina, dog walker ou apoio em eventos'
+          'Vender usados com bom anúncio e preço realista',
+          'Pegar trabalho temporário ou bico por diária',
+          'Oferecer serviços simples, como faxina, dog walker ou apoio em eventos'
         ]
       },
       {
         heading: 'Quando vale considerar renda digital ou trabalho remoto',
         paragraphs: [
-          'Freelas, aulas particulares, assistencia virtual, revenda online e servicos de criacao podem gerar dinheiro com rapidez relativa, especialmente para quem ja tem alguma habilidade pronta para vender.',
-          'O problema e esperar retorno imediato sem estrutura. Em plataformas abertas, pode levar algum tempo ate fechar os primeiros trabalhos. Por isso, esse caminho funciona melhor para quem consegue ativar contatos ou publicar oferta clara ja no primeiro dia.'
+          'Freelas, aulas particulares, assistência virtual, revenda online e serviços de criação podem gerar dinheiro com rapidez relativa, especialmente para quem já tem alguma habilidade pronta para vender.',
+          'O problema é esperar retorno imediato sem estrutura. Em plataformas abertas, pode levar algum tempo até fechar os primeiros trabalhos. Por isso, esse caminho funciona melhor para quem consegue ativar contatos ou publicar uma oferta clara já no primeiro dia.'
         ],
         bullets: [
-          'freela paga melhor quando voce ja sabe o que oferecer',
-          'rede de contatos costuma trazer retorno mais rapido do que plataforma fria',
-          'nao conte com renda digital instantanea se voce estiver comecando do zero'
+          'Freela paga melhor quando você já sabe o que oferecer',
+          'Rede de contatos costuma trazer retorno mais rápido do que plataforma fria',
+          'Não conte com renda digital instantânea se você estiver começando do zero'
         ]
       },
       {
         heading: 'Alternativas que exigem cuidado redobrado',
         paragraphs: [
-          'Emprestimo, adiantamento caro, limite do cartao, penhor e promessas de lucro facil entram na categoria que pede mais cautela. Eles podem ate colocar dinheiro na mao mais depressa, mas muitas vezes criam um problema maior para o mes seguinte.',
-          'Sempre que a alternativa envolver juros, garantia, contrato pouco claro ou promessas exageradas, o ideal e parar e comparar. Dinheiro rapido que desorganiza os proximos meses costuma sair caro.'
+          'Empréstimo, adiantamento caro, limite do cartão, penhor e promessas de lucro fácil entram na categoria que pede mais cautela. Eles podem até colocar dinheiro na mão mais depressa, mas muitas vezes criam um problema maior para o mês seguinte.',
+          'Sempre que a alternativa envolver juros, garantia, contrato pouco claro ou promessas exageradas, o ideal é parar e comparar. Dinheiro rápido que desorganiza os próximos meses costuma sair caro.'
         ],
         bullets: [
-          'desconfie de promessa de ganho facil e sem risco',
-          'nao aceite credito sem olhar custo total',
-          'evite vender item essencial da rotina por desespero'
+          'Desconfie de promessa de ganho fácil e sem risco',
+          'Não aceite crédito sem olhar o custo total',
+          'Evite vender item essencial da rotina por desespero'
         ]
       },
       {
-        heading: 'Como escolher a melhor saida para o seu caso',
+        heading: 'Como escolher a melhor saída para o seu caso',
         paragraphs: [
-          'Se a necessidade e pequena e pontual, vender algo, pegar um bico ou adiantar um servico costuma ser menos arriscado do que contrair divida. Se o valor for alto, talvez o problema seja estrutural e mereca renegociacao, corte de gastos ou reorganizacao do orcamento.',
-          'A pergunta certa nao e apenas como conseguir dinheiro rapido, mas qual alternativa resolve sem piorar sua situacao em seguida.'
+          'Se a necessidade é pequena e pontual, vender algo, pegar um bico ou adiantar um serviço costuma ser menos arriscado do que contrair dívida. Se o valor for alto, talvez o problema seja estrutural e mereça renegociação, corte de gastos ou reorganização do orçamento.',
+          'A pergunta certa não é apenas como conseguir dinheiro rápido, mas qual alternativa resolve sem piorar sua situação logo em seguida.'
         ],
         bullets: [
-          'compare o dinheiro que entra agora com o impacto do proximo mes',
-          'prefira saidas sem juros quando possivel',
-          'use o aperto como sinal para rever o planejamento'
+          'Compare o dinheiro que entra agora com o impacto do próximo mês',
+          'Prefira saídas sem juros quando possível',
+          'Use o aperto como sinal para rever o planejamento'
         ]
       }
     ],
     faq: [
       {
-        question: 'Vender itens usados costuma ser a forma mais rapida?',
+        question: 'Vender itens usados costuma ser a forma mais rápida?',
         answer:
-          'Muitas vezes sim, especialmente quando voce tem objetos com procura e consegue anunciar bem. O risco e vender abaixo do valor por pressa.'
+          'Muitas vezes, sim, especialmente quando você tem objetos com procura e consegue anunciar bem. O risco é vender abaixo do valor por pressa.'
       },
       {
-        question: 'Vale pegar emprestimo para resolver uma urgencia pequena?',
+        question: 'Vale pegar empréstimo para resolver uma urgência pequena?',
         answer:
-          'Em geral, so vale depois de esgotar alternativas mais baratas. Para valores pequenos, o custo do credito pode ser desproporcional.'
+          'Em geral, só vale depois de esgotar alternativas mais baratas. Para valores pequenos, o custo do crédito pode ser desproporcional.'
       },
       {
-        question: 'Como evitar golpes em promessas de renda rapida?',
+        question: 'Como evitar golpes em promessas de renda rápida?',
         answer:
-          'Desconfie de taxa antecipada, promessa de lucro garantido e exigencia de pagamento para liberar suposta oportunidade.'
+          'Desconfie de taxa antecipada, promessa de lucro garantido e exigência de pagamento para liberar suposta oportunidade.'
       }
     ],
     conclusion: [
-      'Conseguir dinheiro rapido e possivel, mas a melhor solucao nem sempre e a mais instantanea. O que importa e o efeito completo da escolha sobre o seu bolso.',
-      'Se a pressao for grande, tente combinar uma saida de curto prazo com um ajuste mais estrutural. Isso reduz a chance de repetir o aperto poucas semanas depois.'
+      'Conseguir dinheiro rápido é possível, mas a melhor solução nem sempre é a mais instantânea. O que importa é o efeito completo da escolha sobre o seu bolso.',
+      'Se a pressão for grande, tente combinar uma saída de curto prazo com um ajuste mais estrutural. Isso reduz a chance de repetir o aperto poucas semanas depois.'
     ],
     internalLinks: [
       {
         path: '/reserva-de-emergencia',
-        title: 'Reserva de emergencia',
-        anchor: 'Veja como criar protecao para depender menos de solucoes urgentes.'
+        title: 'Reserva de emergência',
+        anchor: 'Veja como criar proteção para depender menos de soluções urgentes.'
       },
       {
         path: '/emprestimo-para-negativado',
-        title: 'Emprestimo para negativado',
-        anchor: 'Entenda os riscos de recorrer ao credito em um momento de pressao.'
+        title: 'Empréstimo para negativado',
+        anchor: 'Entenda os riscos de recorrer ao crédito em um momento de pressão.'
       },
       {
         path: '/10-melhores-bancos-para-solicitar-emprestimo',
-        title: 'Melhores bancos para solicitar emprestimo',
-        anchor: 'Se credito for inevitavel, compare antes de contratar.'
+        title: 'Melhores bancos para solicitar empréstimo',
+        anchor: 'Se crédito for inevitável, compare antes de contratar.'
       }
     ]
   },
@@ -684,64 +767,64 @@ export const BLOG_EDITORIAL_OVERRIDES = {
     metaTitle: 'Carro sem entrada: como avaliar antes de financiar',
     seoTitle: 'Carro sem entrada: como avaliar antes de financiar | Cote Juros',
     metaDescription:
-      'Entenda como funciona o financiamento de carro sem entrada, quando ele pode ajudar e quais cuidados tomar para nao assumir parcelas pesadas demais.',
+      'Entenda como funciona o financiamento de carro sem entrada, quando ele pode ajudar e quais cuidados tomar para não assumir parcelas pesadas demais.',
     summary:
       'Financiar carro sem entrada pode destravar a compra, mas aumenta o custo do contrato. Veja quando faz sentido e o que comparar antes de fechar.',
     canonicalUrl: 'https://www.cotejuros.com.br/carro-sem-entrada/',
     coverImage: BLOG_PRIORITY_IMAGE_MANIFEST['carro-sem-entrada'],
     coverImageAlt:
-      'Carro em concessionaria com destaque para condicao de financiamento sem entrada.',
+      'Carro em concessionária com destaque para condição de financiamento sem entrada.',
     intro: [
-      'Comprar carro sem entrada costuma parecer a solucao mais acessivel para quem precisa do veiculo logo. O problema e que essa facilidade quase sempre vem acompanhada de parcela maior, juros mais altos e contrato mais sensivel a qualquer aperto do mes.',
-      'Isso nao significa que o financiamento sem entrada deva ser descartado automaticamente. Em alguns casos ele resolve uma necessidade real, mas so funciona bem quando a parcela cabe com folga e o comprador entende o custo completo da operacao.'
+      'Comprar carro sem entrada costuma parecer a solução mais acessível para quem precisa do veículo logo. O problema é que essa facilidade quase sempre vem acompanhada de parcela maior, juros mais altos e contrato mais sensível a qualquer aperto do mês.',
+      'Isso não significa que o financiamento sem entrada deva ser descartado automaticamente. Em alguns casos ele resolve uma necessidade real, mas só funciona bem quando a parcela cabe com folga e o comprador entende o custo completo da operação.'
     ],
     sections: [
       {
-        heading: 'O que muda quando nao ha entrada',
+        heading: 'O que muda quando não há entrada',
         paragraphs: [
-          'Sem entrada, todo o valor do carro vai para o financiamento. Isso eleva o montante financiado, aumenta o total de juros e costuma deixar a aprovacao mais exigente.',
-          'Na pratica, a entrada funciona como um amortecedor do contrato. Quando ela nao existe, qualquer variacao de taxa ou prazo pesa mais na parcela final.'
+          'Sem entrada, todo o valor do carro vai para o financiamento. Isso eleva o montante financiado, aumenta o total de juros e costuma deixar a aprovação mais exigente.',
+          'Na prática, a entrada funciona como um amortecedor do contrato. Quando ela não existe, qualquer variação de taxa ou prazo pesa mais na parcela final.'
         ],
         bullets: [
-          'mais valor financiado significa mais juros acumulados',
-          'a parcela tende a subir',
-          'a instituicao pode ser mais seletiva na aprovacao'
+          'Mais valor financiado significa mais juros acumulados',
+          'A parcela tende a subir',
+          'A instituição pode ser mais seletiva na aprovação'
         ]
       },
       {
         heading: 'Quando o carro sem entrada pode fazer sentido',
         paragraphs: [
-          'Esse modelo costuma ser mais defensavel quando o carro e ferramenta de renda ou necessidade familiar objetiva, como trabalho, deslocamento sem alternativa ou substituicao urgente de um veiculo que parou de vez.',
-          'Mesmo nesses casos, faz sentido testar cenarios com carro mais barato, prazo menor ou pequena entrada futura. Muitas vezes um ajuste simples reduz bastante o custo total.'
+          'Esse modelo costuma ser mais defensável quando o carro é ferramenta de renda ou necessidade familiar objetiva, como trabalho, deslocamento sem alternativa ou substituição urgente de um veículo que parou de vez.',
+          'Mesmo nesses casos, faz sentido testar cenários com carro mais barato, prazo menor ou pequena entrada futura. Muitas vezes, um ajuste simples reduz bastante o custo total.'
         ],
         bullets: [
-          'veiculo como instrumento de trabalho merece analise mais pratica',
-          'carro mais barato pode equilibrar o contrato',
-          'vale simular uma pequena entrada para reduzir custo final'
+          'Veículo como instrumento de trabalho merece análise mais prática',
+          'Carro mais barato pode equilibrar o contrato',
+          'Vale simular uma pequena entrada para reduzir o custo final'
         ]
       },
       {
         heading: 'O que comparar antes de assinar',
         paragraphs: [
-          'O comparativo deve incluir taxa, CET, prazo, valor total pago, exigencia de seguro e impacto da parcela no seu orcamento. Nao adianta olhar apenas o valor mensal se o contrato alongado vai custar muito mais do que o carro vale.',
-          'Tambem e importante considerar despesas fora da parcela, como IPVA, manutencao, combustivel e seguro. O custo real do carro sempre vai alem do financiamento.'
+          'O comparativo deve incluir taxa, CET, prazo, valor total pago, exigência de seguro e impacto da parcela no seu orçamento. Não adianta olhar apenas o valor mensal se o contrato alongado vai custar muito mais do que o carro vale.',
+          'Também é importante considerar despesas fora da parcela, como IPVA, manutenção, combustível e seguro. O custo real do carro sempre vai além do financiamento.'
         ],
         bullets: [
-          'olhe CET e valor final pago',
-          'considere todos os custos do carro, nao so a parcela',
-          'evite contrato que deixa o orcamento sem folga'
+          'Olhe CET e valor final pago',
+          'Considere todos os custos do carro, não só a parcela',
+          'Evite contrato que deixa o orçamento sem folga'
         ]
       },
       {
         heading: 'Sinais de que talvez seja melhor esperar',
         paragraphs: [
-          'Se a parcela ja entra no limite da renda, se voce nao tem reserva e se o carro desejado exige prazo muito longo para caber no bolso, o financiamento pode comecar errado.',
-          'Nessa situacao, esperar para juntar entrada ou rever o tipo de veiculo costuma ser uma decisao mais madura do que assumir um contrato fragil.'
+          'Se a parcela já entra no limite da renda, se você não tem reserva e se o carro desejado exige prazo muito longo para caber no bolso, o financiamento pode começar errado.',
+          'Nessa situação, esperar para juntar entrada ou rever o tipo de veículo costuma ser uma decisão mais madura do que assumir um contrato frágil.'
         ],
         bullets: [
-          'parcela apertada desde o primeiro mes',
-          'ausencia de reserva para imprevistos',
-          'prazo longo demais para um bem que perde valor'
+          'Parcela apertada desde o primeiro mês',
+          'Ausência de reserva para imprevistos',
+          'Prazo longo demais para um bem que perde valor'
         ]
       }
     ],
@@ -749,359 +832,359 @@ export const BLOG_EDITORIAL_OVERRIDES = {
       {
         question: 'Financiamento sem entrada sempre tem juros maiores?',
         answer:
-          'Nem sempre no percentual, mas o custo total quase sempre sobe porque voce financia um valor maior.'
+          'Nem sempre no percentual, mas o custo total quase sempre sobe porque você financia um valor maior.'
       },
       {
         question: 'Vale financiar sem entrada para trabalhar com o carro?',
         answer:
-          'Pode valer quando a renda gerada pelo veiculo e realista e suficiente para sustentar contrato e manutencao.'
+          'Pode valer quando a renda gerada pelo veículo é realista e suficiente para sustentar contrato e manutenção.'
       },
       {
         question: 'Melhor prazo longo ou parcela mais alta?',
         answer:
-          'O ideal e buscar equilibrio. Prazo longo alivia a parcela, mas aumenta o valor final pago.'
+          'O ideal é buscar equilíbrio. Prazo longo alivia a parcela, mas aumenta o valor final pago.'
       }
     ],
     conclusion: [
-      'Carro sem entrada pode ser uma porta de acesso, mas ele exige analise mais fria do que a propaganda costuma mostrar. O que decide se o negocio e bom nao e a facilidade de sair com o carro, e sim a capacidade de sustentar o contrato com tranquilidade.',
-      'Se houver duvida entre comprar agora ou esperar para juntar parte da entrada, vale fazer as contas com calma. Muitas vezes esperar um pouco evita anos de aperto.'
+      'Carro sem entrada pode ser uma porta de acesso, mas ele exige análise mais fria do que a propaganda costuma mostrar. O que decide se o negócio é bom não é a facilidade de sair com o carro, e sim a capacidade de sustentar o contrato com tranquilidade.',
+      'Se houver dúvida entre comprar agora ou esperar para juntar parte da entrada, vale fazer as contas com calma. Muitas vezes, esperar um pouco evita anos de aperto.'
     ],
     internalLinks: [
       {
         path: '/10-melhores-bancos-para-solicitar-emprestimo',
-        title: 'Melhores bancos para solicitar emprestimo',
-        anchor: 'Compare perfis de credito antes de assumir um contrato maior.'
+        title: 'Melhores bancos para solicitar empréstimo',
+        anchor: 'Compare perfis de crédito antes de assumir um contrato maior.'
       },
       {
         path: '/calculadora-do-cidadao',
-        title: 'Calculadora do Cidadao',
-        anchor: 'Use simulacoes para enxergar melhor juros e parcelas.'
+        title: 'Calculadora do Cidadão',
+        anchor: 'Use simulações para enxergar melhor juros e parcelas.'
       },
       {
         path: '/reserva-de-emergencia',
-        title: 'Reserva de emergencia',
-        anchor: 'Veja por que manter folga financeira e essencial antes de financiar.'
+        title: 'Reserva de emergência',
+        anchor: 'Veja por que manter folga financeira é essencial antes de financiar.'
       }
     ]
   },
   'calculadora-do-cidadao': {
     category: 'Taxa de Juros',
-    title: 'Calculadora do Cidadao: como usar para simular juros, parcelas e rendimento',
-    h1: 'Calculadora do Cidadao: como usar para simular juros, parcelas e rendimento',
-    metaTitle: 'Calculadora do Cidadao: para que serve e como usar',
-    seoTitle: 'Calculadora do Cidadao: para que serve e como usar | Cote Juros',
+    title: 'Calculadora do Cidadão: como usar para simular juros, parcelas e rendimento',
+    h1: 'Calculadora do Cidadão: como usar para simular juros, parcelas e rendimento',
+    metaTitle: 'Calculadora do Cidadão: para que serve e como usar',
+    seoTitle: 'Calculadora do Cidadão: para que serve e como usar | Cote Juros',
     metaDescription:
-      'Aprenda como usar a Calculadora do Cidadao para simular juros, rendimento e parcelas com mais clareza antes de contratar ou investir.',
+      'Aprenda como usar a Calculadora do Cidadão para simular juros, rendimento e parcelas com mais clareza antes de contratar ou investir.',
     summary:
-      'A Calculadora do Cidadao ajuda a testar juros e rendimento em cenarios simples. Veja para que ela serve e como usar os resultados no dia a dia.',
+      'A Calculadora do Cidadão ajuda a testar juros e rendimento em cenários simples. Veja para que ela serve e como usar os resultados no dia a dia.',
     canonicalUrl: 'https://www.cotejuros.com.br/calculadora-do-cidadao/',
     coverImage: BLOG_PRIORITY_IMAGE_MANIFEST['calculadora-do-cidadao'],
     coverImageAlt:
-      'Tela da Calculadora do Cidadao aberta em simulacao de juros e parcelas.',
+      'Tela da Calculadora do Cidadão aberta em simulação de juros e parcelas.',
     intro: [
-      'A Calculadora do Cidadao, mantida pelo Banco Central, e uma ferramenta simples para fazer simulacoes financeiras sem depender apenas da explicacao de quem esta vendendo um produto.',
-      'Ela nao substitui leitura de contrato nem analise completa, mas ajuda muito a responder perguntas praticas: quanto um valor rende, como juros compostos pesam no tempo e que diferenca uma taxa faz no resultado final.'
+      'A Calculadora do Cidadão, mantida pelo Banco Central, é uma ferramenta simples para fazer simulações financeiras sem depender apenas da explicação de quem está vendendo um produto.',
+      'Ela não substitui leitura de contrato nem análise completa, mas ajuda muito a responder perguntas práticas: quanto um valor rende, como juros compostos pesam no tempo e que diferença uma taxa faz no resultado final.'
     ],
     sections: [
       {
-        heading: 'Para que a Calculadora do Cidadao serve na pratica',
+        heading: 'Para que a Calculadora do Cidadão serve na prática',
         paragraphs: [
-          'A ferramenta costuma ser usada para calcular juros compostos, correcao de valores, rendimento e relacao entre taxa, prazo e montante. Isso ja ajuda bastante quem quer entender uma simulacao de emprestimo ou uma aplicacao.',
-          'O principal ganho esta em tirar a decisao do campo da impressao. Quando voce testa os numeros, fica mais facil perceber como pequenos percentuais mudam muito o valor final.'
+          'A ferramenta costuma ser usada para calcular juros compostos, correção de valores, rendimento e relação entre taxa, prazo e montante. Isso já ajuda bastante quem quer entender uma simulação de empréstimo ou uma aplicação.',
+          'O principal ganho está em tirar a decisão do campo da impressão. Quando você testa os números, fica mais fácil perceber como pequenos percentuais mudam muito o valor final.'
         ],
         bullets: [
-          'simular juros compostos',
-          'estimar crescimento de um valor ao longo do tempo',
-          'comparar cenarios com taxas diferentes'
+          'Simular juros compostos',
+          'Estimar o crescimento de um valor ao longo do tempo',
+          'Comparar cenários com taxas diferentes'
         ]
       },
       {
         heading: 'Como usar sem se perder nos campos',
         paragraphs: [
-          'O melhor jeito de usar a ferramenta e entrar com um objetivo claro. Se a ideia e comparar duas propostas de credito, mantenha prazo e valor iguais e altere apenas a taxa. Se o objetivo for investimento, use o mesmo aporte para entender a diferenca entre rendimentos.',
-          'Quando a simulacao muda muitas variaveis ao mesmo tempo, a leitura fica confusa. Por isso, ajustar um fator por vez costuma trazer respostas mais uteis.'
+          'O melhor jeito de usar a ferramenta é entrar com um objetivo claro. Se a ideia é comparar duas propostas de crédito, mantenha prazo e valor iguais e altere apenas a taxa. Se o objetivo for investimento, use o mesmo aporte para entender a diferença entre rendimentos.',
+          'Quando a simulação muda muitas variáveis ao mesmo tempo, a leitura fica confusa. Por isso, ajustar um fator por vez costuma trazer respostas mais úteis.'
         ],
         bullets: [
-          'defina uma pergunta pratica antes de preencher',
-          'mude uma variavel por vez',
-          'anote o resultado para comparar com outras simulacoes'
+          'Defina uma pergunta prática antes de preencher',
+          'Mude uma variável por vez',
+          'Anote o resultado para comparar com outras simulações'
         ]
       },
       {
         heading: 'Onde ela ajuda mais no dia a dia',
         paragraphs: [
-          'No credito, a calculadora ajuda a entender o peso do prazo e da taxa sobre a parcela e sobre o valor final. Nos investimentos, ela ajuda a visualizar o efeito do tempo e da constancia dos aportes.',
-          'Ela tambem pode ser util em negociacoes simples, quando voce quer checar se uma proposta faz sentido antes de seguir para o contrato.'
+          'No crédito, a calculadora ajuda a entender o peso do prazo e da taxa sobre a parcela e sobre o valor final. Nos investimentos, ela ajuda a visualizar o efeito do tempo e da constância dos aportes.',
+          'Ela também pode ser útil em negociações simples, quando você quer checar se uma proposta faz sentido antes de seguir para o contrato.'
         ],
         bullets: [
-          'comparar propostas de credito',
-          'visualizar o efeito do tempo sobre o rendimento',
-          'confirmar se a oferta bate com a conta apresentada'
+          'Comparar propostas de crédito',
+          'Visualizar o efeito do tempo sobre o rendimento',
+          'Confirmar se a oferta bate com a conta apresentada'
         ]
       },
       {
-        heading: 'O que a ferramenta nao resolve sozinha',
+        heading: 'O que a ferramenta não resolve sozinha',
         paragraphs: [
-          'A Calculadora do Cidadao nao mostra sozinha custo total de servicos embutidos, seguros, tarifas ou detalhes especificos do contrato. Ela e uma ferramenta de apoio, nao uma resposta completa.',
-          'Por isso, o ideal e usar o resultado como base para fazer perguntas melhores e nao como motivo para assinar algo sem revisar o restante.'
+          'A Calculadora do Cidadão não mostra sozinha custo total de serviços embutidos, seguros, tarifas ou detalhes específicos do contrato. Ela é uma ferramenta de apoio, não uma resposta completa.',
+          'Por isso, o ideal é usar o resultado como base para fazer perguntas melhores, e não como motivo para assinar algo sem revisar o restante.'
         ],
         bullets: [
-          'nao substitui o contrato nem o CET',
-          'nao elimina a necessidade de comparar propostas',
-          'serve para apoiar a decisao, nao para automatizar a escolha'
+          'Não substitui o contrato nem o CET',
+          'Não elimina a necessidade de comparar propostas',
+          'Serve para apoiar a decisão, não para automatizar a escolha'
         ]
       }
     ],
     faq: [
       {
-        question: 'A Calculadora do Cidadao e confiavel?',
+        question: 'A Calculadora do Cidadão é confiável?',
         answer:
-          'Sim. Ela e uma ferramenta oficial do Banco Central e funciona bem como apoio para simulacoes simples.'
+          'Sim. Ela é uma ferramenta oficial do Banco Central e funciona bem como apoio para simulações simples.'
       },
       {
         question: 'Ela mostra exatamente o valor do meu contrato?',
         answer:
-          'Nem sempre. O resultado depende dos dados inseridos e nao substitui custos extras que podem estar no contrato.'
+          'Nem sempre. O resultado depende dos dados inseridos e não substitui custos extras que podem estar no contrato.'
       },
       {
-        question: 'Vale usar antes de contratar emprestimo?',
+        question: 'Vale usar antes de contratar empréstimo?',
         answer:
-          'Sim. A simulacao ajuda a enxergar melhor o impacto da taxa e do prazo antes de aceitar a proposta.'
+          'Sim. A simulação ajuda a enxergar melhor o impacto da taxa e do prazo antes de aceitar a proposta.'
       }
     ],
     conclusion: [
-      'A Calculadora do Cidadao e util porque devolve a comparacao para a sua mao. Em vez de confiar apenas no discurso comercial, voce consegue testar numeros e ver o efeito real de taxa, prazo e rendimento.',
-      'Quanto mais clara estiver a pergunta que voce quer responder, mais util sera a simulacao. O segredo nao esta em fazer conta dificil, e sim em usar a ferramenta para decidir com mais calma.'
+      'A Calculadora do Cidadão é útil porque devolve a comparação para a sua mão. Em vez de confiar apenas no discurso comercial, você consegue testar números e ver o efeito real de taxa, prazo e rendimento.',
+      'Quanto mais clara estiver a pergunta que você quer responder, mais útil será a simulação. O segredo não está em fazer conta difícil, e sim em usar a ferramenta para decidir com mais calma.'
     ],
     internalLinks: [
       {
         path: '/taxa-cdi',
         title: 'Taxa CDI',
-        anchor: 'Entenda uma das referencias mais usadas em simulacoes de rendimento.'
+        anchor: 'Entenda uma das referências mais usadas em simulações de rendimento.'
       },
       {
         path: '/carro-sem-entrada',
         title: 'Carro sem entrada',
-        anchor: 'Veja como a simulacao ajuda a comparar custo total no financiamento.'
+        anchor: 'Veja como a simulação ajuda a comparar o custo total no financiamento.'
       },
       {
         path: '/calculadora-de-rescisao-por-pedido-de-demissao',
-        title: 'Calculadora de rescisao por pedido de demissao',
+        title: 'Calculadora de rescisão por pedido de demissão',
         anchor: 'Confira outro exemplo de ferramenta que ajuda a antecipar valores.'
       }
     ]
   },
   'calculadora-de-rescisao-por-pedido-de-demissao': {
     category: 'Direitos Trabalhistas',
-    title: 'Calculadora de rescisao por pedido de demissao: o que entra na conta',
-    h1: 'Calculadora de rescisao por pedido de demissao: o que entra na conta',
-    metaTitle: 'Calculadora de rescisao por pedido de demissao',
-    seoTitle: 'Calculadora de rescisao por pedido de demissao | Cote Juros',
+    title: 'Calculadora de rescisão por pedido de demissão: o que entra na conta',
+    h1: 'Calculadora de rescisão por pedido de demissão: o que entra na conta',
+    metaTitle: 'Calculadora de rescisão por pedido de demissão',
+    seoTitle: 'Calculadora de rescisão por pedido de demissão | Cote Juros',
     metaDescription:
-      'Entenda o que entra na rescisao por pedido de demissao, quais verbas costumam ser pagas e como usar a calculadora para ter uma estimativa mais clara.',
+      'Entenda o que entra na rescisão por pedido de demissão, quais verbas costumam ser pagas e como usar a calculadora para ter uma estimativa mais clara.',
     summary:
-      'Quem pede demissao precisa saber o que entra e o que fica de fora na rescisao. Veja como usar a calculadora e interpretar o resultado com mais seguranca.',
+      'Quem pede demissão precisa saber o que entra e o que fica de fora na rescisão. Veja como usar a calculadora e interpretar o resultado com mais segurança.',
     canonicalUrl: 'https://www.cotejuros.com.br/calculadora-de-rescisao-por-pedido-de-demissao/',
     coverImage: BLOG_PRIORITY_IMAGE_MANIFEST['calculadora-de-rescisao-por-pedido-de-demissao'],
     coverImageAlt:
-      'Pessoa analisando valores de rescisao por pedido de demissao em planilha.',
+      'Pessoa analisando valores de rescisão por pedido de demissão em planilha.',
     intro: [
-      'Pedir demissao costuma envolver mais do que uma decisao profissional. Em muitos casos, a duvida imediata e financeira: quanto vou receber e o que realmente entra nessa conta?',
-      'A calculadora de rescisao ajuda a organizar essa resposta, mas o resultado so faz sentido quando voce entende quais verbas se aplicam ao pedido de demissao e quais direitos mudam em relacao a outros tipos de desligamento.'
+      'Pedir demissão costuma envolver mais do que uma decisão profissional. Em muitos casos, a dúvida imediata é financeira: quanto vou receber e o que realmente entra nessa conta?',
+      'A calculadora de rescisão ajuda a organizar essa resposta, mas o resultado só faz sentido quando você entende quais verbas se aplicam ao pedido de demissão e quais direitos mudam em relação a outros tipos de desligamento.'
     ],
     sections: [
       {
-        heading: 'O que normalmente entra na rescisao',
+        heading: 'O que normalmente entra na rescisão',
         paragraphs: [
-          'No pedido de demissao, costumam entrar saldo de salario, ferias vencidas e proporcionais com adicional, alem do decimo terceiro proporcional. Dependendo do caso, tambem pode haver desconto do aviso previo quando ele nao e cumprido.',
-          'Essa combinacao varia conforme tempo de casa, data do desligamento e situacoes especificas do contrato. Por isso, a calculadora deve ser tratada como estimativa inicial, nao como valor final automatico.'
+          'No pedido de demissão, costumam entrar saldo de salário, férias vencidas e proporcionais com adicional, além do décimo terceiro proporcional. Dependendo do caso, também pode haver desconto do aviso prévio quando ele não é cumprido.',
+          'Essa combinação varia conforme tempo de casa, data do desligamento e situações específicas do contrato. Por isso, a calculadora deve ser tratada como estimativa inicial, não como valor final automático.'
         ],
         bullets: [
-          'saldo de salario',
-          'ferias vencidas e proporcionais, quando houver',
-          'decimo terceiro proporcional'
+          'Saldo de salário',
+          'Férias vencidas e proporcionais, quando houver',
+          'Décimo terceiro proporcional'
         ]
       },
       {
         heading: 'O que muda quando o trabalhador pede para sair',
         paragraphs: [
-          'Ao pedir demissao, o trabalhador em geral nao recebe multa de 40% do FGTS e nao acessa seguro-desemprego. Esse e um dos pontos que mais confundem quem compara a propria situacao com a de uma demissao sem justa causa.',
-          'Por isso, antes de formalizar o pedido, vale entender se a troca de emprego ou a transicao planejada esta financeiramente preparada.'
+          'Ao pedir demissão, o trabalhador em geral não recebe multa de 40% do FGTS e não acessa seguro-desemprego. Esse é um dos pontos que mais confundem quem compara a própria situação com a de uma demissão sem justa causa.',
+          'Por isso, antes de formalizar o pedido, vale entender se a troca de emprego ou a transição planejada está financeiramente preparada.'
         ],
         bullets: [
-          'nao ha multa de 40% do FGTS no pedido de demissao',
-          'seguro-desemprego normalmente nao se aplica',
-          'planejamento de caixa faz diferenca nessa transicao'
+          'Não há multa de 40% do FGTS no pedido de demissão',
+          'Seguro-desemprego normalmente não se aplica',
+          'Planejamento de caixa faz diferença nessa transição'
         ]
       },
       {
-        heading: 'Como usar a calculadora com mais precisao',
+        heading: 'Como usar a calculadora com mais precisão',
         paragraphs: [
-          'Preencha data de admissao, salario, data de saida e informacoes sobre ferias com bastante cuidado. Pequenos erros nesses campos mudam o resultado.',
-          'Se houver variacoes salariais recentes, banco de horas, descontos ou regras especificas de convenio, o ideal e confrontar a simulacao com o RH ou com um especialista.'
+          'Preencha data de admissão, salário, data de saída e informações sobre férias com bastante cuidado. Pequenos erros nesses campos mudam o resultado.',
+          'Se houver variações salariais recentes, banco de horas, descontos ou regras específicas de convênio, o ideal é confrontar a simulação com o RH ou com um especialista.'
         ],
         bullets: [
-          'confira datas e salario antes de calcular',
-          'trate o valor como estimativa inicial',
-          'revise pontos especificos com apoio profissional quando necessario'
+          'Confira datas e salário antes de calcular',
+          'Trate o valor como estimativa inicial',
+          'Revise pontos específicos com apoio profissional quando necessário'
         ]
       },
       {
-        heading: 'Quando a simulacao ajuda de verdade',
+        heading: 'Quando a simulação ajuda de verdade',
         paragraphs: [
-          'A calculadora e especialmente util para planejamento. Ela ajuda a decidir o melhor momento de sair, a organizar contas do mes e a entender se a transicao entre empregos esta financeiramente viavel.',
-          'Ela tambem evita surpresa na conversa final, porque ja antecipa o que tende a aparecer e o que nao deve entrar na rescisao.'
+          'A calculadora é especialmente útil para planejamento. Ela ajuda a decidir o melhor momento de sair, a organizar contas do mês e a entender se a transição entre empregos está financeiramente viável.',
+          'Ela também evita surpresa na conversa final, porque já antecipa o que tende a aparecer e o que não deve entrar na rescisão.'
         ],
         bullets: [
-          'serve para planejamento da saida',
-          'ajuda a organizar caixa no periodo de transicao',
-          'reduz duvidas sobre verbas mais comuns'
+          'Serve para planejamento da saída',
+          'Ajuda a organizar o caixa no período de transição',
+          'Reduz dúvidas sobre verbas mais comuns'
         ]
       }
     ],
     faq: [
       {
-        question: 'Quem pede demissao recebe FGTS com multa de 40%?',
+        question: 'Quem pede demissão recebe FGTS com multa de 40%?',
         answer:
-          'Nao. Essa multa e ligada a dispensa sem justa causa, nao ao pedido de demissao.'
+          'Não. Essa multa é ligada à dispensa sem justa causa, não ao pedido de demissão.'
       },
       {
         question: 'A calculadora mostra exatamente quanto vou receber?',
         answer:
-          'Ela oferece uma boa estimativa, mas descontos, acordos e situacoes especificas podem alterar o valor final.'
+          'Ela oferece uma boa estimativa, mas descontos, acordos e situações específicas podem alterar o valor final.'
       },
       {
-        question: 'Preciso considerar aviso previo na conta?',
+        question: 'Preciso considerar aviso prévio na conta?',
         answer:
-          'Sim. Se ele nao for cumprido e nao houver dispensa, o valor pode influenciar o acerto.'
+          'Sim. Se ele não for cumprido e não houver dispensa, o valor pode influenciar o acerto.'
       }
     ],
     conclusion: [
-      'A calculadora de rescisao por pedido de demissao e uma ferramenta valiosa para quem quer sair do improviso e entender o impacto financeiro da decisao.',
-      'Quanto melhor voce compreender o que entra e o que fica de fora, mais segura fica a transicao para o proximo passo profissional.'
+      'A calculadora de rescisão por pedido de demissão é uma ferramenta valiosa para quem quer sair do improviso e entender o impacto financeiro da decisão.',
+      'Quanto melhor você compreender o que entra e o que fica de fora, mais segura fica a transição para o próximo passo profissional.'
     ],
     internalLinks: [
       {
         path: '/calculo-de-rescisao-trabalhista',
-        title: 'Calculo de rescisao trabalhista',
-        anchor: 'Compare com um guia mais amplo sobre verbas rescisorias.'
+        title: 'Cálculo de rescisão trabalhista',
+        anchor: 'Compare com um guia mais amplo sobre verbas rescisórias.'
       },
       {
         path: '/calculadora-do-cidadao',
-        title: 'Calculadora do Cidadao',
-        anchor: 'Veja como usar simulacoes em outras decisoes financeiras.'
+        title: 'Calculadora do Cidadão',
+        anchor: 'Veja como usar simulações em outras decisões financeiras.'
       },
       {
         path: '/reserva-de-emergencia',
-        title: 'Reserva de emergencia',
-        anchor: 'Entenda por que ter folga de caixa ajuda nas mudancas de trabalho.'
+        title: 'Reserva de emergência',
+        anchor: 'Entenda por que ter folga de caixa ajuda nas mudanças de trabalho.'
       }
     ]
   },
   'calculo-de-rescisao-trabalhista': {
     category: 'Direitos Trabalhistas',
-    title: 'Calculo de rescisao trabalhista: o que considerar antes de conferir o acerto',
-    h1: 'Calculo de rescisao trabalhista: o que considerar antes de conferir o acerto',
-    metaTitle: 'Calculo de rescisao trabalhista: guia para conferir o acerto',
-    seoTitle: 'Calculo de rescisao trabalhista: guia para conferir o acerto | Cote Juros',
+    title: 'Cálculo de rescisão trabalhista: o que considerar antes de conferir o acerto',
+    h1: 'Cálculo de rescisão trabalhista: o que considerar antes de conferir o acerto',
+    metaTitle: 'Cálculo de rescisão trabalhista: guia para conferir o acerto',
+    seoTitle: 'Cálculo de rescisão trabalhista: guia para conferir o acerto | Cote Juros',
     metaDescription:
-      'Veja como funciona o calculo de rescisao trabalhista, quais verbas costumam entrar no acerto e o que muda conforme o tipo de desligamento.',
+      'Veja como funciona o cálculo de rescisão trabalhista, quais verbas costumam entrar no acerto e o que muda conforme o tipo de desligamento.',
     summary:
-      'O calculo de rescisao muda conforme o tipo de desligamento. Entenda o que entra no acerto e como conferir os principais pontos sem se perder.',
+      'O cálculo de rescisão muda conforme o tipo de desligamento. Entenda o que entra no acerto e como conferir os principais pontos sem se perder.',
     canonicalUrl: 'https://www.cotejuros.com.br/calculo-de-rescisao-trabalhista/',
     coverImage: BLOG_PRIORITY_IMAGE_MANIFEST['calculo-de-rescisao-trabalhista'],
     coverImageAlt:
-      'Documento de rescisao trabalhista ao lado de calculadora e holerites.',
+      'Documento de rescisão trabalhista ao lado de calculadora e holerites.',
     intro: [
-      'Conferir a rescisao trabalhista costuma parecer complicado porque cada desligamento combina verbas, descontos e regras diferentes. Ainda assim, entender a estrutura do acerto ajuda muito a identificar se a conta faz sentido.',
-      'Voce nao precisa dominar cada detalhe tecnico para ler melhor a rescisao. O essencial e saber o que normalmente entra, o que muda conforme a forma de desligamento e quais pontos merecem revisao com mais cuidado.'
+      'Conferir a rescisão trabalhista costuma parecer complicado porque cada desligamento combina verbas, descontos e regras diferentes. Ainda assim, entender a estrutura do acerto ajuda muito a identificar se a conta faz sentido.',
+      'Você não precisa dominar cada detalhe técnico para ler melhor a rescisão. O essencial é saber o que normalmente entra, o que muda conforme a forma de desligamento e quais pontos merecem revisão com mais cuidado.'
     ],
     sections: [
       {
         heading: 'Quais verbas costumam aparecer no acerto',
         paragraphs: [
-          'Entre os itens mais comuns estao saldo de salario, ferias vencidas e proporcionais, adicional de um terco, decimo terceiro proporcional e eventuais valores ligados a aviso previo. Dependendo do caso, tambem entram FGTS e multa rescisoria.',
-          'A presenca ou ausencia de cada verba depende do tipo de desligamento. E por isso que comparar acertos de colegas nem sempre ajuda.'
+          'Entre os itens mais comuns estão saldo de salário, férias vencidas e proporcionais, adicional de um terço, décimo terceiro proporcional e eventuais valores ligados a aviso prévio. Dependendo do caso, também entram FGTS e multa rescisória.',
+          'A presença ou ausência de cada verba depende do tipo de desligamento. É por isso que comparar acertos de colegas nem sempre ajuda.'
         ],
         bullets: [
-          'saldo de salario',
-          'ferias e decimo terceiro proporcionais',
+          'Saldo de salário',
+          'Férias e décimo terceiro proporcionais',
           'FGTS e multa, quando a modalidade permitir'
         ]
       },
       {
         heading: 'O que muda conforme o tipo de desligamento',
         paragraphs: [
-          'Pedido de demissao, demissao sem justa causa, demissao por justa causa e acordo entre as partes produzem efeitos diferentes na rescisao. O erro mais comum e assumir que todos os desligamentos geram os mesmos pagamentos.',
-          'Por isso, a primeira pergunta deve ser: qual foi a modalidade da saida? So depois disso faz sentido interpretar a planilha ou a calculadora.'
+          'Pedido de demissão, demissão sem justa causa, demissão por justa causa e acordo entre as partes produzem efeitos diferentes na rescisão. O erro mais comum é assumir que todos os desligamentos geram os mesmos pagamentos.',
+          'Por isso, a primeira pergunta deve ser: qual foi a modalidade da saída? Só depois disso faz sentido interpretar a planilha ou a calculadora.'
         ],
         bullets: [
-          'cada modalidade tem combinacao propria de verbas',
-          'FGTS, aviso e seguro-desemprego nao seguem a mesma regra em todos os casos',
-          'o tipo de desligamento define a leitura correta do acerto'
+          'Cada modalidade tem combinação própria de verbas',
+          'FGTS, aviso e seguro-desemprego não seguem a mesma regra em todos os casos',
+          'O tipo de desligamento define a leitura correta do acerto'
         ]
       },
       {
-        heading: 'Como revisar o calculo com mais seguranca',
+        heading: 'Como revisar o cálculo com mais segurança',
         paragraphs: [
-          'Comece checando datas, salario base, periodo de ferias e quantidade de meses considerados no decimo terceiro. Depois confira se o tipo de desligamento usado na conta bate com o seu caso.',
-          'Se houver variavel salarial, comissoes, banco de horas, adicional noturno ou regra de convenio, a revisao precisa ser ainda mais atenta.'
+          'Comece checando datas, salário base, período de férias e quantidade de meses considerados no décimo terceiro. Depois confira se o tipo de desligamento usado na conta bate com o seu caso.',
+          'Se houver variável salarial, comissões, banco de horas, adicional noturno ou regra de convênio, a revisão precisa ser ainda mais atenta.'
         ],
         bullets: [
-          'confira dados basicos antes de olhar os valores',
-          'revise a modalidade do desligamento',
-          'questoes especificas pedem validacao adicional'
+          'Confira dados básicos antes de olhar os valores',
+          'Revise a modalidade do desligamento',
+          'Questões específicas pedem validação adicional'
         ]
       },
       {
-        heading: 'Quando buscar apoio para nao assinar com duvida',
+        heading: 'Quando buscar apoio para não assinar com dúvida',
         paragraphs: [
-          'Se os valores estiverem muito distantes da sua expectativa, se houver descontos que voce nao entendeu ou se o caso envolver situacoes mais complexas, vale pedir esclarecimento ao RH ou orientacao especializada.',
-          'Assinar um acerto sem entender a composicao dos valores pode aumentar inseguranca justamente em um momento que ja costuma ser delicado.'
+          'Se os valores estiverem muito distantes da sua expectativa, se houver descontos que você não entendeu ou se o caso envolver situações mais complexas, vale pedir esclarecimento ao RH ou orientação especializada.',
+          'Assinar um acerto sem entender a composição dos valores pode aumentar a insegurança justamente em um momento que já costuma ser delicado.'
         ],
         bullets: [
-          'pergunte antes de assinar quando algo nao estiver claro',
-          'guarde documentos e comprovantes',
-          'busque apoio em casos com muitas variaveis'
+          'Pergunte antes de assinar quando algo não estiver claro',
+          'Guarde documentos e comprovantes',
+          'Busque apoio em casos com muitas variáveis'
         ]
       }
     ],
     faq: [
       {
-        question: 'Toda rescisao inclui multa de 40% do FGTS?',
+        question: 'Toda rescisão inclui multa de 40% do FGTS?',
         answer:
-          'Nao. Essa multa depende da modalidade do desligamento e normalmente aparece na demissao sem justa causa.'
+          'Não. Essa multa depende da modalidade do desligamento e normalmente aparece na demissão sem justa causa.'
       },
       {
         question: 'Posso usar calculadora online para conferir o acerto?',
         answer:
-          'Sim, como estimativa. Mas o resultado precisa ser comparado com as informacoes reais do contrato e do desligamento.'
+          'Sim, como estimativa. Mas o resultado precisa ser comparado com as informações reais do contrato e do desligamento.'
       },
       {
-        question: 'O que fazer se eu nao entender os descontos?',
+        question: 'O que fazer se eu não entender os descontos?',
         answer:
-          'Peca detalhamento ao RH e, se necessario, busque orientacao profissional antes de concluir a conferencia.'
+          'Peça detalhamento ao RH e, se necessário, busque orientação profissional antes de concluir a conferência.'
       }
     ],
     conclusion: [
-      'O calculo de rescisao trabalhista fica menos confuso quando voce separa a conta em blocos: verbas basicas, modalidade do desligamento e descontos aplicados.',
-      'Essa leitura mais organizada nao substitui apoio tecnico quando o caso e complexo, mas ajuda muito a evitar que voce confira o acerto no escuro.'
+      'O cálculo de rescisão trabalhista fica menos confuso quando você separa a conta em blocos: verbas básicas, modalidade do desligamento e descontos aplicados.',
+      'Essa leitura mais organizada não substitui apoio técnico quando o caso é complexo, mas ajuda muito a evitar que você confira o acerto no escuro.'
     ],
     internalLinks: [
       {
         path: '/calculadora-de-rescisao-por-pedido-de-demissao',
-        title: 'Calculadora de rescisao por pedido de demissao',
-        anchor: 'Veja um recorte especifico para quem decidiu sair do emprego.'
+        title: 'Calculadora de rescisão por pedido de demissão',
+        anchor: 'Veja um recorte específico para quem decidiu sair do emprego.'
       },
       {
         path: '/calculadora-do-cidadao',
-        title: 'Calculadora do Cidadao',
-        anchor: 'Use simulacoes para ganhar mais clareza em outras contas do dia a dia.'
+        title: 'Calculadora do Cidadão',
+        anchor: 'Use simulações para ganhar mais clareza em outras contas do dia a dia.'
       },
       {
         path: '/reserva-de-emergencia',
-        title: 'Reserva de emergencia',
-        anchor: 'Planejamento de caixa ajuda bastante em periodos de transicao profissional.'
+        title: 'Reserva de emergência',
+        anchor: 'Planejamento de caixa ajuda bastante em períodos de transição profissional.'
       }
     ]
   }

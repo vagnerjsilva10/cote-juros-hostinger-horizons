@@ -1,4 +1,4 @@
-import { BLOG_PRIORITY_IMAGE_MANIFEST } from '@/data/blogEditorialOverrides.js';
+import { BLOG_PRIORITY_IMAGE_LIBRARY, BLOG_PRIORITY_IMAGE_MANIFEST } from '@/data/blogEditorialOverrides.js';
 
 const normalizeText = (value = '') =>
   String(value)
@@ -216,6 +216,7 @@ export const buildGeneratedArticleImage = (article = {}) => {
 
 export const resolveArticleImageSources = (article = {}) => {
   const slug = slugify(article.slug || article.title || article.id || 'artigo');
+  const isPriorityArticle = Boolean(BLOG_PRIORITY_IMAGE_LIBRARY[slug]);
   const manifestImage = BLOG_ARTICLE_IMAGE_MANIFEST[slug];
   const explicitImageCandidates = [article.coverImage, article.image, article.imageUrl, article.featuredImage].filter(isRenderableImage);
   const stockImage = buildStockProviderImage(article);
@@ -223,14 +224,21 @@ export const resolveArticleImageSources = (article = {}) => {
   const globalFallback = BLOG_CATEGORY_FALLBACKS.default;
   const generatedFallback = buildGeneratedArticleImage(article);
 
-  const ordered = [
-    manifestImage,
-    ...explicitImageCandidates.filter((image) => !String(image).startsWith('data:image/')),
-    stockImage,
-    categoryFallback,
-    globalFallback,
-    generatedFallback
-  ].filter(Boolean);
+  const ordered = isPriorityArticle
+    ? [
+        manifestImage,
+        ...explicitImageCandidates.filter((image) => !String(image).startsWith('data:image/')),
+        categoryFallback,
+        globalFallback
+      ].filter(Boolean)
+    : [
+        manifestImage,
+        ...explicitImageCandidates.filter((image) => !String(image).startsWith('data:image/')),
+        stockImage,
+        categoryFallback,
+        globalFallback,
+        generatedFallback
+      ].filter(Boolean);
 
   const unique = ordered.filter((value, index) => ordered.indexOf(value) === index);
 
