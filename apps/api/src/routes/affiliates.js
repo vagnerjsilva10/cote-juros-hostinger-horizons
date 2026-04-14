@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { asyncHandler } from '../lib/http.js';
 import { AffiliateService } from '../services/affiliateService.js';
 import { AwinService } from '../services/awinService.js';
+import { AdmitadService } from '../services/admitadService.js';
 
 const router = express.Router();
 
@@ -68,6 +69,31 @@ router.get(
         configured: AwinService.isConfigured()
       }
     });
+  })
+);
+
+router.get(
+  '/admitad/status',
+  asyncHandler(async (_req, res) => {
+    res.json({
+      data: {
+        configured: AdmitadService.isConfigured()
+      }
+    });
+  })
+);
+
+router.post(
+  '/admitad/sync',
+  asyncHandler(async (req, res) => {
+    const schema = z.object({
+      merchantQuery: z.string().optional(),
+      limit: z.coerce.number().int().positive().max(100).optional()
+    });
+
+    const payload = schema.parse(req.body || {});
+    const data = await AdmitadService.syncProgrammes(payload);
+    res.status(201).json({ data });
   })
 );
 

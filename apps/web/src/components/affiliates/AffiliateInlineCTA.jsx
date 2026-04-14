@@ -17,7 +17,7 @@ function AffiliateInlineCTA({ offer, title = 'Compare uma opção relacionada', 
   if (!offer) return null;
 
   const accent = offer?.metadata?.accentColor || '#0F766E';
-  const logoUrl = offer?.metadata?.logoUrl || '';
+  const logoUrl = offer?.imageUrl || offer?.metadata?.logoUrl || '';
 
   return (
     <section

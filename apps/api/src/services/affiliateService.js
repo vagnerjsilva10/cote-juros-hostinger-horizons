@@ -1,5 +1,6 @@
 import { getPrisma } from '../lib/prisma.js';
 import { AwinService } from './awinService.js';
+import { AdmitadService } from './admitadService.js';
 
 const normalizePath = (value = '') => {
   if (!value) return '/';
@@ -25,14 +26,17 @@ const normalizeAffiliateOffer = (offer) => ({
   id: offer.id,
   network: offer.network,
   advertiserId: offer.advertiserId,
+  externalProgramId: offer.externalProgramId,
   merchantName: offer.merchantName,
   offerSlug: offer.offerSlug,
   title: offer.title,
   category: offer.category,
   description: offer.description,
   audience: offer.audience,
+  imageUrl: offer.imageUrl,
   destinationUrl: offer.destinationUrl,
   trackingUrl: offer.trackingUrl,
+  payoutText: offer.payoutText,
   ctaText: offer.ctaText,
   disclosureText: offer.disclosureText,
   priority: offer.priority,
@@ -130,11 +134,18 @@ export class AffiliateService {
       offer: normalizeAffiliateOffer(offer),
       clickref,
       device,
-      redirectUrl: AwinService.buildTrackingUrl({
-        trackingUrl: offer.trackingUrl,
-        destinationUrl: offer.destinationUrl,
-        clickref
-      })
+      redirectUrl:
+        offer.network === 'admitad'
+          ? AdmitadService.buildTrackingUrl({
+            trackingUrl: offer.trackingUrl,
+            destinationUrl: offer.destinationUrl,
+            clickref
+          })
+          : AwinService.buildTrackingUrl({
+            trackingUrl: offer.trackingUrl,
+            destinationUrl: offer.destinationUrl,
+            clickref
+          })
     };
   }
 }

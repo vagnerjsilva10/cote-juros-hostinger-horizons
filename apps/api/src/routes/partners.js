@@ -38,4 +38,28 @@ router.post(
   })
 );
 
+router.post(
+  '/mock-api',
+  asyncHandler(async (req, res) => {
+    const schema = z.object({
+      partnerId: z.string(),
+      leadId: z.string().optional(),
+      sourcePage: z.string(),
+      productType: z.enum(['loan', 'credit_card', 'financing']).optional(),
+      profile: z.string().optional()
+    });
+
+    const payload = schema.parse(req.body || {});
+    const result = await PartnerService.submitMockApiLead({
+      partnerId: payload.partnerId,
+      leadId: payload.leadId,
+      sourcePage: payload.sourcePage,
+      productType: payload.productType,
+      profile: payload.profile
+    });
+
+    res.status(202).json({ data: result });
+  })
+);
+
 export default router;

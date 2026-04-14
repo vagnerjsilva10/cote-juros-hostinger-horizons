@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ArrowRight, Car, Home, ShieldCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PageHero from '@/components/PageHero.jsx';
 import AffiliateOfferGrid from '@/components/affiliates/AffiliateOfferGrid.jsx';
 import AffiliateInlineCTA from '@/components/affiliates/AffiliateInlineCTA.jsx';
+import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import { useAffiliatePlacements } from '@/hooks/useAffiliatePlacements.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
@@ -18,10 +18,15 @@ import { affiliateRedirectService } from '@/platform/services/affiliateRedirectS
 
 function FinanciamentoPage() {
   const [financingData, setFinancingData] = useState([]);
+  const [banksData, setBanksData] = useState([]);
+  const [quickModalOpen, setQuickModalOpen] = useState(false);
   const affiliatePlacements = useAffiliatePlacements({ pageSlug: '/financiamento', productType: 'financing' });
 
   useEffect(() => {
-    portalApi.getOffers({ productType: 'financing' }).then(setFinancingData);
+    Promise.all([portalApi.getBanks(), portalApi.getOffers({ productType: 'financing' })]).then(([banks, offers]) => {
+      setBanksData(Array.isArray(banks) ? banks : []);
+      setFinancingData(Array.isArray(offers) ? offers : []);
+    });
   }, []);
 
   const bestAnnualRate = useMemo(() => {
@@ -36,7 +41,8 @@ function FinanciamentoPage() {
   }, [financingData]);
 
   const handleSimulate = async (offer) => {
-    const destinationUrl = 'https://finance.cotejuros.com.br/quiz';
+    const bank = banksData.find((item) => item.id === offer.bankId);
+    const destinationUrl = bank?.website ? `https://${bank.website}` : 'https://www.cotejuros.com.br/financiamento';
 
     await trackingService.trackOfferClick({
       sourcePage: '/financiamento',
@@ -55,7 +61,7 @@ function FinanciamentoPage() {
       productType: 'financing'
     });
 
-    toast.success(`Interesse registrado para simulação com ${offer.bankName}.`);
+    toast.success(`Interesse registrado para simulacao com ${offer.bankName}.`);
     window.location.href = redirect.resolvedUrl;
   };
 
@@ -68,13 +74,13 @@ function FinanciamentoPage() {
       });
 
       if (!result?.redirectUrl) {
-        toast.error('Essa oferta ainda não possui link disponível.');
+        toast.error('Essa oferta ainda nao possui link disponivel.');
         return;
       }
 
       window.location.href = result.redirectUrl;
     } catch (error) {
-      toast.error(error.message || 'Não foi possível abrir esta oferta agora.');
+      toast.error(error.message || 'Nao foi possivel abrir esta oferta agora.');
     }
   };
 
@@ -99,7 +105,7 @@ function FinanciamentoPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="rounded-[12px] border border-border bg-background-secondary p-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor máximo</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor maximo</p>
                   <p className="mt-2 text-sm font-semibold text-foreground">R$ {(item.maxValue / 1000).toFixed(0)}k</p>
                 </div>
                 <div className="rounded-[12px] border border-border bg-background-secondary p-4">
@@ -109,7 +115,7 @@ function FinanciamentoPage() {
               </div>
 
               <div className="rounded-[12px] border border-border bg-background-secondary p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Entrada mínima</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Entrada minima</p>
                 <p className="mt-2 text-sm text-muted-foreground">A partir de {item.minDownPayment}% do valor do bem.</p>
               </div>
 
@@ -127,21 +133,21 @@ function FinanciamentoPage() {
     <>
       <Helmet>
         <title>Comparador de financiamento - Cote Juros</title>
-        <meta name="description" content="Compare financiamento de imóveis e veículos com leitura premium de taxa, prazo e entrada mínima." />
+        <meta name="description" content="Compare financiamento de imoveis e veiculos com leitura premium de taxa, prazo e entrada minima." />
       </Helmet>
 
       <PageHero
         badge="Comparador de financiamentos"
         centered
         title="Compare financiamento com clareza de taxa, entrada e prazo."
-        subtitle="Compare bancos, taxas e prazos para descobrir qual financiamento faz mais sentido para você."
+        subtitle="Compare bancos, taxas e prazos para descobrir qual financiamento faz mais sentido para voce."
       >
         <div className="flex flex-col justify-center gap-3 sm:flex-row">
-          <Link to="/diagnostico-financeiro">
-            <Button size="lg">Analisar perfil completo</Button>
-          </Link>
+          <Button size="lg" onClick={() => setQuickModalOpen(true)}>
+            Ver minhas opcoes agora
+          </Button>
           <a href="#resultados-financiamento">
-            <Button size="lg" variant="outline">Ver opções agora</Button>
+            <Button size="lg" variant="outline">Ver opcoes agora</Button>
           </a>
         </div>
       </PageHero>
@@ -161,7 +167,7 @@ function FinanciamentoPage() {
             <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{maxTerm} meses</p>
           </div>
           <div className="interactive-card px-5 py-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Leitura de condições</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Leitura de condicoes</p>
             <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">Completa</p>
           </div>
         </div>
@@ -171,7 +177,7 @@ function FinanciamentoPage() {
         <div className="page-shell py-8">
           <AffiliateOfferGrid
             offers={affiliatePlacements.below_hero}
-            title="Condições relacionadas para analisar junto com seu financiamento"
+            title="Condicoes relacionadas para analisar junto com seu financiamento"
             eyebrow="Entenda os custos"
             onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
           />
@@ -183,11 +189,11 @@ function FinanciamentoPage() {
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="veiculos" className="gap-2">
               <Car className="h-4 w-4" />
-              Veículos
+              Veiculos
             </TabsTrigger>
             <TabsTrigger value="imobiliario" className="gap-2">
               <Home className="h-4 w-4" />
-              Imóveis
+              Imoveis
             </TabsTrigger>
           </TabsList>
 
@@ -196,7 +202,7 @@ function FinanciamentoPage() {
               <div className="flex items-start gap-3">
                 <ShieldCheck className="mt-0.5 h-5 w-5 text-primary" />
                 <p className="text-sm text-muted-foreground">
-                  Em geral, veículos mais novos costumam ter taxas menores e parcelas mais equilibradas.
+                  Em geral, veiculos mais novos costumam ter taxas menores e parcelas mais equilibradas.
                 </p>
               </div>
             </div>
@@ -208,7 +214,7 @@ function FinanciamentoPage() {
               <div className="flex items-start gap-3">
                 <ShieldCheck className="mt-0.5 h-5 w-5 text-primary" />
                 <p className="text-sm text-muted-foreground">
-                  No financiamento imobiliário, o uso do FGTS pode ajudar a reduzir a entrada quando disponível.
+                  No financiamento imobiliario, o uso do FGTS pode ajudar a reduzir a entrada quando disponivel.
                 </p>
               </div>
             </div>
@@ -220,7 +226,7 @@ function FinanciamentoPage() {
           <div className="mt-8">
             <AffiliateInlineCTA
               offer={affiliatePlacements.mid_content[0]}
-              title="Antes de seguir, compare uma opção relacionada"
+              title="Antes de seguir, compare uma opcao relacionada"
               onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
             />
           </div>
@@ -233,24 +239,29 @@ function FinanciamentoPage() {
             <div className="mb-8">
               <AffiliateOfferGrid
                 offers={affiliatePlacements.before_faq}
-                title="Mais uma leitura útil antes de decidir pelo contrato"
-                eyebrow="Veja condições"
+                title="Mais uma leitura util antes de decidir pelo contrato"
+                eyebrow="Veja condicoes"
                 onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
               />
             </div>
           ) : null}
 
           <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
-            <h2 className="mb-3">Quer validar seu financiamento com mais segurança?</h2>
+            <h2 className="mb-3">Quer entender qual caminho pode fazer mais sentido?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
-              O diagnóstico organiza sua capacidade de pagamento para você decidir com confiança antes de assumir um contrato de longo prazo.
+              Conte o basico sobre o seu momento e veja opcoes de credito com mais clareza antes de assumir uma parcela de longo prazo.
             </p>
-            <Link to="/diagnostico-financeiro">
-              <Button size="lg">Analisar perfil agora</Button>
-            </Link>
+            <Button size="lg" onClick={() => setQuickModalOpen(true)}>Ver minhas opcoes agora</Button>
           </div>
         </div>
       </section>
+
+      <QuickCreditFlowModal
+        isOpen={quickModalOpen}
+        onClose={() => setQuickModalOpen(false)}
+        sourcePage="/financiamento"
+        originLabel="financiamento"
+      />
     </>
   );
 }

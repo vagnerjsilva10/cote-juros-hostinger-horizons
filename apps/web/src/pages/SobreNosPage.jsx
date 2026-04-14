@@ -1,39 +1,59 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Award, Shield, Target, Users } from 'lucide-react';
+import { CheckCircle2, Handshake, Shield, Target } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import PageHero from '@/components/PageHero.jsx';
 
 function SobreNosPage() {
   const values = [
-    { icon: Target, title: 'Missão', description: 'Tornar a comparação de crédito mais legível, direta e menos cansativa para o usuário.' },
-    { icon: Users, title: 'Transparência', description: 'Explicamos custo, prazo e aderência sem criar artifícios visuais desnecessários.' },
-    { icon: Award, title: 'Qualidade', description: 'Dados atualizados e apresentação consistente ao longo de todo o sistema.' },
-    { icon: Shield, title: 'Segurança', description: 'Coleta mínima e cuidado com o tratamento das informações pessoais.' }
+    {
+      icon: Target,
+      title: 'Clareza primeiro',
+      description: 'Ajudamos voce a entender caminhos de credito antes de decidir para onde seguir.'
+    },
+    {
+      icon: Shield,
+      title: 'Sem promessa falsa',
+      description: 'Nao garantimos aprovacao, nao liberamos dinheiro diretamente e nao cobramos valor antecipado.'
+    },
+    {
+      icon: Handshake,
+      title: 'Proximo passo mais simples',
+      description: 'Quando uma opcao fizer sentido, direcionamos voce para a etapa seguinte com o parceiro.'
+    },
+    {
+      icon: CheckCircle2,
+      title: 'Cada produto no seu lugar',
+      description: 'Cote Juros foca em credito. Cote Finance e um produto separado para organizacao financeira.'
+    }
   ];
 
   return (
     <>
       <Helmet>
         <title>Sobre - Cote Juros</title>
+        <meta
+          name="description"
+          content="Entenda o papel da Cote Juros: ajudar voce a encontrar opcoes de credito com clareza, sem promessa de aprovacao e sem cobranca antecipada."
+        />
       </Helmet>
 
       <PageHero
-        badge="Empresa"
-        title="Uma camada de clareza entre o usuário e o mercado de crédito."
-        subtitle="A proposta da Cote Juros é simplificar leitura, comparação e decisão com uma interface mais tipográfica e menos carregada."
+        badge="Sobre a Cote Juros"
+        title="A gente ajuda voce a encontrar caminhos de credito com mais clareza."
+        subtitle="A Cote Juros nao e banco. Nosso papel e organizar informacoes, mostrar opcoes possiveis e conectar voce com a proxima etapa quando fizer sentido."
       />
 
       <section className="page-section bg-background">
         <div className="page-shell">
           <div className="mx-auto mb-16 max-w-3xl">
-            <h2 className="mb-4">Quem somos</h2>
+            <h2 className="mb-4">O que fazemos</h2>
             <div className="space-y-4 text-lg text-muted-foreground">
               <p>
-                A Cote Juros nasceu para transformar comparação financeira em uma experiência mais clara. Em vez de competir por excesso visual, a plataforma organiza informação para que taxa, prazo e custo total sejam os protagonistas.
+                Quem procura credito normalmente encontra muitas promessas, formularios longos e pouca clareza. A Cote Juros existe para deixar esse primeiro passo mais simples.
               </p>
               <p>
-                O redesenho reforça essa ideia com uma linguagem mais próxima de software premium: muito espaço, contraste controlado e tipografia guiando o fluxo.
+                Voce informa o basico, entende quais caminhos podem combinar com o seu perfil e decide se quer seguir. A analise final, as condicoes e a liberacao do credito sempre dependem do parceiro.
               </p>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import { portalApi } from '@/platform/services/portalApi.js';
 
-export const FINANCE_AI_QUIZ_URL = 'https://finance.cotejuros.com.br/quiz';
+export const FINANCE_AI_URL = 'https://finance.cotejuros.com.br';
 
 const parseUtmFromSearch = (search = '') => {
   const params = new URLSearchParams(search);
@@ -22,7 +22,7 @@ export const buildCoteFinanceAiUrl = ({
   simulationContext,
   timezone = 'America/Sao_Paulo'
 } = {}) => {
-  return FINANCE_AI_QUIZ_URL;
+  return FINANCE_AI_URL;
 };
 
 export const createFinanceAiRedirect = async ({
@@ -52,14 +52,14 @@ export const createFinanceAiRedirect = async ({
     utm
   });
 
-  if (deepLink?.url) {
-    try {
-      const parsed = new URL(deepLink.url);
-      if (parsed.origin === 'https://finance.cotejuros.com.br' && parsed.pathname === '/quiz') {
-        return { url: FINANCE_AI_QUIZ_URL, utm };
+    if (deepLink?.url) {
+      try {
+        const parsed = new URL(deepLink.url);
+      if (parsed.origin === 'https://finance.cotejuros.com.br') {
+        return { url: deepLink.url, utm };
       }
     } catch {
-      // Fall back to the standardized quiz entry.
+      // Fall back to the standardized product entry.
     }
   }
 

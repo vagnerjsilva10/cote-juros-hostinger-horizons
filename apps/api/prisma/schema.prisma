@@ -29,6 +29,7 @@ enum RecordStatus {
 
 enum AffiliateNetworkCode {
   awin
+  admitad
 }
 
 model Bank {
@@ -137,16 +138,28 @@ model SimulationLead {
   scoreRange       String?     @map("score_range")
   employmentStatus String?     @map("employment_status")
   hasRestriction   Boolean?    @map("has_restriction")
+  fullName         String?     @map("full_name")
+  phone            String?
+  profile          String?
+  partnerId        String?     @map("partner_id")
+  partnerName      String?     @map("partner_name")
+  deliveryMode     String?     @map("delivery_mode")
+  redirectUrl      String?     @map("redirect_url")
+  status           String      @default("new")
   utmSource        String?     @map("utm_source")
   utmMedium        String?     @map("utm_medium")
   utmCampaign      String?     @map("utm_campaign")
   originPage       String?     @map("origin_page")
   createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
 
   appIntegrationEvents AppIntegrationEvent[]
 
   @@index([productType])
   @@index([originPage])
+  @@index([profile])
+  @@index([partnerId])
+  @@index([status, createdAt])
   @@index([createdAt])
   @@map("simulation_leads")
 }
@@ -394,8 +407,13 @@ model AffiliateProgram {
   id            String       @id @default(cuid())
   networkId     String       @map("network_id")
   advertiserId  String       @map("advertiser_id")
+  externalProgramId String?  @map("external_program_id")
   merchantName  String       @map("merchant_name")
   programName   String?      @map("program_name")
+  description   String?
+  imageUrl      String?      @map("image_url")
+  category      String?
+  payoutText    String?      @map("payout_text")
   status        RecordStatus @default(active)
   metadata      Json?
   createdAt     DateTime     @default(now()) @map("created_at")
@@ -415,17 +433,20 @@ model AffiliateOffer {
   programId           String?              @map("program_id")
   network             AffiliateNetworkCode @default(awin)
   advertiserId        String               @map("advertiser_id")
+  externalProgramId   String?              @map("external_program_id")
   merchantName        String               @map("merchant_name")
   offerSlug           String               @unique @map("offer_slug")
   title               String
   category            String
   description         String
   audience            String?              @map("audience")
+  imageUrl            String?              @map("image_url")
   productType         ProductType?         @map("product_type")
   pageSlugs           String[]             @default([]) @map("page_slugs")
   placements          String[]             @default([])
   destinationUrl      String               @map("destination_url")
   trackingUrl         String               @map("tracking_url")
+  payoutText          String?              @map("payout_text")
   ctaText             String               @map("cta_text")
   disclosureText      String               @map("disclosure_text")
   isActive            Boolean              @default(true) @map("is_active")

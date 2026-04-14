@@ -1,0 +1,327 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { portalApi } from '@/platform/services/portalApi.js';
+import { trackingService } from '@/platform/services/trackingService.js';
+import { calculateQuickCreditProfile, resolveQuickCreditPartner } from '@/lib/quickCreditRouting.js';
+import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
+
+const EMPLOYMENT_OPTIONS = [
+  { value: 'CLT', label: 'CLT' },
+  { value: 'Autonomo', label: 'Autonomo' },
+  { value: 'Aposentado', label: 'Aposentado' },
+  { value: 'Empresario', label: 'Empresario' },
+  { value: 'Desempregado', label: 'Desempregado' }
+];
+
+const formatCurrencyInput = (value = '') => {
+  const digits = String(value || '').replace(/\D/g, '');
+  if (!digits) return '';
+  return (parseInt(digits, 10) / 100).toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  });
+};
+
+const parseCurrency = (value = '') => {
+  const digits = String(value || '').replace(/\D/g, '');
+  return digits ? parseInt(digits, 10) / 100 : 0;
+};
+
+const formatPhone = (value = '') => {
+  let next = String(value || '').replace(/\D/g, '').slice(0, 11);
+  if (next.length > 10) next = next.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+  else if (next.length > 6) next = next.replace(/(\d{2})(\d{4,5})(\d{1,4})/, '($1) $2-$3');
+  else if (next.length > 2) next = next.replace(/(\d{2})(\d{1,5})/, '($1) $2');
+  return next;
+};
+
+const emptyForm = {
+  amount: 'R$ 10.000,00',
+  income: 'R$ 5.000,00',
+  hasRestriction: '',
+  employmentStatus: '',
+  fullName: '',
+  phone: ''
+};
+
+export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', originLabel = 'credito' }) {
+  const navigate = useNavigate();
+  const [form, setForm] = useState(emptyForm);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setForm(emptyForm);
+    setIsSubmitting(false);
+  }, [isOpen]);
+
+  const updateField = (field, value) => {
+    setForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const isValid =
+    parseCurrency(form.amount) >= 1000 &&
+    parseCurrency(form.income) >= 1000 &&
+    typeof form.hasRestriction === 'string' &&
+    form.hasRestriction !== '' &&
+    Boolean(form.employmentStatus) &&
+    form.fullName.trim().length >= 3 &&
+    form.phone.replace(/\D/g, '').length >= 10;
+
+  const handleSubmit = async () => {
+    if (!isValid) {
+      toast.error('Preencha os campos para continuar.');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const utm = Object.fromEntries(new URLSearchParams(window.location.search).entries());
+
+      await trackingService.trackCtaClick({
+        sourcePage,
+        ctaId: `quick_credit_flow_${originLabel}`,
+        ctaLabel: 'Ver minhas opcoes agora',
+        productType: 'loan',
+        utm
+      });
+
+      const quickCreditPayload = {
+        sourcePage,
+        productType: 'loan',
+        amount: parseCurrency(form.amount),
+        income: parseCurrency(form.income),
+        hasDebt: form.hasRestriction === 'yes',
+        employmentType: form.employmentStatus,
+        fullName: form.fullName.trim(),
+        phone: form.phone.replace(/\D/g, ''),
+        originLabel,
+        utm
+      };
+
+      const backendJourney = await portalApi.startQuickCreditJourney(quickCreditPayload);
+
+      if (backendJourney?.lead?.id) {
+        onClose();
+        navigate('/proxima-etapa', {
+          state: {
+            leadResult: {
+              leadId: backendJourney.lead.id,
+              partnerId: backendJourney.partner?.id || backendJourney.lead.partnerId,
+              partnerName: backendJourney.partner?.name || backendJourney.lead.partnerName,
+              profile: backendJourney.profile || backendJourney.lead.profile,
+              deliveryMode: backendJourney.deliveryMode || backendJourney.lead.deliveryMode,
+              redirectUrl: backendJourney.redirectUrl || backendJourney.lead.redirectUrl || '',
+              status: backendJourney.status || backendJourney.lead.status,
+              sentAt: backendJourney.sentAt || backendJourney.lead.updatedAt || backendJourney.lead.createdAt
+            }
+          }
+        });
+        return;
+      }
+
+      const profile = calculateQuickCreditProfile({
+        income: parseCurrency(form.income),
+        hasRestriction: form.hasRestriction === 'yes',
+        employmentStatus: form.employmentStatus
+      });
+      const partner = resolveQuickCreditPartner(profile);
+
+      const lead = await portalApi.createQuickCreditLead({
+        ...quickCreditPayload,
+        profile,
+        partnerId: partner.id,
+        partnerName: partner.name,
+        deliveryMode: partner.mode,
+        originLabel,
+        status: partner.mode === 'mock_api' ? 'qualified' : 'sent',
+        utm
+      });
+
+      let redirectUrl = '';
+      if (partner.mode === 'tracking_link') {
+        const redirect = await partnerRedirectService.create({
+          partnerId: partner.id,
+          sourcePage,
+          destinationUrl: partner.destinationUrl,
+          productType: 'loan',
+          utm
+        });
+        redirectUrl = redirect?.resolvedUrl || '';
+        await portalApi.updateQuickCreditLead(lead.id, {
+          redirectUrl,
+          status: 'sent'
+        });
+      } else {
+        await portalApi.submitMockPartnerLead({
+          partnerId: partner.id,
+          leadId: lead.id,
+          sourcePage,
+          productType: 'loan',
+          profile
+        });
+        await portalApi.updateQuickCreditLead(lead.id, {
+          status: 'qualified'
+        });
+      }
+
+      onClose();
+      navigate('/proxima-etapa', {
+        state: {
+          leadResult: {
+            leadId: lead?.id || null,
+            partnerId: partner.id,
+            partnerName: partner.name,
+            profile,
+            deliveryMode: partner.mode,
+            redirectUrl,
+            status: partner.mode === 'mock_api' ? 'qualified' : 'sent',
+            sentAt: new Date().toISOString()
+          }
+        }
+      });
+    } catch (error) {
+      toast.error(error.message || 'Nao foi possivel continuar agora.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="w-[calc(100vw-1.5rem)] max-w-[760px] rounded-[28px] border border-slate-200 bg-white p-0 shadow-[0_28px_80px_rgba(15,23,42,0.18)]">
+        <DialogTitle className="sr-only">Ver opcoes de credito</DialogTitle>
+        <DialogDescription className="sr-only">Preencha os dados para continuar.</DialogDescription>
+
+        <div className="border-b border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] px-6 py-6 sm:px-8">
+          <span className="inline-flex rounded-full border border-sky-200 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-700">
+            Sem compromisso
+          </span>
+          <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-4xl">
+            Vamos ver o que pode fazer sentido para voce
+          </h2>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+            Preencha o basico para continuar. Sem cobranca antecipada e sem promessa falsa.
+          </p>
+        </div>
+
+        <div className="space-y-7 px-6 py-6 sm:px-8">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label>Quanto voce quer pedir?</Label>
+              <Input
+                value={form.amount}
+                onChange={(event) => updateField('amount', formatCurrencyInput(event.target.value))}
+                placeholder="R$ 10.000,00"
+                className="h-12 rounded-[16px]"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Qual e sua renda mensal?</Label>
+              <Input
+                value={form.income}
+                onChange={(event) => updateField('income', formatCurrencyInput(event.target.value))}
+                placeholder="R$ 5.000,00"
+                className="h-12 rounded-[16px]"
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label>Seu nome esta negativado?</Label>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { value: 'yes', label: 'Sim' },
+                  { value: 'no', label: 'Nao' }
+                ].map((item) => (
+                  <button
+                    key={item.value}
+                    type="button"
+                    onClick={() => updateField('hasRestriction', item.value)}
+                    className={`h-12 rounded-[16px] border text-sm font-medium transition-all ${
+                      form.hasRestriction === item.value
+                        ? 'border-slate-900 bg-slate-900 text-white'
+                        : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Como voce trabalha hoje?</Label>
+              <Select value={form.employmentStatus} onValueChange={(value) => updateField('employmentStatus', value)}>
+                <SelectTrigger className="h-12 rounded-[16px]">
+                  <SelectValue placeholder="Escolha uma opcao" />
+                </SelectTrigger>
+                <SelectContent>
+                  {EMPLOYMENT_OPTIONS.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label>Seu nome</Label>
+              <Input
+                value={form.fullName}
+                onChange={(event) => updateField('fullName', event.target.value)}
+                placeholder="Como podemos te chamar?"
+                className="h-12 rounded-[16px]"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Seu telefone</Label>
+              <Input
+                value={form.phone}
+                onChange={(event) => updateField('phone', formatPhone(event.target.value))}
+                placeholder="(11) 99999-9999"
+                className="h-12 rounded-[16px]"
+              />
+            </div>
+          </div>
+
+          <div className="rounded-[18px] border border-slate-200 bg-slate-50 px-4 py-4">
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="mt-0.5 h-5 w-5 text-emerald-600" />
+              <p className="text-sm leading-7 text-slate-600">
+                A Cote Juros nao e banco, nao garante aprovacao e nao cobra valor antecipado. Nosso papel e mostrar caminhos possiveis para voce seguir, se quiser.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3 border-t border-slate-200 px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+          <p className="text-sm text-slate-500">
+            Leva pouco tempo para continuar.
+          </p>
+          <Button
+            className="h-12 rounded-[14px] bg-slate-950 px-6 text-sm font-semibold text-white hover:bg-slate-800"
+            disabled={!isValid || isSubmitting}
+            onClick={handleSubmit}
+          >
+            {isSubmitting ? 'Buscando opcoes...' : 'Ver minhas opcoes agora'}
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export default QuickCreditFlowModal;

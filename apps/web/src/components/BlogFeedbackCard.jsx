@@ -11,10 +11,10 @@ function BlogFeedbackCard() {
     <Card className="border-border bg-white">
       <CardContent className="space-y-5 p-6 md:p-8">
         <div className="space-y-2">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/75">Sua opinião</p>
-          <h2 className="text-2xl text-foreground">Este artigo foi útil?</h2>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/75">Sua opiniao</p>
+          <h2 className="text-2xl text-foreground">Este artigo foi util?</h2>
           <p className="text-sm leading-7 text-muted-foreground">
-            Em vez de comentários abertos, usamos um bloco de feedback simples para melhorar o conteúdo e manter a leitura mais limpa.
+            Usamos esse retorno para deixar os conteudos mais claros e mais uteis para quem esta decidindo com calma.
           </p>
         </div>
 
@@ -26,7 +26,7 @@ function BlogFeedbackCard() {
             className="min-w-[150px]"
           >
             <ThumbsUp className="h-4 w-4" />
-            Foi útil
+            Foi util
           </Button>
           <Button
             type="button"
@@ -43,13 +43,13 @@ function BlogFeedbackCard() {
           <div className="flex items-start gap-3">
             <MessageSquareText className="mt-0.5 h-5 w-5 text-primary" />
             <div className="space-y-2">
-              <h3 className="text-lg text-foreground">Quer entender seu caso com mais clareza?</h3>
+              <h3 className="text-lg text-foreground">Quer ver caminhos de credito com mais clareza?</h3>
               <p className="text-sm leading-7 text-muted-foreground">
-                Faça um diagnóstico financeiro gratuito e veja próximos passos possíveis para o seu momento.
+                Veja opcoes que podem fazer sentido para o seu perfil, sem compromisso e sem cobranca antecipada.
               </p>
-              <a href="https://finance.cotejuros.com.br/quiz" className="inline-flex">
-                <Button>Fazer diagnóstico financeiro</Button>
-              </a>
+              <Link to="/emprestimos" className="inline-flex">
+                <Button>Ver minhas opcoes agora</Button>
+              </Link>
               <p className="text-xs text-muted-foreground">
                 Ou, se preferir, volte para o <Link to="/blog" className="font-medium text-primary hover:underline">hub editorial do blog</Link>.
               </p>

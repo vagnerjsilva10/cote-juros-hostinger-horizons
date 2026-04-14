@@ -1,6 +1,5 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { CheckCircle2, ChevronRight, CreditCard, Filter } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -14,6 +13,7 @@ import PageHero from '@/components/PageHero.jsx';
 import AffiliateOfferGrid from '@/components/affiliates/AffiliateOfferGrid.jsx';
 import AffiliateInlineCTA from '@/components/affiliates/AffiliateInlineCTA.jsx';
 import AffiliateSidebarWidget from '@/components/affiliates/AffiliateSidebarWidget.jsx';
+import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import { useAffiliatePlacements } from '@/hooks/useAffiliatePlacements.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
@@ -60,6 +60,8 @@ const resolveCardPalette = (card) => {
 
 function CartoesPage() {
   const [cardsData, setCardsData] = useState([]);
+  const [banksData, setBanksData] = useState([]);
+  const [quickModalOpen, setQuickModalOpen] = useState(false);
   const [freeAnnuity, setFreeAnnuity] = useState(false);
   const [categories, setCategories] = useState({ Premium: false, Intermediario: false, Basico: false });
   const [benefits, setBenefits] = useState({ Cashback: false, Milhas: false, VIP: false });
@@ -67,8 +69,9 @@ function CartoesPage() {
   const affiliatePlacements = useAffiliatePlacements({ pageSlug: '/cartoes-de-credito', productType: 'credit_card' });
 
   useEffect(() => {
-    portalApi.getOffers({ productType: 'credit_card' }).then((items) => {
-      setCardsData(items);
+    Promise.all([portalApi.getBanks(), portalApi.getOffers({ productType: 'credit_card' })]).then(([banks, items]) => {
+      setBanksData(Array.isArray(banks) ? banks : []);
+      setCardsData(Array.isArray(items) ? items : []);
     });
   }, []);
 
@@ -110,7 +113,8 @@ function CartoesPage() {
   }, [filteredCards]);
 
   const handleApply = async (card) => {
-    const destinationUrl = 'https://finance.cotejuros.com.br/quiz';
+    const bank = banksData.find((item) => item.id === card.bankId);
+    const destinationUrl = bank?.website ? `https://${bank.website}` : 'https://www.cotejuros.com.br/cartoes-de-credito';
 
     await trackingService.trackOfferClick({
       sourcePage: '/cartoes-de-credito',
@@ -164,9 +168,9 @@ function CartoesPage() {
         subtitle="Compare anuidade, limite e benefícios reais em uma leitura simples para decidir com segurança."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Link to="/diagnostico-financeiro">
-            <Button size="lg">Analisar perfil completo</Button>
-          </Link>
+          <Button size="lg" onClick={() => setQuickModalOpen(true)}>
+            Ver minhas opcoes agora
+          </Button>
           <a href="#resultados-cartoes">
             <Button size="lg" variant="outline">Ver cartões agora</Button>
           </a>
@@ -276,9 +280,9 @@ function CartoesPage() {
                     <SelectItem value="anuidade-menor">Menor anuidade</SelectItem>
                   </SelectContent>
                 </Select>
-                <Link to="/diagnostico-financeiro">
-                  <Button variant="outline">Analisar perfil</Button>
-                </Link>
+                <Button variant="outline" onClick={() => setQuickModalOpen(true)}>
+                  Ver opcoes para meu perfil
+                </Button>
               </div>
             </div>
 
@@ -358,9 +362,7 @@ function CartoesPage() {
                 <h3 className="mt-4 text-2xl">Nenhum cartão encontrado.</h3>
                 <p className="mt-3 text-muted-foreground">Tente reduzir os filtros ativos para ver mais opções.</p>
                 <div className="mt-6">
-                  <Link to="/diagnostico-financeiro">
-                    <Button>Analisar perfil completo</Button>
-                  </Link>
+                  <Button onClick={() => setQuickModalOpen(true)}>Ver minhas opcoes agora</Button>
                 </div>
               </div>
             ) : null}
@@ -392,16 +394,21 @@ function CartoesPage() {
           ) : null}
 
           <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
-            <h2 className="mb-3">Quer escolher o cartão com mais aderência ao seu momento?</h2>
+            <h2 className="mb-3">Quer escolher um cartão com mais clareza?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
-              O diagnóstico combina renda e comportamento financeiro para mostrar opções com maior chance de aprovação e benefícios que fazem sentido para você.
+              Responda o básico sobre o seu momento e veja caminhos que podem combinar melhor com o seu perfil, sem compromisso e sem cobrança antecipada.
             </p>
-            <Link to="/diagnostico-financeiro">
-              <Button size="lg">Analisar perfil agora</Button>
-            </Link>
+            <Button size="lg" onClick={() => setQuickModalOpen(true)}>Ver minhas opcoes agora</Button>
           </div>
         </div>
       </section>
+
+      <QuickCreditFlowModal
+        isOpen={quickModalOpen}
+        onClose={() => setQuickModalOpen(false)}
+        sourcePage="/cartoes-de-credito"
+        originLabel="cartoes"
+      />
     </>
   );
 }

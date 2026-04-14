@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, Scale, ShieldCheck } from 'lucide-react';
+import { ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { CoteJurosLogo } from './CoteJurosLogo.jsx';
 
 function Footer() {
@@ -8,65 +8,57 @@ function Footer() {
 
   const footerSections = [
     {
-      title: 'Produto',
+      title: 'Credito',
       links: [
-        { label: 'Empréstimos', path: '/emprestimos' },
-        { label: 'Cartões', path: '/cartoes' },
+        { label: 'Emprestimos', path: '/emprestimos' },
+        { label: 'Cartoes', path: '/cartoes' },
         { label: 'Financiamentos', path: '/financiamentos' },
+        { label: 'Comparar emprestimo online', path: '/comparar/emprestimo-online' }
+      ]
+    },
+    {
+      title: 'Conteudo',
+      links: [
+        { label: 'Blog', path: '/blog' },
+        { label: 'Como funciona', path: '/sobre-nos' },
         { label: 'Ferramentas', path: '/ferramentas' }
       ]
     },
     {
-      title: 'Comparadores',
-      links: [
-        { label: 'Comparar tudo', path: '/comparar' },
-        { label: 'Bancos', path: '/bancos' },
-        { label: 'Cartões sem anuidade', path: '/comparar/cartoes-sem-anuidade' },
-        { label: 'Empréstimo online', path: '/comparar/emprestimo-online' }
-      ]
-    },
-    {
-      title: 'Conteúdo',
-      links: [
-        { label: 'Blog', path: '/blog' },
-        { label: 'Diagnóstico', path: '/diagnostico-financeiro' },
-        { label: 'Testar Cote Finance AI', path: '/cote-finance-ai' }
-      ]
-    },
-    {
-      title: 'Empresa',
+      title: 'Institucional',
       links: [
         { label: 'Sobre', path: '/sobre-nos' },
         { label: 'Contato', path: '/contato' },
         { label: 'Privacidade', path: '/politica-de-privacidade' },
         { label: 'Termos', path: '/termos-de-uso' }
       ]
+    },
+    {
+      title: 'Ecossistema',
+      links: [
+        { label: 'Cote Finance', path: '/cote-finance-ai' }
+      ]
     }
   ];
 
   return (
-    <footer className="border-t border-border bg-background py-12 sm:py-16 lg:py-20">
+    <footer className="border-t border-border bg-background py-12 sm:py-16 lg:py-18">
       <div className="page-shell">
-        <div className="mb-10 grid gap-8 sm:gap-10 lg:mb-16 lg:grid-cols-[1.4fr_repeat(4,1fr)] lg:gap-12">
+        <div className="mb-10 grid gap-8 sm:gap-10 lg:mb-14 lg:grid-cols-[1.4fr_repeat(4,1fr)] lg:gap-12">
           <div className="max-w-md space-y-6">
             <Link to="/" className="inline-block">
               <CoteJurosLogo />
             </Link>
             <p className="text-sm leading-7 text-muted-foreground">
-              Cote Juros é uma plataforma de comparação financeira criada para trazer clareza às decisões de crédito.
-              Aqui você compara taxas, condições e benefícios de forma organizada antes de contratar qualquer produto financeiro.
+              A Cote Juros ajuda voce a encontrar opcoes de credito que podem fazer sentido para o seu perfil, com mais clareza e sem promessa falsa.
             </p>
-            <div className="flex flex-wrap gap-2.5 sm:gap-3">
+            <div className="flex flex-wrap gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
                 <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-                Experiência segura
+                Sem cobranca antecipada
               </div>
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
-                LGPD
-              </div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
-                <Scale className="h-3.5 w-3.5 text-primary" />
-                Comparação independente
+                Nao somos banco
               </div>
             </div>
           </div>
@@ -78,24 +70,14 @@ function Footer() {
               </span>
               <ul className="space-y-2.5">
                 {section.links.map((link) => (
-                  <li key={link.href || link.path}>
-                    {link.href ? (
-                      <a
-                        href={link.href}
-                        className="link-animated group inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-                      >
-                        {link.label}
-                        <ArrowUpRight className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
-                      </a>
-                    ) : (
-                      <Link
-                        to={link.path}
-                        className="link-animated group inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-                      >
-                        {link.label}
-                        <ArrowUpRight className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
-                      </Link>
-                    )}
+                  <li key={link.path}>
+                    <Link
+                      to={link.path}
+                      className="link-animated group inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                    >
+                      {link.label}
+                      <ArrowUpRight className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -107,10 +89,10 @@ function Footer() {
           <div>
             <p className="text-sm font-medium text-foreground">Cote Juros © {currentYear}</p>
             <p className="text-sm text-muted-foreground">
-              Crédito explicado com mais clareza, menos excesso visual e foco no que importa.
+              A Cote Juros nao e banco, nao concede credito diretamente e nao garante aprovacao.
             </p>
           </div>
-          <p className="text-sm text-muted-foreground">Brasil • Plataforma digital</p>
+          <p className="text-sm text-muted-foreground">Sem compromisso e sem cobranca antecipada</p>
         </div>
       </div>
     </footer>

@@ -12,6 +12,34 @@ import { Textarea } from '@/components/ui/textarea';
 
 const statuses = ['new', 'qualified', 'sent', 'converted', 'archived'];
 
+const formatCurrency = (value) => {
+  const number = Number(value || 0);
+  if (!Number.isFinite(number) || number <= 0) return '-';
+  return number.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    maximumFractionDigits: 0
+  });
+};
+
+const getProfileLabel = (profile) => {
+  const labels = {
+    negativado: 'Negativado',
+    clt: 'CLT',
+    autonomo: 'Autonomo',
+    geral: 'Geral'
+  };
+  return labels[profile] || profile || '-';
+};
+
+const getDeliveryModeLabel = (mode) => {
+  const labels = {
+    tracking_link: 'Tracking link',
+    mock_api: 'Mock API'
+  };
+  return labels[mode] || mode || '-';
+};
+
 export default function AdminLeadsPage() {
   const [leads, setLeads] = useState([]);
   const [selectedLead, setSelectedLead] = useState(null);
@@ -37,7 +65,7 @@ export default function AdminLeadsPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Gestao de leads" description="Funil de simulacoes com status operacional e detalhes de origem." />
+      <AdminPageHeader title="Gestao de leads" description="Leads captados, perfil calculado, parceiro roteado e status operacional." />
 
       <Card className="border-slate-200">
         <CardContent className="grid gap-4 pt-6 md:grid-cols-5">
@@ -80,29 +108,44 @@ export default function AdminLeadsPage() {
       <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
         <Card className="border-slate-200">
           <CardContent className="pt-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Data</TableHead>
-                  <TableHead>Produto</TableHead>
-                  <TableHead>Origem</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {leads.map((lead) => (
-                  <TableRow key={lead.id} className="cursor-pointer" onClick={() => setSelectedLead(lead)}>
-                    <TableCell>{new Date(lead.createdAt).toLocaleString('pt-BR')}</TableCell>
-                    <TableCell>{getProductTypeLabel(lead.productType)}</TableCell>
-                    <TableCell>{lead.sourcePage || lead.originPage || '-'}</TableCell>
-                    <TableCell>{getLeadStatusLabel(lead.status || 'new')}</TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Data</TableHead>
+                    <TableHead>Contato</TableHead>
+                    <TableHead>Produto</TableHead>
+                    <TableHead>Perfil</TableHead>
+                    <TableHead>Parceiro</TableHead>
+                    <TableHead>Envio</TableHead>
+                    <TableHead>Origem</TableHead>
+                    <TableHead>Status</TableHead>
                   </TableRow>
-                ))}
-                {leads.length === 0 ? (
-                  <TableRow><TableCell colSpan={4} className="text-slate-500">Sem leads para os filtros atuais.</TableCell></TableRow>
-                ) : null}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {leads.map((lead) => (
+                    <TableRow key={lead.id} className="cursor-pointer" onClick={() => setSelectedLead(lead)}>
+                      <TableCell>{new Date(lead.createdAt).toLocaleString('pt-BR')}</TableCell>
+                      <TableCell>
+                        <div className="min-w-[130px]">
+                          <p className="font-medium text-slate-900">{lead.fullName || lead.name || '-'}</p>
+                          <p className="text-xs text-slate-500">{lead.phone || '-'}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>{getProductTypeLabel(lead.productType)}</TableCell>
+                      <TableCell>{getProfileLabel(lead.profile)}</TableCell>
+                      <TableCell>{lead.partnerName || lead.partnerId || '-'}</TableCell>
+                      <TableCell>{getDeliveryModeLabel(lead.deliveryMode)}</TableCell>
+                      <TableCell>{lead.sourcePage || lead.originPage || '-'}</TableCell>
+                      <TableCell>{getLeadStatusLabel(lead.status || 'new')}</TableCell>
+                    </TableRow>
+                  ))}
+                  {leads.length === 0 ? (
+                    <TableRow><TableCell colSpan={8} className="text-slate-500">Sem leads para os filtros atuais.</TableCell></TableRow>
+                  ) : null}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
 
@@ -115,9 +158,17 @@ export default function AdminLeadsPage() {
                   <p><strong>ID:</strong> {selectedLead.id}</p>
                   <p><strong>Origem:</strong> {selectedLead.sourcePage || selectedLead.originPage || '-'}</p>
                   <p><strong>Produto:</strong> {getProductTypeLabel(selectedLead.productType)}</p>
-                  <p><strong>Valor:</strong> {selectedLead.amount || selectedLead.requestedAmount || '-'}</p>
-                  <p><strong>Renda:</strong> {selectedLead.income || '-'}</p>
+                  <p><strong>Nome:</strong> {selectedLead.fullName || selectedLead.name || '-'}</p>
+                  <p><strong>Telefone:</strong> {selectedLead.phone || '-'}</p>
+                  <p><strong>Valor:</strong> {formatCurrency(selectedLead.amount || selectedLead.requestedAmount)}</p>
+                  <p><strong>Renda:</strong> {formatCurrency(selectedLead.income)}</p>
+                  <p><strong>Trabalho:</strong> {selectedLead.employmentType || selectedLead.employmentStatus || '-'}</p>
+                  <p><strong>Negativado:</strong> {selectedLead.hasDebt == null ? '-' : selectedLead.hasDebt ? 'Sim' : 'Nao'}</p>
                   <p><strong>Score:</strong> {selectedLead.score || selectedLead.scoreRange || '-'}</p>
+                  <p><strong>Perfil:</strong> {getProfileLabel(selectedLead.profile)}</p>
+                  <p><strong>Parceiro:</strong> {selectedLead.partnerName || selectedLead.partnerId || '-'}</p>
+                  <p><strong>Modo de envio:</strong> {getDeliveryModeLabel(selectedLead.deliveryMode)}</p>
+                  <p><strong>Redirect:</strong> {selectedLead.redirectUrl || '-'}</p>
                 </div>
                 <div>
                   <Label>Status</Label>

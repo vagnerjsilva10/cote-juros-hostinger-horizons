@@ -177,14 +177,17 @@ const normalizeAffiliateOfferRecord = (offer = {}) => ({
   id: offer.id,
   network: offer.network || 'awin',
   advertiserId: offer.advertiserId || offer.advertiser_id || '',
+  externalProgramId: offer.externalProgramId || offer.external_program_id || '',
   merchantName: normalizeMojibake(offer.merchantName || offer.merchant_name || ''),
   offerSlug: normalizeMojibake(offer.offerSlug || offer.offer_slug || ''),
   title: normalizeMojibake(offer.title || ''),
   category: normalizeMojibake(offer.category || ''),
   description: normalizeMojibake(offer.description || ''),
   audience: normalizeMojibake(offer.audience || ''),
+  imageUrl: offer.imageUrl || offer.image_url || '',
   destinationUrl: offer.destinationUrl || offer.destination_url || '',
   trackingUrl: offer.trackingUrl || offer.tracking_url || '',
+  payoutText: normalizeMojibake(offer.payoutText || offer.payout_text || ''),
   ctaText: normalizeMojibake(offer.ctaText || offer.cta_text || 'Ver condições'),
   disclosureText: normalizeMojibake(offer.disclosureText || offer.disclosure_text || ''),
   priority: Number(offer.priority || 0),
@@ -217,6 +220,43 @@ const buildLocalCreditOffers = (payload = {}) =>
         rawPayload: offer
       })
     );
+
+const normalizeSimulationLeadRecord = (lead = {}) => ({
+  ...lead,
+  amount: lead.amount ?? (lead.requestedAmount != null ? Number(lead.requestedAmount) : undefined),
+  requestedAmount: lead.requestedAmount != null ? Number(lead.requestedAmount) : lead.requestedAmount,
+  income: lead.income != null ? Number(lead.income) : lead.income,
+  employmentType: lead.employmentType || lead.employmentStatus,
+  hasDebt: lead.hasDebt ?? lead.hasRestriction,
+  sourcePage: lead.sourcePage || lead.originPage
+});
+
+const serializeSimulationLeadPayload = (payload = {}) => ({
+  productType: payload.productType || 'loan',
+  requestedAmount: payload.requestedAmount ?? payload.amount,
+  income: payload.income,
+  scoreRange: payload.scoreRange ?? payload.score,
+  employmentStatus: payload.employmentStatus ?? payload.employmentType,
+  hasRestriction: payload.hasRestriction ?? payload.hasDebt,
+  fullName: payload.fullName,
+  phone: payload.phone,
+  profile: payload.profile,
+  partnerId: payload.partnerId,
+  partnerName: payload.partnerName,
+  deliveryMode: payload.deliveryMode,
+  redirectUrl: payload.redirectUrl,
+  status: payload.status,
+  originPage: payload.originPage ?? payload.sourcePage,
+  utm_source: payload.utm?.utm_source,
+  utm_medium: payload.utm?.utm_medium,
+  utm_campaign: payload.utm?.utm_campaign
+});
+
+const serializeSimulationLeadPatch = (payload = {}) => {
+  const data = serializeSimulationLeadPayload(payload);
+  delete data.productType;
+  return data;
+};
 
 export const portalApi = {
   async getBanks() {
@@ -372,6 +412,8 @@ export const portalApi = {
           scoreRange: payload.score,
           employmentStatus: payload.employmentType,
           hasRestriction: payload.hasDebt,
+          fullName: payload.fullName,
+          phone: payload.phone,
           originPage: payload.sourcePage,
           utm_source: payload.utm?.utm_source,
           utm_medium: payload.utm?.utm_medium,
@@ -444,6 +486,36 @@ export const portalApi = {
       });
     } catch {
       return portalRepository.createPartnerRedirect(payload);
+    }
+  },
+
+  async submitMockPartnerLead(payload) {
+    if (!useRemote) {
+      await wait();
+      return portalRepository.createIntegrationEvent({
+        sourcePage: payload.sourcePage,
+        productContext: `mock_api:${payload.partnerId}:${payload.productType || 'loan'}:${payload.profile || 'sem_perfil'}`,
+        simulationId: payload.leadId
+      });
+    }
+
+    try {
+      return await request('/api/partners/mock-api', {
+        method: 'POST',
+        body: JSON.stringify({
+          partnerId: payload.partnerId,
+          leadId: payload.leadId,
+          sourcePage: payload.sourcePage,
+          productType: payload.productType,
+          profile: payload.profile
+        })
+      });
+    } catch {
+      return portalRepository.createIntegrationEvent({
+        sourcePage: payload.sourcePage,
+        productContext: `mock_api:${payload.partnerId}:${payload.productType || 'loan'}:${payload.profile || 'sem_perfil'}`,
+        simulationId: payload.leadId
+      });
     }
   },
 
@@ -556,13 +628,106 @@ export const portalApi = {
   },
 
   async getAdminLeads(filters) {
-    await wait();
-    return portalRepository.listSimulationLeads(filters);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.listSimulationLeads(filters);
+    }
+
+    try {
+      const qs = toQueryString({
+        ...filters,
+        originPage: filters?.sourcePage
+      });
+      const data = await request(`/api/simulations${qs ? `?${qs}` : ''}`);
+      return Array.isArray(data) ? data.map(normalizeSimulationLeadRecord) : [];
+    } catch {
+      return portalRepository.listSimulationLeads(filters);
+    }
   },
 
   async updateAdminLeadStatus(id, status) {
-    await wait();
-    return portalRepository.updateSimulationLeadStatus(id, status);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.updateSimulationLeadStatus(id, status);
+    }
+
+    try {
+      const data = await request(`/api/simulations/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status })
+      });
+      return normalizeSimulationLeadRecord(data);
+    } catch {
+      return portalRepository.updateSimulationLeadStatus(id, status);
+    }
+  },
+
+  async createQuickCreditLead(payload) {
+    if (!useRemote) {
+      await wait();
+      return portalRepository.createSimulationLead(payload);
+    }
+
+    try {
+      const data = await request('/api/simulations', {
+        method: 'POST',
+        body: JSON.stringify(serializeSimulationLeadPayload(payload))
+      });
+      return normalizeSimulationLeadRecord(data);
+    } catch {
+      return portalRepository.createSimulationLead(payload);
+    }
+  },
+
+  async updateQuickCreditLead(id, payload) {
+    if (!useRemote) {
+      await wait();
+      return portalRepository.updateSimulationLead(id, payload);
+    }
+
+    try {
+      const data = await request(`/api/simulations/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(serializeSimulationLeadPatch(payload))
+      });
+      return normalizeSimulationLeadRecord(data);
+    } catch {
+      return portalRepository.updateSimulationLead(id, payload);
+    }
+  },
+
+  async startQuickCreditJourney(payload) {
+    if (!useRemote) return null;
+
+    try {
+      const data = await request('/api/simulations/quick-credit', {
+        method: 'POST',
+        body: JSON.stringify({
+          productType: payload.productType || 'loan',
+          amount: payload.amount,
+          requestedAmount: payload.requestedAmount,
+          income: payload.income,
+          employmentStatus: payload.employmentStatus ?? payload.employmentType,
+          hasRestriction: payload.hasRestriction ?? payload.hasDebt,
+          fullName: payload.fullName,
+          phone: payload.phone,
+          sourcePage: payload.sourcePage,
+          originPage: payload.originPage,
+          originLabel: payload.originLabel,
+          utm: payload.utm,
+          utm_source: payload.utm?.utm_source,
+          utm_medium: payload.utm?.utm_medium,
+          utm_campaign: payload.utm?.utm_campaign
+        })
+      });
+
+      return {
+        ...data,
+        lead: data?.lead ? normalizeSimulationLeadRecord(data.lead) : null
+      };
+    } catch {
+      return null;
+    }
   },
 
   async getAdminTestimonials(filters) {
@@ -591,8 +756,22 @@ export const portalApi = {
   },
 
   async getAdminAnalyticsOverview() {
-    await wait();
-    return portalRepository.getAnalyticsOverview();
+    if (!useRemote) {
+      await wait();
+      return portalRepository.getAnalyticsOverview();
+    }
+
+    try {
+      const data = await request('/api/simulations/overview');
+      return {
+        ...data,
+        recentSimulationActivity: Array.isArray(data?.recentSimulationActivity)
+          ? data.recentSimulationActivity.map(normalizeSimulationLeadRecord)
+          : []
+      };
+    } catch {
+      return portalRepository.getAnalyticsOverview();
+    }
   },
 
   async startCreditJourney(payload) {

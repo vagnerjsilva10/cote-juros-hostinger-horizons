@@ -41,7 +41,7 @@ function SystemMotionShowcase() {
         <div className="grid gap-3 sm:grid-cols-3">
           {[
             { label: 'Entradas', value: 'R$ 6.850', tone: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
-            { label: 'Saídas', value: 'R$ 4.920', tone: 'border-orange-200 bg-orange-50 text-orange-700' },
+            { label: 'Saidas', value: 'R$ 4.920', tone: 'border-orange-200 bg-orange-50 text-orange-700' },
             { label: 'Margem', value: 'R$ 1.930', tone: 'border-sky-200 bg-sky-50 text-sky-700' }
           ].map((item, index) => (
             <motion.div
@@ -62,7 +62,7 @@ function SystemMotionShowcase() {
           <div className="mb-2 flex items-center justify-between">
             <p className="text-xs font-medium text-foreground">Fluxo financeiro vivo</p>
             <Badge variant="outline" className="border-primary/25 bg-primary/10 text-primary">
-              Atualização diária
+              Atualizacao diaria
             </Badge>
           </div>
           <svg viewBox="0 0 240 90" className="h-[94px] w-full">
@@ -85,13 +85,18 @@ function SystemMotionShowcase() {
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-[12px] border border-border bg-background-secondary p-3">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Insight do mês</p>
-            <p className="mt-1 text-sm font-semibold text-foreground">Você pode economizar R$ 680 por mês reduzindo recorrentes.</p>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Insight do mes</p>
+            <p className="mt-1 text-sm font-semibold text-foreground">Voce pode economizar R$ 680 por mes reduzindo recorrentes.</p>
           </div>
           <div className="rounded-[12px] border border-border bg-background-secondary p-3">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Ação prioritária</p>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Acao prioritaria</p>
             <p className="mt-1 text-sm font-semibold text-foreground">Cortar 3 assinaturas com baixo uso nesta semana.</p>
           </div>
+        </div>
+
+        <div className="rounded-[12px] border border-dashed border-primary/25 bg-primary/[0.04] p-3 text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary/75">finance-ecosystem-placeholder</p>
+          <p className="mt-1 text-xs text-muted-foreground">Espaco preparado para asset Freepik com ambiente financeiro moderno e visual limpo.</p>
         </div>
       </motion.div>
     </div>
@@ -105,7 +110,7 @@ function CoteFinanceAIPage() {
     await trackingService.trackCtaClick({
       sourcePage: '/cote-finance-ai',
       ctaId: 'cote_finance_ai_start',
-      ctaLabel: 'Fazer diagnóstico financeiro',
+      ctaLabel: 'Comecar minha organizacao',
       campaign: 'portal_finance_ai_page'
     });
 
@@ -117,57 +122,57 @@ function CoteFinanceAIPage() {
   };
 
   const storyFlow = [
-    'O dinheiro entra, mas o mês termina sem folga.',
-    'Os gastos se espalham e fica difícil ver o que pesa de verdade.',
-    'Com clareza, você volta a decidir com mais calma e prioridade.'
+    'O dinheiro entra, mas o mes termina sem folga.',
+    'Os gastos se espalham e fica dificil ver o que pesa de verdade.',
+    'Com clareza, voce volta a decidir com mais calma e prioridade.'
   ];
 
   const howItWorks = [
     {
-      title: '1. Reúna sua vida financeira em um só lugar',
-      copy: 'Veja entradas, saídas e compromissos sem depender de memória, print ou planilha solta.'
+      title: '1. Reuna sua vida financeira em um so lugar',
+      copy: 'Veja entradas, saidas e compromissos sem depender de memoria, print ou planilha solta.'
     },
     {
-      title: '2. Descubra para onde o dinheiro está indo',
-      copy: 'Entenda o que pesa no mês e quais gastos merecem sua atenção primeiro.'
+      title: '2. Descubra para onde o dinheiro esta indo',
+      copy: 'Entenda o que pesa no mes e quais gastos merecem sua atencao primeiro.'
     },
     {
-      title: '3. Receba orientações claras para agir',
-      copy: 'Saiba o que cortar, ajustar ou priorizar sem precisar interpretar relatórios complicados.'
+      title: '3. Receba orientacoes claras para agir',
+      copy: 'Saiba o que cortar, ajustar ou priorizar sem precisar interpretar relatorios complicados.'
     },
     {
-      title: '4. Acompanhe sua evolução mês a mês',
-      copy: 'Veja o que melhorou, o que ainda aperta o orçamento e onde manter foco.'
+      title: '4. Acompanhe sua evolucao mes a mes',
+      copy: 'Veja o que melhorou, o que ainda aperta o orcamento e onde manter foco.'
     }
   ];
 
   const modules = [
-    { icon: CircleDollarSign, title: 'Entradas e saídas', copy: 'Entenda quanto entra, quanto sai e o que está consumindo seu orçamento.' },
-    { icon: Goal, title: 'Metas financeiras', copy: 'Defina prioridades reais e acompanhe se você está se aproximando delas.' },
-    { icon: Landmark, title: 'Dívidas e compromissos', copy: 'Veja o que vence, o que pesa mais e o que precisa ser reorganizado.' },
-    { icon: Wallet, title: 'Carteira e patrimônio', copy: 'Tenha uma leitura simples do seu momento financeiro para decidir com mais segurança.' },
-    { icon: Brain, title: 'Insights automáticos', copy: 'Receba observações objetivas sobre o que merece sua atenção agora.' },
-    { icon: MessageCircleMore, title: 'Resumos e alertas', copy: 'Acompanhe o mês com lembretes e resumos claros, sem excesso de informação.' }
+    { icon: CircleDollarSign, title: 'Entradas e saidas', copy: 'Entenda quanto entra, quanto sai e o que esta consumindo seu orcamento.' },
+    { icon: Goal, title: 'Metas financeiras', copy: 'Defina prioridades reais e acompanhe se voce esta se aproximando delas.' },
+    { icon: Landmark, title: 'Dividas e compromissos', copy: 'Veja o que vence, o que pesa mais e o que precisa ser reorganizado.' },
+    { icon: Wallet, title: 'Carteira e patrimonio', copy: 'Tenha uma leitura simples do seu momento financeiro para decidir com mais seguranca.' },
+    { icon: Brain, title: 'Insights automaticos', copy: 'Receba observacoes objetivas sobre o que merece sua atencao agora.' },
+    { icon: MessageCircleMore, title: 'Resumos e alertas', copy: 'Acompanhe o mes com lembretes e resumos claros, sem excesso de informacao.' }
   ];
 
   const plans = [
     {
       name: 'Free',
-      price: 'Grátis',
-      copy: 'Para quem quer começar a organizar a vida financeira.',
-      bullets: ['Até 50 lançamentos por mês', 'Visão inicial das saídas']
+      price: 'Gratis',
+      copy: 'Para quem quer comecar a organizar a vida financeira.',
+      bullets: ['Ate 50 lancamentos por mes', 'Visao inicial das saidas']
     },
     {
       name: 'Pro',
-      price: 'R$ 29/mês',
+      price: 'R$ 29/mes',
       copy: 'Para quem quer controle real sobre o dinheiro.',
-      bullets: ['Lançamentos ilimitados', 'Até 500 interações com IA por mês', 'Relatórios completos e metas ilimitadas']
+      bullets: ['Lançamentos ilimitados', 'Ate 500 interacoes com IA por mes', 'Relatórios completos e metas ilimitadas']
     },
     {
       name: 'Premium',
-      price: 'R$ 49/mês',
+      price: 'R$ 49/mes',
       copy: 'Para quem quer mais previsibilidade financeira.',
-      bullets: ['IA financeira sem limite mensal', 'Previsão de saldo e alertas', 'Automação financeira no WhatsApp']
+      bullets: ['IA financeira sem limite mensal', 'Previsao de saldo e alertas', 'Automacao financeira no WhatsApp']
     }
   ];
 
@@ -177,7 +182,7 @@ function CoteFinanceAIPage() {
         <title>Cote Finance AI - Clareza para o seu dinheiro</title>
         <meta
           name="description"
-          content="Entenda para onde seu dinheiro está indo, encontre excessos e tome decisões melhores ao longo do mês."
+          content="Entenda para onde seu dinheiro esta indo, encontre excessos e tome decisoes melhores ao longo do mes."
         />
       </Helmet>
 
@@ -192,13 +197,13 @@ function CoteFinanceAIPage() {
               </Badge>
               <h1 className="max-w-3xl">Veja para onde seu dinheiro vai.</h1>
               <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
-                O Cote Finance AI ajuda você a entender para onde o dinheiro está indo, encontrar excessos e tomar decisões melhores ao longo do mês.
+                O Cote Finance AI ajuda voce a entender para onde o dinheiro esta indo, encontrar excessos e tomar decisoes melhores ao longo do mes.
               </p>
               <div className="space-y-3">
                 {[
-                  'Veja para onde seu dinheiro está indo.',
+                  'Veja para onde seu dinheiro esta indo.',
                   'Identifique gastos que passam despercebidos.',
-                  'Tome decisões melhores mês após mês.'
+                  'Tome decisoes melhores mes apos mes.'
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-3">
                     <ShieldCheck className="mt-0.5 h-5 w-5 text-foreground" />
@@ -207,8 +212,11 @@ function CoteFinanceAIPage() {
                 ))}
               </div>
               <Button size="lg" onClick={handleFinanceAiEntry}>
-                Fazer diagnóstico financeiro <ArrowRight className="h-4 w-4" />
+                Comecar minha organizacao <ArrowRight className="h-4 w-4" />
               </Button>
+              <p className="max-w-xl text-sm leading-6 text-muted-foreground">
+                Produto separado da jornada de credito da Cote Juros. Aqui o foco e organizacao financeira, nao contratacao de emprestimo.
+              </p>
             </motion.div>
 
             <motion.div {...animationIn}>
@@ -225,9 +233,9 @@ function CoteFinanceAIPage() {
               <TrendingUp className="h-3.5 w-3.5" />
               Sua rotina financeira
             </Badge>
-            <h2 className="mb-4">A história que se repete: o dinheiro entra, mas não sobra.</h2>
+            <h2 className="mb-4">A historia que se repete: o dinheiro entra, mas nao sobra.</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              Nem sempre o problema é ganhar pouco. Muitas vezes, é não enxergar com clareza o que está acontecendo no dia a dia.
+              Nem sempre o problema e ganhar pouco. Muitas vezes, e nao enxergar com clareza o que esta acontecendo no dia a dia.
             </p>
           </motion.div>
 
@@ -243,9 +251,9 @@ function CoteFinanceAIPage() {
 
           <motion.div className="mx-auto mb-12 max-w-3xl text-center" {...animationIn}>
             <span className="section-eyebrow mb-5">Como funciona</span>
-            <h2 className="mb-4">O método em 4 etapas para sair do improviso financeiro.</h2>
+            <h2 className="mb-4">O metodo em 4 etapas para sair do improviso financeiro.</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              Da organização inicial ao acompanhamento do mês, cada etapa foi pensada para deixar suas decisões mais simples.
+              Da organizacao inicial ao acompanhamento do mes, cada etapa foi pensada para deixar suas decisoes mais simples.
             </p>
           </motion.div>
 
@@ -267,10 +275,10 @@ function CoteFinanceAIPage() {
       <section className="border-b border-border bg-background py-20 md:py-24">
         <div className="page-shell">
           <motion.div className="mx-auto mb-12 max-w-3xl text-center" {...animationIn}>
-            <span className="section-eyebrow mb-5">Módulos</span>
-            <h2 className="mb-4">Cada módulo responde uma pergunta crítica da sua vida financeira.</h2>
+            <span className="section-eyebrow mb-5">Modulos</span>
+            <h2 className="mb-4">Cada modulo responde uma pergunta critica da sua vida financeira.</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              Quanto entra, quanto sai, o que pesa mais e o que precisa mudar. A plataforma existe para deixar isso visível.
+              Quanto entra, quanto sai, o que pesa mais e o que precisa mudar. A plataforma existe para deixar isso visivel.
             </p>
           </motion.div>
 
@@ -298,9 +306,9 @@ function CoteFinanceAIPage() {
         <div className="page-shell">
           <motion.div className="mx-auto mb-12 max-w-3xl text-center" {...animationIn}>
             <span className="section-eyebrow mb-5">Planos</span>
-            <h2 className="mb-4">Você escolhe o nível de profundidade que seu momento pede.</h2>
+            <h2 className="mb-4">Voce escolhe o nivel de profundidade que seu momento pede.</h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              Comece grátis para ganhar visibilidade. Evolua para Pro ou Premium quando quiser mais controle.
+              Comece gratis para ganhar visibilidade. Evolua para Pro ou Premium quando quiser mais controle.
             </p>
           </motion.div>
 
@@ -335,12 +343,12 @@ function CoteFinanceAIPage() {
         <div className="page-shell max-w-4xl">
           <motion.div className="space-y-6 rounded-[20px] border border-border bg-background-secondary p-10" {...animationIn}>
             <span className="section-eyebrow">Clareza</span>
-            <h2>Não é sobre promessa milagrosa. É sobre clareza para decidir melhor.</h2>
+            <h2>Nao e sobre promessa milagrosa. E sobre clareza para decidir melhor.</h2>
             <p className="text-lg text-muted-foreground">
-              O Cote Finance AI ajuda você a entender sua vida financeira com mais calma, menos ruído e mais segurança no dia a dia.
+              O Cote Finance AI ajuda voce a entender sua vida financeira com mais calma, menos ruido e mais seguranca no dia a dia.
             </p>
             <Button size="lg" className="w-fit" onClick={handleFinanceAiEntry}>
-              Testar Cote Finance AI <ArrowRight className="h-4 w-4" />
+              Comecar minha organizacao <ArrowRight className="h-4 w-4" />
             </Button>
           </motion.div>
         </div>

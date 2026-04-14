@@ -117,26 +117,26 @@ export const seoPages = [
   {
     id: 'seo-emprestimo-negativado',
     path: '/emprestimo-para-negativado',
-    title: 'Empréstimo para Negativado: Compare e Consiga Crédito - Cote Juros',
-    description: 'Conseguir empréstimo com nome sujo é possível. Compare opções com garantia ou consignado e encontre as menores taxas.',
-    heading: 'Empréstimo para Negativado Seguro e Online',
+    title: 'Emprestimo para Negativado: Compare Caminhos Possiveis - Cote Juros',
+    description: 'Veja caminhos de credito que podem fazer sentido para quem esta negativado, com cuidado sobre custo, prazo e proximo passo.',
+    heading: 'Emprestimo para negativado com mais clareza',
     content: [
-      'Estar negativado não significa que você não pode ter acesso a crédito. Muitas instituições financeiras oferecem linhas específicas para quem está com restrições no CPF.',
-      'As modalidades mais comuns para negativados são o empréstimo consignado e o empréstimo com garantia de veículo ou imóvel.',
-      'Antes de fechar negócio, tome cuidado com fraudes: nenhuma instituição financeira séria cobra valores antecipados para liberar crédito.'
+      'Estar negativado nao fecha todas as portas, mas exige mais cuidado antes de pedir credito.',
+      'Algumas modalidades podem fazer sentido dependendo de renda, garantia, margem e regras do parceiro.',
+      'Antes de seguir, compare custo total e desconfie de qualquer cobranca antecipada para liberar credito.'
     ],
     type: 'loans'
   },
   {
     id: 'seo-cartao-sem-anuidade',
     path: '/cartao-sem-anuidade',
-    title: 'Melhores Cartões de Crédito Sem Anuidade - Cote Juros',
-    description: 'Não pague taxas! Compare e solicite os melhores cartões de crédito sem anuidade com limite alto e aprovação na hora.',
-    heading: 'Cartões Sem Anuidade para o seu Perfil',
+    title: 'Cartoes de Credito Sem Anuidade para Comparar - Cote Juros',
+    description: 'Compare cartoes sem anuidade com foco em custo, beneficios e criterios antes de solicitar.',
+    heading: 'Cartoes sem anuidade para comparar com calma',
     content: [
-      'Com a ascensão dos bancos digitais, diversas instituições oferecem cartões totalmente isentos de tarifas e com benefícios relevantes.',
-      'Além da economia anual, muitos desses cartões oferecem programas de cashback, descontos em parceiros e controle total via aplicativo.',
-      'Para escolher o melhor, avalie quais benefícios fazem sentido para sua rotina e compare o custo efetivo de cada opção.'
+      'Muitos bancos digitais oferecem cartoes sem anuidade, mas os beneficios e criterios variam bastante.',
+      'Antes de pedir, vale comparar limite, custo, beneficios e como o cartao entra no seu dia a dia.',
+      'A aprovacao e o limite final dependem da analise do emissor.'
     ],
     type: 'cards'
   }
@@ -168,9 +168,9 @@ export const testimonials = [
     location: 'Rio de Janeiro, RJ',
     product: 'Cartão de Crédito',
     avatar: 'https://ui-avatars.com/api/?name=Maria+Santos&background=7C3AED&color=fff',
-    quote: 'Encontrei um cartão sem anuidade com ótimo limite e cashback. Antes eu pagava taxas abusivas sem saber das opções.',
-    result: '+R$ 230/mês cashback',
-    badge: 'Oferta aprovada'
+    quote: 'Consegui comparar cartoes sem anuidade e entender melhor quais beneficios faziam sentido para minha rotina.',
+    result: 'Comparacao mais clara',
+    badge: 'Perfil comparado'
   },
   {
     id: 't-carlos',
@@ -178,16 +178,16 @@ export const testimonials = [
     location: 'Belo Horizonte, MG',
     product: 'Empréstimo Pessoal',
     avatar: 'https://ui-avatars.com/api/?name=Carlos+Oliveira&background=14B8A6&color=fff',
-    quote: 'Estava negativado e achei que não conseguiria crédito. A plataforma me mostrou opções reais que couberam no meu bolso.',
-    result: 'Aprovação em 48h',
-    badge: 'Caso concluído'
+    quote: 'Estava negativado e consegui entender quais caminhos ainda valiam uma comparacao com cuidado.',
+    result: 'Caminhos avaliados',
+    badge: 'Jornada orientada'
   }
 ];
 
 export const appIntegrationSources = [
   { id: 'src-home-hero', sourcePage: '/', ctaId: 'hero_simular', productType: 'loan' },
   { id: 'src-home-ai', sourcePage: '/', ctaId: 'home_ai_analisar', productType: 'loan' },
-  { id: 'src-diagnostico', sourcePage: '/diagnostico-financeiro', ctaId: 'diagnostico_ai', productType: 'loan' },
+  { id: 'src-finance-context', sourcePage: '/diagnostico-financeiro', ctaId: 'finance_organization', productType: 'loan' },
   { id: 'src-loans', sourcePage: '/emprestimos', ctaId: 'offer_simulate', productType: 'loan' },
   { id: 'src-cards', sourcePage: '/cartoes-de-credito', ctaId: 'offer_apply', productType: 'credit_card' },
   { id: 'src-financing', sourcePage: '/financiamento', ctaId: 'offer_financing_simulate', productType: 'financing' }

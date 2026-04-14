@@ -24,7 +24,7 @@ const emptyForm = {
   minTerm: '',
   maxTerm: '',
   minScore: '',
-  redirectUrl: 'https://finance.cotejuros.com.br/quiz',
+  redirectUrl: 'https://www.cotejuros.com.br/emprestimos',
   partnerTrackingUrl: '',
   isFeatured: false,
   status: 'active'

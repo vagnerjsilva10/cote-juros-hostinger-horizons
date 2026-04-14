@@ -1,4 +1,4 @@
-﻿import { merchantMachineComparePages, merchantMachineStaticPages } from './merchantMachinesCatalog.js';
+import { merchantMachineComparePages, merchantMachineStaticPages } from './merchantMachinesCatalog.js';
 import { normalizeMojibakeDeep } from '../lib/textEncoding.js';
 
 const DEFAULT_SITE_URL = 'https://cote-juros-hostinger-horizons-web.vercel.app';
@@ -16,52 +16,52 @@ export const corePillarPaths = [
 
 export const requiredBankRoutes = [
   { slug: 'nubank', bankId: 'nubank', name: 'Nubank' },
-  { slug: 'itau', bankId: 'itau', name: 'ItaÃº' },
+  { slug: 'itau', bankId: 'itau', name: 'Itaú' },
   { slug: 'santander', bankId: 'santander', name: 'Santander' },
   { slug: 'inter', bankId: 'inter', name: 'Banco Inter' },
   { slug: 'c6-bank', bankId: 'c6', name: 'C6 Bank' },
   { slug: 'bradesco', bankId: 'bradesco', name: 'Bradesco' },
-  { slug: 'caixa', bankId: 'caixa', name: 'Caixa EconÃ´mica' }
+  { slug: 'caixa', bankId: 'caixa', name: 'Caixa Econômica' }
 ];
 
 export const comparePageDefinitions = [
   {
     slug: 'cartoes-sem-anuidade',
-    heading: 'Compare cartÃµes sem anuidade por limite e benefÃ­cios.',
-    title: 'Comparar cartÃµes sem anuidade: melhores opÃ§Ãµes e benefÃ­cios | Cote Juros',
-    description: 'Veja cartÃµes sem anuidade com anÃ¡lise de limite, benefÃ­cios e perfil de aprovaÃ§Ã£o.',
+    heading: 'Compare cartões sem anuidade por limite e benefícios.',
+    title: 'Comparar cartões sem anuidade: melhores opções e benefícios | Cote Juros',
+    description: 'Veja cartoes sem anuidade com leitura de limite, beneficios e criterios antes de solicitar.',
     productType: 'credit_card',
     offerFilter: { annualFeeZero: true, sortBy: 'maxLimit' }
   },
   {
     slug: 'cartoes-cashback',
-    heading: 'Compare cartÃµes com cashback e retorno em compras.',
-    title: 'Comparar cartÃµes com cashback: taxas, limite e retorno | Cote Juros',
-    description: 'Analise cartÃµes com cashback, anuidade e ganhos reais no dia a dia.',
+    heading: 'Compare cartões com cashback e retorno em compras.',
+    title: 'Comparar cartões com cashback: taxas, limite e retorno | Cote Juros',
+    description: 'Analise cartões com cashback, anuidade e ganhos reais no dia a dia.',
     productType: 'credit_card',
     offerFilter: { benefitsAny: ['cashback'], sortBy: 'maxLimit' }
   },
   {
     slug: 'cartoes-milhas',
-    heading: 'Compare cartÃµes com milhas para viajar pagando menos.',
-    title: 'Comparar cartÃµes com milhas: pontuaÃ§Ã£o e benefÃ­cios | Cote Juros',
-    description: 'Comparamos cartÃµes com milhas por pontuaÃ§Ã£o, anuidade e benefÃ­cios premium.',
+    heading: 'Compare cartões com milhas para viajar pagando menos.',
+    title: 'Comparar cartões com milhas: pontuação e benefícios | Cote Juros',
+    description: 'Comparamos cartões com milhas por pontuação, anuidade e benefícios premium.',
     productType: 'credit_card',
     offerFilter: { benefitsAny: ['milhas', 'pontos'], sortBy: 'maxLimit' }
   },
   {
     slug: 'emprestimo-negativado',
-    heading: 'Compare emprÃ©stimo para negativado com mais seguranÃ§a.',
-    title: 'Comparar emprÃ©stimo para negativado: taxas e condiÃ§Ãµes | Cote Juros',
-    description: 'Veja linhas de crÃ©dito para negativado, com foco em custo total e chance de aprovaÃ§Ã£o.',
+    heading: 'Compare empréstimo para negativado com mais segurança.',
+    title: 'Comparar empréstimo para negativado: taxas e condições | Cote Juros',
+    description: 'Veja linhas de credito para negativado, com foco em custo total, prazo e criterios do parceiro.',
     productType: 'loan',
     offerFilter: { categoriesAny: ['Negativado', 'Consignado'], sortBy: 'monthlyRate' }
   },
   {
     slug: 'emprestimo-online',
-    heading: 'Compare emprÃ©stimo online antes de contratar crÃ©dito.',
-    title: 'Comparar emprÃ©stimo online: taxas atualizadas e prazos | Cote Juros',
-    description: 'Compare emprÃ©stimos online em um painel com taxas, prazos e valores mÃ¡ximos.',
+    heading: 'Compare empréstimo online antes de contratar crédito.',
+    title: 'Comparar empréstimo online: taxas atualizadas e prazos | Cote Juros',
+    description: 'Compare empréstimos online em um painel com taxas, prazos e valores máximos.',
     productType: 'loan',
     offerFilter: { categoriesAny: ['Pessoal', 'Garantia', 'Consignado'], sortBy: 'monthlyRate' },
     primaryCta: { label: 'Simular emprestimo', action: 'affiliate' },
@@ -77,7 +77,7 @@ export const comparePageDefinitions = [
       {
         heading: 'Como pesquisar emprestimo online com mais clareza',
         paragraphs: [
-          'Emprestimo online facilita a jornada, mas a decisao nao deve ser automatica. O ideal e cruzar velocidade, custo total e perfil de aprovacao antes do clique final.',
+          'Emprestimo online facilita a jornada, mas a decisao nao deve ser automatica. O ideal e cruzar velocidade, custo total e adequacao ao seu perfil antes do clique final.',
           'Nesta rota, a SuperSim entra como um CTA natural dentro da leitura editorial, sem competir com o comparador principal do portal.'
         ]
       },
@@ -136,9 +136,9 @@ export const comparePageDefinitions = [
   },
   {
     slug: 'financiamento-veiculo',
-    heading: 'Compare financiamento de veÃ­culo por taxa, entrada e prazo.',
-    title: 'Comparar financiamento de veÃ­culo: bancos e taxas | Cote Juros',
-    description: 'Avalie financiamento de carro por custo total, entrada mÃ­nima e prazo mÃ¡ximo.',
+    heading: 'Compare financiamento de veículo por taxa, entrada e prazo.',
+    title: 'Comparar financiamento de veículo: bancos e taxas | Cote Juros',
+    description: 'Avalie financiamento de carro por custo total, entrada mínima e prazo máximo.',
     productType: 'financing',
     offerFilter: { categoriesAny: ['Carro', 'Moto'], sortBy: 'annualRate' }
   },
@@ -148,44 +148,44 @@ export const comparePageDefinitions = [
 export const toolPageDefinitions = [
   {
     path: '/calculadora-juros',
-    heading: 'Calculadora de juros para simular custo total do crÃ©dito.',
-    title: 'Calculadora de juros: simulaÃ§Ã£o grÃ¡tis e rÃ¡pida | Cote Juros',
-    description: 'Projete juros simples e compostos para comparar cenÃ¡rios antes de contratar crÃ©dito.',
+    heading: 'Calculadora de juros para simular custo total do crédito.',
+    title: 'Calculadora de juros: simulação grátis e rápida | Cote Juros',
+    description: 'Projete juros simples e compostos para comparar cenários antes de contratar crédito.',
     toolType: 'juros'
   },
   {
     path: '/calculadora-emprestimo',
-    heading: 'Calculadora de emprÃ©stimo com foco em parcela e custo efetivo.',
-    title: 'Calculadora de emprÃ©stimo: parcela e CET | Cote Juros',
-    description: 'Simule emprÃ©stimo com taxa, prazo e valor para prever a parcela ideal.',
+    heading: 'Calculadora de empréstimo com foco em parcela e custo efetivo.',
+    title: 'Calculadora de empréstimo: parcela e CET | Cote Juros',
+    description: 'Simule empréstimo com taxa, prazo e valor para prever a parcela ideal.',
     toolType: 'emprestimo'
   },
   {
     path: '/calculadora-financiamento',
     heading: 'Calculadora de financiamento para organizar entrada e prazo.',
-    title: 'Calculadora de financiamento de veÃ­culo e imÃ³vel | Cote Juros',
-    description: 'Compare cenÃ¡rios de financiamento e reduza risco de juros abusivos.',
+    title: 'Calculadora de financiamento de veículo e imóvel | Cote Juros',
+    description: 'Compare cenarios de financiamento para entender custo, entrada e prazo antes de decidir.',
     toolType: 'financiamento'
   },
   {
     path: '/calculadora-parcela',
-    heading: 'Calculadora de parcela para validar o peso da dÃ­vida no orÃ§amento.',
-    title: 'Calculadora de parcela mensal com simulaÃ§Ã£o online | Cote Juros',
+    heading: 'Calculadora de parcela para validar o peso da dívida no orçamento.',
+    title: 'Calculadora de parcela mensal com simulação online | Cote Juros',
     description: 'Estime parcela ideal por valor financiado, taxa de juros e prazo em meses.',
     toolType: 'parcela'
   },
   {
     path: '/calculadora-comprometimento-renda',
-    heading: 'Calculadora de comprometimento de renda para crÃ©dito responsÃ¡vel.',
+    heading: 'Calculadora de comprometimento de renda para crédito responsável.',
     title: 'Calculadora de comprometimento de renda | Cote Juros',
-    description: 'Veja se sua renda comporta o crÃ©dito e compare alternativas mais seguras.',
+    description: 'Veja se sua renda comporta o crédito e compare alternativas mais seguras.',
     toolType: 'comprometimento-renda'
   },
   {
     path: '/calculadora-cet',
     heading: 'Calculadora de CET para comparar o custo real entre bancos.',
     title: 'Calculadora de CET: compare custo efetivo total | Cote Juros',
-    description: 'Calcule e compare CET para tomar decisÃµes financeiras mais inteligentes.',
+    description: 'Calcule e compare CET para decidir com mais clareza.',
     toolType: 'cet'
   }
 ];
@@ -193,62 +193,62 @@ export const toolPageDefinitions = [
 export const blogEditorialDefinitions = [
   {
     path: '/blog/melhor-cartao-de-credito',
-    heading: 'Melhor cartÃ£o de crÃ©dito: como escolher para o seu perfil.',
-    title: 'Melhor cartÃ£o de crÃ©dito: guia completo para comparar | Cote Juros',
-    description: 'Saiba como comparar anuidade, limite e benefÃ­cios para encontrar o melhor cartÃ£o.',
-    articleCategory: 'CartÃµes de crÃ©dito',
+    heading: 'Melhor cartão de crédito: como escolher para o seu perfil.',
+    title: 'Melhor cartão de crédito: guia completo para comparar | Cote Juros',
+    description: 'Saiba como comparar anuidade, limite e benefícios para encontrar o melhor cartão.',
+    articleCategory: 'Cartões de crédito',
     body: [
-      'O melhor cartÃ£o de crÃ©dito nÃ£o Ã© o mais famoso, e sim o que combina com seu momento financeiro. Para decidir com seguranÃ§a, compare limite inicial, polÃ­tica de aumento de limite, anuidade e benefÃ­cios reais.',
-      'No Cote Juros, vocÃª consegue cruzar custo e benefÃ­cio em um Ãºnico painel. A recomendaÃ§Ã£o prÃ¡tica Ã© comeÃ§ar por cartÃµes sem anuidade e sÃ³ migrar para opÃ§Ãµes premium quando os benefÃ­cios realmente compensarem.',
-      'Antes de solicitar, avalie o impacto do cartÃ£o no seu orÃ§amento mensal. CartÃ£o bom Ã© aquele que melhora sua rotina e nÃ£o compromete sua margem de pagamento.'
+      'O melhor cartão de crédito não é o mais famoso, e sim o que combina com seu momento financeiro. Para decidir com segurança, compare limite inicial, política de aumento de limite, anuidade e benefícios reais.',
+      'No Cote Juros, você consegue cruzar custo e benefício em um único painel. A recomendação prática é começar por cartões sem anuidade e só migrar para opções premium quando os benefícios realmente compensarem.',
+      'Antes de solicitar, avalie o impacto do cartão no seu orçamento mensal. Cartão bom é aquele que melhora sua rotina e não compromete sua margem de pagamento.'
     ]
   },
   {
     path: '/blog/como-aumentar-limite-cartao',
-    heading: 'Como aumentar limite do cartÃ£o com estratÃ©gia e consistÃªncia.',
-    title: 'Como aumentar limite do cartÃ£o: passos prÃ¡ticos | Cote Juros',
+    heading: 'Como aumentar limite do cartão com estratégia e consistência.',
+    title: 'Como aumentar limite do cartão: passos práticos | Cote Juros',
     description: 'Entenda como bancos avaliam limite e o que fazer para evoluir com mais rapidez.',
-    articleCategory: 'CartÃµes de crÃ©dito',
+    articleCategory: 'Cartões de crédito',
     body: [
-      'Aumento de limite depende de comportamento. Os bancos observam frequÃªncia de uso, pagamento em dia e estabilidade de renda para decidir novas liberaÃ§Ãµes.',
-      'Concentrar gastos no cartÃ£o principal, manter baixa inadimplÃªncia e atualizar renda no app sÃ£o aÃ§Ãµes que aumentam chance de aprovaÃ§Ã£o para limite maior.',
-      'Evite usar o limite total todos os meses. O ideal Ã© manter uso equilibrado e histÃ³rico positivo, mostrando capacidade de pagamento sustentÃ¡vel.'
+      'Aumento de limite depende de comportamento. Os bancos observam frequência de uso, pagamento em dia e estabilidade de renda para decidir novas liberações.',
+      'Concentrar gastos no cartao principal, pagar em dia e atualizar renda no app sao acoes que podem melhorar a leitura do seu perfil para limite maior.',
+      'Evite usar o limite total todos os meses. O ideal é manter uso equilibrado e histórico positivo, mostrando capacidade de pagamento sustentável.'
     ]
   },
   {
     path: '/blog/emprestimo-para-negativado-funciona',
-    heading: 'EmprÃ©stimo para negativado funciona? Entenda quando vale a pena.',
-    title: 'EmprÃ©stimo para negativado funciona? Guia honesto | Cote Juros',
-    description: 'Veja quais modalidades existem para negativado e como evitar custos abusivos.',
-    articleCategory: 'EmprÃ©stimos',
+    heading: 'Empréstimo para negativado funciona? Entenda quando vale a pena.',
+    title: 'Empréstimo para negativado funciona? Guia honesto | Cote Juros',
+    description: 'Veja quais modalidades existem para negativado e como evitar custos que pesam demais.',
+    articleCategory: 'Empréstimos',
     body: [
-      'EmprÃ©stimo para negativado funciona quando hÃ¡ compatibilidade entre renda, parcela e risco da operaÃ§Ã£o. As opÃ§Ãµes mais comuns sÃ£o consignado e crÃ©dito com garantia.',
-      'A chave Ã© comparar o custo efetivo total e nÃ£o apenas a taxa mensal. Em cenÃ¡rios de urgÃªncia, a pressa pode levar a contratos caros e difÃ­ceis de manter.',
-      'Use comparadores confiÃ¡veis para validar bancos, taxas e condiÃ§Ãµes. Nunca faÃ§a pagamento antecipado para liberar crÃ©dito.'
+      'Empréstimo para negativado funciona quando há compatibilidade entre renda, parcela e risco da operação. As opções mais comuns são consignado e crédito com garantia.',
+      'A chave é comparar o custo efetivo total e não apenas a taxa mensal. Em cenários de urgência, a pressa pode levar a contratos caros e difíceis de manter.',
+      'Use comparadores confiáveis para validar bancos, taxas e condições. Nunca faça pagamento antecipado para liberar crédito.'
     ]
   },
   {
     path: '/blog/qual-banco-libera-credito-mais-facil',
-    heading: 'Qual banco libera crÃ©dito mais fÃ¡cil? Compare critÃ©rios reais.',
-    title: 'Qual banco libera crÃ©dito mais fÃ¡cil? Comparativo atualizado | Cote Juros',
-    description: 'Descubra quais critÃ©rios pesam na aprovaÃ§Ã£o e como melhorar seu perfil.',
-    articleCategory: 'EmprÃ©stimos',
+    heading: 'Qual banco libera crédito mais fácil? Compare critérios reais.',
+    title: 'Qual banco libera crédito mais fácil? Comparativo atualizado | Cote Juros',
+    description: 'Entenda quais criterios os bancos costumam observar e como comparar com mais calma.',
+    articleCategory: 'Empréstimos',
     body: [
-      'NÃ£o existe um banco Ãºnico que aprova todo mundo. Cada instituiÃ§Ã£o combina score, renda, histÃ³rico e relacionamento para definir risco e limite.',
-      'Bancos digitais costumam ter esteiras mais rÃ¡pidas, enquanto bancos tradicionais podem oferecer linhas com taxas melhores para clientes com relacionamento.',
-      'A forma mais segura de ganhar velocidade Ã© comparar vÃ¡rios bancos em paralelo e ajustar o pedido ao seu perfil financeiro.'
+      'Não existe um banco único que aprova todo mundo. Cada instituição combina score, renda, histórico e relacionamento para definir risco e limite.',
+      'Bancos digitais costumam ter esteiras mais rápidas, enquanto bancos tradicionais podem oferecer linhas com taxas melhores para clientes com relacionamento.',
+      'A forma mais segura de ganhar velocidade é comparar vários bancos em paralelo e ajustar o pedido ao seu perfil financeiro.'
     ]
   },
   {
     path: '/blog/como-reduzir-juros-do-emprestimo',
-    heading: 'Como reduzir juros do emprÃ©stimo antes de contratar.',
-    title: 'Como reduzir juros do emprÃ©stimo: estratÃ©gias prÃ¡ticas | Cote Juros',
-    description: 'Aprenda tÃ¡ticas de negociaÃ§Ã£o e comparaÃ§Ã£o para pagar menos juros.',
-    articleCategory: 'EducaÃ§Ã£o financeira',
+    heading: 'Como reduzir juros do empréstimo antes de contratar.',
+    title: 'Como reduzir juros do empréstimo: estratégias práticas | Cote Juros',
+    description: 'Aprenda táticas de negociação e comparação para pagar menos juros.',
+    articleCategory: 'Educação financeira',
     body: [
-      'A melhor forma de reduzir juros Ã© entrar na negociaÃ§Ã£o com dados. Leve simulaÃ§Ãµes de bancos concorrentes e use o CET como referÃªncia de comparaÃ§Ã£o.',
-      'Aumentar entrada, reduzir prazo e incluir garantia sÃ£o aÃ§Ãµes que normalmente derrubam taxa e melhoram custo total da operaÃ§Ã£o.',
-      'Evite contratar crÃ©dito sem comparar pelo menos trÃªs propostas. Pequenas diferenÃ§as na taxa podem gerar economia relevante no contrato completo.'
+      'A melhor forma de reduzir juros é entrar na negociação com dados. Leve simulações de bancos concorrentes e use o CET como referência de comparação.',
+      'Aumentar entrada, reduzir prazo e incluir garantia são ações que normalmente derrubam taxa e melhoram custo total da operação.',
+      'Evite contratar crédito sem comparar pelo menos três propostas. Pequenas diferenças na taxa podem gerar economia relevante no contrato completo.'
     ]
   }
 ];
@@ -259,7 +259,7 @@ const loanCluster = [
     heading: 'SuperSim Emprestimo: como funciona, quem pode pedir e se vale a pena',
     title: 'SuperSim Emprestimo: como funciona, quem pode pedir e se vale a pena | Cote Juros',
     description:
-      'Guia editorial da SuperSim com funcionamento, perfil de aprovacao, valores, prazos, comparacao com outras opcoes e FAQ.',
+      'Guia editorial da SuperSim com funcionamento, criterios, valores, prazos, comparacao com outras opcoes e FAQ.',
     badge: 'Guia editorial',
     productType: 'loan',
     offerFilter: { categoriesAny: ['Pessoal', 'Negativado'], sortBy: 'monthlyRate' },
@@ -462,7 +462,7 @@ const loanCluster = [
       {
         heading: 'Como pesquisar emprestimo online com mais clareza',
         paragraphs: [
-          'Emprestimo online facilita a jornada, mas a decisao nao deve ser automatica. O ideal e cruzar velocidade, custo total e perfil de aprovacao antes do clique final.',
+          'Emprestimo online facilita a jornada, mas a decisao nao deve ser automatica. O ideal e cruzar velocidade, custo total e adequacao ao seu perfil antes do clique final.',
           'Nesta rota, a SuperSim entra como um CTA natural dentro da leitura editorial, sem competir com o comparador principal do portal.'
         ]
       },
@@ -573,7 +573,7 @@ const loanCluster = [
     path: '/emprestimo-rapido',
     heading: 'Emprestimo rapido com leitura transparente de custo.',
     title: 'Emprestimo rapido: compare antes de contratar | Cote Juros',
-    description: 'Encontre emprestimo rapido com foco em aprovacao e controle de juros.',
+    description: 'Compare emprestimo rapido com foco em custo, prazo e proximo passo.',
     productType: 'loan',
     offerFilter: { sortBy: 'monthlyRate' }
   },
@@ -595,7 +595,7 @@ const loanCluster = [
   },
   {
     path: '/emprestimo-para-autonomo',
-    heading: 'Emprestimo para autonomo com analise de aprovacao.',
+    heading: 'Emprestimo para autonomo com comparacao mais clara.',
     title: 'Emprestimo para autonomo: comparacao de taxas | Cote Juros',
     description: 'Encontre credito para autonomo com mais previsibilidade de parcela.',
     productType: 'loan',
@@ -757,65 +757,65 @@ const loanCluster = [
 const cardCluster = [
   {
     path: '/melhores-cartoes-de-credito',
-    heading: 'Melhores cartÃµes de crÃ©dito com comparaÃ§Ã£o por perfil.',
-    title: 'Melhores cartÃµes de crÃ©dito: compare limite e benefÃ­cios | Cote Juros',
-    description: 'Analise cartÃµes por anuidade, limite e benefÃ­cios em uma tabela comparativa.',
+    heading: 'Melhores cartões de crédito com comparação por perfil.',
+    title: 'Melhores cartões de crédito: compare limite e benefícios | Cote Juros',
+    description: 'Analise cartões por anuidade, limite e benefícios em uma tabela comparativa.',
     productType: 'credit_card',
     offerFilter: { sortBy: 'maxLimit' }
   },
   {
     path: '/cartao-sem-anuidade',
-    heading: 'CartÃ£o sem anuidade com foco em custo zero e praticidade.',
-    title: 'CartÃ£o sem anuidade: melhores opÃ§Ãµes para comparar | Cote Juros',
-    description: 'Compare cartÃµes sem anuidade por limite, benefÃ­cios e banco emissor.',
+    heading: 'Cartão sem anuidade com foco em custo zero e praticidade.',
+    title: 'Cartão sem anuidade: melhores opções para comparar | Cote Juros',
+    description: 'Compare cartões sem anuidade por limite, benefícios e banco emissor.',
     productType: 'credit_card',
     offerFilter: { annualFeeZero: true, sortBy: 'maxLimit' }
   },
   {
     path: '/cartao-com-cashback',
-    heading: 'CartÃ£o com cashback para gerar retorno em compras.',
-    title: 'CartÃ£o com cashback: comparativo atualizado | Cote Juros',
-    description: 'Compare cartÃµes com cashback por retorno, limite e anuidade.',
+    heading: 'Cartão com cashback para gerar retorno em compras.',
+    title: 'Cartão com cashback: comparativo atualizado | Cote Juros',
+    description: 'Compare cartões com cashback por retorno, limite e anuidade.',
     productType: 'credit_card',
     offerFilter: { benefitsAny: ['cashback'], sortBy: 'maxLimit' }
   },
   {
     path: '/cartao-com-milhas',
-    heading: 'CartÃ£o com milhas para acumular pontos de viagem.',
-    title: 'CartÃ£o com milhas: compare pontuaÃ§Ã£o e custo | Cote Juros',
-    description: 'Veja cartÃµes com milhas e escolha pela melhor relaÃ§Ã£o custo-benefÃ­cio.',
+    heading: 'Cartão com milhas para acumular pontos de viagem.',
+    title: 'Cartão com milhas: compare pontuação e custo | Cote Juros',
+    description: 'Veja cartões com milhas e escolha pela melhor relação custo-benefício.',
     productType: 'credit_card',
     offerFilter: { benefitsAny: ['milhas', 'pontos'], sortBy: 'maxLimit' }
   },
   {
     path: '/cartao-para-negativado',
-    heading: 'CartÃ£o para negativado com critÃ©rios de entrada mais acessÃ­veis.',
-    title: 'CartÃ£o para negativado: compare opÃ§Ãµes e vantagens | Cote Juros',
-    description: 'Compare cartÃµes para negativado com foco em aprovaÃ§Ã£o e custo.',
+    heading: 'Cartão para negativado com critérios de entrada mais acessíveis.',
+    title: 'Cartão para negativado: compare opções e vantagens | Cote Juros',
+    description: 'Compare cartoes para negativado com foco em custo, criterios e proximo passo.',
     productType: 'credit_card',
     offerFilter: { annualFeeZero: true, sortBy: 'annualFee' }
   },
   {
     path: '/cartao-para-mei',
-    heading: 'CartÃ£o para MEI com benefÃ­cios para rotina empresarial.',
-    title: 'CartÃ£o para MEI: compare limite e benefÃ­cios empresariais | Cote Juros',
-    description: 'Encontre cartÃ£o para MEI com anÃ¡lise de limite, anuidade e vantagens.',
+    heading: 'Cartão para MEI com benefícios para rotina empresarial.',
+    title: 'Cartão para MEI: compare limite e benefícios empresariais | Cote Juros',
+    description: 'Encontre cartão para MEI com análise de limite, anuidade e vantagens.',
     productType: 'credit_card',
     offerFilter: { sortBy: 'maxLimit' }
   },
   {
     path: '/cartao-para-score-baixo',
-    heading: 'CartÃ£o para score baixo com comparaÃ§Ã£o de risco e custo.',
-    title: 'CartÃ£o para score baixo: opÃ§Ãµes para iniciar crÃ©dito | Cote Juros',
-    description: 'Compare cartÃµes para score baixo e monte estratÃ©gia de evoluÃ§Ã£o de limite.',
+    heading: 'Cartão para score baixo com comparação de risco e custo.',
+    title: 'Cartão para score baixo: opções para iniciar crédito | Cote Juros',
+    description: 'Compare cartões para score baixo e monte estratégia de evolução de limite.',
     productType: 'credit_card',
     offerFilter: { annualFeeZero: true, sortBy: 'annualFee' }
   },
   {
     path: '/cartao-com-limite-alto',
-    heading: 'CartÃ£o com limite alto para perfis com maior capacidade de renda.',
-    title: 'CartÃ£o com limite alto: compare bancos e benefÃ­cios | Cote Juros',
-    description: 'Veja cartÃµes com limite alto e compare anuidade, pontos e benefÃ­cios.',
+    heading: 'Cartão com limite alto para perfis com maior capacidade de renda.',
+    title: 'Cartão com limite alto: compare bancos e benefícios | Cote Juros',
+    description: 'Veja cartões com limite alto e compare anuidade, pontos e benefícios.',
     productType: 'credit_card',
     offerFilter: { minLimit: 10000, sortBy: 'maxLimit' }
   }
@@ -824,39 +824,39 @@ const cardCluster = [
 const financingCluster = [
   {
     path: '/financiamento-veiculo',
-    heading: 'Financiamento de veÃ­culo com comparaÃ§Ã£o por taxa e entrada.',
-    title: 'Financiamento de veÃ­culo: compare bancos e parcelas | Cote Juros',
+    heading: 'Financiamento de veículo com comparação por taxa e entrada.',
+    title: 'Financiamento de veículo: compare bancos e parcelas | Cote Juros',
     description: 'Compare financiamento de carro e moto por taxa anual e prazo total.',
     productType: 'financing',
     offerFilter: { categoriesAny: ['Carro', 'Moto'], sortBy: 'annualRate' }
   },
   {
     path: '/financiamento-imovel',
-    heading: 'Financiamento de imÃ³vel com leitura de custo total.',
-    title: 'Financiamento de imÃ³vel: compare taxas e condiÃ§Ãµes | Cote Juros',
-    description: 'Analise financiamento imobiliÃ¡rio com prazo, entrada e taxa anual.',
+    heading: 'Financiamento de imóvel com leitura de custo total.',
+    title: 'Financiamento de imóvel: compare taxas e condições | Cote Juros',
+    description: 'Analise financiamento imobiliário com prazo, entrada e taxa anual.',
     productType: 'financing',
-    offerFilter: { categoriesAny: ['ImobiliÃ¡rio', 'Refinanciamento'], sortBy: 'annualRate' }
+    offerFilter: { categoriesAny: ['Imobiliário', 'Refinanciamento'], sortBy: 'annualRate' }
   },
   {
     path: '/financiamento-sem-entrada',
-    heading: 'Financiamento sem entrada para cenÃ¡rios de menor capital inicial.',
-    title: 'Financiamento sem entrada: compare condiÃ§Ãµes reais | Cote Juros',
-    description: 'Veja opÃ§Ãµes com entrada reduzida e compare impacto no custo final.',
+    heading: 'Financiamento sem entrada para cenários de menor capital inicial.',
+    title: 'Financiamento sem entrada: compare condições reais | Cote Juros',
+    description: 'Veja opções com entrada reduzida e compare impacto no custo final.',
     productType: 'financing',
     offerFilter: { maxDownPayment: 10, sortBy: 'annualRate' }
   },
   {
     path: '/financiamento-para-negativado',
-    heading: 'Financiamento para negativado com anÃ¡lise de alternativas.',
-    title: 'Financiamento para negativado: comparaÃ§Ã£o segura | Cote Juros',
+    heading: 'Financiamento para negativado com análise de alternativas.',
+    title: 'Financiamento para negativado: comparação segura | Cote Juros',
     description: 'Compare linhas de financiamento para negativado e reduza risco de contrato ruim.',
     productType: 'financing',
     offerFilter: { categoriesAny: ['Refinanciamento', 'Carro'], sortBy: 'annualRate' }
   },
   {
     path: '/financiamento-carro-usado',
-    heading: 'Financiamento de carro usado com comparaÃ§Ã£o de taxas.',
+    heading: 'Financiamento de carro usado com comparação de taxas.',
     title: 'Financiamento carro usado: melhores taxas para comparar | Cote Juros',
     description: 'Analise bancos para financiar carro usado por taxa, prazo e entrada.',
     productType: 'financing',
@@ -868,15 +868,15 @@ const hubPages = [
   {
     path: '/comparar',
     heading: 'Comparadores financeiros para escolher com clareza.',
-    title: 'Comparar crÃ©dito, cartÃµes e financiamento | Cote Juros',
-    description: 'Acesse comparadores de crÃ©dito, cartÃµes e financiamento para entender custos, benefÃ­cios e condiÃ§Ãµes antes de contratar.',
+    title: 'Comparar crédito, cartões e financiamento | Cote Juros',
+    description: 'Acesse comparadores de crédito, cartões e financiamento para entender custos, benefícios e condições antes de contratar.',
     pageType: 'hub'
   },
   {
     path: '/bancos',
-    heading: 'Bancos comparados em um Ãºnico ecossistema de decisÃ£o.',
-    title: 'Bancos para comparar taxas, cartÃµes e emprÃ©stimos | Cote Juros',
-    description: 'Explore bancos com visÃ£o de cartÃµes, emprÃ©stimos, financiamento e condiÃ§Ãµes.',
+    heading: 'Bancos comparados em um único ecossistema de decisão.',
+    title: 'Bancos para comparar taxas, cartões e empréstimos | Cote Juros',
+    description: 'Explore bancos com visão de cartões, empréstimos, financiamento e condições.',
     pageType: 'hub'
   }
 ];
@@ -951,4 +951,5 @@ export function getBankRoute(slug) {
 export function getBlogEditorialPage(path) {
   return normalizeMojibakeDeep(blogEditorialDefinitions.find((article) => article.path === path) || null);
 }
+
 

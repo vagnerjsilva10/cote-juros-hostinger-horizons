@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, CheckCircle2, ChevronLeft } from 'lucide-react';
 import { toast } from 'sonner';
@@ -67,7 +68,7 @@ function DiagnosticoPage() {
 
     if (data.score === 'Alto' && !data.dividas) {
       recommendedLoan = 'Linha com taxa mais competitiva para perfis premium';
-      recommendedCard = 'Cartão com mais benefícios e maior chance de aprovação';
+      recommendedCard = 'Cartao com mais beneficios para comparar com calma';
     } else if (data.score === 'Baixo' || data.dividas) {
       recommendedLoan = 'Linha voltada a renegociação ou crédito com garantia';
       recommendedCard = 'Cartão de entrada com critérios mais acessíveis';
@@ -91,24 +92,29 @@ function DiagnosticoPage() {
               <p className="text-muted-foreground">
                 Considerando renda, score e presença de dívidas, esta é a direção mais coerente para iniciar a comparação.
               </p>
-              <Button className="w-full">Ver opções de crédito</Button>
+              <Link to="/emprestimos" className="block">
+                <Button className="w-full">Ver opcoes de credito</Button>
+              </Link>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="space-y-4 p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Cartão</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Cartao</p>
               <h3>{recommendedCard}</h3>
               <p className="text-muted-foreground">
-                A leitura combina apetite de aprovação com menor complexidade visual para a próxima etapa.
+                A leitura organiza criterios iniciais para voce comparar a proxima etapa com mais calma.
               </p>
-              <Button variant="outline" className="w-full">Ver opções de cartão</Button>
+              <Link to="/cartoes-de-credito" className="block">
+                <Button variant="outline" className="w-full">Ver opcoes de cartao</Button>
+              </Link>
             </CardContent>
           </Card>
         </div>
 
         <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button
+            variant="outline"
             onClick={() =>
               redirectToFinanceAi({
                 sourcePage: '/diagnostico-financeiro',
@@ -119,10 +125,10 @@ function DiagnosticoPage() {
               })
             }
           >
-            Testar Cote Finance AI
+            Organizar meu dinheiro no Cote Finance
           </Button>
           <Button variant="outline" onClick={() => { setShowOffers(false); setStep(1); }}>
-            Refazer diagnóstico
+            Refazer diagnostico
           </Button>
         </div>
       </div>
@@ -245,5 +251,4 @@ function DiagnosticoPage() {
     </>
   );
 }
-
 export default DiagnosticoPage;

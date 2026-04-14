@@ -117,7 +117,7 @@ const buildFallbackSections = (title, category, tags = []) => {
       heading: 'Próximos passos para colocar em prática',
       paragraphs: [
         `O caminho mais seguro costuma ser simples: entender seu ponto de partida, priorizar poucas ações e revisar o resultado mês a mês.`,
-        `Se ainda houver dúvida, use simuladores, conteúdos relacionados e um diagnóstico financeiro antes de contratar qualquer produto.`
+        `Se ainda houver duvida, compare opcoes, leia conteudos relacionados e avance apenas quando o proximo passo fizer sentido para o seu perfil.`
       ],
       bullets: [
         'registre o cenário atual',

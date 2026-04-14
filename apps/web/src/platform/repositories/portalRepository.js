@@ -19,15 +19,15 @@ const defaultPartnersSeed = banksSeed.map((bank) => ({
   status: 'active',
   productTypes: ['loan', 'credit_card', 'financing'],
   redirectRules: 'default',
-  trackingLink: `https://finance.cotejuros.com.br/quiz?partner=${bank.id}`,
+  trackingLink: bank.website ? `https://${bank.website}` : 'https://www.cotejuros.com.br/emprestimos',
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString()
 }));
 
 const defaultSettingsSeed = {
-  defaultCtaDestination: 'https://finance.cotejuros.com.br/quiz',
-  coteFinanceAiBaseUrl: 'https://finance.cotejuros.com.br/quiz',
-  coteFinanceAiDashboardUrl: 'https://finance.cotejuros.com.br/quiz',
+  defaultCtaDestination: 'https://www.cotejuros.com.br/emprestimos',
+  coteFinanceAiBaseUrl: 'https://finance.cotejuros.com.br',
+  coteFinanceAiDashboardUrl: 'https://finance.cotejuros.com.br',
   supportEmail: 'suporte@cotejuros.com.br',
   socialLinks: {
     linkedin: '',
@@ -242,7 +242,7 @@ const ensureOfferDefaults = (offer) => ({
   maxTerm: offer.maxTerm != null ? Number(offer.maxTerm) : null,
   minScore: offer.minScore || '',
   minDownPayment: offer.minDownPayment != null ? Number(offer.minDownPayment) : null,
-  redirectUrl: offer.redirectUrl || 'https://finance.cotejuros.com.br/quiz',
+  redirectUrl: offer.redirectUrl || 'https://www.cotejuros.com.br/emprestimos',
   partnerTrackingUrl: offer.partnerTrackingUrl || '',
   isFeatured: Boolean(offer.isFeatured),
   status: offer.status || 'active',
@@ -672,6 +672,13 @@ export const portalRepository = {
     const lead = leads.find((item) => item.id === id);
     if (!lead) return null;
     return upsertEntity('simulationLeads', withUpdatedAt({ ...lead, status }));
+  },
+
+  updateSimulationLead(id, patch = {}) {
+    const leads = safeRead('simulationLeads');
+    const lead = leads.find((item) => item.id === id);
+    if (!lead) return null;
+    return upsertEntity('simulationLeads', withUpdatedAt({ ...lead, ...patch }));
   },
 
   listAdminTestimonials(filters = {}) {

@@ -28,7 +28,7 @@ function OfferCard({ offer, isBest }) {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Valor aprovado</p>
+              <p className="text-xs text-muted-foreground mb-1">Valor possivel</p>
               <p className="text-sm font-medium font-variant-tabular">R$ {offer.valor.toLocaleString('pt-BR')}</p>
             </div>
             <div>

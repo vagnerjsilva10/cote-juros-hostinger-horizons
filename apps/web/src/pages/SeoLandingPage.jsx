@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { SimulationModal } from '@/components/SimulationModal.jsx';
+import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import { AdSpace, ADSENSE_SLOT_IDS } from '@/components/AdSpace.jsx';
 import PageHero from '@/components/PageHero.jsx';
 import { resolveSiteUrl } from '@/seo/seoCatalog.js';
@@ -21,15 +21,20 @@ function SeoLandingPage({ title, description, heading, content }) {
         <link rel="canonical" href={canonicalUrl} />
       </Helmet>
 
-      <SimulationModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <QuickCreditFlowModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        sourcePage={typeof window !== 'undefined' ? window.location.pathname : '/'}
+        originLabel="seo-landing"
+      />
 
       <PageHero
-        badge="Comparação"
+        badge="Credito"
         title={heading}
         subtitle={description}
       >
         <Button size="lg" onClick={() => setModalOpen(true)}>
-          Fazer simulação gratuita
+          Ver minhas opcoes agora
         </Button>
       </PageHero>
 
@@ -48,12 +53,12 @@ function SeoLandingPage({ title, description, heading, content }) {
 
             <Card>
               <CardContent className="space-y-5 p-8">
-                <h3>Pronto para comparar com mais clareza?</h3>
+                <h3>Quer seguir com mais clareza?</h3>
                 <div className="space-y-3">
                   {[
-                    'Análise inicial em fluxo simples.',
-                    'Leitura organizada por taxa e prazo.',
-                    'Comparação com menos ruído visual.'
+                    'Comece por um fluxo simples.',
+                    'Veja caminhos possiveis antes de decidir.',
+                    'Sem compromisso e sem cobranca antecipada.'
                   ].map((item) => (
                     <div key={item} className="flex items-start gap-3">
                       <CheckCircle2 className="mt-0.5 h-5 w-5 text-foreground" />
@@ -62,7 +67,7 @@ function SeoLandingPage({ title, description, heading, content }) {
                   ))}
                 </div>
                 <Button onClick={() => setModalOpen(true)}>
-                  Comparar agora <ArrowRight className="h-4 w-4" />
+                  Ver minhas opcoes agora <ArrowRight className="h-4 w-4" />
                 </Button>
               </CardContent>
             </Card>
@@ -71,10 +76,10 @@ function SeoLandingPage({ title, description, heading, content }) {
               <CardContent className="space-y-4 p-8">
                 <h3>Continue sua pesquisa</h3>
                 <div className="grid gap-2 sm:grid-cols-2">
-                  <Link to="/emprestimos" className="link-animated text-sm text-muted-foreground hover:text-foreground">Comparar empréstimos</Link>
-                  <Link to="/cartoes-de-credito" className="link-animated text-sm text-muted-foreground hover:text-foreground">Comparar cartões de crédito</Link>
-                  <Link to="/financiamento" className="link-animated text-sm text-muted-foreground hover:text-foreground">Comparar financiamentos</Link>
-                  <Link to="/juros-abusivos" className="link-animated text-sm text-muted-foreground hover:text-foreground">Entender juros abusivos</Link>
+                  <Link to="/emprestimos" className="link-animated text-sm text-muted-foreground hover:text-foreground">Ver emprestimos</Link>
+                  <Link to="/cartoes-de-credito" className="link-animated text-sm text-muted-foreground hover:text-foreground">Ver cartoes de credito</Link>
+                  <Link to="/financiamento" className="link-animated text-sm text-muted-foreground hover:text-foreground">Ver financiamentos</Link>
+                  <Link to="/blog" className="link-animated text-sm text-muted-foreground hover:text-foreground">Ler conteudos do blog</Link>
                 </div>
               </CardContent>
             </Card>
@@ -83,9 +88,9 @@ function SeoLandingPage({ title, description, heading, content }) {
           <div className="space-y-6">
             <Card className="lg:sticky lg:top-24">
               <CardContent className="space-y-4 p-8">
-                <h4>Por que usar o Cote Juros?</h4>
+                <h4>Antes de seguir</h4>
                 <p className="text-sm text-muted-foreground">
-                  A plataforma foi redesenhada para apresentar menos ruído, mais respiro e uma hierarquia de texto muito mais clara.
+                  A Cote Juros nao e banco, nao garante aprovacao e nao cobra valor antecipado. Nosso papel e ajudar voce a ver caminhos possiveis com mais clareza.
                 </p>
               </CardContent>
             </Card>

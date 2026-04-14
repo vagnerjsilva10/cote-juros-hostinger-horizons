@@ -11,24 +11,19 @@ function Header() {
   const isHome = location.pathname === '/';
 
   const navItems = [
-    { label: 'Home', path: '/' },
-    { label: 'Empréstimos', path: '/emprestimos' },
-    { label: 'Cartões', path: '/cartoes' },
+    { label: 'Emprestimos', path: '/emprestimos' },
+    { label: 'Cartoes', path: '/cartoes' },
     { label: 'Financiamentos', path: '/financiamentos' },
-    { label: 'Ferramentas', path: '/ferramentas' },
     { label: 'Blog', path: '/blog' }
   ];
 
-  const isActive = (path) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
-  };
+  const isActive = (path) => location.pathname.startsWith(path);
 
   return (
     <header
       className={`sticky top-0 z-50 w-full backdrop-blur-xl transition-colors ${
         isHome
-          ? 'border-b border-slate-200/80 bg-gradient-to-b from-[#eef4ff]/95 via-[#e8f0ff]/92 to-[#f4f8ff]/88'
+          ? 'border-b border-slate-200/80 bg-white/90'
           : 'border-b border-border bg-white/95'
       }`}
     >
@@ -55,12 +50,12 @@ function Header() {
           </nav>
 
           <div className="hidden items-center gap-3 lg:flex">
-            <Link to="/diagnostico-financeiro">
+            <Link to="/emprestimos">
               <Button
                 size="lg"
                 className="rounded-[10px] bg-[#111827] px-5 text-white shadow-[0_1px_2px_rgba(0,0,0,0.06),0_6px_16px_rgba(0,0,0,0.14)] transition-all duration-200 hover:bg-slate-800"
               >
-                Analisar perfil
+                Ver opcoes agora
               </Button>
             </Link>
           </div>
@@ -94,9 +89,9 @@ function Header() {
                       </Link>
                     ))}
                     <div className="mt-3 border-t border-border pt-5">
-                      <Link to="/diagnostico-financeiro" onClick={() => setMobileOpen(false)}>
+                      <Link to="/emprestimos" onClick={() => setMobileOpen(false)}>
                         <Button className="h-12 w-full bg-[#111827] text-base text-white transition-all duration-200 hover:bg-slate-800">
-                          Analisar perfil
+                          Ver opcoes agora
                         </Button>
                       </Link>
                     </div>

@@ -28,6 +28,25 @@ export class PartnerService {
       }
     });
   }
+
+  static async submitMockApiLead({ partnerId, leadId, sourcePage, productType, profile }) {
+    const event = await getPrisma().appIntegrationEvent.create({
+      data: {
+        sourcePage,
+        productContext: `mock_api:${partnerId}:${productType || 'loan'}:${profile || 'sem_perfil'}`,
+        simulationId: leadId || null
+      }
+    });
+
+    return {
+      id: event.id,
+      partnerId,
+      leadId: leadId || null,
+      status: 'accepted',
+      externalProtocol: `mock_${event.id}`,
+      createdAt: event.createdAt
+    };
+  }
 }
 
 

@@ -44,7 +44,7 @@ const buildBadgeList = (offer = {}) => {
 function AffiliateOfferCard({ offer, onSelect, featured = false }) {
   if (!offer) return null;
 
-  const logoUrl = offer?.metadata?.logoUrl || '';
+  const logoUrl = offer?.imageUrl || offer?.metadata?.logoUrl || '';
   const accentFromMeta = offer?.metadata?.accentColor || '#0F766E';
   const secondaryAccent = offer?.metadata?.secondaryAccentColor || '#D97706';
   const badges = buildBadgeList(offer);
@@ -145,7 +145,9 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
                 </div>
                 <div className="flex items-start gap-2">
                   <ShieldCheck className="mt-0.5 h-4 w-4 text-primary" />
-                  <p className="text-sm text-foreground">Boa opção para comparar antes de avançar na contratação.</p>
+                  <p className="text-sm text-foreground">
+                    {offer.payoutText || 'Boa opção para comparar antes de avançar na contratação.'}
+                  </p>
                 </div>
               </div>
             </div>

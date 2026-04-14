@@ -70,6 +70,51 @@ const getCategoryRoute = (article) => {
   return CATEGORY_ROUTES.find((item) => key.includes(item.match)) || { path: '/blog', label: article?.category || 'Blog' };
 };
 
+const normalizeIntentText = (value = '') =>
+  String(value)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+
+const getArticleConversionCta = (article, categoryRoute) => {
+  const intent = normalizeIntentText([
+    article?.title,
+    article?.h1,
+    article?.slug,
+    article?.category,
+    article?.summary,
+    article?.excerpt
+  ].filter(Boolean).join(' '));
+
+  if (/(organiz|orcamento|controle financeiro|educacao financeira|diagnostico financeiro|planejamento financeiro)/.test(intent)) {
+    return {
+      eyebrow: 'Proximo passo',
+      title: 'Quer organizar melhor seu dinheiro antes de decidir?',
+      description: 'Se este conteudo falou mais sobre rotina, planejamento ou controle, o Cote Finance pode ajudar voce a enxergar seu mes com mais clareza.',
+      primary: { to: '/cote-finance-ai', label: 'Conhecer o Cote Finance' },
+      secondary: { to: categoryRoute.path, label: 'Ver conteudo relacionado' }
+    };
+  }
+
+  if (/(golpe|fraude|juros abusivos|divida|renegoci|contest)/.test(intent)) {
+    return {
+      eyebrow: 'Antes de decidir',
+      title: 'Compare caminhos possiveis com calma',
+      description: 'Quando o assunto envolve divida, golpe ou cobranca confusa, vale respirar, comparar alternativas e evitar promessa facil.',
+      primary: { to: '/emprestimos', label: 'Ver opcoes com calma' },
+      secondary: { to: categoryRoute.path, label: 'Continuar lendo sobre o tema' }
+    };
+  }
+
+  return {
+    eyebrow: 'Proximo passo',
+    title: 'Quer ver opcoes que combinam com seu perfil?',
+    description: 'Se este conteudo ajudou, agora voce pode ver caminhos de credito que podem fazer sentido para o seu momento, sem promessa falsa e sem cobranca antecipada.',
+    primary: { to: '/emprestimos', label: 'Ver minhas opcoes agora' },
+    secondary: { to: categoryRoute.path, label: 'Ver pagina relacionada' }
+  };
+};
+
 function BlogArticlePage({ articleSlugOverride = '' }) {
   const { articleSlug } = useParams();
   const resolvedSlug = articleSlugOverride || articleSlug;
@@ -126,6 +171,10 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
   const categoryRoute = useMemo(
     () => (safeArticle ? getCategoryRoute(safeArticle) : { path: '/blog', label: 'Blog' }),
     [safeArticle]
+  );
+  const conversionCta = useMemo(
+    () => (safeArticle ? getArticleConversionCta(safeArticle, categoryRoute) : null),
+    [safeArticle, categoryRoute]
   );
   const tocItems = useMemo(() => (safeArticle ? buildArticleToc(safeArticle) : []), [safeArticle]);
 
@@ -461,20 +510,20 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
               </article>
 
               <section className="min-w-0 rounded-[22px] border border-primary/15 bg-primary/[0.04] p-5 sm:p-6 md:p-8">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Diagnóstico financeiro</p>
-                <h2 className="mt-3 text-xl text-foreground sm:text-2xl">Quer dar o próximo passo com mais clareza?</h2>
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">{conversionCta?.eyebrow || 'Proximo passo'}</p>
+                <h2 className="mt-3 text-xl text-foreground sm:text-2xl">{conversionCta?.title || 'Quer dar o proximo passo com mais clareza?'}</h2>
                 <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
-                  Faça um diagnóstico gratuito, entenda seu cenário e descubra caminhos mais seguros antes de contratar crédito ou reorganizar suas finanças.
+                  {conversionCta?.description}
                 </p>
                 <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                  <a href="https://finance.cotejuros.com.br/quiz" className="inline-flex w-full sm:w-auto">
+                  <Link to={conversionCta?.primary.to || '/emprestimos'} className="inline-flex w-full sm:w-auto">
                     <Button className="w-full sm:w-auto">
-                      Analisar meu perfil
+                      {conversionCta?.primary.label || 'Ver minhas opcoes agora'}
                       <ArrowRight className="h-4 w-4" />
                     </Button>
-                  </a>
-                  <Link to="/ferramentas" className="inline-flex w-full sm:w-auto">
-                    <Button variant="outline" className="w-full sm:w-auto">Ver ferramentas</Button>
+                  </Link>
+                  <Link to={conversionCta?.secondary.to || categoryRoute.path} className="inline-flex w-full sm:w-auto">
+                    <Button variant="outline" className="w-full sm:w-auto">{conversionCta?.secondary.label || 'Ver pagina relacionada'}</Button>
                   </Link>
                 </div>
               </section>

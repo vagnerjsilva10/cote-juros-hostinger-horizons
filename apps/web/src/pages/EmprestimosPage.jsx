@@ -23,6 +23,7 @@ import { trackingService } from '@/platform/services/trackingService.js';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
 import { affiliateRedirectService } from '@/platform/services/affiliateRedirectService.js';
 import { getNonSupersimOffers, getSupersimOffer } from '@/lib/supersim.js';
+import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 
 const bankAccentById = {
   itau: '#EC7000',
@@ -41,6 +42,7 @@ function EmprestimosPage() {
   const [loansData, setLoansData] = useState([]);
   const [creditJourney, setCreditJourney] = useState(location.state?.creditJourney || null);
   const [creditJourneyLoading, setCreditJourneyLoading] = useState(false);
+  const [quickModalOpen, setQuickModalOpen] = useState(false);
   const [amount, setAmount] = useState([10000]);
   const [type, setType] = useState('Todos');
   const [score, setScore] = useState('Todos');
@@ -54,6 +56,7 @@ function EmprestimosPage() {
   const beforeFaqSupersimOffer = getSupersimOffer(affiliatePlacements.before_faq || []);
   const beforeFaqOtherOffers = getNonSupersimOffers(affiliatePlacements.before_faq || []);
   const sidebarOffer = affiliatePlacements.sidebar?.[0] || null;
+  const quickLeadContext = location.state?.quickLeadContext || null;
 
   useEffect(() => {
     Promise.all([portalApi.getBanks(), portalApi.getOffers({ productType: 'loan' })]).then(([banks, offers]) => {
@@ -61,6 +64,11 @@ function EmprestimosPage() {
       setLoansData(offers);
     });
   }, []);
+
+  useEffect(() => {
+    if (!quickLeadContext?.amount) return;
+    setAmount([quickLeadContext.amount]);
+  }, [quickLeadContext?.amount]);
 
   useEffect(() => {
     const simulationId = new URLSearchParams(location.search).get('credit_simulation_id');
@@ -122,7 +130,7 @@ function EmprestimosPage() {
 
   const handleSimulate = async (loan) => {
     const bank = banksData.find((item) => item.id === loan.bankId);
-    const destinationUrl = bank?.website ? `https://${bank.website}` : 'https://finance.cotejuros.com.br/quiz';
+    const destinationUrl = bank?.website ? `https://${bank.website}` : 'https://www.cotejuros.com.br/emprestimos';
 
     await trackingService.trackOfferClick({
       sourcePage: '/emprestimos',
@@ -204,20 +212,40 @@ function EmprestimosPage() {
         />
       </Helmet>
 
+      <QuickCreditFlowModal
+        isOpen={quickModalOpen}
+        onClose={() => setQuickModalOpen(false)}
+        sourcePage="/emprestimos"
+        originLabel="emprestimos"
+      />
+
       <PageHero
         badge="Comparador de empréstimos"
-        title="Compare empréstimos com foco em taxa e custo total."
-        subtitle="Veja em poucos segundos as ofertas que cabem no seu momento e entenda o custo real antes de contratar."
+        title="Veja opcoes de emprestimo que podem fazer sentido para voce."
+        subtitle="Comece por uma jornada simples, entenda caminhos possiveis e compare com mais calma antes de decidir."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Link to="/diagnostico-financeiro">
-            <Button size="lg">Analisar perfil completo</Button>
-          </Link>
+          <Button size="lg" onClick={() => setQuickModalOpen(true)}>Ver minhas opcoes agora</Button>
           <a href="#resultados-emprestimos">
             <Button size="lg" variant="outline">Ver ofertas agora</Button>
           </a>
         </div>
       </PageHero>
+
+      {quickLeadContext ? (
+        <section className="border-b border-border bg-white py-5">
+          <div className="page-shell">
+            <div className="rounded-[18px] border border-primary/15 bg-primary/[0.04] px-5 py-4">
+              <p className="text-sm font-semibold text-foreground">
+                {quickLeadContext.fullName ? `${quickLeadContext.fullName}, estas opcoes` : 'Estas opcoes'} podem ser um bom ponto de partida para voce.
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Use os filtros para comparar com calma. A aprovacao final depende do parceiro e do seu perfil.
+              </p>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <section className="border-b border-border bg-background-secondary py-8">
         <div className="page-shell grid gap-4 md:grid-cols-4">
@@ -332,7 +360,7 @@ function EmprestimosPage() {
                     <div className="rounded-[14px] border border-border bg-background-secondary p-4">
                       <div className="grid gap-4 sm:grid-cols-3">
                         <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor aprovado</p>
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor possivel</p>
                           <p className="mt-1 text-sm font-semibold text-foreground">
                             {offer.approvedAmount != null ? `R$ ${offer.approvedAmount.toLocaleString('pt-BR')}` : '--'}
                           </p>
@@ -478,9 +506,7 @@ function EmprestimosPage() {
                     <SelectItem value="prazo-maior">Maior prazo</SelectItem>
                   </SelectContent>
                 </Select>
-                <Link to="/diagnostico-financeiro">
-                  <Button variant="outline">Analisar perfil</Button>
-                </Link>
+                <Button variant="outline" onClick={() => setQuickModalOpen(true)}>Refazer busca rapida</Button>
               </div>
             </div>
 
@@ -528,7 +554,7 @@ function EmprestimosPage() {
                           <p className="mt-2 text-sm text-muted-foreground">
                             {loan.monthlyRate < 2
                               ? 'Uma das menores taxas dentro do filtro que você escolheu.'
-                              : 'Boa opção para quem busca aprovação e parcelas previsíveis.'}
+                              : 'Boa opcao para comparar custo, prazo e parcela com mais calma.'}
                           </p>
                         </div>
 
@@ -625,9 +651,7 @@ function EmprestimosPage() {
                   <Button variant="outline" onClick={resetFilters}>
                     Limpar filtros
                   </Button>
-                  <Link to="/diagnostico-financeiro">
-                    <Button>Analisar perfil completo</Button>
-                  </Link>
+                  <Button onClick={() => setQuickModalOpen(true)}>Refazer busca rapida</Button>
                 </div>
               </div>
             ) : null}
@@ -678,13 +702,11 @@ function EmprestimosPage() {
           ) : null}
 
           <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
-            <h2 className="mb-3">Quer acelerar sua escolha com mais segurança?</h2>
+            <h2 className="mb-3">Quer ver outras opcoes para o seu perfil?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
-              O diagnóstico cruza seu perfil com as melhores linhas para destacar opções com mais chance de aprovação e custo menor.
+              Refaça a busca com alguns dados basicos e veja caminhos que podem combinar melhor com o seu momento.
             </p>
-            <Link to="/diagnostico-financeiro">
-              <Button size="lg">Analisar perfil agora</Button>
-            </Link>
+            <Button size="lg" onClick={() => setQuickModalOpen(true)}>Ver minhas opcoes agora</Button>
           </div>
         </div>
       </section>

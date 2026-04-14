@@ -359,19 +359,19 @@ function BlogPage() {
 
         <section className="rounded-[24px] border border-primary/15 bg-primary/[0.04] p-6 md:p-8">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Próximo passo</p>
-          <h2 className="mt-3 text-2xl text-foreground">Faça um diagnóstico financeiro gratuito</h2>
+          <h2 className="mt-3 text-2xl text-foreground">Quer sair da leitura e ver caminhos de credito?</h2>
           <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
-            Descubra quais ajustes priorizar agora para melhorar score, reduzir custos e contratar crédito com mais segurança.
+            Se voce ja entendeu o basico, o proximo passo e ver opcoes que podem fazer sentido para o seu perfil, sem compromisso e sem cobranca antecipada.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
-            <a href="https://finance.cotejuros.com.br/quiz" className="inline-flex">
+            <Link to="/emprestimos" className="inline-flex">
               <Button>
-                Ir para o diagnóstico
+                Ver minhas opcoes agora
                 <ArrowRight className="h-4 w-4" />
               </Button>
-            </a>
-            <Link to="/ferramentas" className="inline-flex">
-              <Button variant="outline">Ver simuladores</Button>
+            </Link>
+            <Link to="/emprestimo-para-negativado" className="inline-flex">
+              <Button variant="outline">Estou com o nome negativado</Button>
             </Link>
           </div>
         </section>

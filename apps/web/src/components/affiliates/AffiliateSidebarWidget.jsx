@@ -18,7 +18,7 @@ function AffiliateSidebarWidget({ offer, onSelect }) {
   if (!offer) return null;
 
   const accent = offer?.metadata?.accentColor || '#0F766E';
-  const logoUrl = offer?.metadata?.logoUrl || '';
+  const logoUrl = offer?.imageUrl || offer?.metadata?.logoUrl || '';
 
   return (
     <Card className="min-w-0 overflow-hidden border-border bg-white">

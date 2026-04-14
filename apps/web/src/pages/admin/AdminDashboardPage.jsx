@@ -3,6 +3,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { portalApi } from '@/platform/services/portalApi.js';
 
+const productLabels = {
+  loan: 'Emprestimo',
+  credit_card: 'Cartao',
+  financing: 'Financiamento'
+};
+
+const profileLabels = {
+  negativado: 'Negativado',
+  clt: 'CLT',
+  autonomo: 'Autonomo',
+  geral: 'Geral'
+};
+
+const deliveryModeLabels = {
+  tracking_link: 'Tracking link',
+  mock_api: 'Mock API'
+};
+
 export default function AdminDashboardPage() {
   const [data, setData] = useState({
     totalLeads: 0,
@@ -21,7 +39,7 @@ export default function AdminDashboardPage() {
   const metrics = [
     { label: 'Total de leads', value: data.totalLeads },
     { label: 'Cliques em CTA', value: data.ctaClicks },
-    { label: 'Eventos de integração', value: data.appIntegrationEvents },
+    { label: 'Eventos de integracao', value: data.appIntegrationEvents },
     { label: 'Produtos com leads', value: Object.keys(data.leadsByProductType || {}).length }
   ];
 
@@ -60,7 +78,7 @@ export default function AdminDashboardPage() {
 
         <Card className="border-slate-200">
           <CardHeader>
-            <CardTitle className="text-base">Top páginas (origem de lead)</CardTitle>
+            <CardTitle className="text-base">Top paginas (origem de lead)</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {(data.topConvertingPages || []).map((item) => (
@@ -107,7 +125,7 @@ export default function AdminDashboardPage() {
 
       <Card className="border-slate-200">
         <CardHeader>
-          <CardTitle className="text-base">Atividade recente de simulação</CardTitle>
+          <CardTitle className="text-base">Atividade recente de simulacao</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -115,7 +133,10 @@ export default function AdminDashboardPage() {
               <TableRow>
                 <TableHead>Data</TableHead>
                 <TableHead>Produto</TableHead>
-                <TableHead>Página</TableHead>
+                <TableHead>Pagina</TableHead>
+                <TableHead>Perfil</TableHead>
+                <TableHead>Parceiro</TableHead>
+                <TableHead>Envio</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
@@ -123,14 +144,17 @@ export default function AdminDashboardPage() {
               {(data.recentSimulationActivity || []).map((lead) => (
                 <TableRow key={lead.id}>
                   <TableCell>{new Date(lead.createdAt).toLocaleString('pt-BR')}</TableCell>
-                  <TableCell>{lead.productType || '-'}</TableCell>
+                  <TableCell>{productLabels[lead.productType] || lead.productType || '-'}</TableCell>
                   <TableCell>{lead.sourcePage || lead.originPage || '-'}</TableCell>
+                  <TableCell>{profileLabels[lead.profile] || lead.profile || '-'}</TableCell>
+                  <TableCell>{lead.partnerName || '-'}</TableCell>
+                  <TableCell>{deliveryModeLabels[lead.deliveryMode] || lead.deliveryMode || '-'}</TableCell>
                   <TableCell>{lead.status || 'new'}</TableCell>
                 </TableRow>
               ))}
               {(data.recentSimulationActivity || []).length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-slate-500">Sem atividade recente.</TableCell>
+                  <TableCell colSpan={7} className="text-slate-500">Sem atividade recente.</TableCell>
                 </TableRow>
               ) : null}
             </TableBody>

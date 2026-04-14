@@ -22,6 +22,8 @@ import SeoLandingPage from '@/pages/SeoLandingPage.jsx';
 import CoteFinanceAIPage from '@/pages/CoteFinanceAIPage.jsx';
 import MotionHeroPage from '@/pages/MotionHeroPage.jsx';
 import SeoProgrammaticPage from '@/pages/SeoProgrammaticPage.jsx';
+import CreditProfileLandingPage from '@/pages/CreditProfileLandingPage.jsx';
+import LeadNextStepPage from '@/pages/LeadNextStepPage.jsx';
 
 import AdminAuthGuard from '@/admin/AdminAuthGuard.jsx';
 import AdminLayout from '@/admin/AdminLayout.jsx';
@@ -133,6 +135,55 @@ function App() {
         <Route path="/termos-de-uso" element={<AppLayout><TermosUsoPage /></AppLayout>} />
         <Route path="/cote-finance-ai" element={<AppLayout><CoteFinanceAIPage /></AppLayout>} />
         <Route path="/motion-hero" element={<AppLayout><MotionHeroPage /></AppLayout>} />
+        <Route path="/proxima-etapa" element={<AppLayout><LeadNextStepPage /></AppLayout>} />
+        <Route
+          path="/emprestimo-para-negativado"
+          element={
+            <AppLayout>
+              <CreditProfileLandingPage
+                canonicalPath="/emprestimo-para-negativado"
+                title="Emprestimo para negativado | Veja caminhos possiveis | Cote Juros"
+                description="Se voce esta com o nome negativado, veja caminhos possiveis antes de decidir. Sem compromisso e sem cobranca antecipada."
+                badge="Para quem esta negativado"
+                heroTitle="Mesmo com o nome negativado, ainda pode haver caminhos possiveis"
+                heroDescription="Responda algumas perguntas rapidas e veja opcoes que podem fazer sentido para o seu momento, sem criar expectativa errada."
+                trustLine="Sem compromisso e sem promessa falsa"
+              />
+            </AppLayout>
+          }
+        />
+        <Route
+          path="/emprestimo-para-clt"
+          element={
+            <AppLayout>
+              <CreditProfileLandingPage
+                canonicalPath="/emprestimo-para-clt"
+                title="Emprestimo para CLT | Veja opcoes para o seu perfil | Cote Juros"
+                description="Se voce trabalha com carteira assinada, veja opcoes de credito que podem combinar com sua renda e seu perfil."
+                badge="Para quem trabalha com carteira"
+                heroTitle="Se voce e CLT, veja opcoes que podem combinar com sua renda"
+                heroDescription="Comece por uma jornada simples e descubra caminhos possiveis antes de seguir para a proxima etapa."
+                trustLine="Voce pode ver as opcoes e decidir com calma"
+              />
+            </AppLayout>
+          }
+        />
+        <Route
+          path="/emprestimo-para-autonomo"
+          element={
+            <AppLayout>
+              <CreditProfileLandingPage
+                canonicalPath="/emprestimo-para-autonomo"
+                title="Emprestimo para autonomo | Veja caminhos possiveis | Cote Juros"
+                description="Se voce e autonomo, veja opcoes de credito que podem fazer sentido para o seu momento, sem perder tempo com formulários longos."
+                badge="Para autonomos"
+                heroTitle="Se voce e autonomo, veja caminhos de credito que podem fazer sentido"
+                heroDescription="Uma jornada leve para entender possibilidades antes de decidir, com mais clareza e menos enrolacao."
+                trustLine="Sem cobranca antecipada e sem pressao para fechar"
+              />
+            </AppLayout>
+          }
+        />
 
         <Route
           path="/comparar"
