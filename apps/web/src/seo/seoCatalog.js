@@ -1,4 +1,5 @@
 import { merchantMachineComparePages, merchantMachineStaticPages } from './merchantMachinesCatalog.js';
+import { normalizeMojibakeDeep } from '@/lib/textEncoding.js';
 
 const DEFAULT_SITE_URL = 'https://cote-juros-hostinger-horizons-web.vercel.app';
 
@@ -377,7 +378,7 @@ const hubPages = [
   }
 ];
 
-export const seoStaticPages = [
+export const seoStaticPages = normalizeMojibakeDeep([
   ...loanCluster,
   ...cardCluster,
   ...financingCluster,
@@ -389,11 +390,11 @@ export const seoStaticPages = [
   badge: item.badge || 'Comparador financeiro',
   pageType: item.pageType || 'product',
   ...item
-}));
+})));
 
 export const reservedSeoStaticPaths = seoStaticPages.map((page) => page.path);
 
-const quickLinkPresets = {
+const quickLinkPresets = normalizeMojibakeDeep({
   comparadores: comparePageDefinitions.slice(0, 4).map((page) => ({
     label: page.heading,
     path: `/comparar/${page.slug}`
@@ -410,7 +411,7 @@ const quickLinkPresets = {
     label: article.heading,
     path: article.path
   }))
-};
+});
 
 export function slugify(value = '') {
   return String(value)
@@ -433,17 +434,17 @@ export function getQuickLinks() {
 }
 
 export function getStaticSeoPage(path) {
-  return seoStaticPages.find((page) => page.path === path) || null;
+  return normalizeMojibakeDeep(seoStaticPages.find((page) => page.path === path) || null);
 }
 
 export function getComparePage(slug) {
-  return comparePageDefinitions.find((page) => page.slug === slug) || null;
+  return normalizeMojibakeDeep(comparePageDefinitions.find((page) => page.slug === slug) || null);
 }
 
 export function getBankRoute(slug) {
-  return requiredBankRoutes.find((route) => route.slug === slug) || null;
+  return normalizeMojibakeDeep(requiredBankRoutes.find((route) => route.slug === slug) || null);
 }
 
 export function getBlogEditorialPage(path) {
-  return blogEditorialDefinitions.find((article) => article.path === path) || null;
+  return normalizeMojibakeDeep(blogEditorialDefinitions.find((article) => article.path === path) || null);
 }

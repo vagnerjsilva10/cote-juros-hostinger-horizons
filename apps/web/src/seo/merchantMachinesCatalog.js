@@ -43,7 +43,7 @@ const supportPages = [
 
 const buildLinkGroups = (currentPath) => [
   {
-    title: 'Guias do cluster',
+    title: 'Guias relacionados',
     links: clusterPages.filter((item) => item.path !== currentPath).slice(0, 5)
   },
   {
@@ -51,7 +51,7 @@ const buildLinkGroups = (currentPath) => [
     links: comparePages.filter((item) => item.path !== currentPath)
   },
   {
-    title: 'Conteúdos de apoio',
+    title: 'Leituras recomendadas',
     links: supportPages
   }
 ];
@@ -105,7 +105,7 @@ const merchantMachineStaticPages = [
       'MEI, autônomo e pequeno negócio',
       'Taxa promocional nem sempre é o custo final'
     ]),
-    primaryCta: { label: 'Ver comparativos do cluster', to: '/comparar/melhor-maquininha-para-mei' },
+    primaryCta: { label: 'Ver comparativos', to: '/comparar/melhor-maquininha-para-mei' },
     secondaryCta: { label: 'Ver guia da Ton', to: '/maquininha-ton' },
     comparisonTable: {
       columns: ['Modelo', 'Melhor para', 'Taxas e recebimento', 'Pontos fortes', 'Ponto de atenção'],
@@ -253,7 +253,7 @@ const merchantMachineStaticPages = [
       {
         heading: 'Como a Ton se posiciona contra concorrentes',
         paragraphs: [
-          'Na leitura editorial do cluster, a Ton costuma disputar atenção com SumUp pela simplicidade, com Mercado Pago pela força em ecossistema e com PagBank pela agressividade promocional em taxa.',
+          'Na prática, a Ton costuma disputar atenção com SumUp pela simplicidade, com Mercado Pago pela força em ecossistema e com PagBank pela agressividade promocional em taxa.',
           'Em vários cenários, a Ton leva vantagem porque fala diretamente com o pequeno empreendedor e mantém a proposta de entrada simples.'
         ],
         bullets: [
@@ -296,7 +296,7 @@ const merchantMachineStaticPages = [
     usageTitle: 'Antes de comprar uma Ton',
     usageTips: [
       'Compare o modelo com o seu tipo de venda antes de olhar só o preço.',
-      'Use as páginas de taxas e comparativos do cluster para reduzir a chance de erro.',
+      'Use as páginas de taxas e comparativos para reduzir a chance de erro.',
       'Cheque a campanha do dia e a política pós-promoção no site oficial.'
     ],
     linkGroups: buildLinkGroups('/maquininha-ton')
@@ -621,7 +621,7 @@ const merchantMachineStaticPages = [
         ['Ton Mega D195', 'Pequeno negócio que quer equilíbrio', 'Boa leitura entre custo e estrutura', 'Se a operação exigir mais recursos premium'],
         ['Ton Mega D150', 'Entrada simples na linha Mega', 'Versão de acesso mais amigável', 'Se o volume já pede algo mais robusto']
       ],
-      note: 'Os modelos acima seguem a nomenclatura usada nas ofertas afiliadas fornecidas para o cluster.'
+      note: 'Os modelos acima seguem a nomenclatura usada nas ofertas afiliadas disponibilizadas pela marca.'
     },
     editorialSections: [
       {
