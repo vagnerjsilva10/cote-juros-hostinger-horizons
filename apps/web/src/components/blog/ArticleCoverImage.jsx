@@ -40,7 +40,7 @@ function ArticleCoverImage({
         loading={loading}
         decoding={decoding}
         onError={handleError}
-        className={cn('h-full w-full object-cover object-center', imageClassName)}
+        className={cn('absolute inset-0 h-full w-full object-cover object-center', imageClassName)}
       />
     </div>
   );
