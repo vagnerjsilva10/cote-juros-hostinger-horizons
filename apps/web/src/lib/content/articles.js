@@ -16,6 +16,44 @@ const normalizeText = (value = '') =>
 const sanitizeInlineText = (value = '') => normalizeMojibake(String(value || '')).replace(/\s+/g, ' ').trim();
 const sanitizeRichText = (value = '') => normalizeMojibake(String(value || '')).trim();
 
+const ROUTE_REWRITES = {
+  '/blog/calculo-rescisao-trabalhista': '/calculo-de-rescisao-trabalhista',
+  '/blog/aviso-previo-na-demissao': '/pedido-de-demissao',
+  '/qual-e-o-melhor-investimento-para-quem-tem-pouco-dinheiro': '/qual-e-o-melhor-investimento',
+  '/entendendo-os-juros-abusivos-como-identifica-los-e-proteger-suas-financas-pessoais': '/entendendo-os-juros-abusivos',
+  '/como-economizar-dinheiro-e-fazer-seu-salario-render-mais': '/como-economizar-dinheiro',
+  '/10-formas-de-ganhar-dinheiro-sem-investir': '/como-ganhar-dinheiro-online-sem-investir',
+  '/como-a-educacao-financeira-pode-prevenir-dividas': '/como-a-educacao-financeira-pode-prevenir-dividas-e-promover-o-planejamento-financeiro-pessoal',
+  '/category/blog/entenda-os-juros-abusivos': '/juros-abusivos',
+  '/category/tudo-sobre-credito': '/blog'
+};
+
+const resolveCategoryName = (value, fallback = FALLBACK_CATEGORY) => {
+  if (isObjectRecord(value)) {
+    return sanitizeInlineText(value.name || value.label || value.title || fallback) || fallback;
+  }
+
+  return sanitizeInlineText(value || fallback) || fallback;
+};
+
+const normalizeRoutePath = (value = '') => {
+  const raw = sanitizeInlineText(value);
+  if (!raw) return '';
+
+  const normalized = raw.startsWith('http')
+    ? (() => {
+        try {
+          return new URL(raw).pathname;
+        } catch {
+          return raw;
+        }
+      })()
+    : raw;
+
+  const path = `/${String(normalized).replace(/^\/+|\/+$/g, '')}`;
+  return ROUTE_REWRITES[path] || path;
+};
+
 const ROUTE_LABELS = {
   '/educacao-financeira': 'Educação Financeira',
   '/diagnostico-financeiro': 'Diagnóstico Financeiro',
@@ -170,7 +208,9 @@ const normalizeInternalLinks = (links) => {
 
   return links
     .map((item) => {
-      const path = sanitizeInlineText(item?.path || item?.href || '');
+      const path = normalizeRoutePath(item?.path || item?.href || '');
+      if (!path) return null;
+
       const routeLabel = prettifySlugLabel(path);
       const rawTitle = sanitizeInlineText(item?.title || item?.label || item?.anchor || '');
       const rawAnchor = sanitizeInlineText(item?.anchor || item?.title || item?.label || '');
@@ -194,11 +234,11 @@ const normalizeInternalLinks = (links) => {
         anchor: safeAnchorBase
           ? startsWithExplore(safeAnchorBase)
             ? safeAnchorBase.charAt(0).toUpperCase() + safeAnchorBase.slice(1)
-            : `Explore ${safeAnchorBase.charAt(0).toLowerCase()}${safeAnchorBase.slice(1)}`
+            : `Leia também: ${safeAnchorBase.charAt(0).toLowerCase()}${safeAnchorBase.slice(1)}`
           : ''
       };
     })
-    .filter((item) => item.path && item.title);
+    .filter((item) => item?.path && item.title);
 };
 
 const estimateReadTime = ({ intro = [], sections = [], faq = [], conclusion = [], content = '' }) => {
@@ -360,7 +400,7 @@ const buildSupplementalSections = ({ title, category, tags = [], slug = '' }) =>
       bullets: lexicon.mistakes
     },
     {
-      heading: 'Checklist editorial antes de seguir',
+      heading: 'Checklist antes de seguir',
       paragraphs: [
         `Se a ideia Ã© tomar uma decisÃ£o melhor, vale encerrar a leitura com um checklist enxuto. Esse processo simples aumenta a qualidade da escolha e diminui o risco de arrependimento, principalmente em temas financeiros que afetam vÃ¡rios meses do orÃ§amento.`
       ],
@@ -408,11 +448,195 @@ const buildFallbackFaq = ({ title, category, tags = [], slug = '' }) => {
   }));
 };
 
+const getTopicBlueprint = ({ title, category, slug, tags = [] }) => {
+  const topic = resolveEditorialTopic({ title, category, slug, tags });
+  const lexicon = getTopicLexicon(topic);
+
+  const defaults = {
+    focus: 'custo total, utilidade real e impacto da decisão no orçamento dos próximos meses',
+    persona: 'uma pessoa comum, com renda apertada e pouco tempo para comparar alternativas com calma',
+    situation: 'a necessidade aparece rápido, mas a escolha errada pode virar uma dor de cabeça que dura muitos meses',
+    compare: [
+      'olhar apenas a promessa comercial costuma esconder custo, prazo e risco',
+      'comparar dois ou três cenários coloca a decisão em perspectiva e ajuda a enxergar o que cabe de verdade no orçamento',
+      'a melhor opção quase sempre é a que combina clareza, previsibilidade e espaço para imprevistos'
+    ],
+    tips: [
+      'anote o valor que cabe no mês antes de comparar qualquer opção',
+      'leia o custo total, não só a parcela ou o benefício principal',
+      'desconfie de urgência artificial e de promessa boa demais para o seu contexto'
+    ],
+    alternatives: 'adiar a contratação por alguns dias, reorganizar gastos, negociar condições ou buscar uma opção mais simples',
+    internalRoutes: ['/blog', '/ferramentas', '/diagnostico-financeiro']
+  };
+
+  const byTopic = {
+    emprestimos: {
+      focus: 'CET, prazo, parcela final e risco de comprometer a renda além do que seria saudável',
+      persona: 'alguém que precisa de fôlego no curto prazo, mas não quer transformar urgência em um contrato caro',
+      situation: 'a oferta parece resolver o problema hoje, mas a parcela pode apertar ainda mais o caixa nas próximas semanas',
+      alternatives: 'renegociação, empréstimo com prazo menor, reforço de renda temporário ou espera para comparar melhor',
+      internalRoutes: ['/emprestimos', '/ferramentas', '/diagnostico-financeiro']
+    },
+    cartoes: {
+      focus: 'anuidade, juros do rotativo, limite inicial e benefício que realmente faz diferença na rotina',
+      persona: 'quem quer usar o cartão com controle, sem trocar praticidade por dívida cara',
+      situation: 'um cartão pode parecer vantajoso no app, mas virar problema quando a fatura cresce sem planejamento',
+      alternatives: 'cartão sem anuidade, débito, Pix ou reorganização da fatura atual',
+      internalRoutes: ['/cartoes-de-credito', '/ferramentas', '/diagnostico-financeiro']
+    },
+    score: {
+      focus: 'histórico de pagamentos, uso do crédito, atualização cadastral e consistência ao longo do tempo',
+      persona: 'quem quer melhorar a imagem financeira sem cair em promessas milagrosas',
+      situation: 'o número do score vira ansiedade, mas a melhora real depende de comportamento repetido por alguns meses',
+      alternatives: 'regularizar pendências, reduzir pedidos simultâneos e organizar contas fixas',
+      internalRoutes: ['/educacao-financeira', '/diagnostico-financeiro', '/blog']
+    },
+    financiamento: {
+      focus: 'entrada, prazo, custo total pago e folga financeira depois de assumir a parcela',
+      persona: 'uma família que quer financiar sem perder margem para manutenção, seguro e imprevistos',
+      situation: 'a parcela cabe no limite, mas o custo acumulado cresce muito quando o prazo é longo demais',
+      alternatives: 'aumentar entrada, reduzir prazo, considerar bem usado ou adiar a compra',
+      internalRoutes: ['/financiamento', '/ferramentas', '/diagnostico-financeiro']
+    },
+    organizacao: {
+      focus: 'previsibilidade do caixa, priorização de gastos e rotina simples de acompanhamento',
+      persona: 'quem quer sair do improviso e transformar informação financeira em decisão prática',
+      situation: 'o problema não está em faltar ferramenta, mas em não ter um processo simples para revisar o mês',
+      alternatives: 'planilha simples, agenda semanal de revisão e metas menores',
+      internalRoutes: ['/educacao-financeira', '/ferramentas', '/blog']
+    },
+    seguranca: {
+      focus: 'origem da oferta, sinais de golpe, pedido de dados sensíveis e pressão para agir rápido',
+      persona: 'quem recebeu uma mensagem, ligação ou link e precisa distinguir oportunidade de armadilha',
+      situation: 'a urgência criada por terceiros costuma empurrar a decisão antes da checagem mínima',
+      alternatives: 'validar canais oficiais, pausar a conversa e confirmar informações em fonte confiável',
+      internalRoutes: ['/juros-abusivos', '/blog', '/diagnostico-financeiro']
+    }
+  };
+
+  return {
+    title,
+    category,
+    lexicon,
+    ...(byTopic[topic] || {}),
+    ...defaults,
+    ...(byTopic[topic] || {})
+  };
+};
+
+const buildReaderFriendlySections = ({ title, category, slug, tags = [] }) => {
+  const blueprint = getTopicBlueprint({ title, category, slug, tags });
+
+  return [
+    {
+      heading: 'Entenda o ponto principal antes de decidir',
+      paragraphs: [
+        `Quando o assunto é ${title.toLowerCase()}, a melhor leitura começa pelo que realmente pesa no bolso: ${blueprint.focus}. Esse filtro ajuda a separar o que é útil do que é só discurso de venda ou informação solta.`,
+        `Em vez de buscar uma resposta pronta, vale perguntar como essa decisão conversa com sua renda, suas despesas fixas e o espaço que sobra no fim do mês. Essa mudança de perspectiva costuma evitar escolhas apressadas e deixa a análise muito mais prática.`
+      ],
+      bullets: [
+        `coloque ${blueprint.lexicon.comparator} lado a lado`,
+        'olhe o impacto no mês seguinte antes de fechar qualquer escolha',
+        'dê preferência ao que você consegue explicar com clareza para si mesmo'
+      ]
+    },
+    {
+      heading: 'Exemplo prático para trazer o tema para a vida real',
+      paragraphs: [
+        `Imagine ${blueprint.persona}. Nesse cenário, ${blueprint.situation}. O erro mais comum é decidir só pela facilidade do momento, sem projetar como isso vai aparecer na rotina daqui a 30, 60 ou 90 dias.`,
+        `Quando a pessoa transforma o caso em números simples, a decisão muda de nível. Fica mais fácil perceber o que cabe com folga, o que já nasce apertado e o que pode funcionar apenas em um cenário muito otimista.`
+      ],
+      bullets: [
+        'monte um cenário realista e outro mais conservador',
+        'considere o que acontece se surgir um gasto inesperado',
+        'avalie se o benefício continua fazendo sentido depois do primeiro mês'
+      ]
+    },
+    {
+      heading: 'Comparação rápida entre cenários',
+      paragraphs: [
+        `Boa decisão financeira quase sempre nasce de comparação. Não basta saber se algo é possível; é preciso entender se é adequado para o seu momento e se existe um caminho mais leve para chegar ao mesmo resultado.`,
+        `Uma leitura honesta costuma separar três quadros: quando faz sentido seguir, quando o alerta fica amarelo e quando é melhor recuar para reorganizar a base antes de avançar.`
+      ],
+      bullets: [
+        `faz mais sentido quando ${blueprint.compare[1]}`,
+        `merece cautela quando ${blueprint.compare[0]}`,
+        `normalmente fica mais seguro quando ${blueprint.compare[2]}`
+      ]
+    },
+    {
+      heading: 'Erros comuns que deixam a decisão mais cara',
+      paragraphs: [
+        `Muita gente erra não por falta de informação, mas por dar peso demais ao detalhe menos importante. Isso acontece quando a pessoa olha só para taxa, limite, aprovação ou benefício principal e deixa de lado o conjunto da escolha.`,
+        `Outro erro recorrente é comparar pouco. Em finanças, pequenas diferenças de prazo, custo total e regra de uso podem produzir um resultado bem diferente no longo prazo.`
+      ],
+      bullets: blueprint.lexicon.mistakes
+    },
+    {
+      heading: 'Dicas práticas para aplicar ainda hoje',
+      paragraphs: [
+        `Você não precisa montar uma planilha complexa para tomar uma decisão melhor. Na maioria dos casos, alguns cuidados objetivos já aumentam muito a qualidade da escolha e reduzem o risco de arrependimento.`,
+        `A lógica é simples: clareza primeiro, comparação depois e contratação por último. Quando essa ordem se inverte, o custo emocional e financeiro tende a subir.`
+      ],
+      bullets: blueprint.tips
+    },
+    {
+      heading: 'Checklist final antes de seguir',
+      paragraphs: [
+        `Se a intenção é sair deste artigo com um próximo passo mais claro, feche a leitura com um checklist enxuto. Esse pequeno ritual ajuda a reduzir impulso, melhora o senso de controle e deixa a decisão mais coerente com a sua realidade.`
+      ],
+      bullets: blueprint.lexicon.checklist
+    },
+    {
+      heading: 'Alternativas que também merecem comparação',
+      paragraphs: [
+        `Nem sempre a solução principal é a melhor para o momento. Em vários cenários, comparar com ${blueprint.alternatives} amplia sua visão e evita assumir um compromisso desnecessariamente pesado.`,
+        `A melhor decisão não é a mais empolgante nem a mais rápida. É a que resolve o problema sem criar outro maior logo na frente.`
+      ],
+      bullets: [
+        'compare pelo objetivo real, não pelo nome do produto',
+        'prefira opções que mantêm alguma margem para imprevistos',
+        'se ainda houver dúvida, volte para a comparação antes de assinar ou contratar'
+      ]
+    }
+  ].map((section) => ({
+    heading: sanitizeInlineText(section.heading),
+    paragraphs: section.paragraphs.map((paragraph) => sanitizeInlineText(paragraph)).filter(Boolean),
+    bullets: section.bullets.map((bullet) => sanitizeInlineText(bullet)).filter(Boolean)
+  }));
+};
+
+const buildReaderFriendlyFaq = ({ title, category, slug, tags = [] }) => {
+  const blueprint = getTopicBlueprint({ title, category, slug, tags });
+
+  return [
+    {
+      question: `Como saber se ${title.toLowerCase()} faz sentido para mim agora?`,
+      answer: `O melhor caminho é cruzar ${blueprint.focus} com a sua rotina atual. Se a escolha resolve um problema real sem apertar demais o orçamento dos próximos meses, ela tende a fazer mais sentido.`
+    },
+    {
+      question: 'Qual é o erro mais comum ao avaliar esse tema?',
+      answer: `O deslize mais frequente é decidir pela pressa e comparar pouco. Em geral, isso aparece quando a pessoa ignora pontos como ${blueprint.lexicon.mistakes[0]} e segue apenas a promessa mais chamativa.`
+    },
+    {
+      question: 'Vale a pena comparar outras alternativas antes de seguir?',
+      answer: `Sim. Em finanças, comparar alternativas costuma melhorar a decisão e reduzir risco. Muitas vezes, caminhos como ${blueprint.alternatives} entregam um resultado melhor com menos pressão no orçamento.`
+    }
+  ].map((item) => ({
+    question: sanitizeInlineText(item.question),
+    answer: sanitizeInlineText(item.answer)
+  }));
+};
+
 const ensureEditorialDepth = ({ title, category, slug, tags, intro, sections, conclusion, faq, content }) => {
   const minWords = 1200;
-  const supplementalSections = buildSupplementalSections({ title, category, slug, tags });
+  const supplementalSections = [
+    ...buildReaderFriendlySections({ title, category, slug, tags }),
+    ...buildSupplementalSections({ title, category, slug, tags })
+  ];
   const nextSections = [...sections];
-  const nextFaq = faq.length ? faq : buildFallbackFaq({ title, category, slug, tags });
+  const nextFaq = faq.length ? faq : buildReaderFriendlyFaq({ title, category, slug, tags });
 
   let currentWordCount = countWords([
     content,
@@ -469,12 +693,14 @@ export const normalizeArticleData = (article = {}, options = {}) => {
   const nowIso = options.nowIso || new Date().toISOString();
   const title = sanitizeInlineText(source.title || source.h1 || source.seoTitle || source.metaTitle || 'Artigo Cote Juros');
   const slug = normalizeArticleSlug({ ...source, title });
-  const explicitRoutePath = sanitizeInlineText(source.routePath || source.path || '');
+  const explicitRoutePath = normalizeRoutePath(source.routePath || source.path || '');
   const routePath = explicitRoutePath || (sanitizeInlineText(source.sourceType) === 'wordpress' ? `/${slug}` : `/blog/${slug}`);
   const canonicalUrl =
     sanitizeInlineText(source.canonicalUrl || '') ||
     `https://www.cotejuros.com.br${routePath}${routePath.endsWith('/') ? '' : '/'}`;
-  const category = sanitizeInlineText(source.category || source.categoryName || source.clusterLabel || FALLBACK_CATEGORY) || FALLBACK_CATEGORY;
+  const category =
+    resolveCategoryName(source.categoryName || source.clusterLabel || source.category || FALLBACK_CATEGORY, FALLBACK_CATEGORY) ||
+    FALLBACK_CATEGORY;
   const excerpt =
     sanitizeInlineText(source.excerpt || source.summary || source.metaDescription) || buildDefaultSummary(title, category);
   const intro = sanitizeStringArray(source.intro);
@@ -523,7 +749,7 @@ export const normalizeArticleData = (article = {}, options = {}) => {
     slug,
     title,
     h1: sanitizeInlineText(source.h1 || title) || title,
-    description: sanitizeInlineText(source.metaDescription || excerpt) || excerpt,
+    description: sanitizeInlineText(source.metaDescription || source.seoDescription || excerpt) || excerpt,
     excerpt,
     summary: excerpt,
     category,
@@ -546,12 +772,12 @@ export const normalizeArticleData = (article = {}, options = {}) => {
     metaTitle: sanitizeInlineText(source.metaTitle || ''),
     seoTitle: sanitizeInlineText(source.seoTitle || source.metaTitle || `${title} | Blog Cote Juros`) || `${title} | Blog Cote Juros`,
     metaDescription:
-      sanitizeInlineText(source.metaDescription || excerpt) ||
+      sanitizeInlineText(source.metaDescription || source.seoDescription || excerpt) ||
       `Guia da Cote Juros sobre ${title.toLowerCase()} com foco em clareza, organização e decisões financeiras mais seguras.`,
     coverImage: sanitizeInlineText(source.coverImage || source.image || source.imageUrl || source.featuredImage || ''),
-    coverImageAlt: sanitizeInlineText(source.coverImageAlt || source.imageAlt || source.alt || '') || `Capa editorial do artigo ${title}`,
+    coverImageAlt: sanitizeInlineText(source.coverImageAlt || source.imageAlt || source.alt || '') || `Capa do artigo ${title}`,
     image: sanitizeInlineText(source.coverImage || source.image || source.imageUrl || source.featuredImage || ''),
-    imageAlt: sanitizeInlineText(source.coverImageAlt || source.imageAlt || source.alt || '') || `Capa editorial do artigo ${title}`,
+    imageAlt: sanitizeInlineText(source.coverImageAlt || source.imageAlt || source.alt || '') || `Capa do artigo ${title}`,
     routePath,
     canonicalUrl,
     legacyUrl: sanitizeInlineText(source.legacyUrl || ''),

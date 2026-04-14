@@ -22,6 +22,30 @@ import {
 const PAGE_SIZE = 12;
 const BLOG_URL = 'https://www.cotejuros.com.br/blog';
 
+const BLOG_TOPIC_FILTERS = {
+  educacao: ['educacao', 'organizacao', 'orcamento', 'reserva', 'score', 'planejamento', 'gastos', 'metas', 'financas'],
+  dividas: ['divida', 'renegoci', 'juros abusivos', 'rotativo', 'cheque especial', 'parcelamento', 'nome sujo']
+};
+
+const matchesForcedTopic = (article, forcedTopic) => {
+  if (!forcedTopic) return true;
+
+  const keywords = BLOG_TOPIC_FILTERS[forcedTopic] || [];
+  const haystack = [
+    article.slug,
+    article.category,
+    article.categoryKey,
+    article.title,
+    article.h1,
+    article.summary,
+    ...(article.tags || [])
+  ]
+    .join(' ')
+    .toLowerCase();
+
+  return keywords.some((keyword) => haystack.includes(keyword));
+};
+
 const blogBaseSchema = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -48,7 +72,14 @@ const blogBaseSchema = {
   ]
 };
 
-function BlogPage() {
+function BlogPage({
+  forcedTopic = '',
+  pageTitle = 'Blog Cote Juros | Guias financeiros para crédito, score e planejamento',
+  pageDescription = 'Leia guias e dicas da Cote Juros sobre empréstimo, cartões, score, financiamento, dívidas e organização financeira.',
+  heroBadge = 'Blog Cote Juros',
+  heroTitle = 'Guias financeiros para decidir com clareza antes de contratar crédito',
+  heroSubtitle = 'Textos simples e úteis para comparar bancos, entender crédito e cuidar melhor do seu dinheiro.'
+}) {
   const [articlesData, setArticlesData] = useState([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('Todas');
@@ -83,25 +114,27 @@ function BlogPage() {
 
   const categories = useMemo(() => {
     const grouped = new Map();
+    const scopedArticles = articlesData.filter((article) => matchesForcedTopic(article, forcedTopic));
 
-    articlesData.forEach((article) => {
+    scopedArticles.forEach((article) => {
       if (!article.category) return;
       grouped.set(article.category, (grouped.get(article.category) || 0) + 1);
     });
 
     return [
-      { label: 'Todas', count: articlesData.length },
+      { label: 'Todas', count: scopedArticles.length },
       ...Array.from(grouped.entries())
         .map(([label, count]) => ({ label, count }))
         .sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'))
     ];
-  }, [articlesData]);
+  }, [articlesData, forcedTopic]);
 
   const filteredArticles = useMemo(() => {
     const query = search.trim().toLowerCase();
 
     return articlesData
       .filter((article) => {
+        if (!matchesForcedTopic(article, forcedTopic)) return false;
         const inCategory = category === 'Todas' || article.category === category;
         if (!inCategory) return false;
         if (!query) return true;
@@ -110,7 +143,7 @@ function BlogPage() {
         return haystack.includes(query);
       })
       .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
-  }, [articlesData, category, search]);
+  }, [articlesData, category, forcedTopic, search]);
 
   const featured = filteredArticles[0] || null;
   const trendingGuides = filteredArticles.slice(1, 4);
@@ -152,26 +185,17 @@ function BlogPage() {
   return (
     <>
       <Helmet>
-        <title>Blog Cote Juros | Guias financeiros para crédito, score e planejamento</title>
-        <meta
-          name="description"
-          content="Leia guias e dicas da Cote Juros sobre empréstimo, cartões, score, financiamento, dívidas e organização financeira."
-        />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
         <meta name="robots" content="index,follow,max-image-preview:large" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Blog Cote Juros | Guias financeiros para crédito, score e planejamento" />
-        <meta
-          property="og:description"
-          content="Guias e dicas para comparar custos, evitar armadilhas e cuidar melhor do seu dinheiro."
-        />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
         <meta property="og:url" content={BLOG_URL} />
         <meta property="og:image" content="https://www.cotejuros.com.br/assets/blog/fallbacks/editorial-global.svg" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Blog Cote Juros | Guias financeiros para crédito, score e planejamento" />
-        <meta
-          name="twitter:description"
-          content="Guias e dicas sobre crédito, score, cartões, financiamento e organização financeira."
-        />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
         <link rel="canonical" href={BLOG_URL} />
         <script type="application/ld+json">{JSON.stringify(blogBaseSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(itemListSchema)}</script>
@@ -179,9 +203,9 @@ function BlogPage() {
 
       <PageHero
         centered
-        badge="Blog Cote Juros"
-        title="Guias financeiros para decidir com clareza antes de contratar crédito"
-        subtitle="Textos simples e úteis para comparar bancos, entender crédito e cuidar melhor do seu dinheiro."
+        badge={heroBadge}
+        title={heroTitle}
+        subtitle={heroSubtitle}
       >
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
           <div className="relative">

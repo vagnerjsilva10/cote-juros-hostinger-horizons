@@ -6,6 +6,37 @@ const wait = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 const useRemote = Boolean(API_BASE);
 
+const mergeArticlesBySlug = (...collections) => {
+  const merged = new Map();
+
+  collections.flat().forEach((article) => {
+    const normalized = normalizeArticleRecord(article);
+    if (!normalized?.slug) return;
+
+    const previous = merged.get(normalized.slug);
+    if (!previous) {
+      merged.set(normalized.slug, normalized);
+      return;
+    }
+
+    merged.set(normalized.slug, {
+      ...previous,
+      ...normalized,
+      intro: normalized.intro?.length ? normalized.intro : previous.intro,
+      sections: normalized.sections?.length ? normalized.sections : previous.sections,
+      faq: normalized.faq?.length ? normalized.faq : previous.faq,
+      conclusion: normalized.conclusion?.length ? normalized.conclusion : previous.conclusion,
+      internalLinks: normalized.internalLinks?.length ? normalized.internalLinks : previous.internalLinks,
+      coverImage: normalized.coverImage || previous.coverImage,
+      image: normalized.image || previous.image,
+      metaDescription: normalized.metaDescription || previous.metaDescription,
+      seoTitle: normalized.seoTitle || previous.seoTitle
+    });
+  });
+
+  return Array.from(merged.values());
+};
+
 const toQueryString = (params = {}) => {
   const query = new URLSearchParams();
 
@@ -91,8 +122,8 @@ const normalizeArticleRecord = (article = {}) =>
     summary: normalizeMojibake(article.summary || article.excerpt || ''),
     excerpt: normalizeMojibake(article.excerpt || article.summary || ''),
     content: normalizeMojibake(article.content || ''),
-    seoTitle: normalizeMojibake(article.seoTitle || article.title || ''),
-    metaDescription: normalizeMojibake(article.metaDescription || article.summary || ''),
+    seoTitle: normalizeMojibake(article.seoTitle || article.metaTitle || article.title || ''),
+    metaDescription: normalizeMojibake(article.metaDescription || article.seoDescription || article.summary || ''),
     h1: normalizeMojibake(article.h1 || article.title || ''),
   intro: Array.isArray(article.intro) ? article.intro.map((item) => normalizeMojibake(item)) : undefined,
   sections: Array.isArray(article.sections)
@@ -119,10 +150,10 @@ const normalizeArticleRecord = (article = {}) =>
     : undefined,
   publishDate: article.publishDate || article.publishedAt || article.createdAt || new Date().toISOString(),
   readTime: article.readTime || 6,
-  image:
-    article.image ||
-    'https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=1200&q=80',
-  category: normalizeMojibake(article.category || article.categoryName || article.category?.name || 'Finanças Pessoais')
+  image: article.image || article.coverImage || '',
+  author: normalizeMojibake(article.author || article.authorName || 'Equipe Cote Juros'),
+  routePath: article.routePath || article.path || '',
+  category: normalizeMojibake(article.category?.name || article.categoryName || article.category || 'Finanças Pessoais')
 });
 
 const fetchLocalArticleBySlug = async (slug) => {
@@ -237,7 +268,7 @@ export const portalApi = {
     try {
       const qs = toQueryString(filters);
       const data = await request(`/api/articles${qs ? `?${qs}` : ''}`);
-      return Array.isArray(data) ? data.map(normalizeArticleRecord) : [];
+      return mergeArticlesBySlug(Array.isArray(data) ? data : [], portalRepository.listArticles(filters));
     } catch {
       return portalRepository.listArticles(filters);
     }
@@ -449,18 +480,55 @@ export const portalApi = {
   },
 
   async getAdminArticles(filters) {
-    await wait();
-    return portalRepository.listAdminArticles(filters);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.listAdminArticles(filters);
+    }
+
+    try {
+      const qs = toQueryString({
+        ...filters,
+        status: filters?.status || 'all',
+        includeDrafts: true
+      });
+      const data = await request(`/api/articles${qs ? `?${qs}` : ''}`);
+      return Array.isArray(data) ? data.map(normalizeArticleRecord) : [];
+    } catch {
+      return portalRepository.listAdminArticles(filters);
+    }
   },
 
   async saveAdminArticle(payload) {
-    await wait();
-    return portalRepository.saveAdminArticle(payload);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.saveAdminArticle(payload);
+    }
+
+    try {
+      const data = await request('/api/articles', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      return data ? normalizeArticleRecord(data) : null;
+    } catch {
+      return portalRepository.saveAdminArticle(payload);
+    }
   },
 
   async toggleAdminArticlePublish(id) {
-    await wait();
-    return portalRepository.toggleArticlePublish(id);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.toggleArticlePublish(id);
+    }
+
+    try {
+      const data = await request(`/api/articles/${id}/toggle-publish`, {
+        method: 'POST'
+      });
+      return data ? normalizeArticleRecord(data) : null;
+    } catch {
+      return portalRepository.toggleArticlePublish(id);
+    }
   },
 
   async getAdminSeoPages(filters) {

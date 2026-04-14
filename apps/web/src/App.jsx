@@ -74,6 +74,8 @@ function App() {
     wordpressMigratedArticlePaths.forEach((path) => blocked.add(path));
     blocked.add('/cartoes-de-credito');
     blocked.add('/financiamento');
+    blocked.add('/educacao-financeira');
+    blocked.add('/juros-abusivos');
     blocked.add('/diagnostico-financeiro');
     blocked.add('/cote-finance-ai');
     blocked.add('/sobre-nos');
@@ -123,6 +125,40 @@ function App() {
             <AppLayout>
               <BlogBoundary>
                 <BlogPage />
+              </BlogBoundary>
+            </AppLayout>
+          }
+        />
+        <Route
+          path="/educacao-financeira"
+          element={
+            <AppLayout>
+              <BlogBoundary>
+                <BlogPage
+                  forcedTopic="educacao"
+                  pageTitle="Educação financeira | Guias práticos para organizar o dinheiro"
+                  pageDescription="Aprenda a organizar orçamento, melhorar score, controlar gastos e tomar decisões financeiras com mais clareza."
+                  heroBadge="Educação financeira"
+                  heroTitle="Conteúdos para organizar a vida financeira sem complicação"
+                  heroSubtitle="Guias práticos sobre orçamento, score, metas, reserva e hábitos que ajudam no dia a dia."
+                />
+              </BlogBoundary>
+            </AppLayout>
+          }
+        />
+        <Route
+          path="/juros-abusivos"
+          element={
+            <AppLayout>
+              <BlogBoundary>
+                <BlogPage
+                  forcedTopic="dividas"
+                  pageTitle="Dívidas e renegociação | Conteúdo para sair do aperto com mais clareza"
+                  pageDescription="Entenda juros abusivos, renegociação, rotativo e formas mais seguras de reorganizar dívidas."
+                  heroBadge="Dívidas e renegociação"
+                  heroTitle="Guias para entender dívidas, renegociar melhor e evitar custos abusivos"
+                  heroSubtitle="Conteúdo direto ao ponto para comparar caminhos, reduzir risco e decidir com mais calma."
+                />
               </BlogBoundary>
             </AppLayout>
           }
