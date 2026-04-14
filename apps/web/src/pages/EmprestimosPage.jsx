@@ -14,11 +14,15 @@ import PageHero from '@/components/PageHero.jsx';
 import AffiliateOfferGrid from '@/components/affiliates/AffiliateOfferGrid.jsx';
 import AffiliateInlineCTA from '@/components/affiliates/AffiliateInlineCTA.jsx';
 import AffiliateSidebarWidget from '@/components/affiliates/AffiliateSidebarWidget.jsx';
+import SuperSimOfferCard from '@/components/affiliates/SuperSimOfferCard.jsx';
+import SuperSimInlineCTA from '@/components/affiliates/SuperSimInlineCTA.jsx';
+import SuperSimSidebarCard from '@/components/affiliates/SuperSimSidebarCard.jsx';
 import { useAffiliatePlacements } from '@/hooks/useAffiliatePlacements.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
 import { affiliateRedirectService } from '@/platform/services/affiliateRedirectService.js';
+import { getNonSupersimOffers, getSupersimOffer } from '@/lib/supersim.js';
 
 const bankAccentById = {
   itau: '#EC7000',
@@ -44,6 +48,12 @@ function EmprestimosPage() {
   const [sort, setSort] = useState('taxa-baixa');
   const [viewMode, setViewMode] = useState('grid');
   const affiliatePlacements = useAffiliatePlacements({ pageSlug: '/emprestimos', productType: 'loan' });
+  const belowHeroSupersimOffer = getSupersimOffer(affiliatePlacements.below_hero || []);
+  const belowHeroOtherOffers = getNonSupersimOffers(affiliatePlacements.below_hero || []);
+  const midContentOffer = affiliatePlacements.mid_content?.[0] || null;
+  const beforeFaqSupersimOffer = getSupersimOffer(affiliatePlacements.before_faq || []);
+  const beforeFaqOtherOffers = getNonSupersimOffers(affiliatePlacements.before_faq || []);
+  const sidebarOffer = affiliatePlacements.sidebar?.[0] || null;
 
   useEffect(() => {
     Promise.all([portalApi.getBanks(), portalApi.getOffers({ productType: 'loan' })]).then(([banks, offers]) => {
@@ -230,14 +240,25 @@ function EmprestimosPage() {
         </div>
       </section>
 
-      {affiliatePlacements.below_hero?.length ? (
-        <div className="page-shell py-8">
-          <AffiliateOfferGrid
-            offers={affiliatePlacements.below_hero}
-            title="Opções relacionadas para comparar com mais contexto"
-            eyebrow="Veja condições"
-            onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
-          />
+      {(belowHeroSupersimOffer || belowHeroOtherOffers.length) ? (
+        <div className="page-shell space-y-6 py-8">
+          {belowHeroSupersimOffer ? (
+            <SuperSimOfferCard
+              offer={belowHeroSupersimOffer}
+              title="SuperSim como recomendacao editorial"
+              description="Uma leitura objetiva para quem quer avancar para a simulacao sem sair do contexto do comparador de emprestimos."
+              onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
+            />
+          ) : null}
+
+          {belowHeroOtherOffers.length ? (
+            <AffiliateOfferGrid
+              offers={belowHeroOtherOffers}
+              title="Opções relacionadas para comparar com mais contexto"
+              eyebrow="Veja condições"
+              onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
+            />
+          ) : null}
         </div>
       ) : null}
 
@@ -401,12 +422,19 @@ function EmprestimosPage() {
               </CardContent>
             </Card>
 
-            {affiliatePlacements.sidebar?.[0] ? (
+            {sidebarOffer ? (
               <div className="mt-6">
-                <AffiliateSidebarWidget
-                  offer={affiliatePlacements.sidebar[0]}
-                  onSelect={(offer) => handleAffiliateClick(offer, 'sidebar')}
-                />
+                {getSupersimOffer([sidebarOffer]) ? (
+                  <SuperSimSidebarCard
+                    offer={sidebarOffer}
+                    onSelect={(offer) => handleAffiliateClick(offer, 'sidebar')}
+                  />
+                ) : (
+                  <AffiliateSidebarWidget
+                    offer={sidebarOffer}
+                    onSelect={(offer) => handleAffiliateClick(offer, 'sidebar')}
+                  />
+                )}
               </div>
             ) : null}
           </aside>
@@ -604,13 +632,21 @@ function EmprestimosPage() {
               </div>
             ) : null}
 
-            {affiliatePlacements.mid_content?.[0] ? (
+            {midContentOffer ? (
               <div className="mt-8">
-                <AffiliateInlineCTA
-                  offer={affiliatePlacements.mid_content[0]}
-                  title="Antes de contratar, veja uma alternativa para comparar"
-                  onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
-                />
+                {getSupersimOffer([midContentOffer]) ? (
+                  <SuperSimInlineCTA
+                    offer={midContentOffer}
+                    title="Antes de contratar, vale comparar a SuperSim"
+                    onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
+                  />
+                ) : (
+                  <AffiliateInlineCTA
+                    offer={midContentOffer}
+                    title="Antes de contratar, veja uma alternativa para comparar"
+                    onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
+                  />
+                )}
               </div>
             ) : null}
           </section>
@@ -619,14 +655,25 @@ function EmprestimosPage() {
 
       <section className="border-t border-border bg-background-secondary py-16">
         <div className="page-shell">
-          {affiliatePlacements.before_faq?.length ? (
-            <div className="mb-8">
-              <AffiliateOfferGrid
-                offers={affiliatePlacements.before_faq}
-                title="Mais condições para você analisar antes da decisão final"
-                eyebrow="Compare opções"
-                onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
-              />
+          {(beforeFaqSupersimOffer || beforeFaqOtherOffers.length) ? (
+            <div className="mb-8 space-y-6">
+              {beforeFaqSupersimOffer ? (
+                <SuperSimOfferCard
+                  offer={beforeFaqSupersimOffer}
+                  title="SuperSim antes da decisao final"
+                  description="Bloco editorial para quem ja comparou ofertas e quer seguir para uma simulacao com CTA claro e badges visuais."
+                  onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
+                />
+              ) : null}
+
+              {beforeFaqOtherOffers.length ? (
+                <AffiliateOfferGrid
+                  offers={beforeFaqOtherOffers}
+                  title="Mais condições para você analisar antes da decisão final"
+                  eyebrow="Compare opções"
+                  onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
+                />
+              ) : null}
             </div>
           ) : null}
 

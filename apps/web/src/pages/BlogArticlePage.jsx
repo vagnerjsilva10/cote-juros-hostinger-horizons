@@ -10,7 +10,11 @@ import ArticleComments from '@/components/blog/ArticleComments.jsx';
 import ArticleCoverImage from '@/components/blog/ArticleCoverImage.jsx';
 import BlogArticleSkeleton from '@/components/blog/BlogArticleSkeleton.jsx';
 import { AdSlotHorizontal, AdSlotInline, AdSlotResponsive } from '@/components/blog/AdSlot.jsx';
+import SuperSimInlineCTA from '@/components/affiliates/SuperSimInlineCTA.jsx';
+import SuperSimSidebarCard from '@/components/affiliates/SuperSimSidebarCard.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
+import { affiliateRedirectService } from '@/platform/services/affiliateRedirectService.js';
+import { useAffiliatePlacements } from '@/hooks/useAffiliatePlacements.js';
 import {
   buildArticleToc,
   getArticleCategoryKey,
@@ -22,6 +26,7 @@ import {
   normalizeArticleData,
   resolveArticleBySlug
 } from '@/lib/content/articles.js';
+import { getSupersimOffer, SUPERSIM_TARGET_ARTICLE_PATHS } from '@/lib/supersim.js';
 
 const BLOG_BASE_URL = 'https://www.cotejuros.com.br/blog';
 const SITE_LOGO_URL = 'https://www.cotejuros.com.br/assets/logo/logo-current-site.svg';
@@ -109,6 +114,15 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
   }, [resolvedSlug]);
 
   const safeArticle = useMemo(() => (article ? normalizeArticleData(article) : null), [article]);
+  const affiliatePlacements = useAffiliatePlacements({
+    pageSlug: safeArticle?.routePath || '',
+    productType: 'loan'
+  });
+  const shouldShowSupersimCtas = Boolean(safeArticle?.routePath && SUPERSIM_TARGET_ARTICLE_PATHS.includes(safeArticle.routePath));
+  const introSupersimOffer = shouldShowSupersimCtas ? getSupersimOffer(affiliatePlacements.below_hero || []) : null;
+  const midSupersimOffer = shouldShowSupersimCtas ? getSupersimOffer(affiliatePlacements.mid_content || []) : null;
+  const faqSupersimOffer = shouldShowSupersimCtas ? getSupersimOffer(affiliatePlacements.before_faq || []) : null;
+  const sidebarSupersimOffer = shouldShowSupersimCtas ? getSupersimOffer(affiliatePlacements.sidebar || []) : null;
   const categoryRoute = useMemo(
     () => (safeArticle ? getCategoryRoute(safeArticle) : { path: '/blog', label: 'Blog' }),
     [safeArticle]
@@ -143,6 +157,24 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
   const previousArticle = currentIndex > 0 ? orderedArticles[currentIndex - 1] : null;
   const nextArticle = currentIndex >= 0 && currentIndex < orderedArticles.length - 1 ? orderedArticles[currentIndex + 1] : null;
+
+  const handleAffiliateClick = async (offer, position) => {
+    if (!offer || !safeArticle?.routePath) return;
+
+    try {
+      const result = await affiliateRedirectService.create({
+        offerSlug: offer.offerSlug,
+        pageSlug: safeArticle.routePath,
+        position
+      });
+
+      if (result?.redirectUrl) {
+        window.location.href = result.redirectUrl;
+      }
+    } catch {
+      // keep article reading resilient
+    }
+  };
 
   if (loading) {
     return <BlogArticleSkeleton />;
@@ -319,6 +351,14 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     <p key={`intro-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{paragraph}</p>
                   ))}
 
+                  {introSupersimOffer ? (
+                    <SuperSimInlineCTA
+                      offer={introSupersimOffer}
+                      title="Se voce quer comparar uma opcao online, vale olhar a SuperSim"
+                      onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
+                    />
+                  ) : null}
+
                   <AdSlotResponsive />
 
                   {tocItems.length ? (
@@ -357,6 +397,13 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                       </section>
 
                       {index === midSectionIndex ? <AdSlotInline /> : null}
+                      {index === midSectionIndex && midSupersimOffer ? (
+                        <SuperSimInlineCTA
+                          offer={midSupersimOffer}
+                          title="A SuperSim entra aqui como proxima etapa natural da leitura"
+                          onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
+                        />
+                      ) : null}
                     </React.Fragment>
                   ))}
 
@@ -379,6 +426,14 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   ) : null}
 
                   {showPreConclusionAd ? <AdSlotHorizontal /> : null}
+
+                  {faqSupersimOffer ? (
+                    <SuperSimInlineCTA
+                      offer={faqSupersimOffer}
+                      title="Antes da FAQ, voce pode continuar a pesquisa com a SuperSim"
+                      onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
+                    />
+                  ) : null}
 
                   {Array.isArray(safeArticle.faq) && safeArticle.faq.length ? (
                     <section id="faq" className="min-w-0 scroll-mt-28 space-y-4 rounded-[16px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
@@ -454,6 +509,12 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
             </div>
 
             <aside className="min-w-0 space-y-6 lg:sticky lg:top-24 lg:h-fit">
+              {sidebarSupersimOffer ? (
+                <SuperSimSidebarCard
+                  offer={sidebarSupersimOffer}
+                  onSelect={(offer) => handleAffiliateClick(offer, 'sidebar')}
+                />
+              ) : null}
               <AdSlotResponsive />
             </aside>
           </div>
