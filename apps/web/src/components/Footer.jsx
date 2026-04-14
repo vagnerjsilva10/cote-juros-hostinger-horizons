@@ -48,8 +48,7 @@ function Footer() {
               <CoteJurosLogo />
             </Link>
             <p className="text-sm leading-7 text-muted-foreground">
-              A Cote Juros ajuda você a encontrar opções de crédito que podem fazer sentido para o seu perfil, com mais
-              clareza e sem promessa falsa.
+              A Cote Juros ajuda você a entender caminhos de crédito com mais clareza, sem cobrança antecipada e sem misturar análise com contratação.
             </p>
             <div className="flex flex-wrap gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
@@ -57,7 +56,7 @@ function Footer() {
                 Sem cobrança antecipada
               </div>
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
-                Não somos banco
+                Você decide com calma
               </div>
             </div>
           </div>

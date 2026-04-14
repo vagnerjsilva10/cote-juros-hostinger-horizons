@@ -23,12 +23,12 @@ function Header() {
     <header
       className={`sticky top-0 z-50 w-full backdrop-blur-xl transition-colors ${
         isHome
-          ? 'border-b border-slate-200/80 bg-white/90'
-          : 'border-b border-border bg-white/95'
+          ? 'border-b border-slate-200/80 bg-white/88'
+          : 'border-b border-border bg-white/94'
       }`}
     >
       <div className="page-shell">
-        <div className="flex h-[66px] items-center justify-between sm:h-[72px]">
+        <div className="flex h-[68px] items-center justify-between sm:h-[74px]">
           <Link to="/" className="flex items-center">
             <CoteJurosLogo />
           </Link>
@@ -38,9 +38,9 @@ function Header() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`rounded-full px-4 py-2 text-sm font-medium ${
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
                   isActive(item.path)
-                    ? 'bg-slate-900 text-white shadow-[0_12px_28px_rgba(15,23,42,0.14)]'
+                    ? 'bg-[#0F172A] text-white shadow-[0_10px_30px_rgba(15,23,42,0.14)]'
                     : 'text-muted-foreground hover:bg-white hover:text-foreground hover:shadow-[0_10px_24px_rgba(15,23,42,0.06)]'
                 }`}
               >
@@ -51,10 +51,7 @@ function Header() {
 
           <div className="hidden items-center gap-3 lg:flex">
             <Link to="/emprestimos">
-              <Button
-                size="lg"
-                className="px-5"
-              >
+              <Button size="lg">
                 Ver opções agora
               </Button>
             </Link>
@@ -63,7 +60,7 @@ function Header() {
           <div className="flex items-center gap-2 lg:hidden">
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon" className="h-10 w-10 rounded-full">
+                <Button variant="outline" size="icon" className="rounded-full">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
@@ -81,7 +78,7 @@ function Header() {
                         onClick={() => setMobileOpen(false)}
                         className={`rounded-[12px] px-4 py-3 text-base font-medium ${
                           isActive(item.path)
-                            ? 'bg-slate-900 text-white'
+                            ? 'bg-[#0F172A] text-white'
                             : 'text-muted-foreground hover:bg-background-secondary hover:text-foreground'
                         }`}
                       >
@@ -90,7 +87,7 @@ function Header() {
                     ))}
                     <div className="mt-3 border-t border-border pt-5">
                       <Link to="/emprestimos" onClick={() => setMobileOpen(false)}>
-                        <Button className="h-12 w-full text-base">
+                        <Button className="w-full text-base">
                           Ver opções agora
                         </Button>
                       </Link>

@@ -163,17 +163,17 @@ function CartoesPage() {
       </Helmet>
 
       <PageHero
-        eyebrow="Comparação premium"
-        badge="Comparador de cartões"
-        title="Encontre o cartão ideal com leitura clara de custo e benefício."
-        subtitle="Compare anuidade, limite e benefícios reais em uma leitura simples para decidir com segurança."
+        eyebrow="Comparação interna"
+        badge="Cartões com fluxo mais claro"
+        title="Compare custo e benefício com clareza e siga para o parceiro só quando fizer sentido."
+        subtitle="A experiência agora separa melhor leitura interna, decisão e saída externa."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button size="lg" onClick={() => setQuickModalOpen(true)}>
             Ver minhas opções agora
           </Button>
           <a href="#resultados-cartoes">
-            <Button size="lg" variant="outline">Ver cartões agora</Button>
+            <Button size="lg" variant="outline">Ver comparação</Button>
           </a>
         </div>
       </PageHero>
@@ -203,14 +203,22 @@ function CartoesPage() {
         <div className="page-shell py-8">
           <AffiliateOfferGrid
             offers={affiliatePlacements.below_hero}
-            title="Cartões relacionados que podem valer a comparação"
-            eyebrow="Compare opções"
+            title="Opções externas para continuar no parceiro"
+            eyebrow="Destino externo"
             onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
           />
         </div>
       ) : null}
 
       <div className="page-shell py-12" id="resultados-cartoes">
+        <div className="mb-8 rounded-[24px] border border-border bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Comparação interna</p>
+          <h2 className="mt-3 text-2xl text-foreground">Entenda custo, limite e benefícios antes de avançar</h2>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
+            O objetivo desta etapa é comparar com calma. O redirecionamento fica explícito nos CTAs finais.
+          </p>
+        </div>
+
         <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
           <aside className="lg:sticky lg:top-24 lg:h-fit">
             <Card className="border-border bg-white shadow-[var(--shadow-sm)]">
@@ -349,7 +357,7 @@ function CartoesPage() {
                       </div>
 
                       <Button className="mt-auto w-full" onClick={() => handleApply(card)}>
-                        Solicitar agora <ChevronRight className="h-4 w-4" />
+                        Continuar no parceiro <ChevronRight className="h-4 w-4" />
                       </Button>
                     </CardContent>
                   </Card>
@@ -372,7 +380,7 @@ function CartoesPage() {
               <div className="mt-8">
                 <AffiliateInlineCTA
                   offer={affiliatePlacements.mid_content[0]}
-                  title="Quer aprofundar a comparação antes de pedir o cartão?"
+                  title="Para continuar, você será redirecionado"
                   onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
                 />
               </div>
@@ -387,8 +395,8 @@ function CartoesPage() {
             <div className="mb-8">
               <AffiliateOfferGrid
                 offers={affiliatePlacements.before_faq}
-                title="Outras opções úteis para comparar antes da decisão final"
-                eyebrow="Veja condições"
+                title="Opções externas antes da decisão final"
+                eyebrow="Destino externo"
                 onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
               />
             </div>

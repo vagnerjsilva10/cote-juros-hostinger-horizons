@@ -1,7 +1,7 @@
 import React from 'react';
 import AffiliateOfferCard from './AffiliateOfferCard.jsx';
 
-function AffiliateOfferGrid({ offers = [], title, eyebrow = 'Opções em destaque', onSelect }) {
+function AffiliateOfferGrid({ offers = [], title, eyebrow = 'Destino externo', onSelect }) {
   if (!offers.length) return null;
 
   const isSingle = offers.length === 1;
@@ -14,7 +14,7 @@ function AffiliateOfferGrid({ offers = [], title, eyebrow = 'Opções em destaqu
           <div className="mt-2 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <h2 className="max-w-3xl text-3xl font-semibold tracking-[-0.05em] text-foreground">{title}</h2>
             <p className="max-w-xl text-sm leading-6 text-muted-foreground">
-              Compare com calma, entenda o perfil de cada opção e siga apenas quando as condições fizerem sentido para você.
+              Para continuar, você será redirecionado ao parceiro. Compare com calma e avance apenas se as condições fizerem sentido.
             </p>
           </div>
         ) : null}

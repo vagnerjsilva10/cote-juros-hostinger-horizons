@@ -10,27 +10,57 @@ import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import { trackingService } from '@/platform/services/trackingService.js';
 
 const animationIn = {
-  initial: { opacity: 0, y: 20 },
+  initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.45, ease: 'easeOut' }
+  transition: { duration: 0.45, ease: [0.4, 0, 0.2, 1] }
 };
 
 const profileCards = [
   {
     title: 'Está com o nome negativado?',
-    description: 'Veja o que ainda pode ser possível no seu momento, sem perder tempo com caminhos improváveis.',
+    description: 'Veja caminhos mais realistas para o seu momento, sem perder tempo com rotas improváveis.',
     href: '/emprestimo-para-negativado'
   },
   {
-    title: 'Trabalha registrado?',
-    description: 'Entenda quais opções podem fazer mais sentido para quem tem renda fixa mensal.',
+    title: 'Trabalha com renda fixa?',
+    description: 'Comece por opções que costumam conversar melhor com um perfil CLT e renda previsível.',
     href: '/emprestimo-para-clt'
   },
   {
     title: 'Tem renda variável?',
-    description: 'Comece por um caminho mais próximo da realidade de quem trabalha por conta ou tem renda flexível.',
+    description: 'Entenda possibilidades pensadas para autônomos, MEI e quem precisa de mais flexibilidade.',
     href: '/emprestimo-para-autonomo'
+  }
+];
+
+const trustCards = [
+  {
+    title: 'Leitura clara do cenário',
+    description: 'Você entende primeiro o que pode fazer sentido, antes de qualquer decisão.'
+  },
+  {
+    title: 'Sem cobrança antecipada',
+    description: 'O início é leve, transparente e sem custo para começar.'
+  },
+  {
+    title: 'Decisão no seu tempo',
+    description: 'Você só avança quando quiser. Sem urgência artificial e sem pressão.'
+  }
+];
+
+const contentBlocks = [
+  {
+    title: 'Conteúdo que ajuda a decidir melhor',
+    description: 'Guias editoriais para entender score, juros, prazos e como comparar custos sem cair em promessa vaga.',
+    image:
+      'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80'
+  },
+  {
+    title: 'Contexto real para a sua escolha',
+    description: 'A plataforma organiza informações antes de te levar para a próxima etapa, reduzindo ruído e aumentando confiança.',
+    image:
+      'https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1200&q=80'
   }
 ];
 
@@ -41,15 +71,15 @@ const faqItems = [
   },
   {
     question: 'Vou ser aprovado com certeza?',
-    answer: 'Não. A aprovação final depende do parceiro e do seu perfil.'
+    answer: 'Não. A aprovação final depende do parceiro e da análise do seu perfil.'
   },
   {
     question: 'Preciso fechar na hora?',
-    answer: 'Não. Você pode ver caminhos possíveis primeiro e decidir com calma.'
+    answer: 'Não. Primeiro você entende os caminhos possíveis e decide com calma.'
   },
   {
     question: 'A Cote Juros libera dinheiro?',
-    answer: 'Não. A Cote Juros não é banco. A gente mostra opções e te direciona para a próxima etapa quando fizer sentido.'
+    answer: 'Não. A Cote Juros não é banco. Nosso papel é organizar opções e indicar a próxima etapa quando fizer sentido.'
   }
 ];
 
@@ -85,7 +115,7 @@ function HomePage() {
         <title>Cote Juros - Descubra opções de crédito para o seu perfil</title>
         <meta
           name="description"
-          content="Descubra agora quais opções de crédito você realmente pode conseguir. Sem compromisso, sem cobrança antecipada e sem promessa falsa."
+          content="Descubra agora quais opções de crédito você realmente pode conseguir. Sem compromisso, sem cobrança antecipada e sem misturar análise com contratação."
         />
         <meta name="verify-admitad" content="1ae3db0be4" />
         <link rel="canonical" href="https://cotejuros.com.br/" />
@@ -114,16 +144,16 @@ function HomePage() {
               </h1>
 
               <p className="mt-6 max-w-[36rem] text-lg leading-8 text-slate-600">
-                Responda algumas perguntas rápidas e veja caminhos possíveis — sem compromisso e sem cobrança antecipada.
+                Responda algumas perguntas rápidas e veja caminhos possíveis sem compromisso e sem cobrança antecipada.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Button size="lg" className="px-6" onClick={openPrimaryFlow}>
+                <Button size="lg" onClick={openPrimaryFlow}>
                   Ver minhas opções agora
                   <ArrowRight className="h-4 w-4" />
                 </Button>
                 <a href="#como-funciona">
-                  <Button size="lg" variant="outline" className="px-6">
+                  <Button size="lg" variant="outline">
                     Entender como funciona
                   </Button>
                 </a>
@@ -132,7 +162,7 @@ function HomePage() {
               <div className="mt-8 flex flex-wrap gap-3">
                 {['Sem compromisso', 'Sem cobrança antecipada', 'Você decide com calma'].map((item) => (
                   <div key={item} className="premium-pill">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                    <CheckCircle2 className="h-4 w-4 text-[#10B981]" />
                     {item}
                   </div>
                 ))}
@@ -150,17 +180,17 @@ function HomePage() {
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
             <span className="section-eyebrow">Como funciona</span>
-            <h2 className="mt-4 text-slate-950">Você começa em poucos minutos</h2>
+            <h2 className="mt-4 text-slate-950">Uma jornada simples, sem formulário pesado logo na entrada</h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-slate-600">
-              O foco aqui é te mostrar um caminho simples, claro e sem enrolação.
+              Primeiro você entende o cenário. Depois compara opções. Só então decide se quer seguir para um parceiro.
             </p>
           </motion.div>
 
           <div className="stagger-rise mt-12 grid gap-5 md:grid-cols-3">
             {[
-              ['Responda o básico', 'Conte quanto precisa, sua renda e algumas informações rápidas para começar.'],
-              ['Veja o que pode funcionar', 'A gente organiza caminhos mais próximos do seu perfil para você comparar melhor.'],
-              ['Decida com calma', 'Se fizer sentido, você avança. Se não fizer, você para por ali sem pressão.']
+              ['1. Conte o básico', 'Valor, renda e contexto em poucos passos para organizar melhor a análise.'],
+              ['2. Veja caminhos possíveis', 'A leitura interna mostra opções e cenários antes de qualquer saída externa.'],
+              ['3. Avance se fizer sentido', 'Quando você quiser seguir, o redirecionamento fica claro e separado.']
             ].map(([title, description]) => (
               <Card key={title} className="surface-card h-full border-slate-200 bg-white">
                 <CardContent className="p-7">
@@ -177,9 +207,9 @@ function HomePage() {
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
             <span className="section-eyebrow bg-white">Seu momento</span>
-            <h2 className="mt-4 text-slate-950">Escolha o caminho que mais combina com o seu momento</h2>
+            <h2 className="mt-4 text-slate-950">Escolha o ponto de partida mais próximo da sua realidade</h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-slate-600">
-              Em vez de tentar tudo ao mesmo tempo, comece pelo que parece mais próximo da sua realidade.
+              Em vez de misturar tudo, a experiência começa por contexto. Isso reduz ruído e aumenta clareza.
             </p>
           </motion.div>
 
@@ -205,22 +235,38 @@ function HomePage() {
       <section className="page-section border-b border-slate-200 bg-white">
         <div className="page-shell">
           <motion.div {...animationIn} className="premium-dark-panel rounded-[32px] px-8 py-10 text-white sm:px-12 sm:py-14">
-            <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-100">
-              Confiança
-            </span>
-            <h2 className="mt-5 max-w-3xl text-white">Clareza antes de qualquer decisão</h2>
+            <span className="section-kicker border-white/15 bg-white/10 text-sky-100">Clareza e confiança</span>
+            <h2 className="section-title-gradient mt-5 max-w-3xl">Você entende a análise antes de qualquer redirecionamento</h2>
             <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
-              Aqui você começa sem pressão, sem cobrança antecipada e sem promessa falsa.
+              A experiência premium aqui está em separar bem o que é leitura interna do que é saída para parceiro.
             </p>
 
             <div className="mt-8 grid gap-4 md:grid-cols-3">
-              {['Sem compromisso', 'Sem cobrança antecipada', 'Sem promessa falsa'].map((item) => (
-                <div key={item} className="rounded-[18px] border border-white/10 bg-white/5 px-4 py-4 text-sm font-medium text-white/90">
-                  {item}
+              {trustCards.map((item) => (
+                <div key={item.title} className="dark-glass-card rounded-[18px] px-5 py-5">
+                  <p className="text-base font-semibold text-white">{item.title}</p>
+                  <p className="mt-3 text-sm leading-7 text-slate-300">{item.description}</p>
                 </div>
               ))}
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      <section className="page-section border-b border-slate-200 bg-white">
+        <div className="page-shell">
+          <div className="grid gap-6 lg:grid-cols-2">
+            {contentBlocks.map((item) => (
+              <motion.article key={item.title} {...animationIn} className="overflow-hidden rounded-[24px] border border-border bg-white shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
+                <img src={item.image} alt={item.title} className="h-64 w-full object-cover" />
+                <div className="p-7">
+                  <span className="section-eyebrow bg-slate-50">Conteúdo e contexto</span>
+                  <h3 className="mt-4 text-slate-950">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
+                </div>
+              </motion.article>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -236,12 +282,9 @@ function HomePage() {
               </div>
               <div>
                 <span className="section-eyebrow bg-slate-50">Nosso papel</span>
-                <h2 className="mt-4 text-slate-950">Nosso papel é te ajudar a encontrar caminhos</h2>
+                <h2 className="mt-4 text-slate-950">A Cote Juros organiza o cenário. O parceiro cuida da contratação.</h2>
                 <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-600">
-                  A gente não é banco — e é justamente por isso que você consegue ver suas opções com mais clareza.
-                </p>
-                <p className="mt-3 max-w-3xl text-lg leading-8 text-slate-600">
-                  Mostramos caminhos possíveis. A decisão é sempre sua.
+                  Isso evita a mistura entre produto interno e monetização, deixa a jornada mais honesta e melhora a percepção de confiança.
                 </p>
               </div>
             </div>
@@ -273,12 +316,12 @@ function HomePage() {
             className="mx-auto max-w-4xl rounded-[30px] border border-slate-200 bg-white px-7 py-10 text-center shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-10 sm:py-12"
           >
             <span className="section-eyebrow border-sky-200 bg-sky-50 text-sky-700">Comece agora</span>
-            <h2 className="mt-4 text-slate-950">Descubra agora o que pode fazer sentido para você</h2>
+            <h2 className="mt-4 text-slate-950">Veja caminhos possíveis sem entrar em um formulário pesado de cara</h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-slate-600">
-              Leva menos de 2 minutos para começar.
+              Leva menos de 2 minutos para entender o cenário inicial.
             </p>
             <div className="mt-8 flex justify-center">
-              <Button size="lg" className="px-7" onClick={openPrimaryFlow}>
+              <Button size="lg" onClick={openPrimaryFlow}>
                 Ver minhas opções agora
                 <ArrowRight className="h-4 w-4" />
               </Button>
@@ -286,8 +329,7 @@ function HomePage() {
           </motion.div>
 
           <p className="mx-auto mt-6 max-w-3xl text-center text-xs leading-6 text-slate-500">
-            A Cote Juros não é banco, não concede crédito diretamente e não garante aprovação. Não cobramos valor
-            antecipado.
+            A Cote Juros não é banco, não concede crédito diretamente e não garante aprovação. Não cobramos valor antecipado.
           </p>
         </div>
       </section>

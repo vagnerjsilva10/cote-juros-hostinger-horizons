@@ -11,7 +11,7 @@ function PageHero({
   children
 }) {
   return (
-    <section className={`relative overflow-hidden border-b border-border bg-background pb-12 pt-14 sm:pb-16 sm:pt-18 md:pb-24 md:pt-24 ${className}`}>
+    <section className={`relative overflow-hidden border-b border-border bg-background pb-16 pt-16 sm:pb-20 sm:pt-20 md:pb-24 md:pt-24 ${className}`}>
       <div className="pointer-events-none absolute inset-0">
         <div className="hero-premium-clean absolute inset-0" />
         <div className="hero-tech-grid absolute inset-0 opacity-50" />
@@ -23,13 +23,13 @@ function PageHero({
         <div className={centered ? 'mx-auto min-w-0 max-w-4xl' : 'min-w-0 max-w-4xl'}>
           {eyebrow ? <p className="mb-3 text-sm font-semibold text-primary">{eyebrow}</p> : null}
           {badge ? (
-            <Badge variant="outline" className="mb-5 max-w-full rounded-full border-white/80 bg-white/80 px-4 py-1.5 text-center shadow-[0_10px_24px_rgba(15,23,42,0.06)] backdrop-blur sm:mb-6">
+            <Badge variant="outline" className="mb-5 max-w-full rounded-full border-white/80 bg-white/90 px-4 py-1.5 text-center shadow-[0_10px_24px_rgba(15,23,42,0.06)] backdrop-blur sm:mb-6">
               {badge}
             </Badge>
           ) : null}
           <h1 className="mb-4 max-w-4xl break-words text-foreground sm:mb-5">{title}</h1>
           {subtitle ? (
-            <p className={`text-base leading-8 text-muted-foreground sm:text-lg sm:leading-8 md:text-[1.125rem] ${centered ? 'mx-auto max-w-3xl' : 'max-w-3xl'}`}>
+            <p className={`text-base leading-8 text-muted-foreground sm:text-lg sm:leading-8 ${centered ? 'mx-auto max-w-3xl' : 'max-w-3xl'}`}>
               {subtitle}
             </p>
           ) : null}

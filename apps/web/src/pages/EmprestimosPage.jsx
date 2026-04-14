@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ChevronRight, Clock, Filter, LayoutGrid, List, ShieldCheck, Sparkles, Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -124,8 +124,8 @@ function EmprestimosPage() {
 
   const getBadge = (loanType, rate) => {
     if (rate < 2) return { icon: Star, text: 'Melhor taxa' };
-    if (loanType === 'Negativado') return { icon: ShieldCheck, text: 'Sem consulta dura' };
-    return { icon: Sparkles, text: 'Mais aderente' };
+    if (loanType === 'Negativado') return { icon: ShieldCheck, text: 'Perfil sensível' };
+    return { icon: Sparkles, text: 'Boa aderência' };
   };
 
   const handleSimulate = async (loan) => {
@@ -221,14 +221,14 @@ function EmprestimosPage() {
 
       <PageHero
         eyebrow="Crédito com clareza"
-        badge="Comparador de empréstimos"
-        title="Veja opções de empréstimo que podem fazer sentido para você."
-        subtitle="Comece por uma jornada simples, entenda caminhos possíveis e compare com mais calma antes de decidir."
+        badge="Comparação interna de empréstimos"
+        title="Entenda o cenário, compare opções e só depois siga para um parceiro."
+        subtitle="O fluxo agora separa análise interna, comparação e saída externa para reduzir confusão e aumentar confiança."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button size="lg" onClick={() => setQuickModalOpen(true)}>Ver minhas opções agora</Button>
           <a href="#resultados-emprestimos">
-            <Button size="lg" variant="outline">Ver ofertas agora</Button>
+            <Button size="lg" variant="outline">Ver comparação</Button>
           </a>
         </div>
       </PageHero>
@@ -241,7 +241,7 @@ function EmprestimosPage() {
                 {quickLeadContext.fullName ? `${quickLeadContext.fullName}, estas opções` : 'Estas opções'} podem ser um bom ponto de partida para você.
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Use os filtros para comparar com calma. A aprovação final depende do parceiro e do seu perfil.
+                Primeiro compare com calma. A aprovação final depende do parceiro e do seu perfil.
               </p>
             </div>
           </div>
@@ -274,8 +274,8 @@ function EmprestimosPage() {
           {belowHeroSupersimOffer ? (
             <SuperSimOfferCard
               offer={belowHeroSupersimOffer}
-              title="SuperSim como recomendacao editorial"
-              description="Uma leitura objetiva para quem quer avançar para a simulação sem sair do contexto do comparador de empréstimos."
+              title="Para continuar, você será redirecionado"
+              description="Bloco externo separado da comparação principal para manter o fluxo mais claro."
               onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
             />
           ) : null}
@@ -283,8 +283,8 @@ function EmprestimosPage() {
           {belowHeroOtherOffers.length ? (
             <AffiliateOfferGrid
               offers={belowHeroOtherOffers}
-              title="Opções relacionadas para comparar com mais contexto"
-              eyebrow="Veja condições"
+              title="Opções externas para continuar no parceiro"
+              eyebrow="Destino externo"
               onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
             />
           ) : null}
@@ -303,10 +303,10 @@ function EmprestimosPage() {
           <section className="mb-10 rounded-[24px] border border-primary/15 bg-white p-8 shadow-[var(--shadow-md)]">
             <div className="flex flex-col gap-4 border-b border-border pb-6 md:flex-row md:items-end md:justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Jornada real de crédito</p>
-                <h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">Ofertas personalizadas para o seu perfil</h2>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Com base no seu perfil...</p>
+                <h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">Opções organizadas dentro da Cote Juros</h2>
                 <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
-                  Resultado da simulação {creditJourney.simulation?.provider === 'catalog_fallback' ? 'em fallback local' : 'integrada ao provedor'} com ofertas já normalizadas pela Cote Juros.
+                  Aqui você compara taxa, valor e prazo com mais clareza. Se decidir avançar, o próximo passo acontece no parceiro.
                 </p>
               </div>
 
@@ -326,6 +326,13 @@ function EmprestimosPage() {
                   <p className="mt-1 text-sm font-semibold text-foreground">{creditJourney.offers.length}</p>
                 </div>
               </div>
+            </div>
+
+            <div className="mt-6 rounded-[18px] border border-slate-200 bg-slate-50 p-5">
+              <p className="text-sm font-semibold text-slate-900">Para continuar, você será redirecionado.</p>
+              <p className="mt-2 text-sm text-slate-600">
+                A comparação acontece aqui. A contratação, se você quiser seguir, acontece fora da Cote Juros.
+              </p>
             </div>
 
             <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -380,7 +387,7 @@ function EmprestimosPage() {
                     </div>
 
                     <Button className="mt-auto w-full" onClick={() => handleCreditOfferClick(offer)}>
-                      Continuar contratação <ChevronRight className="h-4 w-4" />
+                      Continuar no parceiro <ChevronRight className="h-4 w-4" />
                     </Button>
                   </CardContent>
                 </Card>
@@ -388,6 +395,14 @@ function EmprestimosPage() {
             </div>
           </section>
         ) : null}
+
+        <div className="mb-8 rounded-[24px] border border-border bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Comparação interna</p>
+          <h2 className="mt-3 text-2xl text-foreground">Ajuste o cenário e compare antes de decidir</h2>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
+            Esta parte serve para leitura e comparação. O redirecionamento fica explícito apenas nos botões de continuação.
+          </p>
+        </div>
 
         <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
           <aside className="lg:sticky lg:top-24 lg:h-fit">
@@ -551,7 +566,7 @@ function EmprestimosPage() {
                         </div>
 
                         <div className="rounded-[12px] border border-border bg-background-secondary p-4">
-                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Resumo da oferta</p>
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Resumo da leitura</p>
                           <p className="mt-2 text-sm text-muted-foreground">
                             {loan.monthlyRate < 2
                               ? 'Uma das menores taxas dentro do filtro que você escolheu.'
@@ -574,7 +589,7 @@ function EmprestimosPage() {
                         </div>
 
                         <Button className="mt-auto w-full" onClick={() => handleSimulate(loan)}>
-                          Simular oferta <ChevronRight className="h-4 w-4" />
+                          Continuar no parceiro <ChevronRight className="h-4 w-4" />
                         </Button>
                       </CardContent>
                     </Card>
@@ -634,7 +649,7 @@ function EmprestimosPage() {
                           </div>
 
                           <Button className="w-full lg:justify-center" onClick={() => handleSimulate(loan)}>
-                            Simular oferta <ChevronRight className="h-4 w-4" />
+                            Continuar no parceiro <ChevronRight className="h-4 w-4" />
                           </Button>
                         </div>
                       </CardContent>
@@ -662,13 +677,13 @@ function EmprestimosPage() {
                 {getSupersimOffer([midContentOffer]) ? (
                   <SuperSimInlineCTA
                     offer={midContentOffer}
-                    title="Antes de contratar, vale comparar a SuperSim"
+                    title="Para continuar, você será redirecionado"
                     onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
                   />
                 ) : (
                   <AffiliateInlineCTA
                     offer={midContentOffer}
-                    title="Antes de contratar, veja uma alternativa para comparar"
+                    title="Antes de seguir, veja uma alternativa externa"
                     onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
                   />
                 )}
@@ -685,8 +700,8 @@ function EmprestimosPage() {
               {beforeFaqSupersimOffer ? (
                 <SuperSimOfferCard
                   offer={beforeFaqSupersimOffer}
-                  title="SuperSim antes da decisão final"
-                  description="Bloco editorial para quem já comparou ofertas e quer seguir para uma simulação com CTA claro e badges visuais."
+                  title="Para continuar, você será redirecionado"
+                  description="Bloco final separado da comparação para deixar a decisão mais clara."
                   onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
                 />
               ) : null}
@@ -694,8 +709,8 @@ function EmprestimosPage() {
               {beforeFaqOtherOffers.length ? (
                 <AffiliateOfferGrid
                   offers={beforeFaqOtherOffers}
-                  title="Mais condições para você analisar antes da decisão final"
-                  eyebrow="Compare opções"
+                  title="Opções externas antes da decisão final"
+                  eyebrow="Destino externo"
                   onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
                 />
               ) : null}
@@ -703,9 +718,9 @@ function EmprestimosPage() {
           ) : null}
 
           <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
-            <h2 className="mb-3">Quer ver outras opções para o seu perfil?</h2>
+            <h2 className="mb-3">Quer refazer a análise do seu perfil?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
-              Refaça a busca com alguns dados básicos e veja caminhos que podem combinar melhor com o seu momento.
+              Recomece com alguns dados básicos e veja caminhos que podem combinar melhor com o seu momento.
             </p>
             <Button size="lg" onClick={() => setQuickModalOpen(true)}>Ver minhas opções agora</Button>
           </div>

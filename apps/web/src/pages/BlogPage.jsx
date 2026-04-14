@@ -186,14 +186,14 @@ function BlogPage() {
       <PageHero
         centered
         badge="Blog Cote Juros"
-        title="Entenda melhor seu dinheiro antes de contratar qualquer produto"
-        subtitle="Guias simples para comparar taxas, organizar o orçamento e tomar decisões com mais calma."
+        title="Conteúdo para entender antes de contratar"
+        subtitle="Guias editoriais com imagens reais, leitura clara e contexto financeiro para tomar decisões com mais confiança."
       >
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              className="h-12 rounded-full bg-background pl-11"
+              className="rounded-full bg-background pl-11"
               placeholder="Busque por score, empréstimo, cartão, dívidas ou orçamento"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -216,12 +216,12 @@ function BlogPage() {
       </PageHero>
 
       <div className="page-shell space-y-10 py-10 md:space-y-14 md:py-14">
-        <section className="grid gap-4 rounded-[24px] border border-border bg-white p-5 md:grid-cols-[1.3fr_0.7fr] md:p-7">
+        <section className="grid gap-4 rounded-[24px] border border-border bg-white p-5 md:grid-cols-[1.2fr_0.8fr] md:p-7">
           <div className="space-y-3">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Comece por aqui</p>
-            <h2 className="text-2xl text-foreground md:text-3xl">Os assuntos mais lidos para quem quer organizar a vida financeira</h2>
+            <h2 className="text-2xl text-foreground md:text-3xl">Temas mais úteis para organizar a vida financeira com calma</h2>
             <p className="max-w-3xl text-base leading-7 text-muted-foreground">
-              Navegue por temas, encontre respostas objetivas e aprofunde a leitura sem cair em promessas exageradas.
+              O blog agora apoia a percepção do produto: mais contexto, menos ruído e um visual mais confiável.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-1">
@@ -257,7 +257,7 @@ function BlogPage() {
 
             <Link
               to={getArticlePath(featured)}
-              className="group grid overflow-hidden rounded-[26px] border border-border bg-white md:grid-cols-[1.1fr_0.9fr]"
+              className="group grid overflow-hidden rounded-[26px] border border-border bg-white shadow-[0_10px_30px_rgba(0,0,0,0.05)] md:grid-cols-[1.1fr_0.9fr]"
             >
               <ArticleCoverImage
                 article={featured}
@@ -359,14 +359,14 @@ function BlogPage() {
 
         <section className="rounded-[24px] border border-primary/15 bg-primary/[0.04] p-6 md:p-8">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Próximo passo</p>
-          <h2 className="mt-3 text-2xl text-foreground">Quer sair da leitura e ver caminhos de credito?</h2>
+          <h2 className="mt-3 text-2xl text-foreground">Quando quiser sair da leitura, veja caminhos de crédito com mais contexto</h2>
           <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
-            Se voce ja entendeu o basico, o proximo passo e ver opcoes que podem fazer sentido para o seu perfil, sem compromisso e sem cobranca antecipada.
+            O blog prepara a decisão. A jornada de crédito mostra possibilidades. E o redirecionamento ao parceiro só aparece depois, de forma separada.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Link to="/emprestimos" className="inline-flex">
               <Button>
-                Ver minhas opcoes agora
+                Ver minhas opções agora
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>

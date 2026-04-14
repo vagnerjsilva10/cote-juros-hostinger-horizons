@@ -45,8 +45,8 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
   if (!offer) return null;
 
   const logoUrl = offer?.imageUrl || offer?.metadata?.logoUrl || '';
-  const accentFromMeta = offer?.metadata?.accentColor || '#0F766E';
-  const secondaryAccent = offer?.metadata?.secondaryAccentColor || '#D97706';
+  const accentFromMeta = offer?.metadata?.accentColor || '#2563EB';
+  const secondaryAccent = offer?.metadata?.secondaryAccentColor || '#0F172A';
   const badges = buildBadgeList(offer);
 
   return (
@@ -55,7 +55,7 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
         <div
           className="relative overflow-hidden border-b border-border p-6 sm:p-7 lg:border-b-0 lg:border-r"
           style={{
-            background: `linear-gradient(135deg, ${accentFromMeta}16 0%, #ffffff 52%, ${secondaryAccent}12 100%)`
+            background: `linear-gradient(135deg, ${accentFromMeta}14 0%, #ffffff 52%, ${secondaryAccent}10 100%)`
           }}
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.95),transparent_38%)]" />
@@ -82,7 +82,7 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
                   <div className="mt-2 flex flex-wrap gap-2">
                     <Badge variant="outline" className="border-primary/20 bg-white/90 text-foreground">
                       <Building2 className="mr-1 h-3.5 w-3.5" />
-                      Oferta parceira
+                      Parceiro externo
                     </Badge>
                     {badges[0] ? (
                       <Badge variant="outline" className="border-primary/20 bg-white/90 text-foreground">
@@ -136,17 +136,17 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
 
             <div className="rounded-[18px] border border-border bg-white p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                Destaque desta oferta
+                O que acontece ao clicar
               </p>
               <div className="mt-3 space-y-2">
                 <div className="flex items-start gap-2">
                   <BadgeCheck className="mt-0.5 h-4 w-4 text-primary" />
-                  <p className="text-sm text-foreground">Condições apresentadas de forma mais clara e objetiva.</p>
+                  <p className="text-sm text-foreground">Você sai da Cote Juros e continua no ambiente do parceiro.</p>
                 </div>
                 <div className="flex items-start gap-2">
                   <ShieldCheck className="mt-0.5 h-4 w-4 text-primary" />
                   <p className="text-sm text-foreground">
-                    {offer.payoutText || 'Boa opção para comparar antes de avançar na contratação.'}
+                    {offer.payoutText || 'Use este passo apenas quando a oferta parecer aderente ao seu momento.'}
                   </p>
                 </div>
               </div>
@@ -155,10 +155,10 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
 
           <div className="mt-auto space-y-4">
             <Button
-              className="h-12 w-full justify-between rounded-[14px] px-5 text-sm font-semibold shadow-[0_14px_30px_rgba(15,23,42,0.12)]"
+              className="w-full justify-between rounded-[12px]"
               onClick={() => onSelect?.(offer)}
             >
-              {offer.ctaText || 'Ver condições'}
+              {offer.ctaText || 'Continuar no parceiro'}
               <ArrowRight className="h-4 w-4" />
             </Button>
 

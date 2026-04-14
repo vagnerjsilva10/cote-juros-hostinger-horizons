@@ -120,7 +120,7 @@ function FinanciamentoPage() {
               </div>
 
               <Button className="mt-auto w-full" onClick={() => handleSimulate(item)}>
-                Simular financiamento <ArrowRight className="h-4 w-4" />
+                Continuar no parceiro <ArrowRight className="h-4 w-4" />
               </Button>
             </CardContent>
           </Card>
@@ -133,22 +133,22 @@ function FinanciamentoPage() {
     <>
       <Helmet>
         <title>Comparador de financiamento - Cote Juros</title>
-        <meta name="description" content="Compare financiamento de imóveis e veículos com leitura premium de taxa, prazo e entrada mínima." />
+        <meta name="description" content="Compare financiamento de imóveis e veículos com leitura clara de taxa, prazo e entrada mínima." />
       </Helmet>
 
       <PageHero
-        eyebrow="Leitura premium"
-        badge="Comparador de financiamentos"
+        eyebrow="Comparação interna"
+        badge="Financiamento com fluxo mais claro"
         centered
-        title="Compare financiamento com clareza de taxa, entrada e prazo."
-        subtitle="Compare bancos, taxas e prazos para descobrir qual financiamento faz mais sentido para você."
+        title="Compare financiamento com clareza e só siga para o parceiro quando fizer sentido."
+        subtitle="A página agora separa melhor comparação, decisão e saída externa para reduzir ruído na jornada."
       >
         <div className="flex flex-col justify-center gap-3 sm:flex-row">
           <Button size="lg" onClick={() => setQuickModalOpen(true)}>
             Ver minhas opções agora
           </Button>
           <a href="#resultados-financiamento">
-            <Button size="lg" variant="outline">Ver opções agora</Button>
+            <Button size="lg" variant="outline">Ver comparação</Button>
           </a>
         </div>
       </PageHero>
@@ -178,14 +178,22 @@ function FinanciamentoPage() {
         <div className="page-shell py-8">
           <AffiliateOfferGrid
             offers={affiliatePlacements.below_hero}
-            title="Condicoes relacionadas para analisar junto com seu financiamento"
-            eyebrow="Entenda os custos"
+            title="Opções externas para continuar no parceiro"
+            eyebrow="Destino externo"
             onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
           />
         </div>
       ) : null}
 
       <div className="page-shell py-12" id="resultados-financiamento">
+        <div className="mb-8 rounded-[24px] border border-border bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Comparaï¿½ï¿½o interna</p>
+          <h2 className="mt-3 text-2xl text-foreground">Contexto, opções, decisão e só depois saída</h2>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
+            Esta etapa serve para entender custo, prazo e entrada antes de qualquer redirecionamento.
+          </p>
+        </div>
+
         <Tabs defaultValue="veiculos" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="veiculos" className="gap-2">
@@ -227,7 +235,7 @@ function FinanciamentoPage() {
           <div className="mt-8">
             <AffiliateInlineCTA
               offer={affiliatePlacements.mid_content[0]}
-              title="Antes de seguir, compare uma opcao relacionada"
+              title="Para continuar, vocï¿½ serï¿½ redirecionado"
               onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
             />
           </div>
@@ -240,8 +248,8 @@ function FinanciamentoPage() {
             <div className="mb-8">
               <AffiliateOfferGrid
                 offers={affiliatePlacements.before_faq}
-                title="Mais uma leitura útil antes de decidir pelo contrato"
-                eyebrow="Veja condições"
+                title="Opções externas antes da decisão final"
+                eyebrow="Destino externo"
                 onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
               />
             </div>
@@ -268,3 +276,5 @@ function FinanciamentoPage() {
 }
 
 export default FinanciamentoPage;
+
+

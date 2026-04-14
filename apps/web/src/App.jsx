@@ -142,11 +142,11 @@ function App() {
             <AppLayout>
               <CreditProfileLandingPage
                 canonicalPath="/emprestimo-para-negativado"
-                title="Emprestimo para negativado | Veja caminhos possiveis | Cote Juros"
-                description="Se voce esta com o nome negativado, veja caminhos possiveis antes de decidir. Sem compromisso e sem cobranca antecipada."
-                badge="Para quem esta negativado"
-                heroTitle="Mesmo com o nome negativado, ainda pode haver caminhos possiveis"
-                heroDescription="Responda algumas perguntas rapidas e veja opcoes que podem fazer sentido para o seu momento, sem criar expectativa errada."
+                title="Empréstimo para negativado | Veja caminhos possíveis | Cote Juros"
+                description="Se você está com o nome negativado, veja caminhos possíveis antes de decidir. Sem compromisso e sem cobrança antecipada."
+                badge="Para quem está negativado"
+                heroTitle="Mesmo com o nome negativado, ainda pode haver caminhos possíveis"
+                heroDescription="Responda algumas perguntas rápidas e veja opções que podem fazer sentido para o seu momento, sem criar expectativa errada."
                 trustLine="Sem compromisso e sem promessa falsa"
               />
             </AppLayout>
@@ -158,12 +158,12 @@ function App() {
             <AppLayout>
               <CreditProfileLandingPage
                 canonicalPath="/emprestimo-para-clt"
-                title="Emprestimo para CLT | Veja opcoes para o seu perfil | Cote Juros"
-                description="Se voce trabalha com carteira assinada, veja opcoes de credito que podem combinar com sua renda e seu perfil."
+                title="Empréstimo para CLT | Veja opções para o seu perfil | Cote Juros"
+                description="Se você trabalha com carteira assinada, veja opções de crédito que podem combinar com sua renda e seu perfil."
                 badge="Para quem trabalha com carteira"
-                heroTitle="Se voce e CLT, veja opcoes que podem combinar com sua renda"
-                heroDescription="Comece por uma jornada simples e descubra caminhos possiveis antes de seguir para a proxima etapa."
-                trustLine="Voce pode ver as opcoes e decidir com calma"
+                heroTitle="Se você é CLT, veja opções que podem combinar com sua renda"
+                heroDescription="Comece por uma jornada simples e descubra caminhos possíveis antes de seguir para a próxima etapa."
+                trustLine="Você pode ver as opções e decidir com calma"
               />
             </AppLayout>
           }
@@ -174,12 +174,12 @@ function App() {
             <AppLayout>
               <CreditProfileLandingPage
                 canonicalPath="/emprestimo-para-autonomo"
-                title="Emprestimo para autonomo | Veja caminhos possiveis | Cote Juros"
-                description="Se voce e autonomo, veja opcoes de credito que podem fazer sentido para o seu momento, sem perder tempo com formulários longos."
-                badge="Para autonomos"
-                heroTitle="Se voce e autonomo, veja caminhos de credito que podem fazer sentido"
-                heroDescription="Uma jornada leve para entender possibilidades antes de decidir, com mais clareza e menos enrolacao."
-                trustLine="Sem cobranca antecipada e sem pressao para fechar"
+                title="Empréstimo para autônomo | Veja caminhos possíveis | Cote Juros"
+                description="Se você é autônomo, veja opções de crédito que podem fazer sentido para o seu momento, sem perder tempo com formulários longos."
+                badge="Para autônomos"
+                heroTitle="Se você é autônomo, veja caminhos de crédito que podem fazer sentido"
+                heroDescription="Uma jornada leve para entender possibilidades antes de decidir, com mais clareza e menos enrolação."
+                trustLine="Sem cobrança antecipada e sem pressão para fechar"
               />
             </AppLayout>
           }
