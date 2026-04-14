@@ -1,7 +1,8 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 import { CheckCircle2, ChevronRight, CreditCard, Filter } from 'lucide-react';
+import { toast } from 'sonner';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -10,15 +11,10 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import PageHero from '@/components/PageHero.jsx';
-import AffiliateOfferGrid from '@/components/affiliates/AffiliateOfferGrid.jsx';
-import AffiliateInlineCTA from '@/components/affiliates/AffiliateInlineCTA.jsx';
-import AffiliateSidebarWidget from '@/components/affiliates/AffiliateSidebarWidget.jsx';
 import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
-import { useAffiliatePlacements } from '@/hooks/useAffiliatePlacements.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
-import { affiliateRedirectService } from '@/platform/services/affiliateRedirectService.js';
 
 const bankCardImages = {
   nubank: '/assets/cards/nubank-card.svg',
@@ -66,7 +62,6 @@ function CartoesPage() {
   const [categories, setCategories] = useState({ Premium: false, Intermediario: false, Basico: false });
   const [benefits, setBenefits] = useState({ Cashback: false, Milhas: false, VIP: false });
   const [sort, setSort] = useState('limite-maior');
-  const affiliatePlacements = useAffiliatePlacements({ pageSlug: '/cartoes-de-credito', productType: 'credit_card' });
 
   useEffect(() => {
     Promise.all([portalApi.getBanks(), portalApi.getOffers({ productType: 'credit_card' })]).then(([banks, items]) => {
@@ -102,10 +97,7 @@ function CartoesPage() {
     return result;
   }, [benefits, cardsData, categories, freeAnnuity, sort]);
 
-  const freeCardsCount = useMemo(
-    () => cardsData.filter((item) => item.annualFee === 0).length,
-    [cardsData]
-  );
+  const freeCardsCount = useMemo(() => cardsData.filter((item) => item.annualFee === 0).length, [cardsData]);
 
   const bestLimit = useMemo(() => {
     if (!filteredCards.length) return 0;
@@ -136,37 +128,21 @@ function CartoesPage() {
     window.location.href = redirect.resolvedUrl;
   };
 
-  const handleAffiliateClick = async (offer, position) => {
-    try {
-      const result = await affiliateRedirectService.create({
-        offerSlug: offer.offerSlug,
-        pageSlug: '/cartoes-de-credito',
-        position
-      });
-
-      if (!result?.redirectUrl) {
-        toast.error('Essa oferta ainda não possui link disponível.');
-        return;
-      }
-
-      window.location.href = result.redirectUrl;
-    } catch (error) {
-      toast.error(error.message || 'Não foi possível abrir esta oferta agora.');
-    }
-  };
-
   return (
     <>
       <Helmet>
         <title>Comparador de cartões - Cote Juros</title>
-        <meta name="description" content="Compare cartões por anuidade, limite estimado e benefícios em uma interface premium e objetiva." />
+        <meta
+          name="description"
+          content="Compare cartões por anuidade, limite estimado e benefícios em uma interface premium e objetiva."
+        />
       </Helmet>
 
       <PageHero
         eyebrow="Comparação interna"
-        badge="Cartões com fluxo mais claro"
-        title="Compare custo e benefício com clareza e siga para o parceiro só quando fizer sentido."
-        subtitle="A experiência agora separa melhor leitura interna, decisão e saída externa."
+        badge="Cartões com arquitetura mais clara"
+        title="Compare custo e benefício com uma leitura mais leve."
+        subtitle="Esta página agora fica focada em contexto, comparação e entrada no fluxo. As ofertas externas foram separadas em um ambiente próprio."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button size="lg" onClick={() => setQuickModalOpen(true)}>
@@ -181,42 +157,43 @@ function CartoesPage() {
       <section className="border-b border-border bg-background-secondary py-8">
         <div className="page-shell grid gap-4 md:grid-cols-4">
           <div className="interactive-card px-5 py-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Cartões no comparador</p>
-            <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{cardsData.length}</p>
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Cartões no comparador</p>
+            <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">{cardsData.length}</p>
           </div>
           <div className="interactive-card px-5 py-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Sem anuidade</p>
-            <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-primary">{freeCardsCount}</p>
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Sem anuidade</p>
+            <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-primary">{freeCardsCount}</p>
           </div>
           <div className="interactive-card px-5 py-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Maior limite estimado</p>
-            <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">R$ {(bestLimit / 1000).toFixed(0)}k</p>
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Maior limite estimado</p>
+            <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">R$ {(bestLimit / 1000).toFixed(0)}k</p>
           </div>
           <div className="interactive-card px-5 py-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Ofertas visíveis</p>
-            <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{filteredCards.length}</p>
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Ofertas visíveis</p>
+            <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">{filteredCards.length}</p>
           </div>
         </div>
       </section>
 
-      {affiliatePlacements.below_hero?.length ? (
-        <div className="page-shell py-8">
-          <AffiliateOfferGrid
-            offers={affiliatePlacements.below_hero}
-            title="Opções externas para continuar no parceiro"
-            eyebrow="Destino externo"
-            onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
-          />
-        </div>
-      ) : null}
-
       <div className="page-shell py-12" id="resultados-cartoes">
         <div className="mb-8 rounded-[24px] border border-border bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Comparação interna</p>
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">Comparação interna</p>
           <h2 className="mt-3 text-2xl text-foreground">Entenda custo, limite e benefícios antes de avançar</h2>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
-            O objetivo desta etapa é comparar com calma. O redirecionamento fica explícito nos CTAs finais.
+            O objetivo desta etapa é comparar com calma. A área de parceiros agora está separada para manter a decisão mais clara.
           </p>
+        </div>
+
+        <div className="mb-8 rounded-[20px] border border-primary/15 bg-primary/[0.04] px-6 py-5">
+          <p className="text-sm font-semibold text-foreground">Parceiros externos foram movidos para uma página própria.</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Se quiser ver destinos externos e avisos editoriais, use a página de ofertas sem misturar isso com a comparação principal.
+          </p>
+          <div className="mt-4">
+            <Link to="/ofertas">
+              <Button variant="outline">Ver ofertas e parceiros</Button>
+            </Link>
+          </div>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
@@ -264,15 +241,6 @@ function CartoesPage() {
                 </div>
               </CardContent>
             </Card>
-
-            {affiliatePlacements.sidebar?.[0] ? (
-              <div className="mt-6">
-                <AffiliateSidebarWidget
-                  offer={affiliatePlacements.sidebar[0]}
-                  onSelect={(offer) => handleAffiliateClick(offer, 'sidebar')}
-                />
-              </div>
-            ) : null}
           </aside>
 
           <section>
@@ -309,15 +277,25 @@ function CartoesPage() {
                       <div className="absolute inset-0 flex items-center justify-center p-4">
                         <div className="relative w-full max-w-[240px] -rotate-[6deg] transition-transform duration-300 hover:-translate-y-1 hover:rotate-[-4deg]">
                           {hasPremiumAsset ? (
-                            <img src={cardImage} alt={card.title} className="h-[148px] w-full rounded-2xl object-contain shadow-[0_16px_34px_rgba(15,23,42,0.28)]" />
+                            <img
+                              src={cardImage}
+                              alt={card.title}
+                              className="h-[148px] w-full rounded-2xl object-contain shadow-[0_16px_34px_rgba(15,23,42,0.28)]"
+                            />
                           ) : (
                             <div
                               className="h-[148px] rounded-2xl border border-white/20 p-4 text-white shadow-[0_16px_34px_rgba(15,23,42,0.28)]"
                               style={{ background: `linear-gradient(135deg, ${toneA}, ${toneB})` }}
                             >
-                              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90 [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]">{card.bankName}</p>
-                              <p className="mt-6 text-lg font-semibold leading-tight text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">{card.title}</p>
-                              <p className="mt-8 text-[11px] uppercase tracking-[0.14em] text-white/90 [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]">Crédito</p>
+                              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90 [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]">
+                                {card.bankName}
+                              </p>
+                              <p className="mt-6 text-lg font-semibold leading-tight text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.55)]">
+                                {card.title}
+                              </p>
+                              <p className="mt-8 text-[11px] uppercase tracking-[0.14em] text-white/90 [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]">
+                                Crédito
+                              </p>
                             </div>
                           )}
                         </div>
@@ -326,7 +304,7 @@ function CartoesPage() {
 
                     <CardContent className="flex h-full flex-col gap-5 p-8">
                       <div className="border-b border-border pb-3">
-                        <p className="text-sm font-extrabold uppercase tracking-[0.14em] text-slate-900">{card.bankName}</p>
+                        <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-900">{card.bankName}</p>
                       </div>
 
                       <div className="flex items-center justify-between gap-3">
@@ -337,13 +315,13 @@ function CartoesPage() {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="rounded-[12px] border border-border bg-background-secondary p-4">
                           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Anuidade</p>
-                          <p className={`mt-2 text-sm font-semibold ${isFree ? 'text-primary' : 'text-foreground'}`}>
+                          <p className={`mt-2 text-sm font-medium ${isFree ? 'text-primary' : 'text-foreground'}`}>
                             {isFree ? 'Grátis' : `R$ ${card.annualFee}/ano`}
                           </p>
                         </div>
                         <div className="rounded-[12px] border border-border bg-background-secondary p-4">
                           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Limite estimado</p>
-                          <p className="mt-2 text-sm font-semibold text-foreground">R$ {card.maxLimit / 1000}k</p>
+                          <p className="mt-2 text-sm font-medium text-foreground">R$ {card.maxLimit / 1000}k</p>
                         </div>
                       </div>
 
@@ -357,7 +335,8 @@ function CartoesPage() {
                       </div>
 
                       <Button className="mt-auto w-full" onClick={() => handleApply(card)}>
-                        Continuar no parceiro <ChevronRight className="h-4 w-4" />
+                        Continuar análise
+                        <ChevronRight className="h-4 w-4" />
                       </Button>
                     </CardContent>
                   </Card>
@@ -375,33 +354,12 @@ function CartoesPage() {
                 </div>
               </div>
             ) : null}
-
-            {affiliatePlacements.mid_content?.[0] ? (
-              <div className="mt-8">
-                <AffiliateInlineCTA
-                  offer={affiliatePlacements.mid_content[0]}
-                  title="Para continuar, você será redirecionado"
-                  onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
-                />
-              </div>
-            ) : null}
           </section>
         </div>
       </div>
 
       <section className="border-t border-border bg-background-secondary py-16">
         <div className="page-shell">
-          {affiliatePlacements.before_faq?.length ? (
-            <div className="mb-8">
-              <AffiliateOfferGrid
-                offers={affiliatePlacements.before_faq}
-                title="Opções externas antes da decisão final"
-                eyebrow="Destino externo"
-                onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
-              />
-            </div>
-          ) : null}
-
           <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
             <h2 className="mb-3">Quer escolher um cartão com mais clareza?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
@@ -423,6 +381,3 @@ function CartoesPage() {
 }
 
 export default CartoesPage;
-
-
-

@@ -14,6 +14,7 @@ function Header() {
     { label: 'Empréstimos', path: '/emprestimos' },
     { label: 'Cartões', path: '/cartoes' },
     { label: 'Financiamentos', path: '/financiamentos' },
+    { label: 'Ofertas', path: '/ofertas' },
     { label: 'Blog', path: '/blog' }
   ];
 
@@ -23,12 +24,12 @@ function Header() {
     <header
       className={`sticky top-0 z-50 w-full backdrop-blur-xl transition-colors ${
         isHome
-          ? 'border-b border-slate-200/80 bg-white/88'
-          : 'border-b border-border bg-white/94'
+          ? 'border-b border-slate-200/70 bg-white/82'
+          : 'border-b border-border bg-white/90'
       }`}
     >
       <div className="page-shell">
-        <div className="flex h-[68px] items-center justify-between sm:h-[74px]">
+        <div className="flex h-[70px] items-center justify-between sm:h-[76px]">
           <Link to="/" className="flex items-center">
             <CoteJurosLogo />
           </Link>
@@ -40,8 +41,8 @@ function Header() {
                 to={item.path}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
                   isActive(item.path)
-                    ? 'bg-[#0F172A] text-white shadow-[0_10px_30px_rgba(15,23,42,0.14)]'
-                    : 'text-muted-foreground hover:bg-white hover:text-foreground hover:shadow-[0_10px_24px_rgba(15,23,42,0.06)]'
+                    ? 'border border-border bg-slate-50 text-slate-900'
+                    : 'text-muted-foreground hover:bg-slate-50 hover:text-foreground'
                 }`}
               >
                 {item.label}
@@ -52,7 +53,7 @@ function Header() {
           <div className="hidden items-center gap-3 lg:flex">
             <Link to="/emprestimos">
               <Button size="lg">
-                Ver opções agora
+                Ver opções
               </Button>
             </Link>
           </div>
@@ -78,7 +79,7 @@ function Header() {
                         onClick={() => setMobileOpen(false)}
                         className={`rounded-[12px] px-4 py-3 text-base font-medium ${
                           isActive(item.path)
-                            ? 'bg-[#0F172A] text-white'
+                            ? 'border border-border bg-slate-50 text-slate-900'
                             : 'text-muted-foreground hover:bg-background-secondary hover:text-foreground'
                         }`}
                       >
@@ -88,7 +89,7 @@ function Header() {
                     <div className="mt-3 border-t border-border pt-5">
                       <Link to="/emprestimos" onClick={() => setMobileOpen(false)}>
                         <Button className="w-full text-base">
-                          Ver opções agora
+                          Ver opções
                         </Button>
                       </Link>
                     </div>

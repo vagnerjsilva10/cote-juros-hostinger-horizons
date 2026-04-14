@@ -5,20 +5,20 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[12px] text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 motion-reduce:transform-none",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[12px] text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 motion-reduce:transform-none",
   {
     variants: {
       variant: {
         default:
-          "bg-[#0F172A] px-6 py-3 text-white shadow-[0_10px_30px_rgba(15,23,42,0.16)] hover:scale-[1.02] hover:bg-[#020617] hover:shadow-[0_20px_40px_rgba(15,23,42,0.2)]",
+          "bg-[#2563EB] px-6 py-3 text-white shadow-[0_10px_24px_rgba(37,99,235,0.18)] hover:scale-[1.01] hover:bg-[#1D4ED8] hover:shadow-[0_14px_28px_rgba(37,99,235,0.22)]",
         brand:
-          "bg-[#2563EB] px-6 py-3 text-white shadow-[0_10px_30px_rgba(37,99,235,0.22)] hover:scale-[1.02] hover:bg-[#1D4ED8] hover:shadow-[0_20px_40px_rgba(37,99,235,0.28)]",
+          "bg-[#0F172A] px-6 py-3 text-white shadow-[0_10px_24px_rgba(15,23,42,0.12)] hover:scale-[1.01] hover:bg-[#020617] hover:shadow-[0_14px_28px_rgba(15,23,42,0.16)]",
         destructive:
-          "bg-destructive px-6 py-3 text-destructive-foreground shadow-[var(--shadow-sm)] hover:scale-[1.02] hover:bg-destructive/90",
+          "bg-destructive px-6 py-3 text-destructive-foreground shadow-[var(--shadow-sm)] hover:scale-[1.01] hover:bg-destructive/90",
         outline:
-          "border border-input bg-background px-6 py-3 text-foreground shadow-none hover:scale-[1.02] hover:bg-background-secondary hover:shadow-[var(--shadow-sm)]",
+          "border border-input bg-background px-6 py-3 text-foreground shadow-none hover:scale-[1.01] hover:bg-background-secondary hover:shadow-[0_8px_18px_rgba(15,23,42,0.04)]",
         secondary:
-          "border border-border bg-background-secondary px-6 py-3 text-foreground shadow-none hover:scale-[1.02] hover:bg-background-tertiary",
+          "border border-border bg-background-secondary px-6 py-3 text-foreground shadow-none hover:scale-[1.01] hover:bg-background-tertiary",
         ghost: "text-muted-foreground hover:bg-background-secondary hover:text-foreground",
         link: "px-0 py-0 text-primary underline-offset-4 hover:text-primary-hover hover:underline",
       },

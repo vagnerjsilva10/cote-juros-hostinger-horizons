@@ -187,7 +187,7 @@ function BlogPage() {
         centered
         badge="Blog Cote Juros"
         title="Conteúdo para entender antes de contratar"
-        subtitle="Guias editoriais com imagens reais, leitura clara e contexto financeiro para tomar decisões com mais confiança."
+        subtitle="Guias editoriais com imagens mais humanas, leitura clara e contexto financeiro para tomar decisões com mais confiança."
       >
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
           <div className="relative">
@@ -216,12 +216,12 @@ function BlogPage() {
       </PageHero>
 
       <div className="page-shell space-y-10 py-10 md:space-y-14 md:py-14">
-        <section className="grid gap-4 rounded-[24px] border border-border bg-white p-5 md:grid-cols-[1.2fr_0.8fr] md:p-7">
+        <section className="grid gap-4 rounded-[24px] border border-border bg-white p-5 md:grid-cols-[1.15fr_0.85fr] md:p-7">
           <div className="space-y-3">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Comece por aqui</p>
             <h2 className="text-2xl text-foreground md:text-3xl">Temas mais úteis para organizar a vida financeira com calma</h2>
             <p className="max-w-3xl text-base leading-7 text-muted-foreground">
-              O blog agora apoia a percepção do produto: mais contexto, menos ruído e um visual mais confiável.
+              O blog agora reforça a percepção do produto: mais contexto, menos ruído e um visual mais confiável.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-1">

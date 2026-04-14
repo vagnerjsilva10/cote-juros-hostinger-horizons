@@ -67,18 +67,13 @@ export function CreditProfileLandingPage({
               <span className="inline-flex rounded-full border border-sky-200 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-700">
                 {badge}
               </span>
-              <h1 className="mt-5 text-slate-950">
-                {heroTitle}
-              </h1>
+              <h1 className="mt-5 text-slate-950">{heroTitle}</h1>
               <p className="mt-5 max-w-[35rem] text-base leading-8 text-slate-600 sm:text-lg">
                 {heroDescription}
               </p>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <Button
-                  size="lg"
-                  onClick={() => setModalOpen(true)}
-                >
+                <Button size="lg" onClick={() => setModalOpen(true)}>
                   Ver minhas opções agora
                   <ArrowRight className="h-4 w-4" />
                 </Button>

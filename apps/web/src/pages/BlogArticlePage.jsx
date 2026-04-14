@@ -90,7 +90,7 @@ const getArticleConversionCta = (article, categoryRoute) => {
     return {
       eyebrow: 'Proximo passo',
       title: 'Quer organizar melhor seu dinheiro antes de decidir?',
-      description: 'Se este conteudo falou mais sobre rotina, planejamento ou controle, o Cote Finance pode ajudar voce a enxergar seu mes com mais clareza.',
+      description: 'Se este conteúdo falou mais sobre rotina, planejamento ou controle, o Cote Finance pode ajudar você a enxergar seu mês com mais clareza.',
       primary: { to: '/cote-finance-ai', label: 'Conhecer o Cote Finance' },
       secondary: { to: categoryRoute.path, label: 'Ver conteudo relacionado' }
     };
@@ -100,8 +100,8 @@ const getArticleConversionCta = (article, categoryRoute) => {
     return {
       eyebrow: 'Antes de decidir',
       title: 'Compare caminhos possiveis com calma',
-      description: 'Quando o assunto envolve divida, golpe ou cobranca confusa, vale respirar, comparar alternativas e evitar promessa facil.',
-      primary: { to: '/emprestimos', label: 'Ver opcoes com calma' },
+      description: 'Quando o assunto envolve dívida, golpe ou cobrança confusa, vale respirar, comparar alternativas e evitar promessa fácil.',
+      primary: { to: '/emprestimos', label: 'Ver opções com calma' },
       secondary: { to: categoryRoute.path, label: 'Continuar lendo sobre o tema' }
     };
   }
@@ -109,9 +109,9 @@ const getArticleConversionCta = (article, categoryRoute) => {
   return {
     eyebrow: 'Proximo passo',
     title: 'Quer ver opcoes que combinam com seu perfil?',
-    description: 'Se este conteudo ajudou, agora voce pode ver caminhos de credito que podem fazer sentido para o seu momento, sem promessa falsa e sem cobranca antecipada.',
-    primary: { to: '/emprestimos', label: 'Ver minhas opcoes agora' },
-    secondary: { to: categoryRoute.path, label: 'Ver pagina relacionada' }
+    description: 'Se este conteúdo ajudou, agora você pode ver caminhos de crédito que podem fazer sentido para o seu momento, sem promessa falsa e sem cobrança antecipada.',
+    primary: { to: '/emprestimos', label: 'Ver minhas opções agora' },
+    secondary: { to: categoryRoute.path, label: 'Ver página relacionada' }
   };
 };
 
@@ -403,7 +403,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   {introSupersimOffer ? (
                     <SuperSimInlineCTA
                       offer={introSupersimOffer}
-                      title="Se voce quer comparar uma opcao online, vale olhar a SuperSim"
+                      title="Se você quer comparar uma opção online, vale olhar a SuperSim"
                       onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
                     />
                   ) : null}
@@ -479,7 +479,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   {faqSupersimOffer ? (
                     <SuperSimInlineCTA
                       offer={faqSupersimOffer}
-                      title="Antes da FAQ, voce pode continuar a pesquisa com a SuperSim"
+                      title="Antes da FAQ, você pode continuar a pesquisa com a SuperSim"
                       onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
                     />
                   ) : null}
@@ -510,8 +510,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
               </article>
 
               <section className="min-w-0 rounded-[22px] border border-primary/15 bg-primary/[0.04] p-5 sm:p-6 md:p-8">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">{conversionCta?.eyebrow || 'Proximo passo'}</p>
-                <h2 className="mt-3 text-xl text-foreground sm:text-2xl">{conversionCta?.title || 'Quer dar o proximo passo com mais clareza?'}</h2>
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">{conversionCta?.eyebrow || 'Próximo passo'}</p>
+                <h2 className="mt-3 text-xl text-foreground sm:text-2xl">{conversionCta?.title || 'Quer dar o próximo passo com mais clareza?'}</h2>
                 <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
                   {conversionCta?.description}
                 </p>
@@ -523,7 +523,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     </Button>
                   </Link>
                   <Link to={conversionCta?.secondary.to || categoryRoute.path} className="inline-flex w-full sm:w-auto">
-                    <Button variant="outline" className="w-full sm:w-auto">{conversionCta?.secondary.label || 'Ver pagina relacionada'}</Button>
+                    <Button variant="outline" className="w-full sm:w-auto">{conversionCta?.secondary.label || 'Ver página relacionada'}</Button>
                   </Link>
                 </div>
               </section>

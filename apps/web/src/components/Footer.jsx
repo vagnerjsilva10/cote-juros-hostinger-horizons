@@ -21,6 +21,7 @@ function Footer() {
       links: [
         { label: 'Blog', path: '/blog' },
         { label: 'Como funciona', path: '/sobre-nos' },
+        { label: 'Ofertas e parceiros', path: '/ofertas' },
         { label: 'Ferramentas', path: '/ferramentas' }
       ]
     },
@@ -40,15 +41,15 @@ function Footer() {
   ];
 
   return (
-    <footer className="border-t border-border bg-background py-12 sm:py-16 lg:py-18">
+    <footer className="border-t border-border bg-background py-14 sm:py-16 lg:py-20">
       <div className="page-shell">
-        <div className="mb-10 grid gap-8 sm:gap-10 lg:mb-14 lg:grid-cols-[1.4fr_repeat(4,1fr)] lg:gap-12">
+        <div className="mb-12 grid gap-10 lg:mb-16 lg:grid-cols-[1.5fr_repeat(4,1fr)] lg:gap-12">
           <div className="max-w-md space-y-6">
             <Link to="/" className="inline-block">
               <CoteJurosLogo />
             </Link>
             <p className="text-sm leading-7 text-muted-foreground">
-              A Cote Juros ajuda você a entender caminhos de crédito com mais clareza, sem cobrança antecipada e sem misturar análise com contratação.
+              A Cote Juros ajuda você a entender caminhos de crédito com mais clareza, sem cobrança antecipada e com uma experiência mais simples.
             </p>
             <div className="flex flex-wrap gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
@@ -63,7 +64,7 @@ function Footer() {
 
           {footerSections.map((section) => (
             <div key={section.title}>
-              <span className="mb-5 block text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              <span className="mb-5 block text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                 {section.title}
               </span>
               <ul className="space-y-2.5">

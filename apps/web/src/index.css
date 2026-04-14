@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -72,8 +72,8 @@
     --radius: 16px;
     --radius-md: 12px;
     --radius-lg: 16px;
-    --shadow-sm: 0 10px 30px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 20px 60px rgba(0, 0, 0, 0.08);
+    --shadow-sm: 0 10px 24px rgba(15, 23, 42, 0.05);
+    --shadow-md: 0 18px 40px rgba(15, 23, 42, 0.08);
     --motion-standard: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -92,7 +92,7 @@
     line-height: 1.58;
     overflow-x: hidden;
     background:
-      radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 28%),
+      radial-gradient(circle at top left, rgba(37, 99, 235, 0.05), transparent 24%),
       #ffffff;
   }
 
@@ -112,20 +112,20 @@
   }
 
   h1 {
-    font-size: clamp(2.8rem, 5vw, 56px);
-    font-weight: 800;
-    line-height: 1.1;
+    font-size: clamp(2.6rem, 5vw, 56px);
+    font-weight: 600;
+    line-height: 1.08;
   }
 
   h2 {
     font-size: clamp(2rem, 3.5vw, 36px);
-    font-weight: 800;
+    font-weight: 600;
     line-height: 1.15;
   }
 
   h3 {
     font-size: clamp(1.25rem, 2vw, 22px);
-    font-weight: 700;
+    font-weight: 600;
     line-height: 1.25;
   }
 
@@ -193,7 +193,7 @@
 
 @layer utilities {
   .page-section {
-    @apply py-20 sm:py-24 md:py-[104px];
+    @apply py-24 sm:py-28 md:py-[112px];
   }
 
   .page-shell {
@@ -218,7 +218,7 @@
   }
 
   .surface-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-md);
   }
 
@@ -244,21 +244,21 @@
 
   .hero-premium {
     background:
-      radial-gradient(circle at 20% 18%, rgba(37, 99, 235, 0.12), transparent 32%),
+      radial-gradient(circle at 20% 18%, rgba(37, 99, 235, 0.08), transparent 32%),
       linear-gradient(180deg, #ffffff 0%, #f8fafc 56%, #ffffff 100%);
   }
 
   .hero-premium-clean {
     background:
-      radial-gradient(circle at 16% 18%, rgba(37, 99, 235, 0.12), transparent 34%),
-      radial-gradient(circle at 86% 10%, rgba(37, 99, 235, 0.08), transparent 30%),
+      radial-gradient(circle at 16% 18%, rgba(37, 99, 235, 0.08), transparent 34%),
+      radial-gradient(circle at 86% 10%, rgba(37, 99, 235, 0.05), transparent 30%),
       linear-gradient(180deg, #ffffff 0%, #f8fafc 56%, #ffffff 100%);
   }
 
   .hero-premium-mist {
     background:
-      radial-gradient(circle at 24% 14%, rgba(37, 99, 235, 0.12), transparent 44%),
-      radial-gradient(circle at 70% 80%, rgba(29, 78, 216, 0.08), transparent 48%);
+      radial-gradient(circle at 24% 14%, rgba(37, 99, 235, 0.08), transparent 44%),
+      radial-gradient(circle at 70% 80%, rgba(29, 78, 216, 0.05), transparent 48%);
   }
 
   .hero-float-cloud {
@@ -276,7 +276,7 @@
   }
 
   .hero-premium-glow {
-    background: radial-gradient(circle, rgba(37, 99, 235, 0.28), rgba(37, 99, 235, 0.08) 48%, transparent 70%);
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.18), rgba(37, 99, 235, 0.05) 48%, transparent 70%);
     filter: blur(30px);
   }
 
@@ -369,7 +369,7 @@
   }
 
   .interactive-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-md);
   }
 
@@ -409,8 +409,8 @@
 
   .premium-pill {
     @apply inline-flex items-center gap-2 rounded-full border border-border px-3 py-2 text-sm font-medium text-slate-700;
-    background-color: rgba(255, 255, 255, 0.92);
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    background-color: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
     backdrop-filter: blur(12px);
   }
 

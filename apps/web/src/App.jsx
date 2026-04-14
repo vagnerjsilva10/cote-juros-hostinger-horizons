@@ -9,6 +9,7 @@ import HomePage from '@/pages/HomePage.jsx';
 import EmprestimosPage from '@/pages/EmprestimosPage.jsx';
 import CartoesPage from '@/pages/CartoesPage.jsx';
 import FinanciamentoPage from '@/pages/FinanciamentoPage.jsx';
+import OfertasPage from '@/pages/OfertasPage.jsx';
 import FerramentasPage from '@/pages/FerramentasPage.jsx';
 import DiagnosticoPage from '@/pages/DiagnosticoPage.jsx';
 import BlogPage from '@/pages/BlogPage.jsx';
@@ -117,6 +118,8 @@ function App() {
         <Route path="/cartoes-de-credito" element={<AppLayout><CartoesPage /></AppLayout>} />
         <Route path="/financiamentos" element={<AppLayout><FinanciamentoPage /></AppLayout>} />
         <Route path="/financiamento" element={<AppLayout><FinanciamentoPage /></AppLayout>} />
+        <Route path="/ofertas" element={<AppLayout><OfertasPage /></AppLayout>} />
+        <Route path="/parceiros" element={<AppLayout><OfertasPage /></AppLayout>} />
         <Route path="/ferramentas" element={<AppLayout><FerramentasPage /></AppLayout>} />
         <Route path="/diagnostico-financeiro" element={<AppLayout><DiagnosticoPage /></AppLayout>} />
         <Route
