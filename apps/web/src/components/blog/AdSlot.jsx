@@ -5,8 +5,6 @@ import AdSenseScript from '@/components/AdSenseScript.tsx';
 
 function AdSlotShell({
   label = 'Publicidade',
-  title,
-  description,
   minHeight = '120px',
   className,
   children
@@ -28,13 +26,6 @@ function AdSlotShell({
 
       <div className="relative">
         {children}
-
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center px-4 pb-3">
-          <div className="rounded-full bg-white/90 px-3 py-1 text-[11px] text-muted-foreground shadow-sm">
-            {title}
-            {description ? ` • ${description}` : ''}
-          </div>
-        </div>
       </div>
     </aside>
   );
@@ -44,8 +35,6 @@ export const AdSlotHorizontal = ({ className }) => (
   <AdSlotShell
     className={cn('bg-background-secondary/70', className)}
     minHeight="156px"
-    title="Bloco blog Cote Juros"
-    description="slot horizontal"
   >
     <AdSenseScript />
     <div className="px-4 py-5 sm:px-6 sm:py-6">
@@ -63,8 +52,6 @@ export const AdSlotInline = ({ className }) => (
   <AdSlotShell
     className={className}
     minHeight="120px"
-    title="Bloco fluido"
-    description="entre seções editoriais"
   >
     <AdSenseScript />
     <div className="px-4 py-5 sm:px-6">
@@ -83,8 +70,6 @@ export const AdSlotResponsive = ({ className }) => (
   <AdSlotShell
     className={cn('sm:min-h-[156px] md:min-h-[180px]', className)}
     minHeight="180px"
-    title="Bloco in-article"
-    description="responsivo"
   >
     <AdSenseScript />
     <div className="px-4 py-5 sm:px-6 sm:py-6">

@@ -9,6 +9,7 @@ import BlogArticleCard from '@/components/BlogArticleCard.jsx';
 import ArticleComments from '@/components/blog/ArticleComments.jsx';
 import ArticleCoverImage from '@/components/blog/ArticleCoverImage.jsx';
 import BlogArticleSkeleton from '@/components/blog/BlogArticleSkeleton.jsx';
+import { AdSlotHorizontal, AdSlotInline, AdSlotResponsive } from '@/components/blog/AdSlot.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import {
   buildArticleToc,
@@ -49,13 +50,13 @@ const toFaqSchema = (article) => {
 };
 
 const CATEGORY_ROUTES = [
-  { match: 'emprest', path: '/emprestimos', label: 'Empréstimos' },
-  { match: 'cart', path: '/cartoes-de-credito', label: 'Cartões de crédito' },
-  { match: 'score', path: '/educacao-financeira', label: 'Score de crédito' },
+  { match: 'emprest', path: '/emprestimos', label: 'Emprestimos' },
+  { match: 'cart', path: '/cartoes-de-credito', label: 'Cartoes de credito' },
+  { match: 'score', path: '/educacao-financeira', label: 'Score de credito' },
   { match: 'financi', path: '/financiamento', label: 'Financiamento' },
-  { match: 'divid', path: '/juros-abusivos', label: 'Dívidas e renegociação' },
-  { match: 'educ', path: '/educacao-financeira', label: 'Educação financeira' },
-  { match: 'organiz', path: '/educacao-financeira', label: 'Organização financeira' }
+  { match: 'divid', path: '/juros-abusivos', label: 'Dividas e renegociacao' },
+  { match: 'educ', path: '/educacao-financeira', label: 'Educacao financeira' },
+  { match: 'organiz', path: '/educacao-financeira', label: 'Organizacao financeira' }
 ];
 
 const getCategoryRoute = (article) => {
@@ -93,7 +94,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
       .catch((error) => {
         console.error('[blog-article-page] erro ao carregar artigo', error);
         if (!active) return;
-        setLoadError('Não foi possível carregar este artigo agora.');
+        setLoadError('Nao foi possivel carregar este artigo agora.');
         setArticles([]);
         setArticle(null);
       })
@@ -152,8 +153,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         <Card className="mx-auto max-w-2xl border-border bg-white text-center">
           <CardContent className="space-y-4 p-10">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary/80">Blog Cote Juros</p>
-            <h1 className="text-3xl text-foreground">Artigo não encontrado</h1>
-            <p className="text-muted-foreground">{loadError || 'Esse conteúdo pode ter sido movido, renomeado ou removido.'}</p>
+            <h1 className="text-3xl text-foreground">Artigo nao encontrado</h1>
+            <p className="text-muted-foreground">{loadError || 'Esse conteudo pode ter sido movido, renomeado ou removido.'}</p>
             <Link to="/blog">
               <Button>Voltar para o blog</Button>
             </Link>
@@ -168,15 +169,20 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
   const socialImage = getArticleImage(safeArticle);
   const faqSchema = toFaqSchema(safeArticle);
   const introParagraphs = getArticleParagraphs(safeArticle);
+  const sections = Array.isArray(safeArticle.sections) ? safeArticle.sections : [];
+  const midSectionIndex = sections.length > 2 ? Math.ceil(sections.length / 2) - 1 : -1;
+  const showPreConclusionAd = Boolean((Array.isArray(safeArticle.faq) && safeArticle.faq.length) || (Array.isArray(safeArticle.conclusion) && safeArticle.conclusion.length));
+
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://www.cotejuros.com.br/' },
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://www.cotejuros.com.br/' },
       { '@type': 'ListItem', position: 2, name: 'Blog', item: BLOG_BASE_URL },
       { '@type': 'ListItem', position: 3, name: editorialTitle, item: canonicalUrl }
     ]
   };
+
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -235,7 +241,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
           <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
             <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground">
               <Home className="h-4 w-4" />
-              Início
+              Inicio
             </Link>
             <span>/</span>
             <Link to="/blog" className="hover:text-foreground">
@@ -281,138 +287,168 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
             <ArticleCoverImage article={safeArticle} className="max-h-[460px]" />
           </div>
 
-          <article className="rounded-[20px] border border-border bg-white p-6 md:p-10">
-            <div className="space-y-7">
-              {introParagraphs.map((paragraph, index) => (
-                <p key={`intro-${index}`} className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
-              ))}
-
-              {tocItems.length ? (
-                <section className="rounded-[18px] border border-border bg-background-secondary p-5 md:p-6">
-                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">Neste artigo você vai aprender</p>
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    {tocItems.slice(0, 6).map((item) => (
-                      <a
-                        key={item.id}
-                        href={`#${item.id}`}
-                        className="rounded-[14px] border border-border bg-white px-4 py-4 text-sm text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
-                      >
-                        {item.label}
-                      </a>
-                    ))}
-                  </div>
-                </section>
-              ) : null}
-
-              {Array.isArray(safeArticle.sections)
-                ? safeArticle.sections.map((section, index) => (
-                  <section key={`section-${index}`} id={`secao-${index + 1}`} className="scroll-mt-28 space-y-4">
-                    <h2 className="text-2xl text-foreground">{section.heading}</h2>
-                    {section.paragraphs?.map((paragraph, paragraphIndex) => (
-                      <p key={`section-${index}-p-${paragraphIndex}`} className="text-base leading-8 text-muted-foreground md:text-lg">
-                        {paragraph}
-                      </p>
-                    ))}
-                    {section.bullets?.length ? (
-                      <ul className="space-y-2 pl-5 text-base leading-7 text-muted-foreground marker:text-primary">
-                        {section.bullets.map((bullet, bulletIndex) => (
-                          <li key={`section-${index}-b-${bulletIndex}`} className="pl-1">{bullet}</li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </section>
-                ))
-                : null}
-
-              {safeArticle.internalLinks.length ? (
-                <section className="rounded-[18px] border border-border bg-background-secondary p-5 md:p-6">
-                  <h2 className="text-2xl text-foreground">Veja também</h2>
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    {safeArticle.internalLinks.slice(0, 6).map((item) => (
-                      <Link
-                        key={item.path}
-                        to={item.path}
-                        className="rounded-[14px] border border-border bg-white px-4 py-4 text-sm text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
-                      >
-                        <span className="font-semibold">{item.title}</span>
-                        <span className="mt-1 block text-muted-foreground">{item.anchor}</span>
-                      </Link>
-                    ))}
-                  </div>
-                </section>
-              ) : null}
-
-              {Array.isArray(safeArticle.faq) && safeArticle.faq.length ? (
-                <section id="faq" className="scroll-mt-28 space-y-4 rounded-[16px] border border-border bg-background-secondary p-5 md:p-6">
-                  <h2 className="text-2xl text-foreground">Perguntas frequentes</h2>
-                  <div className="space-y-5">
-                    {safeArticle.faq.map((item, index) => (
-                      <div key={`faq-${index}`} className="space-y-2">
-                        <h3 className="text-lg text-foreground">{item.question}</h3>
-                        <p className="text-base leading-7 text-muted-foreground">{item.answer}</p>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              ) : null}
-
-              {Array.isArray(safeArticle.conclusion) && safeArticle.conclusion.length ? (
-                <section id="conclusao" className="scroll-mt-28 space-y-4">
-                  <h2 className="text-2xl text-foreground">Conclusão</h2>
-                  {safeArticle.conclusion.map((paragraph, index) => (
-                    <p key={`conclusion-${index}`} className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <div className="space-y-8">
+              <article className="rounded-[20px] border border-border bg-white p-6 md:p-10">
+                <div className="space-y-7">
+                  {introParagraphs.map((paragraph, index) => (
+                    <p key={`intro-${index}`} className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
                   ))}
+
+                  <AdSlotResponsive />
+
+                  {tocItems.length ? (
+                    <section className="rounded-[18px] border border-border bg-background-secondary p-5 md:p-6">
+                      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">Neste artigo voce vai encontrar</p>
+                      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                        {tocItems.slice(0, 6).map((item) => (
+                          <a
+                            key={item.id}
+                            href={`#${item.id}`}
+                            className="rounded-[14px] border border-border bg-white px-4 py-4 text-sm text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
+                          >
+                            {item.label}
+                          </a>
+                        ))}
+                      </div>
+                    </section>
+                  ) : null}
+
+                  {sections.map((section, index) => (
+                    <React.Fragment key={`section-${index}`}>
+                      <section id={`secao-${index + 1}`} className="scroll-mt-28 space-y-4">
+                        <h2 className="text-2xl text-foreground">{section.heading}</h2>
+                        {section.paragraphs?.map((paragraph, paragraphIndex) => (
+                          <p key={`section-${index}-p-${paragraphIndex}`} className="text-base leading-8 text-muted-foreground md:text-lg">
+                            {paragraph}
+                          </p>
+                        ))}
+                        {section.bullets?.length ? (
+                          <ul className="space-y-2 pl-5 text-base leading-7 text-muted-foreground marker:text-primary">
+                            {section.bullets.map((bullet, bulletIndex) => (
+                              <li key={`section-${index}-b-${bulletIndex}`} className="pl-1">{bullet}</li>
+                            ))}
+                          </ul>
+                        ) : null}
+                      </section>
+
+                      {index === midSectionIndex ? <AdSlotInline /> : null}
+                    </React.Fragment>
+                  ))}
+
+                  {safeArticle.internalLinks.length ? (
+                    <section className="rounded-[18px] border border-border bg-background-secondary p-5 md:p-6">
+                      <h2 className="text-2xl text-foreground">Leituras recomendadas</h2>
+                      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                        {safeArticle.internalLinks.slice(0, 6).map((item) => (
+                          <Link
+                            key={item.path}
+                            to={item.path}
+                            className="rounded-[14px] border border-border bg-white px-4 py-4 text-sm text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
+                          >
+                            <span className="font-semibold">{item.title}</span>
+                            <span className="mt-1 block text-muted-foreground">{item.anchor}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    </section>
+                  ) : null}
+
+                  {showPreConclusionAd ? <AdSlotHorizontal /> : null}
+
+                  {Array.isArray(safeArticle.faq) && safeArticle.faq.length ? (
+                    <section id="faq" className="scroll-mt-28 space-y-4 rounded-[16px] border border-border bg-background-secondary p-5 md:p-6">
+                      <h2 className="text-2xl text-foreground">Perguntas frequentes</h2>
+                      <div className="space-y-5">
+                        {safeArticle.faq.map((item, index) => (
+                          <div key={`faq-${index}`} className="space-y-2">
+                            <h3 className="text-lg text-foreground">{item.question}</h3>
+                            <p className="text-base leading-7 text-muted-foreground">{item.answer}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  ) : null}
+
+                  {Array.isArray(safeArticle.conclusion) && safeArticle.conclusion.length ? (
+                    <section id="conclusao" className="scroll-mt-28 space-y-4">
+                      <h2 className="text-2xl text-foreground">Conclusao</h2>
+                      {safeArticle.conclusion.map((paragraph, index) => (
+                        <p key={`conclusion-${index}`} className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
+                      ))}
+                    </section>
+                  ) : null}
+                </div>
+              </article>
+
+              <section className="rounded-[22px] border border-primary/15 bg-primary/[0.04] p-6 md:p-8">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Diagnostico financeiro</p>
+                <h2 className="mt-3 text-2xl text-foreground">Quer dar o proximo passo com mais clareza?</h2>
+                <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
+                  Faca um diagnostico gratuito, entenda seu cenario e descubra caminhos mais seguros antes de contratar credito ou reorganizar suas financas.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <a href="https://finance.cotejuros.com.br/quiz" className="inline-flex">
+                    <Button>
+                      Analisar meu perfil
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </a>
+                  <Link to="/ferramentas" className="inline-flex">
+                    <Button variant="outline">Ver ferramentas</Button>
+                  </Link>
+                </div>
+              </section>
+
+              {(previousArticle || nextArticle) ? (
+                <section className="grid gap-4 md:grid-cols-2">
+                  {previousArticle ? (
+                    <Link
+                      to={getArticlePath(previousArticle)}
+                      className="rounded-[16px] border border-border bg-white p-5 transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Artigo anterior</p>
+                      <h3 className="mt-2 text-lg text-foreground">{getEditorialTitle(previousArticle)}</h3>
+                    </Link>
+                  ) : (
+                    <div className="hidden md:block" />
+                  )}
+
+                  {nextArticle ? (
+                    <Link
+                      to={getArticlePath(nextArticle)}
+                      className="rounded-[16px] border border-border bg-white p-5 text-left transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Proximo artigo</p>
+                      <h3 className="mt-2 text-lg text-foreground">{getEditorialTitle(nextArticle)}</h3>
+                    </Link>
+                  ) : null}
                 </section>
               ) : null}
+
+              <ArticleComments articleSlug={safeArticle.slug} />
             </div>
-          </article>
 
-          <section className="rounded-[22px] border border-primary/15 bg-primary/[0.04] p-6 md:p-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Cote Finance AI</p>
-            <h2 className="mt-3 text-2xl text-foreground">Quer um próximo passo mais claro para o seu momento financeiro?</h2>
-            <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
-              Faça um diagnóstico gratuito, entenda seu cenário e descubra caminhos mais seguros antes de contratar crédito ou reorganizar suas finanças.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <a href="https://finance.cotejuros.com.br/quiz" className="inline-flex">
-                <Button>
-                  Analisar meu perfil
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </a>
-              <Link to="/ferramentas" className="inline-flex">
-                <Button variant="outline">Ver ferramentas</Button>
-              </Link>
-            </div>
-          </section>
+            <aside className="space-y-6 lg:sticky lg:top-24 lg:h-fit">
+              <section className="rounded-[18px] border border-border bg-white p-5 md:p-6">
+                <h2 className="text-xl text-foreground">Continue a leitura</h2>
+                <div className="mt-4 space-y-3">
+                  {safeArticle.internalLinks.slice(0, 3).map((item) => (
+                    <Link
+                      key={`aside-${item.path}`}
+                      to={item.path}
+                      className="block rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
+                    >
+                      <span className="font-semibold text-foreground">{item.title}</span>
+                      <span className="mt-1 block text-muted-foreground">{item.anchor}</span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
 
-          {(previousArticle || nextArticle) ? (
-            <section className="grid gap-4 md:grid-cols-2">
-              {previousArticle ? (
-                  <Link
-                  to={getArticlePath(previousArticle)}
-                  className="rounded-[16px] border border-border bg-white p-5 transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
-                >
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Artigo anterior</p>
-                  <h3 className="mt-2 text-lg text-foreground">{getEditorialTitle(previousArticle)}</h3>
-                </Link>
-              ) : (
-                <div className="hidden md:block" />
-              )}
-
-              {nextArticle ? (
-                  <Link
-                  to={getArticlePath(nextArticle)}
-                  className="rounded-[16px] border border-border bg-white p-5 text-left transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
-                >
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Próximo artigo</p>
-                  <h3 className="mt-2 text-lg text-foreground">{getEditorialTitle(nextArticle)}</h3>
-                </Link>
-              ) : null}
-            </section>
-          ) : null}
-
-          <ArticleComments articleSlug={safeArticle.slug} />
+              <AdSlotResponsive />
+            </aside>
+          </div>
         </div>
       </section>
 
@@ -420,8 +456,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         <section className="border-t border-border bg-background-secondary py-12 md:py-14">
           <div className="page-shell space-y-6">
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Veja também</p>
-              <h2 className="text-2xl text-foreground">Mais conteúdos da mesma jornada financeira</h2>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Leia tambem</p>
+              <h2 className="text-2xl text-foreground">Mais conteudos sobre o mesmo assunto</h2>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {relatedArticles.map((item) => (

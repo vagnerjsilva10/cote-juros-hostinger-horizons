@@ -1,5 +1,6 @@
 import { normalizeMojibake } from '@/lib/textEncoding.js';
 import { resolveArticleImageAlt, resolveArticleImageSources } from '@/lib/content/blogImages.js';
+import { BLOG_EDITORIAL_OVERRIDES, getBlogEditorialPriority } from '@/data/blogEditorialOverrides.js';
 
 const FALLBACK_AUTHOR = 'Equipe Cote Juros';
 const FALLBACK_CATEGORY = 'Finanças pessoais';
@@ -183,7 +184,6 @@ const normalizeInternalLinks = (links) => {
       const anchorLooksGenerated =
         !rawAnchor ||
         isSlugLikeLabel(rawAnchor) ||
-        startsWithExplore(rawAnchor) ||
         (title && normalizeText(rawAnchor) === normalizeText(title));
       const anchorBase = isKnownRouteLink ? title : anchorLooksGenerated ? title || routeLabel || rawAnchor : rawAnchor;
       const safeAnchorBase = normalizeMojibake(anchorBase);
@@ -191,11 +191,7 @@ const normalizeInternalLinks = (links) => {
       return {
         path,
         title: normalizeMojibake(title),
-        anchor: safeAnchorBase
-          ? startsWithExplore(safeAnchorBase)
-            ? safeAnchorBase.charAt(0).toUpperCase() + safeAnchorBase.slice(1)
-            : `Explore ${safeAnchorBase.charAt(0).toLowerCase()}${safeAnchorBase.slice(1)}`
-          : ''
+        anchor: safeAnchorBase || normalizeMojibake(title)
       };
     })
     .filter((item) => item.path && item.title);
@@ -245,7 +241,11 @@ export const normalizeArticleSlug = (article = {}) =>
   );
 
 export const normalizeArticleData = (article = {}, options = {}) => {
-  const source = isObjectRecord(article) ? article : {};
+  const baseSource = isObjectRecord(article) ? article : {};
+  const rawSlug = slugify(baseSource.slug || baseSource.title || baseSource.h1 || baseSource.id || '');
+  const source = rawSlug && BLOG_EDITORIAL_OVERRIDES[rawSlug]
+    ? { ...baseSource, ...BLOG_EDITORIAL_OVERRIDES[rawSlug] }
+    : baseSource;
   const nowIso = options.nowIso || new Date().toISOString();
   const title = sanitizeInlineText(source.title || source.h1 || source.seoTitle || source.metaTitle || 'Artigo Cote Juros');
   const slug = normalizeArticleSlug({ ...source, title });
@@ -384,6 +384,7 @@ export const getEditorialTitle = (article = {}) => {
 export const getArticleImage = (article = {}) => resolveArticleImageSources(normalizeArticleData(article)).primary;
 export const getArticleImageCandidates = (article = {}) => resolveArticleImageSources(normalizeArticleData(article));
 export const getArticleImageAlt = (article = {}) => resolveArticleImageAlt(normalizeArticleData(article));
+export { getBlogEditorialPriority };
 export const getArticleCategoryKey = (article = {}) => (isObjectRecord(article) ? normalizeArticleData(article).categoryKey : '');
 export const getArticlePath = (article = {}) => (isObjectRecord(article) ? normalizeArticleData(article).routePath : '/blog');
 

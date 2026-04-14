@@ -1,3 +1,5 @@
+import { BLOG_PRIORITY_IMAGE_MANIFEST } from '@/data/blogEditorialOverrides.js';
+
 const normalizeText = (value = '') =>
   String(value)
     .normalize('NFD')
@@ -135,6 +137,7 @@ const KEYWORD_IMAGE_OVERRIDES = {
 };
 
 export const BLOG_ARTICLE_IMAGE_MANIFEST = {
+  ...BLOG_PRIORITY_IMAGE_MANIFEST,
   'como-usar-tecnologia-para-organizar-financas':
     'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80'
 };

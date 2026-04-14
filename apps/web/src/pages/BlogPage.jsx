@@ -13,10 +13,11 @@ import BlogGridSkeleton from '@/components/blog/BlogGridSkeleton.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import {
   getArticleImage,
+  getArticlePath,
   getArticleSummary,
+  getBlogEditorialPriority,
   getEditorialTitle,
-  normalizeArticleData,
-  normalizeArticleSlug
+  normalizeArticleData
 } from '@/lib/content/articles.js';
 
 const PAGE_SIZE = 12;
@@ -41,7 +42,7 @@ const blogBaseSchema = {
     {
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://www.cotejuros.com.br/' },
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://www.cotejuros.com.br/' },
         { '@type': 'ListItem', position: 2, name: 'Blog', item: BLOG_URL }
       ]
     }
@@ -109,7 +110,11 @@ function BlogPage() {
         const haystack = `${getEditorialTitle(article)} ${getArticleSummary(article)} ${article.tags.join(' ')}`.toLowerCase();
         return haystack.includes(query);
       })
-      .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+      .sort((a, b) => {
+        const priorityDelta = getBlogEditorialPriority(a.slug) - getBlogEditorialPriority(b.slug);
+        if (priorityDelta !== 0) return priorityDelta;
+        return new Date(b.publishedAt) - new Date(a.publishedAt);
+      });
   }, [articlesData, category, search]);
 
   const featured = filteredArticles[0] || null;
@@ -130,13 +135,13 @@ function BlogPage() {
       '@type': 'Blog',
       '@id': `${BLOG_URL}#blog`,
       name: 'Blog Cote Juros',
-      description: 'Guias editoriais da Cote Juros sobre crédito, score, cartões, financiamento e organização financeira.',
+      description: 'Conteudos sobre credito, cartoes, score, financiamento e organizacao financeira.',
       url: BLOG_URL,
       blogPost: filteredArticles.slice(0, 12).map((article, index) => ({
         '@type': 'BlogPosting',
         position: index + 1,
         headline: article.metaTitle || getEditorialTitle(article),
-        url: `${BLOG_URL}/${normalizeArticleSlug(article)}`,
+        url: `https://www.cotejuros.com.br${getArticlePath(article)}`,
         datePublished: article.publishedAt,
         dateModified: article.updatedAt,
         image: getArticleImage(article),
@@ -152,25 +157,25 @@ function BlogPage() {
   return (
     <>
       <Helmet>
-        <title>Blog Cote Juros | Guias financeiros para crédito, score e planejamento</title>
+        <title>Blog Cote Juros | Dicas para cuidar melhor do seu dinheiro</title>
         <meta
           name="description"
-          content="Leia guias editoriais da Cote Juros sobre empréstimo, cartões, score, financiamento, dívidas e organização financeira com estrutura técnica forte para SEO."
+          content="Leia conteudos sobre emprestimo, cartao, score, dividas, financiamento e organizacao financeira com explicacoes claras e exemplos do dia a dia."
         />
         <meta name="robots" content="index,follow,max-image-preview:large" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Blog Cote Juros | Guias financeiros para crédito, score e planejamento" />
+        <meta property="og:title" content="Blog Cote Juros | Dicas para cuidar melhor do seu dinheiro" />
         <meta
           property="og:description"
-          content="Conteúdo editorial para comparar custos, evitar armadilhas e organizar melhor suas finanças."
+          content="Guias claros para comparar custos, evitar armadilhas e organizar melhor sua vida financeira."
         />
         <meta property="og:url" content={BLOG_URL} />
         <meta property="og:image" content="https://www.cotejuros.com.br/assets/blog/fallbacks/editorial-global.svg" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Blog Cote Juros | Guias financeiros para crédito, score e planejamento" />
+        <meta name="twitter:title" content="Blog Cote Juros | Dicas para cuidar melhor do seu dinheiro" />
         <meta
           name="twitter:description"
-          content="Guias editoriais sobre crédito, score, cartões, financiamento e organização financeira."
+          content="Conteudos sobre credito, cartoes, score, financiamento e organizacao financeira em linguagem simples."
         />
         <link rel="canonical" href={BLOG_URL} />
         <script type="application/ld+json">{JSON.stringify(blogBaseSchema)}</script>
@@ -179,16 +184,16 @@ function BlogPage() {
 
       <PageHero
         centered
-        badge="Editorial Cote Juros"
-        title="Guias financeiros para decidir com clareza antes de contratar crédito"
-        subtitle="Conteúdo direto para comparar taxas, evitar armadilhas e organizar suas finanças no dia a dia."
+        badge="Blog Cote Juros"
+        title="Entenda melhor seu dinheiro antes de contratar qualquer produto"
+        subtitle="Guias simples para comparar taxas, organizar o orcamento e tomar decisoes com mais calma."
       >
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               className="h-12 rounded-full bg-background pl-11"
-              placeholder="Busque por score, empréstimo, cartão, dívidas ou orçamento"
+              placeholder="Busque por score, emprestimo, cartao, dividas ou orcamento"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
             />
@@ -212,10 +217,10 @@ function BlogPage() {
       <div className="page-shell space-y-10 py-10 md:space-y-14 md:py-14">
         <section className="grid gap-4 rounded-[24px] border border-border bg-white p-5 md:grid-cols-[1.3fr_0.7fr] md:p-7">
           <div className="space-y-3">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Hub editorial</p>
-            <h2 className="text-2xl text-foreground md:text-3xl">Blog premium para tráfego orgânico e decisão financeira clara</h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Comece por aqui</p>
+            <h2 className="text-2xl text-foreground md:text-3xl">Os assuntos mais lidos para quem quer organizar a vida financeira</h2>
             <p className="max-w-3xl text-base leading-7 text-muted-foreground">
-              Navegue por categorias, encontre comparativos editoriais e aprofunde os próximos passos com segurança.
+              Navegue por temas, encontre respostas objetivas e aprofunde a leitura sem cair em promessas exageradas.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-1">
@@ -236,7 +241,7 @@ function BlogPage() {
         {loading ? (
           <>
             <section className="rounded-[20px] border border-border bg-white px-6 py-14 text-center">
-              <p className="text-muted-foreground">Carregando conteúdos do blog...</p>
+              <p className="text-muted-foreground">Carregando conteudos do blog...</p>
             </section>
             <BlogGridSkeleton items={6} />
           </>
@@ -250,7 +255,7 @@ function BlogPage() {
             </div>
 
             <Link
-              to={`/blog/${normalizeArticleSlug(featured)}`}
+              to={getArticlePath(featured)}
               className="group grid overflow-hidden rounded-[26px] border border-border bg-white md:grid-cols-[1.1fr_0.9fr]"
             >
               <ArticleCoverImage
@@ -260,7 +265,7 @@ function BlogPage() {
               />
 
               <div className="flex flex-col justify-center gap-4 p-6 md:p-8">
-                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-primary">Featured article</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-primary">Artigo em destaque</p>
                 <h3 className="text-3xl text-foreground">{getEditorialTitle(featured)}</h3>
                 <p className="text-base leading-7 text-muted-foreground">{getArticleSummary(featured)}</p>
                 <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
@@ -277,15 +282,11 @@ function BlogPage() {
           </section>
         ) : null}
 
-        <AdSlotHorizontal
-          slot="blog-home-hero"
-          title="Slot editorial horizontal"
-          description="Estrutura discreta pronta para AdSense entre o destaque e os blocos de navegação."
-        />
+        <AdSlotHorizontal />
 
         {trendingGuides.length ? (
           <section className="space-y-5">
-            <h2 className="text-2xl text-foreground">Guias em alta</h2>
+            <h2 className="text-2xl text-foreground">Leituras recomendadas</h2>
             <div className="grid gap-5 md:grid-cols-3">
               {trendingGuides.map((article) => (
                 <BlogArticleCard
@@ -293,7 +294,7 @@ function BlogPage() {
                   article={article}
                   image={getArticleImage(article)}
                   formatDate={formatDate}
-                  label="Ler guia"
+                  label="Ler artigo"
                 />
               ))}
             </div>
@@ -302,7 +303,7 @@ function BlogPage() {
 
         <section className="space-y-4">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="text-2xl text-foreground">Navegue por categoria</h2>
+            <h2 className="text-2xl text-foreground">Navegue por tema</h2>
             <span className="text-sm text-muted-foreground">{filteredArticles.length} artigos</span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -319,11 +320,7 @@ function BlogPage() {
           </div>
         </section>
 
-        <AdSlotInline
-          slot="blog-home-inline"
-          title="Slot editorial inline"
-          description="Ponto discreto para monetização sem poluir o fluxo visual do blog."
-        />
+        <AdSlotInline />
 
         <section className="space-y-5">
           <div className="flex items-center justify-between gap-4">
@@ -337,12 +334,7 @@ function BlogPage() {
                 <React.Fragment key={article.slug}>
                   <BlogArticleCard article={article} image={getArticleImage(article)} formatDate={formatDate} />
                   {index === 2 ? (
-                    <AdSlotResponsive
-                      slot="blog-home-feed"
-                      className="sm:col-span-2 xl:col-span-3"
-                      title="Slot responsivo entre blocos"
-                      description="Pronto para futura integração com AdSense na listagem principal."
-                    />
+                    <AdSlotResponsive className="sm:col-span-2 xl:col-span-3" />
                   ) : null}
                 </React.Fragment>
               ))}
@@ -364,15 +356,15 @@ function BlogPage() {
         </section>
 
         <section className="rounded-[24px] border border-primary/15 bg-primary/[0.04] p-6 md:p-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Próximo passo</p>
-          <h2 className="mt-3 text-2xl text-foreground">Faça um diagnóstico financeiro gratuito</h2>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Proximo passo</p>
+          <h2 className="mt-3 text-2xl text-foreground">Faca um diagnostico financeiro gratuito</h2>
           <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
-            Descubra quais ajustes priorizar agora para melhorar score, reduzir custos e contratar crédito com mais segurança.
+            Descubra quais ajustes priorizar agora para melhorar score, reduzir custos e contratar credito com mais seguranca.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <a href="https://finance.cotejuros.com.br/quiz" className="inline-flex">
               <Button>
-                Ir para o diagnóstico
+                Ir para o diagnostico
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </a>

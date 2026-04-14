@@ -47,8 +47,10 @@ function ArticleComments({ articleSlug }) {
           <MessageSquare className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="text-2xl text-foreground">Comentários</h2>
-          <p className="text-sm text-muted-foreground">Interface pronta para futura persistência em backend ou CMS.</p>
+          <h2 className="text-2xl text-foreground">Comentarios</h2>
+          <p className="text-sm text-muted-foreground">
+            Use este espaco para deixar uma duvida ou contar se o conteudo ajudou no seu caso.
+          </p>
         </div>
       </div>
 
@@ -60,12 +62,12 @@ function ArticleComments({ articleSlug }) {
         <Textarea
           value={form.comment}
           onChange={handleChange('comment')}
-          placeholder="Escreva seu comentário"
-          aria-label="Escreva seu comentário"
+          placeholder="Escreva seu comentario"
+          aria-label="Escreva seu comentario"
           className="min-h-[140px]"
         />
         <div className="flex justify-end">
-          <Button type="submit">Enviar comentário</Button>
+          <Button type="submit">Enviar comentario</Button>
         </div>
       </form>
 
@@ -84,7 +86,7 @@ function ArticleComments({ articleSlug }) {
           ))
         ) : (
           <div className="rounded-[16px] border border-dashed border-border bg-background-secondary p-5 text-sm text-muted-foreground">
-            Nenhum comentário ainda. Este espaço já está preparado para integração futura com Supabase, Sanity ou Strapi.
+            Ainda nao ha comentarios neste artigo. Se quiser, voce pode ser a primeira pessoa a compartilhar uma duvida ou experiencia.
           </div>
         )}
       </div>
