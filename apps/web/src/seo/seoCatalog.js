@@ -1,5 +1,5 @@
 import { merchantMachineComparePages, merchantMachineStaticPages } from './merchantMachinesCatalog.js';
-import { normalizeMojibakeDeep } from '@/lib/textEncoding.js';
+import { normalizeMojibakeDeep } from '../lib/textEncoding.js';
 
 const DEFAULT_SITE_URL = 'https://cote-juros-hostinger-horizons-web.vercel.app';
 
