@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useLocation } from 'react-router-dom';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { getDeliveryModeLabel, getLeadProfileLabel, getLeadStatusLabel } from '@/admin/adminLabels.js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -64,16 +65,16 @@ function LeadNextStepPage() {
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Envio</p>
                     <p className="mt-1 text-sm font-semibold text-slate-900">
-                      {leadResult.deliveryMode === 'mock_api' ? 'Registro interno' : 'Redirecionamento seguro'}
+                      {leadResult.deliveryMode === 'tracking_link' ? 'Redirecionamento seguro' : getDeliveryModeLabel(leadResult.deliveryMode)}
                     </p>
                   </div>
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Perfil</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-900">{leadResult.profile || '-'}</p>
+                    <p className="mt-1 text-sm font-semibold text-slate-900">{getLeadProfileLabel(leadResult.profile)}</p>
                   </div>
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Status</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-900">{leadResult.status || 'registrado'}</p>
+                    <p className="mt-1 text-sm font-semibold text-slate-900">{getLeadStatusLabel(leadResult.status || 'sent')}</p>
                   </div>
                 </div>
               ) : null}

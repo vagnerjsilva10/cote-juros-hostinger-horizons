@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import AdminPageHeader from '@/admin/AdminPageHeader.jsx';
-import { getLeadStatusLabel, getProductTypeLabel } from '@/admin/adminLabels.js';
+import { getDeliveryModeLabel, getLeadProfileLabel, getLeadStatusLabel, getProductTypeLabel } from '@/admin/adminLabels.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -20,24 +20,6 @@ const formatCurrency = (value) => {
     currency: 'BRL',
     maximumFractionDigits: 0
   });
-};
-
-const getProfileLabel = (profile) => {
-  const labels = {
-    negativado: 'Negativado',
-    clt: 'CLT',
-    autonomo: 'Autonomo',
-    geral: 'Geral'
-  };
-  return labels[profile] || profile || '-';
-};
-
-const getDeliveryModeLabel = (mode) => {
-  const labels = {
-    tracking_link: 'Tracking link',
-    mock_api: 'Mock API'
-  };
-  return labels[mode] || mode || '-';
 };
 
 export default function AdminLeadsPage() {
@@ -133,7 +115,7 @@ export default function AdminLeadsPage() {
                         </div>
                       </TableCell>
                       <TableCell>{getProductTypeLabel(lead.productType)}</TableCell>
-                      <TableCell>{getProfileLabel(lead.profile)}</TableCell>
+                      <TableCell>{getLeadProfileLabel(lead.profile)}</TableCell>
                       <TableCell>{lead.partnerName || lead.partnerId || '-'}</TableCell>
                       <TableCell>{getDeliveryModeLabel(lead.deliveryMode)}</TableCell>
                       <TableCell>{lead.sourcePage || lead.originPage || '-'}</TableCell>
@@ -165,7 +147,7 @@ export default function AdminLeadsPage() {
                   <p><strong>Trabalho:</strong> {selectedLead.employmentType || selectedLead.employmentStatus || '-'}</p>
                   <p><strong>Negativado:</strong> {selectedLead.hasDebt == null ? '-' : selectedLead.hasDebt ? 'Sim' : 'Nao'}</p>
                   <p><strong>Score:</strong> {selectedLead.score || selectedLead.scoreRange || '-'}</p>
-                  <p><strong>Perfil:</strong> {getProfileLabel(selectedLead.profile)}</p>
+                  <p><strong>Perfil:</strong> {getLeadProfileLabel(selectedLead.profile)}</p>
                   <p><strong>Parceiro:</strong> {selectedLead.partnerName || selectedLead.partnerId || '-'}</p>
                   <p><strong>Modo de envio:</strong> {getDeliveryModeLabel(selectedLead.deliveryMode)}</p>
                   <p><strong>Redirect:</strong> {selectedLead.redirectUrl || '-'}</p>
