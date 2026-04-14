@@ -362,7 +362,7 @@ const hubPages = [
     path: '/comparar',
     heading: 'Comparadores financeiros para escolher com clareza.',
     title: 'Comparar crédito, cartões e financiamento | Cote Juros',
-    description: 'Acesse comparadores de crédito por intenção de busca e encontre a melhor oferta.',
+    description: 'Acesse comparadores de crédito, cartões e financiamento para entender custos, benefícios e condições antes de contratar.',
     pageType: 'hub'
   },
   {

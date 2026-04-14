@@ -236,9 +236,9 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         {faqSchema ? <script type="application/ld+json">{JSON.stringify(faqSchema)}</script> : null}
       </Helmet>
 
-      <section className="border-b border-border bg-background py-10 md:py-12">
-        <div className="page-shell space-y-6">
-          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+      <section className="border-b border-border bg-background py-8 md:py-10">
+        <div className="page-shell space-y-5 md:space-y-6">
+          <nav aria-label="Breadcrumb" className="flex min-w-0 flex-wrap items-center gap-2 text-xs text-muted-foreground sm:text-sm">
             <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground">
               <Home className="h-4 w-4" />
               Início
@@ -248,7 +248,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
               Blog
             </Link>
             <span>/</span>
-            <span className="text-foreground">{editorialTitle}</span>
+            <span className="min-w-0 flex-1 truncate text-foreground sm:flex-none">{editorialTitle}</span>
           </nav>
 
           <Link to="/blog" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
@@ -256,14 +256,15 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
             Voltar para o blog
           </Link>
 
-          <Badge variant="outline" className="w-fit">{safeArticle.category}</Badge>
-
-          <div className="space-y-4">
-            <h1 className="max-w-4xl text-foreground">{safeArticle.h1 || editorialTitle}</h1>
-            <p className="max-w-3xl text-lg leading-8 text-muted-foreground">{getArticleSummary(safeArticle)}</p>
+          <div className="space-y-4 md:space-y-5">
+            <Badge variant="outline" className="w-fit">{safeArticle.category}</Badge>
+            <div className="space-y-3">
+              <h1 className="max-w-4xl text-3xl leading-tight text-foreground sm:text-4xl lg:text-5xl">{safeArticle.h1 || editorialTitle}</h1>
+              <p className="max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">{getArticleSummary(safeArticle)}</p>
+            </div>
           </div>
 
-          <div className="flex flex-wrap gap-5 text-sm text-muted-foreground">
+          <div className="flex flex-wrap gap-x-5 gap-y-3 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-2">
               <CalendarDays className="h-4 w-4 text-primary" />
               {formatDate(safeArticle.publishedAt)}
@@ -278,34 +279,54 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
+
+          <div className="grid gap-5 pt-2 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-stretch">
+            <div className="overflow-hidden rounded-[18px] border border-border bg-white md:rounded-[20px]">
+              <ArticleCoverImage article={safeArticle} className="w-full max-h-[430px]" aspectRatio="16 / 9" />
+            </div>
+
+            {safeArticle.internalLinks.length ? (
+              <aside className="rounded-[18px] border border-border bg-white p-5 md:p-6">
+                <h2 className="text-xl text-foreground">Continue a leitura</h2>
+                <div className="mt-4 space-y-3">
+                  {safeArticle.internalLinks.slice(0, 3).map((item) => (
+                    <Link
+                      key={`hero-aside-${item.path}`}
+                      to={item.path}
+                      className="block rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
+                    >
+                      <span className="font-semibold text-foreground">{item.title}</span>
+                      <span className="mt-1 block leading-6 text-muted-foreground">{item.anchor}</span>
+                    </Link>
+                  ))}
+                </div>
+              </aside>
+            ) : null}
+          </div>
         </div>
       </section>
 
-      <section className="bg-background py-8 md:py-10">
+      <section className="bg-background py-6 md:py-10">
         <div className="page-shell space-y-8">
-          <div className="mx-auto max-w-5xl overflow-hidden rounded-[20px] border border-border bg-white">
-            <ArticleCoverImage article={safeArticle} className="w-full max-h-[430px]" aspectRatio="16 / 9" />
-          </div>
-
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
             <div className="space-y-8">
-              <article className="rounded-[20px] border border-border bg-white p-6 md:p-10">
-                <div className="space-y-7">
+              <article className="rounded-[18px] border border-border bg-white p-5 sm:p-6 md:rounded-[20px] md:p-10">
+                <div className="space-y-7 md:space-y-8">
                   {introParagraphs.map((paragraph, index) => (
-                    <p key={`intro-${index}`} className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
+                    <p key={`intro-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{paragraph}</p>
                   ))}
 
                   <AdSlotResponsive />
 
                   {tocItems.length ? (
-                    <section className="rounded-[18px] border border-border bg-background-secondary p-5 md:p-6">
+                    <section className="rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
                       <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">Neste artigo você vai encontrar</p>
                       <div className="mt-4 grid gap-3 sm:grid-cols-2">
                         {tocItems.slice(0, 6).map((item) => (
                           <a
                             key={item.id}
                             href={`#${item.id}`}
-                            className="rounded-[14px] border border-border bg-white px-4 py-4 text-sm text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
+                            className="rounded-[14px] border border-border bg-white px-4 py-4 text-sm leading-6 text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
                           >
                             {item.label}
                           </a>
@@ -316,15 +337,15 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
                   {sections.map((section, index) => (
                     <React.Fragment key={`section-${index}`}>
-                      <section id={`secao-${index + 1}`} className="scroll-mt-28 space-y-4">
-                        <h2 className="text-2xl text-foreground">{section.heading}</h2>
+                      <section id={`secao-${index + 1}`} className="scroll-mt-28 space-y-4 md:space-y-5">
+                        <h2 className="text-xl leading-tight text-foreground sm:text-2xl">{section.heading}</h2>
                         {section.paragraphs?.map((paragraph, paragraphIndex) => (
-                          <p key={`section-${index}-p-${paragraphIndex}`} className="text-base leading-8 text-muted-foreground md:text-lg">
+                          <p key={`section-${index}-p-${paragraphIndex}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">
                             {paragraph}
                           </p>
                         ))}
                         {section.bullets?.length ? (
-                          <ul className="list-disc space-y-2 pl-6 text-base leading-7 text-muted-foreground marker:text-primary">
+                          <ul className="list-disc space-y-2 pl-6 text-base leading-7 text-muted-foreground marker:text-primary sm:leading-8">
                             {section.bullets.map((bullet, bulletIndex) => (
                               <li key={`section-${index}-b-${bulletIndex}`} className="pl-1">{bullet}</li>
                             ))}
@@ -337,14 +358,14 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   ))}
 
                   {safeArticle.internalLinks.length ? (
-                    <section className="rounded-[18px] border border-border bg-background-secondary p-5 md:p-6">
-                      <h2 className="text-2xl text-foreground">Leituras recomendadas</h2>
+                    <section className="rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
+                      <h2 className="text-xl text-foreground sm:text-2xl">Leituras recomendadas</h2>
                       <div className="mt-4 grid gap-3 sm:grid-cols-2">
                         {safeArticle.internalLinks.slice(0, 6).map((item) => (
                           <Link
                             key={item.path}
                             to={item.path}
-                            className="rounded-[14px] border border-border bg-white px-4 py-4 text-sm text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
+                            className="rounded-[14px] border border-border bg-white px-4 py-4 text-sm leading-6 text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
                           >
                             <span className="font-semibold">{item.title}</span>
                             <span className="mt-1 block text-muted-foreground">{item.anchor}</span>
@@ -357,8 +378,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   {showPreConclusionAd ? <AdSlotHorizontal /> : null}
 
                   {Array.isArray(safeArticle.faq) && safeArticle.faq.length ? (
-                    <section id="faq" className="scroll-mt-28 space-y-4 rounded-[16px] border border-border bg-background-secondary p-5 md:p-6">
-                      <h2 className="text-2xl text-foreground">Perguntas frequentes</h2>
+                    <section id="faq" className="scroll-mt-28 space-y-4 rounded-[16px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
+                      <h2 className="text-xl text-foreground sm:text-2xl">Perguntas frequentes</h2>
                       <div className="space-y-5">
                         {safeArticle.faq.map((item, index) => (
                           <div key={`faq-${index}`} className="space-y-2">
@@ -372,30 +393,30 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
                   {Array.isArray(safeArticle.conclusion) && safeArticle.conclusion.length ? (
                     <section id="conclusao" className="scroll-mt-28 space-y-4">
-                      <h2 className="text-2xl text-foreground">Conclusão</h2>
+                      <h2 className="text-xl text-foreground sm:text-2xl">Conclusão</h2>
                       {safeArticle.conclusion.map((paragraph, index) => (
-                        <p key={`conclusion-${index}`} className="text-base leading-8 text-muted-foreground md:text-lg">{paragraph}</p>
+                        <p key={`conclusion-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{paragraph}</p>
                       ))}
                     </section>
                   ) : null}
                 </div>
               </article>
 
-              <section className="rounded-[22px] border border-primary/15 bg-primary/[0.04] p-6 md:p-8">
+              <section className="rounded-[22px] border border-primary/15 bg-primary/[0.04] p-5 sm:p-6 md:p-8">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Diagnóstico financeiro</p>
-                <h2 className="mt-3 text-2xl text-foreground">Quer dar o próximo passo com mais clareza?</h2>
+                <h2 className="mt-3 text-xl text-foreground sm:text-2xl">Quer dar o próximo passo com mais clareza?</h2>
                 <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
                   Faça um diagnóstico gratuito, entenda seu cenário e descubra caminhos mais seguros antes de contratar crédito ou reorganizar suas finanças.
                 </p>
-                <div className="mt-5 flex flex-wrap gap-3">
-                  <a href="https://finance.cotejuros.com.br/quiz" className="inline-flex">
-                    <Button>
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <a href="https://finance.cotejuros.com.br/quiz" className="inline-flex w-full sm:w-auto">
+                    <Button className="w-full sm:w-auto">
                       Analisar meu perfil
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   </a>
-                  <Link to="/ferramentas" className="inline-flex">
-                    <Button variant="outline">Ver ferramentas</Button>
+                  <Link to="/ferramentas" className="inline-flex w-full sm:w-auto">
+                    <Button variant="outline" className="w-full sm:w-auto">Ver ferramentas</Button>
                   </Link>
                 </div>
               </section>
@@ -430,22 +451,6 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
             </div>
 
             <aside className="space-y-6 lg:sticky lg:top-24 lg:h-fit">
-              <section className="rounded-[18px] border border-border bg-white p-5 md:p-6">
-                <h2 className="text-xl text-foreground">Continue a leitura</h2>
-                <div className="mt-4 space-y-3">
-                  {safeArticle.internalLinks.slice(0, 3).map((item) => (
-                    <Link
-                      key={`aside-${item.path}`}
-                      to={item.path}
-                      className="block rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
-                    >
-                      <span className="font-semibold text-foreground">{item.title}</span>
-                      <span className="mt-1 block text-muted-foreground">{item.anchor}</span>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-
               <AdSlotResponsive />
             </aside>
           </div>

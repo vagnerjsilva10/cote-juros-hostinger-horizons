@@ -70,7 +70,7 @@ const buildModelFromRoute = ({ mode, pagePath, params, banks, articles, offers }
       return {
         ...comparePage,
         path: `/comparar/${comparePage.slug}`,
-        badge: 'Página de comparação',
+        badge: 'Comparação financeira',
         pageType: 'compare'
       };
     }
@@ -78,12 +78,12 @@ const buildModelFromRoute = ({ mode, pagePath, params, banks, articles, offers }
     const pretty = params.comparisonSlug.split('-').join(' ');
     return {
       path: `/comparar/${params.comparisonSlug}`,
-      heading: `Comparar ${pretty} com leitura de taxas e condições.`,
+      heading: `Comparar ${pretty} com taxas e condições em um só lugar.`,
       title: `Comparar ${pretty} | Cote Juros`,
-      description: 'Página comparativa para análise de bancos, taxas, benefícios e condições.',
+      description: 'Veja opções, compare custos e entenda o que observar antes de contratar.',
       productType: null,
       pageType: 'compare',
-      badge: 'Página de comparação'
+      badge: 'Comparação financeira'
     };
   }
 
@@ -254,7 +254,7 @@ const buildDefaultCopy = (model, offersCount) => {
   if (model.pageType === 'tool') {
     return [
       'Esta ferramenta foi criada para transformar decisão financeira em leitura prática. Você simula cenários, entende impacto de juros e escolhe com mais clareza.',
-      'Use os cálculos como base para negociar melhores condições e depois compare ofertas reais nos nossos comparadores indexáveis.'
+      'Use os cálculos como base para negociar melhores condições e depois compare ofertas reais com mais segurança.'
     ];
   }
 
@@ -264,14 +264,14 @@ const buildDefaultCopy = (model, offersCount) => {
 
   if (model.pageType === 'hub' && model.path === '/comparar') {
     return [
-      'A seção de comparadores reúne páginas por intenção de busca para crédito, cartões e financiamentos. Isso facilita encontrar uma rota de decisão alinhada ao seu objetivo.',
-      'Cada comparador apresenta taxas, benefícios, condições e FAQs para reduzir incerteza antes da contratação.'
+      'A seção de comparadores reúne caminhos práticos para analisar cartões, empréstimos e financiamentos antes de contratar.',
+      'Use as páginas para comparar taxas, benefícios, prazos, custos e cuidados importantes de acordo com o seu objetivo.'
     ];
   }
 
   if (model.pageType === 'hub' && model.path === '/bancos') {
     return [
-      'O hub de bancos organiza instituições por oferta de cartão, crédito pessoal e financiamento. Assim, você compara banco contra banco com o mesmo critério.',
+      'A página de bancos organiza instituições por oferta de cartão, crédito pessoal e financiamento. Assim, você compara banco contra banco com o mesmo critério.',
       'A proposta é eliminar comparação superficial e mostrar o que realmente pesa: taxa, custo efetivo total, prazo e aderência ao perfil.'
     ];
   }
@@ -279,13 +279,15 @@ const buildDefaultCopy = (model, offersCount) => {
   if (model.pageType === 'bank') {
     return [
       `Nesta página você compara os principais produtos financeiros do ${model.heading.split(':')[0]} com foco em clareza de taxa, benefícios e custo total.`,
-      'A leitura foi pensada para reduzir fricção na decisão: menos ruído visual, mais objetividade e links para comparadores relacionados.'
+      'A leitura foi pensada para deixar a decisão mais simples: menos ruído visual, mais objetividade e links para comparadores relacionados.'
     ];
   }
 
   return [
-    `Esta página foi estruturada para intenção de busca específica e já conecta comparação de taxa, benefício e condição em um único fluxo.`,
-    `No momento, há ${offersCount} oferta(s) elegível(is) para esta busca, com atualização contínua de contexto para apoiar uma decisão financeira mais segura.`
+    'Use esta comparação para entender quais opções combinam melhor com o que você procura e quais custos precisam entrar na conta.',
+    offersCount
+      ? `No momento, encontramos ${offersCount} opção${offersCount > 1 ? 'ões' : ''} para comparar nesta página. Analise taxas, limites, prazos e condições antes de avançar.`
+      : 'Ainda estamos atualizando as opções desta página. Enquanto isso, use os critérios abaixo para comparar propostas com mais segurança.'
   ];
 };
 
@@ -413,8 +415,8 @@ function OfferComparisonTable({ model, offers }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-[14px] border border-border bg-white shadow-[var(--shadow-sm)]">
-      <Table>
+    <div className="overflow-x-auto rounded-[14px] border border-border bg-white shadow-[var(--shadow-sm)]">
+      <Table className="min-w-[680px]">
         <TableHeader>
           <TableRow>
             <TableHead>Banco</TableHead>
@@ -467,19 +469,19 @@ function InternalLinkGroups() {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
       {groups.map((group) => {
         const GroupIcon = group.icon;
         return (
           <Card key={group.title} className="surface-card border-border bg-white">
-            <CardContent className="space-y-4 p-6">
-              <div className="flex items-center gap-2">
+            <CardContent className="space-y-4 p-5 sm:p-6">
+              <div className="flex items-center justify-center gap-2 text-center">
                 <GroupIcon className="h-4 w-4 text-primary" />
                 <h4 className="text-lg">{group.title}</h4>
               </div>
               <div className="space-y-2">
                 {group.links.map((link) => (
-                  <Link key={link.path} to={link.path} className="link-animated block text-sm text-muted-foreground hover:text-foreground">
+                  <Link key={link.path} to={link.path} className="block rounded-[12px] border border-border bg-background-secondary px-4 py-3 text-sm leading-6 text-muted-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03] hover:text-foreground">
                     {link.label}
                   </Link>
                 ))}
@@ -578,13 +580,13 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
         subtitle={model.description}
       >
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Link to="/diagnostico-financeiro">
-            <Button size="lg">
+          <Link to="/diagnostico-financeiro" className="w-full sm:w-auto">
+            <Button size="lg" className="w-full sm:w-auto">
               Analisar perfil <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
-          <Link to={model.pageType === 'tool' ? '/ferramentas' : '/comparar'}>
-            <Button size="lg" variant="outline">
+          <Link to={model.pageType === 'tool' ? '/ferramentas' : '/comparar'} className="w-full sm:w-auto">
+            <Button size="lg" variant="outline" className="w-full sm:w-auto">
               {model.pageType === 'tool' ? 'Abrir ferramenta completa' : 'Ir para comparadores'}
             </Button>
           </Link>
@@ -592,9 +594,9 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
       </PageHero>
 
       <section className="border-b border-border bg-background-secondary py-8">
-        <div className="page-shell grid gap-4 md:grid-cols-3">
+        <div className="page-shell grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {highlights.map((item) => (
-            <div key={item.label} className="interactive-card px-5 py-4">
+            <div key={item.label} className="interactive-card px-5 py-4 text-center sm:text-left">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{item.label}</p>
               <p className="mt-2 text-xl font-semibold tracking-[-0.03em] text-foreground">{item.value}</p>
             </div>
@@ -603,10 +605,10 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
       </section>
 
       <section className="page-section bg-background">
-        <div className="page-shell grid gap-8 lg:grid-cols-[1fr_320px]">
+        <div className="page-shell grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="space-y-8">
             <Card className="border-border bg-white">
-              <CardContent className="space-y-5 p-8">
+              <CardContent className="space-y-5 p-5 sm:p-6 md:p-8">
                 {bodyCopy.map((paragraph, index) => (
                   <p key={`${model.path}-paragraph-${index}`}>{paragraph}</p>
                 ))}
@@ -615,7 +617,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
 
             {model.pageType === 'tool' ? (
               <Card className="border-border bg-white">
-                <CardContent className="space-y-6 p-8">
+                <CardContent className="space-y-6 p-5 sm:p-6 md:p-8">
                   <div className="flex items-center gap-2">
                     <Calculator className="h-4 w-4 text-primary" />
                     <h3>Simulação orientada para decisão</h3>
@@ -623,8 +625,8 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
                   <p className="text-muted-foreground">
                     Para cálculo completo com gráficos e ajustes avançados, acesse a central de ferramentas do Cote Juros.
                   </p>
-                  <Link to="/ferramentas">
-                    <Button>
+                  <Link to="/ferramentas" className="inline-flex w-full sm:w-auto">
+                    <Button className="w-full sm:w-auto">
                       Abrir central de ferramentas <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
@@ -634,11 +636,11 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
 
             {model.pageType !== 'tool' && model.pageType !== 'blog-article' ? (
               <Card className="border-border bg-white">
-                <CardContent className="space-y-6 p-8">
-                  <div className="flex items-center justify-between gap-4">
+                <CardContent className="space-y-6 p-5 sm:p-6 md:p-8">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <h3>Tabela comparativa</h3>
                     <Badge variant="outline" className="border-primary/25 bg-primary/10 text-primary">
-                      Dados indexáveis
+                      Compare com calma
                     </Badge>
                   </div>
                   <OfferComparisonTable model={model} offers={pageOffers} />
@@ -647,7 +649,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
             ) : null}
 
             <Card className="border-border bg-white">
-              <CardContent className="space-y-5 p-8">
+              <CardContent className="space-y-5 p-5 sm:p-6 md:p-8">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="h-4 w-4 text-primary" />
                   <h3>Perguntas frequentes</h3>
@@ -666,14 +668,16 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
 
           <aside className="space-y-6 lg:sticky lg:top-24 lg:h-fit">
             <Card className="border-border bg-white">
-              <CardContent className="space-y-4 p-8">
-                <div className="flex items-center gap-2">
+              <CardContent className="space-y-4 p-5 sm:p-6 md:p-8">
+                <div className="flex items-center justify-center gap-2 text-center">
                   <Landmark className="h-4 w-4 text-primary" />
-                  <h4>Arquitetura de cluster</h4>
+                  <h4>Como usar esta comparação</h4>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Esta página está conectada aos clusters de comparadores, bancos, ferramentas e conteúdos editoriais.
-                </p>
+                <ul className="space-y-2 text-sm leading-6 text-muted-foreground">
+                  <li>Compare taxa, prazo, limite e custo total antes de escolher.</li>
+                  <li>Use as ferramentas para simular parcelas e evitar decisões no impulso.</li>
+                  <li>Leia conteúdos relacionados quando tiver dúvida sobre riscos ou condições.</li>
+                </ul>
               </CardContent>
             </Card>
 
