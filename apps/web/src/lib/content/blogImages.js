@@ -238,7 +238,7 @@ const buildStockProviderImage = (article = {}) => {
   return pool[seed % pool.length];
 };
 
-const shouldPreferGeneratedPrimary = () => true;
+const shouldPreferGeneratedPrimary = (article = {}) => normalizeText(article?.sourceType || '') !== 'wordpress';
 
 const getImagePalette = (category = '') => {
   const key = getCategoryKey(category);
@@ -252,62 +252,31 @@ const getImagePalette = (category = '') => {
 
 export const buildGeneratedArticleImage = (article = {}) => {
   const slug = slugify(article.slug || article.title || article.id || 'cote-juros');
-  const title = String(article.title || article.h1 || 'Blog Cote Juros').trim();
+  const title = String(article.title || article.h1 || 'Guia editorial Cote Juros').trim();
   const palette = getImagePalette(article.category || article.clusterLabel);
   const seed = hashString(slug);
-  const headline = title.length > 58 ? `${title.slice(0, 55)}...` : title;
-  const topicKey = resolveTopicImagePoolKey(article);
-  const circles = Array.from({ length: 3 }, (_, index) => ({
-    x: 760 + ((seed >> (index * 4)) % 220),
-    y: 120 + ((seed >> (index * 6)) % 260),
-    r: 42 + ((seed >> (index * 2)) % 40),
-    opacity: 0.12 + index * 0.08
-  }));
-  const bars = Array.from({ length: 5 }, (_, index) => 66 + ((seed >> (index * 3)) % 96));
-  const label = String(article.category || 'Conteúdo do blog').slice(0, 44);
-
-  const glyphByTopic = {
-    emprestimo:
-      `<path d="M872 178c52 0 94 42 94 94s-42 94-94 94-94-42-94-94 42-94 94-94Zm0 42c-29 0-52 23-52 52s23 52 52 52 52-23 52-52-23-52-52-52Zm-4 18h18v22h22v18h-22v22h-18v-22h-22v-18h22z" fill="${palette.primary}" opacity="0.88"/>`,
-    cartao:
-      `<rect x="782" y="192" width="208" height="132" rx="24" fill="${palette.primary}" opacity="0.9"/><rect x="812" y="236" width="148" height="16" rx="8" fill="#ffffff" opacity="0.92"/><rect x="812" y="272" width="74" height="12" rx="6" fill="#ffffff" opacity="0.82"/>`,
-    financiamento:
-      `<path d="M782 300 884 212l102 88v42h-32v-66h-140v66h-32z" fill="${palette.primary}" opacity="0.9"/><rect x="852" y="286" width="32" height="56" rx="8" fill="#fff" opacity="0.86"/>`,
-    score:
-      `<path d="M808 328V222h32v106h-32Zm56 0v-72h32v72h-32Zm56 0v-124h32v124h-32Z" fill="${palette.primary}" opacity="0.92"/><path d="M804 204c52-12 96-8 148 18" fill="none" stroke="${palette.primary}" stroke-width="10" stroke-linecap="round" opacity="0.7"/>`,
-    orcamento:
-      `<circle cx="876" cy="248" r="74" fill="${palette.primary}" opacity="0.12"/><path d="M876 204v88M832 248h88" stroke="${palette.primary}" stroke-width="12" stroke-linecap="round"/><circle cx="876" cy="248" r="20" fill="${palette.primary}" opacity="0.92"/>`,
-    veiculo:
-      `<rect x="792" y="246" width="180" height="54" rx="18" fill="${palette.primary}" opacity="0.92"/><path d="M826 246 854 214h58l28 32" fill="${palette.primary}" opacity="0.72"/><circle cx="844" cy="312" r="18" fill="${palette.accent}"/><circle cx="922" cy="312" r="18" fill="${palette.accent}"/>`,
-    golpes:
-      `<path d="M876 194 960 224v52c0 54-33 92-84 116-51-24-84-62-84-116v-52z" fill="${palette.primary}" opacity="0.92"/><path d="M876 236v44" stroke="#fff" stroke-width="12" stroke-linecap="round"/><circle cx="876" cy="304" r="8" fill="#fff"/>`
-  };
-  const glyph = glyphByTopic[topicKey] || glyphByTopic.orcamento;
+  const bars = Array.from({ length: 5 }, (_, index) => 52 + ((seed >> (index * 3)) % 86));
+  const headline = title.length > 52 ? `${title.slice(0, 49)}...` : title;
 
   const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="${headline}">
-      <rect width="1200" height="675" fill="#ffffff" />
-      <rect width="1200" height="675" fill="${palette.soft}" opacity="0.62" />
-      ${circles.map((circle) => `<circle cx="${circle.x}" cy="${circle.y}" r="${circle.r}" fill="${palette.primary}" opacity="${circle.opacity}" />`).join('')}
-      <rect x="48" y="46" width="1104" height="583" rx="34" fill="#ffffff" fill-opacity="0.9" />
-      <rect x="88" y="90" width="236" height="42" rx="21" fill="${palette.soft}" />
+    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-label="${headline}">
+      <rect width="1200" height="720" fill="#ffffff" />
+      <rect width="1200" height="720" fill="${palette.soft}" opacity="0.5" />
+      <rect x="56" y="56" width="1088" height="608" rx="34" fill="#ffffff" fill-opacity="0.88" />
+      <rect x="92" y="96" width="220" height="40" rx="20" fill="${palette.soft}" />
       <text x="122" y="122" fill="${palette.primary}" font-family="Arial, sans-serif" font-size="22" font-weight="700">${palette.eyebrow}</text>
-      <text x="88" y="204" fill="${palette.accent}" font-family="Arial, sans-serif" font-size="54" font-weight="700">${headline}</text>
-      <text x="88" y="262" fill="#475569" font-family="Arial, sans-serif" font-size="28">${label}</text>
-      <rect x="744" y="136" width="292" height="232" rx="28" fill="#ffffff" fill-opacity="0.96" />
-      ${glyph}
-      <path d="M782 334C830 300 870 294 912 254C944 224 988 208 1010 194" fill="none" stroke="${palette.primary}" stroke-width="10" stroke-linecap="round" opacity="0.4" />
+      <text x="92" y="216" fill="${palette.accent}" font-family="Arial, sans-serif" font-size="56" font-weight="700">${headline}</text>
+      <text x="92" y="274" fill="#475569" font-family="Arial, sans-serif" font-size="28">${String(article.category || 'Conteudo editorial').slice(0, 42)}</text>
+      <rect x="740" y="158" width="302" height="236" rx="28" fill="#ffffff" />
+      <path d="M786 314C834 284 874 280 916 238C948 208 992 186 1020 176" fill="none" stroke="${palette.primary}" stroke-width="10" stroke-linecap="round" />
       ${bars
         .map(
           (height, index) =>
-            `<rect x="${792 + index * 46}" y="${564 - height}" width="24" height="${height}" rx="12" fill="${palette.primary}" opacity="${0.24 + index * 0.12}" />`
+            `<rect x="${792 + index * 46}" y="${326 - height}" width="24" height="${height}" rx="12" fill="${palette.primary}" opacity="${0.24 + index * 0.12}" />`
         )
         .join('')}
-      <rect x="88" y="516" width="312" height="16" rx="8" fill="${palette.soft}" />
-      <rect x="88" y="548" width="384" height="16" rx="8" fill="#e2e8f0" />
-      <rect x="744" y="430" width="292" height="118" rx="24" fill="${palette.soft}" opacity="0.72" />
-      <text x="776" y="482" fill="${palette.primary}" font-family="Arial, sans-serif" font-size="26" font-weight="700">Blog Cote Juros</text>
-      <text x="776" y="516" fill="${palette.accent}" font-family="Arial, sans-serif" font-size="22">Imagem exclusiva do artigo</text>
+      <rect x="92" y="550" width="326" height="16" rx="8" fill="${palette.soft}" />
+      <rect x="92" y="582" width="374" height="16" rx="8" fill="#e2e8f0" />
     </svg>
   `;
 
@@ -318,20 +287,19 @@ export const resolveArticleImageSources = (article = {}) => {
   const slug = slugify(article.slug || article.title || article.id || 'artigo');
   const manifestImage = BLOG_ARTICLE_IMAGE_MANIFEST[slug];
   const explicitImageCandidates = [article.coverImage, article.image, article.imageUrl, article.featuredImage].filter(isRenderableImage);
+  const stockImage = buildStockProviderImage(article);
   const categoryFallback = getBlogCategoryImage(article.category || article.clusterLabel);
   const globalFallback = BLOG_CATEGORY_FALLBACKS.default;
   const generatedFallback = buildGeneratedArticleImage(article);
-  const primaryImage = shouldPreferGeneratedPrimary(article)
-    ? generatedFallback
-    : manifestImage || explicitImageCandidates.find((image) => !String(image).startsWith('data:image/')) || generatedFallback;
 
   const ordered = [
-    primaryImage,
     manifestImage,
+    shouldPreferGeneratedPrimary(article) ? generatedFallback : null,
     ...explicitImageCandidates.filter((image) => !String(image).startsWith('data:image/')),
-    generatedFallback,
+    stockImage,
     categoryFallback,
-    globalFallback
+    globalFallback,
+    generatedFallback
   ].filter(Boolean);
 
   const unique = ordered.filter((value, index) => ordered.indexOf(value) === index);
@@ -350,5 +318,5 @@ export const resolveArticleImageAlt = (article = {}) => {
         ? article.imageAlt.trim()
         : '';
 
-  return explicitAlt || `Imagem do artigo sobre ${String(article.title || article.h1 || 'Cote Juros').trim()}`;
+  return explicitAlt || `Imagem editorial sobre ${String(article.title || article.h1 || 'Cote Juros').trim()}`;
 };

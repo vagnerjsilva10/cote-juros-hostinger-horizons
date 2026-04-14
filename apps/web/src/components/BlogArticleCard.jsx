@@ -31,7 +31,7 @@ function BlogArticleCard({
         <ArticleCoverImage
           article={{ ...safeArticle, coverImage: image || safeArticle.coverImage }}
           className="w-full"
-          aspectRatio="16 / 9"
+          aspectRatio="16 / 10"
           imageClassName="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]"
         />
 

@@ -12,14 +12,6 @@ router.get(
   })
 );
 
-router.post(
-  '/',
-  asyncHandler(async (req, res) => {
-    const data = await ArticleService.save(req.body);
-    res.json({ data });
-  })
-);
-
 router.get(
   '/slug/:slug',
   asyncHandler(async (req, res) => {
@@ -34,15 +26,6 @@ router.get(
   asyncHandler(async (req, res) => {
     const data = await ArticleService.listByCategory(req.params.category);
     res.json({ data });
-  })
-);
-
-router.post(
-  '/:id/toggle-publish',
-  asyncHandler(async (req, res) => {
-    const article = await ArticleService.togglePublish(req.params.id);
-    if (!article) return res.status(404).json({ error: 'Article not found' });
-    res.json({ data: article });
   })
 );
 
