@@ -1,4 +1,4 @@
-import { merchantMachineComparePages, merchantMachineStaticPages } from '@/seo/merchantMachinesCatalog.js';
+import { merchantMachineComparePages, merchantMachineStaticPages } from './merchantMachinesCatalog.js';
 
 const DEFAULT_SITE_URL = 'https://cote-juros-hostinger-horizons-web.vercel.app';
 
