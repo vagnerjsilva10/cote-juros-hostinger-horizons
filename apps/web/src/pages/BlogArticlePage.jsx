@@ -24,6 +24,7 @@ import {
 } from '@/lib/content/articles.js';
 
 const BLOG_BASE_URL = 'https://www.cotejuros.com.br/blog';
+const SITE_LOGO_URL = 'https://www.cotejuros.com.br/assets/logo/logo-current-site.svg';
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString('pt-BR', {
@@ -201,7 +202,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
       name: 'Cote Juros',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://www.cotejuros.com.br/assets/logo/logo-primary.png'
+        url: SITE_LOGO_URL
       }
     },
     articleSection: safeArticle.category,

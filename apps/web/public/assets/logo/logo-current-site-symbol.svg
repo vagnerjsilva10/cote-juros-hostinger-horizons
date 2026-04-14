@@ -1,0 +1,9 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Cote Juros Symbol</title>
+  <desc>Símbolo atual usado no site Cote Juros.</desc>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="14" fill="white"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="14" stroke="rgba(226,232,240,0.9)"/>
+  <rect x="2" y="2" width="44" height="44" rx="12" fill="#F8FAFC"/>
+  <path d="M14 31.4L23.36 21.56L30.08 26.36L42.08 14.36M42.08 14.36V21.08M42.08 14.36H35.36" stroke="#2563EB" stroke-width="2.76" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="42.08" cy="14.36" r="0.96" fill="#2563EB"/>
+</svg>

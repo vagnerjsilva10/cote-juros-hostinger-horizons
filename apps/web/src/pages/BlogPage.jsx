@@ -22,6 +22,7 @@ import {
 
 const PAGE_SIZE = 12;
 const BLOG_URL = 'https://www.cotejuros.com.br/blog';
+const SITE_LOGO_URL = 'https://www.cotejuros.com.br/assets/logo/logo-current-site.svg';
 
 const blogBaseSchema = {
   '@context': 'https://schema.org',
@@ -31,7 +32,7 @@ const blogBaseSchema = {
       '@id': 'https://www.cotejuros.com.br/#organization',
       name: 'Cote Juros',
       url: 'https://www.cotejuros.com.br',
-      logo: 'https://www.cotejuros.com.br/assets/logo/logo-primary.png'
+      logo: SITE_LOGO_URL
     },
     {
       '@type': 'WebSite',
