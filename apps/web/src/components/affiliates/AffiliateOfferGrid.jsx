@@ -4,16 +4,30 @@ import AffiliateOfferCard from './AffiliateOfferCard.jsx';
 function AffiliateOfferGrid({ offers = [], title, eyebrow = 'Opções em destaque', onSelect }) {
   if (!offers.length) return null;
 
+  const isSingle = offers.length === 1;
+
   return (
-    <section className="rounded-[24px] border border-border bg-white p-8 shadow-[var(--shadow-sm)]">
-      <div className="mb-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/80">{eyebrow}</p>
-        {title ? <h2 className="mt-2 text-3xl tracking-[-0.04em] text-foreground">{title}</h2> : null}
+    <section className="overflow-hidden rounded-[28px] border border-border bg-white shadow-[var(--shadow-sm)]">
+      <div className="border-b border-border bg-[linear-gradient(180deg,rgba(245,247,250,0.92)_0%,rgba(255,255,255,0.98)_100%)] px-6 py-6 sm:px-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">{eyebrow}</p>
+        {title ? (
+          <div className="mt-2 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <h2 className="max-w-3xl text-3xl font-semibold tracking-[-0.05em] text-foreground">{title}</h2>
+            <p className="max-w-xl text-sm leading-6 text-muted-foreground">
+              Compare com calma, entenda o perfil de cada opção e siga apenas quando as condições fizerem sentido para você.
+            </p>
+          </div>
+        ) : null}
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+      <div className={`grid gap-5 p-5 sm:p-6 ${isSingle ? 'grid-cols-1' : 'md:grid-cols-2 xl:grid-cols-3'}`.trim()}>
         {offers.map((offer) => (
-          <AffiliateOfferCard key={offer.offerSlug} offer={offer} onSelect={onSelect} />
+          <AffiliateOfferCard
+            key={offer.offerSlug}
+            offer={offer}
+            onSelect={onSelect}
+            featured={isSingle}
+          />
         ))}
       </div>
     </section>

@@ -8,7 +8,7 @@ export const affiliateOffersSeed = [
     title: 'Empréstimo online com análise rápida',
     category: 'Empréstimos',
     description: 'Compare condições, prazo e custo total antes de seguir com a contratação.',
-    audience: 'Para quem quer organizar parcelas e entender o custo real do crédito.',
+    audience: 'Para quem quer organizar parcelas, ganhar agilidade na análise e entender o custo real do crédito.',
     destinationUrl: 'https://www.cotejuros.com.br/emprestimo-online',
     trackingUrl: 'https://www.awin1.com/cread.php?awinmid=00000&awinaffid=000000&ued=https%3A%2F%2Fwww.cotejuros.com.br%2Femprestimo-online',
     ctaText: 'Ver condições',
@@ -16,7 +16,12 @@ export const affiliateOffersSeed = [
     priority: 100,
     productType: 'loan',
     pageSlugs: ['/emprestimos', '/comparar/emprestimo-online'],
-    placements: ['below_hero', 'mid_content', 'before_faq']
+    placements: ['below_hero', 'mid_content', 'before_faq'],
+    metadata: {
+      accentColor: '#0F766E',
+      secondaryAccentColor: '#0F172A',
+      badges: ['Análise rápida', 'Crédito online', 'Sem garantia']
+    }
   },
   {
     id: 'aff-awin-cartao-sem-anuidade',
@@ -27,7 +32,7 @@ export const affiliateOffersSeed = [
     title: 'Cartão sem anuidade para uso do dia a dia',
     category: 'Cartões',
     description: 'Veja custo, limite estimado e o que observar antes de pedir o cartão.',
-    audience: 'Para quem busca praticidade, custo baixo e leitura clara dos benefícios.',
+    audience: 'Para quem busca praticidade, custo baixo e leitura clara dos benefícios no uso diário.',
     destinationUrl: 'https://www.cotejuros.com.br/cartao-sem-anuidade',
     trackingUrl: 'https://www.awin1.com/cread.php?awinmid=00000&awinaffid=000000&ued=https%3A%2F%2Fwww.cotejuros.com.br%2Fcartao-sem-anuidade',
     ctaText: 'Compare opções',
@@ -35,7 +40,12 @@ export const affiliateOffersSeed = [
     priority: 95,
     productType: 'credit_card',
     pageSlugs: ['/cartoes-de-credito', '/comparar/cartoes-sem-anuidade'],
-    placements: ['below_hero', 'sidebar', 'before_faq']
+    placements: ['below_hero', 'sidebar', 'before_faq'],
+    metadata: {
+      accentColor: '#1D4ED8',
+      secondaryAccentColor: '#0F172A',
+      badges: ['Sem anuidade', 'Uso do dia a dia', 'Análise simples']
+    }
   },
   {
     id: 'aff-awin-financiamento-veiculo',
@@ -46,7 +56,7 @@ export const affiliateOffersSeed = [
     title: 'Financiamento de veículo com leitura de custo total',
     category: 'Financiamentos',
     description: 'Entenda entrada, prazo e taxa anual antes de comparar propostas.',
-    audience: 'Para quem quer avaliar parcelas com mais segurança antes de assumir contrato longo.',
+    audience: 'Para quem quer avaliar parcelas com mais segurança antes de assumir um contrato de prazo longo.',
     destinationUrl: 'https://www.cotejuros.com.br/financiamento-veiculo',
     trackingUrl: 'https://www.awin1.com/cread.php?awinmid=00000&awinaffid=000000&ued=https%3A%2F%2Fwww.cotejuros.com.br%2Ffinanciamento-veiculo',
     ctaText: 'Entenda os custos',
@@ -54,7 +64,12 @@ export const affiliateOffersSeed = [
     priority: 92,
     productType: 'financing',
     pageSlugs: ['/financiamento'],
-    placements: ['below_hero', 'mid_content', 'before_faq']
+    placements: ['below_hero', 'mid_content', 'before_faq'],
+    metadata: {
+      accentColor: '#B45309',
+      secondaryAccentColor: '#0F172A',
+      badges: ['Entenda os custos', 'Prazo longo', 'Leitura completa']
+    }
   },
   {
     id: 'aff-awin-emprestimo-sidebar',
@@ -65,7 +80,7 @@ export const affiliateOffersSeed = [
     title: 'Veja o que observar antes de contratar crédito pessoal',
     category: 'Empréstimos',
     description: 'Uma alternativa para comparar valor liberado, prazo e CET com calma.',
-    audience: 'Para quem quer uma leitura objetiva antes de sair do conteúdo.',
+    audience: 'Para quem quer uma leitura objetiva antes de sair do conteúdo e seguir para uma análise externa.',
     destinationUrl: 'https://www.cotejuros.com.br/emprestimo-pessoal',
     trackingUrl: 'https://www.awin1.com/cread.php?awinmid=00000&awinaffid=000000&ued=https%3A%2F%2Fwww.cotejuros.com.br%2Femprestimo-pessoal',
     ctaText: 'Saiba o que observar antes de contratar',
@@ -73,7 +88,12 @@ export const affiliateOffersSeed = [
     priority: 88,
     productType: 'loan',
     pageSlugs: ['/comparar/emprestimo-online', '/emprestimos'],
-    placements: ['sidebar']
+    placements: ['sidebar'],
+    metadata: {
+      accentColor: '#0F766E',
+      secondaryAccentColor: '#14532D',
+      badges: ['Crédito pessoal', 'Boa leitura', 'Condições claras']
+    }
   },
   {
     id: 'aff-awin-cartao-inline',
@@ -84,7 +104,7 @@ export const affiliateOffersSeed = [
     title: 'Cartão com benefícios para quem quer controlar melhor a fatura',
     category: 'Cartões',
     description: 'Compare anuidade, benefícios e critérios de aprovação com mais contexto.',
-    audience: 'Para quem quer entender se o benefício compensa no uso real.',
+    audience: 'Para quem quer entender se o benefício compensa no uso real e manter a fatura sob controle.',
     destinationUrl: 'https://www.cotejuros.com.br/cartao-com-cashback',
     trackingUrl: 'https://www.awin1.com/cread.php?awinmid=00000&awinaffid=000000&ued=https%3A%2F%2Fwww.cotejuros.com.br%2Fcartao-com-cashback',
     ctaText: 'Ver condições',
@@ -92,6 +112,11 @@ export const affiliateOffersSeed = [
     priority: 85,
     productType: 'credit_card',
     pageSlugs: ['/cartoes-de-credito', '/comparar/cartoes-sem-anuidade'],
-    placements: ['mid_content']
+    placements: ['mid_content'],
+    metadata: {
+      accentColor: '#7C3AED',
+      secondaryAccentColor: '#0F172A',
+      badges: ['Cashback', 'Comparação rápida', 'Perfil do dia a dia']
+    }
   }
 ];
