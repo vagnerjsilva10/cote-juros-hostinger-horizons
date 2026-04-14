@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import AdminPageHeader from '@/admin/AdminPageHeader.jsx';
+import { getLeadStatusLabel, getProductTypeLabel } from '@/admin/adminLabels.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -36,18 +37,18 @@ export default function AdminLeadsPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Lead Management" description="Funil de simulações com status operacional e detalhes de origem." />
+      <AdminPageHeader title="Gestao de leads" description="Funil de simulacoes com status operacional e detalhes de origem." />
 
       <Card className="border-slate-200">
-        <CardContent className="pt-6 grid gap-4 md:grid-cols-5">
+        <CardContent className="grid gap-4 pt-6 md:grid-cols-5">
           <div><Label>De</Label><Input type="date" value={filters.from} onChange={(e) => setFilters((prev) => ({ ...prev, from: e.target.value }))} /></div>
-          <div><Label>Até</Label><Input type="date" value={filters.to} onChange={(e) => setFilters((prev) => ({ ...prev, to: e.target.value }))} /></div>
+          <div><Label>Ate</Label><Input type="date" value={filters.to} onChange={(e) => setFilters((prev) => ({ ...prev, to: e.target.value }))} /></div>
           <div>
-            <Label>Source page</Label>
+            <Label>Pagina de origem</Label>
             <Select value={filters.sourcePage} onValueChange={(value) => setFilters((prev) => ({ ...prev, sourcePage: value }))}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                {sourcePageOptions.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}
+                {sourcePageOptions.map((item) => <SelectItem key={item} value={item}>{item === 'all' ? 'Todos' : item}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -56,10 +57,10 @@ export default function AdminLeadsPage() {
             <Select value={filters.productType} onValueChange={(value) => setFilters((prev) => ({ ...prev, productType: value }))}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">all</SelectItem>
-                <SelectItem value="loan">loan</SelectItem>
-                <SelectItem value="credit_card">credit_card</SelectItem>
-                <SelectItem value="financing">financing</SelectItem>
+                <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="loan">Emprestimo</SelectItem>
+                <SelectItem value="credit_card">Cartao de credito</SelectItem>
+                <SelectItem value="financing">Financiamento</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -68,8 +69,8 @@ export default function AdminLeadsPage() {
             <Select value={filters.status} onValueChange={(value) => setFilters((prev) => ({ ...prev, status: value }))}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">all</SelectItem>
-                {statuses.map((status) => <SelectItem key={status} value={status}>{status}</SelectItem>)}
+                <SelectItem value="all">Todos</SelectItem>
+                {statuses.map((status) => <SelectItem key={status} value={status}>{getLeadStatusLabel(status)}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -92,9 +93,9 @@ export default function AdminLeadsPage() {
                 {leads.map((lead) => (
                   <TableRow key={lead.id} className="cursor-pointer" onClick={() => setSelectedLead(lead)}>
                     <TableCell>{new Date(lead.createdAt).toLocaleString('pt-BR')}</TableCell>
-                    <TableCell>{lead.productType || '-'}</TableCell>
+                    <TableCell>{getProductTypeLabel(lead.productType)}</TableCell>
                     <TableCell>{lead.sourcePage || lead.originPage || '-'}</TableCell>
-                    <TableCell>{lead.status || 'new'}</TableCell>
+                    <TableCell>{getLeadStatusLabel(lead.status || 'new')}</TableCell>
                   </TableRow>
                 ))}
                 {leads.length === 0 ? (
@@ -110,10 +111,10 @@ export default function AdminLeadsPage() {
             {selectedLead ? (
               <div className="space-y-4">
                 <h3 className="text-base font-semibold">Detalhes do lead</h3>
-                <div className="text-sm text-slate-600 space-y-1">
+                <div className="space-y-1 text-sm text-slate-600">
                   <p><strong>ID:</strong> {selectedLead.id}</p>
                   <p><strong>Origem:</strong> {selectedLead.sourcePage || selectedLead.originPage || '-'}</p>
-                  <p><strong>Produto:</strong> {selectedLead.productType || '-'}</p>
+                  <p><strong>Produto:</strong> {getProductTypeLabel(selectedLead.productType)}</p>
                   <p><strong>Valor:</strong> {selectedLead.amount || selectedLead.requestedAmount || '-'}</p>
                   <p><strong>Renda:</strong> {selectedLead.income || '-'}</p>
                   <p><strong>Score:</strong> {selectedLead.score || selectedLead.scoreRange || '-'}</p>
@@ -130,7 +131,7 @@ export default function AdminLeadsPage() {
                   >
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {statuses.map((status) => <SelectItem key={status} value={status}>{status}</SelectItem>)}
+                      {statuses.map((status) => <SelectItem key={status} value={status}>{getLeadStatusLabel(status)}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>

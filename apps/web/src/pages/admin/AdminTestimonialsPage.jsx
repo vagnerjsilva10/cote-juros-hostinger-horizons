@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import AdminPageHeader from '@/admin/AdminPageHeader.jsx';
+import { getProductTypeLabel, getRecordStatusLabel } from '@/admin/adminLabels.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,8 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Textarea } from '@/components/ui/textarea';
 
 const emptyForm = {
   id: '',
@@ -45,10 +46,10 @@ export default function AdminTestimonialsPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Testimonials Management" description="Social proof operacional para seções públicas." actionLabel="Novo depoimento" onAction={() => setEditing(emptyForm)} />
+      <AdminPageHeader title="Gestao de depoimentos" description="Prova social operacional para secoes publicas." actionLabel="Novo depoimento" onAction={() => setEditing(emptyForm)} />
 
       <Card className="border-slate-200">
-        <CardContent className="pt-6 grid gap-4 md:grid-cols-2">
+        <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
           <Input placeholder="Buscar depoimento" value={filters.search} onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))} />
           <Select value={filters.status} onValueChange={(value) => setFilters((prev) => ({ ...prev, status: value }))}>
             <SelectTrigger><SelectValue /></SelectTrigger>
@@ -72,7 +73,7 @@ export default function AdminTestimonialsPage() {
                   <TableHead>Produto</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Destaque</TableHead>
-                  <TableHead>Ações</TableHead>
+                  <TableHead>Acoes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -80,9 +81,9 @@ export default function AdminTestimonialsPage() {
                   <TableRow key={item.id}>
                     <TableCell>{item.name}</TableCell>
                     <TableCell>{item.city || item.location || '-'}</TableCell>
-                    <TableCell>{item.productType || item.product || '-'}</TableCell>
-                    <TableCell>{item.status}</TableCell>
-                    <TableCell>{item.featured ? 'Sim' : 'Não'}</TableCell>
+                    <TableCell>{getProductTypeLabel(item.productType || item.product)}</TableCell>
+                    <TableCell>{getRecordStatusLabel(item.status)}</TableCell>
+                    <TableCell>{item.featured ? 'Sim' : 'Nao'}</TableCell>
                     <TableCell className="space-x-2">
                       <Button size="sm" variant="outline" onClick={() => setEditing({ ...emptyForm, ...item, city: item.city || item.location || '', text: item.text || item.quote || '' })}>Editar</Button>
                       <Button
@@ -115,9 +116,9 @@ export default function AdminTestimonialsPage() {
                 <Select value={editing.productType} onValueChange={(value) => setEditing((prev) => ({ ...prev, productType: value }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="loan">loan</SelectItem>
-                    <SelectItem value="credit_card">credit_card</SelectItem>
-                    <SelectItem value="financing">financing</SelectItem>
+                    <SelectItem value="loan">Emprestimo</SelectItem>
+                    <SelectItem value="credit_card">Cartao de credito</SelectItem>
+                    <SelectItem value="financing">Financiamento</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -132,7 +133,7 @@ export default function AdminTestimonialsPage() {
                 </Select>
               </div>
               <div className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2">
-                <Label htmlFor="testimonial-featured">Featured</Label>
+                <Label htmlFor="testimonial-featured">Em destaque</Label>
                 <Switch id="testimonial-featured" checked={Boolean(editing.featured)} onCheckedChange={(value) => setEditing((prev) => ({ ...prev, featured: value }))} />
               </div>
               <Button type="submit" className="w-full">Salvar depoimento</Button>

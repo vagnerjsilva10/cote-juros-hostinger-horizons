@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import AdminPageHeader from '@/admin/AdminPageHeader.jsx';
+import { getPublicationStatusLabel } from '@/admin/adminLabels.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Textarea } from '@/components/ui/textarea';
 
 const emptyForm = {
   id: '',
   title: '',
   slug: '',
-  category: 'Finanças Pessoais',
+  category: 'Financas Pessoais',
   status: 'draft',
   summary: '',
   excerpt: '',
@@ -48,17 +49,17 @@ export default function AdminArticlesPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="CMS / Articles" description="Operação de artigos com draft/publicação e SEO." actionLabel="Novo artigo" onAction={() => setEditing(emptyForm)} />
+      <AdminPageHeader title="CMS / Artigos" description="Operacao de artigos com rascunho, publicacao e SEO." actionLabel="Novo artigo" onAction={() => setEditing(emptyForm)} />
 
       <Card className="border-slate-200">
-        <CardContent className="pt-6 grid gap-4 md:grid-cols-2">
+        <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
           <Input placeholder="Buscar artigo" value={filters.search} onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))} />
           <Select value={filters.status} onValueChange={(value) => setFilters((prev) => ({ ...prev, status: value }))}>
             <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="draft">Draft</SelectItem>
-              <SelectItem value="published">Published</SelectItem>
+              <SelectItem value="draft">Rascunho</SelectItem>
+              <SelectItem value="published">Publicado</SelectItem>
             </SelectContent>
           </Select>
         </CardContent>
@@ -70,10 +71,10 @@ export default function AdminArticlesPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Título</TableHead>
+                  <TableHead>Titulo</TableHead>
                   <TableHead>Categoria</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Ações</TableHead>
+                  <TableHead>Acoes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -81,7 +82,7 @@ export default function AdminArticlesPage() {
                   <TableRow key={article.id}>
                     <TableCell>{article.title}</TableCell>
                     <TableCell>{article.category}</TableCell>
-                    <TableCell>{article.status}</TableCell>
+                    <TableCell>{getPublicationStatusLabel(article.status)}</TableCell>
                     <TableCell className="space-x-2">
                       <Button size="sm" variant="outline" onClick={() => setEditing({ ...emptyForm, ...article })}>Editar</Button>
                       <Button
@@ -89,7 +90,7 @@ export default function AdminArticlesPage() {
                         variant="outline"
                         onClick={async () => {
                           await portalApi.toggleAdminArticlePublish(article.id);
-                          toast.success('Status de publicação atualizado.');
+                          toast.success('Status de publicacao atualizado.');
                           loadData();
                         }}
                       >
@@ -106,7 +107,7 @@ export default function AdminArticlesPage() {
         <Card className="border-slate-200">
           <CardContent className="pt-6">
             <form className="space-y-4" onSubmit={handleSave}>
-              <div><Label>Título</Label><Input value={editing.title} onChange={(e) => setEditing((prev) => ({ ...prev, title: e.target.value }))} required /></div>
+              <div><Label>Titulo</Label><Input value={editing.title} onChange={(e) => setEditing((prev) => ({ ...prev, title: e.target.value }))} required /></div>
               <div><Label>Slug</Label><Input value={editing.slug} onChange={(e) => setEditing((prev) => ({ ...prev, slug: e.target.value }))} /></div>
               <div><Label>Categoria</Label><Input value={editing.category} onChange={(e) => setEditing((prev) => ({ ...prev, category: e.target.value }))} /></div>
               <div>
@@ -114,16 +115,16 @@ export default function AdminArticlesPage() {
                 <Select value={editing.status} onValueChange={(value) => setEditing((prev) => ({ ...prev, status: value }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="published">Published</SelectItem>
+                    <SelectItem value="draft">Rascunho</SelectItem>
+                    <SelectItem value="published">Publicado</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <div><Label>Resumo / excerpt</Label><Textarea rows={3} value={editing.summary} onChange={(e) => setEditing((prev) => ({ ...prev, summary: e.target.value, excerpt: e.target.value }))} /></div>
-              <div><Label>SEO title</Label><Input value={editing.seoTitle} onChange={(e) => setEditing((prev) => ({ ...prev, seoTitle: e.target.value }))} /></div>
-              <div><Label>SEO description</Label><Textarea rows={2} value={editing.seoDescription} onChange={(e) => setEditing((prev) => ({ ...prev, seoDescription: e.target.value }))} /></div>
-              <div><Label>Featured image URL</Label><Input value={editing.image} onChange={(e) => setEditing((prev) => ({ ...prev, image: e.target.value }))} /></div>
-              <div><Label>Body content</Label><Textarea rows={8} value={editing.content} onChange={(e) => setEditing((prev) => ({ ...prev, content: e.target.value }))} /></div>
+              <div><Label>Resumo</Label><Textarea rows={3} value={editing.summary} onChange={(e) => setEditing((prev) => ({ ...prev, summary: e.target.value, excerpt: e.target.value }))} /></div>
+              <div><Label>Titulo SEO</Label><Input value={editing.seoTitle} onChange={(e) => setEditing((prev) => ({ ...prev, seoTitle: e.target.value }))} /></div>
+              <div><Label>Descricao SEO</Label><Textarea rows={2} value={editing.seoDescription} onChange={(e) => setEditing((prev) => ({ ...prev, seoDescription: e.target.value }))} /></div>
+              <div><Label>URL da imagem destacada</Label><Input value={editing.image} onChange={(e) => setEditing((prev) => ({ ...prev, image: e.target.value }))} /></div>
+              <div><Label>Conteudo do artigo</Label><Textarea rows={8} value={editing.content} onChange={(e) => setEditing((prev) => ({ ...prev, content: e.target.value }))} /></div>
               <Button type="submit" className="w-full">Salvar artigo</Button>
             </form>
           </CardContent>

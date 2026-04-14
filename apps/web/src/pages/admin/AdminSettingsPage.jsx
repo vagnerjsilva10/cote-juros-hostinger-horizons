@@ -44,21 +44,21 @@ export default function AdminSettingsPage() {
     event.preventDefault();
     const updated = await portalApi.updateAdminSettings(settings);
     setSettings(updated);
-    toast.success('Configurações atualizadas.');
+    toast.success('Configuracoes atualizadas.');
   };
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Platform Settings" description="Configurações globais de destino, SEO e integrações." />
+      <AdminPageHeader title="Configuracoes da plataforma" description="Configuracoes globais de destino, SEO e integracoes." />
 
       <Card className="border-slate-200">
         <CardContent className="pt-6">
           <form className="space-y-6" onSubmit={handleSave}>
             <div className="grid gap-4 md:grid-cols-2">
-              <div><Label>Default CTA destination</Label><Input value={settings.defaultCtaDestination} onChange={(e) => update('defaultCtaDestination', e.target.value)} /></div>
-              <div><Label>Support email</Label><Input value={settings.supportEmail} onChange={(e) => update('supportEmail', e.target.value)} /></div>
-              <div><Label>Cote Finance AI base URL</Label><Input value={settings.coteFinanceAiBaseUrl} onChange={(e) => update('coteFinanceAiBaseUrl', e.target.value)} /></div>
-              <div><Label>Cote Finance AI dashboard URL</Label><Input value={settings.coteFinanceAiDashboardUrl} onChange={(e) => update('coteFinanceAiDashboardUrl', e.target.value)} /></div>
+              <div><Label>Destino padrao do CTA</Label><Input value={settings.defaultCtaDestination} onChange={(e) => update('defaultCtaDestination', e.target.value)} /></div>
+              <div><Label>E-mail de suporte</Label><Input value={settings.supportEmail} onChange={(e) => update('supportEmail', e.target.value)} /></div>
+              <div><Label>URL base do Cote Finance AI</Label><Input value={settings.coteFinanceAiBaseUrl} onChange={(e) => update('coteFinanceAiBaseUrl', e.target.value)} /></div>
+              <div><Label>URL do painel do Cote Finance AI</Label><Input value={settings.coteFinanceAiDashboardUrl} onChange={(e) => update('coteFinanceAiDashboardUrl', e.target.value)} /></div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
@@ -69,25 +69,25 @@ export default function AdminSettingsPage() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <div><Label>SEO title suffix</Label><Input value={settings.defaultSeo.titleSuffix} onChange={(e) => update('defaultSeo.titleSuffix', e.target.value)} /></div>
-              <div><Label>Default SEO description</Label><Input value={settings.defaultSeo.defaultDescription} onChange={(e) => update('defaultSeo.defaultDescription', e.target.value)} /></div>
-              <div><Label>GA4 key (placeholder)</Label><Input value={settings.analytics.ga4Key} onChange={(e) => update('analytics.ga4Key', e.target.value)} /></div>
-              <div><Label>Meta Pixel key (placeholder)</Label><Input value={settings.analytics.metaPixelKey} onChange={(e) => update('analytics.metaPixelKey', e.target.value)} /></div>
+              <div><Label>Sufixo do titulo SEO</Label><Input value={settings.defaultSeo.titleSuffix} onChange={(e) => update('defaultSeo.titleSuffix', e.target.value)} /></div>
+              <div><Label>Descricao SEO padrao</Label><Input value={settings.defaultSeo.defaultDescription} onChange={(e) => update('defaultSeo.defaultDescription', e.target.value)} /></div>
+              <div><Label>Chave do GA4 (placeholder)</Label><Input value={settings.analytics.ga4Key} onChange={(e) => update('analytics.ga4Key', e.target.value)} /></div>
+              <div><Label>Chave do Meta Pixel (placeholder)</Label><Input value={settings.analytics.metaPixelKey} onChange={(e) => update('analytics.metaPixelKey', e.target.value)} /></div>
             </div>
 
-            <div className="rounded-md border border-slate-200 p-4 space-y-3">
+            <div className="space-y-3 rounded-md border border-slate-200 p-4">
               <div className="flex items-center justify-between">
-                <Label htmlFor="source-tagging-enabled">Source tagging habilitado</Label>
+                <Label htmlFor="source-tagging-enabled">Rastreamento de origem habilitado</Label>
                 <Switch id="source-tagging-enabled" checked={Boolean(settings.sourceTagging.enabled)} onCheckedChange={(value) => update('sourceTagging.enabled', value)} />
               </div>
               <div className="grid gap-4 md:grid-cols-3">
-                <div><Label>Source param</Label><Input value={settings.sourceTagging.sourceParamName} onChange={(e) => update('sourceTagging.sourceParamName', e.target.value)} /></div>
-                <div><Label>Medium param</Label><Input value={settings.sourceTagging.mediumParamName} onChange={(e) => update('sourceTagging.mediumParamName', e.target.value)} /></div>
-                <div><Label>Campaign param</Label><Input value={settings.sourceTagging.campaignParamName} onChange={(e) => update('sourceTagging.campaignParamName', e.target.value)} /></div>
+                <div><Label>Parametro de origem</Label><Input value={settings.sourceTagging.sourceParamName} onChange={(e) => update('sourceTagging.sourceParamName', e.target.value)} /></div>
+                <div><Label>Parametro de midia</Label><Input value={settings.sourceTagging.mediumParamName} onChange={(e) => update('sourceTagging.mediumParamName', e.target.value)} /></div>
+                <div><Label>Parametro de campanha</Label><Input value={settings.sourceTagging.campaignParamName} onChange={(e) => update('sourceTagging.campaignParamName', e.target.value)} /></div>
               </div>
             </div>
 
-            <Button type="submit">Salvar configurações</Button>
+            <Button type="submit">Salvar configuracoes</Button>
           </form>
         </CardContent>
       </Card>

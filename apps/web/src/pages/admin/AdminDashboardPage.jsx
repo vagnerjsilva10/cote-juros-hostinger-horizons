@@ -19,9 +19,9 @@ export default function AdminDashboardPage() {
   }, []);
 
   const metrics = [
-    { label: 'Total leads', value: data.totalLeads },
-    { label: 'CTA clicks', value: data.ctaClicks },
-    { label: 'App integration events', value: data.appIntegrationEvents },
+    { label: 'Total de leads', value: data.totalLeads },
+    { label: 'Cliques em CTA', value: data.ctaClicks },
+    { label: 'Eventos de integração', value: data.appIntegrationEvents },
     { label: 'Produtos com leads', value: Object.keys(data.leadsByProductType || {}).length }
   ];
 

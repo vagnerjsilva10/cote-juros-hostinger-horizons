@@ -1,14 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import AdminPageHeader from '@/admin/AdminPageHeader.jsx';
+import { getProductTypeLabel, getRecordStatusLabel } from '@/admin/adminLabels.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Switch } from '@/components/ui/switch';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const emptyForm = {
   id: '',
@@ -82,22 +83,22 @@ export default function AdminOffersPage() {
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        title="Offer Management"
+        title="Gestao de ofertas"
         description="Gerencie ofertas, parceiros e regras de redirecionamento."
         actionLabel="Nova oferta"
         onAction={() => setEditing(emptyForm)}
       />
 
       <Card className="border-slate-200">
-        <CardContent className="pt-6 grid gap-4 md:grid-cols-3">
-          <Input placeholder="Buscar por título ou banco" value={filters.search} onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))} />
+        <CardContent className="grid gap-4 pt-6 md:grid-cols-3">
+          <Input placeholder="Buscar por titulo ou banco" value={filters.search} onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))} />
           <Select value={filters.productType} onValueChange={(value) => setFilters((prev) => ({ ...prev, productType: value }))}>
             <SelectTrigger><SelectValue placeholder="Produto" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos os produtos</SelectItem>
-              <SelectItem value="loan">Loan</SelectItem>
-              <SelectItem value="credit_card">Credit card</SelectItem>
-              <SelectItem value="financing">Financing</SelectItem>
+              <SelectItem value="loan">Emprestimo</SelectItem>
+              <SelectItem value="credit_card">Cartao de credito</SelectItem>
+              <SelectItem value="financing">Financiamento</SelectItem>
             </SelectContent>
           </Select>
           <Select value={filters.status} onValueChange={(value) => setFilters((prev) => ({ ...prev, status: value }))}>
@@ -117,11 +118,11 @@ export default function AdminOffersPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Título</TableHead>
+                  <TableHead>Titulo</TableHead>
                   <TableHead>Banco</TableHead>
                   <TableHead>Produto</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Ações</TableHead>
+                  <TableHead>Acoes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -129,8 +130,8 @@ export default function AdminOffersPage() {
                   <TableRow key={offer.id}>
                     <TableCell>{offer.title}</TableCell>
                     <TableCell>{offer.bankName || '-'}</TableCell>
-                    <TableCell>{offer.productType}</TableCell>
-                    <TableCell>{offer.status || 'active'}</TableCell>
+                    <TableCell>{getProductTypeLabel(offer.productType)}</TableCell>
+                    <TableCell>{getRecordStatusLabel(offer.status || 'active')}</TableCell>
                     <TableCell className="space-x-2">
                       <Button size="sm" variant="outline" onClick={() => handleEdit(offer)}>Editar</Button>
                       <Button
@@ -156,7 +157,7 @@ export default function AdminOffersPage() {
           <CardContent className="pt-6">
             <form className="space-y-4" onSubmit={handleSave}>
               <div>
-                <Label>Título</Label>
+                <Label>Titulo</Label>
                 <Input value={editing.title} onChange={(e) => setEditing((prev) => ({ ...prev, title: e.target.value }))} required />
               </div>
               <div>
@@ -174,9 +175,9 @@ export default function AdminOffersPage() {
                   <Select value={editing.productType} onValueChange={(value) => setEditing((prev) => ({ ...prev, productType: value }))}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="loan">Loan</SelectItem>
-                      <SelectItem value="credit_card">Credit card</SelectItem>
-                      <SelectItem value="financing">Financing</SelectItem>
+                      <SelectItem value="loan">Emprestimo</SelectItem>
+                      <SelectItem value="credit_card">Cartao de credito</SelectItem>
+                      <SelectItem value="financing">Financiamento</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -190,19 +191,19 @@ export default function AdminOffersPage() {
                 <div><Label>Taxa anual (%)</Label><Input type="number" step="0.01" value={editing.annualRate} onChange={(e) => setEditing((prev) => ({ ...prev, annualRate: e.target.value }))} /></div>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div><Label>Valor mínimo</Label><Input type="number" value={editing.minValue} onChange={(e) => setEditing((prev) => ({ ...prev, minValue: e.target.value }))} /></div>
-                <div><Label>Valor máximo</Label><Input type="number" value={editing.maxValue} onChange={(e) => setEditing((prev) => ({ ...prev, maxValue: e.target.value }))} /></div>
+                <div><Label>Valor minimo</Label><Input type="number" value={editing.minValue} onChange={(e) => setEditing((prev) => ({ ...prev, minValue: e.target.value }))} /></div>
+                <div><Label>Valor maximo</Label><Input type="number" value={editing.maxValue} onChange={(e) => setEditing((prev) => ({ ...prev, maxValue: e.target.value }))} /></div>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div><Label>Prazo mínimo</Label><Input type="number" value={editing.minTerm} onChange={(e) => setEditing((prev) => ({ ...prev, minTerm: e.target.value }))} /></div>
-                <div><Label>Prazo máximo</Label><Input type="number" value={editing.maxTerm} onChange={(e) => setEditing((prev) => ({ ...prev, maxTerm: e.target.value }))} /></div>
+                <div><Label>Prazo minimo</Label><Input type="number" value={editing.minTerm} onChange={(e) => setEditing((prev) => ({ ...prev, minTerm: e.target.value }))} /></div>
+                <div><Label>Prazo maximo</Label><Input type="number" value={editing.maxTerm} onChange={(e) => setEditing((prev) => ({ ...prev, maxTerm: e.target.value }))} /></div>
               </div>
               <div>
-                <Label>Redirect URL</Label>
+                <Label>URL de redirecionamento</Label>
                 <Input value={editing.redirectUrl} onChange={(e) => setEditing((prev) => ({ ...prev, redirectUrl: e.target.value }))} />
               </div>
               <div>
-                <Label>Partner tracking URL</Label>
+                <Label>URL de rastreamento do parceiro</Label>
                 <Input value={editing.partnerTrackingUrl} onChange={(e) => setEditing((prev) => ({ ...prev, partnerTrackingUrl: e.target.value }))} />
               </div>
               <div className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2">

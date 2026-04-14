@@ -5,15 +5,15 @@ import { clearAdminSession } from '@/admin/AdminAuthGuard.jsx';
 import { CoteJurosLogo } from '@/components/CoteJurosLogo.jsx';
 
 const navItems = [
-  { to: '/admin', label: 'Dashboard' },
-  { to: '/admin/offers', label: 'Offers' },
-  { to: '/admin/banks', label: 'Banks' },
-  { to: '/admin/partners', label: 'Partners' },
-  { to: '/admin/articles', label: 'Articles' },
-  { to: '/admin/seo-pages', label: 'SEO Pages' },
+  { to: '/admin', label: 'Painel' },
+  { to: '/admin/offers', label: 'Ofertas' },
+  { to: '/admin/banks', label: 'Bancos' },
+  { to: '/admin/partners', label: 'Parceiros' },
+  { to: '/admin/articles', label: 'Artigos' },
+  { to: '/admin/seo-pages', label: 'Páginas SEO' },
   { to: '/admin/leads', label: 'Leads' },
-  { to: '/admin/testimonials', label: 'Testimonials' },
-  { to: '/admin/settings', label: 'Settings' }
+  { to: '/admin/testimonials', label: 'Depoimentos' },
+  { to: '/admin/settings', label: 'Configurações' }
 ];
 
 export default function AdminLayout({ title, children }) {
@@ -54,7 +54,7 @@ export default function AdminLayout({ title, children }) {
           <header className="sticky top-0 z-10 border-b border-border bg-white/90 backdrop-blur-xl">
             <div className="flex h-[72px] items-center justify-between px-6 lg:px-10">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Admin</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Administração</p>
                 <h1 className="text-2xl font-semibold tracking-[-0.03em] text-foreground">{title}</h1>
               </div>
               <div className="flex items-center gap-3">

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import AdminPageHeader from '@/admin/AdminPageHeader.jsx';
+import { getRecordStatusLabel } from '@/admin/adminLabels.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -43,10 +44,10 @@ export default function AdminBanksPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Bank Management" description="Cadastro e operação dos bancos." actionLabel="Novo banco" onAction={() => setEditing(emptyForm)} />
+      <AdminPageHeader title="Gestao de bancos" description="Cadastro e operacao dos bancos." actionLabel="Novo banco" onAction={() => setEditing(emptyForm)} />
 
       <Card className="border-slate-200">
-        <CardContent className="pt-6 grid gap-4 md:grid-cols-2">
+        <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
           <Input placeholder="Buscar banco" value={filters.search} onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))} />
           <Select value={filters.status} onValueChange={(value) => setFilters((prev) => ({ ...prev, status: value }))}>
             <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
@@ -68,7 +69,7 @@ export default function AdminBanksPage() {
                   <TableHead>Nome</TableHead>
                   <TableHead>Website</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Ações</TableHead>
+                  <TableHead>Acoes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -76,7 +77,7 @@ export default function AdminBanksPage() {
                   <TableRow key={bank.id}>
                     <TableCell>{bank.name}</TableCell>
                     <TableCell>{bank.website || '-'}</TableCell>
-                    <TableCell>{bank.status || 'active'}</TableCell>
+                    <TableCell>{getRecordStatusLabel(bank.status || 'active')}</TableCell>
                     <TableCell className="space-x-2">
                       <Button variant="outline" size="sm" onClick={() => setEditing({ ...emptyForm, ...bank })}>Editar</Button>
                       <Button
@@ -103,7 +104,7 @@ export default function AdminBanksPage() {
             <form className="space-y-4" onSubmit={handleSave}>
               <div><Label>Nome</Label><Input value={editing.name} onChange={(e) => setEditing((prev) => ({ ...prev, name: e.target.value }))} required /></div>
               <div><Label>Slug</Label><Input value={editing.slug} onChange={(e) => setEditing((prev) => ({ ...prev, slug: e.target.value }))} /></div>
-              <div><Label>Logo URL</Label><Input value={editing.logoUrl} onChange={(e) => setEditing((prev) => ({ ...prev, logoUrl: e.target.value }))} /></div>
+              <div><Label>URL do logo</Label><Input value={editing.logoUrl} onChange={(e) => setEditing((prev) => ({ ...prev, logoUrl: e.target.value }))} /></div>
               <div><Label>Cor</Label><Input value={editing.color} onChange={(e) => setEditing((prev) => ({ ...prev, color: e.target.value }))} /></div>
               <div><Label>Website</Label><Input value={editing.website} onChange={(e) => setEditing((prev) => ({ ...prev, website: e.target.value }))} /></div>
               <div>

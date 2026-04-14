@@ -214,15 +214,15 @@ function App() {
         ))}
 
         <Route path="/admin/login" element={<AdminAuthGuard />} />
-        <Route path="/admin" element={<AdminRoute title="Dashboard"><AdminDashboardPage /></AdminRoute>} />
-        <Route path="/admin/offers" element={<AdminRoute title="Offer Management"><AdminOffersPage /></AdminRoute>} />
-        <Route path="/admin/banks" element={<AdminRoute title="Bank Management"><AdminBanksPage /></AdminRoute>} />
-        <Route path="/admin/partners" element={<AdminRoute title="Partner Management"><AdminPartnersPage /></AdminRoute>} />
-        <Route path="/admin/articles" element={<AdminRoute title="Article Management"><AdminArticlesPage /></AdminRoute>} />
-        <Route path="/admin/seo-pages" element={<AdminRoute title="SEO Page Management"><AdminSeoPagesPage /></AdminRoute>} />
-        <Route path="/admin/leads" element={<AdminRoute title="Lead Management"><AdminLeadsPage /></AdminRoute>} />
-        <Route path="/admin/testimonials" element={<AdminRoute title="Testimonials"><AdminTestimonialsPage /></AdminRoute>} />
-        <Route path="/admin/settings" element={<AdminRoute title="Settings"><AdminSettingsPage /></AdminRoute>} />
+        <Route path="/admin" element={<AdminRoute title="Painel"><AdminDashboardPage /></AdminRoute>} />
+        <Route path="/admin/offers" element={<AdminRoute title="Gestão de ofertas"><AdminOffersPage /></AdminRoute>} />
+        <Route path="/admin/banks" element={<AdminRoute title="Gestão de bancos"><AdminBanksPage /></AdminRoute>} />
+        <Route path="/admin/partners" element={<AdminRoute title="Gestão de parceiros"><AdminPartnersPage /></AdminRoute>} />
+        <Route path="/admin/articles" element={<AdminRoute title="Gestão de artigos"><AdminArticlesPage /></AdminRoute>} />
+        <Route path="/admin/seo-pages" element={<AdminRoute title="Gestão de páginas SEO"><AdminSeoPagesPage /></AdminRoute>} />
+        <Route path="/admin/leads" element={<AdminRoute title="Gestão de leads"><AdminLeadsPage /></AdminRoute>} />
+        <Route path="/admin/testimonials" element={<AdminRoute title="Depoimentos"><AdminTestimonialsPage /></AdminRoute>} />
+        <Route path="/admin/settings" element={<AdminRoute title="Configurações"><AdminSettingsPage /></AdminRoute>} />
 
         {seoPages.filter((page) => !shouldSkipSeedSeoPage(page.path)).map((page) => (
           <Route

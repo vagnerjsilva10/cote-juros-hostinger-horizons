@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import AdminPageHeader from '@/admin/AdminPageHeader.jsx';
+import { getRecordStatusLabel } from '@/admin/adminLabels.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -48,10 +49,10 @@ export default function AdminPartnersPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Partner Management" description="Configuração de links e regras por parceiro." actionLabel="Novo parceiro" onAction={() => setEditing(emptyForm)} />
+      <AdminPageHeader title="Gestao de parceiros" description="Configuracao de links e regras por parceiro." actionLabel="Novo parceiro" onAction={() => setEditing(emptyForm)} />
 
       <Card className="border-slate-200">
-        <CardContent className="pt-6 grid gap-4 md:grid-cols-2">
+        <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
           <Input placeholder="Buscar parceiro" value={filters.search} onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))} />
           <Select value={filters.status} onValueChange={(value) => setFilters((prev) => ({ ...prev, status: value }))}>
             <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
@@ -73,7 +74,7 @@ export default function AdminPartnersPage() {
                   <TableHead>Parceiro</TableHead>
                   <TableHead>Banco</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Ações</TableHead>
+                  <TableHead>Acoes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -81,7 +82,7 @@ export default function AdminPartnersPage() {
                   <TableRow key={partner.id}>
                     <TableCell>{partner.name}</TableCell>
                     <TableCell>{banks.find((item) => item.id === partner.bankId)?.name || '-'}</TableCell>
-                    <TableCell>{partner.status || 'active'}</TableCell>
+                    <TableCell>{getRecordStatusLabel(partner.status || 'active')}</TableCell>
                     <TableCell className="space-x-2">
                       <Button variant="outline" size="sm" onClick={() => setEditing({ ...emptyForm, ...partner })}>Editar</Button>
                       <Button
@@ -116,10 +117,10 @@ export default function AdminPartnersPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div><Label>Tracking link</Label><Input value={editing.trackingLink} onChange={(e) => setEditing((prev) => ({ ...prev, trackingLink: e.target.value }))} /></div>
-              <div><Label>Regras de redirect</Label><Input value={editing.redirectRules} onChange={(e) => setEditing((prev) => ({ ...prev, redirectRules: e.target.value }))} /></div>
+              <div><Label>Link de rastreamento</Label><Input value={editing.trackingLink} onChange={(e) => setEditing((prev) => ({ ...prev, trackingLink: e.target.value }))} /></div>
+              <div><Label>Regras de redirecionamento</Label><Input value={editing.redirectRules} onChange={(e) => setEditing((prev) => ({ ...prev, redirectRules: e.target.value }))} /></div>
               <div>
-                <Label>Product types (csv)</Label>
+                <Label>Tipos de produto (csv)</Label>
                 <Input
                   value={Array.isArray(editing.productTypes) ? editing.productTypes.join(',') : ''}
                   onChange={(e) => setEditing((prev) => ({ ...prev, productTypes: e.target.value.split(',').map((item) => item.trim()).filter(Boolean) }))}
