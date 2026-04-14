@@ -173,6 +173,27 @@ const normalizeCreditOfferRecord = (offer = {}) => ({
   rawPayload: offer.rawPayload || null
 });
 
+const normalizeAffiliateOfferRecord = (offer = {}) => ({
+  id: offer.id,
+  network: offer.network || 'awin',
+  advertiserId: offer.advertiserId || offer.advertiser_id || '',
+  merchantName: normalizeMojibake(offer.merchantName || offer.merchant_name || ''),
+  offerSlug: normalizeMojibake(offer.offerSlug || offer.offer_slug || ''),
+  title: normalizeMojibake(offer.title || ''),
+  category: normalizeMojibake(offer.category || ''),
+  description: normalizeMojibake(offer.description || ''),
+  audience: normalizeMojibake(offer.audience || ''),
+  destinationUrl: offer.destinationUrl || offer.destination_url || '',
+  trackingUrl: offer.trackingUrl || offer.tracking_url || '',
+  ctaText: normalizeMojibake(offer.ctaText || offer.cta_text || 'Ver condições'),
+  disclosureText: normalizeMojibake(offer.disclosureText || offer.disclosure_text || ''),
+  priority: Number(offer.priority || 0),
+  productType: offer.productType || offer.product_type || null,
+  pageSlugs: Array.isArray(offer.pageSlugs) ? offer.pageSlugs : [],
+  placements: Array.isArray(offer.placements) ? offer.placements : [],
+  metadata: offer.metadata || null
+});
+
 const buildLocalCreditOffers = (payload = {}) =>
   portalRepository
     .listOffers({
@@ -240,6 +261,62 @@ export const portalApi = {
       return Array.isArray(data) ? data.map(normalizeArticleRecord) : [];
     } catch {
       return portalRepository.listArticles(filters);
+    }
+  },
+
+  async getAffiliateOffers(filters) {
+    if (!useRemote) {
+      await wait();
+      return portalRepository.listAffiliateOffers(filters).map(normalizeAffiliateOfferRecord);
+    }
+
+    try {
+      const qs = toQueryString(filters);
+      const data = await request(`/api/affiliates/offers${qs ? `?${qs}` : ''}`);
+      return Array.isArray(data) ? data.map(normalizeAffiliateOfferRecord) : [];
+    } catch {
+      return portalRepository.listAffiliateOffers(filters).map(normalizeAffiliateOfferRecord);
+    }
+  },
+
+  async getAffiliatePlacements(filters) {
+    if (!useRemote) {
+      await wait();
+      const data = portalRepository.listAffiliatePlacements(filters);
+      return {
+        ...data,
+        placements: Object.fromEntries(
+          Object.entries(data.placements || {}).map(([placement, offers]) => [
+            placement,
+            offers.map(normalizeAffiliateOfferRecord)
+          ])
+        )
+      };
+    }
+
+    try {
+      const qs = toQueryString(filters);
+      const data = await request(`/api/affiliates/placements${qs ? `?${qs}` : ''}`);
+      return {
+        ...data,
+        placements: Object.fromEntries(
+          Object.entries(data?.placements || {}).map(([placement, offers]) => [
+            placement,
+            Array.isArray(offers) ? offers.map(normalizeAffiliateOfferRecord) : []
+          ])
+        )
+      };
+    } catch {
+      const data = portalRepository.listAffiliatePlacements(filters);
+      return {
+        ...data,
+        placements: Object.fromEntries(
+          Object.entries(data.placements || {}).map(([placement, offers]) => [
+            placement,
+            offers.map(normalizeAffiliateOfferRecord)
+          ])
+        )
+      };
     }
   },
 
@@ -641,5 +718,43 @@ export const portalApi = {
         utm_campaign: utm?.utm_campaign
       })
     });
+  },
+
+  async trackAffiliateOfferClick({ offerSlug, pageSlug, position }) {
+    const device =
+      typeof navigator !== 'undefined' && navigator.userAgent
+        ? /mobile|android|iphone|ipod/i.test(navigator.userAgent)
+          ? 'mobile'
+          : /ipad|tablet/i.test(navigator.userAgent)
+            ? 'tablet'
+            : 'desktop'
+        : 'desktop';
+
+    if (!useRemote) {
+      await wait();
+      return portalRepository.trackAffiliateClick({
+        offerSlug,
+        pageSlug,
+        position,
+        device
+      });
+    }
+
+    try {
+      return await request(`/api/affiliates/offers/${offerSlug}/click`, {
+        method: 'POST',
+        body: JSON.stringify({
+          pageSlug,
+          position
+        })
+      });
+    } catch {
+      return portalRepository.trackAffiliateClick({
+        offerSlug,
+        pageSlug,
+        position,
+        device
+      });
+    }
   }
 };

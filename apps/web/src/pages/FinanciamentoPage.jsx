@@ -8,12 +8,17 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PageHero from '@/components/PageHero.jsx';
+import AffiliateOfferGrid from '@/components/affiliates/AffiliateOfferGrid.jsx';
+import AffiliateInlineCTA from '@/components/affiliates/AffiliateInlineCTA.jsx';
+import { useAffiliatePlacements } from '@/hooks/useAffiliatePlacements.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
+import { affiliateRedirectService } from '@/platform/services/affiliateRedirectService.js';
 
 function FinanciamentoPage() {
   const [financingData, setFinancingData] = useState([]);
+  const affiliatePlacements = useAffiliatePlacements({ pageSlug: '/financiamento', productType: 'financing' });
 
   useEffect(() => {
     portalApi.getOffers({ productType: 'financing' }).then(setFinancingData);
@@ -52,6 +57,25 @@ function FinanciamentoPage() {
 
     toast.success(`Interesse registrado para simulação com ${offer.bankName}.`);
     window.location.href = redirect.resolvedUrl;
+  };
+
+  const handleAffiliateClick = async (offer, position) => {
+    try {
+      const result = await affiliateRedirectService.create({
+        offerSlug: offer.offerSlug,
+        pageSlug: '/financiamento',
+        position
+      });
+
+      if (!result?.redirectUrl) {
+        toast.error('Essa oferta ainda não possui link disponível.');
+        return;
+      }
+
+      window.location.href = result.redirectUrl;
+    } catch (error) {
+      toast.error(error.message || 'Não foi possível abrir esta oferta agora.');
+    }
   };
 
   const renderCards = (filterFn) => {
@@ -143,6 +167,17 @@ function FinanciamentoPage() {
         </div>
       </section>
 
+      {affiliatePlacements.below_hero?.length ? (
+        <div className="page-shell py-8">
+          <AffiliateOfferGrid
+            offers={affiliatePlacements.below_hero}
+            title="Condições relacionadas para analisar junto com seu financiamento"
+            eyebrow="Entenda os custos"
+            onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
+          />
+        </div>
+      ) : null}
+
       <div className="page-shell py-12" id="resultados-financiamento">
         <Tabs defaultValue="veiculos" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
@@ -180,10 +215,31 @@ function FinanciamentoPage() {
             {renderCards((item) => item.category !== 'Carro' && item.category !== 'Moto')}
           </TabsContent>
         </Tabs>
+
+        {affiliatePlacements.mid_content?.[0] ? (
+          <div className="mt-8">
+            <AffiliateInlineCTA
+              offer={affiliatePlacements.mid_content[0]}
+              title="Antes de seguir, compare uma opção relacionada"
+              onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
+            />
+          </div>
+        ) : null}
       </div>
 
       <section className="border-t border-border bg-background-secondary py-16">
         <div className="page-shell">
+          {affiliatePlacements.before_faq?.length ? (
+            <div className="mb-8">
+              <AffiliateOfferGrid
+                offers={affiliatePlacements.before_faq}
+                title="Mais uma leitura útil antes de decidir pelo contrato"
+                eyebrow="Veja condições"
+                onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
+              />
+            </div>
+          ) : null}
+
           <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
             <h2 className="mb-3">Quer validar seu financiamento com mais segurança?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">

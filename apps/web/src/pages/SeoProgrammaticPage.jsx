@@ -8,7 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import AffiliateOfferGrid from '@/components/affiliates/AffiliateOfferGrid.jsx';
+import AffiliateInlineCTA from '@/components/affiliates/AffiliateInlineCTA.jsx';
+import AffiliateSidebarWidget from '@/components/affiliates/AffiliateSidebarWidget.jsx';
+import { useAffiliatePlacements } from '@/hooks/useAffiliatePlacements.js';
 import { portalApi } from '@/platform/services/portalApi.js';
+import { affiliateRedirectService } from '@/platform/services/affiliateRedirectService.js';
 import {
   getBankRoute,
   getComparePage,
@@ -706,6 +711,10 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
     ? normalizeMojibakeDeep(normalizedModel.recommendationCards)
     : [];
   const linkGroups = Array.isArray(normalizedModel?.linkGroups) ? normalizeMojibakeDeep(normalizedModel.linkGroups) : [];
+  const affiliatePlacements = useAffiliatePlacements({
+    pageSlug: normalizedModel?.path || '',
+    productType: normalizedModel?.productType || undefined
+  });
 
   if (!normalizedModel) {
     return (
@@ -735,6 +744,22 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
   const structuredData = normalizeMojibakeDeep(
     buildStructuredData({ model: normalizedModel, canonicalUrl, offers: pageOffers, faqItems })
   );
+
+  const handleAffiliateClick = async (offer, position) => {
+    try {
+      const result = await affiliateRedirectService.create({
+        offerSlug: offer.offerSlug,
+        pageSlug: normalizedModel.path,
+        position
+      });
+
+      if (result?.redirectUrl) {
+        window.location.href = result.redirectUrl;
+      }
+    } catch {
+      // keep editorial navigation resilient
+    }
+  };
 
   return (
     <>
@@ -796,6 +821,15 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               </CardContent>
             </Card>
 
+            {affiliatePlacements.below_hero?.length ? (
+              <AffiliateOfferGrid
+                offers={affiliatePlacements.below_hero}
+                title="Condições relacionadas para analisar nesta comparação"
+                eyebrow="Veja condições"
+                onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
+              />
+            ) : null}
+
             <EditorialSections sections={editorialSections} relatedGroups={linkGroups} />
 
             {normalizedModel.pageType === 'tool' ? (
@@ -836,6 +870,23 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
 
             <RecommendationCardsSection title={normalizedModel.recommendationCardsTitle || 'Sugestões para você'} cards={recommendationCards} />
 
+            {affiliatePlacements.mid_content?.[0] ? (
+              <AffiliateInlineCTA
+                offer={affiliatePlacements.mid_content[0]}
+                title="Quer comparar mais uma opção antes de decidir?"
+                onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
+              />
+            ) : null}
+
+            {affiliatePlacements.before_faq?.length ? (
+              <AffiliateOfferGrid
+                offers={affiliatePlacements.before_faq}
+                title="Mais opções para avaliar antes de concluir sua pesquisa"
+                eyebrow="Compare opções"
+                onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
+              />
+            ) : null}
+
             <Card className="min-w-0 border-border bg-white">
               <CardContent className="min-w-0 space-y-5 p-5 sm:p-6 md:p-8">
                 <div className="flex items-center gap-2">
@@ -874,6 +925,13 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
                 </ul>
               </CardContent>
             </Card>
+
+            {affiliatePlacements.sidebar?.[0] ? (
+              <AffiliateSidebarWidget
+                offer={affiliatePlacements.sidebar[0]}
+                onSelect={(offer) => handleAffiliateClick(offer, 'sidebar')}
+              />
+            ) : null}
 
             <InternalLinkGroups customGroups={linkGroups} />
           </aside>

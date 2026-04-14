@@ -7,6 +7,7 @@ import trackingRoutes from './routes/tracking.js';
 import partnersRoutes from './routes/partners.js';
 import integrationRoutes from './routes/integration.js';
 import creditRoutes from './routes/credit.js';
+import affiliatesRoutes from './routes/affiliates.js';
 import { PrismaConfigError } from './lib/prisma.js';
 import { IntegrationConfigurationError, JurosBaixosIntegrationError } from './integrations/jurosBaixos/errors.js';
 import { validateJurosBaixosEnvironment } from './integrations/jurosBaixos/config.js';
@@ -38,6 +39,7 @@ export const createApp = () => {
   app.use('/api/partners', partnersRoutes);
   app.use('/api/integration', integrationRoutes);
   app.use('/api/credit', creditRoutes);
+  app.use('/api/affiliates', affiliatesRoutes);
 
   app.use((err, req, res, _next) => {
     if (err?.name === 'ZodError') {

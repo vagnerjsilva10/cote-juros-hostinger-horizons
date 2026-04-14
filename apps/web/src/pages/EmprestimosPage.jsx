@@ -11,9 +11,14 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import PageHero from '@/components/PageHero.jsx';
+import AffiliateOfferGrid from '@/components/affiliates/AffiliateOfferGrid.jsx';
+import AffiliateInlineCTA from '@/components/affiliates/AffiliateInlineCTA.jsx';
+import AffiliateSidebarWidget from '@/components/affiliates/AffiliateSidebarWidget.jsx';
+import { useAffiliatePlacements } from '@/hooks/useAffiliatePlacements.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
+import { affiliateRedirectService } from '@/platform/services/affiliateRedirectService.js';
 
 const bankAccentById = {
   itau: '#EC7000',
@@ -38,6 +43,7 @@ function EmprestimosPage() {
   const [term, setTerm] = useState([24]);
   const [sort, setSort] = useState('taxa-baixa');
   const [viewMode, setViewMode] = useState('grid');
+  const affiliatePlacements = useAffiliatePlacements({ pageSlug: '/emprestimos', productType: 'loan' });
 
   useEffect(() => {
     Promise.all([portalApi.getBanks(), portalApi.getOffers({ productType: 'loan' })]).then(([banks, offers]) => {
@@ -159,6 +165,25 @@ function EmprestimosPage() {
     setSort('taxa-baixa');
   };
 
+  const handleAffiliateClick = async (offer, position) => {
+    try {
+      const result = await affiliateRedirectService.create({
+        offerSlug: offer.offerSlug,
+        pageSlug: '/emprestimos',
+        position
+      });
+
+      if (!result?.redirectUrl) {
+        toast.error('Essa oferta ainda não possui link disponível.');
+        return;
+      }
+
+      window.location.href = result.redirectUrl;
+    } catch (error) {
+      toast.error(error.message || 'Não foi possível abrir esta oferta agora.');
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -204,6 +229,17 @@ function EmprestimosPage() {
           </div>
         </div>
       </section>
+
+      {affiliatePlacements.below_hero?.length ? (
+        <div className="page-shell py-8">
+          <AffiliateOfferGrid
+            offers={affiliatePlacements.below_hero}
+            title="Opções relacionadas para comparar com mais contexto"
+            eyebrow="Veja condições"
+            onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
+          />
+        </div>
+      ) : null}
 
       <div className="page-shell py-12" id="resultados-emprestimos">
         {creditJourneyLoading ? (
@@ -364,6 +400,15 @@ function EmprestimosPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {affiliatePlacements.sidebar?.[0] ? (
+              <div className="mt-6">
+                <AffiliateSidebarWidget
+                  offer={affiliatePlacements.sidebar[0]}
+                  onSelect={(offer) => handleAffiliateClick(offer, 'sidebar')}
+                />
+              </div>
+            ) : null}
           </aside>
 
           <section>
@@ -558,12 +603,33 @@ function EmprestimosPage() {
                 </div>
               </div>
             ) : null}
+
+            {affiliatePlacements.mid_content?.[0] ? (
+              <div className="mt-8">
+                <AffiliateInlineCTA
+                  offer={affiliatePlacements.mid_content[0]}
+                  title="Antes de contratar, veja uma alternativa para comparar"
+                  onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
+                />
+              </div>
+            ) : null}
           </section>
         </div>
       </div>
 
       <section className="border-t border-border bg-background-secondary py-16">
         <div className="page-shell">
+          {affiliatePlacements.before_faq?.length ? (
+            <div className="mb-8">
+              <AffiliateOfferGrid
+                offers={affiliatePlacements.before_faq}
+                title="Mais condições para você analisar antes da decisão final"
+                eyebrow="Compare opções"
+                onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
+              />
+            </div>
+          ) : null}
+
           <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
             <h2 className="mb-3">Quer acelerar sua escolha com mais segurança?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">

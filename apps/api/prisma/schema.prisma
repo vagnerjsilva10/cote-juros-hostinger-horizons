@@ -27,6 +27,10 @@ enum RecordStatus {
   inactive
 }
 
+enum AffiliateNetworkCode {
+  awin
+}
+
 model Bank {
   id        String   @id @default(cuid())
   name      String
@@ -370,4 +374,90 @@ model PartnerRedirect {
   @@index([offerId])
   @@index([createdAt])
   @@map("partner_redirects")
+}
+
+model AffiliateNetwork {
+  id          String               @id @default(cuid())
+  code        AffiliateNetworkCode @unique
+  name        String
+  status      RecordStatus         @default(active)
+  createdAt   DateTime             @default(now()) @map("created_at")
+  updatedAt   DateTime             @updatedAt @map("updated_at")
+
+  programs AffiliateProgram[]
+  offers   AffiliateOffer[]
+
+  @@map("affiliate_networks")
+}
+
+model AffiliateProgram {
+  id            String       @id @default(cuid())
+  networkId     String       @map("network_id")
+  advertiserId  String       @map("advertiser_id")
+  merchantName  String       @map("merchant_name")
+  programName   String?      @map("program_name")
+  status        RecordStatus @default(active)
+  metadata      Json?
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  network AffiliateNetwork @relation(fields: [networkId], references: [id], onDelete: Cascade)
+  offers  AffiliateOffer[]
+
+  @@index([networkId, status])
+  @@unique([networkId, advertiserId])
+  @@map("affiliate_programs")
+}
+
+model AffiliateOffer {
+  id                  String               @id @default(cuid())
+  networkId           String               @map("network_id")
+  programId           String?              @map("program_id")
+  network             AffiliateNetworkCode @default(awin)
+  advertiserId        String               @map("advertiser_id")
+  merchantName        String               @map("merchant_name")
+  offerSlug           String               @unique @map("offer_slug")
+  title               String
+  category            String
+  description         String
+  audience            String?              @map("audience")
+  productType         ProductType?         @map("product_type")
+  pageSlugs           String[]             @default([]) @map("page_slugs")
+  placements          String[]             @default([])
+  destinationUrl      String               @map("destination_url")
+  trackingUrl         String               @map("tracking_url")
+  ctaText             String               @map("cta_text")
+  disclosureText      String               @map("disclosure_text")
+  isActive            Boolean              @default(true) @map("is_active")
+  priority            Int                  @default(0)
+  metadata            Json?
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+
+  networkRef AffiliateNetwork  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+  program    AffiliateProgram? @relation(fields: [programId], references: [id], onDelete: SetNull)
+  clicks     AffiliateClick[]
+
+  @@index([network, isActive, priority])
+  @@index([productType, isActive])
+  @@index([advertiserId])
+  @@map("affiliate_offers")
+}
+
+model AffiliateClick {
+  id          String   @id @default(cuid())
+  affiliateOfferId String? @map("affiliate_offer_id")
+  offerSlug   String   @map("offer_slug")
+  pageSlug    String   @map("page_slug")
+  position    String
+  clickref    String
+  device      String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  offer AffiliateOffer? @relation(fields: [affiliateOfferId], references: [id], onDelete: SetNull)
+
+  @@index([affiliateOfferId, createdAt])
+  @@index([offerSlug, createdAt])
+  @@index([pageSlug, createdAt])
+  @@map("affiliate_clicks")
 }

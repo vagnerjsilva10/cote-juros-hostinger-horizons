@@ -9,6 +9,7 @@ import {
   seoPages as seoPagesSeed,
   testimonials as testimonialsSeed
 } from '@/platform/seed/portalSeed.js';
+import { affiliateOffersSeed as affiliateSeed } from '@/platform/seed/affiliateSeed.js';
 import { normalizeArticleData } from '@/lib/content/articles.js';
 
 const defaultPartnersSeed = banksSeed.map((bank) => ({
@@ -54,6 +55,7 @@ const defaultSettingsSeed = {
 const STORAGE_KEYS = {
   banks: 'cj.banks',
   offers: 'cj.offers',
+  affiliateOffers: 'cj.affiliateOffers',
   articles: 'cj.articles.v5',
   seoPages: 'cj.seoPages',
   seoFallbackPaths: 'cj.seoFallbackPaths',
@@ -62,6 +64,7 @@ const STORAGE_KEYS = {
   settings: 'cj.settings',
   simulationLeads: 'cj.simulationLeads',
   clickEvents: 'cj.clickEvents',
+  affiliateClicks: 'cj.affiliateClicks',
   ctaEvents: 'cj.ctaEvents',
   partnerRedirects: 'cj.partnerRedirects',
   integrationEvents: 'cj.integrationEvents'
@@ -70,6 +73,7 @@ const STORAGE_KEYS = {
 const memoryStore = {
   banks: null,
   offers: null,
+  affiliateOffers: null,
   articles: null,
   seoPages: null,
   seoFallbackPaths: null,
@@ -78,6 +82,7 @@ const memoryStore = {
   settings: null,
   simulationLeads: [],
   clickEvents: [],
+  affiliateClicks: [],
   ctaEvents: [],
   partnerRedirects: [],
   integrationEvents: []
@@ -96,6 +101,8 @@ const initialDataFor = (key) => {
   if (key === 'testimonials') return deepClone(testimonialsSeed.map((item) => ({ ...item, status: item.status || 'active', featured: item.featured ?? true })));
   if (key === 'partners') return deepClone(defaultPartnersSeed);
   if (key === 'settings') return deepClone(defaultSettingsSeed);
+  if (key === 'affiliateOffers') return deepClone(affiliateSeed);
+  if (key === 'affiliateClicks') return [];
   return [];
 };
 
@@ -382,6 +389,57 @@ export const portalRepository = {
     if (sort === 'anuidade-menor') result = [...result].sort((a, b) => (a.annualFee ?? 999999) - (b.annualFee ?? 999999));
 
     return result;
+  },
+
+  listAffiliateOffers(filters = {}) {
+    const { pageSlug, position, productType, limit } = filters;
+    let result = safeRead('affiliateOffers');
+
+    if (productType) result = result.filter((offer) => offer.productType === productType);
+    if (pageSlug) result = result.filter((offer) => Array.isArray(offer.pageSlugs) && offer.pageSlugs.includes(pageSlug));
+    if (position) result = result.filter((offer) => Array.isArray(offer.placements) && offer.placements.includes(position));
+
+    result = [...result].sort((a, b) => (b.priority || 0) - (a.priority || 0));
+    return typeof limit === 'number' ? result.slice(0, limit) : result;
+  },
+
+  listAffiliatePlacements({ pageSlug, productType } = {}) {
+    const offers = this.listAffiliateOffers({ pageSlug, productType });
+    const placements = {};
+
+    offers.forEach((offer) => {
+      (offer.placements || []).forEach((placement) => {
+        if (!placements[placement]) placements[placement] = [];
+        placements[placement].push(offer);
+      });
+    });
+
+    return {
+      pageSlug,
+      productType: productType || null,
+      placements
+    };
+  },
+
+  trackAffiliateClick(payload) {
+    const event = {
+      id: `affiliate_click_${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      ...payload
+    };
+    appendEntity('affiliateClicks', event);
+
+    const offer = safeRead('affiliateOffers').find((item) => item.offerSlug === payload.offerSlug);
+    const clickref = payload.clickref || `${String(payload.pageSlug || '/').replace(/^\/+/, '').replace(/\//g, '-') || 'home'}|${payload.position}|${payload.offerSlug}|${payload.device}`;
+
+    return {
+      offer,
+      clickref,
+      device: payload.device,
+      redirectUrl: offer?.trackingUrl
+        ? `${offer.trackingUrl}${offer.trackingUrl.includes('?') ? '&' : '?'}clickref=${encodeURIComponent(clickref)}`
+        : offer?.destinationUrl || null
+    };
   },
 
   listArticles(filters = {}) {
