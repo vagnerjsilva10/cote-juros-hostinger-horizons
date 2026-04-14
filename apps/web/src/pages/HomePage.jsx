@@ -389,6 +389,7 @@ function HomePage() {
           name="description"
           content="Compare juros, empréstimos, cartões de crédito e financiamento com mais clareza. Veja taxa, CET, parcela e custo total antes de contratar."
         />
+        <meta name="verify-admitad" content="1ae3db0be4" />
         <link rel="canonical" href="https://cotejuros.com.br/" />
       </Helmet>
 
