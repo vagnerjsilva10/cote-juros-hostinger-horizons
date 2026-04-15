@@ -183,10 +183,10 @@ function HomePage() {
               </span>
 
               <h1 className="hero-title">
-                {t('Veja opções de ')}<span className="highlight">{t('crédito')}</span>{' '}
-                {t('antes')}
+                {t('Veja opções de ')}
+                <span className="highlight">{t('crédito')}</span>
                 <br />
-                {t('de fechar contrato')}
+                {t('antes de fechar contrato')}
               </h1>
 
               <p className="hero-subtitle">
@@ -283,20 +283,17 @@ function HomePage() {
       <section className="editorial-people-section">
         <div className="section-connector section-connector-top" aria-hidden="true" />
         <div className="page-shell">
-          <motion.div {...animationIn} className="editorial-people-grid">
-            <div className="editorial-people-copy">
+          <motion.div {...animationIn} className="editorial-split editorial-people-grid">
+            <div className="editorial-copy editorial-people-copy">
               <span className="eyebrow">{t('Experiência real')}</span>
-              <h2>{t('Crédito é uma decisão de vida. A interface precisa parecer humana.')}</h2>
+              <h2>{t('Crédito não é só taxa. É contexto, momento e escolha.')}</h2>
               <p>
                 {t('A CoteJuros combina leitura de produto, clareza comercial e contexto para ajudar você a comparar antes de fechar contrato.')}
               </p>
             </div>
 
-            <div className="editorial-card editorial-card-composed">
-              <div className="editorial-card-grid" aria-hidden="true" />
+            <div className="editorial-media">
               <div className="editorial-card-glow" aria-hidden="true" />
-              <div className="editorial-card-panel editorial-card-panel-one" aria-hidden="true" />
-              <div className="editorial-card-panel editorial-card-panel-two" aria-hidden="true" />
               <img className="editorial-cutout" src={editorialFeature.image} alt={editorialFeature.title} loading="lazy" />
               <span className="floating-tag">{editorialFeature.tag}</span>
             </div>
@@ -389,7 +386,7 @@ function HomePage() {
         <div className="section-connector section-connector-dark" aria-hidden="true" />
         <div className="page-shell">
           <motion.div {...animationIn} className="dark-panel">
-            <div>
+            <div className="dark-panel-copy">
               <h2>
                 {t('Entender o crédito antes')}
                 <br />
@@ -491,8 +488,8 @@ function HomePage() {
 
       <section className="section section--compact brand-note-section">
         <div className="page-shell">
-          <div className="brand-note-card">
-            <div>
+          <div className="brand-note-card role-block">
+            <div className="role-block-copy">
               <span className="brand-note-kicker">Papel da CoteJuros</span>
               <h2>{t('A CoteJuros ajuda você a comparar antes de contratar')}</h2>
               <p>
