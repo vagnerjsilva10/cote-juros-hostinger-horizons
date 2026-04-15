@@ -196,26 +196,26 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="hero-modal-shell w-[calc(100vw-1.5rem)] max-w-[760px] overflow-hidden rounded-[22px] border border-slate-200 bg-white p-0 shadow-[0_28px_76px_rgba(15,23,42,0.18)]">
+      <DialogContent className="hero-modal-shell w-[calc(100vw-1rem)] max-w-[780px] overflow-hidden rounded-[24px] border border-slate-200 bg-white p-0 shadow-[0_28px_76px_rgba(15,23,42,0.18)]">
         <DialogTitle className="sr-only">Veja suas opções com mais clareza</DialogTitle>
-        <DialogDescription className="sr-only">Preencha o básico para continuar.</DialogDescription>
+        <DialogDescription className="sr-only">Preencha o básico para continuar. Sem cobrança antecipada.</DialogDescription>
 
-        <div className="hero-modal-top border-b border-slate-200 px-5 py-4 sm:px-6 sm:py-5">
+        <div className="hero-modal-top border-b border-slate-200 px-5 py-4 sm:px-6 sm:py-[1.125rem]">
           <span className="inline-flex rounded-full border border-primary/15 bg-primary/[0.05] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
             Crédito com clareza
           </span>
-          <h2 className="mt-3 max-w-xl text-[1.8rem] font-semibold tracking-[-0.03em] text-slate-950 sm:text-[2rem]">
+          <h2 className="mt-3 max-w-xl text-[1.5rem] font-semibold tracking-[-0.04em] text-slate-950 sm:text-[1.7rem]">
             Veja suas opções com mais clareza
           </h2>
-          <p className="mt-2 max-w-xl text-sm leading-7 text-slate-600">
+          <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">
             Preencha o básico para continuar. Sem cobrança antecipada.
           </p>
         </div>
 
-        <div className="max-h-[68vh] overflow-y-auto px-5 py-4 sm:px-6 sm:py-5">
+        <div className="max-h-[68vh] overflow-y-auto px-5 py-4 sm:px-6">
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label>Valor desejado</Label>
+              <Label>Valor</Label>
               <Input
                 value={form.amount}
                 onChange={(event) => updateField('amount', formatCurrencyInput(event.target.value))}
@@ -224,7 +224,7 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
               />
             </div>
             <div className="space-y-2">
-              <Label>Renda mensal</Label>
+              <Label>Renda</Label>
               <Input
                 value={form.income}
                 onChange={(event) => updateField('income', formatCurrencyInput(event.target.value))}
@@ -257,7 +257,7 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
             </div>
 
             <div className="space-y-2">
-              <Label>Situação profissional</Label>
+              <Label>Trabalho</Label>
               <Select value={form.employmentStatus} onValueChange={(value) => updateField('employmentStatus', value)}>
                 <SelectTrigger className="hero-modal-input h-11 rounded-[14px]">
                   <SelectValue placeholder="Escolha uma opção" />
@@ -273,7 +273,7 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
             </div>
 
             <div className="space-y-2">
-              <Label>Seu nome</Label>
+              <Label>Nome</Label>
               <Input
                 value={form.fullName}
                 onChange={(event) => updateField('fullName', event.target.value)}
@@ -282,7 +282,7 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
               />
             </div>
             <div className="space-y-2">
-              <Label>Seu telefone</Label>
+              <Label>Telefone</Label>
               <Input
                 value={form.phone}
                 onChange={(event) => updateField('phone', formatPhone(event.target.value))}
@@ -291,31 +291,33 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
               />
             </div>
           </div>
-
-          <div className="mt-4 rounded-[16px] border border-slate-200 bg-slate-50 px-4 py-3">
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-              <p className="text-sm leading-6 text-slate-600">
-                A Cote Juros não é banco. Nosso papel é mostrar opções para você comparar antes de contratar.
-              </p>
-            </div>
-          </div>
         </div>
 
-        <div className="border-t border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-5 py-3 sm:px-6">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-medium text-slate-900">Você preenche o básico e segue com clareza.</p>
-              <p className="text-xs leading-6 text-slate-500">Sem compromisso e sem cobrança antecipada.</p>
+        <div className="border-t border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-5 py-3.5 sm:px-6">
+          <div className="flex flex-col gap-3">
+            <div className="rounded-[16px] border border-slate-200 bg-slate-50 px-4 py-3">
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                <p className="text-sm leading-6 text-slate-600">
+                  A Cote Juros não é banco. Nosso papel é mostrar opções para você comparar antes de contratar.
+                </p>
+              </div>
             </div>
-            <Button
-              className="hero-modal-cta h-11 rounded-[14px] px-6 text-sm font-semibold text-white"
-              disabled={!isValid || isSubmitting}
-              onClick={handleSubmit}
-            >
-              {isSubmitting ? 'Buscando opções...' : 'Ver minhas opções agora'}
-              <ArrowRight className="h-4 w-4" />
-            </Button>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-900">Você preenche o básico e segue com mais clareza.</p>
+                <p className="text-xs leading-6 text-slate-500">Sem compromisso e sem cobrança antecipada.</p>
+              </div>
+              <Button
+                className="hero-modal-cta h-11 rounded-[14px] px-6 text-sm font-semibold text-white"
+                disabled={!isValid || isSubmitting}
+                onClick={handleSubmit}
+              >
+                {isSubmitting ? 'Buscando opções...' : 'Ver minhas opções agora'}
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </DialogContent>

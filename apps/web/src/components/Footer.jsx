@@ -41,22 +41,22 @@ function Footer() {
   ];
 
   return (
-    <footer className="border-t border-border bg-background py-14 sm:py-16 lg:py-20">
+    <footer className="footer-premium-bg border-t border-border py-12 sm:py-14 lg:py-16">
       <div className="page-shell">
-        <div className="mb-12 grid gap-10 lg:mb-16 lg:grid-cols-[1.5fr_repeat(4,1fr)] lg:gap-12">
-          <div className="max-w-md space-y-6">
+        <div className="mb-10 grid gap-8 lg:mb-12 lg:grid-cols-[1.5fr_repeat(4,1fr)] lg:gap-10">
+          <div className="max-w-md space-y-5">
             <Link to="/" className="inline-block">
               <CoteJurosLogo />
             </Link>
             <p className="text-sm leading-7 text-muted-foreground">
-              A Cote Juros ajuda você a entender caminhos de crédito com mais clareza, sem cobrança antecipada e com uma experiência mais simples.
+              A Cote Juros ajuda você a comparar crédito com mais clareza, entender condições antes de contratar e decidir sem cobrança antecipada.
             </p>
             <div className="flex flex-wrap gap-3">
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
+              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-3 py-2 text-xs font-medium text-foreground shadow-[0_6px_16px_rgba(15,23,42,0.04)]">
                 <ShieldCheck className="h-3.5 w-3.5 text-primary" />
                 Sem cobrança antecipada
               </div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-xs font-medium text-foreground">
+              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-3 py-2 text-xs font-medium text-foreground shadow-[0_6px_16px_rgba(15,23,42,0.04)]">
                 Você decide com calma
               </div>
             </div>
@@ -64,7 +64,7 @@ function Footer() {
 
           {footerSections.map((section) => (
             <div key={section.title}>
-              <span className="mb-5 block text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              <span className="mb-4 block text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                 {section.title}
               </span>
               <ul className="space-y-2.5">
@@ -84,14 +84,14 @@ function Footer() {
           ))}
         </div>
 
-        <div className="flex flex-col gap-3 border-t border-border pt-6 md:flex-row md:items-center md:justify-between md:pt-8">
+        <div className="flex flex-col gap-3 border-t border-border pt-5 md:flex-row md:items-center md:justify-between md:pt-6">
           <div>
             <p className="text-sm font-medium text-foreground">Cote Juros © {currentYear}</p>
             <p className="text-sm text-muted-foreground">
               A Cote Juros não é banco, não concede crédito diretamente e não garante aprovação.
             </p>
           </div>
-          <p className="text-sm text-muted-foreground">Sem compromisso e sem cobrança antecipada</p>
+          <p className="text-sm text-muted-foreground">Compare antes de contratar.</p>
         </div>
       </div>
     </footer>

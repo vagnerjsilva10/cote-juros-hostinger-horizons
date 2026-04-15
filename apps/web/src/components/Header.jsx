@@ -39,7 +39,7 @@ function Header() {
       <div className="page-shell">
         <div className="flex h-[70px] items-center justify-between sm:h-[76px]">
           <Link to="/" className="flex items-center">
-            <CoteJurosLogo variant="original" />
+            <CoteJurosLogo variant="original-light" />
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex">
@@ -60,7 +60,7 @@ function Header() {
 
           <div className="hidden items-center gap-3 lg:flex">
             <Link to="/emprestimos">
-              <Button className="h-11 border-0 bg-[linear-gradient(90deg,#2563EB_0%,#4F46E5_100%)] px-5 text-white shadow-[0_6px_20px_rgba(37,99,235,0.25)] transition-all duration-300 hover:-translate-y-[1px] hover:brightness-110">
+              <Button className="h-11 border-0 bg-[linear-gradient(90deg,#2563EB_0%,#4F46E5_100%)] px-5 text-white shadow-[0_8px_22px_rgba(37,99,235,0.24)] transition-all duration-300 hover:-translate-y-[1px] hover:brightness-110">
                 Ver opções
               </Button>
             </Link>
@@ -100,7 +100,7 @@ function Header() {
                     ))}
                     <div className="mt-3 border-t border-white/10 pt-5">
                       <Link to="/emprestimos" onClick={() => setMobileOpen(false)}>
-                        <Button className="w-full border-0 bg-[linear-gradient(90deg,#2563EB_0%,#4F46E5_100%)] text-base text-white shadow-[0_6px_20px_rgba(37,99,235,0.25)] transition-all duration-300 hover:-translate-y-[1px] hover:brightness-110">
+                        <Button className="w-full border-0 bg-[linear-gradient(90deg,#2563EB_0%,#4F46E5_100%)] text-base text-white shadow-[0_8px_22px_rgba(37,99,235,0.24)] transition-all duration-300 hover:-translate-y-[1px] hover:brightness-110">
                           Ver opções
                         </Button>
                       </Link>

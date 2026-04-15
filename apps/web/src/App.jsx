@@ -149,7 +149,7 @@ function App() {
                 description="Se você está com o nome negativado, veja caminhos possíveis antes de decidir. Sem compromisso e sem cobrança antecipada."
                 badge="Para quem está negativado"
                 heroTitle="Mesmo com o nome negativado, ainda pode haver caminhos possíveis"
-                heroDescription="Responda algumas perguntas rápidas e veja opções que podem fazer sentido para o seu momento, sem criar expectativa errada."
+                heroDescription="Responda o básico e veja opções para comparar antes de contratar, sem criar expectativa errada."
                 trustLine="Sem compromisso e sem promessa falsa"
               />
             </AppLayout>
@@ -165,7 +165,7 @@ function App() {
                 description="Se você trabalha com carteira assinada, veja opções de crédito que podem combinar com sua renda e seu perfil."
                 badge="Para quem trabalha com carteira"
                 heroTitle="Se você é CLT, veja opções que podem combinar com sua renda"
-                heroDescription="Comece por uma jornada simples e descubra caminhos possíveis antes de seguir para a próxima etapa."
+                heroDescription="Compare com mais clareza e veja caminhos possíveis antes de seguir para a próxima etapa."
                 trustLine="Você pode ver as opções e decidir com calma"
               />
             </AppLayout>
@@ -181,7 +181,7 @@ function App() {
                 description="Se você é autônomo, veja opções de crédito que podem fazer sentido para o seu momento, sem perder tempo com formulários longos."
                 badge="Para autônomos"
                 heroTitle="Se você é autônomo, veja caminhos de crédito que podem fazer sentido"
-                heroDescription="Uma jornada leve para entender possibilidades antes de decidir, com mais clareza e menos enrolação."
+                heroDescription="Entenda possibilidades antes de decidir, com mais clareza e menos enrolação."
                 trustLine="Sem cobrança antecipada e sem pressão para fechar"
               />
             </AppLayout>

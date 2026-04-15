@@ -20,43 +20,37 @@ const marketBrands = ['SuperSim', 'Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter
 
 const profileCards = [
   {
-    title: 'Está com o nome negativado?',
-    description: 'Veja por onde começar para comparar com mais segurança.',
+    title: 'Está negativado?',
+    description: 'Veja opções para comparar antes de aceitar a primeira proposta.',
     href: '/emprestimo-para-negativado'
   },
   {
-    title: 'Tem renda fixa?',
-    description: 'Entenda quais caminhos podem caber melhor no seu orçamento.',
+    title: 'Trabalha com CLT?',
+    description: 'Entenda quais condições podem fazer mais sentido para sua renda.',
     href: '/emprestimo-para-clt'
   },
   {
     title: 'Tem renda variável?',
-    description: 'Compare com calma antes de assumir parcelas longas.',
+    description: 'Compare com mais calma antes de assumir parcelas longas.',
     href: '/emprestimo-para-autonomo'
   },
   {
-    title: 'Quer decidir com mais clareza?',
-    description: 'Organize o cenário e avance sem decisão no impulso.',
-    href: '/educacao-financeira'
+    title: 'Quer decidir melhor?',
+    description: 'Use a plataforma para comparar crédito com mais segurança.',
+    href: '/emprestimos'
   }
 ];
 
 const credibilityBlocks = [
   {
-    eyebrow: 'Vida financeira real',
-    title: 'Entenda seu momento antes de contratar qualquer crédito',
-    description:
-      'Você vê opções com mais contexto e evita perder tempo com propostas que não fazem sentido para o seu perfil.',
-    image: 'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=1400&q=80',
-    alt: 'Pessoa analisando dados financeiros no notebook em ambiente moderno'
+    eyebrow: 'Comparação real',
+    title: 'Veja opções, condições e custo com mais clareza',
+    description: 'A proposta da Cote Juros é ajudar você a comparar antes de contratar, sem pressão e sem promessa vazia.'
   },
   {
-    eyebrow: 'Comparação com confiança',
-    title: 'Compare antes de decidir e escolha com mais segurança',
-    description:
-      'Menos promessa vazia e mais clareza para você entender o custo real antes de contratar.',
-    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1400&q=80',
-    alt: 'Mulher revisando planejamento financeiro com celular e notebook'
+    eyebrow: 'Decisão mais segura',
+    title: 'Entenda por onde vale a pena começar',
+    description: 'Quando você enxerga valor, prazo e perfil no mesmo lugar, fica mais fácil separar o que faz sentido do que só parece bom.'
   }
 ];
 
@@ -71,7 +65,7 @@ const faqItems = [
   },
   {
     question: 'Preciso decidir na hora?',
-    answer: 'Não. Você compara com calma e decide apenas quando fizer sentido.'
+    answer: 'Não. Você compara com calma e só segue quando fizer sentido.'
   },
   {
     question: 'A Cote Juros empresta dinheiro?',
@@ -81,13 +75,11 @@ const faqItems = [
 
 function FaqItem({ item, isOpen, onToggle }) {
   return (
-    <div className="rounded-[20px] border border-slate-200 bg-white px-5 py-5 shadow-[0_10px_24px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_14px_30px_rgba(15,23,42,0.06)]">
+    <div className="rounded-[18px] border border-slate-200 bg-white px-5 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_14px_30px_rgba(15,23,42,0.06)]">
       <button type="button" onClick={onToggle} className="flex w-full items-center justify-between gap-4 text-left">
         <span className="text-base font-medium text-slate-900">{item.question}</span>
         <ChevronDown
-          className={`h-4 w-4 shrink-0 text-slate-500 transition-transform duration-300 ${
-            isOpen ? 'rotate-180' : ''
-          }`}
+          className={`h-4 w-4 shrink-0 text-slate-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
       <div
@@ -145,7 +137,7 @@ function HomePage() {
         <title>Cote Juros - Veja opções de crédito com mais clareza</title>
         <meta
           name="description"
-          content="Veja opções de crédito que você pode conseguir de verdade. Compare antes de contratar e entenda o que faz sentido para o seu perfil."
+          content="Veja opções de crédito que você pode conseguir. Compare antes de contratar e entenda o que faz sentido para o seu perfil."
         />
         <meta name="verify-admitad" content="1ae3db0be4" />
         <link rel="canonical" href="https://cotejuros.com.br/" />
@@ -161,40 +153,45 @@ function HomePage() {
       <section className="relative overflow-hidden border-b border-slate-200 bg-white">
         <div className="pointer-events-none absolute inset-0">
           <div className="hero-premium-credit absolute inset-0" />
-          <div className="hero-tech-grid absolute inset-0 opacity-[0.12]" />
-          <div className="absolute left-[6%] top-[-3rem] h-56 w-56 rounded-full bg-sky-200/45 blur-3xl" />
-          <div className="absolute right-[14%] top-[-2.5rem] h-64 w-64 rounded-full bg-indigo-200/45 blur-3xl" />
-          <div className="absolute right-[28%] top-[5rem] h-40 w-40 rounded-full bg-primary/12 blur-3xl" />
+          <div className="hero-tech-grid absolute inset-0 opacity-[0.1]" />
+          <div className="hero-top-glow absolute left-1/2 top-0 h-44 w-[44rem] -translate-x-1/2" />
+          <div className="absolute left-[7%] top-[-2rem] h-40 w-40 rounded-full bg-sky-200/50 blur-3xl" />
+          <div className="absolute right-[14%] top-[-1.5rem] h-48 w-48 rounded-full bg-indigo-200/50 blur-3xl" />
+          <div className="absolute right-[28%] top-[4rem] h-28 w-28 rounded-full bg-primary/12 blur-3xl" />
         </div>
 
-        <div className="page-shell relative py-18 sm:py-22 lg:py-24">
-          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_528px] lg:gap-8">
-            <motion.div {...animationIn} className="max-w-[660px] lg:pt-3">
-              <span className="section-eyebrow border-white/80 bg-white/92">
-                Sem compromisso. Sem cobrança antecipada.
-              </span>
+        <div className="page-shell relative py-12 sm:py-14 lg:py-16">
+          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_560px] lg:gap-6">
+            <motion.div {...animationIn} className="max-w-[640px] lg:pt-2">
+              <span className="section-eyebrow border-white/80 bg-white/92">Sem compromisso. Sem cobrança antecipada.</span>
 
-              <h1 className="hero-headline hero-credit-headline mt-6 text-slate-950">
-                Veja opções de crédito que você pode conseguir de verdade
+              <h1 className="hero-headline hero-credit-headline mt-5 text-slate-950">
+                Veja opções de <span className="hero-word-emphasis-strong">crédito</span>
+                <br />
+                que você pode conseguir
               </h1>
 
-              <p className="hero-subcopy mt-5 max-w-[36rem] text-slate-600">
-                Compare antes de contratar e entenda quais caminhos fazem sentido para o seu perfil.
+              <p className="hero-subcopy mt-4 max-w-[34rem] text-slate-600">
+                Compare antes de contratar e veja quais opções fazem sentido para o seu perfil.
               </p>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Button size="lg" className="hero-primary-cta" onClick={focusHeroPreview}>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Button size="lg" className="hero-primary-cta h-12 px-6" onClick={focusHeroPreview}>
                   Ver minhas opções agora
                   <ArrowRight className="h-4 w-4" />
                 </Button>
                 <a href="#como-funciona">
-                  <Button size="lg" variant="outline" className="border-slate-300 text-slate-800 hover:border-primary/40 hover:text-primary">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="h-12 border-slate-300 bg-white/80 text-slate-800 hover:border-primary/40 hover:text-primary"
+                  >
                     Entender como funciona
                   </Button>
                 </a>
               </div>
 
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-6 flex flex-wrap gap-3">
                 {['Sem compromisso', 'Sem cobrança antecipada', 'Você decide com calma'].map((item) => (
                   <div key={item} className="premium-pill">
                     <CheckCircle2 className="h-4 w-4 text-[#10B981]" />
@@ -204,20 +201,20 @@ function HomePage() {
               </div>
             </motion.div>
 
-            <motion.div {...animationIn} className="mx-auto w-full max-w-[528px] lg:mr-0 lg:pt-1">
+            <motion.div {...animationIn} className="mx-auto w-full max-w-[560px] lg:mr-0">
               <CreditHeroPreview focusSignal={heroPreviewFocusSignal} onContinue={openPrimaryFlow} />
             </motion.div>
           </div>
         </div>
       </section>
 
-      <section className="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] py-12 sm:py-14">
+      <section className="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] py-10 sm:py-11">
         <div className="page-shell">
           <motion.div {...animationIn} className="text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">
               Instituições e marcas no radar de quem compara antes de contratar
             </p>
-            <div className="mt-7 flex flex-wrap justify-center gap-3">
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
               {marketBrands.map((brand) => (
                 <div key={brand} className="brand-pill">
                   <span className="brand-dot" />
@@ -233,20 +230,20 @@ function HomePage() {
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
             <span className="section-eyebrow">Como funciona</span>
-            <h2 className="mt-4 text-slate-950">Você não precisa sair tentando tudo ao mesmo tempo</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg leading-[1.8] text-slate-600">
-              Primeiro você entende o cenário. Depois compara com mais clareza. Só então decide se quer continuar.
+            <h2 className="mt-4 text-slate-950">Primeiro você compara. Depois decide se vale seguir.</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-base leading-[1.72] text-slate-600">
+              A ideia aqui é mostrar opções com mais clareza antes de qualquer contratação.
             </p>
           </motion.div>
 
-          <div className="stagger-rise mt-14 grid gap-6 md:grid-cols-3">
+          <div className="stagger-rise mt-10 grid gap-5 md:grid-cols-3">
             {[
-              ['Comece pelo que faz sentido', 'Responda o básico e veja um caminho mais claro desde o início.'],
-              ['Compare com mais segurança', 'Entenda opções e custos antes de contratar qualquer produto.'],
-              ['Avance no seu tempo', 'Depois de comparar com calma, você decide se quer seguir.']
+              ['Preencha o básico', 'Valor, renda e perfil para organizar um começo mais claro.'],
+              ['Compare opções', 'Veja condições e caminhos possíveis antes de aceitar qualquer proposta.'],
+              ['Decida com calma', 'Você só avança quando fizer sentido para o seu momento.']
             ].map(([title, description]) => (
               <Card key={title} className="surface-card h-full border-slate-200 bg-white">
-                <CardContent className="p-8">
+                <CardContent className="p-6">
                   <h3 className="text-slate-950">{title}</h3>
                   <p className="mt-3 text-sm leading-7 text-slate-600">{description}</p>
                 </CardContent>
@@ -256,24 +253,24 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="page-section border-b border-slate-200 bg-slate-50/80">
+      <section className="page-section border-b border-slate-200 bg-slate-50/70">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
-            <span className="section-eyebrow bg-white">Seu momento</span>
-            <h2 className="mt-4 text-slate-950">Escolha um ponto de partida para ver opções com mais precisão</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg leading-[1.8] text-slate-600">
-              Cada perfil pede uma estratégia diferente. O caminho certo começa na comparação certa.
+            <span className="section-eyebrow bg-white">Por onde começar</span>
+            <h2 className="mt-4 text-slate-950">Escolha um ponto de partida para comparar com mais precisão</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-base leading-[1.72] text-slate-600">
+              Cada perfil pede uma leitura diferente. O comparador fica melhor quando começa no lugar certo.
             </p>
           </motion.div>
 
-          <div className="stagger-rise mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <div className="stagger-rise mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {profileCards.map((item) => (
               <Link key={item.title} to={item.href}>
                 <Card className="surface-card group h-full border-slate-200 bg-white">
-                  <CardContent className="p-8">
+                  <CardContent className="p-6">
                     <h3 className="text-slate-950 transition-colors group-hover:text-primary">{item.title}</h3>
-                    <p className="mt-4 text-sm leading-7 text-slate-600">{item.description}</p>
-                    <div className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-slate-900">
+                    <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
+                    <div className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-slate-900">
                       Ver opções para este perfil
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </div>
@@ -285,92 +282,85 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="page-section border-b border-slate-200 bg-white">
+      <section className="border-b border-white/10 bg-[#0B0F19] py-14 sm:py-16">
         <div className="page-shell">
-          <motion.div
-            {...animationIn}
-            className="premium-dark-panel-home rounded-[34px] px-8 py-12 text-white sm:px-12 sm:py-16 lg:px-16 lg:py-20"
-          >
-            <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-              <div>
-                <span className="section-kicker border-white/15 bg-white/10 text-slate-100">
-                  Decisão com clareza
-                </span>
-                <h2 className="section-title-gradient-strong mt-6 max-w-3xl text-[clamp(2.2rem,4vw,3.75rem)] leading-[1.08]">
-                  Entender o crédito antes de contratar muda tudo
-                </h2>
-                <p className="mt-5 max-w-xl text-lg leading-[1.8] text-slate-300">
-                  Quando você compara antes, fica mais fácil separar o que realmente vale a pena do que só parece bom.
-                </p>
+          <motion.div {...animationIn} className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+            <div>
+              <span className="section-kicker border-white/15 bg-white/10 text-slate-100">Decisão com clareza</span>
+              <h2 className="section-title-gradient-strong mt-5 max-w-3xl text-[clamp(2rem,4vw,3.2rem)] leading-[1.06]">
+                Entender o crédito antes de contratar muda tudo
+              </h2>
+              <p className="mt-4 max-w-xl text-base leading-[1.74] text-slate-300">
+                Quando você compara antes, fica mais fácil separar o que realmente vale a pena do que só parece bom.
+              </p>
 
-                <div className="mt-9 space-y-3">
-                  {[
-                    'Compare antes de decidir',
-                    'Entenda o custo real',
-                    'Evite decisões no impulso',
-                    'Escolha com mais segurança'
-                  ].map((item) => (
-                    <div key={item} className="dark-benefit-row">
-                      <CheckCircle2 className="h-4 w-4 text-sky-300" />
-                      <span>{item}</span>
+              <div className="mt-7 space-y-3">
+                {[
+                  'Compare antes de decidir',
+                  'Entenda o custo real',
+                  'Evite decisões no impulso',
+                  'Escolha com mais segurança'
+                ].map((item) => (
+                  <div key={item} className="dark-benefit-row">
+                    <CheckCircle2 className="h-4 w-4 text-sky-300" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-7 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-4 py-2 text-sm text-slate-200">
+                <ShieldCheck className="h-4 w-4 text-sky-300" />
+                Sem pressão. Sem cobrança antecipada. Você decide com calma.
+              </div>
+            </div>
+
+            <div className="dark-visual-panel">
+              <div className="dark-chart-card">
+                <div className="flex items-end justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Visão de cenário</p>
+                    <h3 className="mt-2 text-white">Do impulso à comparação</h3>
+                  </div>
+                  <div className="rounded-full border border-white/10 bg-white/6 px-3 py-1 text-xs text-slate-200">
+                    Em poucos minutos
+                  </div>
+                </div>
+
+                <div className="mt-7 grid grid-cols-4 items-end gap-3">
+                  {[30, 52, 72, 92].map((height, index) => (
+                    <div key={height} className="space-y-3">
+                      <div className="dark-chart-bar-shell">
+                        <div
+                          className="dark-chart-bar"
+                          style={{ height: `${height}%`, animationDelay: `${index * 120}ms` }}
+                        />
+                      </div>
+                      <div className="text-center text-xs text-slate-400">
+                        {['Início', 'Leitura', 'Comparação', 'Decisão'][index]}
+                      </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-9 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-4 py-2 text-sm text-slate-200">
-                  <ShieldCheck className="h-4 w-4 text-sky-300" />
-                  Sem pressão. Sem cobrança antecipada. Você decide com calma.
-                </div>
-              </div>
-
-              <div className="dark-visual-panel">
-                <div className="dark-chart-card">
-                  <div className="flex items-end justify-between gap-3">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Visão de cenário</p>
-                      <h3 className="mt-2 text-white">Da dúvida à decisão</h3>
-                    </div>
-                    <div className="rounded-full border border-white/10 bg-white/6 px-3 py-1 text-xs text-slate-200">
-                      Em poucos minutos
-                    </div>
-                  </div>
-
-                  <div className="mt-9 grid grid-cols-4 items-end gap-3">
-                    {[32, 54, 73, 94].map((height, index) => (
-                      <div key={height} className="space-y-3">
-                        <div className="dark-chart-bar-shell">
-                          <div
-                            className="dark-chart-bar"
-                            style={{ height: `${height}%`, animationDelay: `${index * 120}ms` }}
-                          />
-                        </div>
-                        <div className="text-center text-xs text-slate-400">
-                          {['Início', 'Leitura', 'Comparação', 'Decisão'][index]}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-9 rounded-[20px] border border-white/8 bg-white/[0.04] p-4">
-                    <svg viewBox="0 0 320 120" className="w-full overflow-visible">
-                      <defs>
-                        <linearGradient id="homeDarkLine" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#60A5FA" />
-                          <stop offset="55%" stopColor="#4F46E5" />
-                          <stop offset="100%" stopColor="#7C3AED" />
-                        </linearGradient>
-                      </defs>
-                      <path
-                        d="M10 92 C 64 88, 82 70, 126 66 S 194 32, 240 34 S 292 16, 310 18"
-                        fill="none"
-                        stroke="url(#homeDarkLine)"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                        className="chart-draw"
-                      />
-                      <circle cx="310" cy="18" r="6" fill="#60A5FA" className="chart-pulse" />
-                    </svg>
-                  </div>
+                <div className="mt-7 rounded-[18px] border border-white/8 bg-white/[0.04] p-4">
+                  <svg viewBox="0 0 320 120" className="w-full overflow-visible">
+                    <defs>
+                      <linearGradient id="homeDarkLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#60A5FA" />
+                        <stop offset="55%" stopColor="#4F46E5" />
+                        <stop offset="100%" stopColor="#7C3AED" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      d="M10 92 C 64 88, 82 70, 126 66 S 194 32, 240 34 S 292 16, 310 18"
+                      fill="none"
+                      stroke="url(#homeDarkLine)"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      className="chart-draw"
+                    />
+                    <circle cx="310" cy="18" r="6" fill="#60A5FA" className="chart-pulse" />
+                  </svg>
                 </div>
               </div>
             </div>
@@ -381,30 +371,23 @@ function HomePage() {
       <section className="page-section border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)]">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
-            <span className="section-eyebrow">Mais confiança para contratar</span>
-            <h2 className="mt-4 text-slate-950">Menos ruído, mais clareza para comparar de verdade</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg leading-[1.8] text-slate-600">
-              A Cote Juros foi desenhada para você entender o cenário e ver opções antes de assumir qualquer compromisso.
+            <span className="section-eyebrow">Mais clareza para contratar</span>
+            <h2 className="mt-4 text-slate-950">Comparar crédito fica melhor quando a proposta é direta</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-base leading-[1.72] text-slate-600">
+              A Cote Juros foi desenhada para mostrar opções, condições e próximos passos de um jeito mais claro e mais comercial.
             </p>
           </motion.div>
 
-          <div className="mt-14 grid gap-6 lg:grid-cols-2">
+          <div className="mt-10 grid gap-5 lg:grid-cols-2">
             {credibilityBlocks.map((item) => (
               <motion.article
                 key={item.title}
                 {...animationIn}
-                className="overflow-hidden rounded-[30px] border border-border bg-white shadow-[0_14px_30px_rgba(15,23,42,0.05)]"
+                className="overflow-hidden rounded-[24px] border border-border bg-white p-6 shadow-[0_14px_30px_rgba(15,23,42,0.05)]"
               >
-                <img
-                  src={item.image}
-                  alt={item.alt}
-                  className="h-72 w-full object-cover transition-transform duration-500 hover:scale-[1.02]"
-                />
-                <div className="p-8">
-                  <span className="section-eyebrow bg-slate-50">{item.eyebrow}</span>
-                  <h3 className="mt-4 text-slate-950">{item.title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
-                </div>
+                <span className="section-eyebrow bg-slate-50">{item.eyebrow}</span>
+                <h3 className="mt-4 text-slate-950">{item.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
               </motion.article>
             ))}
           </div>
@@ -415,7 +398,7 @@ function HomePage() {
         <div className="page-shell">
           <motion.div
             {...animationIn}
-            className="mx-auto max-w-4xl rounded-[32px] border border-slate-200 bg-white px-8 py-10 shadow-[0_12px_28px_rgba(15,23,42,0.05)] sm:px-10 sm:py-11"
+            className="mx-auto max-w-4xl rounded-[28px] border border-slate-200 bg-white px-7 py-8 shadow-[0_12px_28px_rgba(15,23,42,0.05)] sm:px-9 sm:py-9"
           >
             <div className="flex items-start gap-4">
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
@@ -424,7 +407,7 @@ function HomePage() {
               <div>
                 <span className="section-eyebrow bg-slate-50">Nosso papel</span>
                 <h2 className="mt-4 text-slate-950">A Cote Juros ajuda você a comparar antes de contratar</h2>
-                <p className="mt-4 max-w-3xl text-lg leading-[1.8] text-slate-600">
+                <p className="mt-3 max-w-3xl text-base leading-[1.76] text-slate-600">
                   Você entende o custo real, vê opções com mais clareza e decide com mais segurança.
                 </p>
               </div>
@@ -440,7 +423,7 @@ function HomePage() {
             <h2 className="mt-4 text-slate-950">O que você precisa saber antes de ver suas opções</h2>
           </motion.div>
 
-          <div className="mx-auto mt-10 max-w-4xl space-y-4">
+          <div className="mx-auto mt-9 max-w-4xl space-y-4">
             {faqItems.map((item, index) => (
               <motion.div key={item.question} {...animationIn}>
                 <FaqItem item={item} isOpen={openFaq === index} onToggle={() => setOpenFaq(openFaq === index ? -1 : index)} />
@@ -454,27 +437,27 @@ function HomePage() {
         <div className="page-shell">
           <motion.div
             {...animationIn}
-            className="mx-auto max-w-4xl rounded-[32px] border border-slate-200 bg-white px-8 py-11 text-center shadow-[0_18px_40px_rgba(15,23,42,0.08)] sm:px-10 sm:py-13"
+            className="mx-auto max-w-4xl rounded-[28px] border border-slate-200 bg-white px-8 py-9 text-center shadow-[0_18px_40px_rgba(15,23,42,0.08)] sm:px-10 sm:py-10"
           >
             <span className="section-eyebrow border-sky-200 bg-sky-50 text-sky-700">Comece agora</span>
-            <h2 className="mt-4 text-slate-950">Veja opções com mais clareza e compare antes de contratar</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg leading-[1.8] text-slate-600">
-              Sem enrolação, sem promessa falsa e sem cobrança antecipada.
+            <h2 className="mt-4 text-slate-950">Veja opções de crédito antes de fechar qualquer contrato</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-base leading-[1.72] text-slate-600">
+              Compare antes de contratar e siga só no que fizer sentido para você.
             </p>
-            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <Button size="lg" className="hero-primary-cta" onClick={focusHeroPreview}>
+            <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+              <Button size="lg" className="hero-primary-cta h-12 px-6" onClick={focusHeroPreview}>
                 Ver minhas opções agora
                 <ArrowRight className="h-4 w-4" />
               </Button>
               <Link to="/emprestimos">
-                <Button size="lg" variant="outline">
+                <Button size="lg" variant="outline" className="h-12">
                   Entender como comparar
                 </Button>
               </Link>
             </div>
           </motion.div>
 
-          <p className="mx-auto mt-6 max-w-3xl text-center text-xs leading-6 text-slate-500">
+          <p className="mx-auto mt-5 max-w-3xl text-center text-xs leading-6 text-slate-500">
             A Cote Juros não é banco, não concede crédito diretamente e não garante aprovação. Não cobramos valor antecipado.
           </p>
         </div>

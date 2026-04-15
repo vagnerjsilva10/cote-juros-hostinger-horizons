@@ -114,9 +114,9 @@ function CartoesPage() {
 
       <PageHero
         eyebrow="Cartões"
-        badge="Mais clareza antes de decidir"
-        title="Veja com mais calma qual cartão realmente combina com o seu momento."
-        subtitle="Compare anuidade, limite e benefícios com uma leitura leve, direta e muito mais fácil de entender."
+        badge="Compare antes de contratar"
+        title="Veja opções de cartão com mais clareza antes de decidir."
+        subtitle="Compare anuidade, limite e benefícios para entender o que faz sentido para o seu perfil."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>

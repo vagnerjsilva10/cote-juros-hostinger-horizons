@@ -140,9 +140,9 @@ function EmprestimosPage() {
 
       <PageHero
         eyebrow="Empréstimos"
-        badge="Mais clareza antes da decisão"
-        title="Veja em poucos minutos por onde vale a pena começar."
-        subtitle="Compare valor, prazo e custo com uma leitura mais simples, mais humana e muito menos cansativa."
+        badge="Compare antes de contratar"
+        title="Veja opções de empréstimo com mais clareza antes de decidir."
+        subtitle="Compare valor, prazo e custo para entender por onde vale a pena começar."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
@@ -536,7 +536,7 @@ function EmprestimosPage() {
         </div>
       </div>
 
-      <section className="border-t border-border bg-background-secondary py-18">
+      <section className="border-t border-border bg-background-secondary py-[4.5rem]">
         <div className="page-shell">
           <div className="mx-auto max-w-4xl rounded-[24px] border border-primary/20 bg-white px-8 py-11 text-center shadow-[var(--shadow-sm)]">
             <h2 className="mb-3">Quer recomeçar com mais clareza?</h2>

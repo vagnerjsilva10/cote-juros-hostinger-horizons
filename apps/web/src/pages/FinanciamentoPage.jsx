@@ -94,10 +94,10 @@ function FinanciamentoPage() {
 
       <PageHero
         eyebrow="Financiamento"
-        badge="Mais clareza antes de assumir parcelas longas"
+        badge="Compare antes de assumir parcelas longas"
         centered
-        title="Entenda custos, entrada e prazo antes de dar um passo maior."
-        subtitle="Compare com mais calma e veja o que pode fazer sentido para o seu momento sem transformar a decisão em um peso desnecessário."
+        title="Veja opções de financiamento com mais clareza antes de contratar."
+        subtitle="Compare entrada, prazo e custo para entender o que realmente faz sentido para você."
       >
         <div className="flex flex-col justify-center gap-3 sm:flex-row">
           <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
