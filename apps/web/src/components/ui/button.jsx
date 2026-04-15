@@ -16,7 +16,7 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive px-6 py-3 text-destructive-foreground shadow-[var(--shadow-sm)] hover:-translate-y-[1px] hover:bg-destructive/90",
         outline:
-          "border border-slate-200 bg-white/92 px-6 py-3 text-foreground shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:-translate-y-[1px] hover:border-[rgba(79,70,229,0.22)] hover:bg-[rgba(248,250,255,0.96)] hover:shadow-[0_12px_24px_rgba(79,70,229,0.08)]",
+          "border border-slate-200 bg-white/94 px-6 py-3 text-foreground shadow-[0_8px_18px_rgba(15,23,42,0.05)] hover:-translate-y-[1px] hover:border-[rgba(79,70,229,0.24)] hover:bg-white hover:text-foreground hover:shadow-[0_12px_24px_rgba(79,70,229,0.08)]",
         secondary:
           "border border-border bg-background-secondary px-6 py-3 text-foreground shadow-[0_6px_16px_rgba(15,23,42,0.03)] hover:-translate-y-[1px] hover:bg-background-tertiary hover:shadow-[0_10px_22px_rgba(15,23,42,0.06)]",
         ghost: "text-muted-foreground hover:bg-background-secondary hover:text-foreground",

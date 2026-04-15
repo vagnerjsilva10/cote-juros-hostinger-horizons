@@ -102,7 +102,7 @@ function FinanciamentoPage() {
         <div className="flex flex-col justify-center gap-3 sm:flex-row">
           <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
           <a href="#resultados-financiamento">
-            <Button size="lg" variant="outline">Ver comparação</Button>
+            <Button size="lg" variant="outline" className="hero-secondary-btn">Ver comparação</Button>
           </a>
         </div>
       </PageHero>

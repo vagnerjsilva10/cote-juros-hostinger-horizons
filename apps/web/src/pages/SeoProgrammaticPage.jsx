@@ -746,6 +746,10 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
   const beforeFaqOtherOffers = getNonSupersimOffers(affiliatePlacements.before_faq || []);
   const midContentOffer = affiliatePlacements.mid_content?.[0] || null;
   const sidebarOffer = affiliatePlacements.sidebar?.[0] || null;
+  const isCleanComparePage = normalizedModel?.pageType === 'compare';
+  const visibleEditorialSections = isCleanComparePage ? [] : editorialSections;
+  const visibleRecommendationCards = isCleanComparePage ? [] : recommendationCards;
+  const visibleLinkGroups = isCleanComparePage ? [] : linkGroups;
 
   if (!normalizedModel) {
     return (
@@ -817,7 +821,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
         title={normalizedModel.heading}
         subtitle={normalizedModel.description}
       >
-        {normalizedModel.heroFeature && heroAffiliateOffer ? (
+        {normalizedModel.heroFeature && heroAffiliateOffer && !isCleanComparePage ? (
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
             <div className="space-y-5">
               {Array.isArray(normalizedModel.heroBadges) && normalizedModel.heroBadges.length ? (
@@ -851,7 +855,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
                 <PageActionButton
                   action={normalizedModel.secondaryCta || { label: normalizedModel.pageType === 'tool' ? 'Abrir ferramenta completa' : 'Ir para comparadores', to: normalizedModel.pageType === 'tool' ? '/ferramentas' : '/comparar' }}
                   variant="outline"
-                  className="w-full sm:w-auto"
+                  className="hero-secondary-btn w-full sm:w-auto"
                 />
               </div>
             </div>
@@ -891,7 +895,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
             <PageActionButton
               action={normalizedModel.secondaryCta || { label: normalizedModel.pageType === 'tool' ? 'Abrir ferramenta completa' : 'Ir para comparadores', to: normalizedModel.pageType === 'tool' ? '/ferramentas' : '/comparar' }}
               variant="outline"
-              className="w-full sm:w-auto"
+              className="hero-secondary-btn w-full sm:w-auto"
             />
           </div>
         )}
@@ -943,7 +947,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               </CardContent>
             </Card>
 
-            {belowHeroSupersimOffer ? (
+            {!isCleanComparePage && belowHeroSupersimOffer ? (
               <SuperSimOfferCard
                 offer={belowHeroSupersimOffer}
                 title={normalizedModel.path === '/supersim-emprestimo' ? 'SuperSim Empréstimo' : 'SuperSim como recomendação editorial'}
@@ -956,7 +960,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               />
             ) : null}
 
-            {belowHeroOtherOffers.length ? (
+            {!isCleanComparePage && belowHeroOtherOffers.length ? (
               <AffiliateOfferGrid
                 offers={belowHeroOtherOffers}
                 title="Condições relacionadas para analisar nesta comparação"
@@ -965,7 +969,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               />
             ) : null}
 
-            <EditorialSections sections={editorialSections} relatedGroups={linkGroups} />
+            <EditorialSections sections={visibleEditorialSections} relatedGroups={visibleLinkGroups} />
 
             {normalizedModel.pageType === 'tool' ? (
               <Card className="min-w-0 border-border bg-white">
@@ -1003,9 +1007,9 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               </Card>
             ) : null}
 
-            <RecommendationCardsSection title={normalizedModel.recommendationCardsTitle || 'Sugestões para você'} cards={recommendationCards} />
+            <RecommendationCardsSection title={normalizedModel.recommendationCardsTitle || 'Sugestões para você'} cards={visibleRecommendationCards} />
 
-            {midContentOffer ? (
+            {!isCleanComparePage && midContentOffer ? (
               getSupersimOffer([midContentOffer]) ? (
                 <SuperSimInlineCTA
                   offer={midContentOffer}
@@ -1021,7 +1025,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               )
             ) : null}
 
-            {beforeFaqSupersimOffer ? (
+            {!isCleanComparePage && beforeFaqSupersimOffer ? (
               <SuperSimOfferCard
                 offer={beforeFaqSupersimOffer}
                 title="SuperSim para seguir a jornada com mais clareza"
@@ -1030,7 +1034,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               />
             ) : null}
 
-            {beforeFaqOtherOffers.length ? (
+            {!isCleanComparePage && beforeFaqOtherOffers.length ? (
               <AffiliateOfferGrid
                 offers={beforeFaqOtherOffers}
                 title="Mais opções para avaliar antes de concluir sua pesquisa"
@@ -1077,7 +1081,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               </CardContent>
             </Card>
 
-            {sidebarOffer ? (
+            {!isCleanComparePage && sidebarOffer ? (
               getSupersimOffer([sidebarOffer]) ? (
                 <SuperSimSidebarCard
                   offer={sidebarOffer}
@@ -1091,7 +1095,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               )
             ) : null}
 
-            <InternalLinkGroups customGroups={linkGroups} />
+            <InternalLinkGroups customGroups={visibleLinkGroups} />
           </aside>
         </div>
       </section>

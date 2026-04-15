@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { CheckCircle2, ChevronRight, CreditCard, Filter, LayoutGrid, List } from 'lucide-react';
+import { CheckCircle2, ChevronRight, CreditCard, Filter } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -57,7 +57,6 @@ function CartoesPage() {
   const [categories, setCategories] = useState({ Premium: false, Intermediario: false, Basico: false });
   const [benefits, setBenefits] = useState({ Cashback: false, Milhas: false, VIP: false });
   const [sort, setSort] = useState('limite-maior');
-  const [viewMode, setViewMode] = useState('list');
   const categoryOptions = [
     { value: 'Premium', label: 'Premium' },
     { value: 'Intermediario', label: 'Intermediário' },
@@ -127,7 +126,7 @@ function CartoesPage() {
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
           <a href="#resultados-cartoes">
-            <Button size="lg" variant="outline">Ver comparação</Button>
+            <Button size="lg" variant="outline" className="hero-secondary-btn">Ver comparação</Button>
           </a>
         </div>
       </PageHero>
@@ -213,16 +212,6 @@ function CartoesPage() {
             <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <p className="text-sm text-muted-foreground">{filteredCards.length} cartão(ões) visíveis na comparação.</p>
               <div className="flex flex-wrap items-center gap-3">
-                <div className="inline-flex items-center rounded-[10px] border border-border bg-white p-1">
-                  <Button type="button" size="sm" variant={viewMode === 'grid' ? 'default' : 'ghost'} className="h-8 gap-1.5 px-3" onClick={() => setViewMode('grid')}>
-                    <LayoutGrid className="h-3.5 w-3.5" />
-                    Em 2 colunas
-                  </Button>
-                  <Button type="button" size="sm" variant={viewMode === 'list' ? 'default' : 'ghost'} className="h-8 gap-1.5 px-3" onClick={() => setViewMode('list')}>
-                    <List className="h-3.5 w-3.5" />
-                    Em lista
-                  </Button>
-                </div>
                 <Label className="whitespace-nowrap">Ordenar</Label>
                 <Select value={sort} onValueChange={setSort}>
                   <SelectTrigger className="w-[220px]">
@@ -237,8 +226,7 @@ function CartoesPage() {
               </div>
             </div>
 
-            {viewMode === 'grid' ? (
-              <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2">
                 {filteredCards.map((card) => {
                   const isFree = card.annualFee === 0;
                   const cardImage = resolveCardImage(card);
@@ -317,87 +305,7 @@ function CartoesPage() {
                     </Card>
                   );
                 })}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {filteredCards.map((card) => {
-                  const isFree = card.annualFee === 0;
-                  const cardImage = resolveCardImage(card);
-                  const hasPremiumAsset = Boolean(cardImage?.startsWith('/assets/cards/'));
-                  const [toneA, toneB] = resolveCardPalette(card);
-
-                  return (
-                    <Card key={card.id} className="border-border bg-white shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
-                      <CardContent className="p-6">
-                        <div className="grid items-center gap-5 xl:grid-cols-[180px_minmax(0,1.2fr)_0.8fr_220px]">
-                          <div className="relative h-32 overflow-hidden rounded-[18px] border border-border bg-slate-100">
-                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_10%,rgba(148,163,184,0.2),transparent_46%)]" />
-                            <div className="absolute inset-0 flex items-center justify-center p-3">
-                              <div className="relative w-full max-w-[150px] -rotate-[6deg]">
-                                {hasPremiumAsset ? (
-                                  <img
-                                    src={cardImage}
-                                    alt={card.title}
-                                    className="h-[96px] w-full rounded-2xl object-contain shadow-[0_16px_34px_rgba(15,23,42,0.22)]"
-                                  />
-                                ) : (
-                                  <div
-                                    className="h-[96px] rounded-2xl border border-white/20 p-3 text-white shadow-[0_16px_34px_rgba(15,23,42,0.22)]"
-                                    style={{ background: `linear-gradient(135deg, ${toneA}, ${toneB})` }}
-                                  >
-                                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/90">
-                                      {card.bankName}
-                                    </p>
-                                    <p className="mt-3 text-sm font-semibold leading-tight text-white">
-                                      {card.title}
-                                    </p>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="min-w-0 space-y-3">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-900">{card.bankName}</p>
-                              <Badge variant="outline" className="border-primary/25 bg-primary/10 text-primary">{card.category}</Badge>
-                              {isFree ? <Badge variant="secondary">Sem anuidade</Badge> : null}
-                            </div>
-                            <h3 className="text-lg font-semibold text-foreground">{card.title}</h3>
-                            <div className="grid gap-2 sm:grid-cols-3">
-                              {card.benefits?.slice(0, 3).map((benefit, index) => (
-                                <div key={`${benefit}-${index}`} className="flex items-start gap-2 rounded-[12px] border border-border bg-background-secondary px-3 py-3">
-                                  <CheckCircle2 className="mt-0.5 h-4 w-4 text-primary" />
-                                  <p className="text-sm text-muted-foreground">{benefit}</p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-                            <div className="rounded-[14px] border border-border bg-background-secondary p-4">
-                              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Anuidade</p>
-                              <p className={`mt-2 text-sm font-medium ${isFree ? 'text-primary' : 'text-foreground'}`}>
-                                {isFree ? 'Grátis' : `R$ ${card.annualFee}/ano`}
-                              </p>
-                            </div>
-                            <div className="rounded-[14px] border border-border bg-background-secondary p-4">
-                              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Limite estimado</p>
-                              <p className="mt-2 text-sm font-medium text-foreground">R$ {card.maxLimit / 1000}k</p>
-                            </div>
-                          </div>
-
-                          <Button className="w-full xl:justify-center" onClick={openInternalFlow}>
-                            Continuar no fluxo
-                            <ChevronRight className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            )}
+            </div>
 
             {filteredCards.length === 0 ? (
               <div className="rounded-[20px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center">
