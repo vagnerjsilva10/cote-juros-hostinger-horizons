@@ -103,6 +103,7 @@ function FaqItem({ item, isOpen, onToggle }) {
 function HomePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
+  const [heroPreviewFocusSignal, setHeroPreviewFocusSignal] = useState(0);
 
   const openPrimaryFlow = () => {
     trackingService.trackCtaClick({
@@ -114,13 +115,34 @@ function HomePage() {
     setModalOpen(true);
   };
 
+  const focusHeroPreview = () => {
+    trackingService.trackCtaClick({
+      sourcePage: '/',
+      ctaId: 'home_hero_focus_cta',
+      ctaLabel: 'Ver minhas opções agora',
+      productType: 'loan'
+    });
+
+    const previewElement = document.getElementById('hero-credit-preview');
+    previewElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setHeroPreviewFocusSignal((value) => value + 1);
+
+    window.setTimeout(() => {
+      const firstInput = previewElement?.querySelector('input');
+      if (firstInput instanceof HTMLInputElement) {
+        firstInput.focus();
+        firstInput.select();
+      }
+    }, 260);
+  };
+
   return (
     <>
       <Helmet>
         <title>Cote Juros - Descubra caminhos de crédito com mais clareza</title>
         <meta
           name="description"
-          content="Descubra agora quais caminhos de crédito podem realmente fazer sentido para você. Sem promessa falsa, sem cobrança antecipada e com mais clareza para decidir."
+          content="Descubra quais caminhos de crédito fazem sentido para você. Sem promessa falsa, sem cobrança antecipada e com mais clareza para decidir."
         />
         <meta name="verify-admitad" content="1ae3db0be4" />
         <link rel="canonical" href="https://cotejuros.com.br/" />
@@ -137,23 +159,23 @@ function HomePage() {
           <div className="absolute right-[24%] top-[12%] h-44 w-44 rounded-full bg-violet-100/40 blur-3xl" />
         </div>
 
-        <div className="page-shell relative py-24 sm:py-28 lg:py-32">
-          <div className="grid items-center gap-14 lg:grid-cols-[1.08fr_0.82fr] lg:gap-20">
+        <div className="page-shell relative py-20 sm:py-24 lg:py-28">
+          <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-10">
             <motion.div {...animationIn} className="max-w-[690px]">
               <span className="section-eyebrow border-white/80 bg-white/92">
                 Sem promessa falsa. Sem cobrança antecipada.
               </span>
 
               <h1 className="hero-headline mt-7 text-slate-950">
-                Descubra agora quais <span className="hero-word-emphasis-strong">caminhos de crédito</span> podem realmente fazer sentido para você
+                Descubra quais <span className="hero-word-emphasis-strong">caminhos de crédito</span> fazem sentido para você
               </h1>
 
-              <p className="hero-subcopy mt-6 max-w-[38rem] text-slate-600">
+              <p className="hero-subcopy mt-6 max-w-[36rem] text-slate-600">
                 Em poucos minutos, você entende por onde vale a pena começar e evita perder tempo em várias tentativas sem clareza.
               </p>
 
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <Button size="lg" onClick={openPrimaryFlow}>
+                <Button size="lg" className="hero-primary-cta" onClick={focusHeroPreview}>
                   Ver minhas opções agora
                   <ArrowRight className="h-4 w-4" />
                 </Button>
@@ -182,8 +204,8 @@ function HomePage() {
               </div>
             </motion.div>
 
-            <motion.div {...animationIn} className="mx-auto w-full max-w-[348px] lg:mr-0">
-              <CreditHeroPreview />
+            <motion.div {...animationIn} className="mx-auto w-full max-w-[400px] lg:mr-0 lg:pt-[4.8rem]">
+              <CreditHeroPreview focusSignal={heroPreviewFocusSignal} onContinue={openPrimaryFlow} />
             </motion.div>
           </div>
         </div>
