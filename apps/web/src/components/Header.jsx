@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -21,7 +21,6 @@ function Header() {
     { label: 'Empréstimos', path: '/emprestimos' },
     { label: 'Cartões', path: '/cartoes' },
     { label: 'Financiamentos', path: '/financiamentos' },
-    { label: 'Ofertas', path: '/ofertas' },
     { label: 'Blog', path: '/blog' }
   ];
 

@@ -8,8 +8,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PageHero from '@/components/PageHero.jsx';
 import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
+import { normalizeMojibake } from '@/lib/textEncoding.js';
 
 function FinanciamentoPage() {
+  const t = normalizeMojibake;
   const [financingData, setFinancingData] = useState([]);
   const [quickModalOpen, setQuickModalOpen] = useState(false);
 
@@ -57,7 +59,7 @@ function FinanciamentoPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="rounded-[14px] border border-border bg-background-secondary p-4">
-                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Valor máximo</p>
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">{t('Valor máximo')}</p>
                   <p className="mt-2 text-sm font-medium text-foreground">R$ {(item.maxValue / 1000).toFixed(0)}k</p>
                 </div>
                 <div className="rounded-[14px] border border-border bg-background-secondary p-4">
@@ -67,7 +69,7 @@ function FinanciamentoPage() {
               </div>
 
               <div className="rounded-[14px] border border-border bg-background-secondary p-4">
-                <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Entrada mínima</p>
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">{t('Entrada mínima')}</p>
                 <p className="mt-2 text-sm text-muted-foreground">A partir de {item.minDownPayment}% do valor do bem.</p>
               </div>
 
@@ -88,7 +90,7 @@ function FinanciamentoPage() {
         <title>Financiamento com mais clareza - Cote Juros</title>
         <meta
           name="description"
-          content="Compare financiamento de imóveis e veículos com leitura clara de taxa, prazo e entrada mínima."
+          content={t('Compare financiamento de imóveis e veículos com leitura clara de taxa, prazo e entrada mínima.')}
         />
       </Helmet>
 
@@ -96,13 +98,13 @@ function FinanciamentoPage() {
         eyebrow="Financiamento"
         badge="Compare antes de assumir parcelas longas"
         centered
-        title="Veja opções de financiamento com mais clareza antes de contratar."
-        subtitle="Compare entrada, prazo e custo para entender o que realmente faz sentido para você."
+        title={t('Veja opções de financiamento com mais clareza antes de contratar.')}
+        subtitle={t('Compare entrada, prazo e custo para entender o que realmente faz sentido para você.')}
       >
         <div className="flex flex-col justify-center gap-3 sm:flex-row">
-          <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
+          <Button size="lg" onClick={openInternalFlow}>{t('Ver minhas opções agora')}</Button>
           <a href="#resultados-financiamento">
-            <Button size="lg" variant="outline" className="hero-secondary-btn">Ver comparação</Button>
+            <Button size="lg" variant="outline" className="hero-secondary-btn">{t('Ver comparação')}</Button>
           </a>
         </div>
       </PageHero>
@@ -110,7 +112,7 @@ function FinanciamentoPage() {
       <section className="border-b border-border bg-background-secondary py-10">
         <div className="page-shell grid gap-4 md:grid-cols-4">
           <div className="interactive-card px-5 py-5">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Opções no comparador</p>
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">{t('Opções no comparador')}</p>
             <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">{financingData.length}</p>
           </div>
           <div className="interactive-card px-5 py-5">
@@ -122,7 +124,7 @@ function FinanciamentoPage() {
             <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">{maxTerm} meses</p>
           </div>
           <div className="interactive-card px-5 py-5">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Leitura do cenário</p>
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">{t('Leitura do cenário')}</p>
             <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">Mais clara</p>
           </div>
         </div>
@@ -131,9 +133,9 @@ function FinanciamentoPage() {
       <div className="page-shell py-14" id="resultados-financiamento">
         <div className="mb-10 rounded-[24px] border border-border bg-white p-7 shadow-[var(--shadow-sm)] sm:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Compare com mais calma</p>
-          <h2 className="mt-3 text-2xl text-foreground">Entenda custos e prazos com menos ruído.</h2>
+          <h2 className="mt-3 text-2xl text-foreground">{t('Entenda custos e prazos com menos ruído.')}</h2>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
-            Esta etapa foi desenhada para facilitar leitura, comparação e contexto antes da próxima decisão.
+            {t('Esta etapa foi desenhada para facilitar leitura, comparação e contexto antes da próxima decisão.')}
           </p>
         </div>
 
@@ -141,11 +143,11 @@ function FinanciamentoPage() {
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="veiculos" className="gap-2">
               <Car className="h-4 w-4" />
-              Veículos
+              {t('Veículos')}
             </TabsTrigger>
             <TabsTrigger value="imobiliario" className="gap-2">
               <Home className="h-4 w-4" />
-              Imóveis
+              {t('Imóveis')}
             </TabsTrigger>
           </TabsList>
 
@@ -154,7 +156,7 @@ function FinanciamentoPage() {
               <div className="flex items-start gap-3">
                 <ShieldCheck className="mt-0.5 h-5 w-5 text-primary" />
                 <p className="text-sm text-muted-foreground">
-                  Em geral, veículos mais novos costumam trazer condições mais leves e parcelas mais equilibradas.
+                  {t('Em geral, veículos mais novos costumam trazer condições mais leves e parcelas mais equilibradas.')}
                 </p>
               </div>
             </div>
@@ -166,7 +168,7 @@ function FinanciamentoPage() {
               <div className="flex items-start gap-3">
                 <ShieldCheck className="mt-0.5 h-5 w-5 text-primary" />
                 <p className="text-sm text-muted-foreground">
-                  No financiamento imobiliário, uma entrada melhor organizada pode aliviar bastante o peso das parcelas ao longo do tempo.
+                  {t('No financiamento imobiliário, uma entrada melhor organizada pode aliviar bastante o peso das parcelas ao longo do tempo.')}
                 </p>
               </div>
             </div>
@@ -180,9 +182,9 @@ function FinanciamentoPage() {
           <div className="mx-auto max-w-4xl rounded-[24px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
             <h2 className="mb-3">Quer entender qual caminho pode fazer mais sentido?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
-              Conte o básico sobre o seu momento e veja opções com mais clareza antes de assumir uma parcela de longo prazo.
+              {t('Conte o básico sobre o seu momento e veja opções com mais clareza antes de assumir uma parcela de longo prazo.')}
             </p>
-            <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
+            <Button size="lg" onClick={openInternalFlow}>{t('Ver minhas opções agora')}</Button>
           </div>
         </div>
       </section>

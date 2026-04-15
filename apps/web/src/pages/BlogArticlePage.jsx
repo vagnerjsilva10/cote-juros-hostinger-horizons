@@ -27,6 +27,7 @@ import {
   resolveArticleBySlug
 } from '@/lib/content/articles.js';
 import { getSupersimOffer, SUPERSIM_TARGET_ARTICLE_PATHS } from '@/lib/supersim.js';
+import { normalizeMojibake, normalizeMojibakeDeep } from '@/lib/textEncoding.js';
 
 const BLOG_BASE_URL = 'https://www.cotejuros.com.br/blog';
 const SITE_LOGO_URL = 'https://www.cotejuros.com.br/assets/logo/logo-current-site.svg';
@@ -55,7 +56,7 @@ const toFaqSchema = (article) => {
   };
 };
 
-const CATEGORY_ROUTES = [
+const CATEGORY_ROUTES = normalizeMojibakeDeep([
   { match: 'emprest', path: '/emprestimos', label: 'Empréstimos' },
   { match: 'cart', path: '/cartoes-de-credito', label: 'Cartões de crédito' },
   { match: 'score', path: '/educacao-financeira', label: 'Score de crédito' },
@@ -63,7 +64,7 @@ const CATEGORY_ROUTES = [
   { match: 'divid', path: '/juros-abusivos', label: 'Dívidas e renegociação' },
   { match: 'educ', path: '/educacao-financeira', label: 'Educação financeira' },
   { match: 'organiz', path: '/educacao-financeira', label: 'Organização financeira' }
-];
+]);
 
 const getCategoryRoute = (article) => {
   const key = getArticleCategoryKey(article);
@@ -87,35 +88,36 @@ const getArticleConversionCta = (article, categoryRoute) => {
   ].filter(Boolean).join(' '));
 
   if (/(organiz|orcamento|controle financeiro|educacao financeira|diagnostico financeiro|planejamento financeiro)/.test(intent)) {
-    return {
+    return normalizeMojibakeDeep({
       eyebrow: 'Próximo passo',
       title: 'Quer organizar melhor seu dinheiro antes de decidir?',
       description: 'Se este conteúdo falou mais sobre rotina, planejamento ou controle, o Cote Finance pode ajudar você a enxergar seu mês com mais clareza.',
       primary: { to: '/cote-finance-ai', label: 'Conhecer o Cote Finance' },
       secondary: { to: categoryRoute.path, label: 'Ver conteúdo relacionado' }
-    };
+    });
   }
 
   if (/(golpe|fraude|juros abusivos|divida|renegoci|contest)/.test(intent)) {
-    return {
+    return normalizeMojibakeDeep({
       eyebrow: 'Antes de decidir',
       title: 'Compare caminhos possíveis com calma',
       description: 'Quando o assunto envolve dívida, golpe ou cobrança confusa, vale respirar, comparar alternativas e evitar promessas fáceis.',
       primary: { to: '/emprestimos', label: 'Ver opções com calma' },
       secondary: { to: categoryRoute.path, label: 'Continuar lendo sobre o tema' }
-    };
+    });
   }
 
-  return {
+  return normalizeMojibakeDeep({
     eyebrow: 'Próximo passo',
     title: 'Quer ver opções que combinam com seu perfil?',
     description: 'Se este conteúdo ajudou, agora você pode ver caminhos de crédito que podem fazer sentido para o seu momento, sem promessa falsa e sem cobrança antecipada.',
     primary: { to: '/emprestimos', label: 'Ver minhas opções agora' },
     secondary: { to: categoryRoute.path, label: 'Ver página relacionada' }
-  };
+  });
 };
 
 function BlogArticlePage({ articleSlugOverride = '' }) {
+  const t = normalizeMojibake;
   const { articleSlug } = useParams();
   const resolvedSlug = articleSlugOverride || articleSlug;
   const [articles, setArticles] = useState([]);
@@ -145,7 +147,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
       .catch((error) => {
         console.error('[blog-article-page] erro ao carregar artigo', error);
         if (!active) return;
-        setLoadError('Não foi possível carregar este artigo agora.');
+        setLoadError(normalizeMojibake('Não foi possível carregar este artigo agora.'));
         setArticles([]);
         setArticle(null);
       })
@@ -158,7 +160,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
     };
   }, [resolvedSlug]);
 
-  const safeArticle = useMemo(() => (article ? normalizeArticleData(article) : null), [article]);
+  const safeArticle = useMemo(() => (article ? normalizeMojibakeDeep(normalizeArticleData(article)) : null), [article]);
   const affiliatePlacements = useAffiliatePlacements({
     pageSlug: safeArticle?.routePath || '',
     productType: 'loan'
@@ -235,8 +237,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         <Card className="mx-auto max-w-2xl border-border bg-white text-center">
           <CardContent className="space-y-4 p-10">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary/80">Blog Cote Juros</p>
-            <h1 className="text-3xl text-foreground">Artigo não encontrado</h1>
-            <p className="text-muted-foreground">{loadError || 'Esse conteúdo pode ter sido movido, renomeado ou removido.'}</p>
+            <h1 className="text-3xl text-foreground">{t('Artigo não encontrado')}</h1>
+            <p className="text-muted-foreground">{loadError || t('Esse conteúdo pode ter sido movido, renomeado ou removido.')}</p>
             <Link to="/blog">
               <Button>Voltar para o blog</Button>
             </Link>
@@ -259,7 +261,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://www.cotejuros.com.br/' },
+      { '@type': 'ListItem', position: 1, name: t('Início'), item: 'https://www.cotejuros.com.br/' },
       { '@type': 'ListItem', position: 2, name: 'Blog', item: BLOG_BASE_URL },
       { '@type': 'ListItem', position: 3, name: editorialTitle, item: canonicalUrl }
     ]
@@ -323,7 +325,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
           <nav aria-label="Breadcrumb" className="flex min-w-0 flex-wrap items-center gap-2 text-xs text-muted-foreground sm:text-sm">
             <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground">
               <Home className="h-4 w-4" />
-              Início
+              {t('Início')}
             </Link>
             <span>/</span>
             <Link to="/blog" className="hover:text-foreground">
@@ -403,7 +405,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   {introSupersimOffer ? (
                     <SuperSimInlineCTA
                       offer={introSupersimOffer}
-                      title="Se você quer comparar uma opção online, vale olhar a SuperSim"
+                      title={t('Se você quer comparar uma opção online, vale olhar a SuperSim')}
                       onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
                     />
                   ) : null}
@@ -412,7 +414,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
                   {tocItems.length ? (
                     <section className="min-w-0 rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
-                      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">Neste artigo você vai encontrar</p>
+                      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">{t('Neste artigo você vai encontrar')}</p>
                       <div className="mt-4 grid gap-3 sm:grid-cols-2">
                         {tocItems.slice(0, 6).map((item) => (
                           <a
@@ -449,7 +451,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                       {index === midSectionIndex && midSupersimOffer ? (
                         <SuperSimInlineCTA
                           offer={midSupersimOffer}
-                          title="A SuperSim entra aqui como próxima etapa natural da leitura"
+                          title={t('A SuperSim entra aqui como próxima etapa natural da leitura')}
                           onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
                         />
                       ) : null}
@@ -479,7 +481,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   {faqSupersimOffer ? (
                     <SuperSimInlineCTA
                       offer={faqSupersimOffer}
-                      title="Antes da FAQ, você pode continuar a pesquisa com a SuperSim"
+                      title={t('Antes da FAQ, você pode continuar a pesquisa com a SuperSim')}
                       onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
                     />
                   ) : null}
@@ -500,7 +502,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
                   {Array.isArray(safeArticle.conclusion) && safeArticle.conclusion.length ? (
                     <section id="conclusao" className="scroll-mt-28 space-y-4">
-                      <h2 className="text-xl text-foreground sm:text-2xl">Conclusão</h2>
+                      <h2 className="text-xl text-foreground sm:text-2xl">{t('Conclusão')}</h2>
                       {safeArticle.conclusion.map((paragraph, index) => (
                         <p key={`conclusion-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{paragraph}</p>
                       ))}
@@ -510,20 +512,20 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
               </article>
 
               <section className="min-w-0 rounded-[22px] border border-primary/15 bg-primary/[0.04] p-5 sm:p-6 md:p-8">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">{conversionCta?.eyebrow || 'Próximo passo'}</p>
-                <h2 className="mt-3 text-xl text-foreground sm:text-2xl">{conversionCta?.title || 'Quer dar o próximo passo com mais clareza?'}</h2>
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">{conversionCta?.eyebrow || t('Próximo passo')}</p>
+                <h2 className="mt-3 text-xl text-foreground sm:text-2xl">{conversionCta?.title || t('Quer dar o próximo passo com mais clareza?')}</h2>
                 <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
                   {conversionCta?.description}
                 </p>
                 <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   <Link to={conversionCta?.primary.to || '/emprestimos'} className="inline-flex w-full sm:w-auto">
                     <Button className="w-full sm:w-auto">
-                      {conversionCta?.primary.label || 'Ver minhas opções agora'}
+                      {conversionCta?.primary.label || t('Ver minhas opções agora')}
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
                   <Link to={conversionCta?.secondary.to || categoryRoute.path} className="inline-flex w-full sm:w-auto">
-                    <Button variant="outline" className="w-full sm:w-auto">{conversionCta?.secondary.label || 'Ver página relacionada'}</Button>
+                    <Button variant="outline" className="w-full sm:w-auto">{conversionCta?.secondary.label || t('Ver página relacionada')}</Button>
                   </Link>
                 </div>
               </section>
@@ -547,7 +549,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                       to={getArticlePath(nextArticle)}
                       className="min-w-0 rounded-[16px] border border-border bg-white p-5 text-left transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
                     >
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Próximo artigo</p>
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{t('Próximo artigo')}</p>
                       <h3 className="mt-2 text-lg text-foreground">{getEditorialTitle(nextArticle)}</h3>
                     </Link>
                   ) : null}
@@ -574,8 +576,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         <section className="border-t border-border bg-background-secondary py-12 md:py-14">
           <div className="page-shell min-w-0 space-y-6">
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Leia também</p>
-              <h2 className="text-2xl text-foreground">Mais conteúdos sobre o mesmo assunto</h2>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">{t('Leia também')}</p>
+              <h2 className="text-2xl text-foreground">{t('Mais conteúdos sobre o mesmo assunto')}</h2>
             </div>
             <div className="grid min-w-0 gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {relatedArticles.map((item) => (

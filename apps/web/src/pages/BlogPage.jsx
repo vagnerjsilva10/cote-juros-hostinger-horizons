@@ -19,6 +19,7 @@ import {
   getEditorialTitle,
   normalizeArticleData
 } from '@/lib/content/articles.js';
+import { normalizeMojibake } from '@/lib/textEncoding.js';
 
 const PAGE_SIZE = 12;
 const BLOG_URL = 'https://www.cotejuros.com.br/blog';
@@ -51,6 +52,7 @@ const blogBaseSchema = {
 };
 
 function BlogPage() {
+  const t = normalizeMojibake;
   const [articlesData, setArticlesData] = useState([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('Todas');
@@ -94,7 +96,7 @@ function BlogPage() {
     return [
       { label: 'Todas', count: articlesData.length },
       ...Array.from(grouped.entries())
-        .map(([label, count]) => ({ label, count }))
+        .map(([label, count]) => ({ label: normalizeMojibake(label), count }))
         .sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'))
     ];
   }, [articlesData]);
@@ -104,7 +106,8 @@ function BlogPage() {
 
     return articlesData
       .filter((article) => {
-        const inCategory = category === 'Todas' || article.category === category;
+        const normalizedCategory = normalizeMojibake(article.category || '');
+        const inCategory = category === 'Todas' || normalizedCategory === category;
         if (!inCategory) return false;
         if (!query) return true;
 
@@ -186,15 +189,15 @@ function BlogPage() {
       <PageHero
         centered
         badge="Blog Cote Juros"
-        title="ConteÃºdo para entender antes de contratar"
-        subtitle="Guias editoriais com leitura clara, imagens mais humanas e contexto financeiro para decidir com mais confianÃ§a."
+        title={t('Conteúdo para entender antes de contratar')}
+        subtitle={t('Guias editoriais com leitura clara, imagens mais humanas e contexto financeiro para decidir com mais confiança.')}
       >
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              className="rounded-full bg-background pl-11"
-              placeholder="Busque por score, emprÃ©stimo, cartÃ£o, dÃ­vidas ou orÃ§amento"
+              className="blog-hero-search rounded-full bg-background pl-11"
+              placeholder={t('Busque por score, empréstimo, cartão, dívidas ou orçamento')}
               value={search}
               onChange={(event) => setSearch(event.target.value)}
             />
@@ -202,14 +205,14 @@ function BlogPage() {
 
           <div className="flex flex-wrap justify-center gap-2">
             {categories.slice(0, 8).map((item) => (
-              <Button
+              <button
                 key={item.label}
-                variant={category === item.label ? 'default' : 'outline'}
-                className="rounded-full"
+                type="button"
+                className={`blog-hero-chip ${category === item.label ? 'is-active' : ''}`}
                 onClick={() => setCategory(item.label)}
               >
                 {item.label}
-              </Button>
+              </button>
             ))}
           </div>
         </div>
@@ -219,9 +222,9 @@ function BlogPage() {
         <section className="grid gap-5 rounded-[28px] border border-border bg-white p-6 md:grid-cols-[1.15fr_0.85fr] md:p-8">
           <div className="space-y-3">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">Comece por aqui</p>
-            <h2 className="text-2xl text-foreground md:text-3xl">Temas mais Ãºteis para organizar a vida financeira com calma</h2>
+            <h2 className="text-2xl text-foreground md:text-3xl">{t('Temas mais úteis para organizar a vida financeira com calma')}</h2>
             <p className="max-w-3xl text-base leading-7 text-muted-foreground">
-              Um blog mais silencioso, claro e Ãºtil para apoiar decisÃµes financeiras sem poluiÃ§Ã£o visual.
+              {t('Um blog mais silencioso, claro e útil para apoiar decisões financeiras sem poluição visual.')}
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-1">
@@ -252,7 +255,7 @@ function BlogPage() {
           <section className="space-y-5">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-2xl text-foreground">Destaque da semana</h2>
-              <Badge variant="outline">{featured.category}</Badge>
+              <Badge variant="outline">{normalizeMojibake(featured.category || '')}</Badge>
             </div>
 
             <Link

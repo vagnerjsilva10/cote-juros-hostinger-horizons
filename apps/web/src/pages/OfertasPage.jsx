@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle2, ExternalLink, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ExternalLink, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import PageHero from '@/components/PageHero.jsx';
 import AffiliateOfferGrid from '@/components/affiliates/AffiliateOfferGrid.jsx';
@@ -25,10 +25,10 @@ const collectOffers = (placements = {}) => {
     });
 };
 
-const trustPoints = [
-  'Aqui ficam apenas op√ß√µes externas selecionadas.',
-  'Antes de clicar, voc√™ entende o que pode esperar.',
-  'Se voc√™ avan√ßar, a Cote Juros pode receber comiss√£o sem custo extra para voc√™.'
+const handoffPoints = [
+  'Esta ·rea existe sÛ para saÌdas externas, sem misturar com a comparaÁ„o principal.',
+  'VocÍ entende o contexto antes e sÛ clica quando a oferta fizer sentido.',
+  'Se vocÍ avanÁar, a Cote Juros pode receber comiss„o sem custo extra para vocÍ.'
 ];
 
 function OfertasPage() {
@@ -42,6 +42,7 @@ function OfertasPage() {
 
   const supersimOffer = useMemo(() => getSupersimOffer(loanOffers), [loanOffers]);
   const otherLoanOffers = useMemo(() => getNonSupersimOffers(loanOffers), [loanOffers]);
+  const hasAnyOffer = loanOffers.length || creditCardOffers.length || financingOffers.length;
 
   const handleAffiliateClick = async (offer, position) => {
     try {
@@ -52,167 +53,187 @@ function OfertasPage() {
       });
 
       if (!result?.redirectUrl) {
-        toast.error('Esta oferta ainda n√£o est√° dispon√≠vel agora.');
+        toast.error('Esta oferta n„o est· disponÌvel agora.');
         return;
       }
 
       window.location.href = result.redirectUrl;
     } catch (error) {
-      toast.error(error.message || 'N√£o foi poss√≠vel abrir esta oferta agora.');
+      toast.error(error.message || 'N„o foi possÌvel abrir esta oferta agora.');
     }
   };
 
   return (
     <>
       <Helmet>
-        <title>Ofertas externas selecionadas - Cote Juros</title>
+        <title>Ofertas externas selecionadas | Cote Juros</title>
         <meta
           name="description"
-          content="Veja ofertas externas em uma √°rea separada, com leitura clara, aviso de sa√≠da e transpar√™ncia antes de continuar."
+          content="Veja saÌdas externas em uma ·rea separada, com leitura clara, aviso de saÌda e mais contexto antes do clique."
         />
       </Helmet>
 
       <PageHero
-        eyebrow="Ofertas externas"
-        badge="√Årea separada da experi√™ncia principal"
+        eyebrow="SaÌdas externas"
+        badge="¡rea separada da experiÍncia principal"
         centered
-        title="Quando fizer sentido sair do portal, voc√™ encontra as op√ß√µes aqui."
-        subtitle="A experi√™ncia principal da Cote Juros continua focada em clareza e compara√ß√£o. Nesta √°rea, reunimos apenas ofertas externas com leitura r√°pida, aviso de sa√≠da e mais contexto antes do clique."
+        title="Quando fizer sentido sair da Cote Juros, as opÁıes ficam aqui."
+        subtitle="A comparaÁ„o principal continua nas p·ginas de produto. Esta rota existe sÛ para organizar ofertas externas com mais clareza, contexto e transparÍncia."
       >
-        <div className="flex flex-col items-center justify-center gap-4">
-          <div className="grid w-full max-w-4xl gap-4 md:grid-cols-3">
-            {trustPoints.map((item, index) => (
+        <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
+          <div className="grid gap-4 md:grid-cols-3">
+            {handoffPoints.map((item) => (
               <div
                 key={item}
-                className="interactive-card rounded-[20px] border border-border bg-white/92 px-5 py-5 text-left shadow-[0_12px_32px_rgba(15,23,42,0.05)] animate-fade-in-up"
-                style={{ animationDelay: `${index * 80}ms` }}
+                className="rounded-[20px] border border-white/[0.08] bg-white/[0.04] px-5 py-5 text-left shadow-[0_16px_42px_rgba(2,6,23,0.16)] backdrop-blur"
               >
-                <p className="text-sm leading-7 text-foreground">{item}</p>
+                <p className="text-sm leading-7 text-white/78">{item}</p>
               </div>
             ))}
           </div>
 
           <div className="flex flex-col justify-center gap-3 sm:flex-row">
             <Link to="/emprestimos">
-              <Button size="lg" variant="outline">Voltar para a compara√ß√£o</Button>
+              <Button size="lg" variant="outline" className="hero-secondary-btn">
+                Voltar para a comparaÁ„o
+              </Button>
             </Link>
-            <a href="#ofertas-emprestimos">
+            <a href="#ofertas-disponiveis" className="inline-flex">
               <Button size="lg">Ver ofertas agora</Button>
             </a>
           </div>
         </div>
       </PageHero>
 
-      <div className="page-shell py-14 sm:py-20">
-        <section className="rounded-[28px] border border-border bg-white p-8 shadow-[var(--shadow-sm)] sm:p-10">
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Curadoria separada</p>
-              <h2 className="mt-3 max-w-2xl text-3xl text-foreground">
-                A compara√ß√£o principal fica de um lado. As sa√≠das externas ficam aqui.
-              </h2>
-              <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
-                Esta p√°gina existe para manter a experi√™ncia principal mais limpa. Voc√™ entende seu momento primeiro e s√≥ considera uma op√ß√£o externa quando isso realmente fizer sentido.
-              </p>
-            </div>
-
-            <div className="rounded-[24px] border border-border bg-background-secondary p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">O que voc√™ encontra aqui</p>
-              <div className="mt-5 space-y-4">
-                {[
-                  'Destaques com leitura r√°pida e linguagem simples.',
-                  'Resumo objetivo sobre perfil mais comum e pontos de aten√ß√£o.',
-                  'Aviso claro antes de qualquer sa√≠da da Cote Juros.'
-                ].map((item) => (
-                  <div key={item} className="flex items-start gap-3">
-                    <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-primary" />
-                    <p className="text-sm leading-7 text-foreground">{item}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="ofertas-emprestimos" className="mt-16 space-y-6">
-          <div className="max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Empr√©stimos</p>
-            <h2 className="mt-3 text-3xl text-foreground">Op√ß√µes para quem quer avan√ßar com cr√©dito pessoal.</h2>
-            <p className="mt-4 text-base leading-8 text-muted-foreground">
-              Esta √°rea √© separada da compara√ß√£o principal. Use quando voc√™ j√° tiver entendido o cen√°rio e quiser olhar uma alternativa externa com mais objetividade.
+      <div className="page-shell py-14 sm:py-18">
+        <section className="grid gap-5 rounded-[28px] border border-border bg-white p-6 shadow-[var(--shadow-sm)] md:grid-cols-[1.1fr_0.9fr] md:p-8">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Leitura direta</p>
+            <h2 className="mt-3 text-3xl text-foreground">A ·rea existe para n„o poluir a experiÍncia principal.</h2>
+            <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
+              Em vez de misturar saÌda externa com a leitura do produto, a Cote Juros deixa esse passo separado. Assim, vocÍ compara primeiro e sÛ considera um clique externo quando isso fizer sentido.
             </p>
           </div>
 
-          {supersimOffer ? (
-            <SuperSimOfferCard
-              offer={{ ...supersimOffer, disclosureText: supersimOffer.disclosureText || 'Se voc√™ avan√ßar por este link, a Cote Juros pode receber comiss√£o sem custo extra para voc√™.' }}
-              title="SuperSim"
-              description="Uma op√ß√£o para quem quer comparar empr√©stimo pessoal com leitura simples, pedido 100% online e uma sa√≠da mais direta quando o momento pede agilidade."
-              ctaLabel="Simular empr√©stimo"
-              badgeLabel="Destaque editorial"
-              onSelect={(offer) => handleAffiliateClick(offer, 'ofertas-loan-featured')}
-            />
-          ) : null}
-
-          {otherLoanOffers.length ? (
-            <AffiliateOfferGrid
-              offers={otherLoanOffers.map((offer) => ({
-                ...offer,
-                ctaText: offer.ctaText || 'Ver condi√ß√µes',
-                disclosureText: offer.disclosureText || 'Se voc√™ avan√ßar por este link, a Cote Juros pode receber comiss√£o sem custo extra para voc√™.'
-              }))}
-              title="Para continuar, voc√™ ser√° direcionado para uma institui√ß√£o externa"
-              eyebrow="Ofertas externas"
-              onSelect={(offer) => handleAffiliateClick(offer, 'ofertas-loan-grid')}
-            />
-          ) : null}
+          <div className="rounded-[24px] border border-border bg-background-secondary p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Antes de seguir</p>
+            <div className="mt-5 space-y-4">
+              {[
+                'Leia a descriÁ„o e o perfil mais comum da oferta.',
+                'Entenda que o prÛximo passo acontece fora da Cote Juros.',
+                'Compare custo, prazo e contexto antes de contratar.'
+              ].map((item) => (
+                <div key={item} className="flex items-start gap-3">
+                  <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-primary" />
+                  <p className="text-sm leading-7 text-foreground">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
-        {creditCardOffers.length ? (
-          <section className="mt-20 space-y-6">
-            <div className="max-w-3xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Cart√µes</p>
-              <h2 className="mt-3 text-3xl text-foreground">Sa√≠das externas para quem quer continuar olhando cart√µes.</h2>
-              <p className="mt-4 text-base leading-8 text-muted-foreground">
-                A compara√ß√£o principal continua nas p√°ginas do produto. Aqui ficam apenas alternativas externas para quem decidiu seguir.
-              </p>
+        <section id="ofertas-disponiveis" className="mt-14 space-y-10">
+          {!hasAnyOffer ? (
+            <div className="rounded-[24px] border border-dashed border-border bg-background-secondary px-6 py-14 text-center">
+              <h2 className="text-2xl text-foreground">Nenhuma oferta externa disponÌvel agora</h2>
+              <p className="mt-3 text-muted-foreground">Continue pela comparaÁ„o principal para entender melhor o seu cen·rio antes de tentar novamente.</p>
+              <div className="mt-6">
+                <Link to="/emprestimos" className="inline-flex">
+                  <Button>Ir para emprÈstimos</Button>
+                </Link>
+              </div>
             </div>
+          ) : null}
 
-            <AffiliateOfferGrid
-              offers={creditCardOffers.map((offer) => ({
-                ...offer,
-                ctaText: offer.ctaText || 'Ver condi√ß√µes',
-                disclosureText: offer.disclosureText || 'Se voc√™ avan√ßar por este link, a Cote Juros pode receber comiss√£o sem custo extra para voc√™.'
-              }))}
-              title="Para continuar, voc√™ ser√° direcionado para uma institui√ß√£o externa"
-              eyebrow="Ofertas externas"
-              onSelect={(offer) => handleAffiliateClick(offer, 'ofertas-credit-card')}
-            />
-          </section>
-        ) : null}
+          {loanOffers.length ? (
+            <section className="space-y-6">
+              <div className="max-w-3xl">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">EmprÈstimos</p>
+                <h2 className="mt-3 text-3xl text-foreground">Ofertas externas para quem j· decidiu olhar crÈdito pessoal.</h2>
+                <p className="mt-4 text-base leading-8 text-muted-foreground">
+                  Esta vitrine sÛ faz sentido depois da leitura principal. Aqui entram saÌdas objetivas, sem prometer mais do que a oferta realmente entrega.
+                </p>
+              </div>
 
-        {financingOffers.length ? (
-          <section className="mt-20 space-y-6">
-            <div className="max-w-3xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Financiamentos</p>
-              <h2 className="mt-3 text-3xl text-foreground">Alternativas externas para quem quer seguir com financiamento.</h2>
-              <p className="mt-4 text-base leading-8 text-muted-foreground">
-                Mantivemos esta √°rea separada para que a experi√™ncia principal continue limpa e a sa√≠da externa apare√ßa s√≥ na hora certa.
-              </p>
-            </div>
+              {supersimOffer ? (
+                <SuperSimOfferCard
+                  offer={{
+                    ...supersimOffer,
+                    disclosureText:
+                      supersimOffer.disclosureText || 'Se vocÍ avanÁar por este link, a Cote Juros pode receber comiss„o sem custo extra para vocÍ.'
+                  }}
+                  title="SuperSim"
+                  description="Uma alternativa externa para quem quer seguir com emprÈstimo online de forma mais direta, depois de j· ter comparado o cen·rio."
+                  ctaLabel="Simular emprÈstimo"
+                  badgeLabel="SaÌda externa"
+                  onSelect={(offer) => handleAffiliateClick(offer, 'ofertas-loan-featured')}
+                />
+              ) : null}
 
-            <AffiliateOfferGrid
-              offers={financingOffers.map((offer) => ({
-                ...offer,
-                ctaText: offer.ctaText || 'Simular financiamento',
-                disclosureText: offer.disclosureText || 'Se voc√™ avan√ßar por este link, a Cote Juros pode receber comiss√£o sem custo extra para voc√™.'
-              }))}
-              title="Para continuar, voc√™ ser√° direcionado para uma institui√ß√£o externa"
-              eyebrow="Ofertas externas"
-              onSelect={(offer) => handleAffiliateClick(offer, 'ofertas-financing')}
-            />
-          </section>
-        ) : null}
+              {otherLoanOffers.length ? (
+                <AffiliateOfferGrid
+                  offers={otherLoanOffers.map((offer) => ({
+                    ...offer,
+                    ctaText: offer.ctaText || 'Ver condiÁıes',
+                    disclosureText:
+                      offer.disclosureText || 'Se vocÍ avanÁar por este link, a Cote Juros pode receber comiss„o sem custo extra para vocÍ.'
+                  }))}
+                  title="Ao continuar, vocÍ ser· direcionado para uma instituiÁ„o externa"
+                  eyebrow="Ofertas externas"
+                  onSelect={(offer) => handleAffiliateClick(offer, 'ofertas-loan-grid')}
+                />
+              ) : null}
+            </section>
+          ) : null}
+
+          {creditCardOffers.length ? (
+            <section className="space-y-6">
+              <div className="max-w-3xl">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Cartıes</p>
+                <h2 className="mt-3 text-3xl text-foreground">SaÌdas externas para quem quer seguir olhando cartıes.</h2>
+                <p className="mt-4 text-base leading-8 text-muted-foreground">
+                  A comparaÁ„o principal continua na navegaÁ„o do produto. Esta seÁ„o existe sÛ para organizar alternativas externas de forma mais limpa.
+                </p>
+              </div>
+
+              <AffiliateOfferGrid
+                offers={creditCardOffers.map((offer) => ({
+                  ...offer,
+                  ctaText: offer.ctaText || 'Ver condiÁıes',
+                  disclosureText:
+                    offer.disclosureText || 'Se vocÍ avanÁar por este link, a Cote Juros pode receber comiss„o sem custo extra para vocÍ.'
+                }))}
+                title="Ao continuar, vocÍ ser· direcionado para uma instituiÁ„o externa"
+                eyebrow="Ofertas externas"
+                onSelect={(offer) => handleAffiliateClick(offer, 'ofertas-credit-card')}
+              />
+            </section>
+          ) : null}
+
+          {financingOffers.length ? (
+            <section className="space-y-6">
+              <div className="max-w-3xl">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Financiamentos</p>
+                <h2 className="mt-3 text-3xl text-foreground">Alternativas externas para quem quer seguir com financiamento.</h2>
+                <p className="mt-4 text-base leading-8 text-muted-foreground">
+                  Mantivemos esta ·rea separada para o site continuar mais claro. A saÌda externa aparece aqui, e n„o no meio da jornada principal.
+                </p>
+              </div>
+
+              <AffiliateOfferGrid
+                offers={financingOffers.map((offer) => ({
+                  ...offer,
+                  ctaText: offer.ctaText || 'Simular financiamento',
+                  disclosureText:
+                    offer.disclosureText || 'Se vocÍ avanÁar por este link, a Cote Juros pode receber comiss„o sem custo extra para vocÍ.'
+                }))}
+                title="Ao continuar, vocÍ ser· direcionado para uma instituiÁ„o externa"
+                eyebrow="Ofertas externas"
+                onSelect={(offer) => handleAffiliateClick(offer, 'ofertas-financing')}
+              />
+            </section>
+          ) : null}
+        </section>
       </div>
 
       <section className="border-t border-border bg-background-secondary py-16 sm:py-20">
@@ -223,31 +244,24 @@ function OfertasPage() {
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Voltar para o produto</p>
                 <h2 className="mt-3 text-3xl text-foreground">Prefere decidir com mais calma dentro da Cote Juros?</h2>
                 <p className="mt-4 text-base leading-8 text-muted-foreground">
-                  Se voc√™ ainda quer comparar antes de sair do portal, volte para as p√°ginas principais e continue pela leitura interna.
+                  Se vocÍ ainda quer comparar antes de sair do portal, continue pelas p·ginas principais e mantenha a leitura dentro da experiÍncia principal.
                 </p>
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row md:flex-col">
                 <Link to="/emprestimos">
                   <Button className="w-full justify-between">
-                    Ir para empr√©stimos
+                    Ir para emprÈstimos
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
                 <Link to="/cartoes">
                   <Button variant="outline" className="w-full justify-between">
-                    Ver cart√µes
+                    Ver cartıes
                     <ExternalLink className="h-4 w-4" />
                   </Button>
                 </Link>
               </div>
-            </div>
-
-            <div className="mt-6 flex items-start gap-3 rounded-[18px] border border-border bg-background-secondary p-4">
-              <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-primary" />
-              <p className="text-sm leading-7 text-foreground">
-                Esta p√°gina re√∫ne apenas sa√≠das externas. A experi√™ncia principal continua separada, com foco em contexto, compara√ß√£o e clareza.
-              </p>
             </div>
           </div>
         </div>
