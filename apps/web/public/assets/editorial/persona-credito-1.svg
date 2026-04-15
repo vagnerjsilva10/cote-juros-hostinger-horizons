@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="760" viewBox="0 0 640 760" role="img" aria-label="Pessoa comparando crédito com calma">
+  <defs>
+    <linearGradient id="skin1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6c7a7"/>
+      <stop offset="1" stop-color="#c98767"/>
+    </linearGradient>
+    <linearGradient id="cloth1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6c5cff"/>
+      <stop offset="1" stop-color="#4fd1ff"/>
+    </linearGradient>
+    <filter id="shadow1" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="30" stdDeviation="26" flood-color="#08111f" flood-opacity=".22"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow1)">
+    <path d="M151 721c22-148 65-238 169-238s157 91 177 238H151Z" fill="url(#cloth1)"/>
+    <path d="M228 510c19 36 54 58 92 58s73-22 92-58l-30-36H258l-30 36Z" fill="url(#skin1)"/>
+    <path d="M212 250c0-89 47-154 118-154 75 0 121 65 121 154 0 94-48 174-121 174-70 0-118-80-118-174Z" fill="url(#skin1)"/>
+    <path d="M190 254c-12-114 52-190 142-190 78 0 142 56 142 155 0 18-2 34-6 49-40-18-80-52-105-94-34 50-89 82-173 80Z" fill="#182033"/>
+    <path d="M205 319c-17-1-30-18-29-38s16-35 33-34l12 71-16 1Zm247 0c17-1 30-18 29-38s-16-35-33-34l-12 71 16 1Z" fill="url(#skin1)"/>
+    <path d="M248 459c26 28 53 41 83 41 29 0 57-13 82-41 4 52-31 90-82 90s-87-38-83-90Z" fill="#f7d8c5"/>
+    <path d="M248 258c21-12 45-12 67 0m39 0c23-12 47-12 68 0" fill="none" stroke="#182033" stroke-width="12" stroke-linecap="round"/>
+    <path d="M288 344c29 16 61 16 91 0" fill="none" stroke="#8f5f4d" stroke-width="10" stroke-linecap="round"/>
+  </g>
+</svg>

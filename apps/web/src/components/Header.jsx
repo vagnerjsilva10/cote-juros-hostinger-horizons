@@ -47,7 +47,7 @@ function Header() {
                 to={item.path}
                 className={`rounded-full px-3 py-2 text-[13px] font-medium leading-none transition-all duration-300 ${
                   isActive(item.path)
-                    ? 'bg-white/8 text-[rgba(255,255,255,0.98)]'
+                    ? 'bg-white/[0.08] text-[rgba(255,255,255,0.98)]'
                     : 'text-[rgba(255,255,255,0.78)] hover:text-[rgba(255,255,255,0.98)]'
                 }`}
               >
@@ -70,7 +70,7 @@ function Header() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-9 w-9 rounded-full border-white/12 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+                  className="h-9 w-9 rounded-full border-white/[0.12] bg-white/5 text-white hover:bg-white/10 hover:text-white"
                 >
                   <Menu className="h-4.5 w-4.5" />
                 </Button>
@@ -89,8 +89,8 @@ function Header() {
                         onClick={() => setMobileOpen(false)}
                         className={`rounded-[12px] px-4 py-3 text-sm font-medium ${
                           isActive(item.path)
-                            ? 'bg-white/8 text-white'
-                            : 'text-[rgba(255,255,255,0.78)] hover:bg-white/8 hover:text-white'
+                            ? 'bg-white/[0.08] text-white'
+                            : 'text-[rgba(255,255,255,0.78)] hover:bg-white/[0.08] hover:text-white'
                         }`}
                       >
                         {item.label}

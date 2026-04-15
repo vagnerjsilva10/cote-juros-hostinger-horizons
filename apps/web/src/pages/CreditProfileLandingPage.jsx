@@ -60,7 +60,10 @@ export function CreditProfileLandingPage({
         originLabel={canonicalPath.replace(/\//g, '-') || 'lp'}
       />
 
-      <section className="hero-section border-b border-white/6">
+      <section className="hero-section border-b border-white/[0.06]">
+        <div className="hero-ambient-grid" aria-hidden="true" />
+        <div className="hero-ambient-orb hero-ambient-orb-one" aria-hidden="true" />
+        <div className="hero-ambient-orb hero-ambient-orb-two" aria-hidden="true" />
         <div className="page-shell">
           <div className="hero-grid">
             <div className="hero-copy">

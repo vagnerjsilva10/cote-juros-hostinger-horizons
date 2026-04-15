@@ -11,7 +11,6 @@ import {
   Sparkles,
   TrendingUp
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import CreditHeroPreview from '@/components/CreditHeroPreview.jsx';
 import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
@@ -29,17 +28,17 @@ const marketBrands = ['Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter', 'Santande
 const editorialPeople = [
   {
     title: 'Pessoa comparando crédito com calma',
-    image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=900&q=82',
+    image: '/assets/editorial/persona-credito-1.svg',
     tag: 'Decisão'
   },
   {
     title: 'Atendimento financeiro moderno',
-    image: 'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=900&q=82',
+    image: '/assets/editorial/persona-credito-2.svg',
     tag: 'Clareza'
   },
   {
     title: 'Planejamento antes de contratar',
-    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=900&q=82',
+    image: '/assets/editorial/persona-credito-3.svg',
     tag: 'Comparação'
   }
 ];
@@ -213,14 +212,12 @@ function HomePage() {
               </div>
 
               <div className="hero-actions">
-                <Button size="lg" className="hero-primary-btn" onClick={focusHeroPreview}>
+                <a href="#hero-credit-preview" className="hero-primary-btn" onClick={focusHeroPreview}>
                   Ver minhas opções agora
                   <ArrowRight className="h-4 w-4" />
-                </Button>
-                <a href="#como-funciona">
-                  <Button size="lg" variant="outline" className="hero-secondary-btn">
-                    Entender como funciona
-                  </Button>
+                </a>
+                <a href="#como-funciona" className="hero-secondary-btn">
+                  Entender como funciona
                 </a>
               </div>
 
@@ -372,11 +369,12 @@ function HomePage() {
                 <span>Condições</span>
                 <span>simulação</span>
               </div>
-              <div className="insight-radar" aria-hidden="true">
-                <span />
-                <span />
-                <span />
-              </div>
+              <img
+                src="/assets/product/cotejuros-premium-mockup.svg"
+                alt="Mockup visual da comparação de crédito na CoteJuros"
+                className="insight-product-mockup"
+                loading="lazy"
+              />
               <div className="insight-score">
                 <strong>R$ 12.000</strong>
                 <span>valor desejado</span>
@@ -429,10 +427,10 @@ function HomePage() {
             <div className="dark-chart-card">
               <div className="mb-4 flex items-end justify-between gap-3">
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/42">Visão de comparação</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/[0.58]">Visão de comparação</p>
                   <h3 className="mt-2 text-[16px] font-semibold text-white">Do impulso à decisão</h3>
                 </div>
-                <div className="rounded-full border border-white/10 bg-white/4 px-3 py-1 text-[11px] text-white/70">
+                <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] text-white/70">
                   Em poucos minutos
                 </div>
               </div>
@@ -443,12 +441,12 @@ function HomePage() {
                     <div className="dark-chart-bar-shell">
                       <div className="dark-chart-bar" style={{ height: `${height}%`, animationDelay: `${index * 120}ms` }} />
                     </div>
-                    <div className="text-center text-[11px] text-white/44">{['Início', 'Leitura', 'Comparação', 'Decisão'][index]}</div>
+                    <div className="text-center text-[11px] text-white/[0.58]">{['Início', 'Leitura', 'Comparação', 'Decisão'][index]}</div>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-4 rounded-[18px] border border-white/8 bg-white/[0.04] p-4">
+              <div className="mt-4 rounded-[18px] border border-white/[0.08] bg-white/[0.04] p-4">
                 <svg viewBox="0 0 320 120" className="w-full overflow-visible">
                   <defs>
                     <linearGradient id="homeDarkLine" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -550,10 +548,10 @@ function HomePage() {
             <p>
               Compare antes de contratar e siga só no que fizer sentido para você.
             </p>
-            <Button size="lg" className="hero-primary-btn" onClick={focusHeroPreview}>
+            <a href="#hero-credit-preview" className="hero-primary-btn" onClick={focusHeroPreview}>
               Ver minhas opções agora
               <ArrowRight className="h-4 w-4" />
-            </Button>
+            </a>
           </motion.div>
         </div>
       </section>
