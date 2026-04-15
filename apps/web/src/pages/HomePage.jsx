@@ -176,11 +176,11 @@ function HomePage() {
               </span>
 
               <h1 className="hero-headline hero-credit-headline mt-6 text-slate-950">
-                Compare opções de crédito
-                <br />
-                com mais clareza
-                <br />
-                antes de contratar
+                <span className="block whitespace-nowrap">
+                  Compare opções de <span className="hero-word-emphasis-strong">crédito</span>
+                </span>
+                <span className="block">com mais clareza</span>
+                <span className="block">antes de contratar</span>
               </h1>
 
               <p className="hero-subcopy mt-5 max-w-[34rem] text-slate-600">
