@@ -32,7 +32,7 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
     }
   }, [focusSignal]);
 
-  const trustItems = useMemo(() => ['Sem compromisso', 'Sem cobrança antecipada'], []);
+  const trustItems = useMemo(() => ['Sem compromisso', 'Sem cobrança antecipada', 'Você decide com calma'], []);
 
   return (
     <motion.div
@@ -40,15 +40,15 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.48, ease: [0.4, 0, 0.2, 1] }}
-      className={`hero-simulation-card hero-preview-panel hero-preview-float relative overflow-hidden rounded-[24px] border border-border bg-white p-5 sm:p-6 ${isHighlighted ? 'hero-preview-active' : ''}`}
+      className={`hero-simulation-card hero-preview-panel hero-preview-float relative overflow-hidden rounded-[16px] border border-slate-200 bg-white p-6 sm:p-7 ${isHighlighted ? 'hero-preview-active' : ''}`}
     >
-      <div className="absolute inset-x-0 top-0 h-16 bg-[linear-gradient(180deg,rgba(96,165,250,0.09),rgba(124,58,237,0.05),transparent)]" />
+      <div className="absolute inset-x-0 top-0 h-20 bg-[linear-gradient(180deg,rgba(99,102,241,0.10),rgba(59,130,246,0.06),transparent)]" />
 
       <div className="relative space-y-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/80">Veja caminhos possíveis</p>
-            <h3 className="mt-1.5 text-[1rem] font-medium text-slate-900">Etapa inicial</h3>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/80">Etapa inicial</p>
+            <h3 className="mt-1.5 text-[1rem] font-medium text-slate-900">Veja caminhos possíveis para o seu perfil</h3>
           </div>
           <div className="rounded-full border border-primary/10 bg-primary/[0.05] px-2.5 py-1 text-[11px] font-medium text-primary">
             1 de 3
@@ -59,7 +59,7 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
           <motion.div
             className="hero-progress-bar"
             initial={{ width: 0 }}
-            animate={{ width: '32%' }}
+            animate={{ width: '36%' }}
             transition={{ duration: 0.72, ease: [0.4, 0, 0.2, 1] }}
           />
         </div>
@@ -93,8 +93,7 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
 
         <div className="hero-preview-field">
           <div className="flex items-center justify-between gap-4">
-            <span className="hero-preview-label mb-0">Nome negativado?</span>
-
+            <span className="hero-preview-label mb-0">Negativado</span>
             <div className="hero-toggle-shell" role="tablist" aria-label="Nome negativado">
               <button
                 type="button"
@@ -116,7 +115,7 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
           </div>
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-2">
+        <div className="grid gap-2 sm:grid-cols-3">
           {trustItems.map((item) => (
             <div key={item} className="flex items-center gap-2 text-[13px] text-slate-700">
               <CheckCircle2 className="h-4 w-4 text-[#10B981]" />
@@ -128,9 +127,9 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
         <button
           type="button"
           onClick={onContinue}
-          className="hero-preview-cta flex h-12 w-full items-center justify-center gap-2 rounded-[14px] text-sm font-medium text-white"
+          className="hero-preview-cta flex h-[54px] w-full items-center justify-center gap-2 rounded-[14px] text-sm font-semibold text-white"
         >
-          Continuar
+          Ver minhas opções agora
           <ChevronRight className="h-4 w-4" />
         </button>
       </div>

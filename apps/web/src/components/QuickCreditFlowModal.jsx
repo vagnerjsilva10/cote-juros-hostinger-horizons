@@ -196,46 +196,46 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="hero-modal-shell w-[calc(100vw-1.5rem)] max-w-[840px] overflow-hidden rounded-[30px] border border-slate-200 bg-white p-0 shadow-[0_32px_90px_rgba(15,23,42,0.18)]">
+      <DialogContent className="hero-modal-shell w-[calc(100vw-1.5rem)] max-w-[760px] overflow-hidden rounded-[22px] border border-slate-200 bg-white p-0 shadow-[0_28px_76px_rgba(15,23,42,0.18)]">
         <DialogTitle className="sr-only">Veja suas opções com mais clareza</DialogTitle>
-        <DialogDescription className="sr-only">Preencha os dados para continuar.</DialogDescription>
+        <DialogDescription className="sr-only">Preencha o básico para continuar.</DialogDescription>
 
-        <div className="hero-modal-top border-b border-slate-200 px-6 py-5 sm:px-8 sm:py-6">
+        <div className="hero-modal-top border-b border-slate-200 px-5 py-4 sm:px-6 sm:py-5">
           <span className="inline-flex rounded-full border border-primary/15 bg-primary/[0.05] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
             Crédito com clareza
           </span>
-          <h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-[-0.04em] text-slate-950 sm:text-[2.4rem]">
+          <h2 className="mt-3 max-w-xl text-[1.8rem] font-semibold tracking-[-0.03em] text-slate-950 sm:text-[2rem]">
             Veja suas opções com mais clareza
           </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            Preencha o básico para continuar. Sem cobrança antecipada e sem promessa falsa.
+          <p className="mt-2 max-w-xl text-sm leading-7 text-slate-600">
+            Preencha o básico para continuar. Sem cobrança antecipada.
           </p>
         </div>
 
-        <div className="max-h-[72vh] overflow-y-auto px-6 py-5 sm:px-8 sm:py-6">
-          <div className="grid gap-4 sm:grid-cols-2">
+        <div className="max-h-[68vh] overflow-y-auto px-5 py-4 sm:px-6 sm:py-5">
+          <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label>Quanto você quer pedir?</Label>
+              <Label>Valor desejado</Label>
               <Input
                 value={form.amount}
                 onChange={(event) => updateField('amount', formatCurrencyInput(event.target.value))}
                 placeholder="R$ 10.000,00"
-                className="hero-modal-input h-12 rounded-[16px]"
+                className="hero-modal-input h-11 rounded-[14px]"
               />
             </div>
             <div className="space-y-2">
-              <Label>Qual é a sua renda mensal?</Label>
+              <Label>Renda mensal</Label>
               <Input
                 value={form.income}
                 onChange={(event) => updateField('income', formatCurrencyInput(event.target.value))}
                 placeholder="R$ 5.000,00"
-                className="hero-modal-input h-12 rounded-[16px]"
+                className="hero-modal-input h-11 rounded-[14px]"
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Seu nome está negativado?</Label>
-              <div className="grid grid-cols-2 gap-3">
+              <Label>Negativado</Label>
+              <div className="grid grid-cols-2 gap-2">
                 {[
                   { value: 'yes', label: 'Sim' },
                   { value: 'no', label: 'Não' }
@@ -244,9 +244,9 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
                     key={item.value}
                     type="button"
                     onClick={() => updateField('hasRestriction', item.value)}
-                    className={`hero-modal-choice h-12 rounded-[16px] border text-sm font-medium transition-all ${
+                    className={`hero-modal-choice h-11 rounded-[14px] border text-sm font-medium transition-all ${
                       form.hasRestriction === item.value
-                        ? 'border-primary bg-primary text-white shadow-[0_12px_28px_rgba(37,99,235,0.18)]'
+                        ? 'border-primary bg-primary text-white shadow-[0_10px_24px_rgba(37,99,235,0.18)]'
                         : 'border-slate-200 bg-white text-slate-700 hover:border-primary/30 hover:bg-slate-50'
                     }`}
                   >
@@ -257,9 +257,9 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
             </div>
 
             <div className="space-y-2">
-              <Label>Como você trabalha hoje?</Label>
+              <Label>Situação profissional</Label>
               <Select value={form.employmentStatus} onValueChange={(value) => updateField('employmentStatus', value)}>
-                <SelectTrigger className="hero-modal-input h-12 rounded-[16px]">
+                <SelectTrigger className="hero-modal-input h-11 rounded-[14px]">
                   <SelectValue placeholder="Escolha uma opção" />
                 </SelectTrigger>
                 <SelectContent>
@@ -278,7 +278,7 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
                 value={form.fullName}
                 onChange={(event) => updateField('fullName', event.target.value)}
                 placeholder="Como podemos te chamar?"
-                className="hero-modal-input h-12 rounded-[16px]"
+                className="hero-modal-input h-11 rounded-[14px]"
               />
             </div>
             <div className="space-y-2">
@@ -287,29 +287,29 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
                 value={form.phone}
                 onChange={(event) => updateField('phone', formatPhone(event.target.value))}
                 placeholder="(11) 99999-9999"
-                className="hero-modal-input h-12 rounded-[16px]"
+                className="hero-modal-input h-11 rounded-[14px]"
               />
             </div>
           </div>
 
-          <div className="mt-5 rounded-[18px] border border-slate-200 bg-slate-50 px-4 py-4">
+          <div className="mt-4 rounded-[16px] border border-slate-200 bg-slate-50 px-4 py-3">
             <div className="flex items-start gap-3">
               <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-              <p className="text-sm leading-7 text-slate-600">
-                A Cote Juros não é banco. Nosso papel é ajudar você a comparar com mais clareza antes de seguir.
+              <p className="text-sm leading-6 text-slate-600">
+                A Cote Juros não é banco. Nosso papel é mostrar opções para você comparar antes de contratar.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-6 py-4 sm:px-8">
+        <div className="border-t border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-5 py-3 sm:px-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-900">Leva pouco tempo para continuar.</p>
-              <p className="text-xs leading-6 text-slate-500">Você preenche o básico e segue com mais clareza.</p>
+              <p className="text-sm font-medium text-slate-900">Você preenche o básico e segue com clareza.</p>
+              <p className="text-xs leading-6 text-slate-500">Sem compromisso e sem cobrança antecipada.</p>
             </div>
             <Button
-              className="hero-modal-cta h-12 rounded-[14px] px-6 text-sm font-semibold text-white"
+              className="hero-modal-cta h-11 rounded-[14px] px-6 text-sm font-semibold text-white"
               disabled={!isValid || isSubmitting}
               onClick={handleSubmit}
             >

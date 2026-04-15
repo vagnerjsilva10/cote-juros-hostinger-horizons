@@ -21,22 +21,22 @@ const marketBrands = ['SuperSim', 'Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter
 const profileCards = [
   {
     title: 'Está com o nome negativado?',
-    description: 'Veja por onde vale a pena começar sem cair em promessa fácil.',
+    description: 'Veja por onde começar para comparar com mais segurança.',
     href: '/emprestimo-para-negativado'
   },
   {
     title: 'Tem renda fixa?',
-    description: 'Entenda opções que podem encaixar melhor no seu orçamento.',
+    description: 'Entenda quais caminhos podem caber melhor no seu orçamento.',
     href: '/emprestimo-para-clt'
   },
   {
     title: 'Tem renda variável?',
-    description: 'Compare caminhos com mais cuidado antes de assumir parcelas.',
+    description: 'Compare com calma antes de assumir parcelas longas.',
     href: '/emprestimo-para-autonomo'
   },
   {
-    title: 'Quer entender antes de decidir?',
-    description: 'Organize o cenário primeiro e avance com mais confiança.',
+    title: 'Quer decidir com mais clareza?',
+    description: 'Organize o cenário e avance sem decisão no impulso.',
     href: '/educacao-financeira'
   }
 ];
@@ -44,19 +44,19 @@ const profileCards = [
 const credibilityBlocks = [
   {
     eyebrow: 'Vida financeira real',
-    title: 'Entenda seu momento antes de perder tempo em várias tentativas',
+    title: 'Entenda seu momento antes de contratar qualquer crédito',
     description:
-      'A experiência foi pensada para trazer mais clareza logo no início, com contexto real e uma leitura mais humana do seu cenário.',
-    image: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1400&q=80',
-    alt: 'Casal moderno organizando finanças em um ambiente claro'
+      'Você vê opções com mais contexto e evita perder tempo com propostas que não fazem sentido para o seu perfil.',
+    image: 'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=1400&q=80',
+    alt: 'Pessoa analisando dados financeiros no notebook em ambiente moderno'
   },
   {
-    eyebrow: 'Decisão com calma',
-    title: 'Compare com mais segurança antes de seguir para qualquer próxima etapa',
+    eyebrow: 'Comparação com confiança',
+    title: 'Compare antes de decidir e escolha com mais segurança',
     description:
-      'Menos ruído, menos promessa vazia e mais informação útil para você decidir com tranquilidade.',
-    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80',
-    alt: 'Pessoa usando notebook para analisar opções financeiras'
+      'Menos promessa vazia e mais clareza para você entender o custo real antes de contratar.',
+    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1400&q=80',
+    alt: 'Mulher revisando planejamento financeiro com celular e notebook'
   }
 ];
 
@@ -67,16 +67,15 @@ const faqItems = [
   },
   {
     question: 'Isso garante aprovação?',
-    answer: 'Não. A decisão final depende da instituição que analisar o seu caso.'
+    answer: 'Não. A decisão final é da instituição que analisa o seu perfil.'
   },
   {
     question: 'Preciso decidir na hora?',
-    answer: 'Não. Primeiro você entende os caminhos possíveis e só depois decide se quer continuar.'
+    answer: 'Não. Você compara com calma e decide apenas quando fizer sentido.'
   },
   {
     question: 'A Cote Juros empresta dinheiro?',
-    answer:
-      'Não. Nosso papel é ajudar você a entender o cenário, comparar com mais clareza e seguir pelo melhor caminho.'
+    answer: 'Não. Nosso papel é mostrar opções para você comparar antes de contratar.'
   }
 ];
 
@@ -143,10 +142,10 @@ function HomePage() {
   return (
     <>
       <Helmet>
-        <title>Cote Juros - Compare opções de crédito com mais clareza</title>
+        <title>Cote Juros - Veja opções de crédito com mais clareza</title>
         <meta
           name="description"
-          content="Compare opções de crédito com mais clareza antes de contratar. Responda o básico e veja caminhos possíveis sem cobrança antecipada."
+          content="Veja opções de crédito que você pode conseguir de verdade. Compare antes de contratar e entenda o que faz sentido para o seu perfil."
         />
         <meta name="verify-admitad" content="1ae3db0be4" />
         <link rel="canonical" href="https://cotejuros.com.br/" />
@@ -162,28 +161,25 @@ function HomePage() {
       <section className="relative overflow-hidden border-b border-slate-200 bg-white">
         <div className="pointer-events-none absolute inset-0">
           <div className="hero-premium-credit absolute inset-0" />
-          <div className="hero-tech-grid absolute inset-0 opacity-[0.14]" />
+          <div className="hero-tech-grid absolute inset-0 opacity-[0.12]" />
           <div className="absolute left-[6%] top-[-3rem] h-56 w-56 rounded-full bg-sky-200/45 blur-3xl" />
-          <div className="absolute right-[14%] top-[-2.5rem] h-64 w-64 rounded-full bg-violet-200/40 blur-3xl" />
-          <div className="absolute right-[28%] top-[5rem] h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
+          <div className="absolute right-[14%] top-[-2.5rem] h-64 w-64 rounded-full bg-indigo-200/45 blur-3xl" />
+          <div className="absolute right-[28%] top-[5rem] h-40 w-40 rounded-full bg-primary/12 blur-3xl" />
         </div>
 
         <div className="page-shell relative py-18 sm:py-22 lg:py-24">
-          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_440px] lg:gap-8">
-            <motion.div {...animationIn} className="max-w-[620px] lg:pt-3">
+          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_528px] lg:gap-8">
+            <motion.div {...animationIn} className="max-w-[660px] lg:pt-3">
               <span className="section-eyebrow border-white/80 bg-white/92">
                 Sem compromisso. Sem cobrança antecipada.
               </span>
 
               <h1 className="hero-headline hero-credit-headline mt-6 text-slate-950">
-                <span className="block whitespace-nowrap">
-                  Veja <span className="hero-word-emphasis-strong">opções de crédito</span>
-                </span>
-                <span className="block">com mais clareza</span>
+                Veja opções de crédito que você pode conseguir de verdade
               </h1>
 
-              <p className="hero-subcopy mt-5 max-w-[34rem] text-slate-600">
-                Responda o básico e veja opções de crédito com mais clareza antes de seguir.
+              <p className="hero-subcopy mt-5 max-w-[36rem] text-slate-600">
+                Compare antes de contratar e entenda quais caminhos fazem sentido para o seu perfil.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -192,7 +188,7 @@ function HomePage() {
                   <ArrowRight className="h-4 w-4" />
                 </Button>
                 <a href="#como-funciona">
-                  <Button size="lg" variant="outline">
+                  <Button size="lg" variant="outline" className="border-slate-300 text-slate-800 hover:border-primary/40 hover:text-primary">
                     Entender como funciona
                   </Button>
                 </a>
@@ -208,18 +204,18 @@ function HomePage() {
               </div>
             </motion.div>
 
-            <motion.div {...animationIn} className="mx-auto w-full max-w-[440px] lg:mr-0 lg:pt-1">
+            <motion.div {...animationIn} className="mx-auto w-full max-w-[528px] lg:mr-0 lg:pt-1">
               <CreditHeroPreview focusSignal={heroPreviewFocusSignal} onContinue={openPrimaryFlow} />
             </motion.div>
           </div>
         </div>
       </section>
 
-      <section className="border-b border-slate-200 bg-white py-10 sm:py-12">
+      <section className="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] py-12 sm:py-14">
         <div className="page-shell">
           <motion.div {...animationIn} className="text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">
-              Instituições e marcas no radar de quem compara com mais cuidado
+              Instituições e marcas no radar de quem compara antes de contratar
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               {marketBrands.map((brand) => (
@@ -237,17 +233,17 @@ function HomePage() {
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
             <span className="section-eyebrow">Como funciona</span>
-            <h2 className="mt-4 text-slate-950">Você não precisa sair tentando tudo de uma vez</h2>
+            <h2 className="mt-4 text-slate-950">Você não precisa sair tentando tudo ao mesmo tempo</h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-[1.8] text-slate-600">
-              Primeiro você entende o cenário. Depois compara com mais clareza. Só então decide se quer avançar.
+              Primeiro você entende o cenário. Depois compara com mais clareza. Só então decide se quer continuar.
             </p>
           </motion.div>
 
           <div className="stagger-rise mt-14 grid gap-6 md:grid-cols-3">
             {[
-              ['Comece pelo que faz sentido', 'Responda o básico do seu momento e veja um caminho mais claro desde o início.'],
-              ['Compare com mais segurança', 'Entenda possibilidades, custos e contexto antes de tomar qualquer decisão.'],
-              ['Avance só quando estiver pronto', 'Depois de entender o cenário, você decide se quer continuar.']
+              ['Comece pelo que faz sentido', 'Responda o básico e veja um caminho mais claro desde o início.'],
+              ['Compare com mais segurança', 'Entenda opções e custos antes de contratar qualquer produto.'],
+              ['Avance no seu tempo', 'Depois de comparar com calma, você decide se quer seguir.']
             ].map(([title, description]) => (
               <Card key={title} className="surface-card h-full border-slate-200 bg-white">
                 <CardContent className="p-8">
@@ -260,13 +256,13 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="page-section border-b border-slate-200 bg-slate-50/70">
+      <section className="page-section border-b border-slate-200 bg-slate-50/80">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
             <span className="section-eyebrow bg-white">Seu momento</span>
-            <h2 className="mt-4 text-slate-950">Comece pelo caminho que mais combina com o seu momento</h2>
+            <h2 className="mt-4 text-slate-950">Escolha um ponto de partida para ver opções com mais precisão</h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-[1.8] text-slate-600">
-              Cada situação pede um ponto de partida diferente. Não tente tudo de uma vez: comece pelo que faz mais sentido agora.
+              Cada perfil pede uma estratégia diferente. O caminho certo começa na comparação certa.
             </p>
           </motion.div>
 
@@ -278,7 +274,7 @@ function HomePage() {
                     <h3 className="text-slate-950 transition-colors group-hover:text-primary">{item.title}</h3>
                     <p className="mt-4 text-sm leading-7 text-slate-600">{item.description}</p>
                     <div className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-slate-900">
-                      Começar por aqui
+                      Ver opções para este perfil
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </div>
                   </CardContent>
@@ -298,29 +294,32 @@ function HomePage() {
             <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
               <div>
                 <span className="section-kicker border-white/15 bg-white/10 text-slate-100">
-                  Mais clareza antes da decisão
+                  Decisão com clareza
                 </span>
                 <h2 className="section-title-gradient-strong mt-6 max-w-3xl text-[clamp(2.2rem,4vw,3.75rem)] leading-[1.08]">
-                  Clareza muda tudo quando o assunto é crédito
+                  Entender o crédito antes de contratar muda tudo
                 </h2>
                 <p className="mt-5 max-w-xl text-lg leading-[1.8] text-slate-300">
-                  Quando você entende melhor o seu momento, fica mais fácil separar o que merece atenção do que só faz perder tempo.
+                  Quando você compara antes, fica mais fácil separar o que realmente vale a pena do que só parece bom.
                 </p>
 
                 <div className="mt-9 space-y-3">
-                  {['Mais contexto antes da decisão', 'Menos tentativa no escuro', 'Mais calma para comparar'].map(
-                    (item) => (
-                      <div key={item} className="dark-benefit-row">
-                        <CheckCircle2 className="h-4 w-4 text-sky-300" />
-                        <span>{item}</span>
-                      </div>
-                    )
-                  )}
+                  {[
+                    'Compare antes de decidir',
+                    'Entenda o custo real',
+                    'Evite decisões no impulso',
+                    'Escolha com mais segurança'
+                  ].map((item) => (
+                    <div key={item} className="dark-benefit-row">
+                      <CheckCircle2 className="h-4 w-4 text-sky-300" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="mt-9 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-4 py-2 text-sm text-slate-200">
                   <ShieldCheck className="h-4 w-4 text-sky-300" />
-                  Sem pressão. Sem cobrança antecipada. Sem enrolação.
+                  Sem pressão. Sem cobrança antecipada. Você decide com calma.
                 </div>
               </div>
 
@@ -328,8 +327,8 @@ function HomePage() {
                 <div className="dark-chart-card">
                   <div className="flex items-end justify-between gap-3">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Leitura mais clara</p>
-                      <h3 className="mt-2 text-white">Entenda antes de avançar</h3>
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Visão de cenário</p>
+                      <h3 className="mt-2 text-white">Da dúvida à decisão</h3>
                     </div>
                     <div className="rounded-full border border-white/10 bg-white/6 px-3 py-1 text-xs text-slate-200">
                       Em poucos minutos
@@ -337,7 +336,7 @@ function HomePage() {
                   </div>
 
                   <div className="mt-9 grid grid-cols-4 items-end gap-3">
-                    {[38, 58, 74, 92].map((height, index) => (
+                    {[32, 54, 73, 94].map((height, index) => (
                       <div key={height} className="space-y-3">
                         <div className="dark-chart-bar-shell">
                           <div
@@ -379,13 +378,13 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="page-section border-b border-slate-200 bg-white">
+      <section className="page-section border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)]">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
-            <span className="section-eyebrow">Mais confiança no caminho</span>
-            <h2 className="mt-4 text-slate-950">Um produto mais humano, com contexto real e menos ruído</h2>
+            <span className="section-eyebrow">Mais confiança para contratar</span>
+            <h2 className="mt-4 text-slate-950">Menos ruído, mais clareza para comparar de verdade</h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-[1.8] text-slate-600">
-              A Cote Juros foi desenhada para ajudar você a enxergar melhor o cenário antes de qualquer próxima etapa.
+              A Cote Juros foi desenhada para você entender o cenário e ver opções antes de assumir qualquer compromisso.
             </p>
           </motion.div>
 
@@ -412,7 +411,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="page-section border-b border-slate-200 bg-slate-50/70">
+      <section className="page-section border-b border-slate-200 bg-white">
         <div className="page-shell">
           <motion.div
             {...animationIn}
@@ -424,9 +423,9 @@ function HomePage() {
               </div>
               <div>
                 <span className="section-eyebrow bg-slate-50">Nosso papel</span>
-                <h2 className="mt-4 text-slate-950">A Cote Juros existe para dar clareza antes da decisão</h2>
+                <h2 className="mt-4 text-slate-950">A Cote Juros ajuda você a comparar antes de contratar</h2>
                 <p className="mt-4 max-w-3xl text-lg leading-[1.8] text-slate-600">
-                  Nosso papel é ajudar você a entender o cenário, comparar com calma e evitar escolhas no escuro.
+                  Você entende o custo real, vê opções com mais clareza e decide com mais segurança.
                 </p>
               </div>
             </div>
@@ -434,11 +433,11 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="page-section border-b border-slate-200 bg-white">
+      <section className="page-section border-b border-slate-200 bg-slate-50/80">
         <div className="page-shell">
           <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
             <span className="section-eyebrow">Perguntas frequentes</span>
-            <h2 className="mt-4 text-slate-950">O que você precisa saber antes de começar</h2>
+            <h2 className="mt-4 text-slate-950">O que você precisa saber antes de ver suas opções</h2>
           </motion.div>
 
           <div className="mx-auto mt-10 max-w-4xl space-y-4">
@@ -458,18 +457,18 @@ function HomePage() {
             className="mx-auto max-w-4xl rounded-[32px] border border-slate-200 bg-white px-8 py-11 text-center shadow-[0_18px_40px_rgba(15,23,42,0.08)] sm:px-10 sm:py-13"
           >
             <span className="section-eyebrow border-sky-200 bg-sky-50 text-sky-700">Comece agora</span>
-            <h2 className="mt-4 text-slate-950">Veja o que realmente pode fazer sentido para você</h2>
+            <h2 className="mt-4 text-slate-950">Veja opções com mais clareza e compare antes de contratar</h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-[1.8] text-slate-600">
               Sem enrolação, sem promessa falsa e sem cobrança antecipada.
             </p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <Button size="lg" onClick={openPrimaryFlow}>
-                Descobrir meus caminhos agora
+              <Button size="lg" className="hero-primary-cta" onClick={focusHeroPreview}>
+                Ver minhas opções agora
                 <ArrowRight className="h-4 w-4" />
               </Button>
               <Link to="/emprestimos">
                 <Button size="lg" variant="outline">
-                  Ver comparação
+                  Entender como comparar
                 </Button>
               </Link>
             </div>
