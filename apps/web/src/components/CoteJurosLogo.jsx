@@ -2,9 +2,9 @@ import React from 'react';
 import { cn } from '@/lib/utils.js';
 
 const LOGO_MAP = {
-  original: '/assets/cote-juros-logo-horizontal-dark.svg',
-  'original-light': '/assets/cote-juros-logo-horizontal-light.svg',
-  horizontal: '/assets/cote-juros-logo-horizontal-dark.svg',
+  original: '/assets/logo/logo-current-site.svg',
+  'original-light': '/assets/logo/logo-current-site-dark-native.svg',
+  horizontal: '/assets/logo/logo-current-site.svg',
   symbol: '/assets/cote-juros-logo-symbol.svg',
   symbolLight: '/assets/cote-juros-logo-symbol-light.svg',
   icon: '/assets/logo/logo-icon.svg',
@@ -15,7 +15,7 @@ const LOGO_MAP = {
 export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
   const src = LOGO_MAP[variant] || LOGO_MAP.horizontal;
   const isSymbol = ['symbol', 'symbolLight', 'icon', 'square'].includes(variant);
-  const heightClass = isSymbol ? 'h-11 w-11' : 'h-9 w-auto sm:h-10';
+  const heightClass = isSymbol ? 'h-11 w-11' : 'h-7 w-auto';
 
   return (
     <span className={cn('inline-flex items-center', className)} aria-label="Cote Juros">

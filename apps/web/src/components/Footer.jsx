@@ -41,38 +41,38 @@ function Footer() {
   ];
 
   return (
-    <footer className="footer-premium-bg border-t border-border py-12 sm:py-14 lg:py-16">
+    <footer className="footer-premium-bg">
       <div className="page-shell">
-        <div className="mb-10 grid gap-8 lg:mb-12 lg:grid-cols-[1.5fr_repeat(4,1fr)] lg:gap-10">
-          <div className="max-w-md space-y-5">
+        <div className="mb-8 grid gap-8 lg:grid-cols-[1.45fr_repeat(4,1fr)] lg:gap-10">
+          <div className="max-w-md space-y-4">
             <Link to="/" className="inline-block">
-              <CoteJurosLogo />
+              <CoteJurosLogo variant="original-light" />
             </Link>
-            <p className="text-sm leading-7 text-muted-foreground">
-              A Cote Juros ajuda você a comparar crédito com mais clareza, entender condições antes de contratar e decidir sem cobrança antecipada.
+            <p className="text-sm leading-6 text-white/70">
+              A CoteJuros ajuda você a comparar crédito com mais clareza, entender condições antes de contratar e decidir sem cobrança antecipada.
             </p>
             <div className="flex flex-wrap gap-3">
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-3 py-2 text-xs font-medium text-foreground shadow-[0_6px_16px_rgba(15,23,42,0.04)]">
-                <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-medium text-white/80">
+                <ShieldCheck className="h-3.5 w-3.5 text-[#4FD1FF]" />
                 Sem cobrança antecipada
               </div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-3 py-2 text-xs font-medium text-foreground shadow-[0_6px_16px_rgba(15,23,42,0.04)]">
-                Você decide com calma
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-medium text-white/80">
+                Você decide com mais calma
               </div>
             </div>
           </div>
 
           {footerSections.map((section) => (
             <div key={section.title}>
-              <span className="mb-4 block text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              <span className="mb-4 block text-[11px] font-semibold uppercase tracking-[0.18em] text-white/50">
                 {section.title}
               </span>
-              <ul className="space-y-2.5">
+              <ul className="space-y-2">
                 {section.links.map((link) => (
                   <li key={link.path}>
                     <Link
                       to={link.path}
-                      className="link-animated group inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                      className="link-animated group inline-flex items-center gap-1 text-sm text-white/70 hover:text-white"
                     >
                       {link.label}
                       <ArrowUpRight className="h-3.5 w-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
@@ -84,14 +84,14 @@ function Footer() {
           ))}
         </div>
 
-        <div className="flex flex-col gap-3 border-t border-border pt-5 md:flex-row md:items-center md:justify-between md:pt-6">
+        <div className="flex flex-col gap-2 border-t border-white/10 pt-5 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-medium text-foreground">Cote Juros © {currentYear}</p>
-            <p className="text-sm text-muted-foreground">
-              A Cote Juros não é banco, não concede crédito diretamente e não garante aprovação.
+            <p className="text-sm font-medium text-white">CoteJuros © {currentYear}</p>
+            <p className="text-sm text-white/60">
+              A CoteJuros não é banco, não concede crédito diretamente e não garante aprovação.
             </p>
           </div>
-          <p className="text-sm text-muted-foreground">Compare antes de contratar.</p>
+          <p className="text-sm text-white/60">Compare antes de contratar.</p>
         </div>
       </div>
     </footer>

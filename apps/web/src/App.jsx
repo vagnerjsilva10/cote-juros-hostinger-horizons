@@ -48,7 +48,7 @@ function AppLayout({ children }) {
   return (
     <div className="min-h-screen overflow-x-hidden flex flex-col bg-background selection:bg-primary/10">
       <Header />
-      <main className="min-w-0 flex-1">{children}</main>
+      <main className="min-w-0">{children}</main>
       <Footer />
     </div>
   );

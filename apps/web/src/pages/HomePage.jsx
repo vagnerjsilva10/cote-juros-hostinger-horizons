@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle2, ChevronDown, ShieldCheck } from 'lucide-react';
+import {
+  ArrowRight,
+  BadgeCheck,
+  CheckCircle2,
+  ChevronDown,
+  LockKeyhole,
+  ShieldCheck,
+  Sparkles,
+  TrendingUp
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import CreditHeroPreview from '@/components/CreditHeroPreview.jsx';
@@ -10,47 +18,81 @@ import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import { trackingService } from '@/platform/services/trackingService.js';
 
 const animationIn = {
-  initial: { opacity: 0, y: 20 },
+  initial: { opacity: 0, y: 18 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.18 },
-  transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] }
+  viewport: { once: true, amount: 0.16 },
+  transition: { duration: 0.46, ease: [0.4, 0, 0.2, 1] }
 };
 
-const marketBrands = ['SuperSim', 'Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter', 'Santander'];
+const marketBrands = ['Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter', 'Santander', 'SuperSim'];
+
+const editorialPeople = [
+  {
+    title: 'Pessoa comparando crédito com calma',
+    image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=900&q=82',
+    tag: 'Decisão'
+  },
+  {
+    title: 'Atendimento financeiro moderno',
+    image: 'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=900&q=82',
+    tag: 'Clareza'
+  },
+  {
+    title: 'Planejamento antes de contratar',
+    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=900&q=82',
+    tag: 'Comparação'
+  }
+];
+
+const featureCards = [
+  {
+    title: 'Preencha o básico',
+    description: 'Valor, renda e perfil para mostrar um começo mais claro.',
+    metric: '01',
+    bars: [42, 64, 86]
+  },
+  {
+    title: 'Compare opções',
+    description: 'Veja caminhos possíveis antes de aceitar qualquer proposta.',
+    metric: '02',
+    bars: [78, 52, 68]
+  },
+  {
+    title: 'Decida melhor',
+    description: 'Você só segue quando fizer sentido para a sua situação.',
+    metric: '03',
+    bars: [38, 58, 92]
+  }
+];
 
 const profileCards = [
   {
     title: 'Está negativado?',
-    description: 'Veja opções para comparar antes de aceitar a primeira proposta.',
-    href: '/emprestimo-para-negativado'
+    description: 'Veja por onde vale a pena começar antes de fechar qualquer contrato.',
+    tag: 'Perfil'
   },
   {
-    title: 'Trabalha com CLT?',
-    description: 'Entenda quais condições podem fazer mais sentido para sua renda.',
-    href: '/emprestimo-para-clt'
+    title: 'Tem renda fixa?',
+    description: 'Compare condições com mais clareza antes de assumir parcelas.',
+    tag: 'Renda'
   },
   {
     title: 'Tem renda variável?',
-    description: 'Compare com mais calma antes de assumir parcelas longas.',
-    href: '/emprestimo-para-autonomo'
-  },
-  {
-    title: 'Quer decidir melhor?',
-    description: 'Use a plataforma para comparar crédito com mais segurança.',
-    href: '/emprestimos'
+    description: 'Entenda caminhos possíveis para o seu perfil antes da decisão.',
+    tag: 'Autônomo'
   }
 ];
 
 const credibilityBlocks = [
   {
-    eyebrow: 'Comparação real',
+    icon: ShieldCheck,
     title: 'Veja opções, condições e custo com mais clareza',
-    description: 'A proposta da Cote Juros é ajudar você a comparar antes de contratar, sem pressão e sem promessa vazia.'
+    description: 'A proposta da CoteJuros é ajudar você a comparar crédito antes de contratar.'
   },
   {
-    eyebrow: 'Decisão mais segura',
+    icon: TrendingUp,
     title: 'Entenda por onde vale a pena começar',
-    description: 'Quando você enxerga valor, prazo e perfil no mesmo lugar, fica mais fácil separar o que faz sentido do que só parece bom.'
+    description: 'Quando valor, prazo e perfil aparecem juntos, a decisão fica mais segura.'
   }
 ];
 
@@ -61,34 +103,28 @@ const faqItems = [
   },
   {
     question: 'Isso garante aprovação?',
-    answer: 'Não. A decisão final é da instituição que analisa o seu perfil.'
+    answer: 'Não. A decisão final depende da instituição que analisa o seu perfil.'
   },
   {
     question: 'Preciso decidir na hora?',
-    answer: 'Não. Você compara com calma e só segue quando fizer sentido.'
+    answer: 'Não. Você compara com mais calma e decide depois.'
   },
   {
-    question: 'A Cote Juros empresta dinheiro?',
-    answer: 'Não. Nosso papel é mostrar opções para você comparar antes de contratar.'
+    question: 'A CoteJuros empresta dinheiro?',
+    answer: 'Não. A CoteJuros mostra caminhos possíveis para você comparar antes de contratar.'
   }
 ];
 
 function FaqItem({ item, isOpen, onToggle }) {
   return (
-    <div className="rounded-[18px] border border-slate-200 bg-white px-5 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_14px_30px_rgba(15,23,42,0.06)]">
-      <button type="button" onClick={onToggle} className="flex w-full items-center justify-between gap-4 text-left">
-        <span className="text-base font-medium text-slate-900">{item.question}</span>
-        <ChevronDown
-          className={`h-4 w-4 shrink-0 text-slate-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
-        />
+    <div className="faq-item">
+      <button type="button" onClick={onToggle} className="faq-trigger flex w-full items-center justify-between gap-4 text-left">
+        <span>{item.question}</span>
+        <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
-      <div
-        className={`grid transition-[grid-template-rows,opacity,margin] duration-300 ${
-          isOpen ? 'mt-3 grid-rows-[1fr] opacity-100' : 'mt-0 grid-rows-[0fr] opacity-0'
-        }`}
-      >
+      <div className={`grid transition-[grid-template-rows,opacity] duration-300 ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
         <div className="overflow-hidden">
-          <p className="max-w-3xl text-sm leading-7 text-slate-600">{item.answer}</p>
+          <div className="faq-content">{item.answer}</div>
         </div>
       </div>
     </div>
@@ -128,97 +164,104 @@ function HomePage() {
         firstInput.focus();
         firstInput.select();
       }
-    }, 240);
+    }, 220);
   };
 
   return (
     <>
       <Helmet>
-        <title>Cote Juros - Veja opções de crédito com mais clareza</title>
+        <title>CoteJuros - Veja opções de crédito antes de fechar contrato</title>
         <meta
           name="description"
-          content="Veja opções de crédito que você pode conseguir. Compare antes de contratar e entenda o que faz sentido para o seu perfil."
+          content="A CoteJuros mostra caminhos possíveis para o seu perfil antes da decisão final."
         />
         <meta name="verify-admitad" content="1ae3db0be4" />
         <link rel="canonical" href="https://cotejuros.com.br/" />
       </Helmet>
 
-      <QuickCreditFlowModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        sourcePage="/"
-        originLabel="home"
-      />
+      <QuickCreditFlowModal isOpen={modalOpen} onClose={() => setModalOpen(false)} sourcePage="/" originLabel="home" />
 
-      <section className="relative overflow-hidden border-b border-slate-200 bg-white">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="hero-premium-credit absolute inset-0" />
-          <div className="hero-tech-grid absolute inset-0 opacity-[0.1]" />
-          <div className="hero-top-glow absolute left-1/2 top-0 h-44 w-[44rem] -translate-x-1/2" />
-          <div className="absolute left-[7%] top-[-2rem] h-40 w-40 rounded-full bg-sky-200/50 blur-3xl" />
-          <div className="absolute right-[14%] top-[-1.5rem] h-48 w-48 rounded-full bg-indigo-200/50 blur-3xl" />
-          <div className="absolute right-[28%] top-[4rem] h-28 w-28 rounded-full bg-primary/12 blur-3xl" />
-        </div>
+      <section className="hero-section">
+        <div className="hero-ambient-grid" aria-hidden="true" />
+        <div className="hero-ambient-orb hero-ambient-orb-one" aria-hidden="true" />
+        <div className="hero-ambient-orb hero-ambient-orb-two" aria-hidden="true" />
 
-        <div className="page-shell relative py-12 sm:py-14 lg:py-16">
-          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_560px] lg:gap-6">
-            <motion.div {...animationIn} className="max-w-[640px] lg:pt-2">
-              <span className="section-eyebrow border-white/80 bg-white/92">Sem compromisso. Sem cobrança antecipada.</span>
+        <div className="page-shell">
+          <div className="hero-grid">
+            <motion.div {...animationIn} className="hero-copy">
+              <span className="hero-eyebrow">
+                <Sparkles className="h-3.5 w-3.5" />
+                SEM COMPROMISSO. SEM COBRANÇA ANTECIPADA.
+              </span>
 
-              <h1 className="hero-headline hero-credit-headline mt-5 text-slate-950">
-                Veja opções de <span className="hero-word-emphasis-strong">crédito</span>
+              <h1 className="hero-title">
+                Veja opções de <span className="highlight">crédito</span>
                 <br />
-                que você pode conseguir
+                antes de fechar contrato
               </h1>
 
-              <p className="hero-subcopy mt-4 max-w-[34rem] text-slate-600">
-                Compare antes de contratar e veja quais opções fazem sentido para o seu perfil.
+              <p className="hero-subtitle">
+                A CoteJuros mostra caminhos possíveis para o seu perfil antes da decisão final.
               </p>
 
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <Button size="lg" className="hero-primary-cta h-12 px-6" onClick={focusHeroPreview}>
+              <div className="hero-data-rail" aria-hidden="true">
+                <span>perfil</span>
+                <i />
+                <span>condições</span>
+                <i />
+                <span>decisão</span>
+              </div>
+
+              <div className="hero-actions">
+                <Button size="lg" className="hero-primary-btn" onClick={focusHeroPreview}>
                   Ver minhas opções agora
                   <ArrowRight className="h-4 w-4" />
                 </Button>
                 <a href="#como-funciona">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="h-12 border-slate-300 bg-white/80 text-slate-800 hover:border-primary/40 hover:text-primary"
-                  >
+                  <Button size="lg" variant="outline" className="hero-secondary-btn">
                     Entender como funciona
                   </Button>
                 </a>
               </div>
 
-              <div className="mt-6 flex flex-wrap gap-3">
-                {['Sem compromisso', 'Sem cobrança antecipada', 'Você decide com calma'].map((item) => (
-                  <div key={item} className="premium-pill">
-                    <CheckCircle2 className="h-4 w-4 text-[#10B981]" />
-                    {item}
+              <div className="hero-trust">
+                {['Sem compromisso', 'Sem cobrança antecipada', 'Você decide com mais calma'].map((item) => (
+                  <div key={item} className="flex items-center gap-2">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#16C784]" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="hero-people-strip" aria-label="Pessoas comparando crédito com clareza">
+                {editorialPeople.map((item) => (
+                  <div key={item.title} className="hero-person-chip">
+                    <img src={item.image} alt={item.title} loading="lazy" />
+                    <span>{item.tag}</span>
                   </div>
                 ))}
               </div>
             </motion.div>
 
-            <motion.div {...animationIn} className="mx-auto w-full max-w-[560px] lg:mr-0">
+            <motion.div {...animationIn} className="hero-product-wrap">
+              <div className="hero-product-lens" aria-hidden="true" />
+              <div className="hero-floating-widget hero-floating-widget-one" aria-hidden="true">Perfil analisado</div>
+              <div className="hero-floating-widget hero-floating-widget-two" aria-hidden="true">Sem pressão</div>
               <CreditHeroPreview focusSignal={heroPreviewFocusSignal} onContinue={openPrimaryFlow} />
             </motion.div>
           </div>
         </div>
       </section>
 
-      <section className="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] py-10 sm:py-11">
+      <section className="signal-strip-section">
         <div className="page-shell">
-          <motion.div {...animationIn} className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">
-              Instituições e marcas no radar de quem compara antes de contratar
-            </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <motion.div {...animationIn} className="signal-strip">
+            <span>Comparação no radar</span>
+            <div className="signal-strip-track">
               {marketBrands.map((brand) => (
-                <div key={brand} className="brand-pill">
-                  <span className="brand-dot" />
-                  <span>{brand}</span>
+                <div key={brand} className="signal-pill">
+                  <span className="signal-dot" />
+                  {brand}
                 </div>
               ))}
             </div>
@@ -226,204 +269,265 @@ function HomePage() {
         </div>
       </section>
 
-      <section id="como-funciona" className="page-section border-b border-slate-200 bg-white">
+      <section id="como-funciona" className="section section--compact art-section art-section-white">
         <div className="page-shell">
-          <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
-            <span className="section-eyebrow">Como funciona</span>
-            <h2 className="mt-4 text-slate-950">Primeiro você compara. Depois decide se vale seguir.</h2>
-            <p className="mx-auto mt-3 max-w-2xl text-base leading-[1.72] text-slate-600">
-              A ideia aqui é mostrar opções com mais clareza antes de qualquer contratação.
+          <motion.div {...animationIn}>
+            <h2 className="section-title">Primeiro você compara. Depois decide se vale seguir.</h2>
+            <p className="section-subtitle">
+              A CoteJuros organiza a leitura do crédito para você entender por onde vale a pena começar.
             </p>
           </motion.div>
 
-          <div className="stagger-rise mt-10 grid gap-5 md:grid-cols-3">
-            {[
-              ['Preencha o básico', 'Valor, renda e perfil para organizar um começo mais claro.'],
-              ['Compare opções', 'Veja condições e caminhos possíveis antes de aceitar qualquer proposta.'],
-              ['Decida com calma', 'Você só avança quando fizer sentido para o seu momento.']
-            ].map(([title, description]) => (
-              <Card key={title} className="surface-card h-full border-slate-200 bg-white">
-                <CardContent className="p-6">
-                  <h3 className="text-slate-950">{title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-slate-600">{description}</p>
-                </CardContent>
-              </Card>
+          <div className="steps-grid">
+            {featureCards.map((item) => (
+              <motion.div key={item.title} {...animationIn}>
+                <Card className="card art-card">
+                  <CardContent className="p-0">
+                    <div className="art-card-topline">
+                      <span>{item.metric}</span>
+                      <BadgeCheck className="h-4 w-4" />
+                    </div>
+                    <div className="art-card-visual" aria-hidden="true">
+                      {item.bars.map((bar) => (
+                        <span key={bar} style={{ height: `${bar}%` }} />
+                      ))}
+                    </div>
+                    <h3 className="card-title">{item.title}</h3>
+                    <p className="card-text">{item.description}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="page-section border-b border-slate-200 bg-slate-50/70">
+      <section className="editorial-people-section">
+        <div className="section-connector section-connector-top" aria-hidden="true" />
         <div className="page-shell">
-          <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
-            <span className="section-eyebrow bg-white">Por onde começar</span>
-            <h2 className="mt-4 text-slate-950">Escolha um ponto de partida para comparar com mais precisão</h2>
-            <p className="mx-auto mt-3 max-w-2xl text-base leading-[1.72] text-slate-600">
-              Cada perfil pede uma leitura diferente. O comparador fica melhor quando começa no lugar certo.
+          <motion.div {...animationIn} className="editorial-people-grid">
+            <div className="editorial-people-copy">
+              <span className="section-kicker border-[rgba(108,92,255,0.22)] bg-white/70 text-[var(--brand-primary)]">Experiência real</span>
+              <h2>Crédito é uma decisão de vida. A interface precisa parecer humana.</h2>
+              <p>
+                A CoteJuros combina leitura de produto, clareza comercial e contexto para ajudar você a comparar antes de fechar contrato.
+              </p>
+            </div>
+
+            <div className="editorial-photo-stack">
+              {editorialPeople.map((item, index) => (
+                <div key={item.title} className={`editorial-photo-card editorial-photo-card-${index + 1}`}>
+                  <img src={item.image} alt={item.title} loading="lazy" />
+                  <span>{item.tag}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="section section--compact art-section art-section-soft">
+        <div className="page-shell">
+          <motion.div {...animationIn}>
+            <h2 className="section-title">Escolha um ponto de partida para comparar com mais precisão</h2>
+            <p className="section-subtitle">
+              Cada perfil pede uma leitura diferente. O importante é comparar antes de contratar.
             </p>
           </motion.div>
 
-          <div className="stagger-rise mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {profileCards.map((item) => (
-              <Link key={item.title} to={item.href}>
-                <Card className="surface-card group h-full border-slate-200 bg-white">
-                  <CardContent className="p-6">
-                    <h3 className="text-slate-950 transition-colors group-hover:text-primary">{item.title}</h3>
-                    <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
-                    <div className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-slate-900">
-                      Ver opções para este perfil
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          <div className="feature-grid">
+            {profileCards.map((item, index) => (
+              <motion.div key={item.title} {...animationIn}>
+                <Card className="card profile-card">
+                  <CardContent className="p-0">
+                    <div className="profile-card-tag">{item.tag}</div>
+                    <div className="profile-card-glow" aria-hidden="true" />
+                    <h3 className="card-title">{item.title}</h3>
+                    <p className="card-text">{item.description}</p>
+                    <div className="profile-card-meter" aria-hidden="true">
+                      <span style={{ width: `${52 + index * 14}%` }} />
                     </div>
                   </CardContent>
                 </Card>
-              </Link>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="border-b border-white/10 bg-[#0B0F19] py-14 sm:py-16">
+      <section className="insight-section">
+        <div className="section-connector section-connector-soft" aria-hidden="true" />
         <div className="page-shell">
-          <motion.div {...animationIn} className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+          <motion.div {...animationIn} className="insight-grid">
+            <div className="insight-copy">
+              <span className="section-kicker border-[rgba(108,92,255,0.22)] bg-white/70 text-[var(--brand-primary)]">Mais clareza</span>
+              <h2>Compare crédito com uma leitura mais visual</h2>
+              <p>
+                A proposta não é empurrar contrato. É organizar valor, renda, perfil e próximos passos para você enxergar melhor antes de decidir.
+              </p>
+            </div>
+
+            <div className="insight-bento insight-bento-large">
+              <div className="insight-bento-header">
+                <span>Condições</span>
+                <span>simulação</span>
+              </div>
+              <div className="insight-radar" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </div>
+              <div className="insight-score">
+                <strong>R$ 12.000</strong>
+                <span>valor desejado</span>
+              </div>
+            </div>
+
+            <div className="insight-bento">
+              <LockKeyhole className="h-5 w-5 text-[var(--brand-primary)]" />
+              <strong>Sem cobrança antecipada</strong>
+              <span>Você compara antes de avançar.</span>
+            </div>
+
+            <div className="insight-bento insight-bento-dark">
+              <TrendingUp className="h-5 w-5 text-[#4FD1FF]" />
+              <strong>Custo real em foco</strong>
+              <span>Menos impulso, mais contexto.</span>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="dark-panel-section">
+        <div className="section-connector section-connector-dark" aria-hidden="true" />
+        <div className="page-shell">
+          <motion.div {...animationIn} className="dark-panel">
             <div>
-              <span className="section-kicker border-white/15 bg-white/10 text-slate-100">Decisão com clareza</span>
-              <h2 className="section-title-gradient-strong mt-5 max-w-3xl text-[clamp(2rem,4vw,3.2rem)] leading-[1.06]">
-                Entender o crédito antes de contratar muda tudo
+              <h2>
+                Entender o crédito antes
+                <br />
+                de contratar muda tudo
               </h2>
-              <p className="mt-4 max-w-xl text-base leading-[1.74] text-slate-300">
+              <p>
                 Quando você compara antes, fica mais fácil separar o que realmente vale a pena do que só parece bom.
               </p>
 
-              <div className="mt-7 space-y-3">
+              <div className="dark-checklist">
                 {[
                   'Compare antes de decidir',
                   'Entenda o custo real',
                   'Evite decisões no impulso',
                   'Escolha com mais segurança'
                 ].map((item) => (
-                  <div key={item} className="dark-benefit-row">
-                    <CheckCircle2 className="h-4 w-4 text-sky-300" />
-                    <span>{item}</span>
+                  <div key={item} className="item">
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="dark-chart-card">
+              <div className="mb-4 flex items-end justify-between gap-3">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/42">Visão de comparação</p>
+                  <h3 className="mt-2 text-[16px] font-semibold text-white">Do impulso à decisão</h3>
+                </div>
+                <div className="rounded-full border border-white/10 bg-white/4 px-3 py-1 text-[11px] text-white/70">
+                  Em poucos minutos
+                </div>
+              </div>
+
+              <div className="grid grid-cols-4 gap-3">
+                {[32, 54, 76, 96].map((height, index) => (
+                  <div key={height} className="space-y-2">
+                    <div className="dark-chart-bar-shell">
+                      <div className="dark-chart-bar" style={{ height: `${height}%`, animationDelay: `${index * 120}ms` }} />
+                    </div>
+                    <div className="text-center text-[11px] text-white/44">{['Início', 'Leitura', 'Comparação', 'Decisão'][index]}</div>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-7 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-4 py-2 text-sm text-slate-200">
-                <ShieldCheck className="h-4 w-4 text-sky-300" />
-                Sem pressão. Sem cobrança antecipada. Você decide com calma.
-              </div>
-            </div>
-
-            <div className="dark-visual-panel">
-              <div className="dark-chart-card">
-                <div className="flex items-end justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Visão de cenário</p>
-                    <h3 className="mt-2 text-white">Do impulso à comparação</h3>
-                  </div>
-                  <div className="rounded-full border border-white/10 bg-white/6 px-3 py-1 text-xs text-slate-200">
-                    Em poucos minutos
-                  </div>
-                </div>
-
-                <div className="mt-7 grid grid-cols-4 items-end gap-3">
-                  {[30, 52, 72, 92].map((height, index) => (
-                    <div key={height} className="space-y-3">
-                      <div className="dark-chart-bar-shell">
-                        <div
-                          className="dark-chart-bar"
-                          style={{ height: `${height}%`, animationDelay: `${index * 120}ms` }}
-                        />
-                      </div>
-                      <div className="text-center text-xs text-slate-400">
-                        {['Início', 'Leitura', 'Comparação', 'Decisão'][index]}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-7 rounded-[18px] border border-white/8 bg-white/[0.04] p-4">
-                  <svg viewBox="0 0 320 120" className="w-full overflow-visible">
-                    <defs>
-                      <linearGradient id="homeDarkLine" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#60A5FA" />
-                        <stop offset="55%" stopColor="#4F46E5" />
-                        <stop offset="100%" stopColor="#7C3AED" />
-                      </linearGradient>
-                    </defs>
-                    <path
-                      d="M10 92 C 64 88, 82 70, 126 66 S 194 32, 240 34 S 292 16, 310 18"
-                      fill="none"
-                      stroke="url(#homeDarkLine)"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                      className="chart-draw"
-                    />
-                    <circle cx="310" cy="18" r="6" fill="#60A5FA" className="chart-pulse" />
-                  </svg>
-                </div>
+              <div className="mt-4 rounded-[18px] border border-white/8 bg-white/[0.04] p-4">
+                <svg viewBox="0 0 320 120" className="w-full overflow-visible">
+                  <defs>
+                    <linearGradient id="homeDarkLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#6C5CFF" />
+                      <stop offset="100%" stopColor="#4FD1FF" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M10 94 C 68 86, 94 72, 128 64 S 204 32, 240 36 S 292 20, 310 20"
+                    fill="none"
+                    stroke="url(#homeDarkLine)"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    className="chart-draw"
+                  />
+                  <circle cx="310" cy="20" r="5" fill="#4FD1FF" className="chart-pulse" />
+                </svg>
               </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      <section className="page-section border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)]">
+      <section className="section section--compact art-section art-section-white">
         <div className="page-shell">
-          <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
-            <span className="section-eyebrow">Mais clareza para contratar</span>
-            <h2 className="mt-4 text-slate-950">Comparar crédito fica melhor quando a proposta é direta</h2>
-            <p className="mx-auto mt-3 max-w-2xl text-base leading-[1.72] text-slate-600">
-              A Cote Juros foi desenhada para mostrar opções, condições e próximos passos de um jeito mais claro e mais comercial.
+          <motion.div {...animationIn}>
+            <h2 className="section-title">Comparar crédito fica melhor quando a proposta é direta</h2>
+            <p className="section-subtitle">
+              A CoteJuros mostra condições com mais clareza para você entender antes de fechar contrato.
             </p>
           </motion.div>
 
-          <div className="mt-10 grid gap-5 lg:grid-cols-2">
-            {credibilityBlocks.map((item) => (
-              <motion.article
-                key={item.title}
-                {...animationIn}
-                className="overflow-hidden rounded-[24px] border border-border bg-white p-6 shadow-[0_14px_30px_rgba(15,23,42,0.05)]"
-              >
-                <span className="section-eyebrow bg-slate-50">{item.eyebrow}</span>
-                <h3 className="mt-4 text-slate-950">{item.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
-              </motion.article>
-            ))}
+          <div className="credit-grid credit-grid-rich">
+            {credibilityBlocks.map((item) => {
+              const Icon = item.icon;
+              return (
+                <motion.div key={item.title} {...animationIn}>
+                  <Card className="card rich-card">
+                    <CardContent className="p-0">
+                      <div className="rich-card-icon">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <h3 className="card-title">{item.title}</h3>
+                      <p className="card-text">{item.description}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      <section className="page-section border-b border-slate-200 bg-white">
+      <section className="section section--compact brand-note-section">
         <div className="page-shell">
-          <motion.div
-            {...animationIn}
-            className="mx-auto max-w-4xl rounded-[28px] border border-slate-200 bg-white px-7 py-8 shadow-[0_12px_28px_rgba(15,23,42,0.05)] sm:px-9 sm:py-9"
-          >
-            <div className="flex items-start gap-4">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                <ShieldCheck className="h-6 w-6 text-slate-900" />
-              </div>
-              <div>
-                <span className="section-eyebrow bg-slate-50">Nosso papel</span>
-                <h2 className="mt-4 text-slate-950">A Cote Juros ajuda você a comparar antes de contratar</h2>
-                <p className="mt-3 max-w-3xl text-base leading-[1.76] text-slate-600">
-                  Você entende o custo real, vê opções com mais clareza e decide com mais segurança.
-                </p>
-              </div>
+          <div className="brand-note-card">
+            <div>
+              <span className="brand-note-kicker">Papel da CoteJuros</span>
+              <h2>A CoteJuros ajuda você a comparar antes de contratar</h2>
+              <p>
+                Você vê opções com mais clareza, entende o custo real e decide com mais segurança.
+              </p>
             </div>
-          </motion.div>
+            <div className="brand-note-orbit" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="page-section border-b border-slate-200 bg-slate-50/80">
+      <section className="faq-section faq-premium-section">
         <div className="page-shell">
-          <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
-            <span className="section-eyebrow">Perguntas frequentes</span>
-            <h2 className="mt-4 text-slate-950">O que você precisa saber antes de ver suas opções</h2>
+          <motion.div {...animationIn}>
+            <h2 className="section-title">O que você precisa saber antes de ver suas opções</h2>
           </motion.div>
 
-          <div className="mx-auto mt-9 max-w-4xl space-y-4">
+          <div className="faq-list">
             {faqItems.map((item, index) => (
               <motion.div key={item.question} {...animationIn}>
                 <FaqItem item={item} isOpen={openFaq === index} onToggle={() => setOpenFaq(openFaq === index ? -1 : index)} />
@@ -433,33 +537,24 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="page-section bg-[linear-gradient(180deg,#f8fafc_0%,#eef4ff_100%)]">
+      <section className="final-cta-section">
         <div className="page-shell">
-          <motion.div
-            {...animationIn}
-            className="mx-auto max-w-4xl rounded-[28px] border border-slate-200 bg-white px-8 py-9 text-center shadow-[0_18px_40px_rgba(15,23,42,0.08)] sm:px-10 sm:py-10"
-          >
-            <span className="section-eyebrow border-sky-200 bg-sky-50 text-sky-700">Comece agora</span>
-            <h2 className="mt-4 text-slate-950">Veja opções de crédito antes de fechar qualquer contrato</h2>
-            <p className="mx-auto mt-3 max-w-2xl text-base leading-[1.72] text-slate-600">
+          <motion.div {...animationIn} className="final-cta-card">
+            <div className="final-cta-grid" aria-hidden="true" />
+            <span className="final-cta-badge">Comece sem pressão</span>
+            <h2>
+              Veja opções de crédito antes
+              <br />
+              de fechar qualquer contrato
+            </h2>
+            <p>
               Compare antes de contratar e siga só no que fizer sentido para você.
             </p>
-            <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-              <Button size="lg" className="hero-primary-cta h-12 px-6" onClick={focusHeroPreview}>
-                Ver minhas opções agora
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-              <Link to="/emprestimos">
-                <Button size="lg" variant="outline" className="h-12">
-                  Entender como comparar
-                </Button>
-              </Link>
-            </div>
+            <Button size="lg" className="hero-primary-btn" onClick={focusHeroPreview}>
+              Ver minhas opções agora
+              <ArrowRight className="h-4 w-4" />
+            </Button>
           </motion.div>
-
-          <p className="mx-auto mt-5 max-w-3xl text-center text-xs leading-6 text-slate-500">
-            A Cote Juros não é banco, não concede crédito diretamente e não garante aprovação. Não cobramos valor antecipado.
-          </p>
         </div>
       </section>
     </>

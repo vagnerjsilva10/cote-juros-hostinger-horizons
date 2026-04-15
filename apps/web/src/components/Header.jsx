@@ -11,7 +11,7 @@ function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 14);
+    const onScroll = () => setIsScrolled(window.scrollY > 10);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -29,15 +29,13 @@ function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled
-          ? 'border-b border-white/10 bg-[rgba(11,15,25,0.95)] shadow-[0_16px_38px_rgba(2,6,23,0.28)]'
-          : 'border-b border-white/8 bg-[rgba(11,15,25,0.78)]'
+      className={`sticky top-0 z-50 w-full border-b border-white/10 bg-[rgba(7,17,31,0.92)] transition-all duration-300 ${
+        isScrolled ? 'shadow-[0_12px_38px_rgba(4,10,20,0.26)]' : ''
       }`}
       style={{ backdropFilter: 'blur(10px)' }}
     >
       <div className="page-shell">
-        <div className="flex h-[70px] items-center justify-between sm:h-[76px]">
+        <div className="flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center">
             <CoteJurosLogo variant="original-light" />
           </Link>
@@ -47,10 +45,10 @@ function Header() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
+                className={`rounded-full px-3 py-2 text-[13px] font-medium leading-none transition-all duration-300 ${
                   isActive(item.path)
-                    ? 'border border-white/15 bg-white/10 text-[#E5E7EB]'
-                    : 'text-[#E5E7EB] hover:bg-white/8 hover:text-[#2563EB]'
+                    ? 'bg-white/8 text-[rgba(255,255,255,0.98)]'
+                    : 'text-[rgba(255,255,255,0.78)] hover:text-[rgba(255,255,255,0.98)]'
                 }`}
               >
                 {item.label}
@@ -60,8 +58,8 @@ function Header() {
 
           <div className="hidden items-center gap-3 lg:flex">
             <Link to="/emprestimos">
-              <Button className="h-11 border-0 bg-[linear-gradient(90deg,#2563EB_0%,#4F46E5_100%)] px-5 text-white shadow-[0_8px_22px_rgba(37,99,235,0.24)] transition-all duration-300 hover:-translate-y-[1px] hover:brightness-110">
-                Ver opções
+              <Button className="cta-button h-9 rounded-[10px] border-0 bg-[linear-gradient(135deg,#6C5CFF_0%,#4B7CFF_100%)] px-3.5 text-[13px] font-semibold text-white shadow-[0_12px_30px_rgba(76,98,255,0.24)] transition-all duration-300 hover:-translate-y-[1px] hover:brightness-105">
+                Ver minhas opções
               </Button>
             </Link>
           </div>
@@ -72,14 +70,14 @@ function Header() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="rounded-full border-white/20 bg-white/5 text-[#E5E7EB] hover:bg-white/10 hover:text-[#E5E7EB]"
+                  className="h-9 w-9 rounded-full border-white/12 bg-white/5 text-white hover:bg-white/10 hover:text-white"
                 >
-                  <Menu className="h-5 w-5" />
+                  <Menu className="h-4.5 w-4.5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[88vw] max-w-[320px] border-l border-white/10 bg-[#0B0F19] px-5">
-                <div className="mt-8 flex flex-col gap-6">
-                  <div className="border-b border-white/10 pb-5">
+              <SheetContent side="right" className="w-[88vw] max-w-[320px] border-l border-white/10 bg-[#08111f] px-5">
+                <div className="mt-6 flex flex-col gap-6">
+                  <div className="border-b border-white/10 pb-4">
                     <CoteJurosLogo variant="original-light" />
                   </div>
 
@@ -89,19 +87,19 @@ function Header() {
                         key={item.path}
                         to={item.path}
                         onClick={() => setMobileOpen(false)}
-                        className={`rounded-[12px] px-4 py-3 text-base font-medium ${
+                        className={`rounded-[12px] px-4 py-3 text-sm font-medium ${
                           isActive(item.path)
-                            ? 'border border-white/15 bg-white/10 text-[#E5E7EB]'
-                            : 'text-[#E5E7EB] hover:bg-white/8 hover:text-[#2563EB]'
+                            ? 'bg-white/8 text-white'
+                            : 'text-[rgba(255,255,255,0.78)] hover:bg-white/8 hover:text-white'
                         }`}
                       >
                         {item.label}
                       </Link>
                     ))}
-                    <div className="mt-3 border-t border-white/10 pt-5">
+                    <div className="mt-3 border-t border-white/10 pt-4">
                       <Link to="/emprestimos" onClick={() => setMobileOpen(false)}>
-                        <Button className="w-full border-0 bg-[linear-gradient(90deg,#2563EB_0%,#4F46E5_100%)] text-base text-white shadow-[0_8px_22px_rgba(37,99,235,0.24)] transition-all duration-300 hover:-translate-y-[1px] hover:brightness-110">
-                          Ver opções
+                        <Button className="h-10 w-full rounded-[10px] border-0 bg-[linear-gradient(135deg,#6C5CFF_0%,#4B7CFF_100%)] text-[13px] font-semibold text-white shadow-[0_12px_30px_rgba(76,98,255,0.24)] transition-all duration-300 hover:-translate-y-[1px] hover:brightness-105">
+                          Ver minhas opções
                         </Button>
                       </Link>
                     </div>

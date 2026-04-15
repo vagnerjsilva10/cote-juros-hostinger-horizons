@@ -24,7 +24,7 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
     if (!focusSignal) return;
 
     setIsHighlighted(true);
-    window.setTimeout(() => setIsHighlighted(false), 1300);
+    window.setTimeout(() => setIsHighlighted(false), 1200);
 
     if (firstInputRef.current) {
       firstInputRef.current.focus();
@@ -37,24 +37,19 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
   return (
     <motion.div
       id="hero-credit-preview"
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.48, ease: [0.4, 0, 0.2, 1] }}
-      className={`hero-simulation-card hero-preview-panel hero-preview-float relative overflow-hidden rounded-[20px] border border-slate-200 bg-white p-5 sm:p-6 ${
-        isHighlighted ? 'hero-preview-active' : ''
-      }`}
+      className={`hero-card hero-preview-panel relative overflow-hidden ${isHighlighted ? 'hero-preview-active' : ''}`}
     >
-      <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(99,102,241,0.12),rgba(59,130,246,0.08),transparent)]" />
-
-      <div className="relative space-y-3.5">
+      <div className="relative space-y-3">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/80">Simulação inicial</p>
-            <h3 className="mt-1 text-[1rem] font-semibold text-slate-900">Veja opções que podem fazer sentido</h3>
+            <p className="hero-preview-step">Simulação inicial</p>
+            <h3 className="hero-card-title">Veja caminhos possíveis</h3>
+            <p className="hero-card-subtitle">Preencha o básico para continuar com mais clareza.</p>
           </div>
-          <div className="rounded-full border border-primary/10 bg-primary/[0.05] px-2.5 py-1 text-[11px] font-medium text-primary">
-            1 de 3
-          </div>
+          <div className="hero-preview-badge">1 de 3</div>
         </div>
 
         <div className="hero-progress-shell">
@@ -66,36 +61,34 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
           />
         </div>
 
-        <div className="grid gap-2.5 sm:grid-cols-2">
-          <label className="hero-preview-field">
-            <span className="hero-preview-label">Valor desejado</span>
+        <div className="form-stack">
+          <label>
+            <span className="form-label">Valor desejado</span>
             <input
               ref={firstInputRef}
               type="text"
               inputMode="numeric"
               value={desiredAmount}
               onChange={(event) => setDesiredAmount(formatCurrency(event.target.value))}
-              className="hero-preview-input"
+              className="form-control"
               aria-label="Valor desejado"
             />
           </label>
 
-          <label className="hero-preview-field">
-            <span className="hero-preview-label">Renda mensal</span>
+          <label>
+            <span className="form-label">Renda mensal</span>
             <input
               type="text"
               inputMode="numeric"
               value={monthlyIncome}
               onChange={(event) => setMonthlyIncome(formatCurrency(event.target.value))}
-              className="hero-preview-input"
+              className="form-control"
               aria-label="Renda mensal"
             />
           </label>
-        </div>
 
-        <div className="hero-preview-field">
-          <div className="flex items-center justify-between gap-4">
-            <span className="hero-preview-label mb-0">Negativado</span>
+          <div>
+            <span className="form-label">Negativado?</span>
             <div className="hero-toggle-shell" role="tablist" aria-label="Nome negativado">
               <button
                 type="button"
@@ -117,26 +110,17 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3.5 py-2.5">
-          <div className="grid gap-2 sm:grid-cols-2">
-            {footerItems.map((item) => (
-              <div key={item} className="flex items-center gap-2 text-[12px] font-medium text-slate-700">
-                <CheckCircle2 className="h-4 w-4 text-[#10B981]" />
-                {item}
-              </div>
-            ))}
-          </div>
-          <div className="hidden text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 sm:block">
-            Você decide com calma
-          </div>
+        <div className="hero-card-footer">
+          {footerItems.map((item) => (
+            <div key={item} className="hero-card-benefit">
+              <CheckCircle2 className="h-3.5 w-3.5 text-[#16C784]" />
+              {item}
+            </div>
+          ))}
         </div>
 
-        <button
-          type="button"
-          onClick={onContinue}
-          className="hero-preview-cta flex h-[50px] w-full items-center justify-center gap-2 rounded-[14px] text-sm font-semibold text-white"
-        >
-          Continuar
+        <button type="button" onClick={onContinue} className="submit-btn hero-preview-cta">
+          Ver minhas opções agora
           <ChevronRight className="h-4 w-4" />
         </button>
       </div>

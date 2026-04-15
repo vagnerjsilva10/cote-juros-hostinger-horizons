@@ -1,0 +1,16 @@
+<svg width="332" height="48" viewBox="0 0 332 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Cote Juros</title>
+  <desc>Versão do logo Cote Juros adaptada para fundo escuro.</desc>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="14" fill="rgba(255,255,255,0.04)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="14" stroke="rgba(255,255,255,0.08)"/>
+  <path d="M14 31.4L23.36 21.56L30.08 26.36L42.08 14.36M42.08 14.36V21.08M42.08 14.36H35.36" stroke="url(#logo-accent)" stroke-width="2.76" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="42.08" cy="14.36" r="0.96" fill="#4FD1FF"/>
+  <text x="60" y="23" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="21" font-weight="750" letter-spacing="-0.735">Cote Juros</text>
+  <text x="60" y="38" fill="rgba(255,255,255,0.55)" font-family="Inter, Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="1.6">FINANCE PLATFORM</text>
+  <defs>
+    <linearGradient id="logo-accent" x1="14" y1="31.4" x2="42.08" y2="14.36" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6C5CFF"/>
+      <stop offset="1" stop-color="#4FD1FF"/>
+    </linearGradient>
+  </defs>
+</svg>
