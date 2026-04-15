@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -29,10 +29,10 @@ function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b border-white/10 bg-[rgba(7,17,31,0.92)] transition-all duration-300 ${
-        isScrolled ? 'shadow-[0_12px_38px_rgba(4,10,20,0.26)]' : ''
+      className={`sticky top-0 z-50 w-full border-b border-white/[0.08] bg-[rgba(2,6,14,0.98)] transition-all duration-300 ${
+        isScrolled ? 'shadow-[0_14px_42px_rgba(1,4,10,0.42)]' : 'shadow-[0_1px_0_rgba(255,255,255,0.02)]'
       }`}
-      style={{ backdropFilter: 'blur(10px)' }}
+      style={{ backdropFilter: 'blur(12px)' }}
     >
       <div className="page-shell">
         <div className="flex h-16 items-center justify-between">
@@ -70,7 +70,7 @@ function Header() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-9 w-9 rounded-full border-white/[0.12] bg-white/5 text-white hover:bg-white/10 hover:text-white"
+                  className="h-9 w-9 rounded-full border-white/[0.12] bg-white/[0.04] text-white hover:bg-white/[0.08] hover:text-white"
                 >
                   <Menu className="h-4.5 w-4.5" />
                 </Button>
@@ -115,3 +115,4 @@ function Header() {
 }
 
 export default Header;
+

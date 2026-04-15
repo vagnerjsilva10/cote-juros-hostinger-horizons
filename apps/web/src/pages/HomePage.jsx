@@ -28,17 +28,17 @@ const marketBrands = ['Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter', 'Santande
 const editorialPeople = [
   {
     title: 'Pessoa comparando crédito com calma',
-    image: '/assets/editorial/persona-credito-1.svg',
+    image: '/assets/editorial/credit-person-phone.png',
     tag: 'Decisão'
   },
   {
-    title: 'Atendimento financeiro moderno',
-    image: '/assets/editorial/persona-credito-2.svg',
+    title: 'Casal comparando proposta de crédito',
+    image: '/assets/editorial/credit-couple-phone.png',
     tag: 'Clareza'
   },
   {
-    title: 'Planejamento antes de contratar',
-    image: '/assets/editorial/persona-credito-3.svg',
+    title: 'Pessoa conferindo contrato e aplicativo',
+    image: '/assets/editorial/credit-contract-phone.png',
     tag: 'Comparação'
   }
 ];

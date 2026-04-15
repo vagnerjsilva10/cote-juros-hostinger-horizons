@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -37,7 +37,7 @@ function EmprestimosPage() {
   const [score, setScore] = useState('Todos');
   const [term, setTerm] = useState([24]);
   const [sort, setSort] = useState('taxa-baixa');
-  const [viewMode, setViewMode] = useState('grid');
+  const [viewMode, setViewMode] = useState('list');
   const quickLeadContext = location.state?.quickLeadContext || null;
 
   useEffect(() => {
@@ -232,7 +232,7 @@ function EmprestimosPage() {
               </p>
             </div>
 
-            <div className="mt-9 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-9 grid gap-6 md:grid-cols-2">
               {creditJourney.offers.map((offer, index) => (
                 <Card key={offer.id} className="surface-card h-full border-border bg-white">
                   <CardContent className="flex h-full flex-col gap-6 p-8">
@@ -375,11 +375,11 @@ function EmprestimosPage() {
                 <div className="inline-flex items-center rounded-[10px] border border-border bg-white p-1">
                   <Button type="button" size="sm" variant={viewMode === 'grid' ? 'default' : 'ghost'} className="h-8 gap-1.5 px-3" onClick={() => setViewMode('grid')}>
                     <LayoutGrid className="h-3.5 w-3.5" />
-                    Visual em cards
+                    Em cards
                   </Button>
                   <Button type="button" size="sm" variant={viewMode === 'list' ? 'default' : 'ghost'} className="h-8 gap-1.5 px-3" onClick={() => setViewMode('list')}>
                     <List className="h-3.5 w-3.5" />
-                    Visual em lista
+                    Em lista
                   </Button>
                 </div>
                 <Label className="whitespace-nowrap">Ordenar</Label>
@@ -396,7 +396,7 @@ function EmprestimosPage() {
             </div>
 
             {viewMode === 'grid' ? (
-              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-6 md:grid-cols-2">
                 {filteredLoans.map((loan) => {
                   const bank = banksData.find((item) => item.id === loan.bankId);
                   const badge = getBadge(loan.category, loan.monthlyRate);
@@ -473,7 +473,7 @@ function EmprestimosPage() {
                   return (
                     <Card key={loan.id} className="border-border bg-white shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
                       <CardContent className="p-7">
-                        <div className="grid items-center gap-5 lg:grid-cols-[1.3fr_0.9fr_0.9fr_220px]">
+                        <div className="grid items-center gap-5 lg:grid-cols-[1.5fr_0.8fr_0.8fr_220px]">
                           <div className="flex items-start gap-4">
                             <div
                               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-sm font-semibold"
@@ -552,3 +552,4 @@ function EmprestimosPage() {
 }
 
 export default EmprestimosPage;
+

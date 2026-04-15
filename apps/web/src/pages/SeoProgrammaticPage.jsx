@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowRight, Building2, Calculator, Clock3, Landmark, ShieldCheck, Sparkles } from 'lucide-react';
@@ -47,19 +47,19 @@ const formatRate = (value) => `${Number(value || 0).toFixed(2)}%`;
 
 const defaultFaq = [
   {
-    question: 'Qual banco tem a menor taxa para credito?',
+    question: 'Qual banco tem a menor taxa para crédito?',
     answer:
-      'A menor taxa muda conforme perfil, renda e relacionamento bancario. A forma segura de descobrir e comparar propostas em paralelo.'
+      'A menor taxa muda conforme perfil, renda e relacionamento bancário. A forma segura de descobrir é comparar propostas em paralelo.'
   },
   {
-    question: 'Posso conseguir credito com score baixo?',
+    question: 'Posso conseguir crédito com score baixo?',
     answer:
-      'Sim. Existem linhas com criterios mais flexiveis. O ideal e comparar custo efetivo total e priorizar parcelas que caibam no seu orcamento.'
+      'Sim. Existem linhas com critérios mais flexíveis. O ideal é comparar custo efetivo total e priorizar parcelas que caibam no seu orçamento.'
   },
   {
-    question: 'Como saber se uma oferta e realmente boa?',
+    question: 'Como saber se uma oferta é realmente boa?',
     answer:
-      'Olhe taxa, CET, prazo e valor da parcela no mesmo painel. Uma oferta boa e a que equilibra custo total e capacidade de pagamento.'
+      'Olhe taxa, CET, prazo e valor da parcela no mesmo painel. Uma oferta boa é a que equilibra custo total e capacidade de pagamento.'
   }
 ];
 
@@ -81,7 +81,7 @@ const buildModelFromRoute = ({ mode, pagePath, params, banks, articles, offers }
       return {
         ...comparePage,
         path: `/comparar/${comparePage.slug}`,
-        badge: 'Comparacao financeira',
+        badge: 'Comparação financeira',
         pageType: 'compare'
       };
     }
@@ -89,12 +89,12 @@ const buildModelFromRoute = ({ mode, pagePath, params, banks, articles, offers }
     const pretty = params.comparisonSlug.split('-').join(' ');
     return {
       path: `/comparar/${params.comparisonSlug}`,
-      heading: `Comparar ${pretty} com taxas e condicoes em um só lugar.`,
+      heading: `Comparar ${pretty} com taxas e condições em um só lugar.`,
       title: `Comparar ${pretty} | Cote Juros`,
-      description: 'Veja opcoes, compare custos e entenda o que observar antes de contratar.',
+      description: 'Veja opções, compare custos e entenda o que observar antes de contratar.',
       productType: null,
       pageType: 'compare',
-      badge: 'Comparacao financeira'
+      badge: 'Comparação financeira'
     };
   }
 
@@ -106,11 +106,11 @@ const buildModelFromRoute = ({ mode, pagePath, params, banks, articles, offers }
 
     return {
       path: `/banco/${params.bankSlug}`,
-      heading: `${bankName}: cartoes, emprestimos e financiamento para comparar.`,
-      title: `${bankName}: comparação de credito e cartoes | Cote Juros`,
-      description: `Veja produtos financeiros do ${bankName} com leitura de taxa, beneficios e condicoes no mesmo painel.`,
+      heading: `${bankName}: cartões, empréstimos e financiamento para comparar.`,
+      title: `${bankName}: comparação de crédito e cartões | Cote Juros`,
+      description: `Veja produtos financeiros do ${bankName} com leitura de taxa, benefícios e condições no mesmo painel.`,
       pageType: 'bank',
-      badge: 'Pagina de banco',
+      badge: 'Página de banco',
       bankId,
       productType: null
     };
@@ -124,11 +124,11 @@ const buildModelFromRoute = ({ mode, pagePath, params, banks, articles, offers }
 
     return {
       path: `/cartao/${params.cardSlug}`,
-      heading: `${cardName}: comparação de beneficios e custo total.`,
-      title: `${cardName}: detalhes, beneficios e comparação | Cote Juros`,
-      description: `Analise o cartao ${cardName} com limite, anuidade e beneficios comparados.`,
+      heading: `${cardName}: comparação de benefícios e custo total.`,
+      title: `${cardName}: detalhes, benefícios e comparação | Cote Juros`,
+      description: `Analise o cartão ${cardName} com limite, anuidade e benefícios comparados.`,
       pageType: 'card-detail',
-      badge: 'Pagina de cartao',
+      badge: 'Página de cartão',
       productType: 'credit_card',
       offerFilter: { titleContains: [cardName], sortBy: 'maxLimit' }
     };
@@ -227,7 +227,7 @@ const buildHighlights = (model, offers) => {
     return [
       { label: 'Ofertas mapeadas', value: '0' },
       { label: 'Leitura de taxa', value: 'Atualizando' },
-      { label: 'Condições comparaveis', value: 'Ativo' }
+      { label: 'Condições comparáveis', value: 'Ativo' }
     ];
   }
 
@@ -245,7 +245,7 @@ const buildHighlights = (model, offers) => {
     const minFee = Math.min(...offers.map((offer) => Number(offer.annualFee ?? 0)));
     const maxLimit = Math.max(...offers.map((offer) => Number(offer.maxLimit || 0)));
     return [
-      { label: 'Cartoes analisados', value: String(offers.length) },
+      { label: 'Cartões analisados', value: String(offers.length) },
       { label: 'Menor anuidade', value: minFee === 0 ? 'Sem anuidade' : formatCurrency(minFee) },
       { label: 'Maior limite estimado', value: formatCurrency(maxLimit) }
     ];
@@ -264,7 +264,7 @@ const buildHighlights = (model, offers) => {
   return [
     { label: 'Entradas avaliadas', value: String(offers.length) },
     { label: 'Comparadores ativos', value: '100%' },
-    { label: 'Atualizacao de dados', value: 'Recorrente' }
+    { label: 'Atualização de dados', value: 'Recorrente' }
   ];
 };
 
@@ -275,8 +275,8 @@ const buildDefaultCopy = (model, offersCount) => {
 
   if (model.pageType === 'tool') {
     return [
-      'Esta ferramenta foi criada para transformar decisao financeira em leitura pratica. Voce simula cenarios, entende impacto de juros e escolhe com mais clareza.',
-      'Use os calculos como base para negociar melhores condicoes e depois compare ofertas reais com mais seguranca.'
+      'Esta ferramenta foi criada para transformar decisão financeira em leitura prática. Você simula cenários, entende o impacto dos juros e escolhe com mais clareza.',
+      'Use os cálculos como base para negociar melhores condições e depois compare ofertas reais com mais segurança.'
     ];
   }
 
@@ -286,31 +286,43 @@ const buildDefaultCopy = (model, offersCount) => {
 
   if (model.pageType === 'hub' && model.path === '/comparar') {
     return [
-      'A secao de comparadores reune caminhos práticos para analisar cartoes, emprestimos e financiamentos antes de contratar.',
-      'Use as paginas para comparar taxas, beneficios, prazos, custos e cuidados importantes de acordo com o seu objetivo.'
+      'A seção de comparadores reúne caminhos práticos para analisar cartões, empréstimos e financiamentos antes de contratar.',
+      'Use as páginas para comparar taxas, benefícios, prazos, custos e cuidados importantes de acordo com o seu objetivo.'
     ];
   }
 
   if (model.pageType === 'hub' && model.path === '/bancos') {
     return [
-      'A página de bancos organiza instituicoes por oferta de cartao, credito pessoal e financiamento. Assim, voce compara banco contra banco com o mesmo criterio.',
-      'A proposta e eliminar comparação superficial e mostrar o que realmente pesa: taxa, custo efetivo total, prazo e aderencia ao perfil.'
+      'A página de bancos organiza instituições por oferta de cartão, crédito pessoal e financiamento. Assim, você compara banco contra banco com o mesmo critério.',
+      'A proposta é eliminar comparação superficial e mostrar o que realmente pesa: taxa, custo efetivo total, prazo e aderência ao perfil.'
     ];
   }
 
   if (model.pageType === 'bank') {
     return [
-      `Nesta página voce compara os principais produtos financeiros do ${model.heading.split(':')[0]} com foco em clareza de taxa, beneficios e custo total.`,
-      'A leitura foi pensada para deixar a decisao mais simples: menos ruido visual, mais objetividade e links para comparadores relacionados.'
+      `Nesta página você compara os principais produtos financeiros do ${model.heading.split(':')[0]} com foco em clareza de taxa, benefícios e custo total.`,
+      'A leitura foi pensada para deixar a decisão mais simples: menos ruído visual, mais objetividade e links para comparadores relacionados.'
     ];
   }
 
   return [
-    'Use esta comparação para entender quais opcoes combinam melhor com o que voce procura e quais custos precisam entrar na conta.',
+    'Use esta comparação para entender quais opções combinam melhor com o que você procura e quais custos precisam entrar na conta.',
     offersCount
-      ? `No momento, encontramos ${offersCount} opcao${offersCount > 1 ? 'ões' : ''} para comparar nesta página. Analise taxas, limites, prazos e condicoes antes de avancar.`
-      : 'Ainda estamos atualizando as opcoes desta página. Enquanto isso, use os criterios abaixo para comparar propostas com mais seguranca.'
+      ? `No momento, encontramos ${offersCount} opção${offersCount > 1 ? 'ões' : ''} para comparar nesta página. Analise taxas, limites, prazos e condições antes de avançar.`
+      : 'Ainda estamos atualizando as opções desta página. Enquanto isso, use os critérios abaixo para comparar propostas com mais segurança.'
   ];
+};
+
+const buildDecisionChecklist = (model) => {
+  if (model.productType === 'credit_card') {
+    return ['Compare anuidade e limite no mesmo olhar.', 'Separe benefício real de promessa de marketing.', 'Avance só no cartão que fizer sentido para o seu perfil.'];
+  }
+
+  if (model.productType === 'financing') {
+    return ['Olhe taxa, entrada e prazo juntos.', 'Entenda o custo total antes da parcela parecer confortável.', 'Compare com calma antes de assumir uma dívida longa.'];
+  }
+
+  return ['Compare taxa, custo total e prazo no mesmo bloco.', 'Entenda o que pesa de verdade antes de avançar.', 'Escolha o próximo passo com mais clareza e menos impulso.'];
 };
 
 const buildStructuredData = ({ model, canonicalUrl, offers, faqItems }) => {
@@ -373,7 +385,7 @@ const buildStructuredData = ({ model, canonicalUrl, offers, faqItems }) => {
     schemas.push({
       '@context': 'https://schema.org',
       '@type': 'ItemList',
-      name: `Comparacao: ${model.heading}`,
+      name: `Comparação: ${model.heading}`,
       itemListElement: offers.slice(0, 10).map((offer, index) => ({
         '@type': 'ListItem',
         position: index + 1,
@@ -399,8 +411,8 @@ const buildStructuredData = ({ model, canonicalUrl, offers, faqItems }) => {
     schemas.push({
       '@context': 'https://schema.org',
       '@type': 'Comparison',
-      name: `Comparacao financeira: ${model.heading}`,
-      description: 'Comparacao de taxas, condicoes e beneficios para apoio à decisao de credito.',
+      name: `Comparação financeira: ${model.heading}`,
+      description: 'Comparação de taxas, condições e benefícios para apoio à decisão de crédito.',
       url: canonicalUrl
     });
 
@@ -421,7 +433,7 @@ const buildStructuredData = ({ model, canonicalUrl, offers, faqItems }) => {
         name: 'Equipe Cote Juros'
       },
       reviewBody:
-        'Comparacao baseada em taxa, custo efetivo total, condicoes e beneficios para apoiar uma decisao de credito mais segura.'
+        'Comparação baseada em taxa, custo efetivo total, condições e benefícios para apoiar uma decisão de crédito mais segura.'
     });
   }
 
@@ -429,14 +441,14 @@ const buildStructuredData = ({ model, canonicalUrl, offers, faqItems }) => {
     schemas.push({
       '@context': 'https://schema.org',
       '@type': 'ItemList',
-      name: `Comparacao: ${model.heading}`,
+      name: `Comparação: ${model.heading}`,
       itemListElement: comparisonRows.slice(0, 10).map((row, index) => ({
         '@type': 'ListItem',
         position: index + 1,
         item: {
           '@type': 'Product',
           name: Array.isArray(row) ? row[0] : row?.title || `${model.heading} ${index + 1}`,
-          category: model.badge || 'Comparacao financeira'
+          category: model.badge || 'Comparação financeira'
         }
       }))
     });
@@ -479,7 +491,7 @@ function OfferComparisonTable({ model, offers }) {
   if (!offers.length) {
     return (
       <div className="rounded-[12px] border border-dashed border-border bg-background-secondary px-6 py-10 text-center">
-        <p className="text-muted-foreground">Ainda nao ha dados suficientes para esta combinação. Ajuste a rota de comparação.</p>
+        <p className="text-muted-foreground">Ainda não há dados suficientes para esta combinação. Ajuste a rota de comparação.</p>
       </div>
     );
   }
@@ -493,7 +505,7 @@ function OfferComparisonTable({ model, offers }) {
             <TableHead>Produto</TableHead>
             {model.productType === 'credit_card' ? <TableHead>Anuidade</TableHead> : <TableHead>Taxa</TableHead>}
             <TableHead>{model.productType === 'credit_card' ? 'Limite' : 'Valor'}</TableHead>
-            <TableHead>{model.productType === 'financing' ? 'Prazo' : 'Condicao'}</TableHead>
+            <TableHead>{model.productType === 'financing' ? 'Prazo' : 'Condição'}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -518,7 +530,7 @@ function OfferComparisonTable({ model, offers }) {
               <TableCell>
                 {model.productType === 'financing'
                   ? `${offer.maxTerm || '--'} meses`
-                  : offer.category || 'Condicao disponivel'}
+                  : offer.category || 'Condição disponível'}
               </TableCell>
             </TableRow>
           ))}
@@ -552,7 +564,7 @@ function PageActionButton({ action, variant = 'default', size = 'lg', className 
   );
 }
 
-function RecommendationCardsSection({ title = 'Recomendacao editorial', cards = [] }) {
+function RecommendationCardsSection({ title = 'Recomendação editorial', cards = [] }) {
   if (!cards.length) return null;
 
   return (
@@ -576,7 +588,7 @@ function RecommendationCardsSection({ title = 'Recomendacao editorial', cards = 
                 </ul>
               ) : null}
               <div className="mt-5">
-                <PageActionButton action={{ label: card.ctaLabel || 'Ver condicoes', href: card.href, to: card.to }} size="default" className="w-full sm:w-auto" />
+                <PageActionButton action={{ label: card.ctaLabel || 'Ver condições', href: card.href, to: card.to }} size="default" className="w-full sm:w-auto" />
               </div>
             </div>
           ))}
@@ -616,7 +628,7 @@ function EditorialSections({ sections = [], relatedGroups = [] }) {
 
         {relatedLinks.length ? (
           <section className="space-y-4 border-t border-border pt-6">
-            <h3>Veja tambem</h3>
+            <h3>Veja também</h3>
             <div className="grid min-w-0 gap-3 sm:grid-cols-2">
               {relatedLinks.map((link) => (
                 <Link key={`${link.path}-${link.label}`} to={link.path} className="min-w-0 rounded-[12px] border border-border bg-background-secondary px-4 py-4 text-sm leading-6 text-muted-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03] hover:text-foreground">
@@ -708,6 +720,10 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
     () => (normalizedModel ? normalizeMojibakeDeep(buildDefaultCopy(normalizedModel, pageOffers.length)) : []),
     [normalizedModel, pageOffers.length]
   );
+  const decisionChecklist = useMemo(
+    () => (normalizedModel ? normalizeMojibakeDeep(buildDecisionChecklist(normalizedModel)) : []),
+    [normalizedModel]
+  );
   const faqItems = normalizeMojibakeDeep(normalizedModel?.faq || defaultFaq);
   const editorialSections = Array.isArray(normalizedModel?.editorialSections)
     ? normalizeMojibakeDeep(normalizedModel.editorialSections)
@@ -736,9 +752,9 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
       <section className="page-section">
         <div className="page-shell">
           <div className="mx-auto max-w-3xl rounded-[16px] border border-border bg-white p-10 text-center">
-            <h1 className="text-3xl">Pagina nao encontrada</h1>
+            <h1 className="text-3xl">Página não encontrada</h1>
             <p className="mt-4 text-muted-foreground">
-              Esta rota ainda nao possui template publicado. Voce pode continuar pelos hubs principais.
+              Esta rota ainda não possui template publicado. Você pode continuar pelos hubs principais.
             </p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Link to="/comparar">
@@ -823,12 +839,12 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               <div className="flex flex-col gap-3 sm:flex-row">
                 {normalizedModel.primaryCta?.action === 'affiliate' ? (
                   <Button className="w-full sm:w-auto" size="lg" onClick={() => handleAffiliateClick(heroAffiliateOffer, 'hero')}>
-                    {normalizedModel.primaryCta.label || 'Simular emprestimo'}
+                    {normalizedModel.primaryCta.label || 'Simular empréstimo'}
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 ) : (
                   <PageActionButton
-                    action={normalizedModel.primaryCta || { label: 'Ver minhas opcoes agora', to: '/emprestimos' }}
+                    action={normalizedModel.primaryCta || { label: 'Ver minhas opções agora', to: '/emprestimos' }}
                     className="w-full sm:w-auto"
                   />
                 )}
@@ -852,7 +868,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
                   </div>
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/80">{heroAffiliateOffer.merchantName}</p>
-                    <p className="text-sm text-muted-foreground">Recomendacao editorial com disclosure discreto.</p>
+                    <p className="text-sm text-muted-foreground">Recomendação editorial com disclosure discreto.</p>
                   </div>
                 </div>
                 <AffiliateDisclosure text={heroAffiliateOffer.disclosureText} />
@@ -863,12 +879,12 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
           <div className="flex flex-col gap-3 sm:flex-row">
             {normalizedModel.primaryCta?.action === 'affiliate' && heroAffiliateOffer ? (
               <Button className="w-full sm:w-auto" size="lg" onClick={() => handleAffiliateClick(heroAffiliateOffer, 'hero')}>
-                {normalizedModel.primaryCta.label || 'Simular emprestimo'}
+                {normalizedModel.primaryCta.label || 'Simular empréstimo'}
                 <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
               <PageActionButton
-                action={normalizedModel.primaryCta || { label: 'Ver minhas opcoes agora', to: '/emprestimos' }}
+                action={normalizedModel.primaryCta || { label: 'Ver minhas opções agora', to: '/emprestimos' }}
                 className="w-full sm:w-auto"
               />
             )}
@@ -895,6 +911,30 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
       <section className="page-section bg-background">
         <div className="page-shell grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-8">
           <div className="min-w-0 space-y-6 md:space-y-8">
+            {normalizedModel.pageType === 'compare' ? (
+              <Card className="min-w-0 border-border bg-white">
+                <CardContent className="min-w-0 space-y-6 p-5 sm:p-6 md:p-8">
+                  <div className="flex flex-col gap-3 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/80">Leitura da comparação</p>
+                      <h2 className="mt-2 text-2xl text-foreground">O que faz sentido comparar nesta página</h2>
+                    </div>
+                    <Badge variant="outline" className="border-primary/25 bg-primary/10 text-primary">
+                      Antes de decidir
+                    </Badge>
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    {decisionChecklist.map((item) => (
+                      <div key={item} className="rounded-[16px] border border-border bg-background-secondary px-4 py-4 text-sm leading-6 text-muted-foreground">
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
+
             <Card className="min-w-0 border-border bg-white">
               <CardContent className="min-w-0 space-y-5 p-5 sm:p-6 md:p-8">
                 {bodyCopy.map((paragraph, index) => (
@@ -906,11 +946,11 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
             {belowHeroSupersimOffer ? (
               <SuperSimOfferCard
                 offer={belowHeroSupersimOffer}
-                title={normalizedModel.path === '/supersim-emprestimo' ? 'SuperSim Emprestimo' : 'SuperSim como recomendacao editorial'}
+                title={normalizedModel.path === '/supersim-emprestimo' ? 'SuperSim Empréstimo' : 'SuperSim como recomendação editorial'}
                 description={
                   normalizedModel.path === '/supersim-emprestimo'
-                    ? 'Resumo claro da oferta SuperSim para quem quer continuar a pesquisa com contexto, sem transformar a pagina em vitrine comercial.'
-                    : 'A SuperSim aparece aqui como uma recomendacao editorial alinhada ao tema da pagina, com CTA natural e design consistente com o portal.'
+                    ? 'Resumo claro da oferta SuperSim para quem quer continuar a pesquisa com contexto, sem transformar a página em vitrine comercial.'
+                    : 'A SuperSim aparece aqui como uma recomendação editorial alinhada ao tema da página, com CTA natural e design consistente com o portal.'
                 }
                 onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
               />
@@ -920,7 +960,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               <AffiliateOfferGrid
                 offers={belowHeroOtherOffers}
                 title="Condições relacionadas para analisar nesta comparação"
-                eyebrow="Veja condicoes"
+                eyebrow="Veja condições"
                 onSelect={(offer) => handleAffiliateClick(offer, 'below_hero')}
               />
             ) : null}
@@ -932,10 +972,10 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
                 <CardContent className="min-w-0 space-y-6 p-5 sm:p-6 md:p-8">
                   <div className="flex items-center gap-2">
                     <Calculator className="h-4 w-4 text-primary" />
-                    <h3>Simulação orientada para decisao</h3>
+                    <h3>Simulação orientada para decisão</h3>
                   </div>
                   <p className="text-muted-foreground">
-                    Para calculo completo com graficos e ajustes avancados, acesse a central de ferramentas do Cote Juros.
+                    Para cálculo completo com gráficos e ajustes avançados, acesse a central de ferramentas do Cote Juros.
                   </p>
                   <Link to="/ferramentas" className="inline-flex w-full sm:w-auto">
                     <Button className="w-full sm:w-auto">
@@ -963,7 +1003,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               </Card>
             ) : null}
 
-            <RecommendationCardsSection title={normalizedModel.recommendationCardsTitle || 'Sugestoes para voce'} cards={recommendationCards} />
+            <RecommendationCardsSection title={normalizedModel.recommendationCardsTitle || 'Sugestões para você'} cards={recommendationCards} />
 
             {midContentOffer ? (
               getSupersimOffer([midContentOffer]) ? (
@@ -975,7 +1015,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               ) : (
                 <AffiliateInlineCTA
                   offer={midContentOffer}
-                  title="Quer comparar mais uma opcao antes de decidir?"
+                  title="Quer comparar mais uma opção antes de decidir?"
                   onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
                 />
               )
@@ -985,7 +1025,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               <SuperSimOfferCard
                 offer={beforeFaqSupersimOffer}
                 title="SuperSim para seguir a jornada com mais clareza"
-                description="Se a pesquisa ja fez sentido ate aqui, a SuperSim entra como uma proxima etapa editorial antes da FAQ e da decisao final."
+                description="Se a pesquisa já fez sentido até aqui, a SuperSim entra como uma próxima etapa editorial antes da FAQ e da decisão final."
                 onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
               />
             ) : null}
@@ -993,8 +1033,8 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
             {beforeFaqOtherOffers.length ? (
               <AffiliateOfferGrid
                 offers={beforeFaqOtherOffers}
-                title="Mais opcoes para avaliar antes de concluir sua pesquisa"
-                eyebrow="Compare opcoes"
+                title="Mais opções para avaliar antes de concluir sua pesquisa"
+                eyebrow="Compare opções"
                 onSelect={(offer) => handleAffiliateClick(offer, 'before_faq')}
               />
             ) : null}
@@ -1028,8 +1068,8 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
                     ? normalizedModel.usageTips
                     : [
                       'Compare taxa, prazo, limite e custo total antes de escolher.',
-                      'Use as ferramentas para simular parcelas e evitar decisoes no impulso.',
-                      'Leia conteudos relacionados quando tiver duvida sobre riscos ou condicoes.'
+                      'Use as ferramentas para simular parcelas e evitar decisões no impulso.',
+                      'Leia conteúdos relacionados quando tiver dúvida sobre riscos ou condições.'
                     ]).map((tip) => (
                     <li key={tip}>{tip}</li>
                   ))}
@@ -1063,7 +1103,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               {requiredBankRoutes.map((bank) => (
                 <Link key={bank.slug} to={`/banco/${bank.slug}`} className="interactive-card p-5">
                   <p className="text-sm font-semibold text-foreground">{bank.name}</p>
-                  <p className="mt-2 text-sm text-muted-foreground">Cartoes, emprestimos e financiamento.</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Cartões, empréstimos e financiamento.</p>
                 </Link>
               ))}
             </div>
@@ -1075,5 +1115,6 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
 }
 
 export default SeoProgrammaticPage;
+
 
 
