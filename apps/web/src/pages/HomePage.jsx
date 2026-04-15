@@ -176,7 +176,7 @@ function HomePage() {
               </span>
 
               <h1 className="hero-headline hero-credit-headline mt-6 text-slate-950">
-                Compare opções de <span className="hero-word-emphasis-strong">crédito</span>
+                Compare opções de crédito
                 <br />
                 com mais clareza
                 <br />
