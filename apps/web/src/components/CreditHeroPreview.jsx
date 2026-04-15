@@ -115,7 +115,7 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
         <div className="hero-card-footer">
           {footerItems.map((item) => (
             <div key={item} className="hero-card-benefit">
-              <CheckCircle2 className="h-3.5 w-3.5 text-[#16C784]" />
+              <CheckCircle2 className="h-3.5 w-3.5 text-[var(--brand-2)]" />
               {item}
             </div>
           ))}

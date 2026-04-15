@@ -2,13 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { CoteJurosLogo } from './CoteJurosLogo.jsx';
-import { normalizeMojibake, normalizeMojibakeDeep } from '@/lib/textEncoding.js';
 
 function Footer() {
-  const t = normalizeMojibake;
   const currentYear = new Date().getFullYear();
 
-  const footerSections = normalizeMojibakeDeep([
+  const footerSections = [
     {
       title: 'Crédito',
       links: [
@@ -39,7 +37,7 @@ function Footer() {
       title: 'Ecossistema',
       links: [{ label: 'Cote Finance', path: '/cote-finance-ai' }]
     }
-  ]);
+  ];
 
   return (
     <footer className="footer-premium-bg">
@@ -47,18 +45,18 @@ function Footer() {
         <div className="mb-8 grid gap-8 lg:grid-cols-[1.45fr_repeat(4,1fr)] lg:gap-10">
           <div className="max-w-md space-y-4">
             <Link to="/" className="inline-block">
-              <CoteJurosLogo variant="original-light" />
+              <CoteJurosLogo variant="original-light" className="site-logo" />
             </Link>
             <p className="text-sm leading-6 text-white/70">
-              {t('A CoteJuros ajuda você a comparar crédito com mais clareza, entender condições antes de contratar e decidir sem cobrança antecipada.')}
+              A CoteJuros ajuda você a comparar crédito com mais clareza, entender condições antes de contratar e decidir sem cobrança antecipada.
             </p>
             <div className="flex flex-wrap gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-medium text-white/80">
-                <ShieldCheck className="h-3.5 w-3.5 text-[#4FD1FF]" />
-                {t('Sem cobrança antecipada')}
+                <ShieldCheck className="h-3.5 w-3.5 text-[var(--brand-3)]" />
+                Sem cobrança antecipada
               </div>
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-medium text-white/80">
-                {t('Você decide com mais calma')}
+                Você decide com mais calma
               </div>
             </div>
           </div>
@@ -87,9 +85,9 @@ function Footer() {
 
         <div className="flex flex-col gap-2 border-t border-white/10 pt-5 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-medium text-white">{t('CoteJuros ©')} {currentYear}</p>
+            <p className="text-sm font-medium text-white">CoteJuros © {currentYear}</p>
             <p className="text-sm text-white/60">
-              {t('A CoteJuros não é banco, não concede crédito diretamente e não garante aprovação.')}
+              A CoteJuros não é banco, não concede crédito diretamente e não garante aprovação.
             </p>
           </div>
           <p className="text-sm text-white/60">Compare antes de contratar.</p>

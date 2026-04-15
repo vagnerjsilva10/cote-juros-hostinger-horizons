@@ -28,15 +28,15 @@ function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b border-white/[0.08] bg-[rgba(2,6,14,0.98)] transition-all duration-300 ${
-        isScrolled ? 'shadow-[0_14px_42px_rgba(1,4,10,0.42)]' : 'shadow-[0_1px_0_rgba(255,255,255,0.02)]'
+      className={`site-header sticky top-0 z-50 w-full border-b border-white/[0.06] bg-[rgba(2,7,14,0.985)] transition-all duration-300 ${
+        isScrolled ? 'shadow-[0_22px_52px_rgba(0,4,10,0.56)]' : 'shadow-[0_1px_0_rgba(255,255,255,0.02)]'
       }`}
-      style={{ backdropFilter: 'blur(12px)' }}
+      style={{ backdropFilter: 'blur(16px)' }}
     >
       <div className="page-shell">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-[68px] items-center justify-between">
           <Link to="/" className="flex items-center">
-            <CoteJurosLogo variant="original-light" />
+            <CoteJurosLogo variant="original-light" className="site-logo" />
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex">
@@ -47,7 +47,7 @@ function Header() {
                 className={`rounded-full px-3 py-2 text-[13px] font-medium leading-none transition-all duration-300 ${
                   isActive(item.path)
                     ? 'bg-white/[0.08] text-[rgba(255,255,255,0.98)]'
-                    : 'text-[rgba(255,255,255,0.78)] hover:text-[rgba(255,255,255,0.98)]'
+                    : 'text-[rgba(255,255,255,0.72)] hover:text-[rgba(255,255,255,0.96)]'
                 }`}
               >
                 {item.label}
@@ -57,7 +57,7 @@ function Header() {
 
           <div className="hidden items-center gap-3 lg:flex">
             <Link to="/emprestimos">
-              <Button className="cta-button h-9 rounded-[10px] border-0 bg-[linear-gradient(135deg,#6C5CFF_0%,#4B7CFF_100%)] px-3.5 text-[13px] font-semibold text-white shadow-[0_12px_30px_rgba(76,98,255,0.24)] transition-all duration-300 hover:-translate-y-[1px] hover:brightness-105">
+              <Button className="cta-button h-[38px] rounded-[10px] border border-white/[0.08] bg-[linear-gradient(180deg,#5F70FF_0%,#5263FF_100%)] px-[15px] text-[13px] font-semibold text-white shadow-none transition-all duration-300 hover:-translate-y-[1px] hover:brightness-105">
                 Ver minhas opções
               </Button>
             </Link>
@@ -74,10 +74,10 @@ function Header() {
                   <Menu className="h-4.5 w-4.5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[88vw] max-w-[320px] border-l border-white/10 bg-[#08111f] px-5">
+              <SheetContent side="right" className="w-[88vw] max-w-[320px] border-l border-white/10 bg-[#060d18] px-5">
                 <div className="mt-6 flex flex-col gap-6">
                   <div className="border-b border-white/10 pb-4">
-                    <CoteJurosLogo variant="original-light" />
+                    <CoteJurosLogo variant="original-light" className="site-logo" />
                   </div>
 
                   <nav className="flex flex-col gap-2">
@@ -97,7 +97,7 @@ function Header() {
                     ))}
                     <div className="mt-3 border-t border-white/10 pt-4">
                       <Link to="/emprestimos" onClick={() => setMobileOpen(false)}>
-                        <Button className="h-10 w-full rounded-[10px] border-0 bg-[linear-gradient(135deg,#6C5CFF_0%,#4B7CFF_100%)] text-[13px] font-semibold text-white shadow-[0_12px_30px_rgba(76,98,255,0.24)] transition-all duration-300 hover:-translate-y-[1px] hover:brightness-105">
+                        <Button className="h-10 w-full rounded-[10px] border border-white/[0.08] bg-[linear-gradient(180deg,#5F70FF_0%,#5263FF_100%)] text-[13px] font-semibold text-white shadow-none transition-all duration-300 hover:-translate-y-[1px] hover:brightness-105">
                           Ver minhas opções
                         </Button>
                       </Link>
@@ -114,4 +114,3 @@ function Header() {
 }
 
 export default Header;
-

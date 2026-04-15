@@ -15,7 +15,7 @@ const LOGO_MAP = {
 export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
   const src = LOGO_MAP[variant] || LOGO_MAP.horizontal;
   const isSymbol = ['symbol', 'symbolLight', 'icon', 'square'].includes(variant);
-  const heightClass = isSymbol ? 'h-11 w-11' : 'h-7 w-auto';
+  const heightClass = isSymbol ? 'h-11 w-11' : 'h-[30px] w-auto';
 
   return (
     <span className={cn('inline-flex items-center', className)} aria-label="Cote Juros">

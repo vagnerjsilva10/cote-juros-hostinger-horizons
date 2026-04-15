@@ -27,8 +27,8 @@ const animationIn = {
 const marketBrands = ['Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter', 'Santander', 'SuperSim'];
 
 const editorialFeature = normalizeMojibakeDeep({
-  title: 'Pessoa conferindo proposta de crédito e contrato',
-  image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1400&q=80',
+  title: 'Pessoa analisando proposta no notebook',
+  image: '/assets/editorial/editorial-analyst-cutout.png',
   tag: 'Comparação real'
 });
 const featureCards = normalizeMojibakeDeep([
@@ -183,9 +183,10 @@ function HomePage() {
               </span>
 
               <h1 className="hero-title">
-                {t('Veja opções de ')}<span className="highlight">{t('crédito')}</span>
+                {t('Veja opções de ')}<span className="highlight">{t('crédito')}</span>{' '}
+                {t('antes')}
                 <br />
-                antes de fechar contrato
+                {t('de fechar contrato')}
               </h1>
 
               <p className="hero-subtitle">
@@ -213,7 +214,7 @@ function HomePage() {
               <div className="hero-trust">
                 {normalizeMojibakeDeep(['Sem compromisso', 'Sem cobrança antecipada', 'Você decide com mais calma']).map((item) => (
                   <div key={item} className="flex items-center gap-2">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-[#16C784]" />
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[var(--brand-2)]" />
                     <span>{item}</span>
                   </div>
                 ))}
@@ -291,8 +292,12 @@ function HomePage() {
               </p>
             </div>
 
-            <div className="editorial-card">
-              <img src={editorialFeature.image} alt={editorialFeature.title} loading="lazy" />
+            <div className="editorial-card editorial-card-composed">
+              <div className="editorial-card-grid" aria-hidden="true" />
+              <div className="editorial-card-glow" aria-hidden="true" />
+              <div className="editorial-card-panel editorial-card-panel-one" aria-hidden="true" />
+              <div className="editorial-card-panel editorial-card-panel-two" aria-hidden="true" />
+              <img className="editorial-cutout" src={editorialFeature.image} alt={editorialFeature.title} loading="lazy" />
               <span className="floating-tag">{editorialFeature.tag}</span>
             </div>
           </motion.div>
@@ -370,8 +375,8 @@ function HomePage() {
                 <span>{t('Você compara antes de avançar.')}</span>
               </div>
 
-              <div className="card card-dark">
-                <TrendingUp className="h-5 w-5 text-[#4FD1FF]" />
+              <div className="card card-dark custo-real-card">
+                <TrendingUp className="h-5 w-5 text-[var(--brand-3)]" />
                 <strong>{t('Custo real em foco')}</strong>
                 <span>{t('Menos impulso, mais contexto.')}</span>
               </div>
@@ -434,8 +439,8 @@ function HomePage() {
                 <svg viewBox="0 0 320 120" className="w-full overflow-visible">
                   <defs>
                     <linearGradient id="homeDarkLine" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#6C5CFF" />
-                      <stop offset="100%" stopColor="#4FD1FF" />
+                      <stop offset="0%" stopColor="#5B6CFF" />
+                      <stop offset="100%" stopColor="#9AA8FF" />
                     </linearGradient>
                   </defs>
                   <path
@@ -446,7 +451,7 @@ function HomePage() {
                     strokeLinecap="round"
                     className="chart-draw"
                   />
-                  <circle cx="310" cy="20" r="5" fill="#4FD1FF" className="chart-pulse" />
+                  <circle cx="310" cy="20" r="5" fill="#9AA8FF" className="chart-pulse" />
                 </svg>
               </div>
             </div>

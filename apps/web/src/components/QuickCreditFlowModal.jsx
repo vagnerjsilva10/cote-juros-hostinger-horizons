@@ -202,7 +202,7 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
         </DialogDescription>
 
         <div className="hero-modal-top border-b border-slate-200 px-5 py-4 sm:px-6">
-          <span className="inline-flex rounded-full border border-[rgba(108,92,255,0.14)] bg-[rgba(108,92,255,0.06)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--brand-primary)]">
+          <span className="inline-flex rounded-full border border-[rgba(91,108,255,0.14)] bg-[rgba(91,108,255,0.06)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--brand-primary)]">
             Crédito com clareza
           </span>
           <h2 className="mt-3 max-w-xl text-[1.45rem] font-semibold tracking-[-0.04em] text-slate-950 sm:text-[1.65rem]">
@@ -247,8 +247,8 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
                     onClick={() => updateField('hasRestriction', item.value)}
                     className={`hero-modal-choice h-[42px] rounded-[12px] border text-sm font-medium transition-all ${
                       form.hasRestriction === item.value
-                        ? 'border-[rgba(108,92,255,0.24)] bg-[linear-gradient(135deg,#6C5CFF_0%,#4B7CFF_100%)] text-white shadow-[0_10px_24px_rgba(76,98,255,0.18)]'
-                        : 'border-slate-200 bg-white text-slate-700 hover:border-[rgba(108,92,255,0.24)] hover:bg-slate-50'
+                        ? 'border-[rgba(91,108,255,0.2)] bg-[linear-gradient(180deg,#6070FF_0%,#5263FF_100%)] text-white shadow-none'
+                        : 'border-slate-200 bg-white text-slate-700 hover:border-[rgba(91,108,255,0.2)] hover:bg-slate-50'
                     }`}
                   >
                     {item.label}
@@ -298,7 +298,7 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
           <div className="flex flex-col gap-3">
             <div className="rounded-[14px] border border-slate-200 bg-slate-50 px-4 py-3">
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[var(--brand-accent)]" />
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[var(--brand-2)]" />
                 <p className="text-sm leading-6 text-slate-600">
                   A CoteJuros não é banco. Nosso papel é mostrar opções para você comparar antes de contratar.
                 </p>
