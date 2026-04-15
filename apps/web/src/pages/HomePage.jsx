@@ -180,7 +180,6 @@ function HomePage() {
                   Veja <span className="hero-word-emphasis-strong">opções de crédito</span>
                 </span>
                 <span className="block">com mais clareza</span>
-                <span className="block">antes de contratar</span>
               </h1>
 
               <p className="hero-subcopy mt-5 max-w-[34rem] text-slate-600">
