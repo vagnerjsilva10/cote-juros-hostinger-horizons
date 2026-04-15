@@ -16,14 +16,7 @@ const animationIn = {
   transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] }
 };
 
-const marketBrands = [
-  'SuperSim',
-  'Banco PAN',
-  'C6 Bank',
-  'Nubank',
-  'Banco Inter',
-  'Santander'
-];
+const marketBrands = ['SuperSim', 'Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter', 'Santander'];
 
 const profileCards = [
   {
@@ -52,14 +45,16 @@ const credibilityBlocks = [
   {
     eyebrow: 'Vida financeira real',
     title: 'Entenda seu momento antes de perder tempo em várias tentativas',
-    description: 'A experiência foi pensada para trazer mais clareza logo no início, com contexto real e uma leitura mais humana do seu cenário.',
+    description:
+      'A experiência foi pensada para trazer mais clareza logo no início, com contexto real e uma leitura mais humana do seu cenário.',
     image: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1400&q=80',
     alt: 'Casal moderno organizando finanças em um ambiente claro'
   },
   {
     eyebrow: 'Decisão com calma',
     title: 'Compare com mais segurança antes de seguir para qualquer próxima etapa',
-    description: 'Menos ruído, menos promessa vazia e mais informação útil para você decidir com tranquilidade.',
+    description:
+      'Menos ruído, menos promessa vazia e mais informação útil para você decidir com tranquilidade.',
     image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80',
     alt: 'Pessoa usando notebook para analisar opções financeiras'
   }
@@ -80,7 +75,8 @@ const faqItems = [
   },
   {
     question: 'A Cote Juros empresta dinheiro?',
-    answer: 'Não. Nosso papel é ajudar você a entender o cenário, comparar com mais clareza e seguir pelo melhor caminho.'
+    answer:
+      'Não. Nosso papel é ajudar você a entender o cenário, comparar com mais clareza e seguir pelo melhor caminho.'
   }
 ];
 
@@ -89,9 +85,17 @@ function FaqItem({ item, isOpen, onToggle }) {
     <div className="rounded-[20px] border border-slate-200 bg-white px-5 py-5 shadow-[0_10px_24px_rgba(15,23,42,0.04)] transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_14px_30px_rgba(15,23,42,0.06)]">
       <button type="button" onClick={onToggle} className="flex w-full items-center justify-between gap-4 text-left">
         <span className="text-base font-medium text-slate-900">{item.question}</span>
-        <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          className={`h-4 w-4 shrink-0 text-slate-500 transition-transform duration-300 ${
+            isOpen ? 'rotate-180' : ''
+          }`}
+        />
       </button>
-      <div className={`grid transition-[grid-template-rows,opacity,margin] duration-300 ${isOpen ? 'mt-3 grid-rows-[1fr] opacity-100' : 'mt-0 grid-rows-[0fr] opacity-0'}`}>
+      <div
+        className={`grid transition-[grid-template-rows,opacity,margin] duration-300 ${
+          isOpen ? 'mt-3 grid-rows-[1fr] opacity-100' : 'mt-0 grid-rows-[0fr] opacity-0'
+        }`}
+      >
         <div className="overflow-hidden">
           <p className="max-w-3xl text-sm leading-7 text-slate-600">{item.answer}</p>
         </div>
@@ -133,48 +137,57 @@ function HomePage() {
         firstInput.focus();
         firstInput.select();
       }
-    }, 260);
+    }, 240);
   };
 
   return (
     <>
       <Helmet>
-        <title>Cote Juros - Descubra caminhos de crédito com mais clareza</title>
+        <title>Cote Juros - Compare opções de crédito com mais clareza</title>
         <meta
           name="description"
-          content="Descubra quais caminhos de crédito fazem sentido para você. Sem promessa falsa, sem cobrança antecipada e com mais clareza para decidir."
+          content="Compare opções de crédito com mais clareza antes de contratar. Responda o básico e veja caminhos possíveis sem cobrança antecipada."
         />
         <meta name="verify-admitad" content="1ae3db0be4" />
         <link rel="canonical" href="https://cotejuros.com.br/" />
       </Helmet>
 
-      <QuickCreditFlowModal isOpen={modalOpen} onClose={() => setModalOpen(false)} sourcePage="/" originLabel="home" />
+      <QuickCreditFlowModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        sourcePage="/"
+        originLabel="home"
+      />
 
       <section className="relative overflow-hidden border-b border-slate-200 bg-white">
         <div className="pointer-events-none absolute inset-0">
-          <div className="hero-premium-clean absolute inset-0" />
-          <div className="hero-tech-grid absolute inset-0 opacity-16" />
-          <div className="absolute left-[-3rem] top-0 h-56 w-56 rounded-full bg-sky-100/60 blur-3xl" />
-          <div className="absolute right-[-2rem] top-10 h-56 w-56 rounded-full bg-primary/5 blur-3xl" />
-          <div className="absolute right-[24%] top-[12%] h-44 w-44 rounded-full bg-violet-100/40 blur-3xl" />
+          <div className="hero-premium-credit absolute inset-0" />
+          <div className="hero-tech-grid absolute inset-0 opacity-[0.14]" />
+          <div className="absolute left-[6%] top-[-3rem] h-56 w-56 rounded-full bg-sky-200/45 blur-3xl" />
+          <div className="absolute right-[14%] top-[-2.5rem] h-64 w-64 rounded-full bg-violet-200/40 blur-3xl" />
+          <div className="absolute right-[28%] top-[5rem] h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
         </div>
 
-        <div className="page-shell relative py-20 sm:py-24 lg:py-28">
-          <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-10">
-            <motion.div {...animationIn} className="max-w-[690px]">
+        <div className="page-shell relative py-18 sm:py-22 lg:py-24">
+          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_440px] lg:gap-8">
+            <motion.div {...animationIn} className="max-w-[620px] lg:pt-3">
               <span className="section-eyebrow border-white/80 bg-white/92">
-                Sem promessa falsa. Sem cobrança antecipada.
+                Sem compromisso. Sem cobrança antecipada.
               </span>
 
-              <h1 className="hero-headline mt-7 text-slate-950">
-                Descubra quais <span className="hero-word-emphasis-strong">caminhos de crédito</span> fazem sentido para você
+              <h1 className="hero-headline hero-credit-headline mt-6 text-slate-950">
+                Compare opções de <span className="hero-word-emphasis-strong">crédito</span>
+                <br />
+                com mais clareza
+                <br />
+                antes de contratar
               </h1>
 
-              <p className="hero-subcopy mt-6 max-w-[36rem] text-slate-600">
-                Em poucos minutos, você entende por onde vale a pena começar e evita perder tempo em várias tentativas sem clareza.
+              <p className="hero-subcopy mt-5 max-w-[34rem] text-slate-600">
+                Responda o básico e veja opções de crédito com mais clareza antes de seguir.
               </p>
 
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Button size="lg" className="hero-primary-cta" onClick={focusHeroPreview}>
                   Ver minhas opções agora
                   <ArrowRight className="h-4 w-4" />
@@ -186,7 +199,7 @@ function HomePage() {
                 </a>
               </div>
 
-              <div className="mt-9 flex flex-wrap gap-3">
+              <div className="mt-8 flex flex-wrap gap-3">
                 {['Sem compromisso', 'Sem cobrança antecipada', 'Você decide com calma'].map((item) => (
                   <div key={item} className="premium-pill">
                     <CheckCircle2 className="h-4 w-4 text-[#10B981]" />
@@ -194,17 +207,9 @@ function HomePage() {
                   </div>
                 ))}
               </div>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                {['Leitura clara do seu momento', 'Comparação com mais calma', 'Próximos passos sem pressão'].map((item) => (
-                  <span key={item} className="hero-proof-pill">
-                    {item}
-                  </span>
-                ))}
-              </div>
             </motion.div>
 
-            <motion.div {...animationIn} className="mx-auto w-full max-w-[400px] lg:mr-0 lg:pt-[4.8rem]">
+            <motion.div {...animationIn} className="mx-auto w-full max-w-[440px] lg:mr-0 lg:pt-1">
               <CreditHeroPreview focusSignal={heroPreviewFocusSignal} onContinue={openPrimaryFlow} />
             </motion.div>
           </div>
@@ -287,10 +292,15 @@ function HomePage() {
 
       <section className="page-section border-b border-slate-200 bg-white">
         <div className="page-shell">
-          <motion.div {...animationIn} className="premium-dark-panel-home rounded-[34px] px-8 py-12 text-white sm:px-12 sm:py-16 lg:px-16 lg:py-20">
+          <motion.div
+            {...animationIn}
+            className="premium-dark-panel-home rounded-[34px] px-8 py-12 text-white sm:px-12 sm:py-16 lg:px-16 lg:py-20"
+          >
             <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
               <div>
-                <span className="section-kicker border-white/15 bg-white/10 text-slate-100">Mais clareza antes da decisão</span>
+                <span className="section-kicker border-white/15 bg-white/10 text-slate-100">
+                  Mais clareza antes da decisão
+                </span>
                 <h2 className="section-title-gradient-strong mt-6 max-w-3xl text-[clamp(2.2rem,4vw,3.75rem)] leading-[1.08]">
                   Clareza muda tudo quando o assunto é crédito
                 </h2>
@@ -299,16 +309,14 @@ function HomePage() {
                 </p>
 
                 <div className="mt-9 space-y-3">
-                  {[
-                    'Mais contexto antes da decisão',
-                    'Menos tentativa no escuro',
-                    'Mais calma para comparar'
-                  ].map((item) => (
-                    <div key={item} className="dark-benefit-row">
-                      <CheckCircle2 className="h-4 w-4 text-sky-300" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
+                  {['Mais contexto antes da decisão', 'Menos tentativa no escuro', 'Mais calma para comparar'].map(
+                    (item) => (
+                      <div key={item} className="dark-benefit-row">
+                        <CheckCircle2 className="h-4 w-4 text-sky-300" />
+                        <span>{item}</span>
+                      </div>
+                    )
+                  )}
                 </div>
 
                 <div className="mt-9 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-4 py-2 text-sm text-slate-200">
@@ -384,8 +392,16 @@ function HomePage() {
 
           <div className="mt-14 grid gap-6 lg:grid-cols-2">
             {credibilityBlocks.map((item) => (
-              <motion.article key={item.title} {...animationIn} className="overflow-hidden rounded-[30px] border border-border bg-white shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
-                <img src={item.image} alt={item.alt} className="h-72 w-full object-cover transition-transform duration-500 hover:scale-[1.02]" />
+              <motion.article
+                key={item.title}
+                {...animationIn}
+                className="overflow-hidden rounded-[30px] border border-border bg-white shadow-[0_14px_30px_rgba(15,23,42,0.05)]"
+              >
+                <img
+                  src={item.image}
+                  alt={item.alt}
+                  className="h-72 w-full object-cover transition-transform duration-500 hover:scale-[1.02]"
+                />
                 <div className="p-8">
                   <span className="section-eyebrow bg-slate-50">{item.eyebrow}</span>
                   <h3 className="mt-4 text-slate-950">{item.title}</h3>
