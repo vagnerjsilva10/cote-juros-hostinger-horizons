@@ -177,7 +177,7 @@ function HomePage() {
 
               <h1 className="hero-headline hero-credit-headline mt-6 text-slate-950">
                 <span className="block whitespace-nowrap">
-                  Compare opções de <span className="hero-word-emphasis-strong">crédito</span>
+                  Veja <span className="hero-word-emphasis-strong">opções de crédito</span>
                 </span>
                 <span className="block">com mais clareza</span>
                 <span className="block">antes de contratar</span>
