@@ -88,27 +88,27 @@ const getArticleConversionCta = (article, categoryRoute) => {
 
   if (/(organiz|orcamento|controle financeiro|educacao financeira|diagnostico financeiro|planejamento financeiro)/.test(intent)) {
     return {
-      eyebrow: 'Proximo passo',
+      eyebrow: 'Próximo passo',
       title: 'Quer organizar melhor seu dinheiro antes de decidir?',
       description: 'Se este conteúdo falou mais sobre rotina, planejamento ou controle, o Cote Finance pode ajudar você a enxergar seu mês com mais clareza.',
       primary: { to: '/cote-finance-ai', label: 'Conhecer o Cote Finance' },
-      secondary: { to: categoryRoute.path, label: 'Ver conteudo relacionado' }
+      secondary: { to: categoryRoute.path, label: 'Ver conteúdo relacionado' }
     };
   }
 
   if (/(golpe|fraude|juros abusivos|divida|renegoci|contest)/.test(intent)) {
     return {
       eyebrow: 'Antes de decidir',
-      title: 'Compare caminhos possiveis com calma',
-      description: 'Quando o assunto envolve dívida, golpe ou cobrança confusa, vale respirar, comparar alternativas e evitar promessa fácil.',
+      title: 'Compare caminhos possíveis com calma',
+      description: 'Quando o assunto envolve dívida, golpe ou cobrança confusa, vale respirar, comparar alternativas e evitar promessas fáceis.',
       primary: { to: '/emprestimos', label: 'Ver opções com calma' },
       secondary: { to: categoryRoute.path, label: 'Continuar lendo sobre o tema' }
     };
   }
 
   return {
-    eyebrow: 'Proximo passo',
-    title: 'Quer ver opcoes que combinam com seu perfil?',
+    eyebrow: 'Próximo passo',
+    title: 'Quer ver opções que combinam com seu perfil?',
     description: 'Se este conteúdo ajudou, agora você pode ver caminhos de crédito que podem fazer sentido para o seu momento, sem promessa falsa e sem cobrança antecipada.',
     primary: { to: '/emprestimos', label: 'Ver minhas opções agora' },
     secondary: { to: categoryRoute.path, label: 'Ver página relacionada' }
@@ -449,7 +449,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                       {index === midSectionIndex && midSupersimOffer ? (
                         <SuperSimInlineCTA
                           offer={midSupersimOffer}
-                          title="A SuperSim entra aqui como proxima etapa natural da leitura"
+                          title="A SuperSim entra aqui como próxima etapa natural da leitura"
                           onSelect={(offer) => handleAffiliateClick(offer, 'mid_content')}
                         />
                       ) : null}
@@ -518,7 +518,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                 <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   <Link to={conversionCta?.primary.to || '/emprestimos'} className="inline-flex w-full sm:w-auto">
                     <Button className="w-full sm:w-auto">
-                      {conversionCta?.primary.label || 'Ver minhas opcoes agora'}
+                      {conversionCta?.primary.label || 'Ver minhas opções agora'}
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>

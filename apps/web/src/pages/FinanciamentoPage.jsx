@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 import { ArrowRight, Car, Home, ShieldCheck } from 'lucide-react';
-import { toast } from 'sonner';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,17 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PageHero from '@/components/PageHero.jsx';
 import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
-import { trackingService } from '@/platform/services/trackingService.js';
-import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
 
 function FinanciamentoPage() {
   const [financingData, setFinancingData] = useState([]);
-  const [banksData, setBanksData] = useState([]);
   const [quickModalOpen, setQuickModalOpen] = useState(false);
 
   useEffect(() => {
-    Promise.all([portalApi.getBanks(), portalApi.getOffers({ productType: 'financing' })]).then(([banks, offers]) => {
-      setBanksData(Array.isArray(banks) ? banks : []);
+    portalApi.getOffers({ productType: 'financing' }).then((offers) => {
       setFinancingData(Array.isArray(offers) ? offers : []);
     });
   }, []);
@@ -36,29 +30,8 @@ function FinanciamentoPage() {
     return Math.max(...financingData.map((item) => item.maxTerm || 0));
   }, [financingData]);
 
-  const handleSimulate = async (offer) => {
-    const bank = banksData.find((item) => item.id === offer.bankId);
-    const destinationUrl = bank?.website ? `https://${bank.website}` : 'https://www.cotejuros.com.br/financiamento';
-
-    await trackingService.trackOfferClick({
-      sourcePage: '/financiamento',
-      offerId: offer.id,
-      target: destinationUrl,
-      productType: 'financing',
-      partnerId: offer.bankId,
-      metadata: { annualRate: offer.annualRate }
-    });
-
-    const redirect = await partnerRedirectService.create({
-      partnerId: offer.bankId,
-      offerId: offer.id,
-      destinationUrl,
-      sourcePage: '/financiamento',
-      productType: 'financing'
-    });
-
-    toast.success(`Interesse registrado para simulação com ${offer.bankName}.`);
-    window.location.href = redirect.resolvedUrl;
+  const openInternalFlow = () => {
+    setQuickModalOpen(true);
   };
 
   const renderCards = (filterFn) => {
@@ -98,8 +71,8 @@ function FinanciamentoPage() {
                 <p className="mt-2 text-sm text-muted-foreground">A partir de {item.minDownPayment}% do valor do bem.</p>
               </div>
 
-              <Button className="mt-auto w-full" onClick={() => handleSimulate(item)}>
-                Continuar análise
+              <Button className="mt-auto w-full" onClick={openInternalFlow}>
+                Continuar no fluxo
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </CardContent>
@@ -121,15 +94,13 @@ function FinanciamentoPage() {
 
       <PageHero
         eyebrow="Comparação interna"
-        badge="Financiamento com arquitetura mais clara"
+        badge="Financiamento com leitura mais clara"
         centered
         title="Compare taxa, entrada e prazo com uma experiência mais leve."
-        subtitle="Esta página fica focada em contexto, comparação e entrada no fluxo. As ofertas externas agora vivem em um ambiente separado."
+        subtitle="Esta página fica focada em contexto, comparação e entrada no fluxo, com menos ruído e mais previsibilidade na decisão."
       >
         <div className="flex flex-col justify-center gap-3 sm:flex-row">
-          <Button size="lg" onClick={() => setQuickModalOpen(true)}>
-            Ver minhas opções agora
-          </Button>
+          <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
           <a href="#resultados-financiamento">
             <Button size="lg" variant="outline">Ver comparação</Button>
           </a>
@@ -162,20 +133,8 @@ function FinanciamentoPage() {
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">Comparação interna</p>
           <h2 className="mt-3 text-2xl text-foreground">Entenda custos e prazos com menos ruído</h2>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
-            Esta etapa foi simplificada para facilitar leitura e decisão antes da próxima etapa.
+            Esta etapa foi simplificada para facilitar leitura, comparação e contexto antes da próxima decisão.
           </p>
-        </div>
-
-        <div className="mb-8 rounded-[20px] border border-primary/15 bg-primary/[0.04] px-6 py-5">
-          <p className="text-sm font-semibold text-foreground">Ofertas externas foram movidas para uma área separada.</p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Aqui você compara com calma. Se quiser ver parceiros editoriais, use a página de ofertas dedicada.
-          </p>
-          <div className="mt-4">
-            <Link to="/ofertas">
-              <Button variant="outline">Ver ofertas e parceiros</Button>
-            </Link>
-          </div>
         </div>
 
         <Tabs defaultValue="veiculos" className="w-full">
@@ -223,7 +182,7 @@ function FinanciamentoPage() {
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
               Conte o básico sobre o seu momento e veja opções de crédito com mais clareza antes de assumir uma parcela de longo prazo.
             </p>
-            <Button size="lg" onClick={() => setQuickModalOpen(true)}>Ver minhas opções agora</Button>
+            <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
           </div>
         </div>
       </section>

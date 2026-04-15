@@ -10,22 +10,22 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[#2563EB] px-6 py-3 text-white shadow-[0_10px_24px_rgba(37,99,235,0.18)] hover:scale-[1.01] hover:bg-[#1D4ED8] hover:shadow-[0_14px_28px_rgba(37,99,235,0.22)]",
+          "bg-[#2563EB] px-6 py-3 text-white shadow-[0_8px_20px_rgba(37,99,235,0.16)] hover:-translate-y-[1px] hover:bg-[#1D4ED8] hover:shadow-[0_12px_24px_rgba(37,99,235,0.2)]",
         brand:
-          "bg-[#0F172A] px-6 py-3 text-white shadow-[0_10px_24px_rgba(15,23,42,0.12)] hover:scale-[1.01] hover:bg-[#020617] hover:shadow-[0_14px_28px_rgba(15,23,42,0.16)]",
+          "bg-[#0F172A] px-6 py-3 text-white shadow-[0_8px_20px_rgba(15,23,42,0.1)] hover:-translate-y-[1px] hover:bg-[#020617] hover:shadow-[0_12px_24px_rgba(15,23,42,0.14)]",
         destructive:
-          "bg-destructive px-6 py-3 text-destructive-foreground shadow-[var(--shadow-sm)] hover:scale-[1.01] hover:bg-destructive/90",
+          "bg-destructive px-6 py-3 text-destructive-foreground shadow-[var(--shadow-sm)] hover:-translate-y-[1px] hover:bg-destructive/90",
         outline:
-          "border border-input bg-background px-6 py-3 text-foreground shadow-none hover:scale-[1.01] hover:bg-background-secondary hover:shadow-[0_8px_18px_rgba(15,23,42,0.04)]",
+          "border border-input bg-background px-6 py-3 text-foreground shadow-none hover:-translate-y-[1px] hover:bg-background-secondary hover:shadow-[0_8px_18px_rgba(15,23,42,0.04)]",
         secondary:
-          "border border-border bg-background-secondary px-6 py-3 text-foreground shadow-none hover:scale-[1.01] hover:bg-background-tertiary",
+          "border border-border bg-background-secondary px-6 py-3 text-foreground shadow-none hover:-translate-y-[1px] hover:bg-background-tertiary",
         ghost: "text-muted-foreground hover:bg-background-secondary hover:text-foreground",
         link: "px-0 py-0 text-primary underline-offset-4 hover:text-primary-hover hover:underline",
       },
       size: {
         default: "h-12 px-6 py-3",
         sm: "h-10 px-4 py-2 text-xs",
-        lg: "h-12 px-6 py-3 text-sm",
+        lg: "h-14 px-6 py-3 text-sm",
         icon: "h-10 w-10 p-0",
       },
     },

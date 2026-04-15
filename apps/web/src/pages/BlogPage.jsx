@@ -187,7 +187,7 @@ function BlogPage() {
         centered
         badge="Blog Cote Juros"
         title="Conteúdo para entender antes de contratar"
-        subtitle="Guias editoriais com imagens mais humanas, leitura clara e contexto financeiro para tomar decisões com mais confiança."
+        subtitle="Guias editoriais com leitura clara, imagens mais humanas e contexto financeiro para decidir com mais confiança."
       >
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
           <div className="relative">
@@ -215,13 +215,13 @@ function BlogPage() {
         </div>
       </PageHero>
 
-      <div className="page-shell space-y-10 py-10 md:space-y-14 md:py-14">
-        <section className="grid gap-4 rounded-[24px] border border-border bg-white p-5 md:grid-cols-[1.15fr_0.85fr] md:p-7">
+      <div className="page-shell space-y-12 py-12 md:space-y-16 md:py-16">
+        <section className="grid gap-5 rounded-[28px] border border-border bg-white p-6 md:grid-cols-[1.15fr_0.85fr] md:p-8">
           <div className="space-y-3">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Comece por aqui</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">Comece por aqui</p>
             <h2 className="text-2xl text-foreground md:text-3xl">Temas mais úteis para organizar a vida financeira com calma</h2>
             <p className="max-w-3xl text-base leading-7 text-muted-foreground">
-              O blog agora reforça a percepção do produto: mais contexto, menos ruído e um visual mais confiável.
+              Um blog mais silencioso, claro e útil para apoiar decisões financeiras sem poluição visual.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-1">
@@ -241,7 +241,7 @@ function BlogPage() {
 
         {loading ? (
           <>
-            <section className="rounded-[20px] border border-border bg-white px-6 py-14 text-center">
+            <section className="rounded-[24px] border border-border bg-white px-6 py-14 text-center">
               <p className="text-muted-foreground">Carregando conteúdos do blog...</p>
             </section>
             <BlogGridSkeleton items={6} />
@@ -257,7 +257,7 @@ function BlogPage() {
 
             <Link
               to={getArticlePath(featured)}
-              className="group grid overflow-hidden rounded-[26px] border border-border bg-white shadow-[0_10px_30px_rgba(0,0,0,0.05)] md:grid-cols-[1.1fr_0.9fr]"
+              className="group grid overflow-hidden rounded-[28px] border border-border bg-white shadow-[0_12px_32px_rgba(15,23,42,0.06)] md:grid-cols-[1.1fr_0.9fr]"
             >
               <ArticleCoverImage
                 article={featured}
@@ -267,12 +267,12 @@ function BlogPage() {
               />
 
               <div className="flex flex-col justify-center gap-4 p-6 md:p-8">
-                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-primary">Artigo em destaque</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-primary/80">Artigo em destaque</p>
                 <h3 className="text-3xl text-foreground">{getEditorialTitle(featured)}</h3>
                 <p className="text-base leading-7 text-muted-foreground">{getArticleSummary(featured)}</p>
                 <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
                   <span>{formatDate(featured.publishedAt)}</span>
-                  <span>•</span>
+                  <span>&bull;</span>
                   <span>{featured.readingTime || featured.readTime || 6} min de leitura</span>
                 </div>
                 <span className="inline-flex items-center gap-2 font-medium text-primary">
@@ -357,7 +357,7 @@ function BlogPage() {
           ) : null}
         </section>
 
-        <section className="rounded-[24px] border border-primary/15 bg-primary/[0.04] p-6 md:p-8">
+        <section className="rounded-[28px] border border-primary/15 bg-primary/[0.04] p-6 md:p-8">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Próximo passo</p>
           <h2 className="mt-3 text-2xl text-foreground">Quando quiser sair da leitura, veja caminhos de crédito com mais contexto</h2>
           <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">

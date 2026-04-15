@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 import { CheckCircle2, ChevronRight, CreditCard, Filter } from 'lucide-react';
-import { toast } from 'sonner';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -13,8 +11,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import PageHero from '@/components/PageHero.jsx';
 import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
-import { trackingService } from '@/platform/services/trackingService.js';
-import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
 
 const bankCardImages = {
   nubank: '/assets/cards/nubank-card.svg',
@@ -56,7 +52,6 @@ const resolveCardPalette = (card) => {
 
 function CartoesPage() {
   const [cardsData, setCardsData] = useState([]);
-  const [banksData, setBanksData] = useState([]);
   const [quickModalOpen, setQuickModalOpen] = useState(false);
   const [freeAnnuity, setFreeAnnuity] = useState(false);
   const [categories, setCategories] = useState({ Premium: false, Intermediario: false, Basico: false });
@@ -64,8 +59,7 @@ function CartoesPage() {
   const [sort, setSort] = useState('limite-maior');
 
   useEffect(() => {
-    Promise.all([portalApi.getBanks(), portalApi.getOffers({ productType: 'credit_card' })]).then(([banks, items]) => {
-      setBanksData(Array.isArray(banks) ? banks : []);
+    portalApi.getOffers({ productType: 'credit_card' }).then((items) => {
       setCardsData(Array.isArray(items) ? items : []);
     });
   }, []);
@@ -104,28 +98,8 @@ function CartoesPage() {
     return Math.max(...filteredCards.map((item) => item.maxLimit || 0));
   }, [filteredCards]);
 
-  const handleApply = async (card) => {
-    const bank = banksData.find((item) => item.id === card.bankId);
-    const destinationUrl = bank?.website ? `https://${bank.website}` : 'https://www.cotejuros.com.br/cartoes-de-credito';
-
-    await trackingService.trackOfferClick({
-      sourcePage: '/cartoes-de-credito',
-      offerId: card.id,
-      target: destinationUrl,
-      productType: 'credit_card',
-      partnerId: card.bankId
-    });
-
-    const redirect = await partnerRedirectService.create({
-      partnerId: card.bankId,
-      offerId: card.id,
-      destinationUrl,
-      sourcePage: '/cartoes-de-credito',
-      productType: 'credit_card'
-    });
-
-    toast.success(`Interesse registrado para ${card.title}.`);
-    window.location.href = redirect.resolvedUrl;
+  const openInternalFlow = () => {
+    setQuickModalOpen(true);
   };
 
   return (
@@ -140,14 +114,12 @@ function CartoesPage() {
 
       <PageHero
         eyebrow="Comparação interna"
-        badge="Cartões com arquitetura mais clara"
+        badge="Cartões com leitura mais clara"
         title="Compare custo e benefício com uma leitura mais leve."
-        subtitle="Esta página agora fica focada em contexto, comparação e entrada no fluxo. As ofertas externas foram separadas em um ambiente próprio."
+        subtitle="Esta página fica focada em contexto, comparação e entrada no fluxo, sem distrações externas na decisão principal."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button size="lg" onClick={() => setQuickModalOpen(true)}>
-            Ver minhas opções agora
-          </Button>
+          <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
           <a href="#resultados-cartoes">
             <Button size="lg" variant="outline">Ver comparação</Button>
           </a>
@@ -180,20 +152,8 @@ function CartoesPage() {
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">Comparação interna</p>
           <h2 className="mt-3 text-2xl text-foreground">Entenda custo, limite e benefícios antes de avançar</h2>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
-            O objetivo desta etapa é comparar com calma. A área de parceiros agora está separada para manter a decisão mais clara.
+            O objetivo desta etapa é comparar com calma, entender o encaixe do cartão e decidir no seu tempo.
           </p>
-        </div>
-
-        <div className="mb-8 rounded-[20px] border border-primary/15 bg-primary/[0.04] px-6 py-5">
-          <p className="text-sm font-semibold text-foreground">Parceiros externos foram movidos para uma página própria.</p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Se quiser ver destinos externos e avisos editoriais, use a página de ofertas sem misturar isso com a comparação principal.
-          </p>
-          <div className="mt-4">
-            <Link to="/ofertas">
-              <Button variant="outline">Ver ofertas e parceiros</Button>
-            </Link>
-          </div>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
@@ -257,9 +217,7 @@ function CartoesPage() {
                     <SelectItem value="anuidade-menor">Menor anuidade</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant="outline" onClick={() => setQuickModalOpen(true)}>
-                  Ver opções para meu perfil
-                </Button>
+                <Button variant="outline" onClick={openInternalFlow}>Ver opções para meu perfil</Button>
               </div>
             </div>
 
@@ -334,8 +292,8 @@ function CartoesPage() {
                         ))}
                       </div>
 
-                      <Button className="mt-auto w-full" onClick={() => handleApply(card)}>
-                        Continuar análise
+                      <Button className="mt-auto w-full" onClick={openInternalFlow}>
+                        Continuar no fluxo
                         <ChevronRight className="h-4 w-4" />
                       </Button>
                     </CardContent>
@@ -350,7 +308,7 @@ function CartoesPage() {
                 <h3 className="mt-4 text-2xl">Nenhum cartão encontrado.</h3>
                 <p className="mt-3 text-muted-foreground">Tente reduzir os filtros ativos para ver mais opções.</p>
                 <div className="mt-6">
-                  <Button onClick={() => setQuickModalOpen(true)}>Ver minhas opções agora</Button>
+                  <Button onClick={openInternalFlow}>Ver minhas opções agora</Button>
                 </div>
               </div>
             ) : null}
@@ -365,7 +323,7 @@ function CartoesPage() {
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
               Responda o básico sobre o seu momento e veja caminhos que podem combinar melhor com o seu perfil, sem compromisso e sem cobrança antecipada.
             </p>
-            <Button size="lg" onClick={() => setQuickModalOpen(true)}>Ver minhas opções agora</Button>
+            <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
           </div>
         </div>
       </section>

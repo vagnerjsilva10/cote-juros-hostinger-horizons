@@ -51,25 +51,25 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
 
   return (
     <Card className={`surface-card h-full overflow-hidden border-border bg-white ${featured ? 'lg:col-span-2 xl:col-span-3' : ''}`.trim()}>
-      <CardContent className={`grid h-full gap-0 p-0 ${featured ? 'lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]' : ''}`.trim()}>
+      <CardContent className={`grid h-full gap-0 p-0 ${featured ? 'lg:grid-cols-[minmax(0,1.12fr)_minmax(320px,0.88fr)]' : ''}`.trim()}>
         <div
           className="relative overflow-hidden border-b border-border p-6 sm:p-7 lg:border-b-0 lg:border-r"
           style={{
-            background: `linear-gradient(135deg, ${accentFromMeta}14 0%, #ffffff 52%, ${secondaryAccent}10 100%)`
+            background: `linear-gradient(135deg, ${accentFromMeta}12 0%, #ffffff 54%, ${secondaryAccent}08 100%)`
           }}
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.95),transparent_38%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.96),transparent_40%)]" />
           <div className="relative flex h-full flex-col gap-6">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div
-                  className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[20px] border bg-white shadow-[0_14px_30px_rgba(15,23,42,0.08)]"
-                  style={{ borderColor: `${accentFromMeta}2A` }}
+                  className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[20px] border bg-white shadow-[0_12px_24px_rgba(15,23,42,0.06)]"
+                  style={{ borderColor: `${accentFromMeta}22` }}
                 >
                   {logoUrl ? (
                     <img src={logoUrl} alt={offer.merchantName} className="h-10 w-10 object-contain" />
                   ) : (
-                    <span className="text-lg font-bold" style={{ color: accentFromMeta }}>
+                    <span className="text-lg font-semibold" style={{ color: accentFromMeta }}>
                       {getInitials(offer.merchantName || offer.title)}
                     </span>
                   )}
@@ -80,12 +80,12 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
                     {offer.merchantName}
                   </p>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    <Badge variant="outline" className="border-primary/20 bg-white/90 text-foreground">
+                    <Badge variant="outline" className="border-primary/15 bg-white/90 text-foreground">
                       <Building2 className="mr-1 h-3.5 w-3.5" />
                       Parceiro externo
                     </Badge>
                     {badges[0] ? (
-                      <Badge variant="outline" className="border-primary/20 bg-white/90 text-foreground">
+                      <Badge variant="outline" className="border-primary/15 bg-white/90 text-foreground">
                         <Clock3 className="mr-1 h-3.5 w-3.5" />
                         {badges[0]}
                       </Badge>
@@ -94,16 +94,16 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
                 </div>
               </div>
 
-              <div className="hidden rounded-full border border-primary/15 bg-white/85 px-3 py-1 text-xs font-semibold text-primary sm:block">
+              <div className="hidden rounded-full border border-primary/12 bg-white/88 px-3 py-1 text-xs font-medium text-primary sm:block">
                 {offer.category}
               </div>
             </div>
 
             <div className="max-w-2xl">
-              <h3 className="text-2xl font-semibold tracking-[-0.04em] text-foreground sm:text-[2rem]">
+              <h3 className="text-2xl font-semibold tracking-[-0.04em] text-foreground sm:text-[1.95rem]">
                 {offer.title}
               </h3>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-[15px]">
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-[15px]">
                 {offer.description}
               </p>
             </div>
@@ -129,7 +129,7 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                 Ideal para
               </p>
-              <p className="mt-2 text-sm leading-6 text-foreground">
+              <p className="mt-2 text-sm leading-7 text-foreground">
                 {offer.audience || 'Quem quer comparar custos, prazo e leitura das condições antes de seguir.'}
               </p>
             </div>
@@ -141,12 +141,12 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
               <div className="mt-3 space-y-2">
                 <div className="flex items-start gap-2">
                   <BadgeCheck className="mt-0.5 h-4 w-4 text-primary" />
-                  <p className="text-sm text-foreground">Você sai da Cote Juros e continua no ambiente do parceiro.</p>
+                  <p className="text-sm leading-6 text-foreground">Você sai da Cote Juros e continua no ambiente do parceiro.</p>
                 </div>
                 <div className="flex items-start gap-2">
                   <ShieldCheck className="mt-0.5 h-4 w-4 text-primary" />
-                  <p className="text-sm text-foreground">
-                    {offer.payoutText || 'Use este passo apenas quando a oferta parecer aderente ao seu momento.'}
+                  <p className="text-sm leading-6 text-foreground">
+                    {offer.payoutText || 'Avance apenas se as condições fizerem sentido para o seu momento.'}
                   </p>
                 </div>
               </div>

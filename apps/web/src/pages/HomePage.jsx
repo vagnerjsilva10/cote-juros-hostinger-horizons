@@ -113,24 +113,24 @@ function HomePage() {
       <section className="relative overflow-hidden border-b border-slate-200 bg-white">
         <div className="pointer-events-none absolute inset-0">
           <div className="hero-premium-clean absolute inset-0" />
-          <div className="hero-tech-grid absolute inset-0 opacity-24" />
-          <div className="absolute left-[-3rem] top-0 h-56 w-56 rounded-full bg-sky-100/70 blur-3xl" />
+          <div className="hero-tech-grid absolute inset-0 opacity-18" />
+          <div className="absolute left-[-3rem] top-0 h-56 w-56 rounded-full bg-sky-100/60 blur-3xl" />
           <div className="absolute right-[-2rem] top-10 h-56 w-56 rounded-full bg-primary/5 blur-3xl" />
         </div>
 
-        <div className="page-shell relative py-16 sm:py-20 lg:py-24">
-          <div className="grid items-center gap-12 lg:grid-cols-[1.04fr_0.88fr]">
-            <motion.div {...animationIn} className="max-w-[620px]">
-              <span className="section-eyebrow border-white/80 bg-white/90">
+        <div className="page-shell relative py-20 sm:py-24 lg:py-28">
+          <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.85fr] lg:gap-16">
+            <motion.div {...animationIn} className="max-w-[640px]">
+              <span className="section-eyebrow border-white/80 bg-white/92">
                 Sem compromisso
               </span>
 
               <h1 className="mt-6 text-slate-950">
-                Descubra agora quais <span className="hero-word-emphasis">opções de crédito</span> você realmente pode conseguir
+                Descubra agora quais <span className="hero-word-emphasis">opções</span> de crédito você realmente pode conseguir
               </h1>
 
-              <p className="mt-6 max-w-[34rem] text-lg leading-8 text-slate-600">
-                Responda algumas perguntas rápidas e veja caminhos possíveis sem compromisso e sem cobrança antecipada.
+              <p className="mt-6 max-w-[36rem] text-lg leading-[1.7] text-slate-600">
+                Responda algumas perguntas rápidas e veja caminhos possíveis — sem compromisso e sem cobrança antecipada.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -155,7 +155,7 @@ function HomePage() {
               </div>
             </motion.div>
 
-            <motion.div {...animationIn} className="mx-auto w-full max-w-[430px]">
+            <motion.div {...animationIn} className="mx-auto w-full max-w-[390px] lg:mr-0">
               <CreditHeroPreview />
             </motion.div>
           </div>
@@ -167,7 +167,7 @@ function HomePage() {
           <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
             <span className="section-eyebrow">Como funciona</span>
             <h2 className="mt-4 text-slate-950">Uma entrada mais leve, clara e sem excesso</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-slate-600">
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-[1.7] text-slate-600">
               Primeiro você entende o contexto. Depois compara caminhos. Só então decide se quer seguir.
             </p>
           </motion.div>
@@ -194,7 +194,7 @@ function HomePage() {
           <motion.div {...animationIn} className="mx-auto max-w-3xl text-center">
             <span className="section-eyebrow bg-white">Seu momento</span>
             <h2 className="mt-4 text-slate-950">Escolha um ponto de partida mais próximo da sua realidade</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-slate-600">
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-[1.7] text-slate-600">
               Em vez de tentar tudo ao mesmo tempo, a experiência começa por contexto.
             </p>
           </motion.div>
@@ -223,7 +223,7 @@ function HomePage() {
           <motion.div {...animationIn} className="premium-dark-panel rounded-[28px] px-8 py-10 text-white sm:px-12 sm:py-14">
             <span className="section-kicker border-white/15 bg-white/10 text-slate-100">Clareza e confiança</span>
             <h2 className="section-title-gradient mt-5 max-w-3xl">Você entende a análise antes de qualquer redirecionamento</h2>
-            <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
+            <p className="mt-4 max-w-2xl text-lg leading-[1.7] text-slate-300">
               O valor da experiência está em explicar melhor o cenário antes da próxima etapa.
             </p>
 
@@ -272,7 +272,7 @@ function HomePage() {
               <div>
                 <span className="section-eyebrow bg-slate-50">Nosso papel</span>
                 <h2 className="mt-4 text-slate-950">A Cote Juros organiza o cenário com mais clareza</h2>
-                <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-600">
+                <p className="mt-4 max-w-3xl text-lg leading-[1.7] text-slate-600">
                   A proposta é simplificar a leitura do contexto antes da próxima decisão.
                 </p>
               </div>
@@ -306,7 +306,7 @@ function HomePage() {
           >
             <span className="section-eyebrow border-sky-200 bg-sky-50 text-sky-700">Comece agora</span>
             <h2 className="mt-4 text-slate-950">Veja caminhos possíveis sem entrar em um fluxo pesado logo de início</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-slate-600">
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-[1.7] text-slate-600">
               Leva menos de 2 minutos para entender o cenário inicial.
             </p>
             <div className="mt-8 flex justify-center">

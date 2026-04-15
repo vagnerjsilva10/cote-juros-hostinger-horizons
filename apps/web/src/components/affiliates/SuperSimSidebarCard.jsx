@@ -18,8 +18,8 @@ const getInitials = (value = '') =>
 function SuperSimSidebarCard({
   offer,
   title = 'SuperSim',
-  description = 'Opcao editorial para quem quer continuar a pesquisa com uma simulacao online.',
-  ctaLabel = 'Simular emprestimo',
+  description = 'Opção editorial para quem quer continuar a pesquisa com uma simulação online.',
+  ctaLabel = 'Simular empréstimo',
   onSelect
 }) {
   if (!offer) return null;
@@ -31,17 +31,17 @@ function SuperSimSidebarCard({
     <Card className="min-w-0 overflow-hidden border-border bg-white">
       <div
         className="border-b border-border p-5"
-        style={{ background: `linear-gradient(135deg, ${accent}12 0%, #ffffff 100%)` }}
+        style={{ background: `linear-gradient(135deg, ${accent}10 0%, #ffffff 100%)` }}
       >
         <div className="flex items-center gap-3">
           <div
-            className="flex h-12 w-12 items-center justify-center rounded-[16px] border bg-white shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
-            style={{ borderColor: `${accent}24` }}
+            className="flex h-12 w-12 items-center justify-center rounded-[16px] border bg-white shadow-[0_8px_20px_rgba(15,23,42,0.06)]"
+            style={{ borderColor: `${accent}20` }}
           >
             {logoUrl ? (
               <img src={logoUrl} alt={offer.merchantName} className="h-8 w-8 object-contain" />
             ) : (
-              <span className="text-sm font-bold" style={{ color: accent }}>
+              <span className="text-sm font-semibold" style={{ color: accent }}>
                 {getInitials(offer.merchantName || title)}
               </span>
             )}
@@ -55,12 +55,12 @@ function SuperSimSidebarCard({
 
       <CardContent className="min-w-0 space-y-4 p-6">
         <div className="space-y-3">
-          <Badge variant="outline" className="border-primary/20 bg-primary/[0.04] text-foreground">
+          <Badge variant="outline" className="border-primary/15 bg-primary/[0.04] text-foreground">
             {SUPERSIM_BADGES[1]}
           </Badge>
           <h4 className="text-lg leading-7 text-foreground">{description}</h4>
           <p className="text-sm leading-6 text-muted-foreground">
-            {offer.audience || 'Boa opcao para quem quer seguir para uma analise externa com mais contexto.'}
+            {offer.audience || 'Boa opção para quem quer seguir para uma análise externa com mais contexto.'}
           </p>
         </div>
 
@@ -68,7 +68,7 @@ function SuperSimSidebarCard({
           {SUPERSIM_BADGES.filter((item) => item !== SUPERSIM_BADGES[1]).map((item) => (
             <div key={item} className="flex items-start gap-2">
               <BadgeCheck className="mt-0.5 h-4 w-4 text-primary" />
-              <p className="text-sm text-foreground">{item}</p>
+              <p className="text-sm leading-6 text-foreground">{item}</p>
             </div>
           ))}
         </div>

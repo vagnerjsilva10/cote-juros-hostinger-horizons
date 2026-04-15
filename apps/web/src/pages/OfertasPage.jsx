@@ -25,6 +25,12 @@ const collectOffers = (placements = {}) => {
     });
 };
 
+const trustPoints = [
+  'Esta área reúne apenas destinos externos selecionados.',
+  'Para continuar, você será redirecionado ao parceiro.',
+  'Podemos receber comissão sem custo adicional para você.'
+];
+
 function OfertasPage() {
   const loanPlacements = useAffiliatePlacements({ pageSlug: '/emprestimos', productType: 'loan' });
   const creditCardPlacements = useAffiliatePlacements({ pageSlug: '/cartoes-de-credito', productType: 'credit_card' });
@@ -46,7 +52,7 @@ function OfertasPage() {
       });
 
       if (!result?.redirectUrl) {
-        toast.error('Essa oferta ainda não possui link disponível.');
+        toast.error('Esta oferta ainda não possui link disponível.');
         return;
       }
 
@@ -67,77 +73,73 @@ function OfertasPage() {
       </Helmet>
 
       <PageHero
-        eyebrow="Parceiros e ofertas"
+        eyebrow="Ofertas selecionadas"
         badge="Ambiente separado do produto principal"
         centered
-        title="Veja parceiros em um espaço próprio, com clareza sobre o que acontece ao continuar."
-        subtitle="As páginas principais da Cote Juros ficam focadas em contexto, comparação e entrada no fluxo. Nesta área, reunimos apenas ofertas externas e avisos editoriais."
+        title="Veja parceiros em um espaço próprio, com clareza antes de continuar."
+        subtitle="As páginas principais da Cote Juros seguem focadas em contexto, comparação e leitura do seu cenário. Nesta área, reunimos apenas ofertas externas com aviso editorial e transparência."
       >
-        <div className="flex flex-col justify-center gap-3 sm:flex-row">
-          <Link to="/emprestimos">
-            <Button size="lg" variant="outline">Voltar para a comparação</Button>
-          </Link>
-          <a href="#ofertas-emprestimos">
-            <Button size="lg">Ver parceiros agora</Button>
-          </a>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <div className="grid w-full max-w-4xl gap-4 md:grid-cols-3">
+            {trustPoints.map((item, index) => (
+              <div
+                key={item}
+                className="interactive-card rounded-[20px] border border-border bg-white/92 px-5 py-5 text-left shadow-[0_12px_32px_rgba(15,23,42,0.05)] animate-fade-in-up"
+                style={{ animationDelay: `${index * 80}ms` }}
+              >
+                <p className="text-sm leading-7 text-foreground">{item}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col justify-center gap-3 sm:flex-row">
+            <Link to="/emprestimos">
+              <Button size="lg" variant="outline">Voltar para a comparação</Button>
+            </Link>
+            <a href="#ofertas-emprestimos">
+              <Button size="lg">Ver ofertas selecionadas</Button>
+            </a>
+          </div>
         </div>
       </PageHero>
 
-      <section className="border-b border-border bg-background-secondary py-8">
-        <div className="page-shell grid gap-4 md:grid-cols-3">
-          <div className="interactive-card px-5 py-5">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Como esta página funciona</p>
-            <p className="mt-3 text-sm leading-7 text-foreground">
-              Aqui você encontra apenas destinos externos organizados por categoria.
-            </p>
-          </div>
-          <div className="interactive-card px-5 py-5">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Aviso obrigatório</p>
-            <p className="mt-3 text-sm leading-7 text-foreground">
-              Para continuar, você será redirecionado ao parceiro.
-            </p>
-          </div>
-          <div className="interactive-card px-5 py-5">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Transparência</p>
-            <p className="mt-3 text-sm leading-7 text-foreground">
-              Podemos receber comissão sem custo adicional para você.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <div className="page-shell py-12">
-        <section className="mb-12 rounded-[24px] border border-border bg-white p-8 shadow-[var(--shadow-sm)]">
-          <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+      <div className="page-shell py-14 sm:py-18">
+        <section className="rounded-[28px] border border-border bg-white p-8 shadow-[var(--shadow-sm)] sm:p-10">
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div>
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">Estrutura separada</p>
-              <h2 className="mt-3 text-3xl text-foreground">Produto principal de um lado. Parceiros do outro.</h2>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
-                Esta separação evita confusão entre comparação interna, simulação e monetização. Você entende o produto principal primeiro e só vê parceiros quando escolhe entrar nesta página.
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Curadoria separada</p>
+              <h2 className="mt-3 max-w-2xl text-3xl text-foreground">
+                Produto principal de um lado. Continuidade com parceiros do outro.
+              </h2>
+              <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
+                Esta página existe para manter a experiência principal mais clara. Você entende o produto dentro da Cote Juros primeiro e só entra em uma oferta externa quando isso fizer sentido para o seu momento.
               </p>
             </div>
 
-            <div className="grid gap-3 rounded-[20px] border border-border bg-background-secondary p-5">
-              {[
-                'Com base no seu perfil, a leitura principal continua nas páginas de produto.',
-                'Para continuar, você será redirecionado ao parceiro.',
-                'Podemos receber comissão sem custo adicional.'
-              ].map((item) => (
-                <div key={item} className="flex items-start gap-3">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                  <p className="text-sm text-foreground">{item}</p>
-                </div>
-              ))}
+            <div className="rounded-[24px] border border-border bg-background-secondary p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">O que você encontra aqui</p>
+              <div className="mt-5 space-y-4">
+                {[
+                  'Destaques editoriais com leitura rápida do cenário.',
+                  'Resumo simples sobre perfil indicado e próximos passos.',
+                  'Aviso explícito antes de qualquer saída da Cote Juros.'
+                ].map((item) => (
+                  <div key={item} className="flex items-start gap-3">
+                    <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-primary" />
+                    <p className="text-sm leading-7 text-foreground">{item}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        <section id="ofertas-emprestimos" className="space-y-6">
+        <section id="ofertas-emprestimos" className="mt-16 space-y-6">
           <div className="max-w-3xl">
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">Empréstimos</p>
-            <h2 className="mt-3 text-3xl text-foreground">Ofertas externas para quem quer seguir com crédito pessoal.</h2>
-            <p className="mt-4 text-sm leading-7 text-muted-foreground">
-              Esta seção é editorial e separada do comparador principal. Use apenas quando fizer sentido continuar em um ambiente externo.
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Empréstimos</p>
+            <h2 className="mt-3 text-3xl text-foreground">Ofertas externas para quem decidiu avançar com crédito pessoal.</h2>
+            <p className="mt-4 text-base leading-8 text-muted-foreground">
+              Esta seção é editorial e separada do comparador principal. Use-a quando você já tiver entendido o contexto e quiser seguir para uma simulação no ambiente do parceiro.
             </p>
           </div>
 
@@ -145,7 +147,7 @@ function OfertasPage() {
             <SuperSimOfferCard
               offer={{ ...supersimOffer, disclosureText: supersimOffer.disclosureText || 'Podemos receber comissão sem custo adicional.' }}
               title="SuperSim"
-              description="Oferta editorial separada do fluxo principal para quem quer avaliar crédito pessoal com linguagem mais simples e continuidade direta no parceiro."
+              description="Uma opção editorial para quem quer avaliar crédito pessoal com linguagem direta, leitura simples e continuidade externa bem sinalizada."
               ctaLabel="Simular empréstimo"
               badgeLabel="Destaque editorial"
               onSelect={(offer) => handleAffiliateClick(offer, 'ofertas-loan-featured')}
@@ -167,12 +169,12 @@ function OfertasPage() {
         </section>
 
         {creditCardOffers.length ? (
-          <section className="mt-16 space-y-6">
+          <section className="mt-20 space-y-6">
             <div className="max-w-3xl">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">Cartões</p>
-              <h2 className="mt-3 text-3xl text-foreground">Parceiros externos para continuar a análise de cartões.</h2>
-              <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                Os comparativos continuam nas páginas principais. Aqui entram apenas opções de saída para parceiros.
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Cartões</p>
+              <h2 className="mt-3 text-3xl text-foreground">Parceiros externos para quem quer continuar a análise de cartões.</h2>
+              <p className="mt-4 text-base leading-8 text-muted-foreground">
+                Os comparativos continuam nas páginas principais. Aqui ficam apenas opções externas para seguir em um ambiente parceiro, com aviso claro antes do clique.
               </p>
             </div>
 
@@ -190,12 +192,12 @@ function OfertasPage() {
         ) : null}
 
         {financingOffers.length ? (
-          <section className="mt-16 space-y-6">
+          <section className="mt-20 space-y-6">
             <div className="max-w-3xl">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">Financiamentos</p>
-              <h2 className="mt-3 text-3xl text-foreground">Destinos externos para quem quer seguir em financiamento.</h2>
-              <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                Mantivemos esta saída em uma área própria para deixar a arquitetura do produto mais limpa e previsível.
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Financiamentos</p>
+              <h2 className="mt-3 text-3xl text-foreground">Destinos externos para quem quer seguir com financiamento.</h2>
+              <p className="mt-4 text-base leading-8 text-muted-foreground">
+                Mantivemos essa saída em uma área própria para preservar a leitura do produto principal e deixar cada passo mais previsível.
               </p>
             </div>
 
@@ -213,15 +215,15 @@ function OfertasPage() {
         ) : null}
       </div>
 
-      <section className="border-t border-border bg-background-secondary py-16">
+      <section className="border-t border-border bg-background-secondary py-16 sm:py-20">
         <div className="page-shell">
-          <div className="mx-auto max-w-4xl rounded-[24px] border border-border bg-white p-8 shadow-[var(--shadow-sm)]">
-            <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
+          <div className="mx-auto max-w-4xl rounded-[28px] border border-border bg-white p-8 shadow-[var(--shadow-sm)] sm:p-10">
+            <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
               <div>
-                <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">Voltar para o produto</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Voltar para o produto</p>
                 <h2 className="mt-3 text-3xl text-foreground">Quer continuar pela experiência principal da Cote Juros?</h2>
-                <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                  Se você prefere comparar primeiro dentro do app, volte para as páginas principais e siga pela leitura interna antes de decidir.
+                <p className="mt-4 text-base leading-8 text-muted-foreground">
+                  Se você prefere comparar primeiro dentro do app, volte para as páginas principais e siga pela leitura interna antes de decidir por um parceiro.
                 </p>
               </div>
 
@@ -242,8 +244,8 @@ function OfertasPage() {
             </div>
 
             <div className="mt-6 flex items-start gap-3 rounded-[18px] border border-border bg-background-secondary p-4">
-              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <p className="text-sm text-foreground">
+              <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-primary" />
+              <p className="text-sm leading-7 text-foreground">
                 Esta página reúne apenas parceiros e destinos externos. O produto principal continua separado, com foco em contexto, comparação e clareza.
               </p>
             </div>
