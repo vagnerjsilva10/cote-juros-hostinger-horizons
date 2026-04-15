@@ -65,7 +65,7 @@ function EmprestimosPage() {
         if (!ignore) setCreditJourney(result);
       })
       .catch(() => {
-        if (!ignore) toast.error('Não foi possível carregar a simulação personalizada.');
+        if (!ignore) toast.error('Não foi possível carregar sua leitura personalizada agora.');
       })
       .finally(() => {
         if (!ignore) setCreditJourneyLoading(false);
@@ -104,9 +104,9 @@ function EmprestimosPage() {
   }, [filteredLoans]);
 
   const getBadge = (loanType, rate) => {
-    if (rate < 2) return { icon: Star, text: 'Melhor taxa' };
-    if (loanType === 'Negativado') return { icon: ShieldCheck, text: 'Perfil sensível' };
-    return { icon: Sparkles, text: 'Boa aderência' };
+    if (rate < 2) return { icon: Star, text: 'Menor custo' };
+    if (loanType === 'Negativado') return { icon: ShieldCheck, text: 'Mais sensível ao momento' };
+    return { icon: Sparkles, text: 'Vale olhar com calma' };
   };
 
   const resetFilters = () => {
@@ -124,10 +124,10 @@ function EmprestimosPage() {
   return (
     <>
       <Helmet>
-        <title>Comparador de empréstimos - Cote Juros</title>
+        <title>Empréstimos com mais clareza - Cote Juros</title>
         <meta
           name="description"
-          content="Compare taxa, prazo e valor máximo para encontrar o empréstimo mais aderente ao seu perfil."
+          content="Compare valor, prazo e custo com mais clareza para descobrir por onde vale a pena começar."
         />
       </Helmet>
 
@@ -139,10 +139,10 @@ function EmprestimosPage() {
       />
 
       <PageHero
-        eyebrow="Comparação interna"
-        badge="Empréstimos com leitura mais clara"
-        title="Compare valor, prazo e taxa com uma experiência mais leve."
-        subtitle="Esta página fica focada em contexto, comparação e entrada no fluxo, com menos ruído e mais clareza na decisão."
+        eyebrow="Empréstimos"
+        badge="Mais clareza antes da decisão"
+        title="Veja em poucos minutos por onde vale a pena começar."
+        subtitle="Compare valor, prazo e custo com uma leitura mais simples, mais humana e muito menos cansativa."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
@@ -153,93 +153,93 @@ function EmprestimosPage() {
       </PageHero>
 
       {quickLeadContext ? (
-        <section className="border-b border-border bg-white py-5">
+        <section className="border-b border-border bg-white py-6">
           <div className="page-shell">
-            <div className="rounded-[18px] border border-primary/15 bg-primary/[0.04] px-5 py-4">
+            <div className="rounded-[20px] border border-primary/15 bg-primary/[0.04] px-5 py-4 shadow-[0_8px_18px_rgba(37,99,235,0.04)]">
               <p className="text-sm font-semibold text-foreground">
                 {quickLeadContext.fullName ? `${quickLeadContext.fullName}, estas opções` : 'Estas opções'} podem ser um bom ponto de partida para você.
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Primeiro compare com calma. A decisão final depende do seu momento e da análise de perfil.
+                Primeiro compare com calma. Depois decida se vale seguir.
               </p>
             </div>
           </div>
         </section>
       ) : null}
 
-      <section className="border-b border-border bg-background-secondary py-8">
+      <section className="border-b border-border bg-background-secondary py-10">
         <div className="page-shell grid gap-4 md:grid-cols-4">
-          <div className="interactive-card px-5 py-4">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Valor em análise</p>
+          <div className="interactive-card px-5 py-5">
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Valor escolhido</p>
             <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">R$ {amount[0].toLocaleString('pt-BR')}</p>
           </div>
-          <div className="interactive-card px-5 py-4">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Prazo selecionado</p>
+          <div className="interactive-card px-5 py-5">
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Prazo escolhido</p>
             <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">{term[0]} meses</p>
           </div>
-          <div className="interactive-card px-5 py-4">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Melhor taxa atual</p>
+          <div className="interactive-card px-5 py-5">
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Menor custo no momento</p>
             <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-primary">{bestRate ? `${bestRate}% a.m.` : '--'}</p>
           </div>
-          <div className="interactive-card px-5 py-4">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Ofertas visíveis</p>
+          <div className="interactive-card px-5 py-5">
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Opções visíveis</p>
             <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">{filteredLoans.length}</p>
           </div>
         </div>
       </section>
 
-      <div className="page-shell py-12" id="resultados-emprestimos">
+      <div className="page-shell py-14" id="resultados-emprestimos">
         {creditJourneyLoading ? (
-          <div className="mb-8 rounded-[20px] border border-border bg-white px-8 py-10 shadow-[var(--shadow-sm)]">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">Simulação personalizada</p>
-            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-foreground">Carregando sua leitura de cenário...</h2>
+          <div className="mb-10 rounded-[22px] border border-border bg-white px-8 py-10 shadow-[var(--shadow-sm)]">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">Leitura personalizada</p>
+            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-foreground">Carregando o seu cenário...</h2>
           </div>
         ) : null}
 
         {creditJourney?.offers?.length ? (
-          <section className="mb-10 rounded-[24px] border border-primary/15 bg-white p-8 shadow-[var(--shadow-md)]">
-            <div className="flex flex-col gap-4 border-b border-border pb-6 md:flex-row md:items-end md:justify-between">
+          <section className="mb-12 rounded-[28px] border border-primary/15 bg-white p-8 shadow-[var(--shadow-md)] sm:p-10">
+            <div className="flex flex-col gap-4 border-b border-border pb-7 md:flex-row md:items-end md:justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Com base no seu perfil...</p>
-                <h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">Opções organizadas dentro da Cote Juros</h2>
-                <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
-                  Aqui você compara taxa, valor e prazo com mais clareza antes de escolher o próximo passo.
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Com base no seu momento...</p>
+                <h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">Caminhos que merecem sua atenção agora</h2>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+                  Aqui você compara valor, prazo e custo com mais clareza antes de decidir o próximo passo.
                 </p>
               </div>
 
               <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-[14px] border border-border bg-background-secondary px-4 py-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor solicitado</p>
+                <div className="rounded-[16px] border border-border bg-background-secondary px-4 py-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor pedido</p>
                   <p className="mt-1 text-sm font-semibold text-foreground">
                     {creditJourney.simulation?.requestedAmount ? `R$ ${Number(creditJourney.simulation.requestedAmount).toLocaleString('pt-BR')}` : '--'}
                   </p>
                 </div>
-                <div className="rounded-[14px] border border-border bg-background-secondary px-4 py-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Parcelas</p>
+                <div className="rounded-[16px] border border-border bg-background-secondary px-4 py-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Parcelas previstas</p>
                   <p className="mt-1 text-sm font-semibold text-foreground">{creditJourney.simulation?.installments || '--'}x</p>
                 </div>
-                <div className="rounded-[14px] border border-border bg-background-secondary px-4 py-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Leituras</p>
+                <div className="rounded-[16px] border border-border bg-background-secondary px-4 py-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Caminhos</p>
                   <p className="mt-1 text-sm font-semibold text-foreground">{creditJourney.offers.length}</p>
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 rounded-[18px] border border-slate-200 bg-slate-50 p-5">
-              <p className="text-sm font-semibold text-slate-900">A leitura principal continua aqui dentro.</p>
+            <div className="mt-7 rounded-[20px] border border-slate-200 bg-slate-50 p-5">
+              <p className="text-sm font-semibold text-slate-900">A decisão começa aqui dentro.</p>
               <p className="mt-2 text-sm text-slate-600">
-                Use esta área para entender melhor o cenário antes de avançar no seu próprio ritmo.
+                Use esta área para entender melhor o cenário antes de avançar no seu ritmo.
               </p>
             </div>
 
-            <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-9 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {creditJourney.offers.map((offer, index) => (
                 <Card key={offer.id} className="surface-card h-full border-border bg-white">
                   <CardContent className="flex h-full flex-col gap-6 p-8">
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                          {offer.provider === 'catalog_fallback' ? 'Leitura' : 'Marketplace'}
+                          {offer.provider === 'catalog_fallback' ? 'Comparação' : 'Opção'}
                         </p>
                         <p className="mt-2 text-lg font-semibold text-foreground">{offer.bankName}</p>
                         <p className="text-sm text-muted-foreground">{offer.productName}</p>
@@ -252,7 +252,7 @@ function EmprestimosPage() {
                       </Badge>
                     </div>
 
-                    <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid gap-5 sm:grid-cols-2">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Taxa mensal</p>
                         <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-primary">
@@ -260,14 +260,14 @@ function EmprestimosPage() {
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">CET</p>
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Custo total</p>
                         <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">
                           {offer.cet != null ? `${offer.cet}%` : '--'}
                         </p>
                       </div>
                     </div>
 
-                    <div className="rounded-[14px] border border-border bg-background-secondary p-4">
+                    <div className="rounded-[16px] border border-border bg-background-secondary p-4">
                       <div className="grid gap-4 sm:grid-cols-3">
                         <div>
                           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor possível</p>
@@ -289,7 +289,7 @@ function EmprestimosPage() {
                     </div>
 
                     <Button className="mt-auto w-full" onClick={openInternalFlow}>
-                      Continuar no fluxo
+                      Quero entender melhor
                       <ChevronRight className="h-4 w-4" />
                     </Button>
                   </CardContent>
@@ -299,22 +299,22 @@ function EmprestimosPage() {
           </section>
         ) : null}
 
-        <div className="mb-8 rounded-[24px] border border-border bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">Comparação interna</p>
-          <h2 className="mt-3 text-2xl text-foreground">Ajuste o cenário e compare antes de decidir</h2>
+        <div className="mb-10 rounded-[26px] border border-border bg-white p-7 shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">Compare com mais calma</p>
+          <h2 className="mt-3 text-2xl text-foreground">Ajuste o cenário e descubra o que pode fazer sentido</h2>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
-            Esta parte serve para leitura, comparação e entendimento do seu contexto.
+            Esta parte existe para ajudar você a comparar com mais segurança antes de avançar.
           </p>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
+        <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
           <aside className="lg:sticky lg:top-24 lg:h-fit">
             <Card className="border-border bg-white shadow-[var(--shadow-sm)]">
               <CardContent className="space-y-8 p-8">
                 <div className="flex items-center justify-between border-b border-border pb-4">
                   <div className="flex items-center gap-2">
                     <Filter className="h-4 w-4 text-primary" />
-                    <h3 className="text-lg">Filtros da comparação</h3>
+                    <h3 className="text-lg">Refine sua busca</h3>
                   </div>
                   <button type="button" onClick={resetFilters} className="text-sm font-medium text-primary hover:text-primary-hover">
                     Limpar
@@ -330,7 +330,7 @@ function EmprestimosPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <Label>Tipo de crédito</Label>
+                  <Label>Tipo de empréstimo</Label>
                   <Select value={type} onValueChange={setType}>
                     <SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger>
                     <SelectContent>
@@ -338,7 +338,7 @@ function EmprestimosPage() {
                       <SelectItem value="Pessoal">Pessoal</SelectItem>
                       <SelectItem value="Consignado">Consignado</SelectItem>
                       <SelectItem value="Garantia">Com garantia</SelectItem>
-                      <SelectItem value="Negativado">Negativado</SelectItem>
+                      <SelectItem value="Negativado">Para negativado</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -352,10 +352,10 @@ function EmprestimosPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <Label>Score aproximado</Label>
+                  <Label>Como está seu histórico financeiro?</Label>
                   <RadioGroup value={score} onValueChange={setScore} className="space-y-3">
                     {['Todos', 'Alto', 'Medio', 'Baixo'].map((item) => (
-                      <label key={item} className="flex items-center gap-3 rounded-[10px] border border-border px-4 py-3 hover:bg-background-secondary">
+                      <label key={item} className="flex items-center gap-3 rounded-[12px] border border-border px-4 py-3 hover:bg-background-secondary">
                         <RadioGroupItem value={item} />
                         <span className="text-sm text-foreground">
                           {item === 'Todos' ? 'Não sei' : item === 'Medio' ? 'Médio' : item}
@@ -369,17 +369,17 @@ function EmprestimosPage() {
           </aside>
 
           <section>
-            <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <p className="text-sm text-muted-foreground">{filteredLoans.length} oferta(s) organizadas para facilitar sua decisão.</p>
+            <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <p className="text-sm text-muted-foreground">{filteredLoans.length} opções organizadas para facilitar sua decisão.</p>
               <div className="flex flex-wrap items-center gap-3">
                 <div className="inline-flex items-center rounded-[10px] border border-border bg-white p-1">
                   <Button type="button" size="sm" variant={viewMode === 'grid' ? 'default' : 'ghost'} className="h-8 gap-1.5 px-3" onClick={() => setViewMode('grid')}>
                     <LayoutGrid className="h-3.5 w-3.5" />
-                    Cards
+                    Visual em cards
                   </Button>
                   <Button type="button" size="sm" variant={viewMode === 'list' ? 'default' : 'ghost'} className="h-8 gap-1.5 px-3" onClick={() => setViewMode('list')}>
                     <List className="h-3.5 w-3.5" />
-                    Lista
+                    Visual em lista
                   </Button>
                 </div>
                 <Label className="whitespace-nowrap">Ordenar</Label>
@@ -396,7 +396,7 @@ function EmprestimosPage() {
             </div>
 
             {viewMode === 'grid' ? (
-              <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {filteredLoans.map((loan) => {
                   const bank = banksData.find((item) => item.id === loan.bankId);
                   const badge = getBadge(loan.category, loan.monthlyRate);
@@ -430,12 +430,12 @@ function EmprestimosPage() {
                           <p className="mt-2 text-4xl font-medium tracking-[-0.05em] text-primary">{loan.monthlyRate}%</p>
                         </div>
 
-                        <div className="rounded-[12px] border border-border bg-background-secondary p-4">
-                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Resumo da leitura</p>
-                          <p className="mt-2 text-sm text-muted-foreground">
+                        <div className="rounded-[14px] border border-border bg-background-secondary p-4">
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Resumo rápido</p>
+                          <p className="mt-2 text-sm leading-7 text-muted-foreground">
                             {loan.monthlyRate < 2
-                              ? 'Uma das menores taxas dentro do filtro que você escolheu.'
-                              : 'Boa opção para comparar custo, prazo e parcela com mais calma.'}
+                              ? 'Uma das melhores condições dentro do cenário que você escolheu.'
+                              : 'Boa escolha para comparar custo, prazo e parcela com mais calma.'}
                           </p>
                         </div>
 
@@ -454,7 +454,7 @@ function EmprestimosPage() {
                         </div>
 
                         <Button className="mt-auto w-full" onClick={openInternalFlow}>
-                          Continuar no fluxo
+                          Quero entender melhor
                           <ChevronRight className="h-4 w-4" />
                         </Button>
                       </CardContent>
@@ -471,8 +471,8 @@ function EmprestimosPage() {
                   const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#2563EB';
 
                   return (
-                    <Card key={loan.id} className="border-border bg-white">
-                      <CardContent className="p-6">
+                    <Card key={loan.id} className="border-border bg-white shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
+                      <CardContent className="p-7">
                         <div className="grid items-center gap-5 lg:grid-cols-[1.3fr_0.9fr_0.9fr_220px]">
                           <div className="flex items-start gap-4">
                             <div
@@ -511,7 +511,7 @@ function EmprestimosPage() {
                           </div>
 
                           <Button className="w-full lg:justify-center" onClick={openInternalFlow}>
-                            Continuar no fluxo
+                            Quero entender melhor
                             <ChevronRight className="h-4 w-4" />
                           </Button>
                         </div>
@@ -523,9 +523,9 @@ function EmprestimosPage() {
             )}
 
             {filteredLoans.length === 0 ? (
-              <div className="rounded-[16px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center">
-                <h3 className="text-2xl">Nenhuma oferta encontrada.</h3>
-                <p className="mt-3 text-muted-foreground">Ajuste valor, prazo ou score para ampliar a comparação.</p>
+              <div className="rounded-[18px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center">
+                <h3 className="text-2xl">Nenhuma opção encontrada.</h3>
+                <p className="mt-3 text-muted-foreground">Ajuste valor, prazo ou histórico financeiro para ampliar a comparação.</p>
                 <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
                   <Button variant="outline" onClick={resetFilters}>Limpar filtros</Button>
                   <Button onClick={openInternalFlow}>Refazer busca rápida</Button>
@@ -536,10 +536,10 @@ function EmprestimosPage() {
         </div>
       </div>
 
-      <section className="border-t border-border bg-background-secondary py-16">
+      <section className="border-t border-border bg-background-secondary py-18">
         <div className="page-shell">
-          <div className="mx-auto max-w-4xl rounded-[20px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
-            <h2 className="mb-3">Quer refazer a análise do seu perfil?</h2>
+          <div className="mx-auto max-w-4xl rounded-[24px] border border-primary/20 bg-white px-8 py-11 text-center shadow-[var(--shadow-sm)]">
+            <h2 className="mb-3">Quer recomeçar com mais clareza?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
               Recomece com alguns dados básicos e veja caminhos que podem combinar melhor com o seu momento.
             </p>

@@ -9,39 +9,39 @@ function SobreNosPage() {
     {
       icon: Target,
       title: 'Clareza primeiro',
-      description: 'Ajudamos voce a entender caminhos de credito antes de decidir para onde seguir.'
+      description: 'Ajudamos você a entender caminhos de crédito antes de decidir por onde seguir.'
     },
     {
       icon: Shield,
       title: 'Sem promessa falsa',
-      description: 'Nao garantimos aprovacao, nao liberamos dinheiro diretamente e nao cobramos valor antecipado.'
+      description: 'Não garantimos aprovação, não liberamos dinheiro diretamente e não cobramos valor antecipado.'
     },
     {
       icon: Handshake,
-      title: 'Proximo passo mais simples',
-      description: 'Quando uma opcao fizer sentido, direcionamos voce para a etapa seguinte com o parceiro.'
+      title: 'Próximo passo mais simples',
+      description: 'Quando uma opção fizer sentido, mostramos a continuação com mais contexto e menos confusão.'
     },
     {
       icon: CheckCircle2,
       title: 'Cada produto no seu lugar',
-      description: 'Cote Juros foca em credito. Cote Finance e um produto separado para organizacao financeira.'
+      description: 'A Cote Juros cuida da jornada de crédito. O Cote Finance é um produto separado para organização financeira.'
     }
   ];
 
   return (
     <>
       <Helmet>
-        <title>Sobre - Cote Juros</title>
+        <title>Sobre a Cote Juros</title>
         <meta
           name="description"
-          content="Entenda o papel da Cote Juros: ajudar voce a encontrar opcoes de credito com clareza, sem promessa de aprovacao e sem cobranca antecipada."
+          content="Entenda o papel da Cote Juros: ajudar você a encontrar caminhos de crédito com mais clareza, sem promessa de aprovação e sem cobrança antecipada."
         />
       </Helmet>
 
       <PageHero
         badge="Sobre a Cote Juros"
-        title="A gente ajuda voce a encontrar caminhos de credito com mais clareza."
-        subtitle="A Cote Juros nao e banco. Nosso papel e organizar informacoes, mostrar opcoes possiveis e conectar voce com a proxima etapa quando fizer sentido."
+        title="A gente ajuda você a enxergar caminhos de crédito com mais clareza."
+        subtitle="A Cote Juros não é banco. Nosso papel é organizar informações, mostrar possibilidades reais e deixar a próxima decisão muito mais clara."
       />
 
       <section className="page-section bg-background">
@@ -50,10 +50,10 @@ function SobreNosPage() {
             <h2 className="mb-4">O que fazemos</h2>
             <div className="space-y-4 text-lg text-muted-foreground">
               <p>
-                Quem procura credito normalmente encontra muitas promessas, formularios longos e pouca clareza. A Cote Juros existe para deixar esse primeiro passo mais simples.
+                Quem procura crédito normalmente encontra muita promessa, formulários cansativos e pouca clareza. A Cote Juros existe para tornar esse começo mais simples.
               </p>
               <p>
-                Voce informa o basico, entende quais caminhos podem combinar com o seu perfil e decide se quer seguir. A analise final, as condicoes e a liberacao do credito sempre dependem do parceiro.
+                Você informa o básico, entende quais caminhos podem combinar com o seu momento e decide se quer seguir. As condições finais e a resposta da instituição sempre dependem de quem fizer a análise.
               </p>
             </div>
           </div>

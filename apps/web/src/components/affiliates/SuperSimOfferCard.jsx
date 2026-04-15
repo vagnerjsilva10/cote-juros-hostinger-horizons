@@ -18,7 +18,7 @@ const getInitials = (value = '') =>
 function SuperSimOfferCard({
   offer,
   title = 'SuperSim Empréstimo',
-  description = 'Uma alternativa editorial para quem quer avaliar empréstimo online com análise rápida, linguagem simples e chance de encaixe para perfis com restrição.',
+  description = 'Uma alternativa para quem quer avaliar empréstimo online com análise rápida, linguagem simples e chance de encaixe para perfis com restrição.',
   ctaLabel = 'Simular empréstimo',
   badgeLabel = 'Destaque editorial',
   benefits = SUPERSIM_BENEFITS,
@@ -93,7 +93,7 @@ function SuperSimOfferCard({
               <div className="rounded-[18px] border border-border bg-white p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Perfil mais comum</p>
                 <p className="mt-2 text-sm leading-7 text-foreground">
-                  {offer.audience || 'Quem busca crédito pessoal online com fluxo simples e resposta ágil.'}
+                  {offer.audience || 'Para quem busca empréstimo pessoal com resposta rápida e uma opção mais acessível.'}
                 </p>
               </div>
             </div>
@@ -114,7 +114,7 @@ function SuperSimOfferCard({
             <div className="flex items-start gap-2">
               <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
               <p className="text-sm leading-7 text-foreground">
-                {offer.payoutText || 'Condições sujeitas à análise do parceiro e variam conforme o perfil.'}
+                {offer.payoutText || 'Condições sujeitas à análise da instituição e variam conforme o perfil.'}
               </p>
             </div>
           </div>

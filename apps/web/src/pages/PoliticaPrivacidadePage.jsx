@@ -4,29 +4,29 @@ import PageHero from '@/components/PageHero.jsx';
 
 function PoliticaPrivacidadePage() {
   const sections = [
-    ['O que coletamos', 'Podemos coletar nome, telefone, valor desejado, renda, tipo de trabalho, se ha restricao no nome, dados de navegacao e origem da visita.'],
-    ['Por que usamos esses dados', 'Usamos essas informacoes para mostrar caminhos de credito mais coerentes, registrar sua solicitacao, melhorar a experiencia e acompanhar a origem dos leads.'],
-    ['Com quem podemos compartilhar', 'Quando voce decide seguir, podemos compartilhar dados necessarios com parceiros de credito ou servicos de operacao. Nao vendemos seus dados pessoais.'],
-    ['O que nao fazemos', 'Nao cobramos valor antecipado, nao prometemos aprovacao e nao usamos seus dados para fingir uma liberacao de credito pela Cote Juros.'],
-    ['Cote Finance', 'Cote Finance e um produto separado. Se voce acessar esse produto, a experiencia e o tratamento de dados seguem o contexto proprio dele.'],
-    ['Seus direitos', 'Voce pode pedir acesso, correcao, exclusao, revogacao de consentimento e informacoes sobre o uso dos seus dados.'],
+    ['O que coletamos', 'Podemos coletar nome, telefone, valor desejado, renda, tipo de trabalho, se há restrição no nome, dados de navegação e origem da visita.'],
+    ['Por que usamos esses dados', 'Usamos essas informações para mostrar caminhos de crédito mais coerentes, registrar sua solicitação, melhorar a experiência e entender como as pessoas chegam até a Cote Juros.'],
+    ['Com quem podemos compartilhar', 'Quando você decide seguir, podemos compartilhar os dados necessários com instituições ou serviços envolvidos na continuidade da solicitação. Não vendemos seus dados pessoais.'],
+    ['O que não fazemos', 'Não cobramos valor antecipado, não prometemos aprovação e não usamos seus dados para fingir uma liberação de crédito pela Cote Juros.'],
+    ['Cote Finance', 'O Cote Finance é um produto separado. Se você acessar esse produto, a experiência e o tratamento de dados seguem o contexto próprio dele.'],
+    ['Seus direitos', 'Você pode pedir acesso, correção, exclusão, revogação de consentimento e informações sobre o uso dos seus dados.'],
     ['Contato', 'Para falar sobre privacidade, escreva para privacidade@cotejuros.com.br.']
   ];
 
   return (
     <>
       <Helmet>
-        <title>Politica de privacidade - Cote Juros</title>
+        <title>Política de privacidade - Cote Juros</title>
         <meta
           name="description"
-          content="Veja como a Cote Juros usa dados para mostrar caminhos de credito, registrar leads e conectar usuarios com parceiros."
+          content="Veja como a Cote Juros usa dados para mostrar caminhos de crédito, registrar solicitações e conectar você com a próxima etapa quando fizer sentido."
         />
       </Helmet>
 
       <PageHero
         badge="Privacidade"
         title="Seus dados precisam ter um motivo claro."
-        subtitle={`Ultima atualizacao: ${new Date().toLocaleDateString('pt-BR')}`}
+        subtitle={`Última atualização: ${new Date().toLocaleDateString('pt-BR')}`}
       />
 
       <section className="page-section bg-background">

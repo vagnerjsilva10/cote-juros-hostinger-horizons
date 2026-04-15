@@ -82,7 +82,7 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
                   <div className="mt-2 flex flex-wrap gap-2">
                     <Badge variant="outline" className="border-primary/15 bg-white/90 text-foreground">
                       <Building2 className="mr-1 h-3.5 w-3.5" />
-                      Parceiro externo
+                      Instituição externa
                     </Badge>
                     {badges[0] ? (
                       <Badge variant="outline" className="border-primary/15 bg-white/90 text-foreground">
@@ -130,7 +130,7 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
                 Ideal para
               </p>
               <p className="mt-2 text-sm leading-7 text-foreground">
-                {offer.audience || 'Quem quer comparar custos, prazo e leitura das condições antes de seguir.'}
+                {offer.audience || 'Quem quer comparar custo, prazo e leitura das condições antes de seguir.'}
               </p>
             </div>
 
@@ -141,7 +141,7 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
               <div className="mt-3 space-y-2">
                 <div className="flex items-start gap-2">
                   <BadgeCheck className="mt-0.5 h-4 w-4 text-primary" />
-                  <p className="text-sm leading-6 text-foreground">Você sai da Cote Juros e continua no ambiente do parceiro.</p>
+                  <p className="text-sm leading-6 text-foreground">Você sai da Cote Juros e continua no ambiente da instituição.</p>
                 </div>
                 <div className="flex items-start gap-2">
                   <ShieldCheck className="mt-0.5 h-4 w-4 text-primary" />
@@ -158,7 +158,7 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
               className="w-full justify-between rounded-[12px]"
               onClick={() => onSelect?.(offer)}
             >
-              {offer.ctaText || 'Continuar no parceiro'}
+              {offer.ctaText || 'Ver condições'}
               <ArrowRight className="h-4 w-4" />
             </Button>
 

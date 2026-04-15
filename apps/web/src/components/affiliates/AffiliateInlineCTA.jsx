@@ -60,7 +60,7 @@ function AffiliateInlineCTA({ offer, title = 'Compare uma opção relacionada', 
           <div className="rounded-[18px] border border-border bg-white/90 p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Ideal para</p>
             <p className="mt-2 text-sm leading-6 text-foreground">
-              {offer.audience || 'Quem quer comparar melhor antes de seguir para a contratação.'}
+              {offer.audience || 'Quem quer comparar melhor antes de seguir para a próxima etapa.'}
             </p>
           </div>
         </div>
@@ -74,7 +74,7 @@ function AffiliateInlineCTA({ offer, title = 'Compare uma opção relacionada', 
             </div>
             <div className="flex items-start gap-2">
               <BadgeCheck className="mt-0.5 h-4 w-4 text-primary" />
-              <p className="text-sm text-foreground">Boa opção para comparar perfil, custos e praticidade.</p>
+              <p className="text-sm text-foreground">Boa opção para comparar perfil, custo e praticidade.</p>
             </div>
           </div>
 

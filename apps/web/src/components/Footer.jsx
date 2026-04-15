@@ -21,7 +21,7 @@ function Footer() {
       links: [
         { label: 'Blog', path: '/blog' },
         { label: 'Como funciona', path: '/sobre-nos' },
-        { label: 'Ofertas e parceiros', path: '/ofertas' },
+        { label: 'Ofertas externas', path: '/ofertas' },
         { label: 'Ferramentas', path: '/ferramentas' }
       ]
     },

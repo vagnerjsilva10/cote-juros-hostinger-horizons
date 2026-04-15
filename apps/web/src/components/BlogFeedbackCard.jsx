@@ -11,10 +11,10 @@ function BlogFeedbackCard() {
     <Card className="border-border bg-white">
       <CardContent className="space-y-5 p-6 md:p-8">
         <div className="space-y-2">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/75">Sua opiniao</p>
-          <h2 className="text-2xl text-foreground">Este artigo foi util?</h2>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/75">Sua opinião</p>
+          <h2 className="text-2xl text-foreground">Este artigo foi útil?</h2>
           <p className="text-sm leading-7 text-muted-foreground">
-            Usamos esse retorno para deixar os conteudos mais claros e mais uteis para quem esta decidindo com calma.
+            Usamos esse retorno para deixar os conteúdos mais claros e mais úteis para quem quer decidir com calma.
           </p>
         </div>
 
@@ -26,7 +26,7 @@ function BlogFeedbackCard() {
             className="min-w-[150px]"
           >
             <ThumbsUp className="h-4 w-4" />
-            Foi util
+            Foi útil
           </Button>
           <Button
             type="button"
@@ -43,15 +43,15 @@ function BlogFeedbackCard() {
           <div className="flex items-start gap-3">
             <MessageSquareText className="mt-0.5 h-5 w-5 text-primary" />
             <div className="space-y-2">
-              <h3 className="text-lg text-foreground">Quer ver caminhos de credito com mais clareza?</h3>
+              <h3 className="text-lg text-foreground">Quer ver caminhos de crédito com mais clareza?</h3>
               <p className="text-sm leading-7 text-muted-foreground">
-                Veja opcoes que podem fazer sentido para o seu perfil, sem compromisso e sem cobranca antecipada.
+                Veja opções que podem fazer sentido para o seu momento, sem compromisso e sem cobrança antecipada.
               </p>
               <Link to="/emprestimos" className="inline-flex">
-                <Button>Ver minhas opcoes agora</Button>
+                <Button>Ver minhas opções agora</Button>
               </Link>
               <p className="text-xs text-muted-foreground">
-                Ou, se preferir, volte para o <Link to="/blog" className="font-medium text-primary hover:underline">hub editorial do blog</Link>.
+                Ou, se preferir, volte para o <Link to="/blog" className="font-medium text-primary hover:underline">blog</Link>.
               </p>
             </div>
           </div>

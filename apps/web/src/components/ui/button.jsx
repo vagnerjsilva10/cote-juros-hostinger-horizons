@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[#2563EB] px-6 py-3 text-white shadow-[0_8px_20px_rgba(37,99,235,0.16)] hover:-translate-y-[1px] hover:bg-[#1D4ED8] hover:shadow-[0_12px_24px_rgba(37,99,235,0.2)]",
+          "bg-[#2563EB] px-6 py-3 text-white shadow-[0_10px_24px_rgba(37,99,235,0.18)] hover:-translate-y-[1px] hover:bg-[#1D4ED8] hover:shadow-[0_16px_30px_rgba(37,99,235,0.22)]",
         brand:
           "bg-[#0F172A] px-6 py-3 text-white shadow-[0_8px_20px_rgba(15,23,42,0.1)] hover:-translate-y-[1px] hover:bg-[#020617] hover:shadow-[0_12px_24px_rgba(15,23,42,0.14)]",
         destructive:
@@ -25,7 +25,7 @@ const buttonVariants = cva(
       size: {
         default: "h-12 px-6 py-3",
         sm: "h-10 px-4 py-2 text-xs",
-        lg: "h-14 px-6 py-3 text-sm",
+        lg: "h-[56px] px-6 py-3 text-sm",
         icon: "h-10 w-10 p-0",
       },
     },

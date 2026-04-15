@@ -41,7 +41,7 @@ export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
       {icon}
       <span className="flex flex-col leading-none">
         <span className={cn('text-[21px] font-[750] tracking-[-0.035em]', titleColor)}>Cote Juros</span>
-        <span className={cn('mt-1 text-[10px] font-semibold uppercase tracking-[0.16em]', subtitleColor)}>Finance Platform</span>
+        <span className={cn('mt-1 text-[10px] font-semibold uppercase tracking-[0.16em]', subtitleColor)}>Crédito com clareza</span>
       </span>
     </span>
   );
