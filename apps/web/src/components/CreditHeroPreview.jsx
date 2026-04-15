@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, ChevronRight } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { normalizeMojibake } from '@/lib/textEncoding.js';
 
 const formatCurrency = (value) => {
@@ -123,7 +123,6 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
 
         <button type="button" onClick={onContinue} className="submit-btn hero-preview-cta">
           {t('Ver minhas opções agora')}
-          <ChevronRight className="h-4 w-4" />
         </button>
       </div>
     </motion.div>

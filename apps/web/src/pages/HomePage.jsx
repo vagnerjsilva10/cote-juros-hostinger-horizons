@@ -27,8 +27,8 @@ const animationIn = {
 const marketBrands = ['Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter', 'Santander', 'SuperSim'];
 
 const editorialFeature = normalizeMojibakeDeep({
-  title: 'Pessoa analisando proposta no notebook',
-  image: '/assets/editorial/editorial-analyst-cutout.png',
+  title: 'Pessoa comparando opções no notebook',
+  image: '/assets/editorial/editorial-woman-desk.png',
   tag: 'Comparação real'
 });
 const featureCards = normalizeMojibakeDeep([
@@ -54,7 +54,7 @@ const featureCards = normalizeMojibakeDeep([
 
 const profileCards = normalizeMojibakeDeep([
   {
-    title: 'Está negativado?',
+    title: 'Perfil negativado?',
     description: 'Veja por onde vale a pena começar antes de fechar qualquer contrato.',
     tag: 'Perfil'
   },
@@ -64,7 +64,7 @@ const profileCards = normalizeMojibakeDeep([
     tag: 'Renda'
   },
   {
-    title: 'Tem renda variável?',
+    title: 'Autônomo?',
     description: 'Entenda caminhos possíveis para o seu perfil antes da decisão.',
     tag: 'Autônomo'
   }
@@ -79,7 +79,7 @@ const credibilityBlocks = normalizeMojibakeDeep([
   {
     icon: TrendingUp,
     title: 'Entenda por onde vale a pena começar',
-    description: 'Quando valor, prazo e perfil aparecem juntos, a decisão fica mais segura.'
+    description: 'Quando valor, renda e perfil aparecem juntos, a decisão fica mais segura.'
   }
 ]);
 
@@ -183,10 +183,11 @@ function HomePage() {
               </span>
 
               <h1 className="hero-title">
-                {t('Veja opções de ')}
-                <span className="highlight">{t('crédito')}</span>
-                <br />
-                {t('antes de fechar contrato')}
+                <span className="hero-title-line">
+                  {t('Veja opções de ')}
+                  <span className="highlight">{t('crédito')}</span>
+                </span>
+                <span className="hero-title-line">{t('antes de fechar contrato')}</span>
               </h1>
 
               <p className="hero-subtitle">
@@ -288,13 +289,12 @@ function HomePage() {
               <span className="eyebrow">{t('Experiência real')}</span>
               <h2>{t('Crédito não é só taxa. É contexto, momento e escolha.')}</h2>
               <p>
-                {t('A CoteJuros combina leitura de produto, clareza comercial e contexto para ajudar você a comparar antes de fechar contrato.')}
+                {t('A CoteJuros ajuda você a comparar antes de contratar, com mais clareza sobre valor, perfil e custo real.')}
               </p>
             </div>
 
             <div className="editorial-media">
-              <div className="editorial-card-glow" aria-hidden="true" />
-              <img className="editorial-cutout" src={editorialFeature.image} alt={editorialFeature.title} loading="lazy" />
+              <img className="editorial-photo" src={editorialFeature.image} alt={editorialFeature.title} loading="lazy" />
               <span className="floating-tag">{editorialFeature.tag}</span>
             </div>
           </motion.div>
