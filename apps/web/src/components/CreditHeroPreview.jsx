@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, ChevronRight } from 'lucide-react';
+import { normalizeMojibake } from '@/lib/textEncoding.js';
 
 const formatCurrency = (value) => {
   const digits = String(value).replace(/\D/g, '');
@@ -14,6 +15,7 @@ const formatCurrency = (value) => {
 };
 
 function CreditHeroPreview({ focusSignal = 0, onContinue }) {
+  const t = normalizeMojibake;
   const [desiredAmount, setDesiredAmount] = useState('R$ 12.000');
   const [monthlyIncome, setMonthlyIncome] = useState('R$ 4.500');
   const [isNegative, setIsNegative] = useState(true);
@@ -32,7 +34,7 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
     }
   }, [focusSignal]);
 
-  const footerItems = useMemo(() => ['Sem compromisso', 'Sem cobrança antecipada'], []);
+  const footerItems = useMemo(() => [t('Sem compromisso'), t('Sem cobrança antecipada')], [t]);
 
   return (
     <motion.div
@@ -45,9 +47,9 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
       <div className="relative space-y-3">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="hero-preview-step">Simulação inicial</p>
-            <h3 className="hero-card-title">Veja caminhos possíveis</h3>
-            <p className="hero-card-subtitle">Preencha o básico para continuar com mais clareza.</p>
+            <p className="hero-preview-step">{t('Simulação inicial')}</p>
+            <h3 className="hero-card-title">{t('Veja caminhos possíveis')}</h3>
+            <p className="hero-card-subtitle">{t('Preencha o básico para continuar com mais clareza.')}</p>
           </div>
           <div className="hero-preview-badge">1 de 3</div>
         </div>
@@ -104,7 +106,7 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
                 className={`hero-toggle-option ${!isNegative ? 'is-active' : ''}`}
                 aria-pressed={!isNegative}
               >
-                Não
+                {t('Não')}
               </button>
             </div>
           </div>
@@ -120,7 +122,7 @@ function CreditHeroPreview({ focusSignal = 0, onContinue }) {
         </div>
 
         <button type="button" onClick={onContinue} className="submit-btn hero-preview-cta">
-          Ver minhas opções agora
+          {t('Ver minhas opções agora')}
           <ChevronRight className="h-4 w-4" />
         </button>
       </div>
