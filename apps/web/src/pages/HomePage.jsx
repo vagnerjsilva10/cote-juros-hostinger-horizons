@@ -258,9 +258,9 @@ function HomePage() {
           </motion.div>
 
           <div className="steps-grid">
-            {featureCards.map((item) => (
+            {featureCards.map((item, index) => (
               <motion.div key={item.title} {...animationIn}>
-                <Card className="card art-card">
+                <Card className={`card art-card art-card-${index + 1}`}>
                   <CardContent className="p-0">
                     <div className="art-card-topline">
                       <span>{item.metric}</span>

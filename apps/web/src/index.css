@@ -2589,7 +2589,7 @@
 /* Landing refinement: quieter, monochromatic, more product-like */
 .site-header .site-logo img {
   display: block;
-  height: 30px;
+  height: 34px;
   width: auto;
   filter: none !important;
 }
@@ -3004,6 +3004,11 @@ p {
   pointer-events: none;
 }
 
+.art-card-2 .art-card-visual,
+.art-card-3 .art-card-visual {
+  bottom: 16px;
+}
+
 .art-card-topline span,
 .profile-card-tag,
 .brand-note-kicker {
@@ -3257,14 +3262,38 @@ p {
 }
 
 .dark-checklist .item {
+  position: relative;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .dark-panel-copy .dark-checklist .item {
   align-items: center !important;
-  justify-content: center !important;
-  text-align: center !important;
+  justify-content: flex-start !important;
+  gap: 10px;
+  text-align: left !important;
+}
+
+.dark-panel-copy .dark-checklist .item::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(154, 168, 255, 0.95), rgba(91, 108, 255, 0.95));
+  box-shadow: 0 0 18px rgba(91, 108, 255, 0.22);
+}
+
+.dark-panel-copy .dark-checklist .item::after {
+  content: '';
+  position: absolute;
+  left: 20px;
+  width: 7px;
+  height: 4px;
+  border-left: 2px solid rgba(255, 255, 255, 0.92);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.92);
+  transform: rotate(-45deg);
 }
 
 .dark-chart-card {
