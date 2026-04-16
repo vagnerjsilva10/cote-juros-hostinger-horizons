@@ -250,7 +250,7 @@ function HomePage() {
 
       <section id="como-funciona" className="section section--compact art-section art-section-white">
         <div className="page-shell">
-          <motion.div {...animationIn}>
+          <motion.div {...animationIn} className="section-heading-left">
             <h2 className="section-title">{t('Primeiro você compara. Depois decide se vale seguir.')}</h2>
             <p className="section-subtitle">
               {t('A CoteJuros organiza a leitura do crédito para você entender por onde vale a pena começar.')}

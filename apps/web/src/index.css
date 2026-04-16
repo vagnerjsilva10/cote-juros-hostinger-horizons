@@ -3440,6 +3440,13 @@ body {
   text-wrap: balance;
 }
 
+.section-heading-left .section-title,
+.section-heading-left .section-subtitle {
+  margin-left: 0;
+  margin-right: 0;
+  text-align: left;
+}
+
 .section-subtitle {
   font-family: Inter, sans-serif;
   font-size: 14px;
