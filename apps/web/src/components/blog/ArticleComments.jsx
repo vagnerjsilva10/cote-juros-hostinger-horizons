@@ -41,13 +41,13 @@ function ArticleComments({ articleSlug }) {
   };
 
   return (
-    <section className="min-w-0 rounded-[20px] border border-border bg-white p-5 sm:p-6 md:p-8">
+    <section className="blog-comments min-w-0 rounded-[20px] border border-border bg-white p-5 sm:p-6 md:p-8">
       <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/[0.08] text-primary">
+        <div className="blog-comments-icon flex h-11 w-11 items-center justify-center rounded-full bg-primary/[0.08] text-primary">
           <MessageSquare className="h-5 w-5" />
         </div>
         <div className="min-w-0">
-          <h2 className="text-2xl text-foreground">Comentários</h2>
+          <h2 className="blog-section-title text-2xl text-foreground">Comentários</h2>
           <p className="text-sm text-muted-foreground">
             Use este espaço para deixar uma dúvida ou contar se o conteúdo ajudou no seu caso.
           </p>
@@ -74,9 +74,9 @@ function ArticleComments({ articleSlug }) {
       <div className="mt-8 space-y-4">
         {comments.length ? (
           comments.map((comment) => (
-            <article key={comment.id} className="min-w-0 rounded-[16px] border border-border bg-background-secondary p-4">
+            <article key={comment.id} className="blog-comments-item min-w-0 rounded-[16px] border border-border bg-background-secondary p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <strong className="text-sm text-foreground">{comment.name}</strong>
+                <strong className="blog-chip-title text-sm text-foreground">{comment.name}</strong>
                 <span className="text-xs text-muted-foreground">
                   {new Date(comment.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                 </span>
@@ -85,7 +85,7 @@ function ArticleComments({ articleSlug }) {
             </article>
           ))
         ) : (
-          <div className="min-w-0 rounded-[16px] border border-dashed border-border bg-background-secondary p-5 text-sm text-muted-foreground">
+          <div className="blog-comments-empty min-w-0 rounded-[16px] border border-dashed border-border bg-background-secondary p-5 text-sm text-muted-foreground">
             Ainda não há comentários neste artigo. Se quiser, você pode ser a primeira pessoa a compartilhar uma dúvida ou experiência.
           </div>
         )}
