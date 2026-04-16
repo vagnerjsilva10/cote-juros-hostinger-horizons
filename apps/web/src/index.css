@@ -6076,3 +6076,189 @@ body {
     margin-right: auto;
   }
 }
+
+@media (max-width: 767px) {
+  .public-site-shell {
+    --mobile-type-gutter: 20px;
+    --mobile-title-measure: calc(100vw - (var(--mobile-type-gutter) * 2));
+    --mobile-title-wide: min(100%, 36rem);
+    --mobile-copy-wide: min(100%, 34rem);
+  }
+
+  .public-site-shell main :is(
+    .hero-copy,
+    .section-heading-left,
+    .section-heading-center,
+    .editorial-copy,
+    .editorial-people-copy,
+    .role-block-copy,
+    .dark-panel-copy,
+    .main-copy-card,
+    .final-cta-card,
+    .brand-note-card,
+    .blog-intro-panel,
+    .cards-page-cta
+  ) {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .public-site-shell main :is(
+    .hero-title,
+    .section-title,
+    .cards-section-title,
+    .blog-article-title,
+    .blog-comments-title,
+    .block-title,
+    .editorial-title,
+    .role-block-title,
+    .left-block-title,
+    .cta-final-title,
+    .hero-headline,
+    .hero-credit-headline,
+    .editorial-copy h2,
+    .editorial-people-copy h2,
+    .role-block-copy h2,
+    .dark-panel h2,
+    .main-copy-card h2,
+    .final-cta-card h2,
+    .brand-note-card h2,
+    .blog-intro-panel h2,
+    .blog-featured-card h3,
+    .blog-cta-panel h2,
+    .cards-page-cta h2
+  ) {
+    width: 100% !important;
+    max-width: var(--mobile-title-wide) !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+    text-wrap: pretty;
+    letter-spacing: -0.045em !important;
+    line-height: 1.02 !important;
+  }
+
+  .public-site-shell main :is(.hero-title, .blog-page-hero .hero-title, .cards-page-hero .hero-title) {
+    max-width: min(100%, var(--mobile-title-measure)) !important;
+    font-size: clamp(32px, 8.8vw, 38px) !important;
+    line-height: 0.98 !important;
+  }
+
+  .public-site-shell.is-home .hero-copy,
+  .public-site-shell.is-home .hero-subtitle {
+    max-width: min(100%, var(--mobile-title-measure)) !important;
+  }
+
+  .public-site-shell.is-home .hero-title {
+    max-width: min(100%, var(--mobile-title-measure)) !important;
+    font-size: clamp(36px, 9.8vw, 40px) !important;
+  }
+
+  .public-site-shell.is-home .hero-title-line {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-wrap: break-word !important;
+    white-space: normal !important;
+  }
+
+  .public-site-shell.is-home .hero-title-line + .hero-title-line::before {
+    content: none;
+  }
+
+  .public-site-shell main :is(.section-title, .cards-section-title) {
+    max-width: min(100%, var(--mobile-title-measure)) !important;
+    font-size: clamp(30px, 8.2vw, 36px) !important;
+    line-height: 1.04 !important;
+  }
+
+  .public-site-shell main :is(
+    .card-title,
+    .rich-card h3,
+    .profile-card h3,
+    .art-card h3,
+    .surface-card h3,
+    .interactive-card h3,
+    .cards-offer-card h3,
+    .blog-article-card-shell h3
+  ) {
+    width: 100%;
+    max-width: 100% !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    text-wrap: pretty;
+    letter-spacing: -0.025em !important;
+    line-height: 1.12 !important;
+  }
+
+  .public-site-shell main :is(
+    .hero-subtitle,
+    .section-subtitle,
+    .card-text,
+    .editorial-copy p,
+    .editorial-people-copy p,
+    .role-block-copy p,
+    .dark-panel p,
+    .main-copy-card p,
+    .final-cta-card p,
+    .brand-note-card p,
+    .blog-intro-panel p,
+    .blog-featured-card p,
+    .blog-cta-panel p,
+    .cards-page-cta p
+  ) {
+    max-width: var(--mobile-copy-wide) !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    text-wrap: pretty;
+  }
+
+  .public-site-shell main :is(.section-heading-center .section-title, .section-heading-center .section-subtitle) {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .public-site-shell main :is(.section-heading-left .section-title, .section-heading-left .section-subtitle) {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+  }
+
+  .public-site-shell main :is(
+    .brand-note-card,
+    .main-copy-card,
+    .dark-panel,
+    .final-cta-card,
+    .blog-intro-panel,
+    .cards-page-cta
+  ) {
+    padding-left: clamp(20px, 6vw, 28px) !important;
+    padding-right: clamp(20px, 6vw, 28px) !important;
+  }
+
+  .hero-modal-top h2 {
+    max-width: min(100%, 28rem) !important;
+  }
+
+  .public-site-shell.is-domain-page main :is(
+    .hero-title,
+    .blog-page-hero .hero-title,
+    .cards-page-hero .hero-title,
+    .section-title,
+    .cards-section-title,
+    .blog-intro-panel h2,
+    .blog-featured-card h3,
+    .blog-cta-panel h2,
+    .brand-note-card h2,
+    .final-cta-card h2,
+    .main-copy-card h2,
+    .dark-panel h2,
+    .editorial-copy h2,
+    .role-block-copy h2
+  ) {
+    max-width: min(100%, var(--mobile-title-measure)) !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+    text-wrap: pretty;
+  }
+}
