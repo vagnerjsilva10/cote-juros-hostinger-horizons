@@ -2740,6 +2740,252 @@
   color: #151722;
 }
 
+.blog-page-shell,
+.blog-article-page,
+.blog-article-hero,
+.blog-article-related {
+  color: #151722;
+}
+
+.blog-page-shell h2,
+.blog-page-shell h3,
+.blog-article-page h2,
+.blog-article-page h3,
+.blog-article-related h2,
+.blog-article-related h3 {
+  color: #151722;
+  letter-spacing: -0.04em;
+}
+
+.blog-page-shell p,
+.blog-article-page p,
+.blog-article-related p {
+  color: #667085;
+}
+
+.blog-page-shell .badge,
+.blog-article-page .badge,
+.blog-article-related .badge {
+  border-color: rgba(91, 108, 255, 0.14);
+  background: rgba(91, 108, 255, 0.06);
+  color: rgba(24, 29, 43, 0.74);
+}
+
+.blog-article-card-shell {
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(247, 250, 255, 0.94) 100%);
+  border-color: rgba(15, 23, 42, 0.07);
+  box-shadow: 0 16px 38px rgba(15, 23, 42, 0.045);
+}
+
+.blog-article-card-cover {
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.blog-article-card-content {
+  gap: 18px;
+}
+
+.blog-article-card-meta {
+  color: rgba(24, 29, 43, 0.58);
+}
+
+.blog-article-card-title {
+  font-size: clamp(21px, 2vw, 28px);
+  line-height: 1.04;
+  letter-spacing: -0.05em;
+  font-weight: 670;
+}
+
+.blog-article-card-summary {
+  font-size: 14px;
+  line-height: 1.62;
+  letter-spacing: -0.01em;
+  color: #667085;
+}
+
+.blog-article-card-footer {
+  border-top-color: rgba(15, 23, 42, 0.07);
+  color: #667085;
+}
+
+.blog-article-card-link,
+.blog-read-link {
+  color: #5b6cff;
+}
+
+.blog-featured-card,
+.blog-intro-panel,
+.blog-status-panel,
+.blog-cta-panel {
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.04);
+}
+
+.blog-featured-card {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(91, 108, 255, 0.08), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 251, 255, 0.96) 100%);
+}
+
+.blog-intro-panel,
+.blog-status-panel,
+.blog-cta-panel {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(91, 108, 255, 0.06), transparent 24%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 251, 255, 0.94) 100%);
+}
+
+.blog-topic-card,
+.blog-filter-chip {
+  border-color: rgba(91, 108, 255, 0.14);
+  background: rgba(255, 255, 255, 0.88);
+  color: rgba(24, 29, 43, 0.76);
+}
+
+.blog-topic-card:hover,
+.blog-filter-chip:hover {
+  border-color: rgba(91, 108, 255, 0.24);
+  background: rgba(255, 255, 255, 1);
+  color: #151722;
+}
+
+.blog-filter-chip.is-active {
+  border-color: transparent;
+  background: linear-gradient(180deg, #6070ff 0%, #5263ff 100%);
+  color: #ffffff;
+  box-shadow: 0 14px 28px rgba(91, 108, 255, 0.18);
+}
+
+.blog-article-hero {
+  background:
+    radial-gradient(circle at 14% 12%, rgba(91, 108, 255, 0.1), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #f6f9ff 100%);
+}
+
+.blog-article-breadcrumb,
+.blog-article-backlink,
+.blog-article-meta {
+  color: #667085;
+}
+
+.blog-article-breadcrumb a:hover,
+.blog-article-backlink:hover,
+.blog-article-meta a:hover {
+  color: #151722;
+}
+
+.blog-article-title {
+  font-size: clamp(38px, 4.4vw, 58px);
+  line-height: 0.95;
+  letter-spacing: -0.065em;
+  font-weight: 680;
+  color: #151722;
+  text-wrap: balance;
+}
+
+.blog-article-summary {
+  font-size: 16px;
+  line-height: 1.62;
+  letter-spacing: -0.01em;
+  color: #667085;
+}
+
+.blog-article-cover {
+  border-radius: 22px;
+  border-color: rgba(15, 23, 42, 0.07);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.05);
+}
+
+.blog-article-hero-aside,
+.blog-article-body-card,
+.blog-article-toc,
+.blog-article-link-grid,
+.blog-article-faq,
+.blog-article-conversion,
+.blog-article-pagination a {
+  border-color: rgba(15, 23, 42, 0.07);
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.04);
+}
+
+.blog-article-hero-aside,
+.blog-article-body-card,
+.blog-article-pagination a {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 251, 255, 0.95) 100%);
+}
+
+.blog-article-toc,
+.blog-article-link-grid,
+.blog-article-faq {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(91, 108, 255, 0.05), transparent 26%),
+    linear-gradient(180deg, #f9fbff 0%, #f4f7fd 100%);
+}
+
+.blog-article-richtext > p,
+.blog-article-section p,
+.blog-article-faq p,
+.blog-article-conclusion p {
+  font-size: 16px;
+  line-height: 1.72;
+  letter-spacing: -0.01em;
+  color: #667085;
+}
+
+.blog-article-section h2,
+.blog-article-faq h2,
+.blog-article-conclusion h2,
+.blog-article-conversion h2 {
+  font-size: clamp(28px, 2.7vw, 40px);
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+  font-weight: 670;
+  text-wrap: balance;
+}
+
+.blog-article-section h3,
+.blog-article-faq h3 {
+  font-size: 20px;
+  line-height: 1.16;
+  letter-spacing: -0.03em;
+  font-weight: 620;
+}
+
+.blog-article-richtext ul,
+.blog-article-section ul {
+  font-size: 16px;
+  line-height: 1.68;
+  letter-spacing: -0.01em;
+}
+
+.blog-article-chip-grid a,
+.blog-article-hero-aside a {
+  border-color: rgba(15, 23, 42, 0.07);
+  background: rgba(255, 255, 255, 0.88);
+  transition:
+    border-color 220ms var(--motion-standard),
+    background 220ms var(--motion-standard),
+    transform 220ms var(--motion-standard);
+}
+
+.blog-article-chip-grid a:hover,
+.blog-article-hero-aside a:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+}
+
+.blog-article-conversion {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(91, 108, 255, 0.12), transparent 26%),
+    linear-gradient(180deg, rgba(244, 247, 255, 0.96) 0%, rgba(238, 243, 255, 0.9) 100%);
+}
+
+.blog-article-related {
+  background:
+    linear-gradient(180deg, #f8fbff 0%, #f2f6fc 100%);
+}
+
 .blog-intro-panel,
 .blog-featured-card,
 .blog-status-panel,
@@ -3898,6 +4144,19 @@ body {
 }
 
 @media (max-width: 991px) {
+  .blog-article-title {
+    font-size: 36px;
+    line-height: 0.98;
+  }
+
+  .blog-article-section h2,
+  .blog-article-faq h2,
+  .blog-article-conclusion h2,
+  .blog-article-conversion h2 {
+    font-size: 30px;
+    line-height: 1.04;
+  }
+
   .hero-grid,
   .editorial-split,
   .editorial-people-grid,

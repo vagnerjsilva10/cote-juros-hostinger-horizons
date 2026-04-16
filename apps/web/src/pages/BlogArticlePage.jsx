@@ -320,9 +320,9 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         {faqSchema ? <script type="application/ld+json">{JSON.stringify(faqSchema)}</script> : null}
       </Helmet>
 
-      <section className="border-b border-border bg-background py-6 md:py-10">
+      <section className="blog-article-hero border-b border-border bg-background py-6 md:py-10">
         <div className="page-shell min-w-0 space-y-5 md:space-y-6">
-          <nav aria-label="Breadcrumb" className="flex min-w-0 flex-wrap items-center gap-2 text-xs text-muted-foreground sm:text-sm">
+          <nav aria-label="Breadcrumb" className="blog-article-breadcrumb flex min-w-0 flex-wrap items-center gap-2 text-xs text-muted-foreground sm:text-sm">
             <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground">
               <Home className="h-4 w-4" />
               {t('Início')}
@@ -335,20 +335,20 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
             <span className="min-w-0 flex-1 truncate text-foreground sm:flex-none">{editorialTitle}</span>
           </nav>
 
-          <Link to="/blog" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+          <Link to="/blog" className="blog-article-backlink inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
             <ArrowLeft className="h-4 w-4" />
             Voltar para o blog
           </Link>
 
-          <div className="space-y-4 md:space-y-5">
+          <div className="blog-article-header space-y-4 md:space-y-5">
             <Badge variant="outline" className="w-fit">{safeArticle.category}</Badge>
-            <div className="space-y-3">
-              <h1 className="max-w-4xl text-3xl leading-tight text-foreground sm:text-4xl lg:text-5xl">{safeArticle.h1 || editorialTitle}</h1>
-              <p className="max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">{getArticleSummary(safeArticle)}</p>
+            <div className="blog-article-headline space-y-3">
+              <h1 className="blog-article-title max-w-4xl text-3xl leading-tight text-foreground sm:text-4xl lg:text-5xl">{safeArticle.h1 || editorialTitle}</h1>
+              <p className="blog-article-summary max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">{getArticleSummary(safeArticle)}</p>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-x-5 gap-y-3 text-sm text-muted-foreground">
+          <div className="blog-article-meta flex flex-wrap gap-x-5 gap-y-3 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-2">
               <CalendarDays className="h-4 w-4 text-primary" />
               {formatDate(safeArticle.publishedAt)}
@@ -364,17 +364,17 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
             </Link>
           </div>
 
-          <div className="grid min-w-0 gap-5 pt-2 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+          <div className="blog-article-cover-grid grid min-w-0 gap-5 pt-2 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
             <ArticleCoverImage
               article={safeArticle}
-              className="min-w-0 w-full max-h-[430px] rounded-[18px] border border-border md:rounded-[20px]"
+              className="blog-article-cover min-w-0 w-full max-h-[430px] rounded-[18px] border border-border md:rounded-[20px]"
               aspectRatio="16 / 9"
             />
 
             {safeArticle.internalLinks.length ? (
-              <aside className="min-w-0 rounded-[18px] border border-border bg-white p-4 sm:p-5 md:p-6">
+              <aside className="blog-article-hero-aside min-w-0 rounded-[18px] border border-border bg-white p-4 sm:p-5 md:p-6">
                 <h2 className="text-xl text-foreground">Continue a leitura</h2>
-                <div className="mt-4 space-y-3">
+                <div className="blog-article-hero-aside-list mt-4 space-y-3">
                   {safeArticle.internalLinks.slice(0, 3).map((item) => (
                     <Link
                       key={`hero-aside-${item.path}`}
@@ -392,12 +392,12 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         </div>
       </section>
 
-      <section className="bg-background py-6 md:py-10">
+      <section className="blog-article-page bg-background py-6 md:py-10">
         <div className="page-shell min-w-0 space-y-8">
-          <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-8">
+          <div className="blog-article-layout grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-8">
             <div className="min-w-0 space-y-6 md:space-y-8">
-              <article className="min-w-0 rounded-[18px] border border-border bg-white p-4 sm:p-6 md:rounded-[20px] md:p-10">
-                <div className="space-y-7 md:space-y-8">
+              <article className="blog-article-body-card min-w-0 rounded-[18px] border border-border bg-white p-4 sm:p-6 md:rounded-[20px] md:p-10">
+                <div className="blog-article-richtext space-y-7 md:space-y-8">
                   {introParagraphs.map((paragraph, index) => (
                     <p key={`intro-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{paragraph}</p>
                   ))}
@@ -413,9 +413,9 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   <AdSlotResponsive />
 
                   {tocItems.length ? (
-                    <section className="min-w-0 rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
+                    <section className="blog-article-toc min-w-0 rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
                       <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">{t('Neste artigo você vai encontrar')}</p>
-                      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                      <div className="blog-article-chip-grid mt-4 grid gap-3 sm:grid-cols-2">
                         {tocItems.slice(0, 6).map((item) => (
                           <a
                             key={item.id}
@@ -431,7 +431,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
                   {sections.map((section, index) => (
                     <React.Fragment key={`section-${index}`}>
-                      <section id={`secao-${index + 1}`} className="min-w-0 scroll-mt-28 space-y-4 md:space-y-5">
+                      <section id={`secao-${index + 1}`} className="blog-article-section min-w-0 scroll-mt-28 space-y-4 md:space-y-5">
                         <h2 className="text-xl leading-tight text-foreground sm:text-2xl">{section.heading}</h2>
                         {section.paragraphs?.map((paragraph, paragraphIndex) => (
                           <p key={`section-${index}-p-${paragraphIndex}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">
@@ -459,9 +459,9 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   ))}
 
                   {safeArticle.internalLinks.length ? (
-                    <section className="min-w-0 rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
+                    <section className="blog-article-link-grid min-w-0 rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
                       <h2 className="text-xl text-foreground sm:text-2xl">Leituras recomendadas</h2>
-                      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                      <div className="blog-article-chip-grid mt-4 grid gap-3 sm:grid-cols-2">
                         {safeArticle.internalLinks.slice(0, 6).map((item) => (
                           <Link
                             key={item.path}
@@ -487,7 +487,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   ) : null}
 
                   {Array.isArray(safeArticle.faq) && safeArticle.faq.length ? (
-                    <section id="faq" className="min-w-0 scroll-mt-28 space-y-4 rounded-[16px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
+                    <section id="faq" className="blog-article-faq min-w-0 scroll-mt-28 space-y-4 rounded-[16px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
                       <h2 className="text-xl text-foreground sm:text-2xl">Perguntas frequentes</h2>
                       <div className="space-y-5">
                         {safeArticle.faq.map((item, index) => (
@@ -501,7 +501,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   ) : null}
 
                   {Array.isArray(safeArticle.conclusion) && safeArticle.conclusion.length ? (
-                    <section id="conclusao" className="scroll-mt-28 space-y-4">
+                    <section id="conclusao" className="blog-article-conclusion scroll-mt-28 space-y-4">
                       <h2 className="text-xl text-foreground sm:text-2xl">{t('Conclusão')}</h2>
                       {safeArticle.conclusion.map((paragraph, index) => (
                         <p key={`conclusion-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{paragraph}</p>
@@ -511,13 +511,13 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                 </div>
               </article>
 
-              <section className="min-w-0 rounded-[22px] border border-primary/15 bg-primary/[0.04] p-5 sm:p-6 md:p-8">
+              <section className="blog-article-conversion min-w-0 rounded-[22px] border border-primary/15 bg-primary/[0.04] p-5 sm:p-6 md:p-8">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">{conversionCta?.eyebrow || t('Próximo passo')}</p>
                 <h2 className="mt-3 text-xl text-foreground sm:text-2xl">{conversionCta?.title || t('Quer dar o próximo passo com mais clareza?')}</h2>
                 <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
                   {conversionCta?.description}
                 </p>
-                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <div className="blog-article-conversion-actions mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   <Link to={conversionCta?.primary.to || '/emprestimos'} className="inline-flex w-full sm:w-auto">
                     <Button className="w-full sm:w-auto">
                       {conversionCta?.primary.label || t('Ver minhas opções agora')}
@@ -531,7 +531,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
               </section>
 
               {(previousArticle || nextArticle) ? (
-                <section className="grid min-w-0 gap-4 md:grid-cols-2">
+                <section className="blog-article-pagination grid min-w-0 gap-4 md:grid-cols-2">
                   {previousArticle ? (
                     <Link
                       to={getArticlePath(previousArticle)}
@@ -559,7 +559,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
               <ArticleComments articleSlug={safeArticle.slug} />
             </div>
 
-            <aside className="min-w-0 space-y-6 lg:sticky lg:top-24 lg:h-fit">
+            <aside className="blog-article-sidebar min-w-0 space-y-6 lg:sticky lg:top-24 lg:h-fit">
               {sidebarSupersimOffer ? (
                 <SuperSimSidebarCard
                   offer={sidebarSupersimOffer}
@@ -573,7 +573,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
       </section>
 
       {relatedArticles.length ? (
-        <section className="border-t border-border bg-background-secondary py-12 md:py-14">
+        <section className="blog-article-related border-t border-border bg-background-secondary py-12 md:py-14">
           <div className="page-shell min-w-0 space-y-6">
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">{t('Leia também')}</p>
