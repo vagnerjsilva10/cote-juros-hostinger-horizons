@@ -69,7 +69,7 @@ function SystemMotionShowcase() {
             <path
               d="M4 70 C26 64, 40 52, 60 54 C84 56, 98 38, 120 40 C146 42, 156 60, 176 56 C198 52, 216 30, 236 20"
               fill="none"
-              stroke="rgba(37,99,235,0.95)"
+              stroke="rgba(91,108,255,0.95)"
               strokeWidth="2.5"
               className="chart-draw"
             />
@@ -79,7 +79,7 @@ function SystemMotionShowcase() {
               stroke="rgba(20,148,136,0.72)"
               strokeWidth="2"
             />
-            <circle cx="236" cy="20" r="4" fill="#2563EB" className="chart-pulse" />
+            <circle cx="236" cy="20" r="4" fill="#5B6CFF" className="chart-pulse" />
           </svg>
         </div>
 

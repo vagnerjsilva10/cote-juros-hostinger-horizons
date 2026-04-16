@@ -86,7 +86,7 @@ export const affiliateOffersSeed = [
     pageSlugs: ['/cartoes-de-credito', '/comparar/cartoes-sem-anuidade'],
     placements: ['below_hero', 'sidebar', 'before_faq'],
     metadata: {
-      accentColor: '#1D4ED8',
+      accentColor: '#5B6CFF',
       secondaryAccentColor: '#0F172A',
       badges: ['Sem anuidade', 'Uso do dia a dia', 'Analise simples']
     }
@@ -161,7 +161,7 @@ export const affiliateOffersSeed = [
     pageSlugs: ['/cartoes-de-credito', '/comparar/cartoes-sem-anuidade'],
     placements: ['mid_content'],
     metadata: {
-      accentColor: '#7C3AED',
+      accentColor: '#7A86FF',
       secondaryAccentColor: '#0F172A',
       badges: ['Cashback', 'Comparacao rapida', 'Perfil do dia a dia']
     }

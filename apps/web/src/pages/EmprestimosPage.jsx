@@ -155,7 +155,7 @@ function EmprestimosPage() {
       {quickLeadContext ? (
         <section className="border-b border-border bg-white py-6">
           <div className="page-shell">
-            <div className="rounded-[20px] border border-primary/15 bg-primary/[0.04] px-5 py-4 shadow-[0_8px_18px_rgba(37,99,235,0.04)]">
+            <div className="rounded-[20px] border border-primary/15 bg-primary/[0.04] px-5 py-4 shadow-[0_8px_18px_rgba(91,108,255,0.04)]">
               <p className="text-sm font-semibold text-foreground">
                 {quickLeadContext.fullName ? `${quickLeadContext.fullName}, estas opções` : 'Estas opções'} podem ser um bom ponto de partida para você.
               </p>
@@ -401,7 +401,7 @@ function EmprestimosPage() {
                   const bank = banksData.find((item) => item.id === loan.bankId);
                   const badge = getBadge(loan.category, loan.monthlyRate);
                   const BadgeIcon = badge.icon;
-                  const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#2563EB';
+                  const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#5B6CFF';
 
                   return (
                     <Card key={loan.id} className="surface-card h-full border-border bg-white">
@@ -468,7 +468,7 @@ function EmprestimosPage() {
                   const bank = banksData.find((item) => item.id === loan.bankId);
                   const badge = getBadge(loan.category, loan.monthlyRate);
                   const BadgeIcon = badge.icon;
-                  const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#2563EB';
+                  const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#5B6CFF';
 
                   return (
                     <Card key={loan.id} className="border-border bg-white shadow-[0_8px_20px_rgba(15,23,42,0.04)]">

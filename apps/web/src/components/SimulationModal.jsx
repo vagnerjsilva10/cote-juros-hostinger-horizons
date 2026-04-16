@@ -163,7 +163,7 @@ const SegmentedOption = ({ active, onClick, title, copy }) => (
   <button
     type="button"
     onClick={onClick}
-    className={`rounded-2xl border px-4 py-4 text-left transition-all ${active ? 'border-primary bg-primary/5 shadow-[0_8px_24px_rgba(37,99,235,0.10)]' : 'border-border bg-white hover:border-primary/30 hover:bg-background-secondary'}`}
+    className={`rounded-2xl border px-4 py-4 text-left transition-all ${active ? 'border-primary bg-primary/5 shadow-[0_8px_24px_rgba(91,108,255,0.10)]' : 'border-border bg-white hover:border-primary/30 hover:bg-background-secondary'}`}
   >
     <p className="text-sm font-semibold text-foreground">{title}</p>
     {copy ? <p className="mt-1 text-xs leading-5 text-muted-foreground">{copy}</p> : null}

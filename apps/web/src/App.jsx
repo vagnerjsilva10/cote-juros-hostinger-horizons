@@ -46,8 +46,11 @@ import { corePillarPaths, reservedSeoStaticPaths } from '@/seo/seoCatalog.js';
 import { wordpressMigratedArticles, wordpressMigratedArticlePaths } from '@/data/wordpressMigratedArticles.js';
 
 function AppLayout({ children }) {
+  const location = useLocation();
+  const routeClass = location.pathname === '/' ? 'is-home' : 'is-domain-page';
+
   return (
-    <div className="min-h-screen overflow-x-hidden flex flex-col bg-background selection:bg-primary/10">
+    <div className={`public-site-shell ${routeClass} min-h-screen overflow-x-hidden flex flex-col bg-background selection:bg-primary/10`}>
       <Header />
       <main className="min-w-0">{children}</main>
       <Footer />

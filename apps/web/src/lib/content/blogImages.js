@@ -78,12 +78,12 @@ const buildStockProviderImage = (article = {}) => {
 
 const getImagePalette = (category = '') => {
   const key = getCategoryKey(category);
-  if (key === 'emprestimos') return { primary: '#2563eb', soft: '#dbeafe', accent: '#0f172a', eyebrow: 'EMPRESTIMOS' };
+  if (key === 'emprestimos') return { primary: '#5b6cff', soft: '#eef1ff', accent: '#0f172a', eyebrow: 'EMPRESTIMOS' };
   if (key === 'cartoes') return { primary: '#0f766e', soft: '#ccfbf1', accent: '#0f172a', eyebrow: 'CARTOES' };
   if (key === 'financiamento') return { primary: '#ea580c', soft: '#fed7aa', accent: '#7c2d12', eyebrow: 'FINANCIAMENTO' };
-  if (key === 'score') return { primary: '#7c3aed', soft: '#ddd6fe', accent: '#3b0764', eyebrow: 'SCORE' };
+  if (key === 'score') return { primary: '#7a86ff', soft: '#eef1ff', accent: '#0f172a', eyebrow: 'SCORE' };
   if (key === 'dividas') return { primary: '#dc2626', soft: '#fecaca', accent: '#450a0a', eyebrow: 'DIVIDAS' };
-  return { primary: '#1d4ed8', soft: '#dbeafe', accent: '#0f172a', eyebrow: 'BLOG COTE JUROS' };
+  return { primary: '#5b6cff', soft: '#eef1ff', accent: '#0f172a', eyebrow: 'BLOG COTE JUROS' };
 };
 
 export const buildGeneratedArticleImage = (article = {}) => {

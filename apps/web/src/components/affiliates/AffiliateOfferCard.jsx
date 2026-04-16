@@ -45,7 +45,7 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
   if (!offer) return null;
 
   const logoUrl = offer?.imageUrl || offer?.metadata?.logoUrl || '';
-  const accentFromMeta = offer?.metadata?.accentColor || '#2563EB';
+  const accentFromMeta = offer?.metadata?.accentColor || '#5B6CFF';
   const secondaryAccent = offer?.metadata?.secondaryAccentColor || '#0F172A';
   const badges = buildBadgeList(offer);
 
