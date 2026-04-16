@@ -213,7 +213,7 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
           </p>
         </div>
 
-        <div className="max-h-[68vh] overflow-y-auto px-5 py-4 sm:px-6">
+        <div className="hero-modal-body max-h-[68vh] overflow-y-auto px-5 py-4 sm:px-6">
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-2">
               <Label>Valor</Label>
@@ -294,7 +294,7 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
           </div>
         </div>
 
-        <div className="border-t border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-5 py-3.5 sm:px-6">
+        <div className="hero-modal-footer border-t border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-5 py-3.5 sm:px-6">
           <div className="flex flex-col gap-3">
             <div className="rounded-[14px] border border-slate-200 bg-slate-50 px-4 py-3">
               <div className="flex items-start gap-3">
