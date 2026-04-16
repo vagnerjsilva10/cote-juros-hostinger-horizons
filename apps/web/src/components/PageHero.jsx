@@ -23,7 +23,7 @@ function PageHero({
           {badge ? (
             <Badge
               variant="outline"
-              className="mb-4 max-w-full rounded-full border-white/[0.10] bg-white/[0.04] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.04em] text-white/[0.78] sm:mb-5"
+              className="page-hero-badge mb-4 max-w-full rounded-full border-white/[0.10] bg-white/[0.04] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.04em] text-white/[0.78] sm:mb-5"
             >
               {badge}
             </Badge>

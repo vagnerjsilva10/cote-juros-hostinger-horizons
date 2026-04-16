@@ -188,16 +188,17 @@ function BlogPage() {
 
       <PageHero
         centered
+        className="blog-page-hero"
         badge="Blog Cote Juros"
-        title={t('Conte˙do para entender antes de contratar')}
-        subtitle={t('Guias editoriais com leitura clara, imagens mais humanas e contexto financeiro para decidir com mais confianÁa.')}
+        title={t('Conte√∫do para entender antes de contratar')}
+        subtitle={t('Guias editoriais com leitura clara, imagens mais humanas e contexto financeiro para decidir com mais confian√ßa.')}
       >
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              className="blog-hero-search rounded-full bg-background pl-11"
-              placeholder={t('Busque por score, emprÈstimo, cart„o, dÌvidas ou orÁamento')}
+              className="blog-hero-search pl-11"
+              placeholder={t('Busque por score, empr√©stimo, cart√£o, d√≠vidas ou or√ßamento')}
               value={search}
               onChange={(event) => setSearch(event.target.value)}
             />
@@ -218,13 +219,13 @@ function BlogPage() {
         </div>
       </PageHero>
 
-      <div className="page-shell space-y-12 py-12 md:space-y-16 md:py-16">
-        <section className="grid gap-5 rounded-[28px] border border-border bg-white p-6 md:grid-cols-[1.15fr_0.85fr] md:p-8">
+      <div className="page-shell blog-page-shell space-y-12 py-12 md:space-y-16 md:py-16">
+        <section className="blog-intro-panel grid gap-5 p-6 md:grid-cols-[1.15fr_0.85fr] md:p-8">
           <div className="space-y-3">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">Comece por aqui</p>
-            <h2 className="text-2xl text-foreground md:text-3xl">{t('Temas mais ˙teis para organizar a vida financeira com calma')}</h2>
+            <h2 className="text-2xl text-foreground md:text-3xl">{t('Temas mais √∫teis para organizar a vida financeira com calma')}</h2>
             <p className="max-w-3xl text-base leading-7 text-muted-foreground">
-              {t('Um blog mais silencioso, claro e ˙til para apoiar decisıes financeiras sem poluiÁ„o visual.')}
+              {t('Um blog mais silencioso, claro e √∫til para apoiar decis√µes financeiras sem polui√ß√£o visual.')}
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-1">
@@ -233,7 +234,7 @@ function BlogPage() {
                 key={item.label}
                 type="button"
                 onClick={() => setCategory(item.label)}
-                className="rounded-[18px] border border-border bg-background-secondary px-4 py-4 text-left transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
+                className="blog-topic-card px-4 py-4 text-left"
               >
                 <span className="block text-sm font-semibold text-foreground">{item.label}</span>
                 <span className="mt-1 block text-sm text-muted-foreground">{item.count} artigos</span>
@@ -244,7 +245,7 @@ function BlogPage() {
 
         {loading ? (
           <>
-            <section className="rounded-[24px] border border-border bg-white px-6 py-14 text-center">
+            <section className="blog-status-panel px-6 py-14 text-center">
               <p className="text-muted-foreground">Carregando conte√∫dos do blog...</p>
             </section>
             <BlogGridSkeleton items={6} />
@@ -260,7 +261,7 @@ function BlogPage() {
 
             <Link
               to={getArticlePath(featured)}
-              className="group grid overflow-hidden rounded-[28px] border border-border bg-white shadow-[0_12px_32px_rgba(15,23,42,0.06)] md:grid-cols-[1.1fr_0.9fr]"
+              className="blog-featured-card group grid overflow-hidden md:grid-cols-[1.1fr_0.9fr]"
             >
               <ArticleCoverImage
                 article={featured}
@@ -278,7 +279,7 @@ function BlogPage() {
                   <span>&bull;</span>
                   <span>{featured.readingTime || featured.readTime || 6} min de leitura</span>
                 </div>
-                <span className="inline-flex items-center gap-2 font-medium text-primary">
+                <span className="blog-read-link inline-flex items-center gap-2 font-medium">
                   Ler artigo
                   <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </span>
@@ -317,7 +318,7 @@ function BlogPage() {
                 key={item.label}
                 type="button"
                 onClick={() => setCategory(item.label)}
-                className="rounded-full border border-border bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.04]"
+                className={`blog-filter-chip ${category === item.label ? 'is-active' : ''}`}
               >
                 {item.label} ({item.count})
               </button>
@@ -345,7 +346,7 @@ function BlogPage() {
               ))}
             </div>
           ) : (
-            <div className="rounded-[16px] border border-dashed border-border bg-background-secondary px-6 py-14 text-center">
+            <div className="blog-status-panel border-dashed px-6 py-14 text-center">
               <h3 className="text-2xl text-foreground">Nenhum artigo encontrado</h3>
               <p className="mt-3 text-muted-foreground">Tente outro termo de busca ou uma categoria diferente.</p>
             </div>
@@ -353,14 +354,14 @@ function BlogPage() {
 
           {hasMore ? (
             <div className="flex justify-center">
-              <Button variant="outline" className="rounded-full px-7" onClick={() => setVisibleCount((value) => value + PAGE_SIZE)}>
+              <Button variant="outline" className="rounded-[8px] px-7" onClick={() => setVisibleCount((value) => value + PAGE_SIZE)}>
                 Carregar mais artigos
               </Button>
             </div>
           ) : null}
         </section>
 
-        <section className="rounded-[28px] border border-primary/15 bg-primary/[0.04] p-6 md:p-8">
+        <section className="blog-cta-panel p-6 md:p-8">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Pr√≥ximo passo</p>
           <h2 className="mt-3 text-2xl text-foreground">Quando quiser sair da leitura, veja caminhos de cr√©dito com mais contexto</h2>
           <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
@@ -368,13 +369,13 @@ function BlogPage() {
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Link to="/emprestimos" className="inline-flex">
-              <Button>
+              <Button className="rounded-[8px]">
                 Ver minhas op√ß√µes agora
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
             <Link to="/emprestimo-para-negativado" className="inline-flex">
-              <Button variant="outline">Estou com o nome negativado</Button>
+              <Button variant="outline" className="rounded-[8px]">Estou com o nome negativado</Button>
             </Link>
           </div>
         </section>
