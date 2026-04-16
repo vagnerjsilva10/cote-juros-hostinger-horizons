@@ -18,7 +18,7 @@ function PageHero({
       <div className={`page-shell relative z-10 min-w-0 ${centered ? 'text-center' : ''}`}>
         <div className={centered ? 'mx-auto min-w-0 max-w-4xl' : 'min-w-0 max-w-4xl'}>
           {eyebrow ? (
-            <p className="mb-3 text-[13px] font-medium text-white/[0.76]">{eyebrow}</p>
+            <p className="page-hero-eyebrow mb-3 text-[13px] font-medium">{eyebrow}</p>
           ) : null}
           {badge ? (
             <Badge
