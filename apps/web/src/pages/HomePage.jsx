@@ -303,7 +303,7 @@ function HomePage() {
 
       <section className="section section--compact art-section art-section-soft">
         <div className="page-shell">
-          <motion.div {...animationIn}>
+          <motion.div {...animationIn} className="section-heading-left">
             <h2 className="section-title">{t('Escolha um ponto de partida para comparar com mais precisão')}</h2>
             <p className="section-subtitle">
               {t('Cada perfil pede uma leitura diferente. O importante é comparar antes de contratar.')}
@@ -458,7 +458,7 @@ function HomePage() {
 
       <section className="section section--compact art-section art-section-white">
         <div className="page-shell">
-          <motion.div {...animationIn}>
+          <motion.div {...animationIn} className="section-heading-left">
             <h2 className="section-title">{t('Comparar crédito fica melhor quando a proposta é direta')}</h2>
             <p className="section-subtitle">
               {t('A CoteJuros mostra condições com mais clareza para você entender antes de fechar contrato.')}
