@@ -6239,6 +6239,14 @@ body {
     max-width: min(100%, 28rem) !important;
   }
 
+  .public-site-shell.is-home .final-cta-card .hero-primary-btn {
+    width: min(100%, 296px) !important;
+    max-width: calc(100% - 32px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    justify-content: center !important;
+  }
+
   .public-site-shell.is-domain-page main :is(
     .hero-title,
     .blog-page-hero .hero-title,
