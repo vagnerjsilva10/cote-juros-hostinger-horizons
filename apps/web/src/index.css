@@ -5831,18 +5831,25 @@ body {
 
   .hero-modal-shell {
     top: auto !important;
-    bottom: max(10px, env(safe-area-inset-bottom)) !important;
-    width: calc(100vw - 22px) !important;
-    max-width: 430px !important;
-    max-height: min(72dvh, 640px) !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: calc(100dvh - max(8px, env(safe-area-inset-top))) !important;
     display: flex !important;
     grid-template-rows: none !important;
     flex-direction: column;
     gap: 0 !important;
     overflow: hidden !important;
-    border-radius: 18px !important;
-    transform: translateX(-50%) !important;
-    box-shadow: 0 18px 54px rgba(15, 23, 42, 0.2) !important;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+    border-left: 0 !important;
+    border-radius: 18px 18px 0 0 !important;
+    transform: translate3d(0, 0, 0) !important;
+    animation: none !important;
+    box-shadow: 0 -18px 54px rgba(15, 23, 42, 0.2) !important;
   }
 
   .hero-modal-top {
@@ -5878,8 +5885,9 @@ body {
     min-height: 0;
     max-height: none !important;
     overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    padding: 14px 16px !important;
+    padding: 14px 16px 16px !important;
   }
 
   .hero-modal-body .grid {
@@ -5910,8 +5918,9 @@ body {
 
   .hero-modal-footer {
     flex: 0 0 auto;
-    padding: 12px 16px calc(12px + env(safe-area-inset-bottom)) !important;
+    padding: 12px 16px calc(18px + max(12px, env(safe-area-inset-bottom))) !important;
     background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+    box-shadow: 0 -10px 24px rgba(15, 23, 42, 0.05);
   }
 
   .hero-modal-footer .rounded-\[14px\] {
@@ -5930,28 +5939,43 @@ body {
 
   .hero-modal-footer .hero-modal-cta {
     width: 100%;
-    height: 44px !important;
+    height: 48px !important;
+    min-height: 48px !important;
     border-radius: 12px !important;
   }
 
   .public-site-shell.is-domain-page .blog-page-hero {
-    padding-bottom: 34px !important;
+    background:
+      radial-gradient(circle at 78% 16%, rgba(91, 108, 255, 0.06) 0%, rgba(91, 108, 255, 0) 28%),
+      linear-gradient(180deg, #f8fafc 0%, #f4f7fb 100%) !important;
+    padding-top: 48px !important;
+    padding-bottom: 42px !important;
   }
 
   .public-site-shell.is-domain-page .blog-page-hero .hero-title {
-    max-width: 310px !important;
-    font-size: clamp(27px, 7.4vw, 30px) !important;
-    line-height: 1.02 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: 31ch !important;
+    color: #07111f !important;
+    font-size: clamp(30px, 8.1vw, 34px) !important;
+    font-weight: 760 !important;
+    line-height: 0.98 !important;
+    letter-spacing: -0.045em !important;
   }
 
   .public-site-shell.is-domain-page .blog-page-hero .hero-subtitle {
-    max-width: 286px !important;
-    font-size: 13px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: 32ch !important;
+    color: rgba(15, 23, 42, 0.76) !important;
+    font-size: 14.5px !important;
     line-height: 1.55 !important;
   }
 
   .public-site-shell.is-domain-page .blog-page-hero .mx-auto {
-    max-width: min(310px, calc(100vw - 56px)) !important;
+    max-width: min(332px, calc(100vw - 40px)) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 
   .public-site-shell.is-domain-page .blog-page-hero .relative {
@@ -5961,12 +5985,20 @@ body {
   .public-site-shell.is-domain-page .blog-page-hero .page-shell.relative {
     width: 100% !important;
     max-width: 100vw !important;
+    text-align: left !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  .public-site-shell.is-domain-page .blog-page-hero .page-shell.relative > .mx-auto {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 
   .public-site-shell.is-domain-page .blog-page-hero .mx-auto.flex {
-    width: min(280px, calc(100vw - 64px)) !important;
-    max-width: min(280px, calc(100vw - 64px)) !important;
-    margin-left: 20px !important;
+    width: min(332px, calc(100vw - 40px)) !important;
+    max-width: min(332px, calc(100vw - 40px)) !important;
+    margin-left: 0 !important;
     margin-right: auto !important;
   }
 
@@ -5978,7 +6010,7 @@ body {
   .public-site-shell.is-domain-page .blog-page-hero .flex-wrap {
     flex-wrap: nowrap !important;
     justify-content: flex-start !important;
-    max-width: min(280px, calc(100vw - 64px)) !important;
+    max-width: min(332px, calc(100vw - 40px)) !important;
     overflow-x: auto;
     padding-bottom: 4px;
     scrollbar-width: none;
@@ -5996,6 +6028,31 @@ body {
     padding-left: 18px !important;
     padding-right: 18px !important;
     white-space: nowrap;
+  }
+
+  .public-site-shell.is-domain-page .blog-page-hero .hero-ambient-grid {
+    opacity: 0.1 !important;
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.35), transparent 70%) !important;
+  }
+
+  .public-site-shell.is-domain-page .blog-page-hero .hero-ambient-orb {
+    opacity: 0.18 !important;
+    filter: blur(96px) !important;
+  }
+
+  .public-site-shell.is-domain-page .blog-page-hero .page-hero-badge {
+    border-color: rgba(15, 23, 42, 0.08) !important;
+    background: rgba(255, 255, 255, 0.7) !important;
+    color: rgba(15, 23, 42, 0.6) !important;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.035);
+  }
+
+  .public-site-shell.is-domain-page .blog-page-hero .blog-hero-search {
+    min-height: 52px !important;
+    border-color: rgba(15, 23, 42, 0.06) !important;
+    background: rgba(255, 255, 255, 0.94) !important;
+    color: #0f172a !important;
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.06) !important;
   }
 
   .public-site-shell.is-domain-page .hero-section .mt-8,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Cell, Pie, PieChart, ResponsiveContainer, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
-import { Calculator, Download, DollarSign, Home, TrendingUp } from 'lucide-react';
+import { ArrowRight, Download, DollarSign, Home, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -70,17 +70,27 @@ function FerramentasPage() {
       </Helmet>
 
       <PageHero
-        centered
-        badge="Ferramentas"
+        eyebrow="Ferramentas"
+        badge="Simule antes de decidir"
         title="Calculadoras simples para decidir com mais segurança."
         subtitle="Use calculadoras simples para entender quanto você realmente vai pagar em juros e parcelas antes de tomar uma decisão."
       >
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-white shadow-[var(--shadow-sm)]">
-          <Calculator className="h-7 w-7 text-foreground" />
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <a href="#calculadoras-financeiras">
+            <Button size="lg">
+              Usar calculadoras
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </a>
+          <a href="#juros-compostos">
+            <Button size="lg" variant="outline" className="hero-secondary-btn">
+              Ver simulações
+            </Button>
+          </a>
         </div>
       </PageHero>
 
-      <div className="page-shell py-12">
+      <div className="page-shell py-12" id="calculadoras-financeiras">
         <Tabs defaultValue="juros-compostos" className="w-full">
           <TabsList className="grid w-full grid-cols-1 gap-2 md:grid-cols-3">
             <TabsTrigger value="juros-compostos" className="gap-2">
@@ -97,7 +107,7 @@ function FerramentasPage() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="juros-compostos" className="mt-8">
+          <TabsContent value="juros-compostos" id="juros-compostos" className="mt-8">
             <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
               <Card>
                 <CardHeader>
