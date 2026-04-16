@@ -39,7 +39,7 @@ function BlogArticleCard({
           <div className="blog-article-card-meta flex flex-wrap items-center justify-between gap-3">
             <Badge variant="outline" className="max-w-full truncate">{safeArticle.category}</Badge>
             <span className="inline-flex items-center gap-2 text-xs text-muted-foreground">
-              <Clock className="blog-inline-icon h-3.5 w-3.5 text-primary" />
+              <Clock className="h-3.5 w-3.5 text-primary" />
               {safeArticle.readTime || safeArticle.readingTime || 6} min
             </span>
           </div>
@@ -55,7 +55,7 @@ function BlogArticleCard({
 
           <div className="blog-article-card-footer mt-auto flex items-center justify-between border-t border-border pt-4 text-sm">
             <span className="inline-flex items-center gap-2 text-muted-foreground">
-              <CalendarDays className="blog-inline-icon h-4 w-4 text-primary" />
+              <CalendarDays className="h-4 w-4 text-primary" />
               {formatDate(safeArticle.publishedAt)}
             </span>
             <span className="blog-article-card-link inline-flex items-center gap-2 font-medium text-primary">

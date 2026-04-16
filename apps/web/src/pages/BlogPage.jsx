@@ -222,8 +222,8 @@ function BlogPage() {
       <div className="page-shell blog-page-shell space-y-12 py-12 md:space-y-16 md:py-16">
         <section className="blog-intro-panel grid gap-5 p-6 md:grid-cols-[1.15fr_0.85fr] md:p-8">
           <div className="space-y-3">
-            <p className="blog-section-kicker text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">Comece por aqui</p>
-            <h2 className="blog-section-title text-2xl text-foreground md:text-3xl">{t('Temas mais úteis para organizar a vida financeira com calma')}</h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">Comece por aqui</p>
+            <h2 className="text-2xl text-foreground md:text-3xl">{t('Temas mais úteis para organizar a vida financeira com calma')}</h2>
             <p className="max-w-3xl text-base leading-7 text-muted-foreground">
               {t('Um blog mais silencioso, claro e útil para apoiar decisões financeiras sem poluição visual.')}
             </p>
@@ -236,7 +236,7 @@ function BlogPage() {
                 onClick={() => setCategory(item.label)}
                 className="blog-topic-card px-4 py-4 text-left"
               >
-                <span className="blog-topic-card-title block text-sm font-semibold text-foreground">{item.label}</span>
+                <span className="block text-sm font-semibold text-foreground">{item.label}</span>
                 <span className="mt-1 block text-sm text-muted-foreground">{item.count} artigos</span>
               </button>
             ))}
@@ -255,7 +255,7 @@ function BlogPage() {
         {featured ? (
           <section className="space-y-5">
             <div className="flex items-center justify-between gap-4">
-              <h2 className="blog-section-title text-2xl text-foreground">Destaque da semana</h2>
+              <h2 className="text-2xl text-foreground">Destaque da semana</h2>
               <Badge variant="outline">{normalizeMojibake(featured.category || '')}</Badge>
             </div>
 
@@ -271,8 +271,8 @@ function BlogPage() {
               />
 
               <div className="flex flex-col justify-center gap-4 p-6 md:p-8">
-                <p className="blog-section-kicker text-sm font-semibold uppercase tracking-[0.14em] text-primary/80">Artigo em destaque</p>
-                <h3 className="blog-featured-title text-3xl text-foreground">{getEditorialTitle(featured)}</h3>
+                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-primary/80">Artigo em destaque</p>
+                <h3 className="text-3xl text-foreground">{getEditorialTitle(featured)}</h3>
                 <p className="text-base leading-7 text-muted-foreground">{getArticleSummary(featured)}</p>
                 <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
                   <span>{formatDate(featured.publishedAt)}</span>
@@ -292,7 +292,7 @@ function BlogPage() {
 
         {trendingGuides.length ? (
           <section className="space-y-5">
-            <h2 className="blog-section-title text-2xl text-foreground">Leituras recomendadas</h2>
+            <h2 className="text-2xl text-foreground">Leituras recomendadas</h2>
             <div className="grid gap-5 md:grid-cols-3">
               {trendingGuides.map((article) => (
                 <BlogArticleCard
@@ -309,7 +309,7 @@ function BlogPage() {
 
         <section className="space-y-4">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="blog-section-title text-2xl text-foreground">Navegue por tema</h2>
+            <h2 className="text-2xl text-foreground">Navegue por tema</h2>
             <span className="text-sm text-muted-foreground">{filteredArticles.length} artigos</span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -330,7 +330,7 @@ function BlogPage() {
 
         <section className="space-y-5">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="blog-section-title text-2xl text-foreground">Artigos recentes</h2>
+            <h2 className="text-2xl text-foreground">Artigos recentes</h2>
             <span className="text-sm text-muted-foreground">{filteredArticles.length} artigos</span>
           </div>
 
@@ -347,7 +347,7 @@ function BlogPage() {
             </div>
           ) : (
             <div className="blog-status-panel border-dashed px-6 py-14 text-center">
-              <h3 className="blog-section-title text-2xl text-foreground">Nenhum artigo encontrado</h3>
+              <h3 className="text-2xl text-foreground">Nenhum artigo encontrado</h3>
               <p className="mt-3 text-muted-foreground">Tente outro termo de busca ou uma categoria diferente.</p>
             </div>
           )}
@@ -362,8 +362,8 @@ function BlogPage() {
         </section>
 
         <section className="blog-cta-panel p-6 md:p-8">
-          <p className="blog-section-kicker text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Próximo passo</p>
-          <h2 className="blog-section-title mt-3 text-2xl text-foreground">Quando quiser sair da leitura, veja caminhos de crédito com mais contexto</h2>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">Próximo passo</p>
+          <h2 className="mt-3 text-2xl text-foreground">Quando quiser sair da leitura, veja caminhos de crédito com mais contexto</h2>
           <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
             O blog prepara a decisão. A jornada de crédito mostra possibilidades. E o redirecionamento ao parceiro só aparece depois, de forma separada.
           </p>

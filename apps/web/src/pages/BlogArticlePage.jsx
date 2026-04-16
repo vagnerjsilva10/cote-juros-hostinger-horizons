@@ -236,7 +236,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
       <section className="page-shell py-20">
         <Card className="mx-auto max-w-2xl border-border bg-white text-center">
           <CardContent className="space-y-4 p-10">
-            <p className="blog-section-kicker text-xs font-semibold uppercase tracking-[0.2em] text-primary/80">Blog Cote Juros</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary/80">Blog Cote Juros</p>
             <h1 className="text-3xl text-foreground">{t('Artigo não encontrado')}</h1>
             <p className="text-muted-foreground">{loadError || t('Esse conteúdo pode ter sido movido, renomeado ou removido.')}</p>
             <Link to="/blog">
@@ -350,15 +350,15 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
           <div className="blog-article-meta flex flex-wrap gap-x-5 gap-y-3 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-2">
-              <CalendarDays className="blog-inline-icon h-4 w-4 text-primary" />
+              <CalendarDays className="h-4 w-4 text-primary" />
               {formatDate(safeArticle.publishedAt)}
             </span>
             <span className="inline-flex items-center gap-2">
-              <Clock className="blog-inline-icon h-4 w-4 text-primary" />
+              <Clock className="h-4 w-4 text-primary" />
               {safeArticle.readingTime || safeArticle.readTime || 6} min de leitura
             </span>
             <span>{safeArticle.author}</span>
-            <Link to={categoryRoute.path} className="blog-inline-link inline-flex items-center gap-2 text-primary hover:underline">
+            <Link to={categoryRoute.path} className="inline-flex items-center gap-2 text-primary hover:underline">
               Mais em {categoryRoute.label}
               <ArrowRight className="h-4 w-4" />
             </Link>
@@ -373,7 +373,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
             {safeArticle.internalLinks.length ? (
               <aside className="blog-article-hero-aside min-w-0 rounded-[18px] border border-border bg-white p-4 sm:p-5 md:p-6">
-                <h2 className="blog-section-title text-xl text-foreground">Continue a leitura</h2>
+                <h2 className="text-xl text-foreground">Continue a leitura</h2>
                 <div className="blog-article-hero-aside-list mt-4 space-y-3">
                   {safeArticle.internalLinks.slice(0, 3).map((item) => (
                     <Link
@@ -381,7 +381,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                       to={item.path}
                       className="block min-w-0 rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
                     >
-                      <span className="blog-chip-title block break-words font-semibold text-foreground">{item.title}</span>
+                      <span className="block break-words font-semibold text-foreground">{item.title}</span>
                       <span className="mt-1 block leading-6 text-muted-foreground">{item.anchor}</span>
                     </Link>
                   ))}
@@ -414,7 +414,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
                   {tocItems.length ? (
                     <section className="blog-article-toc min-w-0 rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
-                      <p className="blog-section-kicker text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">{t('Neste artigo você vai encontrar')}</p>
+                      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">{t('Neste artigo você vai encontrar')}</p>
                       <div className="blog-article-chip-grid mt-4 grid gap-3 sm:grid-cols-2">
                         {tocItems.slice(0, 6).map((item) => (
                           <a
@@ -460,7 +460,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
                   {safeArticle.internalLinks.length ? (
                     <section className="blog-article-link-grid min-w-0 rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
-                      <h2 className="blog-section-title text-xl text-foreground sm:text-2xl">Leituras recomendadas</h2>
+                      <h2 className="text-xl text-foreground sm:text-2xl">Leituras recomendadas</h2>
                       <div className="blog-article-chip-grid mt-4 grid gap-3 sm:grid-cols-2">
                         {safeArticle.internalLinks.slice(0, 6).map((item) => (
                           <Link
@@ -468,7 +468,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                             to={item.path}
                             className="min-w-0 rounded-[14px] border border-border bg-white px-4 py-4 text-sm leading-6 text-foreground transition-colors hover:border-primary/35 hover:bg-primary/[0.03]"
                           >
-                            <span className="blog-chip-title block break-words font-semibold">{item.title}</span>
+                            <span className="block break-words font-semibold">{item.title}</span>
                             <span className="mt-1 block text-muted-foreground">{item.anchor}</span>
                           </Link>
                         ))}
@@ -488,7 +488,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
                   {Array.isArray(safeArticle.faq) && safeArticle.faq.length ? (
                     <section id="faq" className="blog-article-faq min-w-0 scroll-mt-28 space-y-4 rounded-[16px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
-                      <h2 className="blog-section-title text-xl text-foreground sm:text-2xl">Perguntas frequentes</h2>
+                      <h2 className="text-xl text-foreground sm:text-2xl">Perguntas frequentes</h2>
                       <div className="space-y-5">
                         {safeArticle.faq.map((item, index) => (
                           <div key={`faq-${index}`} className="space-y-2">
@@ -502,7 +502,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
                   {Array.isArray(safeArticle.conclusion) && safeArticle.conclusion.length ? (
                     <section id="conclusao" className="blog-article-conclusion scroll-mt-28 space-y-4">
-                      <h2 className="blog-section-title text-xl text-foreground sm:text-2xl">{t('Conclusão')}</h2>
+                      <h2 className="text-xl text-foreground sm:text-2xl">{t('Conclusão')}</h2>
                       {safeArticle.conclusion.map((paragraph, index) => (
                         <p key={`conclusion-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{paragraph}</p>
                       ))}
@@ -512,8 +512,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
               </article>
 
               <section className="blog-article-conversion min-w-0 rounded-[22px] border border-primary/15 bg-primary/[0.04] p-5 sm:p-6 md:p-8">
-                <p className="blog-section-kicker text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">{conversionCta?.eyebrow || t('Próximo passo')}</p>
-                <h2 className="blog-section-title mt-3 text-xl text-foreground sm:text-2xl">{conversionCta?.title || t('Quer dar o próximo passo com mais clareza?')}</h2>
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary/80">{conversionCta?.eyebrow || t('Próximo passo')}</p>
+                <h2 className="mt-3 text-xl text-foreground sm:text-2xl">{conversionCta?.title || t('Quer dar o próximo passo com mais clareza?')}</h2>
                 <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
                   {conversionCta?.description}
                 </p>
@@ -537,8 +537,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                       to={getArticlePath(previousArticle)}
                       className="min-w-0 rounded-[16px] border border-border bg-white p-5 transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
                     >
-                      <p className="blog-section-kicker text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Artigo anterior</p>
-                      <h3 className="blog-pagination-title mt-2 text-lg text-foreground">{getEditorialTitle(previousArticle)}</h3>
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Artigo anterior</p>
+                      <h3 className="mt-2 text-lg text-foreground">{getEditorialTitle(previousArticle)}</h3>
                     </Link>
                   ) : (
                     <div className="hidden md:block" />
@@ -549,8 +549,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                       to={getArticlePath(nextArticle)}
                       className="min-w-0 rounded-[16px] border border-border bg-white p-5 text-left transition-colors hover:border-primary/35 hover:bg-primary/[0.02]"
                     >
-                      <p className="blog-section-kicker text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{t('Próximo artigo')}</p>
-                      <h3 className="blog-pagination-title mt-2 text-lg text-foreground">{getEditorialTitle(nextArticle)}</h3>
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{t('Próximo artigo')}</p>
+                      <h3 className="mt-2 text-lg text-foreground">{getEditorialTitle(nextArticle)}</h3>
                     </Link>
                   ) : null}
                 </section>
@@ -576,8 +576,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         <section className="blog-article-related border-t border-border bg-background-secondary py-12 md:py-14">
           <div className="page-shell min-w-0 space-y-6">
             <div className="space-y-2">
-              <p className="blog-section-kicker text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">{t('Leia também')}</p>
-              <h2 className="blog-section-title text-2xl text-foreground">{t('Mais conteúdos sobre o mesmo assunto')}</h2>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">{t('Leia também')}</p>
+              <h2 className="text-2xl text-foreground">{t('Mais conteúdos sobre o mesmo assunto')}</h2>
             </div>
             <div className="grid min-w-0 gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {relatedArticles.map((item) => (

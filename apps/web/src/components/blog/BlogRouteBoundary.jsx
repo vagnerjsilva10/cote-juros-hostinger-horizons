@@ -27,10 +27,10 @@ class BlogRouteBoundary extends React.Component {
     if (!this.state.hasError) return this.props.children;
 
     return (
-      <section className="page-shell blog-route-boundary py-16 md:py-20">
-        <div className="blog-route-boundary-card mx-auto max-w-2xl rounded-[24px] border border-border bg-white p-8 text-center shadow-[var(--shadow-sm)]">
-          <p className="blog-section-kicker text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Blog Cote Juros</p>
-          <h1 className="blog-section-title mt-4 text-3xl text-foreground">Não foi possível carregar este conteúdo</h1>
+      <section className="page-shell py-16 md:py-20">
+        <div className="mx-auto max-w-2xl rounded-[24px] border border-border bg-white p-8 text-center shadow-[var(--shadow-sm)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Blog Cote Juros</p>
+          <h1 className="mt-4 text-3xl text-foreground">Não foi possível carregar este conteúdo</h1>
           <p className="mt-3 text-base text-muted-foreground">
             A rota encontrou um erro inesperado. O restante do portal segue estável, e você pode tentar abrir o artigo novamente.
           </p>
@@ -38,13 +38,13 @@ class BlogRouteBoundary extends React.Component {
             <button
               type="button"
               onClick={() => this.setState({ hasError: false })}
-              className="blog-route-boundary-primary inline-flex items-center justify-center rounded-[12px] bg-[#111827] px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-slate-800"
+              className="inline-flex items-center justify-center rounded-[12px] bg-[#111827] px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-slate-800"
             >
               Tentar novamente
             </button>
             <Link
               to="/blog"
-              className="blog-route-boundary-secondary inline-flex items-center justify-center rounded-[12px] border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-background-secondary"
+              className="inline-flex items-center justify-center rounded-[12px] border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-background-secondary"
             >
               Voltar para o blog
             </Link>
@@ -56,3 +56,4 @@ class BlogRouteBoundary extends React.Component {
 }
 
 export default BlogRouteBoundary;
+
