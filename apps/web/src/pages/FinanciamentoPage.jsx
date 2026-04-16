@@ -97,11 +97,10 @@ function FinanciamentoPage() {
       <PageHero
         eyebrow="Financiamento"
         badge="Compare antes de assumir parcelas longas"
-        centered
         title={t('Veja opções de financiamento com mais clareza antes de contratar.')}
         subtitle={t('Compare entrada, prazo e custo para entender o que realmente faz sentido para você.')}
       >
-        <div className="flex flex-col justify-center gap-3 sm:flex-row">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <Button size="lg" onClick={openInternalFlow}>{t('Ver minhas opções agora')}</Button>
           <a href="#resultados-financiamento">
             <Button size="lg" variant="outline" className="hero-secondary-btn">{t('Ver comparação')}</Button>
