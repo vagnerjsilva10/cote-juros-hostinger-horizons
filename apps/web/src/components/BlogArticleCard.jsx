@@ -23,11 +23,11 @@ function BlogArticleCard({
     <Link
       to={href}
       className={cn(
-        'blog-article-card group block h-full rounded-[24px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
+        'blog-article-card group block h-full rounded-[24px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(91,108,255,0.22)] focus-visible:ring-offset-2',
         className
       )}
     >
-      <Card className="blog-article-card-shell surface-card relative flex h-full flex-col overflow-hidden border-border transition-all duration-200 group-hover:-translate-y-1 group-hover:border-primary/30 group-hover:shadow-[0_14px_34px_rgba(15,23,42,0.08)] group-focus-visible:border-primary/30">
+      <Card className="blog-article-card-shell surface-card relative flex h-full flex-col overflow-hidden border-border transition-all duration-200 group-hover:-translate-y-1 group-hover:border-[rgba(91,108,255,0.18)] group-hover:shadow-[0_16px_36px_rgba(15,23,42,0.06)] group-focus-visible:border-[rgba(91,108,255,0.18)]">
         <ArticleCoverImage
           article={{ ...safeArticle, coverImage: image || safeArticle.coverImage }}
           className="blog-article-card-cover w-full"
@@ -39,13 +39,13 @@ function BlogArticleCard({
           <div className="blog-article-card-meta flex flex-wrap items-center justify-between gap-3">
             <Badge variant="outline" className="max-w-full truncate">{safeArticle.category}</Badge>
             <span className="inline-flex items-center gap-2 text-xs text-muted-foreground">
-              <Clock className="h-3.5 w-3.5 text-primary" />
+              <Clock className="blog-meta-icon h-3.5 w-3.5" />
               {safeArticle.readTime || safeArticle.readingTime || 6} min
             </span>
           </div>
 
           <div className="blog-article-card-copy space-y-3">
-            <h3 className={cn('blog-article-card-title text-balance text-foreground transition-colors group-hover:text-primary', compact ? 'text-lg' : 'text-xl')}>
+            <h3 className={cn('blog-article-card-title text-balance text-foreground transition-colors', compact ? 'text-lg' : 'text-xl')}>
               {title}
             </h3>
             <p className={cn('blog-article-card-summary text-muted-foreground', compact ? 'line-clamp-3 text-sm leading-6' : 'line-clamp-3 leading-7')}>
@@ -55,10 +55,10 @@ function BlogArticleCard({
 
           <div className="blog-article-card-footer mt-auto flex items-center justify-between border-t border-border pt-4 text-sm">
             <span className="inline-flex items-center gap-2 text-muted-foreground">
-              <CalendarDays className="h-4 w-4 text-primary" />
+              <CalendarDays className="blog-meta-icon h-4 w-4" />
               {formatDate(safeArticle.publishedAt)}
             </span>
-            <span className="blog-article-card-link inline-flex items-center gap-2 font-medium text-primary">
+            <span className="blog-article-card-link inline-flex items-center gap-2 font-medium">
               {label}
               <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </span>

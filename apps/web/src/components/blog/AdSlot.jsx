@@ -13,13 +13,13 @@ function AdSlotShell({
     <aside
       aria-label={label}
       className={cn(
-        'min-w-0 overflow-hidden rounded-[20px] border border-border bg-white/90',
+        'blog-ad-slot min-w-0 overflow-hidden rounded-[20px] border border-border bg-white/90',
         className
       )}
       style={{ minHeight }}
     >
       <div className="border-b border-border/70 px-5 py-3 sm:px-6">
-        <span className="inline-flex rounded-full border border-border bg-background px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+        <span className="blog-kicker inline-flex rounded-full border border-border bg-background px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           {label}
         </span>
       </div>
