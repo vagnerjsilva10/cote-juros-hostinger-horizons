@@ -347,18 +347,16 @@ function HomePage() {
                 <span>{t('Condições')}</span>
                 <span>{t('Simulação')}</span>
               </div>
-              <div className="ring ring-one" />
-              <div className="ring ring-two" />
-              <div className="orb orb-one" />
-              <div className="orb orb-two" />
-              <div className="orb orb-three" />
-              <div className="mini-bars">
-                <span />
-                <span />
-                <span />
-                <span />
+              <div className="conditions-visual">
+                <div className="conditions-axis" />
+                <div className="conditions-curve" />
+                <div className="mini-bars">
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                </div>
               </div>
-              <div className="mini-line" />
               <div className="conditions-widget-score">
                 <strong>R$ 12.000</strong>
                 <span>valor desejado</span>

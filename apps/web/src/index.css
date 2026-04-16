@@ -1958,61 +1958,53 @@
     text-transform: uppercase;
   }
 
-  .conditions-widget .orb {
+  .conditions-visual {
     position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 999px;
-    background: linear-gradient(135deg, #7c8cff 0%, #62d6ff 100%);
-    box-shadow: 0 0 24px rgba(99, 124, 255, 0.45);
-    animation: orbFloat 5.5s ease-in-out infinite;
-  }
-
-  .conditions-widget .orb-one {
+    left: 42px;
+    right: 42px;
     top: 58px;
-    left: 72px;
+    height: 132px;
+    z-index: 2;
+    overflow: hidden;
+    border-radius: 20px;
+    background:
+      linear-gradient(rgba(91, 108, 255, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(91, 108, 255, 0.08) 1px, transparent 1px),
+      radial-gradient(90% 100% at 72% 24%, rgba(154, 168, 255, 0.22), transparent 64%),
+      rgba(255, 255, 255, 0.42);
+    background-size: 32px 32px, 32px 32px, auto, auto;
+    border: 1px solid rgba(91, 108, 255, 0.1);
   }
 
-  .conditions-widget .orb-two {
-    top: 86px;
-    right: 88px;
-    animation-delay: 0.8s;
-  }
-
-  .conditions-widget .orb-three {
-    right: 70px;
-    bottom: 56px;
-    animation-delay: 1.6s;
-  }
-
-  .conditions-widget .ring {
+  .conditions-axis {
     position: absolute;
-    border: 1px solid rgba(99, 124, 255, 0.16);
-    border-radius: 999px;
+    left: 16px;
+    right: 16px;
+    bottom: 22px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(91, 108, 255, 0), rgba(91, 108, 255, 0.2), rgba(91, 108, 255, 0));
   }
 
-  .conditions-widget .ring-one {
-    top: 54px;
-    right: 48px;
-    width: 118px;
-    height: 118px;
-  }
-
-  .conditions-widget .ring-two {
-    top: 78px;
-    left: 54px;
-    width: 84px;
-    height: 84px;
+  .conditions-curve {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    top: 32px;
+    height: 58px;
+    border-top: 3px solid rgba(91, 108, 255, 0.32);
+    border-radius: 50% 50% 0 0;
+    transform: skewX(-12deg);
+    filter: drop-shadow(0 8px 12px rgba(91, 108, 255, 0.1));
   }
 
   .conditions-widget .mini-bars {
     position: absolute;
     left: 50%;
-    top: 48%;
-    transform: translate(-50%, -50%);
+    bottom: 22px;
+    transform: translateX(-50%);
     display: flex;
     align-items: end;
-    gap: 10px;
+    gap: 12px;
     z-index: 2;
   }
 
@@ -2030,19 +2022,6 @@
   .conditions-widget .mini-bars span:nth-child(2) { height: 62px; animation-delay: 0.15s; }
   .conditions-widget .mini-bars span:nth-child(3) { height: 78px; animation-delay: 0.3s; }
   .conditions-widget .mini-bars span:nth-child(4) { height: 98px; animation-delay: 0.45s; }
-
-  .conditions-widget .mini-line {
-    position: absolute;
-    left: 18%;
-    right: 18%;
-    bottom: 54px;
-    height: 2px;
-    border-radius: 999px;
-    background: linear-gradient(90deg, rgba(99, 124, 255, 0) 0%, rgba(99, 124, 255, 0.45) 40%, rgba(80, 214, 255, 0.95) 100%);
-    transform: rotate(-8deg);
-    filter: drop-shadow(0 0 10px rgba(79, 124, 255, 0.25));
-    z-index: 2;
-  }
 
   .conditions-widget-score {
     position: absolute;
@@ -3007,6 +2986,24 @@ p {
   background: #ffffff;
 }
 
+.art-card .card-title,
+.art-card .card-text {
+  position: relative;
+  z-index: 2;
+  max-width: calc(100% - 78px);
+}
+
+.art-card-visual {
+  top: auto;
+  right: 22px;
+  bottom: 22px;
+  width: 68px;
+  height: 52px;
+  opacity: 0.34;
+  z-index: 1;
+  pointer-events: none;
+}
+
 .art-card-topline span,
 .profile-card-tag,
 .brand-note-kicker {
@@ -3187,23 +3184,9 @@ p {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(246, 249, 255, 0.96) 100%);
 }
 
-.conditions-widget .ring {
-  border: 1px solid rgba(91, 108, 255, 0.18);
-}
-
-.conditions-widget .orb {
-  background: linear-gradient(180deg, #7a86ff 0%, #9aa8ff 100%);
-  box-shadow: 0 0 18px rgba(91, 108, 255, 0.22);
-}
-
 .conditions-widget .mini-bars span {
   background: linear-gradient(180deg, #9aa8ff 0%, #5b6cff 100%);
   box-shadow: 0 8px 18px rgba(91, 108, 255, 0.14);
-}
-
-.conditions-widget .mini-line {
-  background: linear-gradient(90deg, rgba(91, 108, 255, 0) 0%, rgba(91, 108, 255, 0.42) 40%, rgba(154, 168, 255, 0.85) 100%);
-  filter: none;
 }
 
 .conditions-widget-score {
