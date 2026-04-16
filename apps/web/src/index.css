@@ -2716,16 +2716,24 @@
   border-color: rgba(91, 108, 255, 0.14) !important;
   background: rgba(255, 255, 255, 0.52) !important;
   color: rgba(24, 29, 43, 0.68) !important;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .blog-page-hero .hero-title {
   max-width: 680px;
   color: #151722;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 .blog-page-hero .hero-subtitle {
   max-width: 680px;
   color: rgba(24, 29, 43, 0.74);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 .blog-page-shell {
