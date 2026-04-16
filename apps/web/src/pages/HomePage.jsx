@@ -458,7 +458,7 @@ function HomePage() {
 
       <section className="section section--compact art-section art-section-white">
         <div className="page-shell">
-          <motion.div {...animationIn} className="section-heading-left">
+          <motion.div {...animationIn}>
             <h2 className="section-title">{t('Comparar crédito fica melhor quando a proposta é direta')}</h2>
             <p className="section-subtitle">
               {t('A CoteJuros mostra condições com mais clareza para você entender antes de fechar contrato.')}
@@ -497,6 +497,7 @@ function HomePage() {
               </p>
             </div>
             <div className="brand-note-orbit" aria-hidden="true">
+              <i />
               <span />
               <span />
               <span />

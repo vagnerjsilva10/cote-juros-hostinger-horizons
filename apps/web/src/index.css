@@ -3306,7 +3306,7 @@ p {
 .role-block,
 .brand-note-card {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.42fr);
   gap: 24px;
   align-items: center;
   padding: 28px;
@@ -3322,13 +3322,79 @@ p {
 }
 
 .brand-note-orbit {
+  position: relative;
+  min-height: 190px;
+  overflow: hidden;
+  border-radius: 22px;
   background:
-    radial-gradient(circle at center, rgba(91, 108, 255, 0.12), transparent 18%),
-    repeating-radial-gradient(circle, rgba(91, 108, 255, 0.14) 0 1px, transparent 1px 28px);
+    radial-gradient(circle at 58% 48%, rgba(91, 108, 255, 0.18), transparent 18%),
+    repeating-radial-gradient(circle at 58% 48%, rgba(91, 108, 255, 0.14) 0 1px, transparent 1px 34px),
+    linear-gradient(135deg, rgba(91, 108, 255, 0.08), rgba(79, 209, 255, 0.08));
+  border: 1px solid rgba(91, 108, 255, 0.12);
+}
+
+.brand-note-orbit::before {
+  content: '';
+  position: absolute;
+  inset: 18px;
+  border-radius: 18px;
+  background-image:
+    linear-gradient(rgba(91, 108, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91, 108, 255, 0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(circle at 58% 48%, #000, transparent 76%);
+}
+
+.brand-note-orbit::after {
+  content: '';
+  position: absolute;
+  left: 26px;
+  right: 28px;
+  top: 52%;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(91, 108, 255, 0.3), rgba(79, 209, 255, 0.24), transparent);
+}
+
+.brand-note-orbit i {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  border-radius: 999px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(91, 108, 255, 0.16);
+  box-shadow: 0 18px 44px rgba(91, 108, 255, 0.14);
 }
 
 .brand-note-orbit span {
+  position: absolute;
   background: linear-gradient(180deg, #5b6cff 0%, #9aa8ff 100%);
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(91, 108, 255, 0.2);
+}
+
+.brand-note-orbit span:nth-child(2) {
+  width: 18px;
+  height: 18px;
+  top: 34px;
+  left: 52px;
+}
+
+.brand-note-orbit span:nth-child(3) {
+  width: 14px;
+  height: 14px;
+  top: 84px;
+  right: 46px;
+}
+
+.brand-note-orbit span:nth-child(4) {
+  width: 12px;
+  height: 12px;
+  bottom: 36px;
+  left: 110px;
 }
 
 .faq-section {
