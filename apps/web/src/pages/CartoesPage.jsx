@@ -47,7 +47,7 @@ const resolveCardPalette = (card) => {
   if (bankName.includes('santander')) return ['#B91C1C', '#EF4444'];
   if (bankName.includes('c6')) return ['#0F172A', '#334155'];
   if (bankName.includes('inter')) return ['#EA580C', '#FDBA74'];
-  return ['#1E293B', '#2563EB'];
+  return ['#5B6CFF', '#9AA8FF'];
 };
 
 function CartoesPage() {
@@ -118,69 +118,71 @@ function CartoesPage() {
       </Helmet>
 
       <PageHero
+        className="cards-page-hero"
         eyebrow="Cartões"
         badge="Compare antes de contratar"
         title="Veja opções de cartão com mais clareza antes de decidir."
         subtitle="Compare anuidade, limite e benefícios para entender o que faz sentido para o seu perfil."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
+          <Button size="lg" className="cards-page-primary-btn" onClick={openInternalFlow}>Ver minhas opções agora</Button>
           <a href="#resultados-cartoes">
-            <Button size="lg" variant="outline" className="hero-secondary-btn">Ver comparação</Button>
+            <Button size="lg" variant="outline" className="cards-page-secondary-btn">Ver comparação</Button>
           </a>
         </div>
       </PageHero>
 
-      <section className="border-b border-border bg-background-secondary py-10">
+      <section className="cards-page-metrics-section border-b border-border bg-background-secondary py-10">
         <div className="page-shell grid gap-4 md:grid-cols-4">
-          <div className="interactive-card px-5 py-5">
+          <div className="cards-metric-card interactive-card px-5 py-5">
             <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Cartões no comparador</p>
             <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">{cardsData.length}</p>
           </div>
-          <div className="interactive-card px-5 py-5">
+          <div className="cards-metric-card interactive-card px-5 py-5">
             <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Sem anuidade</p>
-            <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-primary">{freeCardsCount}</p>
+            <p className="cards-metric-value mt-2 text-xl font-medium tracking-[-0.03em]">{freeCardsCount}</p>
           </div>
-          <div className="interactive-card px-5 py-5">
+          <div className="cards-metric-card interactive-card px-5 py-5">
             <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Maior limite estimado</p>
             <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">R$ {(bestLimit / 1000).toFixed(0)}k</p>
           </div>
-          <div className="interactive-card px-5 py-5">
+          <div className="cards-metric-card interactive-card px-5 py-5">
             <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Opções visíveis</p>
             <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">{filteredCards.length}</p>
           </div>
         </div>
       </section>
 
-      <div className="page-shell py-14" id="resultados-cartoes">
-        <div className="mb-10 rounded-[24px] border border-border bg-white p-7 shadow-[var(--shadow-sm)] sm:p-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Comparação interna</p>
-          <h2 className="mt-3 text-2xl text-foreground">Entenda custo, limite e benefícios antes de seguir.</h2>
+      <div className="page-shell cards-page-shell py-14" id="resultados-cartoes">
+        <div className="cards-comparison-intro mb-10 rounded-[24px] border border-border bg-white p-7 shadow-[var(--shadow-sm)] sm:p-8">
+          <p className="cards-kicker text-xs font-semibold uppercase tracking-[0.18em]">Comparação interna</p>
+          <h2 className="cards-section-title mt-3 text-2xl text-foreground">Entenda custo, limite e benefícios antes de seguir.</h2>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
             Aqui a ideia é comparar com calma, tirar o excesso de ruído e decidir com mais segurança.
           </p>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
-          <aside className="lg:sticky lg:top-24 lg:h-fit">
-            <Card className="border-border bg-white shadow-[var(--shadow-sm)]">
+          <aside className="cards-filters lg:sticky lg:top-24 lg:h-fit">
+            <Card className="cards-filter-card border-border bg-white shadow-[var(--shadow-sm)]">
               <CardContent className="space-y-8 p-8">
-                <div className="flex items-center gap-2 border-b border-border pb-4">
-                  <Filter className="h-4 w-4 text-primary" />
-                  <h3 className="text-lg">Filtros da comparação</h3>
+                <div className="cards-filter-header flex items-center gap-2 border-b border-border pb-4">
+                  <Filter className="cards-filter-icon h-4 w-4" />
+                  <h3 className="cards-filter-title text-lg">Filtros da comparação</h3>
                 </div>
 
-                <div className="flex items-center justify-between gap-4">
+                <div className="cards-filter-row flex items-center justify-between gap-4">
                   <Label htmlFor="free-annuity">Mostrar só cartões sem anuidade</Label>
-                  <Switch id="free-annuity" checked={freeAnnuity} onCheckedChange={setFreeAnnuity} />
+                  <Switch id="free-annuity" className="cards-page-switch" checked={freeAnnuity} onCheckedChange={setFreeAnnuity} />
                 </div>
 
                 <div className="space-y-4">
                   <Label>Categoria</Label>
                   <div className="space-y-3">
                     {categoryOptions.map((item) => (
-                      <label key={item.value} className="flex items-center gap-3 rounded-[14px] border border-border px-4 py-3 transition-colors duration-300 hover:bg-background-secondary">
+                      <label key={item.value} className="cards-filter-option flex items-center gap-3 rounded-[14px] border border-border px-4 py-3 transition-colors duration-300 hover:bg-background-secondary">
                         <Checkbox
+                          className="cards-page-checkbox"
                           checked={categories[item.value]}
                           onCheckedChange={(checked) => setCategories((previous) => ({ ...previous, [item.value]: Boolean(checked) }))}
                         />
@@ -194,8 +196,9 @@ function CartoesPage() {
                   <Label>Benefícios</Label>
                   <div className="space-y-3">
                     {['Cashback', 'Milhas', 'VIP'].map((item) => (
-                      <label key={item} className="flex items-center gap-3 rounded-[14px] border border-border px-4 py-3 transition-colors duration-300 hover:bg-background-secondary">
+                      <label key={item} className="cards-filter-option flex items-center gap-3 rounded-[14px] border border-border px-4 py-3 transition-colors duration-300 hover:bg-background-secondary">
                         <Checkbox
+                          className="cards-page-checkbox"
                           checked={benefits[item]}
                           onCheckedChange={(checked) => setBenefits((previous) => ({ ...previous, [item]: Boolean(checked) }))}
                         />
@@ -210,19 +213,19 @@ function CartoesPage() {
 
           <section>
             <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <p className="text-sm text-muted-foreground">{filteredCards.length} cartão(ões) visíveis na comparação.</p>
+              <p className="cards-results-copy text-sm text-muted-foreground">{filteredCards.length} cartão(ões) visíveis na comparação.</p>
               <div className="flex flex-wrap items-center gap-3">
                 <Label className="whitespace-nowrap">Ordenar</Label>
                 <Select value={sort} onValueChange={setSort}>
-                  <SelectTrigger className="w-[220px]">
+                  <SelectTrigger className="cards-select-trigger w-[220px]">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="limite-maior">Maior limite</SelectItem>
-                    <SelectItem value="anuidade-menor">Menor anuidade</SelectItem>
+                  <SelectContent className="cards-select-content">
+                    <SelectItem className="cards-select-item" value="limite-maior">Maior limite</SelectItem>
+                    <SelectItem className="cards-select-item" value="anuidade-menor">Menor anuidade</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant="outline" onClick={openInternalFlow}>Ver opções para meu perfil</Button>
+                <Button variant="outline" className="cards-page-secondary-btn" onClick={openInternalFlow}>Ver opções para meu perfil</Button>
               </div>
             </div>
 
@@ -234,11 +237,11 @@ function CartoesPage() {
                   const [toneA, toneB] = resolveCardPalette(card);
 
                   return (
-                    <Card key={card.id} className="surface-card h-full overflow-hidden border-border bg-white">
-                      <div className="relative h-48 border-b border-border bg-slate-100">
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_10%,rgba(148,163,184,0.2),transparent_46%)]" />
+                    <Card key={card.id} className="cards-offer-card surface-card h-full overflow-hidden border-border bg-white">
+                      <div className="cards-offer-visual relative h-48 border-b border-border bg-slate-100">
+                        <div className="cards-offer-glow absolute inset-0 bg-[radial-gradient(circle_at_12%_10%,rgba(148,163,184,0.2),transparent_46%)]" />
                         <div className="absolute inset-0 flex items-center justify-center p-4">
-                          <div className="relative w-full max-w-[240px] -rotate-[6deg] transition-transform duration-300 hover:-translate-y-1 hover:rotate-[-4deg]">
+                          <div className="cards-card-media relative w-full max-w-[240px] -rotate-[6deg] transition-transform duration-300 hover:-translate-y-1 hover:rotate-[-4deg]">
                             {hasPremiumAsset ? (
                               <img
                                 src={cardImage}
@@ -247,7 +250,7 @@ function CartoesPage() {
                               />
                             ) : (
                               <div
-                                className="h-[148px] rounded-2xl border border-white/20 p-4 text-white shadow-[0_16px_34px_rgba(15,23,42,0.28)]"
+                                className="cards-fallback-art h-[148px] rounded-2xl border border-white/20 p-4 text-white shadow-[0_16px_34px_rgba(15,23,42,0.28)]"
                                 style={{ background: `linear-gradient(135deg, ${toneA}, ${toneB})` }}
                               >
                                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90 [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]">
@@ -265,39 +268,39 @@ function CartoesPage() {
                         </div>
                       </div>
 
-                      <CardContent className="flex h-full flex-col gap-5 p-8">
-                        <div className="border-b border-border pb-3">
+                      <CardContent className="cards-offer-content flex h-full flex-col gap-5 p-8">
+                        <div className="cards-offer-bank border-b border-border pb-3">
                           <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-900">{card.bankName}</p>
                         </div>
 
-                        <div className="flex items-center justify-between gap-3">
-                          <Badge variant="outline" className="border-primary/25 bg-primary/10 text-primary">{card.category}</Badge>
-                          {isFree ? <Badge variant="secondary">Sem anuidade</Badge> : null}
+                        <div className="cards-offer-badges flex items-center justify-between gap-3">
+                          <Badge variant="outline" className="cards-offer-badge">{card.category}</Badge>
+                          {isFree ? <Badge variant="secondary" className="cards-offer-badge-secondary">Sem anuidade</Badge> : null}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="rounded-[14px] border border-border bg-background-secondary p-4">
+                        <div className="cards-offer-stats grid grid-cols-2 gap-4">
+                          <div className="cards-offer-stat rounded-[14px] border border-border bg-background-secondary p-4">
                             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Anuidade</p>
-                            <p className={`mt-2 text-sm font-medium ${isFree ? 'text-primary' : 'text-foreground'}`}>
+                            <p className={`cards-offer-stat-value mt-2 text-sm font-medium ${isFree ? 'is-free' : 'text-foreground'}`}>
                               {isFree ? 'Grátis' : `R$ ${card.annualFee}/ano`}
                             </p>
                           </div>
-                          <div className="rounded-[14px] border border-border bg-background-secondary p-4">
+                          <div className="cards-offer-stat rounded-[14px] border border-border bg-background-secondary p-4">
                             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Limite estimado</p>
-                            <p className="mt-2 text-sm font-medium text-foreground">R$ {card.maxLimit / 1000}k</p>
+                            <p className="cards-offer-stat-value mt-2 text-sm font-medium text-foreground">R$ {card.maxLimit / 1000}k</p>
                           </div>
                         </div>
 
-                        <div className="space-y-3">
+                        <div className="cards-offer-benefits space-y-3">
                           {card.benefits?.slice(0, 3).map((benefit, index) => (
                             <div key={`${benefit}-${index}`} className="flex items-start gap-3">
-                              <CheckCircle2 className="mt-0.5 h-4 w-4 text-primary" />
+                              <CheckCircle2 className="cards-benefit-icon mt-0.5 h-4 w-4" />
                               <p className="text-sm text-muted-foreground">{benefit}</p>
                             </div>
                           ))}
                         </div>
 
-                        <Button className="mt-auto w-full" onClick={openInternalFlow}>
+                        <Button className="cards-page-primary-btn mt-auto w-full" onClick={openInternalFlow}>
                           Continuar no fluxo
                           <ChevronRight className="h-4 w-4" />
                         </Button>
@@ -308,12 +311,12 @@ function CartoesPage() {
             </div>
 
             {filteredCards.length === 0 ? (
-              <div className="rounded-[20px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center">
+              <div className="cards-empty-state rounded-[20px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center">
                 <CreditCard className="mx-auto h-10 w-10 text-muted-foreground" />
                 <h3 className="mt-4 text-2xl">Nenhum cartão encontrado.</h3>
                 <p className="mt-3 text-muted-foreground">Reduza os filtros ativos para abrir mais opções.</p>
                 <div className="mt-6">
-                  <Button onClick={openInternalFlow}>Ver minhas opções agora</Button>
+                  <Button className="cards-page-primary-btn" onClick={openInternalFlow}>Ver minhas opções agora</Button>
                 </div>
               </div>
             ) : null}
@@ -321,14 +324,14 @@ function CartoesPage() {
         </div>
       </div>
 
-      <section className="border-t border-border bg-background-secondary py-16 sm:py-20">
+      <section className="cards-page-cta-section border-t border-border bg-background-secondary py-16 sm:py-20">
         <div className="page-shell">
-          <div className="mx-auto max-w-4xl rounded-[24px] border border-primary/20 bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
-            <h2 className="mb-3">Quer escolher um cartão com mais clareza?</h2>
+          <div className="cards-page-cta mx-auto max-w-4xl rounded-[24px] border bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
+            <h2 className="cards-section-title mb-3">Quer escolher um cartão com mais clareza?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
               Responda o básico sobre o seu momento e veja caminhos que podem combinar melhor com o seu perfil, sem compromisso e sem cobrança antecipada.
             </p>
-            <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
+            <Button size="lg" className="cards-page-primary-btn" onClick={openInternalFlow}>Ver minhas opções agora</Button>
           </div>
         </div>
       </section>
