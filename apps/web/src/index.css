@@ -2542,6 +2542,19 @@
     min-width: 0;
   }
 
+  .cookie-consent {
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    grid-template-columns: auto minmax(0, 1fr);
+    padding: 12px;
+  }
+
+  .cookie-consent-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
   .hero-card::before {
     inset: -10px;
   }
@@ -2592,6 +2605,102 @@
   height: 34px;
   width: auto;
   filter: none !important;
+}
+
+.cookie-consent {
+  position: fixed;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  z-index: 80;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 56px rgba(15, 23, 42, 0.14);
+  backdrop-filter: blur(16px);
+}
+
+.cookie-consent-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(91, 108, 255, 0.12), rgba(79, 209, 255, 0.1));
+  border: 1px solid rgba(91, 108, 255, 0.12);
+}
+
+.cookie-consent-icon span {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 34% 34%, rgba(255, 255, 255, 0.95) 0 2px, transparent 2px),
+    radial-gradient(circle at 68% 42%, rgba(255, 255, 255, 0.95) 0 1.5px, transparent 1.5px),
+    radial-gradient(circle at 50% 72%, rgba(255, 255, 255, 0.95) 0 1.5px, transparent 1.5px),
+    linear-gradient(135deg, #5b6cff, #9aa8ff);
+}
+
+.cookie-consent-copy {
+  min-width: 0;
+}
+
+.cookie-consent-copy strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #0f172a;
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.cookie-consent-copy p {
+  margin: 0;
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.cookie-consent-copy a {
+  color: #5b6cff;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.cookie-consent-copy a:hover {
+  text-decoration: underline;
+}
+
+.cookie-consent-button {
+  min-height: 38px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 16px;
+  background: linear-gradient(180deg, #6070ff 0%, #5263ff 100%);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+  box-shadow: 0 10px 22px rgba(91, 108, 255, 0.22);
+}
+
+.cookie-consent-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(91, 108, 255, 0.26);
+}
+
+.cookie-consent-button:focus-visible {
+  outline: 3px solid rgba(91, 108, 255, 0.26);
+  outline-offset: 2px;
 }
 
 .section-title,

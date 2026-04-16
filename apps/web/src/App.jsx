@@ -4,6 +4,7 @@ import ScrollToTop from '@/components/ScrollToTop.jsx';
 import Header from '@/components/Header.jsx';
 import Footer from '@/components/Footer.jsx';
 import AdSenseScript from '@/components/AdSenseScript.tsx';
+import CookieConsent from '@/components/CookieConsent.jsx';
 
 import HomePage from '@/pages/HomePage.jsx';
 import EmprestimosPage from '@/pages/EmprestimosPage.jsx';
@@ -50,6 +51,7 @@ function AppLayout({ children }) {
       <Header />
       <main className="min-w-0">{children}</main>
       <Footer />
+      <CookieConsent />
     </div>
   );
 }
