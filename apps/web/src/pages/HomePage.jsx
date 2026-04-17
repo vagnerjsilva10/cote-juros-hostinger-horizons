@@ -31,6 +31,8 @@ const marketBrands = ['Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter', 'Santande
 const editorialFeature = normalizeMojibakeDeep({
   tag: 'Comparação real'
 });
+
+const roleWomanImageSrc = '/assets/editorial/role-woman-headphones.png';
 const featureCards = normalizeMojibakeDeep([
   {
     title: 'Preencha o básico',
@@ -511,21 +513,28 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="section section--compact brand-note-section">
+      <section className="section section--compact brand-note-section role-section">
         <div className="page-shell">
-          <div className="brand-note-card role-block">
-            <div className="role-block-copy">
+          <div className="brand-note-card role-block role-card">
+            <div className="role-block-copy role-content">
               <span className="brand-note-kicker">Papel da CoteJuros</span>
-              <h2>{t('A CoteJuros ajuda você a comparar antes de contratar')}</h2>
-              <p>
+              <h2 className="role-block-title">{t('A CoteJuros ajuda você a comparar antes de contratar')}</h2>
+              <p className="role-block-text">
                 {t('Você vê opções com mais clareza, entende o custo real e decide com mais segurança.')}
               </p>
             </div>
-            <div className="brand-note-orbit" aria-hidden="true">
-              <i />
-              <span />
-              <span />
-              <span />
+            <div className="role-media" aria-hidden="true">
+              <div className="role-image-fade" />
+              <img
+                className="role-image"
+                src={roleWomanImageSrc}
+                srcSet={`${roleWomanImageSrc} 1x`}
+                sizes="(max-width: 767px) 100vw, (max-width: 1100px) 44vw, 520px"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                fetchPriority="low"
+              />
             </div>
           </div>
         </div>
