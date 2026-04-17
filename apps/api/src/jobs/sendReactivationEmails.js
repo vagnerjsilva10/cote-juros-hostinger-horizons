@@ -103,9 +103,17 @@ class SendReactivationEmailsJob {
     const rows = await googleSheetsClient.readRows(this.spreadsheetId, SHEET_NAME);
     const eligible = this.pickEligibleRows(rows);
     this.stats.eligible = eligible.length;
+    const remainingDailyQuota = Math.max(0, this.dailyLimit - this.countEmailsSentToday(rows));
 
     console.log(`[SendEmails] Eligible leads: ${eligible.length}`);
-    for (const lead of eligible.slice(0, Math.min(this.limit, this.dailyLimit))) {
+    console.log(`[SendEmails] Daily quota remaining: ${remainingDailyQuota}/${this.dailyLimit}`);
+
+    if (remainingDailyQuota <= 0) {
+      console.log('[SendEmails] Daily limit reached; no emails will be sent in this run');
+      return this.stats;
+    }
+
+    for (const lead of eligible.slice(0, Math.min(this.limit, remainingDailyQuota))) {
       await this.processLead(lead);
     }
 
@@ -136,6 +144,18 @@ class SendReactivationEmailsJob {
 
       return true;
     });
+  }
+
+  countEmailsSentToday(rows) {
+    const today = new Date().toISOString().slice(0, 10);
+    return rows.filter((row) => {
+      if (!row.emailSentAt) return false;
+      const emailStatus = String(row.emailStatus || '').toLowerCase();
+      if (!['sent', 'completed'].includes(emailStatus)) return false;
+      const sentDate = new Date(row.emailSentAt);
+      if (Number.isNaN(sentDate.getTime())) return false;
+      return sentDate.toISOString().slice(0, 10) === today;
+    }).length;
   }
 
   async processLead(lead) {

@@ -4,6 +4,7 @@ node_modules
 apps/**/.env.local
 *.env
 *.zip
+.tools/
 
 .vercel
 .env*.local
