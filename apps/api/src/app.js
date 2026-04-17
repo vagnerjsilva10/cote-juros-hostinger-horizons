@@ -8,6 +8,7 @@ import partnersRoutes from './routes/partners.js';
 import integrationRoutes from './routes/integration.js';
 import creditRoutes from './routes/credit.js';
 import affiliatesRoutes from './routes/affiliates.js';
+import reactivationRoutes from './routes/reactivation.js';
 import { PrismaConfigError } from './lib/prisma.js';
 import { IntegrationConfigurationError, JurosBaixosIntegrationError } from './integrations/jurosBaixos/errors.js';
 import { validateJurosBaixosEnvironment } from './integrations/jurosBaixos/config.js';
@@ -40,10 +41,15 @@ export const createApp = () => {
   app.use('/api/integration', integrationRoutes);
   app.use('/api/credit', creditRoutes);
   app.use('/api/affiliates', affiliatesRoutes);
+  app.use('/api/reactivation', reactivationRoutes);
 
   app.use((err, req, res, _next) => {
     if (err?.name === 'ZodError') {
       return res.status(400).json({ error: 'Validation error', details: err.issues });
+    }
+
+    if (err?.name === 'ValidationError') {
+      return res.status(400).json({ error: 'Validation error', details: err.details || err.message });
     }
 
     if (err instanceof PrismaConfigError) {

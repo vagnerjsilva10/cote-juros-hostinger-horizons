@@ -935,5 +935,133 @@ export const portalApi = {
         device
       });
     }
+  },
+
+  async getReactivationLead(token, { markViewed = false } = {}) {
+    if (!useRemote) {
+      await wait();
+      return {
+        id: `local_reactivation_${token.slice(-6)}`,
+        status: 'visited',
+        fullName: '',
+        productType: 'loan',
+        segment: 'local_preview',
+        expiresAt: null
+      };
+    }
+
+    return request(`/api/reactivation/lead/${encodeURIComponent(token)}${markViewed ? '?viewed=1' : ''}`);
+  },
+
+  async submitReactivationLead(payload) {
+    if (!useRemote) {
+      await wait();
+      return {
+        lead: {
+          id: `local_reactivation_${Date.now()}`,
+          status: 'routed',
+          fullName: payload.fullName,
+          productType: payload.productType,
+          scoreValue: 72,
+          scoreBand: 'B',
+          qualification: 'standard'
+        },
+        score: {
+          value: 72,
+          band: 'B',
+          qualification: 'standard'
+        },
+        partner: {
+          id: 'standard-credit',
+          name: 'Parceiro Standard',
+          mode: 'redirect'
+        },
+        redirectUrl: '/ofertas'
+      };
+    }
+
+    return request('/api/reactivation/submit', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async optOutReactivationLead(payload) {
+    if (!useRemote) {
+      await wait();
+      return { status: 'suppressed', optOutReason: payload.reason || payload.scope };
+    }
+
+    return request('/api/reactivation/opt-out', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async refuseReactivationConsent(payload) {
+    if (!useRemote) {
+      await wait();
+      return { status: 'rejected', optOutReason: payload.reason || 'consent_refused' };
+    }
+
+    return request('/api/reactivation/refuse-consent', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async getReactivationKpis(filters) {
+    if (!useRemote) {
+      await wait();
+      return {
+        totalLeads: 1200,
+        sentLeads: 1200,
+        visits: 384,
+        consents: 156,
+        forms: 140,
+        qualified: 128,
+        routed: 118,
+        delivered: 102,
+        deliveryFailed: 6,
+        conversionRates: {
+          visitRate: 32,
+          consentRate: 40.63,
+          formRate: 89.74,
+          qualificationRate: 91.43,
+          deliveryRate: 86.44
+        },
+        revenue: {
+          estimatedRevenueCents: 428000,
+          payoutCents: 0
+        },
+        byStatus: {
+          imported: 816,
+          visited: 228,
+          consented: 38,
+          delivery_success: 102,
+          delivery_retrying: 10,
+          delivery_failed: 6
+        },
+        byDeliveryStatus: {
+          delivery_success: 102,
+          delivery_retrying: 10,
+          delivery_failed: 6
+        },
+        byBatch: [{ batchId: 'local_preview', leads: 1200 }],
+        byPartner: [
+          { partnerId: 'standard-credit', partnerName: 'Parceiro Standard', leads: 74 },
+          { partnerId: 'restriction-friendly', partnerName: 'Parceiro Restrição', leads: 44 }
+        ],
+        auditEvents: {
+          page_viewed: 384,
+          consent_granted: 156,
+          partner_routed: 118
+        },
+        recentLeads: []
+      };
+    }
+
+    const qs = toQueryString(filters);
+    return request(`/api/reactivation/kpis${qs ? `?${qs}` : ''}`);
   }
 };

@@ -32,6 +32,59 @@ enum AffiliateNetworkCode {
   admitad
 }
 
+enum ReactivationLeadStatus {
+  imported
+  visited
+  consented
+  qualified
+  routed
+  pending_delivery
+  delivery_retrying
+  delivery_failed
+  delivery_success
+  rejected
+  expired
+  revoked
+  suppressed
+}
+
+enum ReactivationPartnerMode {
+  webhook
+  redirect
+  email
+  whatsapp
+}
+
+enum LgpdEventType {
+  lead_imported
+  link_generated
+  token_regenerated
+  token_revoked
+  page_viewed
+  consent_granted
+  consent_refused
+  consent_revoked
+  opt_out_registered
+  form_submitted
+  duplicate_submit_ignored
+  lead_scored
+  partner_selected
+  partner_routed
+  partner_route_failed
+  delivery_retry_scheduled
+  suppression_checked
+  notification_sent
+  token_expired
+  data_exported
+}
+
+enum ReactivationSuppressionScope {
+  unsubscribe_email
+  unsubscribe_whatsapp
+  dnc_global
+  revoked_consent
+}
+
 model Bank {
   id        String   @id @default(cuid())
   name      String
@@ -481,4 +534,136 @@ model AffiliateClick {
   @@index([offerSlug, createdAt])
   @@index([pageSlug, createdAt])
   @@map("affiliate_clicks")
+}
+
+model ReactivationLead {
+  id                 String                 @id @default(cuid())
+  externalLeadId     String?                @map("external_lead_id")
+  batchId            String?                @map("batch_id")
+  tokenHash          String                 @unique @map("token_hash")
+  tokenLast4         String                 @map("token_last4")
+  tokenRevokedAt     DateTime?              @map("token_revoked_at")
+  tokenRegeneratedAt DateTime?              @map("token_regenerated_at")
+  lastUsedAt         DateTime?              @map("last_used_at")
+  status             ReactivationLeadStatus @default(imported)
+  fullName           String?                @map("full_name")
+  email              String?
+  phone              String?
+  cpfHash            String?                @map("cpf_hash")
+  productType        ProductType            @default(loan) @map("product_type")
+  source             String?                @map("source")
+  segment            String?
+  originalPayload    Json?                  @map("original_payload")
+  consentGivenAt     DateTime?              @map("consent_given_at")
+  consentRefusedAt   DateTime?              @map("consent_refused_at")
+  consentRevokedAt   DateTime?              @map("consent_revoked_at")
+  consentIp          String?                @map("consent_ip")
+  consentUserAgent   String?                @map("consent_user_agent")
+  consentVersion     String?                @map("consent_version")
+  privacyPolicyVersion String?              @map("privacy_policy_version")
+  consentSource      String?                @map("consent_source")
+  optOutReason       String?                @map("opt_out_reason")
+  requestedAmount    Decimal?               @db.Decimal(14, 2) @map("requested_amount")
+  income             Decimal?               @db.Decimal(14, 2)
+  employmentStatus   String?                @map("employment_status")
+  hasRestriction     Boolean?               @map("has_restriction")
+  hasGuarantee       Boolean?               @map("has_guarantee")
+  guaranteeType      String?                @map("guarantee_type")
+  scoreValue         Int?                   @map("score_value")
+  scoreBand          String?                @map("score_band")
+  qualification      String?
+  selectedPartnerId  String?                @map("selected_partner_id")
+  selectedPartnerName String?               @map("selected_partner_name")
+  idempotencyKey     String?                @unique @map("idempotency_key")
+  submissionHash     String?                @map("submission_hash")
+  submittedAt        DateTime?              @map("submitted_at")
+  processingLockId   String?                @map("processing_lock_id")
+  processingStartedAt DateTime?             @map("processing_started_at")
+  processingExpiresAt DateTime?             @map("processing_expires_at")
+  deliveryStatus     String?                @map("delivery_status")
+  deliveredAt        DateTime?              @map("delivered_at")
+  estimatedRevenueCents Int?                @map("estimated_revenue_cents")
+  payoutCents        Int?                   @map("payout_cents")
+  expiresAt          DateTime?              @map("expires_at")
+  createdAt          DateTime               @default(now()) @map("created_at")
+  updatedAt          DateTime               @updatedAt @map("updated_at")
+
+  events     ReactivationAuditEvent[]
+  deliveries ReactivationPartnerDelivery[]
+
+  @@index([batchId, status])
+  @@index([status, createdAt])
+  @@index([segment])
+  @@index([selectedPartnerId, createdAt])
+  @@index([processingLockId])
+  @@index([deliveryStatus, updatedAt])
+  @@map("reactivation_leads")
+}
+
+model ReactivationAuditEvent {
+  id          String        @id @default(cuid())
+  leadId      String?       @map("lead_id")
+  eventType   LgpdEventType @map("event_type")
+  actor       String        @default("system")
+  ipAddress   String?       @map("ip_address")
+  userAgent   String?       @map("user_agent")
+  source      String?
+  idempotencyKey String? @unique @map("idempotency_key")
+  metadata    Json?
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  lead ReactivationLead? @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  @@index([leadId, createdAt])
+  @@index([eventType, createdAt])
+  @@map("reactivation_audit_events")
+}
+
+model ReactivationPartnerDelivery {
+  id             String                  @id @default(cuid())
+  leadId         String                  @map("lead_id")
+  partnerId      String                  @map("partner_id")
+  partnerName    String                  @map("partner_name")
+  mode           ReactivationPartnerMode
+  status         String                  @default("pending")
+  destination    String?
+  idempotencyKey String                  @unique @map("idempotency_key")
+  retryCount     Int                     @default(0) @map("retry_count")
+  nextAttemptAt  DateTime?               @map("next_attempt_at")
+  lastAttemptAt  DateTime?               @map("last_attempt_at")
+  deliveredAt    DateTime?               @map("delivered_at")
+  requestPayload Json?                   @map("request_payload")
+  responsePayload Json?                  @map("response_payload")
+  errorMessage   String?                 @map("error_message")
+  createdAt      DateTime                @default(now()) @map("created_at")
+  updatedAt      DateTime                @updatedAt @map("updated_at")
+
+  lead ReactivationLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId, createdAt])
+  @@index([partnerId, status])
+  @@index([status, createdAt])
+  @@index([nextAttemptAt, status])
+  @@unique([leadId, partnerId])
+  @@map("reactivation_partner_deliveries")
+}
+
+model ReactivationSuppression {
+  id        String                      @id @default(cuid())
+  scope     ReactivationSuppressionScope
+  emailHash String?                     @map("email_hash")
+  phoneHash String?                     @map("phone_hash")
+  cpfHash   String?                     @map("cpf_hash")
+  reason    String?
+  source    String?
+  createdAt DateTime                    @default(now()) @map("created_at")
+
+  @@index([scope, createdAt])
+  @@index([emailHash, scope])
+  @@index([phoneHash, scope])
+  @@index([cpfHash, scope])
+  @@unique([emailHash, scope])
+  @@unique([phoneHash, scope])
+  @@unique([cpfHash, scope])
+  @@map("reactivation_suppressions")
 }

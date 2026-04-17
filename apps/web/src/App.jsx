@@ -28,6 +28,7 @@ import MotionHeroPage from '@/pages/MotionHeroPage.jsx';
 import SeoProgrammaticPage from '@/pages/SeoProgrammaticPage.jsx';
 import CreditProfileLandingPage from '@/pages/CreditProfileLandingPage.jsx';
 import LeadNextStepPage from '@/pages/LeadNextStepPage.jsx';
+import ReactivationLandingPage from '@/pages/ReactivationLandingPage.jsx';
 
 import AdminAuthGuard from '@/admin/AdminAuthGuard.jsx';
 import AdminLayout from '@/admin/AdminLayout.jsx';
@@ -38,6 +39,7 @@ import AdminPartnersPage from '@/pages/admin/AdminPartnersPage.jsx';
 import AdminArticlesPage from '@/pages/admin/AdminArticlesPage.jsx';
 import AdminSeoPagesPage from '@/pages/admin/AdminSeoPagesPage.jsx';
 import AdminLeadsPage from '@/pages/admin/AdminLeadsPage.jsx';
+import AdminReactivationPage from '@/pages/admin/AdminReactivationPage.jsx';
 import AdminTestimonialsPage from '@/pages/admin/AdminTestimonialsPage.jsx';
 import AdminSettingsPage from '@/pages/admin/AdminSettingsPage.jsx';
 
@@ -152,6 +154,7 @@ function App() {
         <Route path="/cote-finance-ai" element={<AppLayout><CoteFinanceAIPage /></AppLayout>} />
         <Route path="/motion-hero" element={<AppLayout><MotionHeroPage /></AppLayout>} />
         <Route path="/proxima-etapa" element={<AppLayout><LeadNextStepPage /></AppLayout>} />
+        <Route path="/r/:token" element={<AppLayout><ReactivationLandingPage /></AppLayout>} />
         <Route
           path="/emprestimo-para-negativado"
           element={
@@ -288,6 +291,7 @@ function App() {
         <Route path="/admin/articles" element={<AdminRoute title="Gestão de artigos"><AdminArticlesPage /></AdminRoute>} />
         <Route path="/admin/seo-pages" element={<AdminRoute title="Gestão de páginas SEO"><AdminSeoPagesPage /></AdminRoute>} />
         <Route path="/admin/leads" element={<AdminRoute title="Gestão de leads"><AdminLeadsPage /></AdminRoute>} />
+        <Route path="/admin/reactivation" element={<AdminRoute title="Reativação de leads"><AdminReactivationPage /></AdminRoute>} />
         <Route path="/admin/testimonials" element={<AdminRoute title="Depoimentos"><AdminTestimonialsPage /></AdminRoute>} />
         <Route path="/admin/settings" element={<AdminRoute title="Configurações"><AdminSettingsPage /></AdminRoute>} />
 

@@ -1,0 +1,258 @@
+{
+  "name": "Cote Juros - Reactivation Import, Suppression and Dispatch",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "schedule",
+      "name": "Run waves hourly",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "documentId": "={{$env.GOOGLE_SHEETS_REACTIVATION_ID}}",
+        "sheetName": "leads",
+        "options": {}
+      },
+      "id": "read-leads",
+      "name": "Read leads sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const waveLimit = Number($env.REACTIVATION_WAVE_SIZE || 100);\nconst batchId = $env.REACTIVATION_BATCH_ID || `n8n_${new Date().toISOString().slice(0,10).replace(/-/g,'')}`;\nreturn items\n  .filter(item => !item.json.sent_at && !item.json.suppressed_at)\n  .slice(0, waveLimit)\n  .map(item => ({ json: { ...item.json, batchId: item.json.batchId || batchId } }));"
+      },
+      "id": "select-wave",
+      "name": "Select next wave",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "batchSize": 25,
+        "options": {}
+      },
+      "id": "split-batches",
+      "name": "Split API batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.COTE_API_BASE_URL + '/api/reactivation/suppression/check'}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{'Bearer ' + $env.COTE_API_TOKEN}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"email\": $node['Split API batches'].json.email,\n  \"phone\": $node['Split API batches'].json.phone || $node['Split API batches'].json.telefone,\n  \"cpf\": $node['Split API batches'].json.cpf\n}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "check-suppression",
+      "name": "Check suppression",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{Boolean($json.data?.suppressed || $json.data?.emailSuppressed || $json.data?.whatsappSuppressed)}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "is-suppressed",
+      "name": "Suppressed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1100, 0]
+    },
+    {
+      "parameters": {
+        "amount": "={{Number($env.REACTIVATION_WAVE_DELAY_SECONDS || 2)}}",
+        "unit": "seconds"
+      },
+      "id": "wave-delay",
+      "name": "Wave delay",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1320, 120]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.COTE_API_BASE_URL + '/api/reactivation/import'}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{'Bearer ' + $env.COTE_API_TOKEN}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"externalLeadId\": $node['Split API batches'].json.externalLeadId || $node['Split API batches'].json.id,\n  \"batchId\": $node['Split API batches'].json.batchId,\n  \"fullName\": $node['Split API batches'].json.fullName || $node['Split API batches'].json.nome,\n  \"email\": $node['Split API batches'].json.email,\n  \"phone\": $node['Split API batches'].json.phone || $node['Split API batches'].json.telefone,\n  \"cpf\": $node['Split API batches'].json.cpf,\n  \"productType\": $node['Split API batches'].json.productType || \"loan\",\n  \"source\": \"google_sheets\",\n  \"segment\": $node['Split API batches'].json.segment,\n  \"requestedAmount\": Number($node['Split API batches'].json.requestedAmount || $node['Split API batches'].json.valor || 0) || undefined,\n  \"income\": Number($node['Split API batches'].json.income || $node['Split API batches'].json.renda || 0) || undefined,\n  \"employmentStatus\": $node['Split API batches'].json.employmentStatus || $node['Split API batches'].json.ocupacao,\n  \"hasRestriction\": [\"true\", \"1\", \"sim\", \"yes\"].includes(String($node['Split API batches'].json.hasRestriction || $node['Split API batches'].json.restricao || \"false\").toLowerCase()),\n  \"hasGuarantee\": [\"true\", \"1\", \"sim\", \"yes\"].includes(String($node['Split API batches'].json.hasGuarantee || $node['Split API batches'].json.garantia || \"false\").toLowerCase()),\n  \"guaranteeType\": $node['Split API batches'].json.guaranteeType || $node['Split API batches'].json.tipo_garantia,\n  \"originalPayload\": $node['Split API batches'].json\n}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "create-token",
+      "name": "Create lead and token",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1540, 120]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.data?.lead?.phone}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "has-whatsapp",
+      "name": "Has WhatsApp?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1760, 120]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.WHATSAPP_API_URL}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{'Bearer ' + $env.WHATSAPP_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": $json.data.lead.phone,\n  \"template\": $env.WHATSAPP_REACTIVATION_TEMPLATE,\n  \"data\": {\n    \"name\": $json.data.lead.fullName || \"\",\n    \"url\": $env.REACTIVATION_BASE_URL + \"/r/\" + $json.data.token\n  }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "send-whatsapp",
+      "name": "Send WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1980, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.EMAIL_API_URL}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{'Bearer ' + $env.EMAIL_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": $json.data.lead.email,\n  \"templateId\": $env.EMAIL_REACTIVATION_TEMPLATE_ID,\n  \"data\": {\n    \"name\": $json.data.lead.fullName || \"\",\n    \"url\": $env.REACTIVATION_BASE_URL + \"/r/\" + $json.data.token\n  }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "send-email",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1980, 240]
+    }
+  ],
+  "connections": {
+    "Run waves hourly": {
+      "main": [[{ "node": "Read leads sheet", "type": "main", "index": 0 }]]
+    },
+    "Read leads sheet": {
+      "main": [[{ "node": "Select next wave", "type": "main", "index": 0 }]]
+    },
+    "Select next wave": {
+      "main": [[{ "node": "Split API batches", "type": "main", "index": 0 }]]
+    },
+    "Split API batches": {
+      "main": [[{ "node": "Check suppression", "type": "main", "index": 0 }]]
+    },
+    "Check suppression": {
+      "main": [[{ "node": "Suppressed?", "type": "main", "index": 0 }]]
+    },
+    "Suppressed?": {
+      "main": [
+        [],
+        [{ "node": "Wave delay", "type": "main", "index": 0 }]
+      ]
+    },
+    "Wave delay": {
+      "main": [[{ "node": "Create lead and token", "type": "main", "index": 0 }]]
+    },
+    "Create lead and token": {
+      "main": [[{ "node": "Has WhatsApp?", "type": "main", "index": 0 }]]
+    },
+    "Has WhatsApp?": {
+      "main": [
+        [{ "node": "Send WhatsApp", "type": "main", "index": 0 }],
+        [{ "node": "Send Email", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

@@ -11,6 +11,8 @@
 		"start:api": "npm run start --prefix apps/api",
 		"test:awin": "node scripts/testAwinApi.js",
 		"test:awin:linkbuilder": "node scripts/testAwinLinkBuilder.js",
+		"reactivation:tokens": "node scripts/reactivation/generateLeadTokens.js",
+		"reactivation:batches": "node scripts/reactivation/segmentLeadBatches.js",
 		"prisma:generate": "npm run prisma:generate --prefix apps/api",
 		"prisma:migrate": "npm run prisma:migrate --prefix apps/api",
 		"prisma:deploy": "npm run prisma:deploy --prefix apps/api",

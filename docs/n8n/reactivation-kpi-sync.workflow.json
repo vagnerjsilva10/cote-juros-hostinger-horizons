@@ -1,0 +1,81 @@
+{
+  "name": "Cote Juros - Reactivation KPI Sync",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "id": "schedule",
+      "name": "Run every 30 minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.COTE_API_BASE_URL + '/api/reactivation/kpis'}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{'Bearer ' + $env.COTE_API_TOKEN}}"
+            }
+          ]
+        }
+      },
+      "id": "fetch-kpis",
+      "name": "Fetch KPIs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const kpis = $json.data || $json;\nreturn [{\n  json: {\n    syncedAt: new Date().toISOString(),\n    totalLeads: kpis.totalLeads,\n    sentLeads: kpis.sentLeads,\n    visits: kpis.visits,\n    consents: kpis.consents,\n    forms: kpis.forms,\n    qualified: kpis.qualified,\n    routed: kpis.routed,\n    delivered: kpis.delivered,\n    deliveryFailed: kpis.deliveryFailed,\n    visitRate: kpis.conversionRates?.visitRate,\n    consentRate: kpis.conversionRates?.consentRate,\n    formRate: kpis.conversionRates?.formRate,\n    qualificationRate: kpis.conversionRates?.qualificationRate,\n    deliveryRate: kpis.conversionRates?.deliveryRate,\n    estimatedRevenueCents: kpis.revenue?.estimatedRevenueCents,\n    payoutCents: kpis.revenue?.payoutCents,\n    byStatus: JSON.stringify(kpis.byStatus || {}),\n    byDeliveryStatus: JSON.stringify(kpis.byDeliveryStatus || {}),\n    byBatch: JSON.stringify(kpis.byBatch || []),\n    byPartner: JSON.stringify(kpis.byPartner || []),\n    auditEvents: JSON.stringify(kpis.auditEvents || {})\n  }\n}];"
+      },
+      "id": "flatten",
+      "name": "Flatten dashboard row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "={{$env.GOOGLE_SHEETS_REACTIVATION_ID}}",
+        "sheetName": "kpis",
+        "columns": {
+          "mappingMode": "autoMapInputData"
+        },
+        "options": {}
+      },
+      "id": "append-kpis",
+      "name": "Append KPIs to Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [660, 0]
+    }
+  ],
+  "connections": {
+    "Run every 30 minutes": {
+      "main": [[{ "node": "Fetch KPIs", "type": "main", "index": 0 }]]
+    },
+    "Fetch KPIs": {
+      "main": [[{ "node": "Flatten dashboard row", "type": "main", "index": 0 }]]
+    },
+    "Flatten dashboard row": {
+      "main": [[{ "node": "Append KPIs to Sheets", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

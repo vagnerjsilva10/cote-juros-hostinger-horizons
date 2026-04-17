@@ -12,6 +12,7 @@ const navItems = [
   { to: '/admin/articles', label: 'Artigos' },
   { to: '/admin/seo-pages', label: 'Páginas SEO' },
   { to: '/admin/leads', label: 'Leads' },
+  { to: '/admin/reactivation', label: 'Reativacao' },
   { to: '/admin/testimonials', label: 'Depoimentos' },
   { to: '/admin/settings', label: 'Configurações' }
 ];
