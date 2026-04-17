@@ -68,11 +68,12 @@ const verifyAdminSession = (token) => {
 const setAdminCookie = (res, token) => {
   const secure = process.env.NODE_ENV === 'production';
   const domain = process.env.REACTIVATION_ADMIN_COOKIE_DOMAIN;
+  const sameSite = secure ? 'None' : 'Lax';
   const parts = [
     `${ADMIN_COOKIE_NAME}=${encodeURIComponent(token)}`,
-    'Path=/api/reactivation-admin',
+    'Path=/',
     'HttpOnly',
-    'SameSite=Lax',
+    `SameSite=${sameSite}`,
     `Max-Age=${ADMIN_SESSION_TTL_SECONDS}`
   ];
   if (secure) parts.push('Secure');
@@ -82,14 +83,16 @@ const setAdminCookie = (res, token) => {
 
 const clearAdminCookie = (res) => {
   const domain = process.env.REACTIVATION_ADMIN_COOKIE_DOMAIN;
+  const secure = process.env.NODE_ENV === 'production';
+  const sameSite = secure ? 'None' : 'Lax';
   const parts = [
     `${ADMIN_COOKIE_NAME}=`,
-    'Path=/api/reactivation-admin',
+    'Path=/',
     'HttpOnly',
-    'SameSite=Lax',
+    `SameSite=${sameSite}`,
     'Max-Age=0'
   ];
-  if (process.env.NODE_ENV === 'production') parts.push('Secure');
+  if (secure) parts.push('Secure');
   if (domain) parts.push(`Domain=${domain}`);
   res.setHeader('Set-Cookie', parts.join('; '));
 };
