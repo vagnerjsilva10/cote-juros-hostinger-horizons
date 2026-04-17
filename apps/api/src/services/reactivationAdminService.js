@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import sendgridEventWebhook from '@sendgrid/eventwebhook';
+import sgMail from '@sendgrid/mail';
 import { getPrisma } from '../lib/prisma.js';
 
 const { EventWebhook, EventWebhookHeader } = sendgridEventWebhook;
@@ -100,6 +101,10 @@ const audit = async (prisma, req, action, entityType, entityId, after, before = 
     }
   });
 };
+
+const renderTemplate = (template, variables) => String(template || '').replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (_, key) => {
+  return variables[key] ?? '';
+});
 
 export class ReactivationAdminService {
   static validateFlow(definition = {}) {
@@ -468,6 +473,318 @@ export class ReactivationAdminService {
       prisma.reactivationFlowExecutionStep.findMany({ where: { leadId }, orderBy: { createdAt: 'asc' } })
     ]);
     return { lead, auditEvents, messages, flowExecutions, flowSteps };
+  }
+
+  static async previewTemplate(templateId, variables = {}) {
+    const prisma = getPrisma();
+    const template = await prisma.reactivationEmailTemplate.findUnique({ where: { id: templateId } });
+    if (!template) return null;
+    const defaults = {
+      firstName: 'Marina',
+      name: 'Marina',
+      fullName: 'Marina Teste Cote',
+      reactivationUrl: 'https://finance.cotejuros.com.br/r/exemplo-token',
+      unsubscribeUrl: 'https://finance.cotejuros.com.br/r/exemplo-token?optout=1'
+    };
+    const merged = { ...defaults, ...variables };
+    return {
+      template,
+      rendered: {
+        subject: renderTemplate(template.subject, merged),
+        preheader: renderTemplate(template.preheader || '', merged),
+        html: renderTemplate(template.html, merged),
+        text: renderTemplate(template.text, merged)
+      },
+      variables: merged
+    };
+  }
+
+  static async sendTemplateTest({ templateId, toEmail, variables = {} }, req) {
+    const preview = await this.previewTemplate(templateId, variables);
+    if (!preview) return null;
+    if (!process.env.SENDGRID_API_KEY) {
+      throw new Error('SENDGRID_API_KEY is required to send template tests');
+    }
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const message = {
+      to: toEmail,
+      from: {
+        email: process.env.SENDGRID_FROM_EMAIL || 'noreply@em.cotejuros.com.br',
+        name: process.env.SENDGRID_FROM_NAME || 'Cote Juros'
+      },
+      replyTo: process.env.SENDGRID_REPLY_TO || process.env.SENDGRID_FROM_EMAIL || 'noreply@em.cotejuros.com.br',
+      subject: `[TESTE] ${preview.rendered.subject}`,
+      html: preview.rendered.html,
+      text: preview.rendered.text,
+      customArgs: {
+        campaign: 'admin_template_test',
+        templateId
+      }
+    };
+    const [response] = await sgMail.send(message);
+    await audit(getPrisma(), req, 'template_updated', 'template_test', templateId, {
+      to: maskEmail(toEmail),
+      statusCode: response?.statusCode || null,
+      providerMessageId: response?.headers?.['x-message-id'] || null
+    });
+    return {
+      sent: true,
+      to: maskEmail(toEmail),
+      statusCode: response?.statusCode || null,
+      providerMessageId: response?.headers?.['x-message-id'] || null
+    };
+  }
+
+  static async resendLeadEmail({ leadId, templateId, sequenceKey = 'manual_resend', reactivationUrl }, req) {
+    const prisma = getPrisma();
+    const [lead, template] = await Promise.all([
+      prisma.reactivationLead.findUnique({ where: { id: leadId } }),
+      prisma.reactivationEmailTemplate.findUnique({ where: { id: templateId } })
+    ]);
+    if (!lead || !template) return null;
+    if (!lead.email) throw new Error('Lead does not have an email');
+    if (!reactivationUrl) {
+      throw new Error('reactivationUrl is required because raw reactivation tokens are not stored in the database');
+    }
+    if (!process.env.SENDGRID_API_KEY) {
+      throw new Error('SENDGRID_API_KEY is required to resend email');
+    }
+
+    const campaign = await prisma.reactivationEmailCampaign.findFirst({ where: { slug: CAMPAIGN_SLUG } });
+    const variables = {
+      firstName: String(lead.fullName || 'Ola').trim().split(/\s+/)[0],
+      name: String(lead.fullName || 'Ola').trim().split(/\s+/)[0],
+      fullName: lead.fullName || '',
+      reactivationUrl,
+      unsubscribeUrl: `${reactivationUrl}?optout=1`
+    };
+    const idempotencyKey = crypto.createHash('sha256')
+      .update(['manual_resend', leadId, templateId, Date.now()].join(':'))
+      .digest('hex');
+    const subject = renderTemplate(template.subject, variables);
+    const html = renderTemplate(template.html, variables);
+    const text = renderTemplate(template.text, variables);
+
+    const messageRecord = await prisma.reactivationEmailMessage.create({
+      data: {
+        leadId,
+        campaignId: campaign?.id || null,
+        templateId,
+        sequenceKey,
+        provider: 'sendgrid',
+        toEmailHash: hashEmail(lead.email),
+        toEmailMasked: maskEmail(lead.email),
+        subject,
+        status: 'sending',
+        idempotencyKey,
+        requestPayload: {
+          to: maskEmail(lead.email),
+          subject,
+          sequenceKey,
+          action: 'manual_resend'
+        },
+        scheduledAt: new Date()
+      }
+    });
+
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const [response] = await sgMail.send({
+      to: lead.email,
+      from: {
+        email: process.env.SENDGRID_FROM_EMAIL || 'noreply@em.cotejuros.com.br',
+        name: process.env.SENDGRID_FROM_NAME || 'Cote Juros'
+      },
+      replyTo: process.env.SENDGRID_REPLY_TO || process.env.SENDGRID_FROM_EMAIL || 'noreply@em.cotejuros.com.br',
+      subject,
+      html,
+      text,
+      trackingSettings: {
+        clickTracking: { enable: true, enableText: true },
+        openTracking: { enable: true }
+      },
+      customArgs: {
+        messageId: messageRecord.id,
+        leadId,
+        campaignId: campaign?.id || '',
+        campaign: campaign?.slug || CAMPAIGN_SLUG,
+        sequence: sequenceKey
+      }
+    });
+    const providerMessageId = response?.headers?.['x-message-id'] || null;
+    await prisma.reactivationEmailMessage.update({
+      where: { id: messageRecord.id },
+      data: {
+        status: 'sent',
+        sentAt: new Date(),
+        providerMessageId,
+        responsePayload: {
+          statusCode: response?.statusCode || null,
+          providerMessageId
+        }
+      }
+    });
+    await prisma.reactivationEmailMessageEvent.create({
+      data: {
+        messageId: messageRecord.id,
+        leadId,
+        campaignId: campaign?.id || null,
+        eventType: 'manual_resend',
+        provider: 'sendgrid',
+        providerEventId: `manual-resend-${messageRecord.id}`,
+        providerMessageId,
+        emailHash: hashEmail(lead.email),
+        rawPayload: { actor: actorFromReq(req) },
+        signatureVerified: true,
+        occurredAt: new Date()
+      }
+    });
+    await audit(prisma, req, 'lead_email_resent', 'lead', leadId, {
+      messageId: messageRecord.id,
+      templateId,
+      sequenceKey,
+      to: maskEmail(lead.email)
+    });
+    return { messageId: messageRecord.id, providerMessageId, to: maskEmail(lead.email) };
+  }
+
+  static async pauseLeadFlow(leadId, req) {
+    const prisma = getPrisma();
+    const result = await prisma.reactivationLeadFlowExecution.updateMany({
+      where: {
+        leadId,
+        status: { in: ['active', 'waiting'] }
+      },
+      data: { status: 'paused' }
+    });
+    await audit(prisma, req, 'lead_paused', 'lead', leadId, { pausedExecutions: result.count });
+    return { pausedExecutions: result.count };
+  }
+
+  static async moveLeadFlowNode({ leadId, executionId, nodeKey, reason }, req) {
+    const prisma = getPrisma();
+    const execution = await prisma.reactivationLeadFlowExecution.findFirst({
+      where: {
+        id: executionId || undefined,
+        leadId,
+        status: { in: ['active', 'waiting', 'paused'] }
+      }
+    });
+    if (!execution) return null;
+    const node = await prisma.reactivationFlowNode.findFirst({
+      where: {
+        flowVersionId: execution.flowVersionId,
+        nodeKey
+      }
+    });
+    if (!node) throw new Error(`Node ${nodeKey} not found in execution flow version`);
+    const updated = await prisma.reactivationLeadFlowExecution.update({
+      where: { id: execution.id },
+      data: {
+        currentNodeKey: nodeKey,
+        status: 'active',
+        waitingUntil: null,
+        errorMessage: null,
+        context: {
+          ...(execution.context || {}),
+          manualMove: {
+            nodeKey,
+            reason: reason || null,
+            actor: actorFromReq(req),
+            at: new Date().toISOString()
+          }
+        }
+      }
+    });
+    await prisma.reactivationFlowExecutionStep.create({
+      data: {
+        executionId: execution.id,
+        leadId,
+        flowNodeId: node.id,
+        nodeKey,
+        nodeType: node.type,
+        status: 'completed',
+        input: { manual: true, reason: reason || null },
+        output: { movedBy: actorFromReq(req) },
+        startedAt: new Date(),
+        completedAt: new Date()
+      }
+    });
+    await audit(prisma, req, 'lead_flow_moved', 'lead', leadId, { executionId: execution.id, nodeKey, reason });
+    return updated;
+  }
+
+  static async forceNextExecution(leadId, req) {
+    const prisma = getPrisma();
+    const result = await prisma.reactivationLeadFlowExecution.updateMany({
+      where: {
+        leadId,
+        status: 'waiting'
+      },
+      data: {
+        status: 'active',
+        waitingUntil: null
+      }
+    });
+    await audit(prisma, req, 'lead_flow_moved', 'lead', leadId, { forcedExecutions: result.count, action: 'force_next_execution' });
+    return { forcedExecutions: result.count };
+  }
+
+  static async applyLeadSuppression({ leadId, email, scope = 'dnc_global', reason = 'admin_manual' }, req) {
+    const prisma = getPrisma();
+    const lead = leadId ? await prisma.reactivationLead.findUnique({ where: { id: leadId } }) : null;
+    const targetEmail = email || lead?.email;
+    if (!targetEmail) throw new Error('email or leadId with email is required');
+    const suppression = await prisma.reactivationSuppression.upsert({
+      where: { emailHash_scope: { emailHash: hashEmail(targetEmail), scope } },
+      create: {
+        scope,
+        emailHash: hashEmail(targetEmail),
+        reason,
+        source: 'admin_manual'
+      },
+      update: {
+        reason,
+        source: 'admin_manual'
+      }
+    });
+    if (leadId) {
+      await prisma.reactivationLead.update({
+        where: { id: leadId },
+        data: {
+          status: scope === 'revoked_consent' ? 'revoked' : 'suppressed',
+          optOutReason: reason,
+          consentRevokedAt: scope === 'revoked_consent' ? new Date() : undefined
+        }
+      });
+    }
+    await audit(prisma, req, 'lead_suppressed', leadId ? 'lead' : 'suppression', leadId || suppression.id, {
+      suppressionId: suppression.id,
+      scope,
+      reason,
+      email: maskEmail(targetEmail)
+    });
+    return suppression;
+  }
+
+  static async releaseSuppression({ suppressionId, leadId, email, scope }, req) {
+    const prisma = getPrisma();
+    let deleted;
+    if (suppressionId) {
+      deleted = await prisma.reactivationSuppression.deleteMany({ where: { id: suppressionId } });
+    } else {
+      const lead = leadId ? await prisma.reactivationLead.findUnique({ where: { id: leadId } }) : null;
+      const targetEmail = email || lead?.email;
+      if (!targetEmail || !scope) throw new Error('suppressionId or email/leadId plus scope is required');
+      deleted = await prisma.reactivationSuppression.deleteMany({
+        where: { emailHash: hashEmail(targetEmail), scope }
+      });
+    }
+    await audit(prisma, req, 'lead_suppressed', leadId ? 'lead' : 'suppression', leadId || suppressionId || null, {
+      action: 'release_suppression',
+      deleted: deleted.count,
+      scope
+    });
+    return { deleted: deleted.count };
   }
 
   static verifySendGridSignature(req) {

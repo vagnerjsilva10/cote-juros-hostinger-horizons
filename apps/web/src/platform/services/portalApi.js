@@ -1130,6 +1130,20 @@ export const portalApi = {
     });
   },
 
+  async previewReactivationEmailTemplate(templateId, variables = {}) {
+    return request(`/api/reactivation-admin/templates/${templateId}/preview`, {
+      method: 'POST',
+      body: JSON.stringify({ variables })
+    });
+  },
+
+  async sendReactivationTemplateTest(templateId, payload) {
+    return request(`/api/reactivation-admin/templates/${templateId}/test-send`, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
   async getReactivationFlows() {
     if (!useRemote) {
       await wait();
@@ -1171,6 +1185,48 @@ export const portalApi = {
     return request('/api/reactivation-admin/flows/validate', {
       method: 'POST',
       body: JSON.stringify(definition)
+    });
+  },
+
+  async resendReactivationLeadEmail(leadId, payload) {
+    return request(`/api/reactivation-admin/leads/${leadId}/resend-email`, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async pauseReactivationLeadFlow(leadId) {
+    return request(`/api/reactivation-admin/leads/${leadId}/pause-flow`, {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
+  },
+
+  async moveReactivationLeadFlowNode(leadId, payload) {
+    return request(`/api/reactivation-admin/leads/${leadId}/move-flow-node`, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async forceReactivationLeadNextExecution(leadId) {
+    return request(`/api/reactivation-admin/leads/${leadId}/force-next-execution`, {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
+  },
+
+  async applyReactivationSuppression(payload) {
+    return request('/api/reactivation-admin/suppressions/apply', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async releaseReactivationSuppression(payload) {
+    return request('/api/reactivation-admin/suppressions/release', {
+      method: 'POST',
+      body: JSON.stringify(payload)
     });
   },
 

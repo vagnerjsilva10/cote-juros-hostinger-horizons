@@ -107,6 +107,45 @@ const statusSchema = z.object({
   status: z.string().min(2)
 });
 
+const templatePreviewSchema = z.object({
+  variables: jsonRecord
+});
+
+const templateTestSchema = z.object({
+  toEmail: z.string().email(),
+  variables: jsonRecord
+});
+
+const resendLeadEmailSchema = z.object({
+  templateId: z.string().min(1),
+  sequenceKey: z.string().min(1).optional(),
+  reactivationUrl: z.string().url()
+});
+
+const moveLeadFlowNodeSchema = z.object({
+  executionId: z.string().optional(),
+  nodeKey: z.string().min(1),
+  reason: z.string().optional().nullable()
+});
+
+const suppressionApplySchema = z.object({
+  leadId: z.string().optional(),
+  email: z.string().email().optional(),
+  scope: z.enum(['unsubscribe_email', 'unsubscribe_whatsapp', 'dnc_global', 'revoked_consent']).optional(),
+  reason: z.string().min(2).optional()
+}).refine((payload) => payload.leadId || payload.email, {
+  message: 'leadId or email is required'
+});
+
+const suppressionReleaseSchema = z.object({
+  suppressionId: z.string().optional(),
+  leadId: z.string().optional(),
+  email: z.string().email().optional(),
+  scope: z.enum(['unsubscribe_email', 'unsubscribe_whatsapp', 'dnc_global', 'revoked_consent']).optional()
+}).refine((payload) => payload.suppressionId || ((payload.leadId || payload.email) && payload.scope), {
+  message: 'suppressionId or leadId/email plus scope is required'
+});
+
 router.post('/webhooks/sendgrid', asyncHandler(async (req, res) => {
   const result = await ReactivationAdminService.handleSendGridWebhook(req.body || [], req);
   res.json({ data: result });
@@ -150,6 +189,24 @@ router.post('/templates', asyncHandler(async (req, res) => {
   res.status(payload.id ? 200 : 201).json({ data: template });
 }));
 
+router.post('/templates/:id/preview', asyncHandler(async (req, res) => {
+  const payload = templatePreviewSchema.parse(req.body || {});
+  const preview = await ReactivationAdminService.previewTemplate(req.params.id, payload.variables || {});
+  if (!preview) return res.status(404).json({ error: 'Template not found' });
+  res.json({ data: preview });
+}));
+
+router.post('/templates/:id/test-send', asyncHandler(async (req, res) => {
+  const payload = templateTestSchema.parse(req.body || {});
+  const result = await ReactivationAdminService.sendTemplateTest({
+    templateId: req.params.id,
+    toEmail: payload.toEmail,
+    variables: payload.variables || {}
+  }, req);
+  if (!result) return res.status(404).json({ error: 'Template not found' });
+  res.json({ data: result });
+}));
+
 router.get('/flows', asyncHandler(async (_req, res) => {
   res.json({ data: await ReactivationAdminService.listFlows() });
 }));
@@ -181,6 +238,48 @@ router.get('/leads/:leadId/timeline', asyncHandler(async (req, res) => {
   const timeline = await ReactivationAdminService.leadTimeline(req.params.leadId);
   if (!timeline.lead) return res.status(404).json({ error: 'Lead not found' });
   res.json({ data: timeline });
+}));
+
+router.post('/leads/:leadId/resend-email', asyncHandler(async (req, res) => {
+  const payload = resendLeadEmailSchema.parse(req.body || {});
+  const result = await ReactivationAdminService.resendLeadEmail({
+    leadId: req.params.leadId,
+    ...payload
+  }, req);
+  if (!result) return res.status(404).json({ error: 'Lead or template not found' });
+  res.json({ data: result });
+}));
+
+router.post('/leads/:leadId/pause-flow', asyncHandler(async (req, res) => {
+  const result = await ReactivationAdminService.pauseLeadFlow(req.params.leadId, req);
+  res.json({ data: result });
+}));
+
+router.post('/leads/:leadId/move-flow-node', asyncHandler(async (req, res) => {
+  const payload = moveLeadFlowNodeSchema.parse(req.body || {});
+  const result = await ReactivationAdminService.moveLeadFlowNode({
+    leadId: req.params.leadId,
+    ...payload
+  }, req);
+  if (!result) return res.status(404).json({ error: 'Active lead flow execution not found' });
+  res.json({ data: result });
+}));
+
+router.post('/leads/:leadId/force-next-execution', asyncHandler(async (req, res) => {
+  const result = await ReactivationAdminService.forceNextExecution(req.params.leadId, req);
+  res.json({ data: result });
+}));
+
+router.post('/suppressions/apply', asyncHandler(async (req, res) => {
+  const payload = suppressionApplySchema.parse(req.body || {});
+  const suppression = await ReactivationAdminService.applyLeadSuppression(payload, req);
+  res.status(201).json({ data: suppression });
+}));
+
+router.post('/suppressions/release', asyncHandler(async (req, res) => {
+  const payload = suppressionReleaseSchema.parse(req.body || {});
+  const result = await ReactivationAdminService.releaseSuppression(payload, req);
+  res.json({ data: result });
 }));
 
 router.post('/bootstrap-defaults', asyncHandler(async (req, res) => {

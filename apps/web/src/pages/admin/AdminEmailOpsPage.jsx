@@ -152,6 +152,250 @@ function TemplatesPanel({ templates }) {
   );
 }
 
+function ManualActionsPanel({ templates }) {
+  const [selectedTemplateId, setSelectedTemplateId] = useState('');
+  const [testEmail, setTestEmail] = useState('');
+  const [preview, setPreview] = useState(null);
+  const [leadId, setLeadId] = useState('');
+  const [reactivationUrl, setReactivationUrl] = useState('');
+  const [nodeKey, setNodeKey] = useState('');
+  const [suppressionEmail, setSuppressionEmail] = useState('');
+  const [suppressionScope, setSuppressionScope] = useState('unsubscribe_email');
+  const [busy, setBusy] = useState('');
+  const [message, setMessage] = useState('');
+
+  const templateId = selectedTemplateId || templates[0]?.id || '';
+  const templateOptions = templates || [];
+
+  const runAction = async (label, action) => {
+    setBusy(label);
+    setMessage('');
+    try {
+      const result = await action();
+      setMessage(`${label}: concluido. ${JSON.stringify(result || {})}`);
+      return result;
+    } catch (err) {
+      setMessage(`${label}: ${err.message || 'falhou'}`);
+      return null;
+    } finally {
+      setBusy('');
+    }
+  };
+
+  const buildPreviewVariables = () => ({
+    firstName: 'Marina',
+    name: 'Marina',
+    fullName: 'Marina Teste Cote',
+    reactivationUrl: reactivationUrl || 'https://finance.cotejuros.com.br/r/exemplo-token',
+    unsubscribeUrl: reactivationUrl ? `${reactivationUrl}?optout=1` : 'https://finance.cotejuros.com.br/r/exemplo-token?optout=1'
+  });
+
+  return (
+    <section className="rounded-lg border border-slate-200 bg-white p-5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-bold text-slate-950">Acoes manuais</h2>
+          <p className="text-sm text-slate-600">Preview, teste, reenvio, pausa de fluxo e supressao sem acessar o banco.</p>
+        </div>
+        {busy ? <span className="rounded bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700">{busy}...</span> : null}
+      </div>
+
+      {message ? <p className="mt-4 break-words rounded-lg bg-slate-50 p-3 text-xs font-semibold text-slate-700">{message}</p> : null}
+
+      <div className="mt-5 grid gap-4 xl:grid-cols-2">
+        <div className="rounded-lg border border-slate-200 p-4">
+          <h3 className="font-bold text-slate-950">Template</h3>
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
+            <label className="text-sm font-semibold text-slate-700">
+              Template
+              <select
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                value={templateId}
+                onChange={(event) => setSelectedTemplateId(event.target.value)}
+              >
+                {templateOptions.map((template) => (
+                  <option key={template.id} value={template.id}>{template.name}</option>
+                ))}
+              </select>
+            </label>
+            <label className="text-sm font-semibold text-slate-700">
+              Email de teste
+              <input
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                value={testEmail}
+                onChange={(event) => setTestEmail(event.target.value)}
+                placeholder="voce@cotejuros.com.br"
+              />
+            </label>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="rounded-lg bg-slate-950 px-3 py-2 text-xs font-semibold text-white"
+              onClick={() => runAction('Preview do template', async () => {
+                const result = await portalApi.previewReactivationEmailTemplate(templateId, buildPreviewVariables());
+                setPreview(result);
+                return { subject: result?.rendered?.subject };
+              })}
+              disabled={!templateId || Boolean(busy)}
+            >
+              Gerar preview
+            </button>
+            <button
+              type="button"
+              className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700"
+              onClick={() => runAction('Envio de teste', () => portalApi.sendReactivationTemplateTest(templateId, {
+                toEmail: testEmail,
+                variables: buildPreviewVariables()
+              }))}
+              disabled={!templateId || !testEmail || Boolean(busy)}
+            >
+              Enviar teste
+            </button>
+          </div>
+          {preview ? (
+            <div className="mt-4 space-y-2 rounded-lg bg-slate-50 p-3 text-xs text-slate-700">
+              <p><strong>Assunto:</strong> {preview.rendered?.subject}</p>
+              <p><strong>Preheader:</strong> {preview.rendered?.preheader || '-'}</p>
+              <textarea
+                className="h-32 w-full rounded-lg border border-slate-200 bg-white p-2 font-mono text-xs"
+                value={preview.rendered?.text || ''}
+                readOnly
+              />
+            </div>
+          ) : null}
+        </div>
+
+        <div className="rounded-lg border border-slate-200 p-4">
+          <h3 className="font-bold text-slate-950">Lead e supressao</h3>
+          <div className="mt-3 grid gap-3">
+            <label className="text-sm font-semibold text-slate-700">
+              Lead ID
+              <input
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                value={leadId}
+                onChange={(event) => setLeadId(event.target.value)}
+                placeholder="cuid do reactivation_leads"
+              />
+            </label>
+            <label className="text-sm font-semibold text-slate-700">
+              URL de reativacao
+              <input
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                value={reactivationUrl}
+                onChange={(event) => setReactivationUrl(event.target.value)}
+                placeholder="https://finance.cotejuros.com.br/r/token"
+              />
+            </label>
+            <label className="text-sm font-semibold text-slate-700">
+              Node key
+              <input
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                value={nodeKey}
+                onChange={(event) => setNodeKey(event.target.value)}
+                placeholder="send_initial"
+              />
+            </label>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="rounded-lg bg-slate-950 px-3 py-2 text-xs font-semibold text-white"
+              onClick={() => runAction('Reenvio manual', () => portalApi.resendReactivationLeadEmail(leadId, {
+                templateId,
+                sequenceKey: 'manual_resend',
+                reactivationUrl
+              }))}
+              disabled={!leadId || !templateId || !reactivationUrl || Boolean(busy)}
+            >
+              Reenviar email
+            </button>
+            <button
+              type="button"
+              className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700"
+              onClick={() => runAction('Pausar fluxo do lead', () => portalApi.pauseReactivationLeadFlow(leadId))}
+              disabled={!leadId || Boolean(busy)}
+            >
+              Pausar lead
+            </button>
+            <button
+              type="button"
+              className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700"
+              onClick={() => runAction('Mover lead no fluxo', () => portalApi.moveReactivationLeadFlowNode(leadId, {
+                nodeKey,
+                reason: 'admin_manual'
+              }))}
+              disabled={!leadId || !nodeKey || Boolean(busy)}
+            >
+              Mover node
+            </button>
+            <button
+              type="button"
+              className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700"
+              onClick={() => runAction('Forcar proxima execucao', () => portalApi.forceReactivationLeadNextExecution(leadId))}
+              disabled={!leadId || Boolean(busy)}
+            >
+              Forcar proxima etapa
+            </button>
+          </div>
+
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            <label className="text-sm font-semibold text-slate-700">
+              Email para supressao
+              <input
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                value={suppressionEmail}
+                onChange={(event) => setSuppressionEmail(event.target.value)}
+                placeholder="lead@email.com"
+              />
+            </label>
+            <label className="text-sm font-semibold text-slate-700">
+              Escopo
+              <select
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                value={suppressionScope}
+                onChange={(event) => setSuppressionScope(event.target.value)}
+              >
+                <option value="unsubscribe_email">unsubscribe_email</option>
+                <option value="unsubscribe_whatsapp">unsubscribe_whatsapp</option>
+                <option value="dnc_global">dnc_global</option>
+                <option value="revoked_consent">revoked_consent</option>
+              </select>
+            </label>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700"
+              onClick={() => runAction('Aplicar supressao', () => portalApi.applyReactivationSuppression({
+                leadId: leadId || undefined,
+                email: suppressionEmail || undefined,
+                scope: suppressionScope,
+                reason: 'admin_manual'
+              }))}
+              disabled={(!leadId && !suppressionEmail) || Boolean(busy)}
+            >
+              Aplicar supressao
+            </button>
+            <button
+              type="button"
+              className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700"
+              onClick={() => runAction('Liberar supressao', () => portalApi.releaseReactivationSuppression({
+                leadId: leadId || undefined,
+                email: suppressionEmail || undefined,
+                scope: suppressionScope
+              }))}
+              disabled={(!leadId && !suppressionEmail) || Boolean(busy)}
+            >
+              Liberar supressao
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function AdminEmailOpsPage() {
   const [dashboard, setDashboard] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
@@ -229,6 +473,7 @@ export default function AdminEmailOpsPage() {
 
       <CampaignsPanel campaigns={campaigns} onRefresh={load} />
       <TemplatesPanel templates={templates} />
+      <ManualActionsPanel templates={templates} />
 
       <section className="rounded-lg border border-slate-200 bg-white p-5">
         <h2 className="text-lg font-bold text-slate-950">Health dos jobs</h2>
