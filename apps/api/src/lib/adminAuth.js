@@ -5,6 +5,37 @@ export const ADMIN_COOKIE_NAME = 'cj_admin_session';
 export const ADMIN_SESSION_TTL_SECONDS = Number(process.env.ADMIN_SESSION_TTL_SECONDS || process.env.REACTIVATION_ADMIN_SESSION_TTL_SECONDS || 60 * 60 * 12);
 const ADMIN_COOKIE_DOMAIN = process.env.ADMIN_COOKIE_DOMAIN || process.env.REACTIVATION_ADMIN_COOKIE_DOMAIN || '';
 
+export const ADMIN_REQUIRED_TABLES = [
+  'admin_users',
+  'admin_roles',
+  'admin_permissions',
+  'admin_role_permissions',
+  'admin_user_roles',
+  'admin_sessions',
+  'admin_login_attempts',
+  'admin_audit_logs'
+];
+
+export class AdminAuthSetupError extends Error {
+  constructor(message, { code = 'ADMIN_AUTH_SETUP_ERROR', statusCode = 500, details = null } = {}) {
+    super(message);
+    this.name = 'AdminAuthSetupError';
+    this.code = code;
+    this.statusCode = statusCode;
+    this.details = details;
+  }
+}
+
+export const logAdminAuth = (level, event, details = {}) => {
+  const payload = {
+    event,
+    at: new Date().toISOString(),
+    ...details
+  };
+  const logger = level === 'error' ? console.error : level === 'warn' ? console.warn : console.log;
+  logger(`[admin-auth] ${event}`, payload);
+};
+
 const DEFAULT_PERMISSIONS = {
   super_admin: [
     ['*', '*']
@@ -227,7 +258,54 @@ export const getRequestMetadata = (req) => ({
   userAgent: req.headers['user-agent'] || null
 });
 
+export const checkAdminDatabaseHealth = async (prisma = getPrisma()) => {
+  const requiredTableList = ADMIN_REQUIRED_TABLES.map((table) => `'${table}'`).join(',');
+  const tableRows = await prisma.$queryRawUnsafe(`
+    select table_name
+    from information_schema.tables
+    where table_schema = 'public'
+      and table_name in (${requiredTableList})
+  `);
+  const existingTables = new Set(tableRows.map((row) => row.table_name));
+  const missingTables = ADMIN_REQUIRED_TABLES.filter((table) => !existingTables.has(table));
+
+  let appliedMigrations = [];
+  try {
+    appliedMigrations = await prisma.$queryRaw`
+      select migration_name
+      from _prisma_migrations
+      where finished_at is not null
+        and rolled_back_at is null
+        and migration_name in ('20260417_admin_governance_foundation', '20260417_admin_partner_configs')
+      order by migration_name
+    `;
+  } catch {
+    appliedMigrations = [];
+  }
+
+  return {
+    ok: missingTables.length === 0,
+    missingTables,
+    requiredTables: ADMIN_REQUIRED_TABLES,
+    appliedMigrations: appliedMigrations.map((row) => row.migration_name)
+  };
+};
+
+export const ensureAdminDatabaseReady = async (prisma = getPrisma()) => {
+  const health = await checkAdminDatabaseHealth(prisma);
+  if (!health.ok) {
+    throw new AdminAuthSetupError('Admin database is not migrated', {
+      code: 'ADMIN_MIGRATION_MISSING',
+      statusCode: 503,
+      details: health
+    });
+  }
+  return health;
+};
+
 const ensureRolesAndPermissions = async (prisma) => {
+  await ensureAdminDatabaseReady(prisma);
+
   const seededSuperAdmin = await prisma.adminRole.findUnique({
     where: { code: 'super_admin' },
     include: {

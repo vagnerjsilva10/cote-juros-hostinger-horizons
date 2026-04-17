@@ -16,12 +16,19 @@ export default function AdminAuthGuard({ children }) {
   const refreshSession = async () => {
     try {
       const data = await portalApi.getAdminSession();
-      setSession({
+      const nextSession = {
         authenticated: Boolean(data?.authenticated),
         user: data?.user || null
-      });
-    } catch {
-      setSession({ authenticated: false, user: null });
+      };
+      setSession(nextSession);
+      return nextSession;
+    } catch (sessionError) {
+      const nextSession = { authenticated: false, user: null };
+      setSession(nextSession);
+      if (location.pathname === '/admin/login') {
+        setError(sessionError.message || 'Nao foi possivel validar a sessao do admin.');
+      }
+      return nextSession;
     } finally {
       setReady(true);
     }
@@ -39,9 +46,12 @@ export default function AdminAuthGuard({ children }) {
     try {
       await portalApi.loginAdmin(password);
       setPassword('');
-      await refreshSession();
+      const nextSession = await refreshSession();
+      if (!nextSession.authenticated) {
+        setError('Login aceito, mas a sessao nao foi persistida. Verifique cookie, CORS e dominio da API.');
+      }
     } catch (submitError) {
-      setError(submitError.message || 'Não foi possível autenticar no admin.');
+      setError(submitError.message || 'Nao foi possivel autenticar no admin.');
     } finally {
       setBusy(false);
     }
@@ -78,6 +88,11 @@ export default function AdminAuthGuard({ children }) {
               <Button type="submit" className="w-full" disabled={busy || password.length < 8}>
                 {busy ? 'Entrando...' : 'Entrar'}
               </Button>
+              {busy ? (
+                <p className="text-xs text-muted-foreground">
+                  Validando API, banco, senha e cookie de sessao. Se passar de alguns segundos, a chamada sera interrompida com diagnostico.
+                </p>
+              ) : null}
               <p className="text-xs text-muted-foreground">
                 A autenticação é validada pela API com sessão segura e trilha de auditoria.
               </p>

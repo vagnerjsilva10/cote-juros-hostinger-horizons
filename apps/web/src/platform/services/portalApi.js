@@ -6,7 +6,10 @@ const wait = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const resolveApiBase = () => {
   const configured = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
   if (configured) return configured;
-  if (typeof window !== 'undefined' && /(^|\.)cotejuros\.com\.br$/i.test(window.location.hostname)) {
+  if (
+    typeof window !== 'undefined'
+    && /(^|\.)cotejuros\.(com\.br|br)$/i.test(window.location.hostname)
+  ) {
     return 'https://api.cotejuros.com.br';
   }
   return '';
@@ -31,36 +34,82 @@ const toQueryString = (params = {}) => {
   return query.toString();
 };
 
+const buildApiErrorMessage = ({ status, path, apiBase, payload, fallbackMessage }) => {
+  const code = payload?.code || null;
+  const message = payload?.message || payload?.error || fallbackMessage;
+
+  if (code === 'ADMIN_MIGRATION_MISSING') {
+    return 'Banco do admin não migrado. Aplique as migrations de admin/RBAC no Supabase e redeploye a API.';
+  }
+  if (code === 'ADMIN_BOOTSTRAP_NOT_CONFIGURED') {
+    return 'Admin não provisionado. Configure ADMIN_BOOTSTRAP_PASSWORD na API do Vercel e faça redeploy.';
+  }
+  if (code === 'ADMIN_INVALID_CREDENTIALS' || status === 401) {
+    return 'Senha do admin inválida ou usuário admin inativo.';
+  }
+  if (status === 403) {
+    return 'Sessão sem permissão para acessar este recurso.';
+  }
+  if (status === 404) {
+    return `Endpoint do admin não encontrado em ${apiBase || 'origem atual'}${path}. Verifique se a API nova foi deployada.`;
+  }
+  if (status >= 500) {
+    return message || 'Erro interno da API do admin. Verifique logs e variáveis de ambiente no Vercel.';
+  }
+
+  return message || `API request failed (${status})`;
+};
+
 const request = async (path, options = {}) => {
   const isAdminPath = path.startsWith('/api/reactivation-admin') || path.startsWith('/api/admin');
+  const { timeoutMs: requestedTimeoutMs, signal, ...fetchOptions } = options;
+  const timeoutMs = requestedTimeoutMs ?? (isAdminPath ? 25000 : 15000);
+  const controller = new AbortController();
+  const timeoutId = globalThis.setTimeout(() => controller.abort(), timeoutMs);
   const headers = {
     'Content-Type': 'application/json',
     ...(path.startsWith('/api/reactivation-admin') && ADMIN_API_TOKEN ? { Authorization: `Bearer ${ADMIN_API_TOKEN}` } : {}),
     ...(options.headers || {})
   };
-  const response = await fetch(`${API_BASE}${path}`, {
-    headers,
-    credentials: isAdminPath ? 'include' : options.credentials,
-    ...options
-  });
+
+  let response;
+  try {
+    response = await fetch(`${API_BASE}${path}`, {
+      headers,
+      ...fetchOptions,
+      credentials: isAdminPath ? 'include' : fetchOptions.credentials,
+      signal: signal || controller.signal
+    });
+  } catch (error) {
+    if (error?.name === 'AbortError') {
+      throw new Error(`A API demorou mais de ${Math.round(timeoutMs / 1000)}s para responder. Verifique deploy, CORS e logs da API.`);
+    }
+    throw new Error(`Não foi possível conectar na API em ${API_BASE || 'origem atual'}${path}. ${error?.message || ''}`.trim());
+  } finally {
+    globalThis.clearTimeout(timeoutId);
+  }
 
   if (!response.ok) {
-    let message = `API request failed (${response.status})`;
+    let payload = null;
 
     try {
-      const errorPayload = await response.json();
-      if (errorPayload?.message) message = errorPayload.message;
-      else if (errorPayload?.error) message = errorPayload.error;
+      payload = await response.json();
     } catch {
       // ignore non-JSON error bodies
     }
 
-    throw new Error(message);
+    throw new Error(buildApiErrorMessage({
+      status: response.status,
+      path,
+      apiBase: API_BASE,
+      payload,
+      fallbackMessage: `API request failed (${response.status})`
+    }));
   }
 
   const contentType = response.headers.get('content-type') || '';
   if (!contentType.includes('application/json')) {
-    throw new Error(`Resposta invalida da API (${response.status}) em ${API_BASE || 'origem atual'}${path}`);
+    throw new Error(`A resposta de ${API_BASE || 'origem atual'}${path} não é JSON. O frontend pode estar apontando para o site estático em vez da API.`);
   }
 
   const payload = await response.json();

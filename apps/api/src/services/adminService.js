@@ -161,8 +161,7 @@ export class AdminService {
     const updatedUser = await prisma.adminUser.update({
       where: { id: user.id },
       data: {
-        lastLoginAt: new Date(),
-        passwordHash: user.lastLoginAt ? user.passwordHash : hashPassword(password)
+        lastLoginAt: new Date()
       }
     });
 

@@ -6,7 +6,7 @@ import { ReactivationAdminService } from '../services/reactivationAdminService.j
 import { resolveAdminSession } from '../lib/adminAuth.js';
 
 const router = express.Router();
-const ADMIN_COOKIE_NAME = 'cj_admin_session';
+const ADMIN_COOKIE_NAME = 'cj_reactivation_admin_session';
 const ADMIN_SESSION_TTL_SECONDS = Number(process.env.REACTIVATION_ADMIN_SESSION_TTL_SECONDS || 60 * 60 * 12);
 
 const safeEqual = (left = '', right = '') => {

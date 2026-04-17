@@ -1,12 +1,15 @@
 import express from 'express';
+import crypto from 'node:crypto';
 import { z } from 'zod';
 import { asyncHandler } from '../lib/http.js';
 import {
   ADMIN_SESSION_TTL_SECONDS,
   assertLoginAllowed,
+  checkAdminDatabaseHealth,
   clearAdminCookie,
   createAdminSession,
   ensureAdminBootstrap,
+  logAdminAuth,
   hashValue,
   parseCookies,
   recordAdminAudit,
@@ -129,17 +132,30 @@ const partnerSaveSchema = z.object({
 });
 
 router.post('/auth/login', asyncHandler(async (req, res) => {
+  const requestId = req.headers['x-request-id'] || crypto.randomUUID?.() || `${Date.now()}-${Math.random()}`;
   const { email, password } = loginSchema.parse(req.body || {});
+  logAdminAuth('info', 'login_started', { requestId, emailProvided: Boolean(email) });
+
   const seededUser = await ensureAdminBootstrap();
   if (!seededUser) {
-    return res.status(503).json({ error: 'Admin bootstrap is not configured' });
+    logAdminAuth('warn', 'login_bootstrap_not_configured', { requestId });
+    return res.status(503).json({
+      error: 'Admin bootstrap is not configured',
+      code: 'ADMIN_BOOTSTRAP_NOT_CONFIGURED',
+      message: 'Admin nao provisionado. Configure ADMIN_BOOTSTRAP_PASSWORD na API e faca redeploy.'
+    });
   }
 
   const ipAddress = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || null;
   const allowed = await assertLoginAllowed({ email: email || seededUser.email, ipAddress });
   if (!allowed) {
     await AdminService.registerFailedLogin({ email: email || seededUser.email, req, reason: 'rate_limited' });
-    return res.status(429).json({ error: 'Too many login attempts. Try again later.' });
+    logAdminAuth('warn', 'login_rate_limited', { requestId, email: email || seededUser.email, ipAddress });
+    return res.status(429).json({
+      error: 'Too many login attempts. Try again later.',
+      code: 'ADMIN_LOGIN_RATE_LIMITED',
+      message: 'Muitas tentativas de login. Aguarde alguns minutos e tente novamente.'
+    });
   }
 
   const prisma = getPrisma();
@@ -164,7 +180,17 @@ router.post('/auth/login', asyncHandler(async (req, res) => {
 
   if (!user || user.status !== 'active' || !verifyPassword(password, user.passwordHash)) {
     await AdminService.registerFailedLogin({ email: email || seededUser.email, req, reason: 'invalid_credentials' });
-    return res.status(401).json({ error: 'Unauthorized' });
+    logAdminAuth('warn', 'login_invalid_credentials', {
+      requestId,
+      email: email || seededUser.email,
+      userFound: Boolean(user),
+      userStatus: user?.status || null
+    });
+    return res.status(401).json({
+      error: 'Unauthorized',
+      code: 'ADMIN_INVALID_CREDENTIALS',
+      message: 'Senha do admin invalida ou usuario admin inativo.'
+    });
   }
 
   await AdminService.authenticateDefaultUser(password, req, user);
@@ -178,6 +204,7 @@ router.post('/auth/login', asyncHandler(async (req, res) => {
     resourceId: session.session.id,
     metadata: { expiresAt: session.expiresAt.toISOString() }
   });
+  logAdminAuth('info', 'login_success', { requestId, userId: user.id, email: user.email });
 
   res.json({
     data: {
@@ -188,6 +215,39 @@ router.post('/auth/login', asyncHandler(async (req, res) => {
         email: user.email,
         fullName: user.fullName,
         roles: user.roles.map((item) => item.role.code)
+      }
+    }
+  });
+}));
+
+router.get('/auth/diagnostics', asyncHandler(async (_req, res) => {
+  const prisma = getPrisma();
+  const database = await checkAdminDatabaseHealth(prisma);
+  const [userCount, superAdmin] = await Promise.all([
+    database.ok ? prisma.adminUser.count() : Promise.resolve(null),
+    database.ok ? prisma.adminRole.findUnique({
+      where: { code: 'super_admin' },
+      include: {
+        permissions: {
+          include: {
+            permission: true
+          }
+        }
+      }
+    }) : Promise.resolve(null)
+  ]);
+
+  res.json({
+    data: {
+      ok: database.ok && Boolean(superAdmin),
+      database,
+      bootstrap: {
+        passwordConfigured: Boolean(process.env.ADMIN_BOOTSTRAP_PASSWORD || process.env.REACTIVATION_ADMIN_PASSWORD),
+        userCount,
+        superAdminExists: Boolean(superAdmin),
+        superAdminWildcardPermission: Boolean(superAdmin?.permissions?.some((rolePermission) =>
+          rolePermission.permission.resource === '*' && rolePermission.permission.action === '*'
+        ))
       }
     }
   });

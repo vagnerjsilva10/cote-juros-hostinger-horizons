@@ -12,30 +12,42 @@ import reactivationRoutes from './routes/reactivation.js';
 import reactivationAdminRoutes from './routes/reactivationAdmin.js';
 import adminRoutes from './routes/admin.js';
 import { PrismaConfigError } from './lib/prisma.js';
+import { AdminAuthSetupError } from './lib/adminAuth.js';
 import { IntegrationConfigurationError, JurosBaixosIntegrationError } from './integrations/jurosBaixos/errors.js';
 import { getJurosBaixosHealth } from './integrations/jurosBaixos/config.js';
 
 export const createApp = () => {
   const app = express();
+  const domainOriginAliases = (origin) => {
+    try {
+      const url = new URL(origin);
+      const aliases = [origin];
+      const webHosts = new Set([
+        'cotejuros.com.br',
+        'www.cotejuros.com.br',
+        'cotejuros.br',
+        'www.cotejuros.br'
+      ]);
+
+      if (webHosts.has(url.hostname)) {
+        for (const host of webHosts) {
+          aliases.push(`${url.protocol}//${host}`);
+        }
+      }
+
+      return aliases;
+    } catch {
+      return [origin];
+    }
+  };
+
   const configuredOrigins = String(process.env.CORS_ORIGIN || '*')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
-  const allowedOrigins = Array.from(new Set(configuredOrigins.flatMap((origin) => {
-    if (origin === '*') return ['*'];
-    try {
-      const url = new URL(origin);
-      if (url.hostname === 'cotejuros.com.br') {
-        return [origin, `${url.protocol}//www.cotejuros.com.br`];
-      }
-      if (url.hostname === 'www.cotejuros.com.br') {
-        return [origin, `${url.protocol}//cotejuros.com.br`];
-      }
-      return [origin];
-    } catch {
-      return [origin];
-    }
-  })));
+  const allowedOrigins = Array.from(new Set(configuredOrigins.flatMap((origin) => (
+    origin === '*' ? ['*'] : domainOriginAliases(origin)
+  ))));
 
   app.use(
     cors({
@@ -44,6 +56,7 @@ export const createApp = () => {
         if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
           return callback(null, true);
         }
+        console.warn('[cors] blocked origin', { origin });
         return callback(null, false);
       }
     })
@@ -92,6 +105,15 @@ export const createApp = () => {
 
     if (err instanceof PrismaConfigError) {
       return res.status(500).json({ error: 'Database configuration error', message: err.message });
+    }
+
+    if (err instanceof AdminAuthSetupError) {
+      return res.status(err.statusCode || 500).json({
+        error: 'Admin authentication setup error',
+        code: err.code || null,
+        message: err.message,
+        details: err.details || null
+      });
     }
 
     if (err instanceof IntegrationConfigurationError) {
