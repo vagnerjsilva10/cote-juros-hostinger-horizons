@@ -11,10 +11,9 @@ import affiliatesRoutes from './routes/affiliates.js';
 import reactivationRoutes from './routes/reactivation.js';
 import { PrismaConfigError } from './lib/prisma.js';
 import { IntegrationConfigurationError, JurosBaixosIntegrationError } from './integrations/jurosBaixos/errors.js';
-import { validateJurosBaixosEnvironment } from './integrations/jurosBaixos/config.js';
+import { getJurosBaixosHealth } from './integrations/jurosBaixos/config.js';
 
 export const createApp = () => {
-  validateJurosBaixosEnvironment();
   const app = express();
 
   app.use(
@@ -29,6 +28,9 @@ export const createApp = () => {
       ok: true,
       service: 'cote-juros-api',
       databaseConfigured: Boolean(process.env.DATABASE_URL),
+      integrations: {
+        jurosBaixos: getJurosBaixosHealth()
+      },
       timestamp: new Date().toISOString()
     });
   });

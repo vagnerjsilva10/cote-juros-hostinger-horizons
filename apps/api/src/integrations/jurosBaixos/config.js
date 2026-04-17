@@ -1,4 +1,4 @@
-import { IntegrationConfigurationError, JurosBaixosNotConfiguredError } from './errors.js';
+import { JurosBaixosNotConfiguredError } from './errors.js';
 
 const DEFAULT_ENDPOINTS = {
   partnerAuthPath: '/thirdparty/login',
@@ -28,6 +28,9 @@ const buildConfig = () => {
   const webhookSecret = readString('JUROS_BAIXOS_WEBHOOK_SECRET');
   const hasClientCredentials = Boolean(clientId && clientSecret);
   const configured = Boolean(baseUrl && hasClientCredentials);
+  const missing = [];
+  if (!baseUrl) missing.push('JUROS_BAIXOS_BASE_URL');
+  if (!hasClientCredentials) missing.push('JUROS_BAIXOS_CLIENT_ID + JUROS_BAIXOS_CLIENT_SECRET');
 
   const endpoints = {
     partnerAuthPath: readString('JUROS_BAIXOS_PARTNER_AUTH_PATH') || DEFAULT_ENDPOINTS.partnerAuthPath,
@@ -37,18 +40,12 @@ const buildConfig = () => {
     simulationOffersPath: readString('JUROS_BAIXOS_SIMULATION_OFFERS_PATH') || DEFAULT_ENDPOINTS.simulationOffersPath
   };
 
-  if (process.env.NODE_ENV === 'production') {
-    const missing = [];
-    if (!baseUrl) missing.push('JUROS_BAIXOS_BASE_URL');
-    if (!hasClientCredentials) missing.push('JUROS_BAIXOS_CLIENT_ID + JUROS_BAIXOS_CLIENT_SECRET');
-    if (missing.length) {
-      throw new IntegrationConfigurationError(`Missing Juros Baixos environment configuration: ${missing.join(', ')}`);
-    }
-  }
-
   return {
     provider: 'juros_baixos',
     configured,
+    available: configured,
+    status: configured ? 'available' : 'disabled',
+    missing,
     baseUrl,
     apiKey,
     clientId,
@@ -66,7 +63,7 @@ export const getJurosBaixosConfig = () => {
   return cachedConfig;
 };
 
-export const validateJurosBaixosEnvironment = () => getJurosBaixosConfig();
+export const validateJurosBaixosEnvironment = () => getJurosBaixosHealth();
 
 export const isJurosBaixosConfigured = () => getJurosBaixosConfig().configured;
 
@@ -81,6 +78,9 @@ export const getJurosBaixosHealth = () => {
   return {
     provider: config.provider,
     configured: config.configured,
+    available: config.available,
+    status: config.status,
+    missing: config.missing,
     hasBaseUrl: Boolean(config.baseUrl),
     hasApiKey: Boolean(config.apiKey),
     hasClientCredentials: config.hasClientCredentials,
