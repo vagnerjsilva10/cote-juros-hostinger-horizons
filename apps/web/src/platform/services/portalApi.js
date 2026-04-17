@@ -1207,6 +1207,10 @@ export const portalApi = {
     });
   },
 
+  async getReactivationLeadTimeline(leadId) {
+    return request(`/api/reactivation-admin/leads/${leadId}/timeline`);
+  },
+
   async resendReactivationLeadEmail(leadId, payload) {
     return request(`/api/reactivation-admin/leads/${leadId}/resend-email`, {
       method: 'POST',
