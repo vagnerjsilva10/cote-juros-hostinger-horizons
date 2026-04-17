@@ -1,0 +1,45 @@
+name: Reactivation - Sync KPIs
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+    inputs:
+      batch_id:
+        description: 'Batch ID to sync'
+        required: true
+        default: 'piloto-5-2026-04-17'
+
+concurrency:
+  group: reactivation-sync-kpis
+  cancel-in-progress: false
+
+jobs:
+  sync-kpis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      NODE_ENV: production
+      COTE_API_BASE_URL: ${{ vars.COTE_API_BASE_URL || 'https://api.cotejuros.com.br' }}
+      COTE_API_TOKEN: ${{ secrets.COTE_API_TOKEN }}
+      GOOGLE_SHEETS_REACTIVATION_ID: ${{ vars.GOOGLE_SHEETS_REACTIVATION_ID || '16rV2fuSxVCSkmJYOijmNZF5sP1sQIR9ct9r97Ti-vvY' }}
+      GOOGLE_SHEETS_CREDENTIALS_JSON: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS_JSON }}
+      REACTIVATION_BATCH_ID: ${{ github.event.inputs.batch_id || vars.REACTIVATION_BATCH_ID || 'piloto-5-2026-04-17' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma client
+        run: npm run prisma:generate --prefix apps/api
+
+      - name: Sync KPIs
+        run: npm run sync:reactivation:kpis --prefix apps/api -- "$REACTIVATION_BATCH_ID"

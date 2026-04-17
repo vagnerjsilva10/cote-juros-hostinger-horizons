@@ -4,3 +4,13 @@ node_modules
 apps/**/.env.local
 *.env
 *.zip
+
+.vercel
+.env*.local
+
+# Local service account credentials
+.secrets/
+credentials*.json
+*service-account*.json
+*service_account*.json
+cote-finance-ai-*.json
