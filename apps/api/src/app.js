@@ -133,6 +133,24 @@ export const createApp = () => {
       });
     }
 
+    if (req.originalUrl?.includes('/api/admin/email-ops') || req.originalUrl?.includes('/api/reactivation-admin')) {
+      if (String(err?.message || '').includes('SENDGRID_API_KEY')) {
+        return res.status(503).json({
+          error: 'Email provider is not configured',
+          code: 'EMAIL_PROVIDER_NOT_CONFIGURED',
+          message: 'Provider de envio ainda nao configurado.'
+        });
+      }
+
+      if (String(err?.message || '').includes('Lead does not have an email')) {
+        return res.status(400).json({
+          error: 'Lead has no email',
+          code: 'EMAIL_OPS_LEAD_WITHOUT_EMAIL',
+          message: 'O lead selecionado nao possui email para envio.'
+        });
+      }
+    }
+
     if (err?.name?.startsWith('Prisma')) {
       return res.status(500).json({
         error: 'Database query error',

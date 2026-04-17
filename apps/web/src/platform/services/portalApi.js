@@ -53,8 +53,20 @@ const buildApiErrorMessage = ({ status, path, apiBase, payload, fallbackMessage 
   if (code === 'ADMIN_BOOTSTRAP_NOT_CONFIGURED') {
     return 'Admin não provisionado. Configure ADMIN_BOOTSTRAP_PASSWORD na API do Vercel e faça redeploy.';
   }
-  if (code === 'ADMIN_INVALID_CREDENTIALS' || status === 401) {
+  if (code === 'EMAIL_PROVIDER_NOT_CONFIGURED') {
+    return 'Provider de envio ainda nao configurado.';
+  }
+  if (code === 'EMAIL_OPS_LEAD_WITHOUT_EMAIL') {
+    return 'O lead selecionado nao possui email para envio.';
+  }
+  if (code === 'ADMIN_INVALID_CREDENTIALS') {
     return 'Senha do admin inválida ou usuário admin inativo.';
+  }
+  if (status === 401 && path.startsWith('/api/admin/email-ops')) {
+    return 'Sessao do admin expirada. Entre novamente pelo login principal do admin.';
+  }
+  if (status === 401) {
+    return 'Sessao expirada ou credenciais invalidas. Entre novamente.';
   }
   if (status === 403) {
     return 'Sessão sem permissão para acessar este recurso.';
@@ -1430,19 +1442,7 @@ export const portalApi = {
       };
     }
 
-    return request('/api/reactivation-admin/dashboard');
-  },
-
-  async loginReactivationEmailAdmin(password) {
-    return this.loginAdmin(password);
-  },
-
-  async logoutReactivationEmailAdmin() {
-    return this.logoutAdmin();
-  },
-
-  async getReactivationEmailAdminSession() {
-    return this.getAdminSession();
+    return request('/api/admin/email-ops/dashboard');
   },
 
   getApiBaseUrl() {
@@ -1451,18 +1451,18 @@ export const portalApi = {
 
   async getReactivationEmailCampaigns() {
     if (!useRemote) return [];
-    return request('/api/reactivation-admin/campaigns');
+    return request('/api/admin/email-ops/campaigns');
   },
 
   async saveReactivationEmailCampaign(payload) {
-    return request('/api/reactivation-admin/campaigns', {
+    return request('/api/admin/email-ops/campaigns', {
       method: 'POST',
       body: JSON.stringify(payload)
     });
   },
 
   async setReactivationEmailCampaignStatus(id, status) {
-    return request(`/api/reactivation-admin/campaigns/${id}/status`, {
+    return request(`/api/admin/email-ops/campaigns/${id}/status`, {
       method: 'POST',
       body: JSON.stringify({ status })
     });
@@ -1470,25 +1470,25 @@ export const portalApi = {
 
   async getReactivationEmailTemplates() {
     if (!useRemote) return [];
-    return request('/api/reactivation-admin/templates');
+    return request('/api/admin/email-ops/templates');
   },
 
   async saveReactivationEmailTemplate(payload) {
-    return request('/api/reactivation-admin/templates', {
+    return request('/api/admin/email-ops/templates', {
       method: 'POST',
       body: JSON.stringify(payload)
     });
   },
 
   async previewReactivationEmailTemplate(templateId, variables = {}) {
-    return request(`/api/reactivation-admin/templates/${templateId}/preview`, {
+    return request(`/api/admin/email-ops/templates/${templateId}/preview`, {
       method: 'POST',
       body: JSON.stringify({ variables })
     });
   },
 
   async sendReactivationTemplateTest(templateId, payload) {
-    return request(`/api/reactivation-admin/templates/${templateId}/test-send`, {
+    return request(`/api/admin/email-ops/templates/${templateId}/test-send`, {
       method: 'POST',
       body: JSON.stringify(payload)
     });
@@ -1521,71 +1521,71 @@ export const portalApi = {
         }]
       }];
     }
-    return request('/api/reactivation-admin/flows');
+    return request('/api/admin/email-ops/flows');
   },
 
   async saveReactivationFlow(payload) {
-    return request('/api/reactivation-admin/flows', {
+    return request('/api/admin/email-ops/flows', {
       method: 'POST',
       body: JSON.stringify(payload)
     });
   },
 
   async validateReactivationFlow(definition) {
-    return request('/api/reactivation-admin/flows/validate', {
+    return request('/api/admin/email-ops/flows/validate', {
       method: 'POST',
       body: JSON.stringify(definition)
     });
   },
 
   async getReactivationLeadTimeline(leadId) {
-    return request(`/api/reactivation-admin/leads/${leadId}/timeline`);
+    return request(`/api/admin/email-ops/leads/${leadId}/timeline`);
   },
 
   async resendReactivationLeadEmail(leadId, payload) {
-    return request(`/api/reactivation-admin/leads/${leadId}/resend-email`, {
+    return request(`/api/admin/email-ops/leads/${leadId}/resend-email`, {
       method: 'POST',
       body: JSON.stringify(payload)
     });
   },
 
   async pauseReactivationLeadFlow(leadId) {
-    return request(`/api/reactivation-admin/leads/${leadId}/pause-flow`, {
+    return request(`/api/admin/email-ops/leads/${leadId}/pause-flow`, {
       method: 'POST',
       body: JSON.stringify({})
     });
   },
 
   async moveReactivationLeadFlowNode(leadId, payload) {
-    return request(`/api/reactivation-admin/leads/${leadId}/move-flow-node`, {
+    return request(`/api/admin/email-ops/leads/${leadId}/move-flow-node`, {
       method: 'POST',
       body: JSON.stringify(payload)
     });
   },
 
   async forceReactivationLeadNextExecution(leadId) {
-    return request(`/api/reactivation-admin/leads/${leadId}/force-next-execution`, {
+    return request(`/api/admin/email-ops/leads/${leadId}/force-next-execution`, {
       method: 'POST',
       body: JSON.stringify({})
     });
   },
 
   async applyReactivationSuppression(payload) {
-    return request('/api/reactivation-admin/suppressions/apply', {
+    return request('/api/admin/email-ops/suppressions/apply', {
       method: 'POST',
       body: JSON.stringify(payload)
     });
   },
 
   async releaseReactivationSuppression(payload) {
-    return request('/api/reactivation-admin/suppressions/release', {
+    return request('/api/admin/email-ops/suppressions/release', {
       method: 'POST',
       body: JSON.stringify(payload)
     });
   },
 
   async bootstrapReactivationEmailAdmin() {
-    return request('/api/reactivation-admin/bootstrap-defaults', {
+    return request('/api/admin/email-ops/bootstrap-defaults', {
       method: 'POST',
       body: JSON.stringify({})
     });

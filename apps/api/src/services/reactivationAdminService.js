@@ -82,7 +82,7 @@ const hashEmail = (email) => {
 
 const maskEmail = (email) => String(email || '').replace(/^(.{2}).*(@.*)$/, '$1***$2');
 
-const actorFromReq = (req) => req.headers['x-admin-user'] || req.headers['x-github-actor'] || 'admin';
+const actorFromReq = (req) => req?.adminUser?.email || req?.headers?.['x-admin-user'] || req?.headers?.['x-github-actor'] || 'admin';
 
 const getIp = (req) => String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '').split(',')[0] || null;
 

@@ -2,6 +2,7 @@ import express from 'express';
 import crypto from 'node:crypto';
 import { z } from 'zod';
 import { asyncHandler } from '../lib/http.js';
+import reactivationAdminRoutes from './reactivationAdmin.js';
 import {
   ADMIN_SESSION_TTL_SECONDS,
   assertLoginAllowed,
@@ -24,6 +25,11 @@ import { AdminService } from '../services/adminService.js';
 import { getPrisma } from '../lib/prisma.js';
 
 const router = express.Router();
+
+const requireEmailOpsPermission = (req, res, next) => {
+  const action = req.method === 'GET' ? 'view' : 'edit';
+  return requirePermission('email_ops', action)(req, res, next);
+};
 
 const loginSchema = z.object({
   email: z.string().email().optional(),
@@ -130,6 +136,8 @@ const partnerSaveSchema = z.object({
   internalNotes: z.string().optional().nullable(),
   metadata: z.any().optional().nullable()
 });
+
+router.use('/email-ops', requireEmailOpsPermission, reactivationAdminRoutes);
 
 router.post('/auth/login', asyncHandler(async (req, res) => {
   const requestId = req.headers['x-request-id'] || crypto.randomUUID?.() || `${Date.now()}-${Math.random()}`;
