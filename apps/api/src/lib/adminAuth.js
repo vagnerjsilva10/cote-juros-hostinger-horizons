@@ -314,6 +314,22 @@ export const ensureAdminBootstrap = async () => {
         passwordHash: hashPassword(bootstrapPassword)
       }
     });
+  } else if (
+    bootstrapPassword
+    && (
+      existing.status !== 'active'
+      || existing.fullName !== bootstrapName
+      || !verifyPassword(bootstrapPassword, existing.passwordHash)
+    )
+  ) {
+    user = await prisma.adminUser.update({
+      where: { id: existing.id },
+      data: {
+        fullName: bootstrapName,
+        status: 'active',
+        passwordHash: hashPassword(bootstrapPassword)
+      }
+    });
   }
 
   const superAdminRole = await prisma.adminRole.findUnique({ where: { code: 'super_admin' } });
