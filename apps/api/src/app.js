@@ -16,10 +16,25 @@ import { getJurosBaixosHealth } from './integrations/jurosBaixos/config.js';
 
 export const createApp = () => {
   const app = express();
-  const allowedOrigins = String(process.env.CORS_ORIGIN || '*')
+  const configuredOrigins = String(process.env.CORS_ORIGIN || '*')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
+  const allowedOrigins = Array.from(new Set(configuredOrigins.flatMap((origin) => {
+    if (origin === '*') return ['*'];
+    try {
+      const url = new URL(origin);
+      if (url.hostname === 'cotejuros.com.br') {
+        return [origin, `${url.protocol}//www.cotejuros.com.br`];
+      }
+      if (url.hostname === 'www.cotejuros.com.br') {
+        return [origin, `${url.protocol}//cotejuros.com.br`];
+      }
+      return [origin];
+    } catch {
+      return [origin];
+    }
+  })));
 
   app.use(
     cors({
