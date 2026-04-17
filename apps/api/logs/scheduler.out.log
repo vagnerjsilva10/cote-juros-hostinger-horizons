@@ -1,0 +1,43 @@
+
+> api@0.0.0 jobs:start
+> node src/jobs/scheduler.js
+
+[Scheduler] Starting job scheduler
+[Scheduler] API Base URL: https://api.cotejuros.com.br
+[Scheduler] Spreadsheet ID: 16rV2fuSxVCSkmJYOijmNZF5sP1sQIR9ct9r97Ti-vvY
+[Scheduler] Task 'prepareReactivationQueue' scheduled with cron: 0 9 * * 1-5
+[Scheduler] Task 'importLeadsFromSheets' scheduled with cron: */5 * * * *
+[Scheduler] Task 'retryPendingDeliveries' scheduled with cron: */15 * * * *
+[Scheduler] Task 'sendReactivationEmails' scheduled with cron: 30 9-17 * * 1-5
+[Scheduler] Task 'syncReactivationKpis' scheduled with cron: 0 * * * *
+[Scheduler] All jobs scheduled. Press Ctrl+C to stop.
+[importLeadsFromSheets] Task triggered at 2026-04-17T09:00:00.065Z
+[retryPendingDeliveries] Task triggered at 2026-04-17T09:00:00.105Z
+[syncReactivationKpis] Task triggered at 2026-04-17T09:00:00.125Z
+[RetryDeliveries] Job started
+[RetryDeliveries] Job completed
+[RetryDeliveries] Summary: 0 processed, 0 succeeded, 0 failed
+[retryPendingDeliveries] Task completed successfully
+[ImportLeads] Job started
+[SyncKpis] Job started for batchId: piloto-5-2026-04-17
+[ImportLeads] Found 0 leads to process
+[ImportLeads] Job completed
+[ImportLeads] Summary: 0 imported, 0 errors, 0 skipped
+[importLeadsFromSheets] Task completed successfully
+[SyncKpis] Fetched KPIs for batch piloto-5-2026-04-17
+[SyncKpis] Saved KPIs to kpis_daily: totalLeads=18, delivered=1
+[SyncKpis] Job completed
+[SyncKpis] Summary: fetched 1, saved 1
+[syncReactivationKpis] Task completed successfully
+[importLeadsFromSheets] Task triggered at 2026-04-17T09:05:00.040Z
+[ImportLeads] Job started
+[ImportLeads] Found 0 leads to process
+[ImportLeads] Job completed
+[ImportLeads] Summary: 0 imported, 0 errors, 0 skipped
+[importLeadsFromSheets] Task completed successfully
+[importLeadsFromSheets] Task triggered at 2026-04-17T09:10:00.038Z
+[ImportLeads] Job started
+[ImportLeads] Found 0 leads to process
+[ImportLeads] Job completed
+[ImportLeads] Summary: 0 imported, 0 errors, 0 skipped
+[importLeadsFromSheets] Task completed successfully

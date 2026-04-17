@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import { z } from 'zod';
 import { asyncHandler } from '../lib/http.js';
 import { ReactivationAdminService } from '../services/reactivationAdminService.js';
+import { resolveAdminSession } from '../lib/adminAuth.js';
 
 const router = express.Router();
 const ADMIN_COOKIE_NAME = 'cj_admin_session';
@@ -97,8 +98,14 @@ const clearAdminCookie = (res) => {
   res.setHeader('Set-Cookie', parts.join('; '));
 };
 
-const requireAdminToken = (req, res, next) => {
+const requireAdminToken = async (req, res, next) => {
   const expected = process.env.REACTIVATION_ADMIN_TOKEN || process.env.COTE_API_TOKEN;
+  const unifiedSession = await resolveAdminSession(req);
+  if (unifiedSession) {
+    req.adminSession = unifiedSession;
+    req.adminUser = unifiedSession.user;
+    return next();
+  }
   const cookieToken = parseCookies(req)[ADMIN_COOKIE_NAME];
   const hasValidCookie = verifyAdminSession(cookieToken);
   if (hasValidCookie) return next();

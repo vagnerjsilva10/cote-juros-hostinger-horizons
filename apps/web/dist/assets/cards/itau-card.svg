@@ -1,0 +1,20 @@
+<svg width="960" height="600" viewBox="0 0 960 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="960" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF8A00"/>
+      <stop offset="1" stop-color="#EC7000"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(760 120) rotate(130) scale(340 290)">
+      <stop stop-color="#FFC173" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#FFC173" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="960" height="600" rx="36" fill="url(#bg)"/>
+  <rect width="960" height="600" rx="36" fill="url(#glow)"/>
+  <rect x="72" y="90" width="92" height="68" rx="12" fill="#FBE3C0" fill-opacity="0.9"/>
+  <rect x="710" y="74" width="172" height="172" rx="28" fill="#004A93"/>
+  <text x="728" y="178" fill="white" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="700">Itaú</text>
+  <text x="78" y="366" fill="#1F2937" fill-opacity="0.82" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.08em">•••• 2098</text>
+  <text x="74" y="500" fill="#1F2937" fill-opacity="0.92" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="700">Itaú Personnalité</text>
+  <text x="760" y="512" fill="#1F2937" fill-opacity="0.85" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">Visa Infinite</text>
+</svg>

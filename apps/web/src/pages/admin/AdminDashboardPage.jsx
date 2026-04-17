@@ -1,166 +1,110 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { portalApi } from '@/platform/services/portalApi.js';
 
-const productLabels = {
-  loan: 'Emprestimo',
-  credit_card: 'Cartao',
-  financing: 'Financiamento'
-};
-
-const profileLabels = {
-  negativado: 'Negativado',
-  clt: 'CLT',
-  autonomo: 'Autonomo',
-  geral: 'Geral'
-};
-
-const deliveryModeLabels = {
-  tracking_link: 'Tracking link',
-  mock_api: 'Mock API'
-};
-
-export default function AdminDashboardPage() {
-  const [data, setData] = useState({
-    totalLeads: 0,
-    leadsByProductType: {},
-    clicksByOffer: [],
-    ctaClicks: 0,
-    appIntegrationEvents: 0,
-    topConvertingPages: [],
-    recentSimulationActivity: []
+const money = (cents = 0) =>
+  Number(cents || 0).toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
   });
 
+function MetricCard({ label, value, hint }) {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-5">
+      <p className="text-sm font-semibold text-slate-500">{label}</p>
+      <p className="mt-2 text-3xl font-bold text-slate-950">{value}</p>
+      {hint ? <p className="mt-2 text-sm text-slate-600">{hint}</p> : null}
+    </div>
+  );
+}
+
+export default function AdminDashboardPage() {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState('');
+
   useEffect(() => {
-    portalApi.getAdminAnalyticsOverview().then(setData);
+    portalApi
+      .getAdminDashboard()
+      .then(setData)
+      .catch((loadError) => setError(loadError.message || 'Não foi possível carregar o painel.'));
   }, []);
 
-  const metrics = [
-    { label: 'Total de leads', value: data.totalLeads },
-    { label: 'Cliques em CTA', value: data.ctaClicks },
-    { label: 'Eventos de integracao', value: data.appIntegrationEvents },
-    { label: 'Produtos com leads', value: Object.keys(data.leadsByProductType || {}).length }
-  ];
+  if (error) return <p className="rounded-lg bg-red-50 p-4 text-sm font-semibold text-red-700">{error}</p>;
+  if (!data) return <p className="rounded-lg bg-white p-4 text-sm text-slate-700">Carregando painel executivo...</p>;
 
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {metrics.map((metric) => (
-          <Card key={metric.label} className="border-slate-200">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-slate-500">{metric.label}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-semibold text-slate-900">{metric.value}</p>
-            </CardContent>
-          </Card>
-        ))}
+        <MetricCard label="Leads monitorados" value={data.totalLeads || 0} hint="Base operacional ativa" />
+        <MetricCard label="Sessões administrativas" value={data.activeSessions || 0} hint="Usuários autenticados agora" />
+        <MetricCard label="Receita estimada" value={money(data.estimatedRevenueCents || 0)} hint="Projeção atual de monetização" />
+        <MetricCard label="Receita confirmada" value={money(data.confirmedRevenueCents || 0)} hint={`${data.openAlerts || 0} alertas operacionais abertos`} />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <Card className="border-slate-200">
-          <CardHeader>
-            <CardTitle className="text-base">Leads por produto</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {Object.entries(data.leadsByProductType || {}).map(([product, count]) => (
-              <div key={product} className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2">
-                <span className="text-sm text-slate-600">{product}</span>
-                <span className="font-semibold text-slate-900">{count}</span>
+        <section className="rounded-lg border border-slate-200 bg-white p-5">
+          <h2 className="text-base font-bold text-slate-950">Leads por produto</h2>
+          <div className="mt-4 space-y-3">
+            {Object.entries(data.leadsByProduct || {}).map(([product, count]) => (
+              <div key={product} className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm">
+                <span className="text-slate-600">{product}</span>
+                <span className="font-semibold text-slate-950">{count}</span>
               </div>
             ))}
-            {Object.keys(data.leadsByProductType || {}).length === 0 ? (
-              <p className="text-sm text-slate-500">Sem leads registrados ainda.</p>
+            {Object.keys(data.leadsByProduct || {}).length === 0 ? (
+              <p className="text-sm text-slate-500">Ainda não há volume suficiente para segmentação por produto.</p>
             ) : null}
-          </CardContent>
-        </Card>
+          </div>
+        </section>
 
-        <Card className="border-slate-200">
-          <CardHeader>
-            <CardTitle className="text-base">Top paginas (origem de lead)</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {(data.topConvertingPages || []).map((item) => (
-              <div key={item.page} className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2">
-                <span className="text-sm text-slate-600">{item.page}</span>
-                <span className="font-semibold text-slate-900">{item.count}</span>
+        <section className="rounded-lg border border-slate-200 bg-white p-5">
+          <h2 className="text-base font-bold text-slate-950">Leads por status operacional</h2>
+          <div className="mt-4 space-y-3">
+            {Object.entries(data.leadsByStatus || {}).map(([status, count]) => (
+              <div key={status} className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm">
+                <span className="text-slate-600">{status}</span>
+                <span className="font-semibold text-slate-950">{count}</span>
               </div>
             ))}
-            {(data.topConvertingPages || []).length === 0 ? (
-              <p className="text-sm text-slate-500">Sem dados suficientes ainda.</p>
+            {Object.keys(data.leadsByStatus || {}).length === 0 ? (
+              <p className="text-sm text-slate-500">Nenhum status agregado disponível ainda.</p>
             ) : null}
-          </CardContent>
-        </Card>
+          </div>
+        </section>
       </div>
 
-      <Card className="border-slate-200">
-        <CardHeader>
-          <CardTitle className="text-base">Cliques por oferta</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Oferta</TableHead>
-                <TableHead>Cliques</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {(data.clicksByOffer || []).map((row) => (
-                <TableRow key={row.offerId}>
-                  <TableCell>{row.offerTitle}</TableCell>
-                  <TableCell>{row.count}</TableCell>
-                </TableRow>
+      <section className="rounded-lg border border-slate-200 bg-white p-5">
+        <h2 className="text-base font-bold text-slate-950">Leads recentes</h2>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full min-w-[860px] text-left text-sm">
+            <thead className="border-b border-slate-200 text-xs uppercase text-slate-500">
+              <tr>
+                <th className="py-3">Data</th>
+                <th>Lead</th>
+                <th>Produto</th>
+                <th>Status</th>
+                <th>Parceiro</th>
+                <th>Owner</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(data.recentLeads || []).map((lead) => (
+                <tr key={lead.id} className="border-b border-slate-100">
+                  <td className="py-3">{lead.createdAt ? new Date(lead.createdAt).toLocaleString('pt-BR') : '-'}</td>
+                  <td>
+                    <p className="font-semibold text-slate-950">{lead.fullName || 'Lead sem nome'}</p>
+                    <p className="text-xs text-slate-500">{lead.phone || '-'}</p>
+                  </td>
+                  <td>{lead.productType || '-'}</td>
+                  <td>{lead.status || '-'}</td>
+                  <td>{lead.partnerName || lead.partnerId || '-'}</td>
+                  <td>{lead.ownerAssignment?.ownerUser?.fullName || '-'}</td>
+                </tr>
               ))}
-              {(data.clicksByOffer || []).length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={2} className="text-slate-500">Sem cliques registrados.</TableCell>
-                </TableRow>
-              ) : null}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      <Card className="border-slate-200">
-        <CardHeader>
-          <CardTitle className="text-base">Atividade recente de simulacao</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Data</TableHead>
-                <TableHead>Produto</TableHead>
-                <TableHead>Pagina</TableHead>
-                <TableHead>Perfil</TableHead>
-                <TableHead>Parceiro</TableHead>
-                <TableHead>Envio</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {(data.recentSimulationActivity || []).map((lead) => (
-                <TableRow key={lead.id}>
-                  <TableCell>{new Date(lead.createdAt).toLocaleString('pt-BR')}</TableCell>
-                  <TableCell>{productLabels[lead.productType] || lead.productType || '-'}</TableCell>
-                  <TableCell>{lead.sourcePage || lead.originPage || '-'}</TableCell>
-                  <TableCell>{profileLabels[lead.profile] || lead.profile || '-'}</TableCell>
-                  <TableCell>{lead.partnerName || '-'}</TableCell>
-                  <TableCell>{deliveryModeLabels[lead.deliveryMode] || lead.deliveryMode || '-'}</TableCell>
-                  <TableCell>{lead.status || 'new'}</TableCell>
-                </TableRow>
-              ))}
-              {(data.recentSimulationActivity || []).length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-slate-500">Sem atividade recente.</TableCell>
-                </TableRow>
-              ) : null}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            </tbody>
+          </table>
+          {(data.recentLeads || []).length === 0 ? <p className="pt-4 text-sm text-slate-500">Sem leads recentes.</p> : null}
+        </div>
+      </section>
     </div>
   );
 }

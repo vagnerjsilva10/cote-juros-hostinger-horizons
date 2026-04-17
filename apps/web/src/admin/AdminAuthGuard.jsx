@@ -1,74 +1,85 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { portalApi } from '@/platform/services/portalApi.js';
 
-const SESSION_KEY = 'cj.admin.session';
-
-function isAuthenticated() {
-  if (typeof window === 'undefined') return false;
-  return window.sessionStorage.getItem(SESSION_KEY) === 'ok';
-}
-
 export default function AdminAuthGuard({ children }) {
   const location = useLocation();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [authed, setAuthed] = useState(() => isAuthenticated());
   const [busy, setBusy] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [session, setSession] = useState({ authenticated: false, user: null });
 
-  const expectedPassword = useMemo(() => import.meta.env.VITE_ADMIN_PASSCODE || '', []);
+  const refreshSession = async () => {
+    try {
+      const data = await portalApi.getAdminSession();
+      setSession({
+        authenticated: Boolean(data?.authenticated),
+        user: data?.user || null
+      });
+    } catch {
+      setSession({ authenticated: false, user: null });
+    } finally {
+      setReady(true);
+    }
+  };
+
+  useEffect(() => {
+    refreshSession();
+  }, []);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setBusy(true);
+    setError('');
+
+    try {
+      await portalApi.loginAdmin(password);
+      setPassword('');
+      await refreshSession();
+    } catch (submitError) {
+      setError(submitError.message || 'Não foi possível autenticar no admin.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (!ready) {
+    return <div className="min-h-screen bg-slate-50 p-6 text-sm text-slate-600">Validando sessão do admin...</div>;
+  }
 
   if (location.pathname === '/admin/login') {
-    if (authed) {
+    if (session.authenticated) {
       return <Navigate to="/admin" replace />;
     }
 
-    const handleSubmit = async (event) => {
-      event.preventDefault();
-      setBusy(true);
-      setError('');
-
-      try {
-        if (expectedPassword && password === expectedPassword) {
-          window.sessionStorage.setItem(SESSION_KEY, 'ok');
-          setAuthed(true);
-          return;
-        }
-
-        await portalApi.loginReactivationEmailAdmin(password);
-        window.sessionStorage.setItem(SESSION_KEY, 'ok');
-        setAuthed(true);
-      } catch {
-        setError('Senha invalida ou API de admin indisponivel.');
-      } finally {
-        setBusy(false);
-      }
-    };
-
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
         <Card className="w-full max-w-md border-slate-200 shadow-sm">
           <CardHeader>
             <CardTitle className="text-xl">Admin Cote Juros</CardTitle>
           </CardHeader>
           <CardContent>
             <form className="space-y-4" onSubmit={handleSubmit}>
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Digite a senha de admin"
-                autoComplete="current-password"
-              />
+              <label className="block space-y-2 text-sm font-medium text-slate-700">
+                <span>Senha do admin</span>
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Senha configurada no backend"
+                  autoComplete="current-password"
+                />
+              </label>
               {error ? <p className="text-sm text-red-600">{error}</p> : null}
               <Button type="submit" className="w-full" disabled={busy || password.length < 8}>
                 {busy ? 'Entrando...' : 'Entrar'}
               </Button>
               <p className="text-xs text-muted-foreground">
-                Use a senha configurada em REACTIVATION_ADMIN_PASSWORD na API.
+                A autenticação é validada pela API com sessão segura e trilha de auditoria.
               </p>
             </form>
           </CardContent>
@@ -77,14 +88,17 @@ export default function AdminAuthGuard({ children }) {
     );
   }
 
-  if (!authed) {
-    return <Navigate to="/admin/login" replace />;
+  if (!session.authenticated) {
+    return <Navigate to="/admin/login" replace state={{ from: location.pathname }} />;
   }
 
   return children;
 }
 
-export function clearAdminSession() {
-  if (typeof window === 'undefined') return;
-  window.sessionStorage.removeItem(SESSION_KEY);
+export async function clearAdminSession() {
+  try {
+    await portalApi.logoutAdmin();
+  } catch {
+    // The UI will still redirect to login; the cookie cleanup is best-effort.
+  }
 }

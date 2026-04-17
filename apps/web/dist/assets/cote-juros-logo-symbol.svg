@@ -1,0 +1,18 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cj_bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1220"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="cj_accent" x1="17" y1="42" x2="40" y2="17" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F62FE"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#cj_bg)"/>
+  <path d="M37.5 18.8C33.1 15.5 26.6 15.1 21.7 18.1C15 22.2 13.2 31.3 17.7 37.7C21.8 43.5 29.9 45.4 36.2 42.5" stroke="#94A3B8" stroke-width="2.4" stroke-linecap="round"/>
+  <rect x="20" y="33" width="4.6" height="9" rx="2.3" fill="url(#cj_accent)"/>
+  <rect x="27.7" y="27.5" width="4.6" height="14.5" rx="2.3" fill="url(#cj_accent)"/>
+  <rect x="35.4" y="22" width="4.6" height="20" rx="2.3" fill="url(#cj_accent)"/>
+  <circle cx="39.6" cy="18.8" r="2.1" fill="#67E8F9"/>
+</svg>

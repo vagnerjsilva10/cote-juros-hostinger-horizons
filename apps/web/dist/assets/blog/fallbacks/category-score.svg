@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" fill="none">
+  <rect width="1200" height="720" fill="#F5F3FF" />
+  <rect x="56" y="56" width="1088" height="608" rx="34" fill="white" fill-opacity="0.9" />
+  <rect x="92" y="96" width="156" height="40" rx="20" fill="#DDD6FE" />
+  <text x="122" y="122" fill="#6D28D9" font-family="Arial, sans-serif" font-size="22" font-weight="700">SCORE</text>
+  <text x="92" y="224" fill="#0F172A" font-family="Arial, sans-serif" font-size="58" font-weight="700">Crédito com contexto</text>
+  <text x="92" y="282" fill="#475569" font-family="Arial, sans-serif" font-size="30">Entenda o que pesa na análise e como se preparar.</text>
+  <circle cx="886" cy="268" r="110" fill="#EDE9FE" />
+  <path d="M886 268L952 212" stroke="#7C3AED" stroke-width="10" stroke-linecap="round" />
+  <circle cx="886" cy="268" r="18" fill="#7C3AED" />
+  <path d="M806 322C826 344 850 358 886 358C922 358 948 344 968 322" stroke="#C4B5FD" stroke-width="18" stroke-linecap="round" />
+  <rect x="92" y="548" width="286" height="16" rx="8" fill="#DDD6FE" />
+  <rect x="92" y="582" width="344" height="16" rx="8" fill="#E2E8F0" />
+</svg>

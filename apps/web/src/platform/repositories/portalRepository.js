@@ -15,11 +15,29 @@ import { normalizeArticleData } from '@/lib/content/articles.js';
 const defaultPartnersSeed = banksSeed.map((bank) => ({
   id: `partner-${bank.id}`,
   name: `${bank.name} Afiliados`,
+  slug: toSlug(`${bank.name}-afiliados`),
   bankId: bank.id,
   status: 'active',
+  integrationType: 'tracking_link',
+  healthStatus: 'healthy',
+  priority: 50,
+  weight: 1,
   productTypes: ['loan', 'credit_card', 'financing'],
   redirectRules: 'default',
   trackingLink: bank.website ? `https://${bank.website}` : 'https://www.cotejuros.com.br/emprestimos',
+  webhookUrl: '',
+  apiBaseUrl: '',
+  fallbackPartnerId: '',
+  dailyLimit: null,
+  monthlyLimit: null,
+  slaMinutes: null,
+  payoutLeadCents: null,
+  payoutConversionCents: null,
+  internalNotes: '',
+  metadata: null,
+  lastHealthCheckAt: null,
+  lastErrorAt: null,
+  lastErrorMessage: '',
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString()
 }));
@@ -266,8 +284,26 @@ const ensureBankDefaults = (bank) => ({
 const ensurePartnerDefaults = (partner) => ({
   id: partner.id || `partner_${Date.now()}`,
   name: partner.name || 'Novo parceiro',
+  slug: partner.slug || toSlug(partner.name || `parceiro-${Date.now()}`),
   bankId: partner.bankId || '',
   trackingLink: partner.trackingLink || '',
+  webhookUrl: partner.webhookUrl || '',
+  apiBaseUrl: partner.apiBaseUrl || '',
+  integrationType: partner.integrationType || 'tracking_link',
+  healthStatus: partner.healthStatus || 'unknown',
+  priority: partner.priority != null ? Number(partner.priority) : 50,
+  weight: partner.weight != null ? Number(partner.weight) : 1,
+  fallbackPartnerId: partner.fallbackPartnerId || '',
+  dailyLimit: partner.dailyLimit != null ? Number(partner.dailyLimit) : null,
+  monthlyLimit: partner.monthlyLimit != null ? Number(partner.monthlyLimit) : null,
+  slaMinutes: partner.slaMinutes != null ? Number(partner.slaMinutes) : null,
+  payoutLeadCents: partner.payoutLeadCents != null ? Number(partner.payoutLeadCents) : null,
+  payoutConversionCents: partner.payoutConversionCents != null ? Number(partner.payoutConversionCents) : null,
+  internalNotes: partner.internalNotes || '',
+  metadata: partner.metadata || null,
+  lastHealthCheckAt: partner.lastHealthCheckAt || null,
+  lastErrorAt: partner.lastErrorAt || null,
+  lastErrorMessage: partner.lastErrorMessage || '',
   productTypes: Array.isArray(partner.productTypes) ? partner.productTypes : [],
   redirectRules: partner.redirectRules || 'default',
   status: partner.status || 'active',
@@ -577,14 +613,16 @@ export const portalRepository = {
   },
 
   listAdminPartners(filters = {}) {
-    const { search, status } = filters;
+    const { search, status, healthStatus, integrationType } = filters;
     let data = safeRead('partners');
     if (status && status !== 'all') data = data.filter((item) => item.status === status);
+    if (healthStatus && healthStatus !== 'all') data = data.filter((item) => item.healthStatus === healthStatus);
+    if (integrationType && integrationType !== 'all') data = data.filter((item) => item.integrationType === integrationType);
     if (search) {
       const query = normalize(search);
-      data = data.filter((item) => normalize(`${item.name} ${item.redirectRules}`).includes(query));
+      data = data.filter((item) => normalize(`${item.name} ${item.redirectRules} ${item.slug || ''}`).includes(query));
     }
-    return data.sort((a, b) => sortByDateDesc(a, b, 'updatedAt'));
+    return data.sort((a, b) => (b.priority || 0) - (a.priority || 0));
   },
 
   saveAdminPartner(payload) {

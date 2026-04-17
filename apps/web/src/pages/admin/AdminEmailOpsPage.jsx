@@ -975,7 +975,7 @@ export default function AdminEmailOpsPage() {
     await load();
   };
 
-  if (loading) return <p className="rounded-lg bg-white p-4 text-slate-700">Carregando operacao de email...</p>;
+  if (loading) return <p className="rounded-lg bg-white p-4 text-slate-700">Carregando operação de e-mail...</p>;
   if (authRequired) return <AdminLoginPanel onLoggedIn={load} />;
 
   return (
@@ -984,7 +984,7 @@ export default function AdminEmailOpsPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-950">Email Ops</h1>
           <p className="mt-1 max-w-3xl text-sm text-slate-600">
-            Campanhas, templates, eventos SendGrid e fluxo visual da reativacao de credito da Cote Juros.
+            Campanhas, templates, eventos SendGrid e fluxo visual da reativação de crédito da Cote Juros.
           </p>
         </div>
         <button
@@ -992,17 +992,7 @@ export default function AdminEmailOpsPage() {
           className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white"
           onClick={bootstrap}
         >
-          Sincronizar fluxo padrao
-        </button>
-        <button
-          type="button"
-          className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700"
-          onClick={async () => {
-            await portalApi.logoutReactivationEmailAdmin();
-            setAuthRequired(true);
-          }}
-        >
-          Sair
+          Sincronizar fluxo padrão
         </button>
       </div>
 

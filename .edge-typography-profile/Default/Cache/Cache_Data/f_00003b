@@ -1,0 +1,182 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/components/affiliates/SuperSimSidebarCard.jsx");import __vite__cjsImport0_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=96e0e4f6"; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+import __vite__cjsImport1_react from "/node_modules/.vite/deps/react.js?v=96e0e4f6"; const React = __vite__cjsImport1_react.__esModule ? __vite__cjsImport1_react.default : __vite__cjsImport1_react;
+import { ArrowRight, BadgeCheck } from "/node_modules/.vite/deps/lucide-react.js?v=96e0e4f6";
+import { Card, CardContent } from "/src/components/ui/card.jsx";
+import { Button } from "/src/components/ui/button.jsx";
+import { Badge } from "/src/components/ui/badge.jsx";
+import AffiliateDisclosure from "/src/components/affiliates/AffiliateDisclosure.jsx";
+import { SUPERSIM_BADGES } from "/src/lib/supersim.js";
+const getInitials = (value = "") => String(value).split(" ").filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
+function SuperSimSidebarCard({
+  offer,
+  title = "SuperSim",
+  description = "Opção editorial para quem quer continuar a pesquisa com uma simulação online.",
+  ctaLabel = "Simular empréstimo",
+  onSelect
+}) {
+  if (!offer) return null;
+  const accent = offer?.metadata?.accentColor || "#16A34A";
+  const logoUrl = offer?.imageUrl || offer?.metadata?.logoUrl || "";
+  return /* @__PURE__ */ jsxDEV(Card, { className: "min-w-0 overflow-hidden border-border bg-white", children: [
+    /* @__PURE__ */ jsxDEV(
+      "div",
+      {
+        className: "border-b border-border p-5",
+        style: { background: `linear-gradient(135deg, ${accent}10 0%, #ffffff 100%)` },
+        children: /* @__PURE__ */ jsxDEV("div", { className: "flex items-center gap-3", children: [
+          /* @__PURE__ */ jsxDEV(
+            "div",
+            {
+              className: "flex h-12 w-12 items-center justify-center rounded-[16px] border bg-white shadow-[0_8px_20px_rgba(15,23,42,0.06)]",
+              style: { borderColor: `${accent}20` },
+              children: logoUrl ? /* @__PURE__ */ jsxDEV("img", { src: logoUrl, alt: offer.merchantName, className: "h-8 w-8 object-contain" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+                lineNumber: 42,
+                columnNumber: 13
+              }, this) : /* @__PURE__ */ jsxDEV("span", { className: "text-sm font-semibold", style: { color: accent }, children: getInitials(offer.merchantName || title) }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+                lineNumber: 44,
+                columnNumber: 13
+              }, this)
+            },
+            void 0,
+            false,
+            {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+              lineNumber: 37,
+              columnNumber: 11
+            },
+            this
+          ),
+          /* @__PURE__ */ jsxDEV("div", { children: [
+            /* @__PURE__ */ jsxDEV("p", { className: "text-xs font-semibold uppercase tracking-[0.16em] text-primary/80", children: "Recomendado" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+              lineNumber: 50,
+              columnNumber: 13
+            }, this),
+            /* @__PURE__ */ jsxDEV("p", { className: "text-sm font-semibold text-foreground", children: title }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+              lineNumber: 51,
+              columnNumber: 13
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+            lineNumber: 49,
+            columnNumber: 11
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+          lineNumber: 36,
+          columnNumber: 9
+        }, this)
+      },
+      void 0,
+      false,
+      {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+        lineNumber: 32,
+        columnNumber: 7
+      },
+      this
+    ),
+    /* @__PURE__ */ jsxDEV(CardContent, { className: "min-w-0 space-y-4 p-6", children: [
+      /* @__PURE__ */ jsxDEV("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsxDEV(Badge, { variant: "outline", className: "border-primary/15 bg-primary/[0.04] text-foreground", children: SUPERSIM_BADGES[1] }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+          lineNumber: 58,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV("h4", { className: "text-lg leading-7 text-foreground", children: description }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+          lineNumber: 61,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV("p", { className: "text-sm leading-6 text-muted-foreground", children: offer.audience || "Boa opção para quem quer seguir para uma análise externa com mais contexto." }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+          lineNumber: 62,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+        lineNumber: 57,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: "space-y-2 rounded-[16px] border border-border bg-background-secondary p-4", children: SUPERSIM_BADGES.filter((item) => item !== SUPERSIM_BADGES[1]).map(
+        (item) => /* @__PURE__ */ jsxDEV("div", { className: "flex items-start gap-2", children: [
+          /* @__PURE__ */ jsxDEV(BadgeCheck, { className: "mt-0.5 h-4 w-4 text-primary" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+            lineNumber: 70,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("p", { className: "text-sm leading-6 text-foreground", children: item }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+            lineNumber: 71,
+            columnNumber: 15
+          }, this)
+        ] }, item, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+          lineNumber: 69,
+          columnNumber: 11
+        }, this)
+      ) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+        lineNumber: 67,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Button, { className: "h-11 w-full justify-between rounded-[14px] px-4 text-sm font-semibold", onClick: () => onSelect?.(offer), children: [
+        ctaLabel,
+        /* @__PURE__ */ jsxDEV(ArrowRight, { className: "h-4 w-4" }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+          lineNumber: 78,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+        lineNumber: 76,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(AffiliateDisclosure, { text: offer.disclosureText }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+        lineNumber: 80,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+      lineNumber: 56,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx",
+    lineNumber: 31,
+    columnNumber: 5
+  }, this);
+}
+_c = SuperSimSidebarCard;
+export default SuperSimSidebarCard;
+var _c;
+$RefreshReg$(_c, "SuperSimSidebarCard");
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+  RefreshRuntime.__hmr_import(import.meta.url).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+function $RefreshReg$(type, id) {
+  return RefreshRuntime.register(type, "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/affiliates/SuperSimSidebarCard.jsx " + id);
+}
+function $RefreshSig$() {
+  return RefreshRuntime.createSignatureFunctionForTransform();
+}
+
+//# sourceMappingURL=data:application/json;base64,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Y0FBVyxXQUFVLGlDQUF0QjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUFtRDtBQUFBLFVBQ25ELHVCQUFDLE9BQUUsV0FBVSxxQ0FBcUNBLGtCQUFsRDtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUF1RDtBQUFBLGFBRi9DQSxNQUFWO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFHQTtBQUFBLE1BQ0QsS0FOSDtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBT0E7QUFBQSxNQUVBLHVCQUFDLFVBQU8sV0FBVSx5RUFBd0UsU0FBUyxNQUFNWCxXQUFXSixLQUFLLEdBQ3RIRztBQUFBQTtBQUFBQSxRQUNELHVCQUFDLGNBQVcsV0FBVSxhQUF0QjtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBQStCO0FBQUEsV0FGakM7QUFBQTtBQUFBO0FBQUE7QUFBQSxhQUdBO0FBQUEsTUFDQSx1QkFBQyx1QkFBb0IsTUFBTUgsTUFBTWdCLGtCQUFqQztBQUFBO0FBQUE7QUFBQTtBQUFBLGFBQWdEO0FBQUEsU0F4QmxEO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0F5QkE7QUFBQSxPQWxERjtBQUFBO0FBQUE7QUFBQTtBQUFBLFNBbURBO0FBRUo7QUFBQ0MsS0FsRVFsQjtBQW9FVCxlQUFlQTtBQUFvQixJQUFBa0I7QUFBQSxhQUFBQSxJQUFBIiwibmFtZXMiOlsiUmVhY3QiLCJBcnJvd1JpZ2h0IiwiQmFkZ2VDaGVjayIsIkNhcmQiLCJDYXJkQ29udGVudCIsIkJ1dHRvbiIsIkJhZGdlIiwiQWZmaWxpYXRlRGlzY2xvc3VyZSIsIlNVUEVSU0lNX0JBREdFUyIsImdldEluaXRpYWxzIiwidmFsdWUiLCJTdHJpbmciLCJzcGxpdCIsImZpbHRlciIsIkJvb2xlYW4iLCJzbGljZSIsIm1hcCIsInBhcnQiLCJqb2luIiwidG9VcHBlckNhc2UiLCJTdXBlclNpbVNpZGViYXJDYXJkIiwib2ZmZXIiLCJ0aXRsZSIsImRlc2NyaXB0aW9uIiwiY3RhTGFiZWwiLCJvblNlbGVjdCIsImFjY2VudCIsIm1ldGFkYXRhIiwiYWNjZW50Q29sb3IiLCJsb2dvVXJsIiwiaW1hZ2VVcmwiLCJiYWNrZ3JvdW5kIiwiYm9yZGVyQ29sb3IiLCJtZXJjaGFudE5hbWUiLCJjb2xvciIsImF1ZGllbmNlIiwiaXRlbSIsImRpc2Nsb3N1cmVUZXh0IiwiX2MiXSwiaWdub3JlTGlzdCI6W10sInNvdXJjZXMiOlsiU3VwZXJTaW1TaWRlYmFyQ2FyZC5qc3giXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JztcbmltcG9ydCB7IEFycm93UmlnaHQsIEJhZGdlQ2hlY2sgfSBmcm9tICdsdWNpZGUtcmVhY3QnO1xuaW1wb3J0IHsgQ2FyZCwgQ2FyZENvbnRlbnQgfSBmcm9tICdAL2NvbXBvbmVudHMvdWkvY2FyZCc7XG5pbXBvcnQgeyBCdXR0b24gfSBmcm9tICdAL2NvbXBvbmVudHMvdWkvYnV0dG9uJztcbmltcG9ydCB7IEJhZGdlIH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL2JhZGdlJztcbmltcG9ydCBBZmZpbGlhdGVEaXNjbG9zdXJlIGZyb20gJy4vQWZmaWxpYXRlRGlzY2xvc3VyZS5qc3gnO1xuaW1wb3J0IHsgU1VQRVJTSU1fQkFER0VTIH0gZnJvbSAnQC9saWIvc3VwZXJzaW0uanMnO1xuXG5jb25zdCBnZXRJbml0aWFscyA9ICh2YWx1ZSA9ICcnKSA9PlxuICBTdHJpbmcodmFsdWUpXG4gICAgLnNwbGl0KCcgJylcbiAgICAuZmlsdGVyKEJvb2xlYW4pXG4gICAgLnNsaWNlKDAsIDIpXG4gICAgLm1hcCgocGFydCkgPT4gcGFydFswXSlcbiAgICAuam9pbignJylcbiAgICAudG9VcHBlckNhc2UoKTtcblxuZnVuY3Rpb24gU3VwZXJTaW1TaWRlYmFyQ2FyZCh7XG4gIG9mZmVyLFxuICB0aXRsZSA9ICdTdXBlclNpbScsXG4gIGRlc2NyaXB0aW9uID0gJ09ww6fDo28gZWRpdG9yaWFsIHBhcmEgcXVlbSBxdWVyIGNvbnRpbnVhciBhIHBlc3F1aXNhIGNvbSB1bWEgc2ltdWxhw6fDo28gb25saW5lLicsXG4gIGN0YUxhYmVsID0gJ1NpbXVsYXIgZW1wcsOpc3RpbW8nLFxuICBvblNlbGVjdFxufSkge1xuICBpZiAoIW9mZmVyKSByZXR1cm4gbnVsbDtcblxuICBjb25zdCBhY2NlbnQgPSBvZmZlcj8ubWV0YWRhdGE/LmFjY2VudENvbG9yIHx8ICcjMTZBMzRBJztcbiAgY29uc3QgbG9nb1VybCA9IG9mZmVyPy5pbWFnZVVybCB8fCBvZmZlcj8ubWV0YWRhdGE/LmxvZ29VcmwgfHwgJyc7XG5cbiAgcmV0dXJuIChcbiAgICA8Q2FyZCBjbGFzc05hbWU9XCJtaW4tdy0wIG92ZXJmbG93LWhpZGRlbiBib3JkZXItYm9yZGVyIGJnLXdoaXRlXCI+XG4gICAgICA8ZGl2XG4gICAgICAgIGNsYXNzTmFtZT1cImJvcmRlci1iIGJvcmRlci1ib3JkZXIgcC01XCJcbiAgICAgICAgc3R5bGU9e3sgYmFja2dyb3VuZDogYGxpbmVhci1ncmFkaWVudCgxMzVkZWcsICR7YWNjZW50fTEwIDAlLCAjZmZmZmZmIDEwMCUpYCB9fVxuICAgICAgPlxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXggaXRlbXMtY2VudGVyIGdhcC0zXCI+XG4gICAgICAgICAgPGRpdlxuICAgICAgICAgICAgY2xhc3NOYW1lPVwiZmxleCBoLTEyIHctMTIgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHJvdW5kZWQtWzE2cHhdIGJvcmRlciBiZy13aGl0ZSBzaGFkb3ctWzBfOHB4XzIwcHhfcmdiYSgxNSwyMyw0MiwwLjA2KV1cIlxuICAgICAgICAgICAgc3R5bGU9e3sgYm9yZGVyQ29sb3I6IGAke2FjY2VudH0yMGAgfX1cbiAgICAgICAgICA+XG4gICAgICAgICAgICB7bG9nb1VybCA/IChcbiAgICAgICAgICAgICAgPGltZyBzcmM9e2xvZ29Vcmx9IGFsdD17b2ZmZXIubWVyY2hhbnROYW1lfSBjbGFzc05hbWU9XCJoLTggdy04IG9iamVjdC1jb250YWluXCIgLz5cbiAgICAgICAgICAgICkgOiAoXG4gICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT1cInRleHQtc20gZm9udC1zZW1pYm9sZFwiIHN0eWxlPXt7IGNvbG9yOiBhY2NlbnQgfX0+XG4gICAgICAgICAgICAgICAge2dldEluaXRpYWxzKG9mZmVyLm1lcmNoYW50TmFtZSB8fCB0aXRsZSl9XG4gICAgICAgICAgICAgIDwvc3Bhbj5cbiAgICAgICAgICAgICl9XG4gICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgPGRpdj5cbiAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cInRleHQteHMgZm9udC1zZW1pYm9sZCB1cHBlcmNhc2UgdHJhY2tpbmctWzAuMTZlbV0gdGV4dC1wcmltYXJ5LzgwXCI+UmVjb21lbmRhZG88L3A+XG4gICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJ0ZXh0LXNtIGZvbnQtc2VtaWJvbGQgdGV4dC1mb3JlZ3JvdW5kXCI+e3RpdGxlfTwvcD5cbiAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgPC9kaXY+XG4gICAgICA8L2Rpdj5cblxuICAgICAgPENhcmRDb250ZW50IGNsYXNzTmFtZT1cIm1pbi13LTAgc3BhY2UteS00IHAtNlwiPlxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInNwYWNlLXktM1wiPlxuICAgICAgICAgIDxCYWRnZSB2YXJpYW50PVwib3V0bGluZVwiIGNsYXNzTmFtZT1cImJvcmRlci1wcmltYXJ5LzE1IGJnLXByaW1hcnkvWzAuMDRdIHRleHQtZm9yZWdyb3VuZFwiPlxuICAgICAgICAgICAge1NVUEVSU0lNX0JBREdFU1sxXX1cbiAgICAgICAgICA8L0JhZGdlPlxuICAgICAgICAgIDxoNCBjbGFzc05hbWU9XCJ0ZXh0LWxnIGxlYWRpbmctNyB0ZXh0LWZvcmVncm91bmRcIj57ZGVzY3JpcHRpb259PC9oND5cbiAgICAgICAgICA8cCBjbGFzc05hbWU9XCJ0ZXh0LXNtIGxlYWRpbmctNiB0ZXh0LW11dGVkLWZvcmVncm91bmRcIj5cbiAgICAgICAgICAgIHtvZmZlci5hdWRpZW5jZSB8fCAnQm9hIG9ww6fDo28gcGFyYSBxdWVtIHF1ZXIgc2VndWlyIHBhcmEgdW1hIGFuw6FsaXNlIGV4dGVybmEgY29tIG1haXMgY29udGV4dG8uJ31cbiAgICAgICAgICA8L3A+XG4gICAgICAgIDwvZGl2PlxuXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwic3BhY2UteS0yIHJvdW5kZWQtWzE2cHhdIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLWJhY2tncm91bmQtc2Vjb25kYXJ5IHAtNFwiPlxuICAgICAgICAgIHtTVVBFUlNJTV9CQURHRVMuZmlsdGVyKChpdGVtKSA9PiBpdGVtICE9PSBTVVBFUlNJTV9CQURHRVNbMV0pLm1hcCgoaXRlbSkgPT4gKFxuICAgICAgICAgICAgPGRpdiBrZXk9e2l0ZW19IGNsYXNzTmFtZT1cImZsZXggaXRlbXMtc3RhcnQgZ2FwLTJcIj5cbiAgICAgICAgICAgICAgPEJhZGdlQ2hlY2sgY2xhc3NOYW1lPVwibXQtMC41IGgtNCB3LTQgdGV4dC1wcmltYXJ5XCIgLz5cbiAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC1zbSBsZWFkaW5nLTYgdGV4dC1mb3JlZ3JvdW5kXCI+e2l0ZW19PC9wPlxuICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgKSl9XG4gICAgICAgIDwvZGl2PlxuXG4gICAgICAgIDxCdXR0b24gY2xhc3NOYW1lPVwiaC0xMSB3LWZ1bGwganVzdGlmeS1iZXR3ZWVuIHJvdW5kZWQtWzE0cHhdIHB4LTQgdGV4dC1zbSBmb250LXNlbWlib2xkXCIgb25DbGljaz17KCkgPT4gb25TZWxlY3Q/LihvZmZlcil9PlxuICAgICAgICAgIHtjdGFMYWJlbH1cbiAgICAgICAgICA8QXJyb3dSaWdodCBjbGFzc05hbWU9XCJoLTQgdy00XCIgLz5cbiAgICAgICAgPC9CdXR0b24+XG4gICAgICAgIDxBZmZpbGlhdGVEaXNjbG9zdXJlIHRleHQ9e29mZmVyLmRpc2Nsb3N1cmVUZXh0fSAvPlxuICAgICAgPC9DYXJkQ29udGVudD5cbiAgICA8L0NhcmQ+XG4gICk7XG59XG5cbmV4cG9ydCBkZWZhdWx0IFN1cGVyU2ltU2lkZWJhckNhcmQ7XG4iXSwiZmlsZSI6IkM6L2Rldi9jb3RlLWp1cm9zLWhvc3Rpbmdlci1ob3Jpem9ucy9hcHBzL3dlYi9zcmMvY29tcG9uZW50cy9hZmZpbGlhdGVzL1N1cGVyU2ltU2lkZWJhckNhcmQuanN4In0=

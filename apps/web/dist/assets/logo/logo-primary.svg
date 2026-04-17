@@ -1,0 +1,11 @@
+﻿<svg width="404" height="92" viewBox="0 0 404 92" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cote Juros">
+  <g>
+    <rect x="8" y="10" width="72" height="72" rx="20" fill="#0F172A" />
+    <path d="M52 27C48.7 23.9 44.2 22 39.3 22C29.2 22 21 30.2 21 40.3C21 50.4 29.2 58.6 39.3 58.6C44.2 58.6 48.7 56.7 52 53.6" stroke="#E2E8F0" stroke-width="4" stroke-linecap="round"/>
+    <path d="M24 47.6L33 40.4L39.7 43.8L49.5 34.8" stroke="#3B82F6" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="49.5" cy="34.8" r="2.8" fill="#14B8A6"/>
+    <path d="M21.5 28.8H30.2" stroke="#94A3B8" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M21.5 33.5H27.4" stroke="#94A3B8" stroke-width="2.4" stroke-linecap="round"/>
+  </g>
+  <text x="96" y="58" fill="#0F172A" font-family="Inter, Manrope, 'Segoe UI', sans-serif" font-size="38" font-weight="700" letter-spacing="-0.02em">Cote Juros</text>
+</svg>

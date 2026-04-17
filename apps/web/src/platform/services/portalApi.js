@@ -32,6 +32,7 @@ const toQueryString = (params = {}) => {
 };
 
 const request = async (path, options = {}) => {
+  const isAdminPath = path.startsWith('/api/reactivation-admin') || path.startsWith('/api/admin');
   const headers = {
     'Content-Type': 'application/json',
     ...(path.startsWith('/api/reactivation-admin') && ADMIN_API_TOKEN ? { Authorization: `Bearer ${ADMIN_API_TOKEN}` } : {}),
@@ -39,7 +40,7 @@ const request = async (path, options = {}) => {
   };
   const response = await fetch(`${API_BASE}${path}`, {
     headers,
-    credentials: path.startsWith('/api/reactivation-admin') ? 'include' : options.credentials,
+    credentials: isAdminPath ? 'include' : options.credentials,
     ...options
   });
 
@@ -277,6 +278,48 @@ const serializeSimulationLeadPatch = (payload = {}) => {
 };
 
 export const portalApi = {
+  async loginAdmin(password, email) {
+    return request('/api/admin/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        password,
+        ...(email ? { email } : {})
+      })
+    });
+  },
+
+  async logoutAdmin() {
+    return request('/api/admin/auth/logout', {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
+  },
+
+  async getAdminSession() {
+    return request('/api/admin/auth/session');
+  },
+
+  async requestAdminPasswordReset(email) {
+    return request('/api/admin/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email })
+    });
+  },
+
+  async resetAdminPassword(token, newPassword) {
+    return request('/api/admin/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ token, newPassword })
+    });
+  },
+
+  async changeAdminPassword(currentPassword, newPassword) {
+    return request('/api/admin/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ currentPassword, newPassword })
+    });
+  },
+
   async getBanks() {
     await wait();
     return portalRepository.listBanks();
@@ -601,18 +644,68 @@ export const portalApi = {
   },
 
   async getAdminPartners(filters) {
-    await wait();
-    return portalRepository.listAdminPartners(filters);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.listAdminPartners(filters);
+    }
+
+    try {
+      const qs = toQueryString(filters);
+      return await request(`/api/admin/partners${qs ? `?${qs}` : ''}`);
+    } catch {
+      return portalRepository.listAdminPartners(filters);
+    }
   },
 
   async saveAdminPartner(payload) {
-    await wait();
-    return portalRepository.saveAdminPartner(payload);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.saveAdminPartner(payload);
+    }
+
+    try {
+      return await request('/api/admin/partners', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+    } catch {
+      return portalRepository.saveAdminPartner(payload);
+    }
   },
 
   async toggleAdminPartnerStatus(id) {
-    await wait();
-    return portalRepository.togglePartnerStatus(id);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.togglePartnerStatus(id);
+    }
+
+    try {
+      return await request(`/api/admin/partners/${id}/status`, {
+        method: 'POST',
+        body: JSON.stringify({})
+      });
+    } catch {
+      return portalRepository.togglePartnerStatus(id);
+    }
+  },
+
+  async testAdminPartner(id) {
+    if (!useRemote) {
+      await wait();
+      return {
+        partner: null,
+        result: {
+          healthStatus: 'warning',
+          message: 'Teste local sem backend remoto.',
+          checkedAt: new Date().toISOString()
+        }
+      };
+    }
+
+    return request(`/api/admin/partners/${id}/test`, {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
   },
 
   async getAdminArticles(filters) {
@@ -648,7 +741,20 @@ export const portalApi = {
   async getAdminLeads(filters) {
     if (!useRemote) {
       await wait();
-      return portalRepository.listSimulationLeads(filters);
+      const items = portalRepository.listSimulationLeads(filters);
+      return {
+        items,
+        meta: {
+          page: 1,
+          pageSize: items.length || 20,
+          total: items.length,
+          totalPages: 1
+        },
+        facets: {
+          tags: [],
+          owners: []
+        }
+      };
     }
 
     try {
@@ -656,10 +762,26 @@ export const portalApi = {
         ...filters,
         originPage: filters?.sourcePage
       });
-      const data = await request(`/api/simulations${qs ? `?${qs}` : ''}`);
-      return Array.isArray(data) ? data.map(normalizeSimulationLeadRecord) : [];
+      const data = await request(`/api/admin/leads${qs ? `?${qs}` : ''}`);
+      return {
+        ...data,
+        items: Array.isArray(data?.items) ? data.items.map(normalizeSimulationLeadRecord) : []
+      };
     } catch {
-      return portalRepository.listSimulationLeads(filters);
+      const items = portalRepository.listSimulationLeads(filters);
+      return {
+        items,
+        meta: {
+          page: 1,
+          pageSize: items.length || 20,
+          total: items.length,
+          totalPages: 1
+        },
+        facets: {
+          tags: [],
+          owners: []
+        }
+      };
     }
   },
 
@@ -670,14 +792,152 @@ export const portalApi = {
     }
 
     try {
-      const data = await request(`/api/simulations/${id}`, {
-        method: 'PATCH',
+      const data = await request(`/api/admin/leads/${id}/status`, {
+        method: 'POST',
         body: JSON.stringify({ status })
       });
       return normalizeSimulationLeadRecord(data);
     } catch {
       return portalRepository.updateSimulationLeadStatus(id, status);
     }
+  },
+
+  async getAdminLead(id) {
+    if (!useRemote) {
+      await wait();
+      return portalRepository.getSimulationLeadById?.(id) || null;
+    }
+
+    const data = await request(`/api/admin/leads/${id}`);
+    return normalizeSimulationLeadRecord(data);
+  },
+
+  async addAdminLeadNote(id, body) {
+    return request(`/api/admin/leads/${id}/notes`, {
+      method: 'POST',
+      body: JSON.stringify({ body })
+    });
+  },
+
+  async setAdminLeadTags(id, tags) {
+    return request(`/api/admin/leads/${id}/tags`, {
+      method: 'POST',
+      body: JSON.stringify({ tags })
+    });
+  },
+
+  async assignAdminLeadOwner(id, ownerUserId, note) {
+    return request(`/api/admin/leads/${id}/owner`, {
+      method: 'POST',
+      body: JSON.stringify({ ownerUserId, note })
+    });
+  },
+
+  async suppressAdminLead(id, scope, reason) {
+    return request(`/api/admin/leads/${id}/suppress`, {
+      method: 'POST',
+      body: JSON.stringify({ scope, reason })
+    });
+  },
+
+  async simulateAdminLeadRouting(id) {
+    return request(`/api/admin/leads/${id}/simulate-routing`, {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
+  },
+
+  async getAdminLeadOwners() {
+    if (!useRemote) return [];
+    return request('/api/admin/users/owners');
+  },
+
+  async getAdminDashboard() {
+    if (!useRemote) {
+      await wait();
+      const overview = portalRepository.getAnalyticsOverview();
+      return {
+        totalLeads: overview.totalLeads,
+        activeSessions: 0,
+        openAlerts: 0,
+        estimatedRevenueCents: 0,
+        confirmedRevenueCents: 0,
+        leadsByProduct: overview.leadsByProductType || {},
+        leadsByStatus: {},
+        recentLeads: overview.recentSimulationActivity || []
+      };
+    }
+    return request('/api/admin/dashboard');
+  },
+
+  async getAdminHealth() {
+    if (!useRemote) {
+      await wait();
+      return {
+        generatedAt: new Date().toISOString(),
+        api: {
+          service: 'cote-juros-api',
+          databaseConfigured: false,
+          environment: 'local'
+        },
+        integrations: {
+          jurosBaixos: {
+            provider: 'juros_baixos',
+            configured: false,
+            available: false,
+            status: 'disabled',
+            missing: ['JUROS_BAIXOS_BASE_URL', 'JUROS_BAIXOS_CLIENT_ID + JUROS_BAIXOS_CLIENT_SECRET']
+          }
+        },
+        alerts: {
+          open: 0,
+          total: 0,
+          bySeverity: {},
+          items: []
+        },
+        partners: {
+          byHealthStatus: {}
+        },
+        checks: [],
+        scheduledJobs: []
+      };
+    }
+
+    return request('/api/admin/health');
+  },
+
+  async getAdminAuditLogs(filters = {}) {
+    if (!useRemote) {
+      await wait();
+      return { items: [], page: 1, pageSize: 20, total: 0, totalPages: 1 };
+    }
+    const qs = toQueryString(filters);
+    return request(`/api/admin/audit${qs ? `?${qs}` : ''}`);
+  },
+
+  async getAdminUsers(filters = {}) {
+    if (!useRemote) return [];
+    const qs = toQueryString(filters);
+    return request(`/api/admin/users${qs ? `?${qs}` : ''}`);
+  },
+
+  async getAdminRoles() {
+    if (!useRemote) return [];
+    return request('/api/admin/roles');
+  },
+
+  async createAdminUser(payload) {
+    return request('/api/admin/users', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async updateAdminUser(userId, payload) {
+    return request(`/api/admin/users/${userId}`, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
   },
 
   async createQuickCreditLead(payload) {
@@ -1115,21 +1375,15 @@ export const portalApi = {
   },
 
   async loginReactivationEmailAdmin(password) {
-    return request('/api/reactivation-admin/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ password })
-    });
+    return this.loginAdmin(password);
   },
 
   async logoutReactivationEmailAdmin() {
-    return request('/api/reactivation-admin/auth/logout', {
-      method: 'POST',
-      body: JSON.stringify({})
-    });
+    return this.logoutAdmin();
   },
 
   async getReactivationEmailAdminSession() {
-    return request('/api/reactivation-admin/auth/session');
+    return this.getAdminSession();
   },
 
   getApiBaseUrl() {

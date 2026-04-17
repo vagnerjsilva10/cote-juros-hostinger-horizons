@@ -36,12 +36,15 @@ import AdminDashboardPage from '@/pages/admin/AdminDashboardPage.jsx';
 import AdminOffersPage from '@/pages/admin/AdminOffersPage.jsx';
 import AdminBanksPage from '@/pages/admin/AdminBanksPage.jsx';
 import AdminPartnersPage from '@/pages/admin/AdminPartnersPage.jsx';
+import AdminUsersPage from '@/pages/admin/AdminUsersPage.jsx';
 import AdminArticlesPage from '@/pages/admin/AdminArticlesPage.jsx';
 import AdminSeoPagesPage from '@/pages/admin/AdminSeoPagesPage.jsx';
 import AdminLeadsPage from '@/pages/admin/AdminLeadsPage.jsx';
 import AdminReactivationPage from '@/pages/admin/AdminReactivationPage.jsx';
 import AdminEmailOpsPage from '@/pages/admin/AdminEmailOpsPage.jsx';
 import AdminTestimonialsPage from '@/pages/admin/AdminTestimonialsPage.jsx';
+import AdminAuditPage from '@/pages/admin/AdminAuditPage.jsx';
+import AdminHealthPage from '@/pages/admin/AdminHealthPage.jsx';
 import AdminSettingsPage from '@/pages/admin/AdminSettingsPage.jsx';
 
 import { seoFallbackPaths as seedFallbackPaths, seoPages as seedSeoPages } from '@/platform/seed/portalSeed.js';
@@ -289,12 +292,15 @@ function App() {
         <Route path="/admin/offers" element={<AdminRoute title="Gestão de ofertas"><AdminOffersPage /></AdminRoute>} />
         <Route path="/admin/banks" element={<AdminRoute title="Gestão de bancos"><AdminBanksPage /></AdminRoute>} />
         <Route path="/admin/partners" element={<AdminRoute title="Gestão de parceiros"><AdminPartnersPage /></AdminRoute>} />
+        <Route path="/admin/users" element={<AdminRoute title="Equipe e permissões"><AdminUsersPage /></AdminRoute>} />
         <Route path="/admin/articles" element={<AdminRoute title="Gestão de artigos"><AdminArticlesPage /></AdminRoute>} />
         <Route path="/admin/seo-pages" element={<AdminRoute title="Gestão de páginas SEO"><AdminSeoPagesPage /></AdminRoute>} />
         <Route path="/admin/leads" element={<AdminRoute title="Gestão de leads"><AdminLeadsPage /></AdminRoute>} />
         <Route path="/admin/reactivation" element={<AdminRoute title="Reativação de leads"><AdminReactivationPage /></AdminRoute>} />
         <Route path="/admin/email-ops" element={<AdminRoute title="Email Ops"><AdminEmailOpsPage /></AdminRoute>} />
         <Route path="/admin/testimonials" element={<AdminRoute title="Depoimentos"><AdminTestimonialsPage /></AdminRoute>} />
+        <Route path="/admin/audit" element={<AdminRoute title="Auditoria"><AdminAuditPage /></AdminRoute>} />
+        <Route path="/admin/health" element={<AdminRoute title="Saúde operacional"><AdminHealthPage /></AdminRoute>} />
         <Route path="/admin/settings" element={<AdminRoute title="Configurações"><AdminSettingsPage /></AdminRoute>} />
 
         {seoPages.filter((page) => !shouldSkipSeedSeoPage(page.path)).map((page) => (

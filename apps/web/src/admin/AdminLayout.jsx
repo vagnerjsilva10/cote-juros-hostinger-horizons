@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { clearAdminSession } from '@/admin/AdminAuthGuard.jsx';
@@ -10,25 +10,42 @@ const navItems = [
   { to: '/admin/offers', label: 'Ofertas' },
   { to: '/admin/banks', label: 'Bancos' },
   { to: '/admin/partners', label: 'Parceiros' },
+  { to: '/admin/users', label: 'Equipe' },
   { to: '/admin/articles', label: 'Artigos' },
   { to: '/admin/seo-pages', label: 'Páginas SEO' },
   { to: '/admin/leads', label: 'Leads' },
-  { to: '/admin/reactivation', label: 'Reativacao' },
+  { to: '/admin/reactivation', label: 'Reativação' },
   { to: '/admin/email-ops', label: 'Email Ops' },
   { to: '/admin/testimonials', label: 'Depoimentos' },
+  { to: '/admin/audit', label: 'Auditoria' },
+  { to: '/admin/health', label: 'Saúde' },
   { to: '/admin/settings', label: 'Configurações' }
 ];
 
 export default function AdminLayout({ title, children }) {
   const navigate = useNavigate();
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+
+    portalApi.getAdminSession()
+      .then((data) => {
+        if (!active) return;
+        setSession(data?.user || null);
+      })
+      .catch(() => {
+        if (!active) return;
+        setSession(null);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handleLogout = async () => {
-    try {
-      await portalApi.logoutReactivationEmailAdmin();
-    } catch {
-      // Local session cleanup still matters if the API is unavailable.
-    }
-    clearAdminSession();
+    await clearAdminSession();
     navigate('/admin/login');
   };
 
@@ -66,6 +83,12 @@ export default function AdminLayout({ title, children }) {
                 <h1 className="text-2xl font-semibold tracking-[-0.03em] text-foreground">{title}</h1>
               </div>
               <div className="flex items-center gap-3">
+                {session ? (
+                  <div className="hidden text-right sm:block">
+                    <p className="text-sm font-medium text-foreground">{session.fullName || session.email}</p>
+                    <p className="text-xs text-muted-foreground">{(session.roles || []).join(' · ') || 'admin'}</p>
+                  </div>
+                ) : null}
                 <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">Ver portal</Link>
                 <Button variant="outline" size="sm" onClick={handleLogout}>Sair</Button>
               </div>

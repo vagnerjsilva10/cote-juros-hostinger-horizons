@@ -10,6 +10,7 @@ import creditRoutes from './routes/credit.js';
 import affiliatesRoutes from './routes/affiliates.js';
 import reactivationRoutes from './routes/reactivation.js';
 import reactivationAdminRoutes from './routes/reactivationAdmin.js';
+import adminRoutes from './routes/admin.js';
 import { PrismaConfigError } from './lib/prisma.js';
 import { IntegrationConfigurationError, JurosBaixosIntegrationError } from './integrations/jurosBaixos/errors.js';
 import { getJurosBaixosHealth } from './integrations/jurosBaixos/config.js';
@@ -78,6 +79,7 @@ export const createApp = () => {
   app.use('/api/affiliates', affiliatesRoutes);
   app.use('/api/reactivation', reactivationRoutes);
   app.use('/api/reactivation-admin', reactivationAdminRoutes);
+  app.use('/api/admin', adminRoutes);
 
   app.use((err, req, res, _next) => {
     if (err?.name === 'ZodError') {
