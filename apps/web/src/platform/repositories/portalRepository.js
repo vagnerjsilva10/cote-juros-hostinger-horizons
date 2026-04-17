@@ -12,6 +12,20 @@ import {
 import { affiliateOffersSeed as affiliateSeed } from '@/platform/seed/affiliateSeed.js';
 import { normalizeArticleData } from '@/lib/content/articles.js';
 
+const normalize = (text = '') =>
+  String(text)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+
+const toSlug = (value = '') =>
+  normalize(value)
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+
 const defaultPartnersSeed = banksSeed.map((bank) => ({
   id: `partner-${bank.id}`,
   name: `${bank.name} Afiliados`,
@@ -178,20 +192,6 @@ const upsertEntity = (key, entity) => {
   safeWrite(key, next);
   return entity;
 };
-
-const normalize = (text = '') =>
-  String(text)
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
-
-const toSlug = (value = '') =>
-  normalize(value)
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
 
 const parseDate = (value) => {
   const date = new Date(value);
