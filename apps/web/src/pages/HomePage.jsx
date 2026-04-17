@@ -18,6 +18,7 @@ import SeoHead from '@/components/SeoHead.jsx';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { normalizeMojibake, normalizeMojibakeDeep } from '@/lib/textEncoding.js';
 import { brandPages, createOrganizationSchema, createWebSiteSchema } from '@/seo/brandSeo.js';
+import roleWomanImageSrc from '@/assets/editorial/role-woman-headphones.png';
 
 const animationIn = {
   initial: { opacity: 0, y: 18 },
@@ -32,7 +33,6 @@ const editorialFeature = normalizeMojibakeDeep({
   tag: 'Comparação real'
 });
 
-const roleWomanImageSrc = '/assets/editorial/role-woman-headphones.png';
 const featureCards = normalizeMojibakeDeep([
   {
     title: 'Preencha o básico',
