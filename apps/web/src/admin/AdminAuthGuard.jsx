@@ -3,6 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { portalApi } from '@/platform/services/portalApi.js';
 
 const SESSION_KEY = 'cj.admin.session';
 
@@ -16,23 +17,35 @@ export default function AdminAuthGuard({ children }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [authed, setAuthed] = useState(() => isAuthenticated());
+  const [busy, setBusy] = useState(false);
 
-  const expectedPassword = useMemo(() => import.meta.env.VITE_ADMIN_PASSCODE || 'admin123', []);
+  const expectedPassword = useMemo(() => import.meta.env.VITE_ADMIN_PASSCODE || '', []);
 
   if (location.pathname === '/admin/login') {
     if (authed) {
       return <Navigate to="/admin" replace />;
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
       event.preventDefault();
-      if (password === expectedPassword) {
+      setBusy(true);
+      setError('');
+
+      try {
+        if (expectedPassword && password === expectedPassword) {
+          window.sessionStorage.setItem(SESSION_KEY, 'ok');
+          setAuthed(true);
+          return;
+        }
+
+        await portalApi.loginReactivationEmailAdmin(password);
         window.sessionStorage.setItem(SESSION_KEY, 'ok');
         setAuthed(true);
-        setError('');
-        return;
+      } catch {
+        setError('Senha invalida ou API de admin indisponivel.');
+      } finally {
+        setBusy(false);
       }
-      setError('Senha inválida.');
     };
 
     return (
@@ -48,10 +61,15 @@ export default function AdminAuthGuard({ children }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Digite a senha de admin"
+                autoComplete="current-password"
               />
               {error ? <p className="text-sm text-red-600">{error}</p> : null}
-              <Button type="submit" className="w-full">Entrar</Button>
-              <p className="text-xs text-muted-foreground">Placeholder de proteção. Configure `VITE_ADMIN_PASSCODE` em produção.</p>
+              <Button type="submit" className="w-full" disabled={busy || password.length < 8}>
+                {busy ? 'Entrando...' : 'Entrar'}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Use a senha configurada em REACTIVATION_ADMIN_PASSWORD na API.
+              </p>
             </form>
           </CardContent>
         </Card>

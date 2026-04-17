@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { clearAdminSession } from '@/admin/AdminAuthGuard.jsx';
 import { CoteJurosLogo } from '@/components/CoteJurosLogo.jsx';
+import { portalApi } from '@/platform/services/portalApi.js';
 
 const navItems = [
   { to: '/admin', label: 'Painel' },
@@ -21,7 +22,12 @@ const navItems = [
 export default function AdminLayout({ title, children }) {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await portalApi.logoutReactivationEmailAdmin();
+    } catch {
+      // Local session cleanup still matters if the API is unavailable.
+    }
     clearAdminSession();
     navigate('/admin/login');
   };
