@@ -30,6 +30,7 @@ const request = async (path, options = {}) => {
   };
   const response = await fetch(`${API_BASE}${path}`, {
     headers,
+    credentials: path.startsWith('/api/reactivation-admin') ? 'include' : options.credentials,
     ...options
   });
 
@@ -1097,6 +1098,24 @@ export const portalApi = {
     }
 
     return request('/api/reactivation-admin/dashboard');
+  },
+
+  async loginReactivationEmailAdmin(password) {
+    return request('/api/reactivation-admin/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ password })
+    });
+  },
+
+  async logoutReactivationEmailAdmin() {
+    return request('/api/reactivation-admin/auth/logout', {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
+  },
+
+  async getReactivationEmailAdminSession() {
+    return request('/api/reactivation-admin/auth/session');
   },
 
   async getReactivationEmailCampaigns() {

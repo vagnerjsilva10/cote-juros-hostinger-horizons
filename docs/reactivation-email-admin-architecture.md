@@ -10,10 +10,32 @@ Esta fase adiciona uma camada editavel sobre a operacao atual de reativacao sem 
 - Envio: SendGrid
 - Automacao atual: GitHub Actions chamando os jobs existentes
 
+## Autenticacao do admin
+
+As rotas do admin aceitam dois modos:
+
+- Browser: login por `POST /api/reactivation-admin/auth/login`, com cookie HTTP-only `cj_admin_session`.
+- Automacoes/scripts: `Authorization: Bearer <REACTIVATION_ADMIN_TOKEN ou COTE_API_TOKEN>`.
+
+Variaveis recomendadas para producao:
+
+```text
+REACTIVATION_ADMIN_PASSWORD=<senha forte para operadores>
+REACTIVATION_ADMIN_SESSION_SECRET=<segredo aleatorio de 32+ bytes>
+REACTIVATION_ADMIN_COOKIE_DOMAIN=.cotejuros.com.br
+REACTIVATION_ADMIN_SESSION_TTL_SECONDS=43200
+REACTIVATION_ADMIN_TOKEN=<token administrativo para scripts, diferente de COTE_API_TOKEN>
+```
+
+O frontend nao precisa mais expor `COTE_API_TOKEN` em `VITE_ADMIN_API_TOKEN`. Esse fallback ainda existe para ambiente local/controlado, mas nao deve ser usado em producao.
+
 ## Novas rotas
 
-Todas usam `Authorization: Bearer <REACTIVATION_ADMIN_TOKEN ou COTE_API_TOKEN>`, exceto o webhook SendGrid.
+Todas usam cookie de sessao ou `Authorization: Bearer`, exceto login/logout/session e webhook SendGrid.
 
+- `POST /api/reactivation-admin/auth/login`
+- `POST /api/reactivation-admin/auth/logout`
+- `GET /api/reactivation-admin/auth/session`
 - `GET /api/reactivation-admin/dashboard`
 - `GET /api/reactivation-admin/campaigns`
 - `POST /api/reactivation-admin/campaigns`
@@ -27,6 +49,12 @@ Todas usam `Authorization: Bearer <REACTIVATION_ADMIN_TOKEN ou COTE_API_TOKEN>`,
 - `POST /api/reactivation-admin/flows/validate`
 - `POST /api/reactivation-admin/flows/:id/status`
 - `GET /api/reactivation-admin/leads/:leadId/timeline`
+- `POST /api/reactivation-admin/leads/:leadId/resend-email`
+- `POST /api/reactivation-admin/leads/:leadId/pause-flow`
+- `POST /api/reactivation-admin/leads/:leadId/move-flow-node`
+- `POST /api/reactivation-admin/leads/:leadId/force-next-execution`
+- `POST /api/reactivation-admin/suppressions/apply`
+- `POST /api/reactivation-admin/suppressions/release`
 - `POST /api/reactivation-admin/bootstrap-defaults`
 - `POST /api/reactivation-admin/webhooks/sendgrid`
 
@@ -74,14 +102,11 @@ Ela carrega:
 - campanhas
 - templates
 - visualizacao do fluxo em blocos conectados
-
-Para acessar os endpoints protegidos pelo browser em ambiente local/controlado, configure:
-
-```text
-VITE_ADMIN_API_TOKEN=<mesmo valor do REACTIVATION_ADMIN_TOKEN ou COTE_API_TOKEN>
-```
-
-Nao use `COTE_API_TOKEN` como `VITE_*` em producao. Variaveis `VITE_*` ficam expostas no bundle do browser. Para producao, o proximo passo recomendado e criar uma camada BFF/autenticada para o admin ou mover o admin operacional para rotas server-side.
+- login seguro por cookie HTTP-only
+- preview e envio de teste de template
+- reenvio manual
+- pausa/movimento de lead no fluxo
+- aplicacao/liberacao de supressao
 
 ## Fluxo inicial publicado
 
@@ -116,9 +141,9 @@ Templates iniciais:
 ## Proximos incrementos
 
 - Registrar eventos reais de delivered/open/click/bounce via webhook SendGrid em producao.
-- Expor acoes manuais: reenviar email, mover lead, pausar lead, aplicar/liberar suppressao.
 - Criar edicao visual real com drag/connect persistente.
-- Criar camada BFF/autenticada para o admin em producao, evitando token operacional no bundle Vite.
+- Criar editor completo de template com preview HTML lado a lado.
+- Criar tela detalhada do lead dentro do fluxo.
 
 ## Integracao ja ativa nesta fase
 

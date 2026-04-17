@@ -1,19 +1,111 @@
 import express from 'express';
+import crypto from 'node:crypto';
 import { z } from 'zod';
 import { asyncHandler } from '../lib/http.js';
 import { ReactivationAdminService } from '../services/reactivationAdminService.js';
 
 const router = express.Router();
+const ADMIN_COOKIE_NAME = 'cj_admin_session';
+const ADMIN_SESSION_TTL_SECONDS = Number(process.env.REACTIVATION_ADMIN_SESSION_TTL_SECONDS || 60 * 60 * 12);
+
+const safeEqual = (left = '', right = '') => {
+  const leftBuffer = Buffer.from(String(left));
+  const rightBuffer = Buffer.from(String(right));
+  if (leftBuffer.length !== rightBuffer.length) return false;
+  return crypto.timingSafeEqual(leftBuffer, rightBuffer);
+};
+
+const getAdminSessionSecret = () => {
+  return process.env.REACTIVATION_ADMIN_SESSION_SECRET
+    || process.env.REACTIVATION_ADMIN_TOKEN
+    || process.env.COTE_API_TOKEN
+    || '';
+};
+
+const parseCookies = (req) => {
+  const header = req.headers.cookie || '';
+  return Object.fromEntries(
+    header
+      .split(';')
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+      .map((entry) => {
+        const index = entry.indexOf('=');
+        if (index === -1) return [entry, ''];
+        return [entry.slice(0, index), decodeURIComponent(entry.slice(index + 1))];
+      })
+  );
+};
+
+const signAdminSession = () => {
+  const secret = getAdminSessionSecret();
+  if (!secret) return null;
+  const now = Math.floor(Date.now() / 1000);
+  const payload = Buffer.from(JSON.stringify({
+    sub: 'reactivation-admin',
+    iat: now,
+    exp: now + ADMIN_SESSION_TTL_SECONDS,
+    nonce: crypto.randomBytes(12).toString('hex')
+  })).toString('base64url');
+  const signature = crypto.createHmac('sha256', secret).update(payload).digest('base64url');
+  return `${payload}.${signature}`;
+};
+
+const verifyAdminSession = (token) => {
+  const secret = getAdminSessionSecret();
+  if (!secret || !token || !token.includes('.')) return false;
+  const [payload, signature] = token.split('.');
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('base64url');
+  if (!safeEqual(signature, expected)) return false;
+  try {
+    const parsed = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    return parsed?.sub === 'reactivation-admin' && Number(parsed.exp || 0) > Math.floor(Date.now() / 1000);
+  } catch {
+    return false;
+  }
+};
+
+const setAdminCookie = (res, token) => {
+  const secure = process.env.NODE_ENV === 'production';
+  const domain = process.env.REACTIVATION_ADMIN_COOKIE_DOMAIN;
+  const parts = [
+    `${ADMIN_COOKIE_NAME}=${encodeURIComponent(token)}`,
+    'Path=/api/reactivation-admin',
+    'HttpOnly',
+    'SameSite=Lax',
+    `Max-Age=${ADMIN_SESSION_TTL_SECONDS}`
+  ];
+  if (secure) parts.push('Secure');
+  if (domain) parts.push(`Domain=${domain}`);
+  res.setHeader('Set-Cookie', parts.join('; '));
+};
+
+const clearAdminCookie = (res) => {
+  const domain = process.env.REACTIVATION_ADMIN_COOKIE_DOMAIN;
+  const parts = [
+    `${ADMIN_COOKIE_NAME}=`,
+    'Path=/api/reactivation-admin',
+    'HttpOnly',
+    'SameSite=Lax',
+    'Max-Age=0'
+  ];
+  if (process.env.NODE_ENV === 'production') parts.push('Secure');
+  if (domain) parts.push(`Domain=${domain}`);
+  res.setHeader('Set-Cookie', parts.join('; '));
+};
 
 const requireAdminToken = (req, res, next) => {
   const expected = process.env.REACTIVATION_ADMIN_TOKEN || process.env.COTE_API_TOKEN;
+  const cookieToken = parseCookies(req)[ADMIN_COOKIE_NAME];
+  const hasValidCookie = verifyAdminSession(cookieToken);
+  if (hasValidCookie) return next();
   if (!expected && process.env.NODE_ENV === 'production') {
     return res.status(503).json({ error: 'Admin token is not configured' });
   }
   if (!expected) return next();
   const header = req.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : '';
-  if (token !== expected) return res.status(401).json({ error: 'Unauthorized' });
+  if (!safeEqual(token, expected)) return res.status(401).json({ error: 'Unauthorized' });
   return next();
 };
 
@@ -146,10 +238,41 @@ const suppressionReleaseSchema = z.object({
   message: 'suppressionId or leadId/email plus scope is required'
 });
 
+const loginSchema = z.object({
+  password: z.string().min(8)
+});
+
 router.post('/webhooks/sendgrid', asyncHandler(async (req, res) => {
   const result = await ReactivationAdminService.handleSendGridWebhook(req.body || [], req);
   res.json({ data: result });
 }));
+
+router.post('/auth/login', asyncHandler(async (req, res) => {
+  const configuredPassword = process.env.REACTIVATION_ADMIN_PASSWORD;
+  if (!configuredPassword) {
+    return res.status(process.env.NODE_ENV === 'production' ? 503 : 400).json({
+      error: 'Admin password is not configured'
+    });
+  }
+  const { password } = loginSchema.parse(req.body || {});
+  if (!safeEqual(password, configuredPassword)) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const token = signAdminSession();
+  if (!token) return res.status(503).json({ error: 'Admin session secret is not configured' });
+  setAdminCookie(res, token);
+  res.json({ data: { authenticated: true, expiresInSeconds: ADMIN_SESSION_TTL_SECONDS } });
+}));
+
+router.post('/auth/logout', (_req, res) => {
+  clearAdminCookie(res);
+  res.json({ data: { authenticated: false } });
+});
+
+router.get('/auth/session', (req, res) => {
+  const cookieToken = parseCookies(req)[ADMIN_COOKIE_NAME];
+  res.json({ data: { authenticated: verifyAdminSession(cookieToken) } });
+});
 
 router.use(requireAdminToken);
 

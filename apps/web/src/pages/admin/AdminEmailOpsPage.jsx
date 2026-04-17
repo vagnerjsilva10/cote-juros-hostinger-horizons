@@ -396,18 +396,69 @@ function ManualActionsPanel({ templates }) {
   );
 }
 
+function AdminLoginPanel({ onLoggedIn }) {
+  const [password, setPassword] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+
+  const submit = async (event) => {
+    event.preventDefault();
+    setBusy(true);
+    setError('');
+    try {
+      await portalApi.loginReactivationEmailAdmin(password);
+      setPassword('');
+      onLoggedIn();
+    } catch (err) {
+      setError(err.message || 'Nao foi possivel entrar.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="mx-auto max-w-md rounded-lg border border-slate-200 bg-white p-6">
+      <h1 className="text-2xl font-bold text-slate-950">Email Ops</h1>
+      <p className="mt-2 text-sm text-slate-600">Entre para controlar campanhas, fluxos, templates e a regua de reativacao.</p>
+      <form className="mt-5 space-y-4" onSubmit={submit}>
+        <label className="block text-sm font-semibold text-slate-700">
+          Senha do admin
+          <input
+            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            autoComplete="current-password"
+            placeholder="Senha configurada no backend"
+          />
+        </label>
+        {error ? <p className="rounded-lg bg-red-50 p-3 text-sm font-semibold text-red-700">{error}</p> : null}
+        <button
+          type="submit"
+          className="w-full rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+          disabled={busy || password.length < 8}
+        >
+          {busy ? 'Entrando...' : 'Entrar'}
+        </button>
+      </form>
+    </div>
+  );
+}
+
 export default function AdminEmailOpsPage() {
   const [dashboard, setDashboard] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
   const [templates, setTemplates] = useState([]);
   const [flows, setFlows] = useState([]);
   const [selectedFlowId, setSelectedFlowId] = useState('');
+  const [authRequired, setAuthRequired] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
     setLoading(true);
     setError('');
+    setAuthRequired(false);
     try {
       const [dashboardData, campaignData, templateData, flowData] = await Promise.all([
         portalApi.getReactivationEmailAdminDashboard(),
@@ -421,6 +472,10 @@ export default function AdminEmailOpsPage() {
       setFlows(flowData || []);
       setSelectedFlowId((current) => current || flowData?.[0]?.id || '');
     } catch (err) {
+      if (String(err.message || '').toLowerCase().includes('unauthorized')) {
+        setAuthRequired(true);
+        return;
+      }
       setError(err.message || 'Nao foi possivel carregar o admin de email.');
     } finally {
       setLoading(false);
@@ -439,6 +494,7 @@ export default function AdminEmailOpsPage() {
   };
 
   if (loading) return <p className="rounded-lg bg-white p-4 text-slate-700">Carregando operacao de email...</p>;
+  if (authRequired) return <AdminLoginPanel onLoggedIn={load} />;
 
   return (
     <div className="space-y-6">
@@ -455,6 +511,16 @@ export default function AdminEmailOpsPage() {
           onClick={bootstrap}
         >
           Sincronizar fluxo padrao
+        </button>
+        <button
+          type="button"
+          className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700"
+          onClick={async () => {
+            await portalApi.logoutReactivationEmailAdmin();
+            setAuthRequired(true);
+          }}
+        >
+          Sair
         </button>
       </div>
 
