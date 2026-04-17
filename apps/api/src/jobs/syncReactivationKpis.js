@@ -1,6 +1,7 @@
 import 'dotenv/config.js';
 import axios from 'axios';
 import { googleSheetsClient } from '../integrations/googleSheets.js';
+import { JobRunLogger } from './jobRunLogger.js';
 
 class SyncReactivationKpisJob {
   constructor() {
@@ -14,6 +15,7 @@ class SyncReactivationKpisJob {
       saved: 0,
       errors: 0,
     };
+    this.jobRunLogger = new JobRunLogger('sync_reactivation_kpis');
   }
 
   validateEnv() {
@@ -38,6 +40,7 @@ class SyncReactivationKpisJob {
     }
 
     console.log(`[SyncKpis] Job started for batchId: ${batchId}`);
+    await this.jobRunLogger.start({ batchId });
 
     try {
       // Fetch KPIs from API
@@ -52,11 +55,13 @@ class SyncReactivationKpisJob {
       console.log(
         `[SyncKpis] Summary: fetched ${this.stats.fetched}, saved ${this.stats.saved}`
       );
+      await this.jobRunLogger.finish('success', this.stats);
 
       return this.stats;
     } catch (error) {
       console.error('[SyncKpis] Job failed:', error.message);
       this.stats.errors++;
+      await this.jobRunLogger.finish('failed', this.stats, error);
       throw error;
     }
   }

@@ -4,6 +4,7 @@ import { findArticleBySlug, normalizeArticleData } from '@/lib/content/articles.
 
 const wait = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+const ADMIN_API_TOKEN = import.meta.env.VITE_ADMIN_API_TOKEN || '';
 const useRemote = Boolean(API_BASE);
 
 const toQueryString = (params = {}) => {
@@ -22,11 +23,13 @@ const toQueryString = (params = {}) => {
 };
 
 const request = async (path, options = {}) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(path.startsWith('/api/reactivation-admin') && ADMIN_API_TOKEN ? { Authorization: `Bearer ${ADMIN_API_TOKEN}` } : {}),
+    ...(options.headers || {})
+  };
   const response = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {})
-    },
+    headers,
     ...options
   });
 
@@ -1063,5 +1066,118 @@ export const portalApi = {
 
     const qs = toQueryString(filters);
     return request(`/api/reactivation/kpis${qs ? `?${qs}` : ''}`);
+  },
+
+  async getReactivationEmailAdminDashboard() {
+    if (!useRemote) {
+      await wait();
+      return {
+        leadsInQueue: 42,
+        sentToday: 5,
+        delivered: 5,
+        opens: 2,
+        clicks: 1,
+        bounces: 0,
+        spamReports: 0,
+        optOuts: 0,
+        activeCampaigns: 1,
+        activeFlows: 1,
+        pausedFlows: 0,
+        dailyLimit: 5,
+        dailyLimitUsed: 5,
+        dailyLimitRemaining: 0,
+        openRate: 40,
+        clickRate: 20,
+        conversionToSubmit: 8,
+        conversionByCampaign: [],
+        conversionByPartner: [],
+        estimatedRevenueCents: 9000,
+        nextMessages: []
+      };
+    }
+
+    return request('/api/reactivation-admin/dashboard');
+  },
+
+  async getReactivationEmailCampaigns() {
+    if (!useRemote) return [];
+    return request('/api/reactivation-admin/campaigns');
+  },
+
+  async saveReactivationEmailCampaign(payload) {
+    return request('/api/reactivation-admin/campaigns', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async setReactivationEmailCampaignStatus(id, status) {
+    return request(`/api/reactivation-admin/campaigns/${id}/status`, {
+      method: 'POST',
+      body: JSON.stringify({ status })
+    });
+  },
+
+  async getReactivationEmailTemplates() {
+    if (!useRemote) return [];
+    return request('/api/reactivation-admin/templates');
+  },
+
+  async saveReactivationEmailTemplate(payload) {
+    return request('/api/reactivation-admin/templates', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async getReactivationFlows() {
+    if (!useRemote) {
+      await wait();
+      return [{
+        id: 'preview-flow',
+        name: 'Reativacao credito v1',
+        slug: 'reactivation-credit-v1',
+        status: 'active',
+        isActive: true,
+        versions: [{
+          version: 1,
+          definition: {
+            nodes: [
+              { key: 'trigger', type: 'trigger_lead_entry', label: 'Lead elegivel', position: { x: 80, y: 160 } },
+              { key: 'initial', type: 'send_email', label: 'Email initial', position: { x: 320, y: 160 } },
+              { key: 'wait', type: 'delay', label: 'Esperar 3 dias', position: { x: 560, y: 160 } },
+              { key: 'condition', type: 'condition', label: 'Clicou?', position: { x: 800, y: 160 } }
+            ],
+            edges: [
+              { key: 'e1', source: 'trigger', target: 'initial' },
+              { key: 'e2', source: 'initial', target: 'wait' },
+              { key: 'e3', source: 'wait', target: 'condition' }
+            ]
+          }
+        }]
+      }];
+    }
+    return request('/api/reactivation-admin/flows');
+  },
+
+  async saveReactivationFlow(payload) {
+    return request('/api/reactivation-admin/flows', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async validateReactivationFlow(definition) {
+    return request('/api/reactivation-admin/flows/validate', {
+      method: 'POST',
+      body: JSON.stringify(definition)
+    });
+  },
+
+  async bootstrapReactivationEmailAdmin() {
+    return request('/api/reactivation-admin/bootstrap-defaults', {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
   }
 };

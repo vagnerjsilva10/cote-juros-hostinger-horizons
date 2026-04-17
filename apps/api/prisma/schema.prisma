@@ -85,6 +85,119 @@ enum ReactivationSuppressionScope {
   revoked_consent
 }
 
+enum EmailCampaignStatus {
+  draft
+  active
+  paused
+  completed
+  archived
+}
+
+enum EmailTemplateStatus {
+  draft
+  active
+  inactive
+  archived
+}
+
+enum EmailMessageStatus {
+  queued
+  sending
+  sent
+  delivered
+  opened
+  clicked
+  bounced
+  dropped
+  spam_reported
+  unsubscribed
+  failed
+  suppressed
+  cancelled
+}
+
+enum EmailEventType {
+  processed
+  delivered
+  open
+  click
+  bounce
+  dropped
+  deferred
+  spamreport
+  unsubscribe
+  group_unsubscribe
+  group_resubscribe
+  sent
+  failed
+  suppressed
+  manual_resend
+}
+
+enum AutomationFlowStatus {
+  draft
+  active
+  paused
+  archived
+}
+
+enum AutomationNodeType {
+  trigger_lead_entry
+  eligibility_filter
+  delay
+  send_email
+  condition
+  behavior_split
+  wait_event
+  mark_status
+  add_suppression
+  end_flow
+  webhook_event
+  route_partner
+  update_lead_field
+}
+
+enum AutomationExecutionStatus {
+  active
+  waiting
+  paused
+  completed
+  failed
+  cancelled
+}
+
+enum AutomationStepStatus {
+  pending
+  running
+  waiting
+  completed
+  failed
+  skipped
+}
+
+enum AdminAuditAction {
+  campaign_created
+  campaign_updated
+  campaign_paused
+  campaign_activated
+  campaign_archived
+  campaign_duplicated
+  template_created
+  template_updated
+  template_published
+  flow_created
+  flow_updated
+  flow_published
+  flow_paused
+  flow_activated
+  lead_email_resent
+  lead_flow_moved
+  lead_paused
+  lead_suppressed
+  config_updated
+  webhook_received
+}
+
 model Bank {
   id        String   @id @default(cuid())
   name      String
@@ -590,6 +703,9 @@ model ReactivationLead {
 
   events     ReactivationAuditEvent[]
   deliveries ReactivationPartnerDelivery[]
+  emailMessages ReactivationEmailMessage[]
+  flowExecutions ReactivationLeadFlowExecution[]
+  flowSteps ReactivationFlowExecutionStep[]
 
   @@index([batchId, status])
   @@index([status, createdAt])
@@ -666,4 +782,315 @@ model ReactivationSuppression {
   @@unique([phoneHash, scope])
   @@unique([cpfHash, scope])
   @@map("reactivation_suppressions")
+}
+
+model ReactivationEmailCampaign {
+  id               String              @id @default(cuid())
+  name             String
+  slug             String              @unique
+  description      String?
+  status           EmailCampaignStatus @default(draft)
+  isActive         Boolean             @default(false) @map("is_active")
+  startsAt         DateTime?           @map("starts_at")
+  endsAt           DateTime?           @map("ends_at")
+  initialTemplateId String?            @map("initial_template_id")
+  reminderTemplateId String?           @map("reminder_template_id")
+  lastCallTemplateId String?           @map("last_call_template_id")
+  flowDefinitionId String?             @map("flow_definition_id")
+  publishedFlowVersionId String?       @map("published_flow_version_id")
+  dailyLimit       Int                 @default(5) @map("daily_limit")
+  batchSize        Int                 @default(5) @map("batch_size")
+  sendWindow       Json?               @map("send_window")
+  exitRules        Json?               @map("exit_rules")
+  metadata         Json?
+  createdBy        String?             @map("created_by")
+  updatedBy        String?             @map("updated_by")
+  createdAt        DateTime            @default(now()) @map("created_at")
+  updatedAt        DateTime            @updatedAt @map("updated_at")
+
+  messages ReactivationEmailMessage[]
+
+  @@index([status, isActive])
+  @@index([startsAt, endsAt])
+  @@map("reactivation_email_campaigns")
+}
+
+model ReactivationEmailTemplate {
+  id          String              @id @default(cuid())
+  name        String
+  slug        String
+  version     Int                 @default(1)
+  status      EmailTemplateStatus @default(draft)
+  isActive    Boolean             @default(false) @map("is_active")
+  subject     String
+  preheader   String?
+  html        String              @db.Text
+  text        String              @db.Text
+  variables   String[]            @default([])
+  metadata    Json?
+  parentId    String?             @map("parent_id")
+  createdBy   String?             @map("created_by")
+  updatedBy   String?             @map("updated_by")
+  publishedAt DateTime?           @map("published_at")
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime            @updatedAt @map("updated_at")
+
+  messages ReactivationEmailMessage[]
+
+  @@unique([slug, version])
+  @@index([slug, status])
+  @@index([status, isActive])
+  @@map("reactivation_email_templates")
+}
+
+model ReactivationEmailMessage {
+  id              String             @id @default(cuid())
+  leadId          String?            @map("lead_id")
+  campaignId      String?            @map("campaign_id")
+  templateId      String?            @map("template_id")
+  flowExecutionId String?            @map("flow_execution_id")
+  stepKey         String?            @map("step_key")
+  sequenceKey     String?            @map("sequence_key")
+  provider        String             @default("sendgrid")
+  providerMessageId String?          @map("provider_message_id")
+  toEmailHash     String?            @map("to_email_hash")
+  toEmailMasked   String?            @map("to_email_masked")
+  subject         String?
+  status          EmailMessageStatus @default(queued)
+  idempotencyKey  String?            @unique @map("idempotency_key")
+  requestPayload  Json?              @map("request_payload")
+  responsePayload Json?              @map("response_payload")
+  errorMessage    String?            @map("error_message")
+  scheduledAt     DateTime?          @map("scheduled_at")
+  sentAt          DateTime?          @map("sent_at")
+  deliveredAt     DateTime?          @map("delivered_at")
+  openedAt        DateTime?          @map("opened_at")
+  clickedAt       DateTime?          @map("clicked_at")
+  bouncedAt       DateTime?          @map("bounced_at")
+  unsubscribedAt  DateTime?          @map("unsubscribed_at")
+  createdAt       DateTime           @default(now()) @map("created_at")
+  updatedAt       DateTime           @updatedAt @map("updated_at")
+
+  lead      ReactivationLead?          @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  campaign  ReactivationEmailCampaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  template  ReactivationEmailTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  events    ReactivationEmailMessageEvent[]
+
+  @@index([leadId, createdAt])
+  @@index([campaignId, status, createdAt])
+  @@index([providerMessageId])
+  @@index([status, scheduledAt])
+  @@map("reactivation_email_messages")
+}
+
+model ReactivationEmailMessageEvent {
+  id              String         @id @default(cuid())
+  messageId       String?        @map("message_id")
+  leadId          String?        @map("lead_id")
+  campaignId      String?        @map("campaign_id")
+  eventType       EmailEventType @map("event_type")
+  provider        String         @default("sendgrid")
+  providerEventId String?        @map("provider_event_id")
+  providerMessageId String?      @map("provider_message_id")
+  emailHash       String?        @map("email_hash")
+  url             String?        @db.Text
+  userAgent       String?        @map("user_agent")
+  ipAddress       String?        @map("ip_address")
+  reason          String?
+  rawPayload      Json?          @map("raw_payload")
+  signatureVerified Boolean      @default(false) @map("signature_verified")
+  occurredAt      DateTime       @default(now()) @map("occurred_at")
+  createdAt       DateTime       @default(now()) @map("created_at")
+
+  message ReactivationEmailMessage? @relation(fields: [messageId], references: [id], onDelete: SetNull)
+
+  @@unique([provider, providerEventId])
+  @@index([messageId, occurredAt])
+  @@index([leadId, occurredAt])
+  @@index([campaignId, eventType, occurredAt])
+  @@index([providerMessageId])
+  @@map("reactivation_email_message_events")
+}
+
+model ReactivationFlowDefinition {
+  id                String               @id @default(cuid())
+  name              String
+  slug              String               @unique
+  description       String?
+  status            AutomationFlowStatus @default(draft)
+  isActive          Boolean              @default(false) @map("is_active")
+  publishedVersionId String?             @map("published_version_id")
+  metadata          Json?
+  createdBy         String?              @map("created_by")
+  updatedBy         String?              @map("updated_by")
+  createdAt         DateTime             @default(now()) @map("created_at")
+  updatedAt         DateTime             @updatedAt @map("updated_at")
+
+  versions ReactivationFlowVersion[]
+  executions ReactivationLeadFlowExecution[]
+
+  @@index([status, isActive])
+  @@map("reactivation_flow_definitions")
+}
+
+model ReactivationFlowVersion {
+  id           String    @id @default(cuid())
+  flowId       String    @map("flow_id")
+  version      Int
+  status       String    @default("draft")
+  definition   Json
+  validationErrors Json? @map("validation_errors")
+  publishedAt  DateTime? @map("published_at")
+  createdBy    String?   @map("created_by")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  flow       ReactivationFlowDefinition @relation(fields: [flowId], references: [id], onDelete: Cascade)
+  nodes      ReactivationFlowNode[]
+  edges      ReactivationFlowEdge[]
+  executions ReactivationLeadFlowExecution[]
+
+  @@unique([flowId, version])
+  @@index([flowId, status])
+  @@map("reactivation_flow_versions")
+}
+
+model ReactivationFlowNode {
+  id            String             @id @default(cuid())
+  flowVersionId String             @map("flow_version_id")
+  nodeKey       String             @map("node_key")
+  type          AutomationNodeType
+  label         String
+  config        Json?
+  position      Json?
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @updatedAt @map("updated_at")
+
+  flowVersion ReactivationFlowVersion @relation(fields: [flowVersionId], references: [id], onDelete: Cascade)
+  steps       ReactivationFlowExecutionStep[]
+
+  @@unique([flowVersionId, nodeKey])
+  @@index([flowVersionId, type])
+  @@map("reactivation_flow_nodes")
+}
+
+model ReactivationFlowEdge {
+  id            String   @id @default(cuid())
+  flowVersionId String   @map("flow_version_id")
+  edgeKey       String   @map("edge_key")
+  sourceNodeKey String   @map("source_node_key")
+  targetNodeKey String   @map("target_node_key")
+  label         String?
+  condition     Json?
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  flowVersion ReactivationFlowVersion @relation(fields: [flowVersionId], references: [id], onDelete: Cascade)
+
+  @@unique([flowVersionId, edgeKey])
+  @@index([flowVersionId, sourceNodeKey])
+  @@map("reactivation_flow_edges")
+}
+
+model ReactivationLeadFlowExecution {
+  id              String                    @id @default(cuid())
+  leadId          String                    @map("lead_id")
+  campaignId      String?                   @map("campaign_id")
+  flowId          String                    @map("flow_id")
+  flowVersionId   String                    @map("flow_version_id")
+  currentNodeKey  String?                   @map("current_node_key")
+  status          AutomationExecutionStatus @default(active)
+  context         Json?
+  startedAt       DateTime                  @default(now()) @map("started_at")
+  waitingUntil    DateTime?                 @map("waiting_until")
+  completedAt     DateTime?                 @map("completed_at")
+  failedAt        DateTime?                 @map("failed_at")
+  errorMessage    String?                   @map("error_message")
+  createdAt       DateTime                  @default(now()) @map("created_at")
+  updatedAt       DateTime                  @updatedAt @map("updated_at")
+
+  lead        ReactivationLead           @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  flow        ReactivationFlowDefinition @relation(fields: [flowId], references: [id], onDelete: Restrict)
+  flowVersion ReactivationFlowVersion    @relation(fields: [flowVersionId], references: [id], onDelete: Restrict)
+  steps       ReactivationFlowExecutionStep[]
+
+  @@index([leadId, status])
+  @@index([campaignId, status])
+  @@index([flowVersionId, status])
+  @@index([currentNodeKey, status])
+  @@map("reactivation_lead_flow_executions")
+}
+
+model ReactivationFlowExecutionStep {
+  id              String               @id @default(cuid())
+  executionId     String               @map("execution_id")
+  leadId          String?              @map("lead_id")
+  flowNodeId      String?              @map("flow_node_id")
+  nodeKey         String               @map("node_key")
+  nodeType        AutomationNodeType    @map("node_type")
+  status          AutomationStepStatus  @default(pending)
+  input           Json?
+  output          Json?
+  errorMessage    String?              @map("error_message")
+  startedAt       DateTime?            @map("started_at")
+  completedAt     DateTime?            @map("completed_at")
+  createdAt       DateTime             @default(now()) @map("created_at")
+
+  execution ReactivationLeadFlowExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+  lead      ReactivationLead?             @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  flowNode  ReactivationFlowNode?         @relation(fields: [flowNodeId], references: [id], onDelete: SetNull)
+
+  @@index([executionId, createdAt])
+  @@index([leadId, createdAt])
+  @@index([nodeKey, status])
+  @@map("reactivation_flow_execution_steps")
+}
+
+model ReactivationAdminAuditLog {
+  id          String           @id @default(cuid())
+  actor       String           @default("system")
+  action      AdminAuditAction
+  entityType  String           @map("entity_type")
+  entityId    String?          @map("entity_id")
+  before      Json?
+  after       Json?
+  metadata    Json?
+  ipAddress   String?          @map("ip_address")
+  userAgent   String?          @map("user_agent")
+  createdAt   DateTime         @default(now()) @map("created_at")
+
+  @@index([entityType, entityId])
+  @@index([action, createdAt])
+  @@index([actor, createdAt])
+  @@map("reactivation_admin_audit_logs")
+}
+
+model ReactivationAdminConfig {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       Json
+  description String?
+  updatedBy   String?  @map("updated_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("reactivation_admin_config")
+}
+
+model ReactivationAutomationJobRun {
+  id             String   @id @default(cuid())
+  jobName        String   @map("job_name")
+  status         String
+  triggerSource  String?  @map("trigger_source")
+  startedAt      DateTime @default(now()) @map("started_at")
+  finishedAt     DateTime? @map("finished_at")
+  durationMs     Int?     @map("duration_ms")
+  processedCount Int?     @map("processed_count")
+  successCount   Int?     @map("success_count")
+  errorCount     Int?     @map("error_count")
+  metadata       Json?
+  errorMessage   String?  @map("error_message")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@index([jobName, startedAt])
+  @@index([status, startedAt])
+  @@map("reactivation_automation_job_runs")
 }

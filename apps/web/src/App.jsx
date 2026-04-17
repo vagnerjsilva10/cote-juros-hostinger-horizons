@@ -40,6 +40,7 @@ import AdminArticlesPage from '@/pages/admin/AdminArticlesPage.jsx';
 import AdminSeoPagesPage from '@/pages/admin/AdminSeoPagesPage.jsx';
 import AdminLeadsPage from '@/pages/admin/AdminLeadsPage.jsx';
 import AdminReactivationPage from '@/pages/admin/AdminReactivationPage.jsx';
+import AdminEmailOpsPage from '@/pages/admin/AdminEmailOpsPage.jsx';
 import AdminTestimonialsPage from '@/pages/admin/AdminTestimonialsPage.jsx';
 import AdminSettingsPage from '@/pages/admin/AdminSettingsPage.jsx';
 
@@ -292,6 +293,7 @@ function App() {
         <Route path="/admin/seo-pages" element={<AdminRoute title="Gestão de páginas SEO"><AdminSeoPagesPage /></AdminRoute>} />
         <Route path="/admin/leads" element={<AdminRoute title="Gestão de leads"><AdminLeadsPage /></AdminRoute>} />
         <Route path="/admin/reactivation" element={<AdminRoute title="Reativação de leads"><AdminReactivationPage /></AdminRoute>} />
+        <Route path="/admin/email-ops" element={<AdminRoute title="Email Ops"><AdminEmailOpsPage /></AdminRoute>} />
         <Route path="/admin/testimonials" element={<AdminRoute title="Depoimentos"><AdminTestimonialsPage /></AdminRoute>} />
         <Route path="/admin/settings" element={<AdminRoute title="Configurações"><AdminSettingsPage /></AdminRoute>} />
 

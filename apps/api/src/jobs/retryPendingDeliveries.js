@@ -1,5 +1,6 @@
 import 'dotenv/config.js';
 import axios from 'axios';
+import { JobRunLogger } from './jobRunLogger.js';
 
 class RetryPendingDeliveriesJob {
   constructor() {
@@ -11,6 +12,7 @@ class RetryPendingDeliveriesJob {
       succeeded: 0,
       failed: 0,
     };
+    this.jobRunLogger = new JobRunLogger('retry_reactivation_deliveries');
   }
 
   validateEnv() {
@@ -24,6 +26,7 @@ class RetryPendingDeliveriesJob {
 
   async run() {
     console.log('[RetryDeliveries] Job started');
+    await this.jobRunLogger.start();
 
     try {
       const result = await this.retryDueDeliveries();
@@ -37,10 +40,12 @@ class RetryPendingDeliveriesJob {
         `[RetryDeliveries] Summary: ${this.stats.processed} processed, ` +
           `${this.stats.succeeded} succeeded, ${this.stats.failed} failed`
       );
+      await this.jobRunLogger.finish(this.stats.failed > 0 ? 'partial_success' : 'success', this.stats);
 
       return this.stats;
     } catch (error) {
       console.error('[RetryDeliveries] Job failed:', error.message);
+      await this.jobRunLogger.finish('failed', this.stats, error);
       throw error;
     }
   }

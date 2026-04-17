@@ -1,6 +1,7 @@
 import 'dotenv/config.js';
 import axios from 'axios';
 import { googleSheetsClient } from '../integrations/googleSheets.js';
+import { JobRunLogger } from './jobRunLogger.js';
 
 const SHEET_NAME = 'leads_queue';
 const STATUS_COLUMN = 'status';
@@ -21,6 +22,7 @@ class ImportLeadsJob {
       errors: 0,
       skipped: 0,
     };
+    this.jobRunLogger = new JobRunLogger('import_reactivation_leads');
   }
 
   validateEnv() {
@@ -40,6 +42,7 @@ class ImportLeadsJob {
 
   async run() {
     console.log('[ImportLeads] Job started');
+    await this.jobRunLogger.start({ sheetName: SHEET_NAME });
 
     try {
       // Read leads from Google Sheets
@@ -57,10 +60,12 @@ class ImportLeadsJob {
       console.log(
         `[ImportLeads] Summary: ${this.stats.imported} imported, ${this.stats.errors} errors, ${this.stats.skipped} skipped`
       );
+      await this.jobRunLogger.finish(this.stats.errors > 0 ? 'partial_success' : 'success', this.stats);
 
       return this.stats;
     } catch (error) {
       console.error('[ImportLeads] Job failed:', error.message);
+      await this.jobRunLogger.finish('failed', this.stats, error);
       throw error;
     }
   }
