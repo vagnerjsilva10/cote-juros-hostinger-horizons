@@ -2,9 +2,9 @@
 
 ## Fluxo
 
-O login do admin usa a API em `/api/admin/auth/login`. A API garante as tabelas administrativas, sincroniza o bootstrap minimo, valida a senha, cria uma linha em `admin_sessions` e devolve o cookie HTTP-only `cj_admin_session`.
+O login do admin usa `/api/admin/auth/login` no mesmo dominio do frontend. No Vercel do web, `/api/*` e reescrito para a API real. A API garante as tabelas administrativas, sincroniza o bootstrap minimo, valida a senha, cria uma linha em `admin_sessions` e devolve o cookie HTTP-only `cj_admin_session`.
 
-O frontend nao grava token em localStorage. A sessao e confirmada chamando `/api/admin/auth/session` com `credentials: include`.
+O frontend nao grava token em localStorage. A sessao e confirmada chamando `/api/admin/auth/session` com `credentials: include`. Isso evita depender de cookie cross-site entre `cotejuros.br` e `api.cotejuros.com.br`.
 
 ## Variaveis obrigatorias da API
 
@@ -12,7 +12,7 @@ O frontend nao grava token em localStorage. A sessao e confirmada chamando `/api
 - `ADMIN_BOOTSTRAP_PASSWORD`: senha inicial/sincronizada do `super_admin`.
 - `ADMIN_PASSWORD_HASH_SECRET`: segredo estavel usado no hash da senha. Se mudar, a senha bootstrap deve estar configurada para rehash seguro.
 - `ADMIN_SESSION_SECRET`: segredo estavel usado para assinar o cookie de sessao.
-- `ADMIN_COOKIE_DOMAIN`: em producao, use `.cotejuros.com.br` quando frontend e API estiverem em subdominios desse dominio.
+- `ADMIN_COOKIE_DOMAIN`: em producao, use `.cotejuros.com.br` para chamadas diretas entre subdominios. Quando o frontend usa o proxy `/api/*` em outro dominio publicado, a API omite automaticamente `Domain` para o cookie ser host-only no dominio do frontend.
 - `CORS_ORIGIN`: inclua os dominios publicados do frontend, por exemplo `https://www.cotejuros.com.br,https://cotejuros.com.br`.
 
 ## Migrations obrigatorias
@@ -31,7 +31,8 @@ O diagnostico `/api/admin/auth/diagnostics` lista tabelas ausentes e migrations 
 3. Faça deploy da API.
 4. Confirme `GET https://api.cotejuros.com.br/api/admin/auth/diagnostics`.
 5. Faça deploy do frontend.
-6. Teste login, sessao, dashboard e logout no browser.
+6. Confirme que o frontend responde `GET https://SEU-DOMINIO/api/admin/auth/diagnostics`.
+7. Teste login, sessao, dashboard e logout no browser.
 
 ## Testes rapidos
 

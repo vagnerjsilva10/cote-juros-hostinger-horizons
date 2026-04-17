@@ -19,6 +19,15 @@ const API_BASE = resolveApiBase();
 const ADMIN_API_TOKEN = import.meta.env.VITE_ADMIN_API_TOKEN || '';
 const useRemote = Boolean(API_BASE);
 
+const isCoteJurosHost = () =>
+  typeof window !== 'undefined'
+  && /(^|\.)cotejuros\.(com\.br|br)$/i.test(window.location.hostname);
+
+const resolveRequestBase = (path) => {
+  if (path.startsWith('/api/admin') && isCoteJurosHost()) return '';
+  return API_BASE;
+};
+
 const toQueryString = (params = {}) => {
   const query = new URLSearchParams();
 
@@ -62,6 +71,7 @@ const buildApiErrorMessage = ({ status, path, apiBase, payload, fallbackMessage 
 
 const request = async (path, options = {}) => {
   const isAdminPath = path.startsWith('/api/reactivation-admin') || path.startsWith('/api/admin');
+  const requestBase = resolveRequestBase(path);
   const { timeoutMs: requestedTimeoutMs, signal, ...fetchOptions } = options;
   const timeoutMs = requestedTimeoutMs ?? (isAdminPath ? 25000 : 15000);
   const controller = new AbortController();
@@ -74,7 +84,7 @@ const request = async (path, options = {}) => {
 
   let response;
   try {
-    response = await fetch(`${API_BASE}${path}`, {
+    response = await fetch(`${requestBase}${path}`, {
       headers,
       ...fetchOptions,
       credentials: isAdminPath ? 'include' : fetchOptions.credentials,
@@ -84,7 +94,7 @@ const request = async (path, options = {}) => {
     if (error?.name === 'AbortError') {
       throw new Error(`A API demorou mais de ${Math.round(timeoutMs / 1000)}s para responder. Verifique deploy, CORS e logs da API.`);
     }
-    throw new Error(`Não foi possível conectar na API em ${API_BASE || 'origem atual'}${path}. ${error?.message || ''}`.trim());
+    throw new Error(`Não foi possível conectar na API em ${requestBase || 'origem atual'}${path}. ${error?.message || ''}`.trim());
   } finally {
     globalThis.clearTimeout(timeoutId);
   }
@@ -101,7 +111,7 @@ const request = async (path, options = {}) => {
     throw new Error(buildApiErrorMessage({
       status: response.status,
       path,
-      apiBase: API_BASE,
+      apiBase: requestBase,
       payload,
       fallbackMessage: `API request failed (${response.status})`
     }));
@@ -109,7 +119,7 @@ const request = async (path, options = {}) => {
 
   const contentType = response.headers.get('content-type') || '';
   if (!contentType.includes('application/json')) {
-    throw new Error(`A resposta de ${API_BASE || 'origem atual'}${path} não é JSON. O frontend pode estar apontando para o site estático em vez da API.`);
+    throw new Error(`A resposta de ${requestBase || 'origem atual'}${path} não é JSON. O frontend pode estar apontando para o site estático em vez da API.`);
   }
 
   const payload = await response.json();

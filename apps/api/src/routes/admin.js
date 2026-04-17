@@ -195,7 +195,7 @@ router.post('/auth/login', asyncHandler(async (req, res) => {
 
   await AdminService.authenticateDefaultUser(password, req, user);
   const session = await createAdminSession(req, user);
-  setAdminCookie(res, session.token);
+  setAdminCookie(req, res, session.token);
   await recordAdminAudit({
     req,
     user,
@@ -265,7 +265,7 @@ router.post('/auth/logout', asyncHandler(async (req, res) => {
       resourceId: current.session.id
     });
   }
-  clearAdminCookie(res);
+  clearAdminCookie(req, res);
   res.json({ data: { authenticated: false } });
 }));
 

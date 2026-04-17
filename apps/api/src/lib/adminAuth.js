@@ -198,6 +198,34 @@ export const parseCookies = (req) => {
   );
 };
 
+const getHostname = (value = '') => {
+  if (!value) return '';
+  try {
+    return new URL(value).hostname.toLowerCase();
+  } catch {
+    return String(value).split(':')[0].toLowerCase();
+  }
+};
+
+const isHostnameCoveredByDomain = (hostname, domain) => {
+  if (!hostname || !domain) return false;
+  const normalizedDomain = String(domain).replace(/^\./, '').toLowerCase();
+  return hostname === normalizedDomain || hostname.endsWith(`.${normalizedDomain}`);
+};
+
+const resolveCookieDomain = (req) => {
+  if (!ADMIN_COOKIE_DOMAIN) return '';
+  const originHostname = getHostname(req?.headers?.origin || '');
+  const forwardedHost = getHostname(req?.headers?.['x-forwarded-host'] || req?.headers?.host || '');
+  const requestHostname = originHostname || forwardedHost;
+
+  if (requestHostname && !isHostnameCoveredByDomain(requestHostname, ADMIN_COOKIE_DOMAIN)) {
+    return '';
+  }
+
+  return ADMIN_COOKIE_DOMAIN;
+};
+
 const getCookieSecret = () =>
   process.env.ADMIN_SESSION_SECRET
   || process.env.REACTIVATION_ADMIN_SESSION_SECRET
@@ -223,9 +251,10 @@ const parseToken = (token) => {
   }
 };
 
-export const setAdminCookie = (res, token) => {
+export const setAdminCookie = (req, res, token) => {
   const secure = process.env.NODE_ENV === 'production';
   const sameSite = secure ? 'None' : 'Lax';
+  const cookieDomain = resolveCookieDomain(req);
   const parts = [
     `${ADMIN_COOKIE_NAME}=${encodeURIComponent(token)}`,
     'Path=/',
@@ -234,13 +263,14 @@ export const setAdminCookie = (res, token) => {
     `Max-Age=${ADMIN_SESSION_TTL_SECONDS}`
   ];
   if (secure) parts.push('Secure');
-  if (ADMIN_COOKIE_DOMAIN) parts.push(`Domain=${ADMIN_COOKIE_DOMAIN}`);
+  if (cookieDomain) parts.push(`Domain=${cookieDomain}`);
   res.setHeader('Set-Cookie', parts.join('; '));
 };
 
-export const clearAdminCookie = (res) => {
+export const clearAdminCookie = (req, res) => {
   const secure = process.env.NODE_ENV === 'production';
   const sameSite = secure ? 'None' : 'Lax';
+  const cookieDomain = resolveCookieDomain(req);
   const parts = [
     `${ADMIN_COOKIE_NAME}=`,
     'Path=/',
@@ -249,7 +279,7 @@ export const clearAdminCookie = (res) => {
     'Max-Age=0'
   ];
   if (secure) parts.push('Secure');
-  if (ADMIN_COOKIE_DOMAIN) parts.push(`Domain=${ADMIN_COOKIE_DOMAIN}`);
+  if (cookieDomain) parts.push(`Domain=${cookieDomain}`);
   res.setHeader('Set-Cookie', parts.join('; '));
 };
 
