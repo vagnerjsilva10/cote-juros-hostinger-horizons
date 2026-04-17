@@ -920,6 +920,7 @@ function AdminLoginPanel({ onLoggedIn }) {
         >
           {busy ? 'Entrando...' : 'Entrar'}
         </button>
+        <p className="text-xs text-slate-500">API: {portalApi.getApiBaseUrl()}</p>
       </form>
     </div>
   );

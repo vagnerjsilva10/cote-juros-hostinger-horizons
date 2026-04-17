@@ -3,7 +3,16 @@ import { normalizeMojibake, normalizeMojibakeDeep } from '@/lib/textEncoding.js'
 import { findArticleBySlug, normalizeArticleData } from '@/lib/content/articles.js';
 
 const wait = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+const resolveApiBase = () => {
+  const configured = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+  if (configured) return configured;
+  if (typeof window !== 'undefined' && /(^|\.)cotejuros\.com\.br$/i.test(window.location.hostname)) {
+    return 'https://api.cotejuros.com.br';
+  }
+  return '';
+};
+
+const API_BASE = resolveApiBase();
 const ADMIN_API_TOKEN = import.meta.env.VITE_ADMIN_API_TOKEN || '';
 const useRemote = Boolean(API_BASE);
 
@@ -46,6 +55,11 @@ const request = async (path, options = {}) => {
     }
 
     throw new Error(message);
+  }
+
+  const contentType = response.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    throw new Error(`Resposta invalida da API (${response.status}) em ${API_BASE || 'origem atual'}${path}`);
   }
 
   const payload = await response.json();
@@ -1116,6 +1130,10 @@ export const portalApi = {
 
   async getReactivationEmailAdminSession() {
     return request('/api/reactivation-admin/auth/session');
+  },
+
+  getApiBaseUrl() {
+    return API_BASE || 'origem atual';
   },
 
   async getReactivationEmailCampaigns() {
