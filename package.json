@@ -9,19 +9,20 @@
 		"check:encoding": "node tools/check-encoding.js",
 		"start": "npm run start --prefix apps/web",
 		"start:api": "npm run start --prefix apps/api",
-		"postinstall": "npm run prisma:generate --prefix apps/api",
+		"postinstall": "npx prisma generate --schema=apps/api/prisma/schema.prisma",
 		"test:awin": "node scripts/testAwinApi.js",
 		"test:awin:linkbuilder": "node scripts/testAwinLinkBuilder.js",
 		"reactivation:tokens": "node scripts/reactivation/generateLeadTokens.js",
 		"reactivation:batches": "node scripts/reactivation/segmentLeadBatches.js",
-		"prisma:generate": "npm run prisma:generate --prefix apps/api",
+		"prisma:generate": "npx prisma generate --schema=apps/api/prisma/schema.prisma",
 		"prisma:migrate": "npm run prisma:migrate --prefix apps/api",
 		"prisma:deploy": "npm run prisma:deploy --prefix apps/api",
 		"lint": "npm run lint --prefix apps/web"
 	},
 	"dependencies": {
 		"axios": "^1.11.0",
-		"dotenv": "^16.6.1"
+		"dotenv": "^16.6.1",
+		"prisma": "^6.19.3"
 	},
 	"workspaces": [
 		"apps/*"
