@@ -513,28 +513,34 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="section section--compact brand-note-section role-section">
+      <section id="papel-cotejuros" className="section section--compact brand-note-section role-section">
         <div className="page-shell">
-          <div className="brand-note-card role-block role-card">
-            <div className="role-block-copy role-content">
-              <span className="brand-note-kicker">Papel da CoteJuros</span>
-              <h2 className="role-block-title">{t('A CoteJuros ajuda você a comparar antes de contratar')}</h2>
-              <p className="role-block-text">
-                {t('Você vê opções com mais clareza, entende o custo real e decide com mais segurança.')}
-              </p>
+          <div className="role-card">
+            <div className="role-content">
+              <div className="role-copy">
+                <span className="role-eyebrow">Papel da CoteJuros</span>
+                <h2 className="role-title">{t('A CoteJuros ajuda você a comparar antes de contratar')}</h2>
+                <p className="role-text">
+                  {t('Você vê opções com mais clareza, entende o custo real e decide com mais segurança.')}
+                </p>
+              </div>
             </div>
-            <div className="role-media" aria-hidden="true">
-              <div className="role-image-fade" />
+            <div
+              className="role-media"
+              style={{ '--role-photo-url': `url(${roleWomanImageSrc})` }}
+              aria-hidden="true"
+            >
               <img
-                className="role-image"
+                className="role-photo"
                 src={roleWomanImageSrc}
                 srcSet={`${roleWomanImageSrc} 1x`}
                 sizes="(max-width: 767px) 100vw, (max-width: 1100px) 44vw, 520px"
                 alt=""
-                loading="lazy"
+                loading="eager"
                 decoding="async"
-                fetchPriority="low"
+                fetchPriority="high"
               />
+              <div className="role-photo-overlay" />
             </div>
           </div>
         </div>
