@@ -51,7 +51,7 @@
       "parameters": {
         "operation": "append",
         "documentId": "={{$env.GOOGLE_SHEETS_REACTIVATION_ID}}",
-        "sheetName": "kpis",
+        "sheetName": "kpis_daily",
         "columns": {
           "mappingMode": "autoMapInputData"
         },

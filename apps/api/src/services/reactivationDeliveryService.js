@@ -1,5 +1,12 @@
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const toIsoString = (value) => {
+  if (!value) return null;
+  if (value instanceof Date) return value.toISOString();
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
+};
+
 const maskSensitive = (value) => {
   if (!value || typeof value !== 'object') return value;
   if (Array.isArray(value)) return value.map(maskSensitive);
@@ -63,7 +70,7 @@ export const ReactivationDeliveryService = {
         mode: partner.mode
       },
       consent: {
-        givenAt: lead.consentGivenAt,
+        givenAt: toIsoString(lead.consentGivenAt),
         version: lead.consentVersion,
         privacyPolicyVersion: lead.privacyPolicyVersion,
         source: lead.consentSource
@@ -87,7 +94,17 @@ export const ReactivationDeliveryService = {
         const headers = process.env.REACTIVATION_PARTNER_WEBHOOK_TOKEN
           ? { Authorization: `Bearer ${process.env.REACTIVATION_PARTNER_WEBHOOK_TOKEN}` }
           : {};
+        console.info('[reactivation.delivery.webhook.attempt]', {
+          leadId: lead.id,
+          partnerId: partner.id,
+          retryCount,
+          destinationHost: new URL(partner.destination).host
+        });
         const responsePayload = await postJson(partner.destination, payload, headers);
+        console.info('[reactivation.delivery.webhook.success]', {
+          leadId: lead.id,
+          partnerId: partner.id
+        });
         return { status: 'delivery_success', requestPayload: maskSensitive(payload), responsePayload, destination: partner.destination };
       }
 
@@ -115,6 +132,19 @@ export const ReactivationDeliveryService = {
           process.env.WHATSAPP_API_KEY ? { Authorization: `Bearer ${process.env.WHATSAPP_API_KEY}` } : {}
         );
         return { status: 'delivery_success', requestPayload: maskSensitive(payload), responsePayload, destination: process.env.WHATSAPP_API_URL };
+      }
+
+      if (partner.mode === 'webhook' && !partner.destination) {
+        console.warn('[reactivation.delivery.webhook.missing_destination]', {
+          leadId: lead.id,
+          partnerId: partner.id
+        });
+        return {
+          status: 'pending_delivery',
+          requestPayload: maskSensitive(payload),
+          responsePayload: { reason: 'missing_partner_webhook_destination', partnerId: partner.id },
+          destination: null
+        };
       }
 
       return {

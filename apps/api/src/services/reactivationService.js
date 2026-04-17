@@ -722,6 +722,10 @@ export const ReactivationService = {
       },
       batchId: filters.batchId || undefined
     };
+    const auditWhere = {
+      createdAt: where.createdAt,
+      lead: filters.batchId ? { batchId: filters.batchId } : undefined
+    };
 
     const [total, byStatus, byPartner, byBatch, deliveryCounts, auditCounts, revenue, recent] = await Promise.all([
       prisma.reactivationLead.count({ where }),
@@ -736,7 +740,7 @@ export const ReactivationService = {
       prisma.reactivationPartnerDelivery.groupBy({ by: ['status'], _count: { _all: true } }),
       prisma.reactivationAuditEvent.groupBy({
         by: ['eventType'],
-        where: { createdAt: where.createdAt },
+        where: auditWhere,
         _count: { _all: true }
       }),
       prisma.reactivationLead.aggregate({ where, _sum: { estimatedRevenueCents: true, payoutCents: true } }),

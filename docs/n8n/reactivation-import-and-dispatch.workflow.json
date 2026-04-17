@@ -21,7 +21,7 @@
     {
       "parameters": {
         "documentId": "={{$env.GOOGLE_SHEETS_REACTIVATION_ID}}",
-        "sheetName": "leads",
+        "sheetName": "leads_queue",
         "options": {}
       },
       "id": "read-leads",

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
 import SeoHead from '@/components/SeoHead.jsx';
 import { Button } from '@/components/ui/button.jsx';
@@ -46,12 +46,14 @@ function Field({ label, children }) {
 
 export default function ReactivationLandingPage() {
   const { token } = useParams();
+  const [searchParams] = useSearchParams();
   const [lead, setLead] = useState(null);
   const [step, setStep] = useState(1);
   const [status, setStatus] = useState('loading');
   const [error, setError] = useState('');
   const [accepted, setAccepted] = useState(false);
   const [result, setResult] = useState(null);
+  const [dismissedOptOutPrompt, setDismissedOptOutPrompt] = useState(false);
   const [form, setForm] = useState({
     fullName: '',
     email: '',
@@ -185,6 +187,7 @@ export default function ReactivationLandingPage() {
   };
 
   const blockedStatus = ['expired', 'revoked', 'opted_out', 'refused'].includes(status);
+  const showOptOutPrompt = searchParams.get('optout') === '1' && !dismissedOptOutPrompt && status === 'ready';
 
   return (
     <>
@@ -255,7 +258,24 @@ export default function ReactivationLandingPage() {
           </aside>
 
           <div className="rounded-lg border border-slate-200 p-5 md:p-7">
-            {blockedStatus ? (
+            {showOptOutPrompt ? (
+              <div className="space-y-5">
+                <h2 className="text-3xl font-bold text-slate-950">Remover seu contato?</h2>
+                <p className="text-slate-700">
+                  Voce chegou pelo link de remocao. Se confirmar, a Cote Juros registrara sua preferencia e nao usara
+                  este cadastro para novos contatos desta operacao.
+                </p>
+                {error ? <p className="rounded-md bg-red-50 p-3 text-sm text-red-700">{error}</p> : null}
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button type="button" onClick={() => optOut('dnc_global')} className="rounded-md">
+                    Confirmar remocao
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setDismissedOptOutPrompt(true)} className="rounded-md">
+                    Continuar para atualizacao
+                  </Button>
+                </div>
+              </div>
+            ) : blockedStatus ? (
               <div className="space-y-3">
                 <h2 className="text-3xl font-bold text-slate-950">Preferencia registrada</h2>
                 <p className="text-slate-700">
