@@ -228,6 +228,25 @@ export const getRequestMetadata = (req) => ({
 });
 
 const ensureRolesAndPermissions = async (prisma) => {
+  const seededSuperAdmin = await prisma.adminRole.findUnique({
+    where: { code: 'super_admin' },
+    include: {
+      permissions: {
+        include: {
+          permission: true
+        }
+      }
+    }
+  });
+
+  if (
+    seededSuperAdmin?.permissions?.some((rolePermission) =>
+      rolePermission.permission.resource === '*' && rolePermission.permission.action === '*'
+    )
+  ) {
+    return;
+  }
+
   for (const [code, permissions] of Object.entries(DEFAULT_PERMISSIONS)) {
     const role = await prisma.adminRole.upsert({
       where: { code },
@@ -279,7 +298,6 @@ export const ensureAdminBootstrap = async () => {
   const bootstrapEmail = (process.env.ADMIN_BOOTSTRAP_EMAIL || 'admin@cotejuros.com.br').toLowerCase();
   const bootstrapName = process.env.ADMIN_BOOTSTRAP_NAME || 'Administrador Cote Juros';
   const bootstrapPassword = process.env.ADMIN_BOOTSTRAP_PASSWORD || process.env.REACTIVATION_ADMIN_PASSWORD || '';
-  if (!bootstrapPassword) return null;
 
   const existing = await prisma.adminUser.findUnique({
     where: { email: bootstrapEmail }
@@ -287,6 +305,8 @@ export const ensureAdminBootstrap = async () => {
 
   let user = existing;
   if (!existing) {
+    if (!bootstrapPassword) return null;
+
     user = await prisma.adminUser.create({
       data: {
         email: bootstrapEmail,

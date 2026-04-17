@@ -29,8 +29,6 @@ const animationIn = {
 const marketBrands = ['Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter', 'Santander', 'SuperSim'];
 
 const editorialFeature = normalizeMojibakeDeep({
-  title: 'Pessoa comparando opções no notebook',
-  image: '/assets/editorial/editorial-woman-desk.png',
   tag: 'Comparação real'
 });
 const featureCards = normalizeMojibakeDeep([
@@ -295,8 +293,35 @@ function HomePage() {
               </p>
             </div>
 
-            <div className="editorial-media">
-              <img className="editorial-photo" src={editorialFeature.image} alt={editorialFeature.title} loading="lazy" />
+            <div className="editorial-media" aria-label="Comparação de crédito organizada em uma tela de notebook">
+              <div className="editorial-visual-panel" aria-hidden="true">
+                <div className="editorial-browser-bar">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+                <div className="editorial-dashboard-grid">
+                  <div className="editorial-dashboard-card editorial-dashboard-card-main">
+                    <small>{t('valor desejado')}</small>
+                    <strong>R$ 12.000</strong>
+                    <div className="editorial-progress-line"><span /></div>
+                  </div>
+                  <div className="editorial-dashboard-card">
+                    <small>{t('perfil')}</small>
+                    <strong>claro</strong>
+                  </div>
+                  <div className="editorial-dashboard-card">
+                    <small>{t('custo')}</small>
+                    <strong>visível</strong>
+                  </div>
+                </div>
+                <div className="editorial-chart-lines">
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              </div>
               <span className="floating-tag">{editorialFeature.tag}</span>
             </div>
           </motion.div>
