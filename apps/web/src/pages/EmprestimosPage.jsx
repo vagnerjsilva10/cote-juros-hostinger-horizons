@@ -1,5 +1,4 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ChevronRight, Clock, Filter, LayoutGrid, List, ShieldCheck, Sparkles, Star } from 'lucide-react';
@@ -11,8 +10,10 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import PageHero from '@/components/PageHero.jsx';
+import SeoHead from '@/components/SeoHead.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
+import { brandPages, homeBreadcrumb } from '@/seo/brandSeo.js';
 
 const bankAccentById = {
   itau: '#EC7000',
@@ -123,13 +124,12 @@ function EmprestimosPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Empréstimos com mais clareza - Cote Juros</title>
-        <meta
-          name="description"
-          content="Compare valor, prazo e custo com mais clareza para descobrir por onde vale a pena começar."
-        />
-      </Helmet>
+      <SeoHead
+        title={brandPages.emprestimos.title}
+        description={brandPages.emprestimos.description}
+        path={brandPages.emprestimos.path}
+        breadcrumbs={[homeBreadcrumb, { name: 'Empréstimos', path: brandPages.emprestimos.path }]}
+      />
 
       <QuickCreditFlowModal
         isOpen={quickModalOpen}
@@ -139,6 +139,7 @@ function EmprestimosPage() {
       />
 
       <PageHero
+        breadcrumbs={[homeBreadcrumb, { name: 'Empréstimos', path: brandPages.emprestimos.path }]}
         eyebrow="Empréstimos"
         badge="Compare antes de contratar"
         title="Veja opções de empréstimo com mais clareza antes de decidir."

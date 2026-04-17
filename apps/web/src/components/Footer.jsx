@@ -20,8 +20,9 @@ function Footer() {
       title: 'Conteúdo',
       links: [
         { label: 'Blog', path: '/blog' },
-        { label: 'Como funciona', path: '/sobre-nos' },
-        { label: 'Ferramentas', path: '/ferramentas' }
+        { label: 'Como funciona', path: '/como-funciona' },
+        { label: 'Ferramentas', path: '/ferramentas' },
+        { label: 'Perguntas frequentes', path: '/perguntas-frequentes' }
       ]
     },
     {
@@ -48,7 +49,7 @@ function Footer() {
               <CoteJurosLogo variant="original-light" className="site-logo" />
             </Link>
             <p className="text-sm leading-6 text-white/70">
-              A CoteJuros ajuda você a comparar crédito com mais clareza, entender condições antes de contratar e decidir sem cobrança antecipada.
+              A Cote Juros ajuda você a comparar crédito com mais clareza, entender condições antes de contratar e decidir sem cobrança antecipada.
             </p>
             <div className="flex flex-wrap gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-medium text-white/80">
@@ -85,9 +86,9 @@ function Footer() {
 
         <div className="flex flex-col gap-2 border-t border-white/10 pt-5 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-medium text-white">CoteJuros © {currentYear}</p>
+            <p className="text-sm font-medium text-white">Cote Juros © {currentYear}</p>
             <p className="text-sm text-white/60">
-              A CoteJuros não é banco, não concede crédito diretamente e não garante aprovação.
+              A Cote Juros não é banco, não concede crédito diretamente e não garante aprovação.
             </p>
           </div>
           <p className="text-sm text-white/60">Compare antes de contratar.</p>

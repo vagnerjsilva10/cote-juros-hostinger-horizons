@@ -1,14 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { ArrowRight, Car, Home, ShieldCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PageHero from '@/components/PageHero.jsx';
+import SeoHead from '@/components/SeoHead.jsx';
 import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { normalizeMojibake } from '@/lib/textEncoding.js';
+import { brandPages, homeBreadcrumb } from '@/seo/brandSeo.js';
 
 function FinanciamentoPage() {
   const t = normalizeMojibake;
@@ -86,15 +87,15 @@ function FinanciamentoPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Financiamento com mais clareza - Cote Juros</title>
-        <meta
-          name="description"
-          content={t('Compare financiamento de imóveis e veículos com leitura clara de taxa, prazo e entrada mínima.')}
-        />
-      </Helmet>
+      <SeoHead
+        title={brandPages.financiamentos.title}
+        description={brandPages.financiamentos.description}
+        path={brandPages.financiamentos.path}
+        breadcrumbs={[homeBreadcrumb, { name: 'Financiamentos', path: brandPages.financiamentos.path }]}
+      />
 
       <PageHero
+        breadcrumbs={[homeBreadcrumb, { name: 'Financiamentos', path: brandPages.financiamentos.path }]}
         eyebrow="Financiamento"
         badge="Compare antes de assumir parcelas longas"
         title={t('Veja opções de financiamento com mais clareza antes de contratar.')}

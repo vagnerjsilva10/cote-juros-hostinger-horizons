@@ -27,8 +27,10 @@ const fixedRoutes = [
   '/financiamento',
   '/diagnostico-financeiro',
   '/cote-finance-ai',
+  '/como-funciona',
   '/sobre-nos',
   '/contato',
+  '/perguntas-frequentes',
   '/politica-de-privacidade',
   '/termos-de-uso'
 ];

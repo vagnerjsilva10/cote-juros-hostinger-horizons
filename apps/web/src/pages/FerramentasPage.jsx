@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { Cell, Pie, PieChart, ResponsiveContainer, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { ArrowRight, Download, DollarSign, Home, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
@@ -9,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PageHero from '@/components/PageHero.jsx';
+import SeoHead from '@/components/SeoHead.jsx';
+import { brandPages, homeBreadcrumb } from '@/seo/brandSeo.js';
 
 function FerramentasPage() {
   const [jcCapital, setJcCapital] = useState(10000);
@@ -64,12 +65,15 @@ function FerramentasPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Ferramentas financeiras - Cote Juros</title>
-        <meta name="description" content="Use calculadoras simples para entender parcelas, juros e custo total antes de contratar crédito." />
-      </Helmet>
+      <SeoHead
+        title={brandPages.ferramentas.title}
+        description={brandPages.ferramentas.description}
+        path={brandPages.ferramentas.path}
+        breadcrumbs={[homeBreadcrumb, { name: 'Ferramentas', path: brandPages.ferramentas.path }]}
+      />
 
       <PageHero
+        breadcrumbs={[homeBreadcrumb, { name: 'Ferramentas', path: brandPages.ferramentas.path }]}
         eyebrow="Ferramentas"
         badge="Simule antes de decidir"
         title="Calculadoras simples para decidir com mais segurança."

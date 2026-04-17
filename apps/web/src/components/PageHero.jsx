@@ -1,10 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 
 function PageHero({
   title,
   subtitle,
   badge,
+  breadcrumbs = [],
   centered = false,
   className = '',
   eyebrow,
@@ -17,6 +19,27 @@ function PageHero({
       <div className="hero-ambient-orb hero-ambient-orb-two" aria-hidden="true" />
       <div className={`page-shell relative z-10 min-w-0 ${centered ? 'text-center' : ''}`}>
         <div className={centered ? 'mx-auto min-w-0 max-w-4xl' : 'min-w-0 max-w-4xl'}>
+          {breadcrumbs.length > 1 ? (
+            <nav
+              className={`page-hero-breadcrumbs ${centered ? 'justify-center' : ''}`}
+              aria-label="Breadcrumb"
+            >
+              {breadcrumbs.map((item, index) => {
+                const isLast = index === breadcrumbs.length - 1;
+
+                return (
+                  <React.Fragment key={`${item.path || item.name}-${index}`}>
+                    {isLast || !item.path ? (
+                      <span aria-current={isLast ? 'page' : undefined}>{item.name}</span>
+                    ) : (
+                      <Link to={item.path}>{item.name}</Link>
+                    )}
+                    {!isLast ? <span aria-hidden="true">/</span> : null}
+                  </React.Fragment>
+                );
+              })}
+            </nav>
+          ) : null}
           {eyebrow ? (
             <p className="page-hero-eyebrow mb-3 text-[13px] font-medium">{eyebrow}</p>
           ) : null}

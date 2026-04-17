@@ -9,6 +9,8 @@ export const corePillarPaths = [
   '/cartoes',
   '/financiamentos',
   '/ferramentas',
+  '/como-funciona',
+  '/perguntas-frequentes',
   '/comparar',
   '/bancos',
   '/blog'

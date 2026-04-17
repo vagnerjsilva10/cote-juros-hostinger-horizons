@@ -1,8 +1,9 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import { CheckCircle2, Handshake, Shield, Target } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import PageHero from '@/components/PageHero.jsx';
+import SeoHead from '@/components/SeoHead.jsx';
+import { brandPages, homeBreadcrumb } from '@/seo/brandSeo.js';
 
 function SobreNosPage() {
   const values = [
@@ -30,15 +31,15 @@ function SobreNosPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Sobre a Cote Juros</title>
-        <meta
-          name="description"
-          content="Entenda o papel da Cote Juros: ajudar você a encontrar caminhos de crédito com mais clareza, sem promessa de aprovação e sem cobrança antecipada."
-        />
-      </Helmet>
+      <SeoHead
+        title={brandPages.sobre.title}
+        description={brandPages.sobre.description}
+        path={brandPages.sobre.path}
+        breadcrumbs={[homeBreadcrumb, { name: 'Sobre', path: brandPages.sobre.path }]}
+      />
 
       <PageHero
+        breadcrumbs={[homeBreadcrumb, { name: 'Sobre', path: brandPages.sobre.path }]}
         badge="Sobre a Cote Juros"
         title="A gente ajuda você a enxergar caminhos de crédito com mais clareza."
         subtitle="A Cote Juros não é banco. Nosso papel é organizar informações, mostrar possibilidades reais e deixar a próxima decisão muito mais clara."

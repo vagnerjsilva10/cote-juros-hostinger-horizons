@@ -1,5 +1,4 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { CheckCircle2, ChevronRight, CreditCard, Filter } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,8 +8,10 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import PageHero from '@/components/PageHero.jsx';
+import SeoHead from '@/components/SeoHead.jsx';
 import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
+import { brandPages, homeBreadcrumb } from '@/seo/brandSeo.js';
 
 const bankCardImages = {
   nubank: '/assets/cards/nubank-card.svg',
@@ -109,15 +110,15 @@ function CartoesPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Cartões com mais clareza - Cote Juros</title>
-        <meta
-          name="description"
-          content="Compare anuidade, limite e benefícios com uma leitura mais simples antes de decidir."
-        />
-      </Helmet>
+      <SeoHead
+        title={brandPages.cartoes.title}
+        description={brandPages.cartoes.description}
+        path={brandPages.cartoes.path}
+        breadcrumbs={[homeBreadcrumb, { name: 'Cartões', path: brandPages.cartoes.path }]}
+      />
 
       <PageHero
+        breadcrumbs={[homeBreadcrumb, { name: 'Cartões', path: brandPages.cartoes.path }]}
         className="cards-page-hero"
         eyebrow="Cartões"
         badge="Compare antes de contratar"

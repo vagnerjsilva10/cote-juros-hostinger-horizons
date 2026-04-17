@@ -21,6 +21,8 @@ function Header() {
     { label: 'Empréstimos', path: '/emprestimos' },
     { label: 'Cartões', path: '/cartoes' },
     { label: 'Financiamentos', path: '/financiamentos' },
+    { label: 'Como funciona', path: '/como-funciona' },
+    { label: 'Ferramentas', path: '/ferramentas' },
     { label: 'Blog', path: '/blog' }
   ];
 

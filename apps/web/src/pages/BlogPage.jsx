@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import PageHero from '@/components/PageHero.jsx';
+import SeoHead from '@/components/SeoHead.jsx';
 import BlogArticleCard from '@/components/BlogArticleCard.jsx';
 import ArticleCoverImage from '@/components/blog/ArticleCoverImage.jsx';
 import { AdSlotHorizontal, AdSlotInline, AdSlotResponsive } from '@/components/blog/AdSlot.jsx';
@@ -20,36 +20,10 @@ import {
   normalizeArticleData
 } from '@/lib/content/articles.js';
 import { normalizeMojibake } from '@/lib/textEncoding.js';
+import { brandPages, canonicalUrl, homeBreadcrumb } from '@/seo/brandSeo.js';
 
 const PAGE_SIZE = 12;
-const BLOG_URL = 'https://www.cotejuros.com.br/blog';
-const SITE_LOGO_URL = 'https://www.cotejuros.com.br/assets/logo/logo-current-site.svg';
-
-const blogBaseSchema = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'Organization',
-      '@id': 'https://www.cotejuros.com.br/#organization',
-      name: 'Cote Juros',
-      url: 'https://www.cotejuros.com.br',
-      logo: SITE_LOGO_URL
-    },
-    {
-      '@type': 'WebSite',
-      '@id': 'https://www.cotejuros.com.br/#website',
-      name: 'Cote Juros',
-      url: 'https://www.cotejuros.com.br'
-    },
-    {
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://www.cotejuros.com.br/' },
-        { '@type': 'ListItem', position: 2, name: 'Blog', item: BLOG_URL }
-      ]
-    }
-  ]
-};
+const BLOG_URL = canonicalUrl('/blog');
 
 function BlogPage() {
   const t = normalizeMojibake;
@@ -160,34 +134,17 @@ function BlogPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Blog Cote Juros | Dicas para cuidar melhor do seu dinheiro</title>
-        <meta
-          name="description"
-          content="Leia conteúdos sobre empréstimo, cartão, score, dívidas, financiamento e organização financeira com explicações claras e exemplos do dia a dia."
-        />
-        <meta name="robots" content="index,follow,max-image-preview:large" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Blog Cote Juros | Dicas para cuidar melhor do seu dinheiro" />
-        <meta
-          property="og:description"
-          content="Guias claros para comparar custos, evitar armadilhas e organizar melhor sua vida financeira."
-        />
-        <meta property="og:url" content={BLOG_URL} />
-        <meta property="og:image" content="https://www.cotejuros.com.br/assets/blog/fallbacks/editorial-global.svg" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Blog Cote Juros | Dicas para cuidar melhor do seu dinheiro" />
-        <meta
-          name="twitter:description"
-          content="Conteúdos sobre crédito, cartões, score, financiamento e organização financeira em linguagem simples."
-        />
-        <link rel="canonical" href={BLOG_URL} />
-        <script type="application/ld+json">{JSON.stringify(blogBaseSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(itemListSchema)}</script>
-      </Helmet>
+      <SeoHead
+        title={brandPages.blog.title}
+        description={brandPages.blog.description}
+        path={brandPages.blog.path}
+        breadcrumbs={[homeBreadcrumb, { name: 'Blog', path: brandPages.blog.path }]}
+        structuredData={[itemListSchema]}
+      />
 
       <PageHero
         centered
+        breadcrumbs={[homeBreadcrumb, { name: 'Blog', path: brandPages.blog.path }]}
         className="blog-page-hero"
         badge="Blog Cote Juros"
         title={t('Conteúdo para entender antes de contratar')}

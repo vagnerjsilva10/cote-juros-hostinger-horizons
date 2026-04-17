@@ -16,8 +16,10 @@ import DiagnosticoPage from '@/pages/DiagnosticoPage.jsx';
 import BlogPage from '@/pages/BlogPage.jsx';
 import BlogArticlePage from '@/pages/BlogArticlePage.jsx';
 import BlogRouteBoundary from '@/components/blog/BlogRouteBoundary.jsx';
+import ComoFuncionaPage from '@/pages/ComoFuncionaPage.jsx';
 import SobreNosPage from '@/pages/SobreNosPage.jsx';
 import ContatoPage from '@/pages/ContatoPage.jsx';
+import FaqPage from '@/pages/FaqPage.jsx';
 import PoliticaPrivacidadePage from '@/pages/PoliticaPrivacidadePage.jsx';
 import TermosUsoPage from '@/pages/TermosUsoPage.jsx';
 import SeoLandingPage from '@/pages/SeoLandingPage.jsx';
@@ -84,8 +86,11 @@ function App() {
     blocked.add('/financiamento');
     blocked.add('/diagnostico-financeiro');
     blocked.add('/cote-finance-ai');
+    blocked.add('/como-funciona');
     blocked.add('/sobre-nos');
     blocked.add('/contato');
+    blocked.add('/perguntas-frequentes');
+    blocked.add('/faq');
     blocked.add('/politica-de-privacidade');
     blocked.add('/termos-de-uso');
     return blocked;
@@ -137,8 +142,11 @@ function App() {
             </AppLayout>
           }
         />
+        <Route path="/como-funciona" element={<AppLayout><ComoFuncionaPage /></AppLayout>} />
         <Route path="/sobre-nos" element={<AppLayout><SobreNosPage /></AppLayout>} />
         <Route path="/contato" element={<AppLayout><ContatoPage /></AppLayout>} />
+        <Route path="/perguntas-frequentes" element={<AppLayout><FaqPage /></AppLayout>} />
+        <Route path="/faq" element={<AppLayout><FaqPage /></AppLayout>} />
         <Route path="/politica-de-privacidade" element={<AppLayout><PoliticaPrivacidadePage /></AppLayout>} />
         <Route path="/termos-de-uso" element={<AppLayout><TermosUsoPage /></AppLayout>} />
         <Route path="/cote-finance-ai" element={<AppLayout><CoteFinanceAIPage /></AppLayout>} />

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -8,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import PageHero from '@/components/PageHero.jsx';
+import SeoHead from '@/components/SeoHead.jsx';
+import { brandPages, homeBreadcrumb } from '@/seo/brandSeo.js';
 
 function ContatoPage() {
   const [formData, setFormData] = useState({ nome: '', email: '', assunto: '', mensagem: '' });
@@ -31,11 +32,15 @@ function ContatoPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Contato - Cote Juros</title>
-      </Helmet>
+      <SeoHead
+        title={brandPages.contato.title}
+        description={brandPages.contato.description}
+        path={brandPages.contato.path}
+        breadcrumbs={[homeBreadcrumb, { name: 'Contato', path: brandPages.contato.path }]}
+      />
 
       <PageHero
+        breadcrumbs={[homeBreadcrumb, { name: 'Contato', path: brandPages.contato.path }]}
         badge="Contato"
         title="Fale com a equipe em um fluxo tão simples quanto o restante do produto."
         subtitle="O formulário segue a mesma linguagem do novo portal: poucos elementos, muito respiro e foco no texto."

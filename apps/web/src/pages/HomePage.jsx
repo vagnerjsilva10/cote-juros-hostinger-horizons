@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -14,8 +14,10 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import CreditHeroPreview from '@/components/CreditHeroPreview.jsx';
 import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
+import SeoHead from '@/components/SeoHead.jsx';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { normalizeMojibake, normalizeMojibakeDeep } from '@/lib/textEncoding.js';
+import { brandPages, createOrganizationSchema, createWebSiteSchema } from '@/seo/brandSeo.js';
 
 const animationIn = {
   initial: { opacity: 0, y: 18 },
@@ -157,15 +159,14 @@ function HomePage() {
 
   return (
     <>
-      <Helmet>
-        <title>{t('CoteJuros - Veja opções de crédito antes de fechar contrato')}</title>
-        <meta
-          name="description"
-          content={t('A CoteJuros mostra caminhos possíveis para o seu perfil antes da decisão final.')}
-        />
+      <SeoHead
+        title={brandPages.home.title}
+        description={brandPages.home.description}
+        path={brandPages.home.path}
+        structuredData={[createOrganizationSchema(), createWebSiteSchema()]}
+      >
         <meta name="verify-admitad" content="1ae3db0be4" />
-        <link rel="canonical" href="https://cotejuros.com.br/" />
-      </Helmet>
+      </SeoHead>
 
       <QuickCreditFlowModal isOpen={modalOpen} onClose={() => setModalOpen(false)} sourcePage="/" originLabel="home" />
 
@@ -183,15 +184,16 @@ function HomePage() {
               </span>
 
               <h1 className="hero-title">
+                <span className="hero-title-line">{t('Cote Juros ajuda você')}</span>
                 <span className="hero-title-line">
-                  {t('Veja opções de ')}
+                  {t('a comparar ')}
                   <span className="highlight">{t('crédito')}</span>
                 </span>
-                <span className="hero-title-line">{t('antes de fechar contrato')}</span>
+                <span className="hero-title-line">{t('antes de contratar')}</span>
               </h1>
 
               <p className="hero-subtitle">
-                {t('A CoteJuros mostra caminhos possíveis para o seu perfil antes da decisão final.')}
+                {t('Compare opções de empréstimo, cartão e financiamento com mais clareza antes de decidir.')}
               </p>
 
               <div className="hero-data-rail" aria-hidden="true">
@@ -207,9 +209,9 @@ function HomePage() {
                   {t('Ver minhas opções agora')}
                   <ArrowRight className="h-4 w-4" />
                 </a>
-                <a href="#como-funciona" className="hero-secondary-btn">
+                <Link to="/como-funciona" className="hero-secondary-btn">
                   Entender como funciona
-                </a>
+                </Link>
               </div>
 
               <div className="hero-trust">

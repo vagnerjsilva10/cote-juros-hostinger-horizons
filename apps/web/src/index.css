@@ -5205,6 +5205,30 @@ body {
   padding: 8px 14px !important;
 }
 
+.page-hero-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+  color: rgba(15, 23, 42, 0.58);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.page-hero-breadcrumbs a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page-hero-breadcrumbs a:hover {
+  color: rgba(15, 23, 42, 0.88);
+}
+
+.page-hero-breadcrumbs span[aria-current='page'] {
+  color: rgba(15, 23, 42, 0.86);
+}
+
 .public-site-shell.is-domain-page .section-title,
 .public-site-shell.is-domain-page .cards-section-title,
 .public-site-shell.is-domain-page .blog-page-shell h2,
