@@ -27,7 +27,7 @@ const animationIn = {
 };
 
 const marketBrands = ['Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter', 'Santander', 'SuperSim'];
-const roleWomanImageSrc = '/assets/editorial/role-woman-headphones.png';
+const roleWomanImageSrc = '/images/role-thinking-woman.png';
 
 const editorialFeature = normalizeMojibakeDeep({
   tag: 'Comparação real'
@@ -518,29 +518,37 @@ function HomePage() {
           <div className="role-card">
             <div className="role-content">
               <div className="role-copy">
-                <span className="role-eyebrow">Papel da CoteJuros</span>
+                <span className="role-eyebrow">PAPEL DA COTEJUROS</span>
                 <h2 className="role-title">{t('A CoteJuros ajuda você a comparar antes de contratar')}</h2>
                 <p className="role-text">
                   {t('Você vê opções com mais clareza, entende o custo real e decide com mais segurança.')}
                 </p>
               </div>
-            </div>
-            <div
-              className="role-media"
-              style={{ '--role-photo-url': `url(${roleWomanImageSrc})` }}
-              aria-hidden="true"
-            >
-              <img
-                className="role-photo"
-                src={roleWomanImageSrc}
-                srcSet={`${roleWomanImageSrc} 1x`}
-                sizes="(max-width: 767px) 100vw, (max-width: 1100px) 44vw, 520px"
-                alt=""
-                loading="eager"
-                decoding="async"
-                fetchPriority="high"
-              />
-              <div className="role-photo-overlay" />
+
+              <motion.div
+                className="role-media"
+                initial={{ opacity: 0, y: 28, scale: 0.98 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, amount: 0.35 }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="role-media-glow" />
+                <motion.div
+                  className="role-photo-wrap"
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <img
+                    src={roleWomanImageSrc}
+                    alt="Mulher analisando opções no notebook em ambiente clean"
+                    className="role-photo"
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
+                  />
+                </motion.div>
+              </motion.div>
             </div>
           </div>
         </div>
