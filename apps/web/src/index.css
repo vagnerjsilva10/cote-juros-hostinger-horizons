@@ -3068,11 +3068,11 @@
   position: relative;
   z-index: 1;
   overflow: hidden;
-  min-height: clamp(292px, 27vw, 344px);
+  min-height: 380px;
   max-width: 1080px;
   margin: 0 auto;
-  padding: clamp(24px, 3vw, 34px);
-  border-radius: 32px;
+  padding: 0;
+  border-radius: 28px;
   border: 1px solid rgba(15, 23, 42, 0.07);
   background:
     radial-gradient(circle at 100% 0%, rgba(186, 214, 255, 0.22), transparent 26%),
@@ -3084,17 +3084,18 @@
 
 .role-content {
   display: grid;
-  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   gap: 0;
-  align-items: center;
-  min-height: clamp(244px, 22vw, 286px);
+  align-items: stretch;
+  min-height: 380px;
 }
 
 .role-copy {
   position: relative;
   z-index: 3;
   max-width: 520px;
-  padding-right: clamp(14px, 2vw, 30px);
+  padding: clamp(36px, 5vw, 64px) clamp(30px, 4.5vw, 56px);
+  align-self: center;
 }
 
 .role-eyebrow {
@@ -3130,12 +3131,10 @@
 .role-media {
   position: relative;
   z-index: 1;
-  min-height: clamp(292px, 27vw, 344px);
+  min-height: 380px;
   height: 100%;
   align-self: stretch;
-  margin: calc(clamp(24px, 3vw, 34px) * -1) calc(clamp(24px, 3vw, 34px) * -1) calc(clamp(24px, 3vw, 34px) * -1) -54px;
   overflow: hidden;
-  border-radius: 0 32px 32px 0;
 }
 
 .role-media::before {
@@ -3145,13 +3144,11 @@
   z-index: 2;
   pointer-events: none;
   background: linear-gradient(
-    90deg,
-    rgba(251, 252, 254, 1) 0%,
-    rgba(251, 252, 254, 0.94) 9%,
-    rgba(251, 252, 254, 0.72) 20%,
-    rgba(251, 252, 254, 0.34) 34%,
-    rgba(251, 252, 254, 0.1) 47%,
-    rgba(251, 252, 254, 0) 62%
+    to left,
+    rgba(255, 255, 255, 0) 55%,
+    rgba(255, 255, 255, 0.25) 70%,
+    rgba(255, 255, 255, 0.65) 85%,
+    #ffffff 100%
   );
 }
 
@@ -3162,22 +3159,17 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  object-position: 44% center;
-  opacity: 1;
-  visibility: visible;
-  filter: contrast(1.04) saturate(1.05);
-  image-rendering: auto;
-  transform: scale(1.055);
+  object-position: 60% center;
 }
 
 @media (max-width: 1100px) {
   .role-card {
-    min-height: 0;
+    min-height: 360px;
   }
 
   .role-content {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    min-height: 292px;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    min-height: 360px;
   }
 
   .role-title {
@@ -3186,25 +3178,22 @@
   }
 
   .role-media {
-    min-height: 292px;
-    margin-left: -40px;
+    min-height: 360px;
   }
 
   .role-media::before {
     background: linear-gradient(
-      90deg,
-      rgba(251, 252, 254, 1) 0%,
-      rgba(251, 252, 254, 0.92) 12%,
-      rgba(251, 252, 254, 0.62) 26%,
-      rgba(251, 252, 254, 0.2) 43%,
-      rgba(251, 252, 254, 0) 60%
+      to left,
+      rgba(255, 255, 255, 0) 54%,
+      rgba(255, 255, 255, 0.22) 69%,
+      rgba(255, 255, 255, 0.62) 84%,
+      #ffffff 100%
     );
   }
 }
 
 @media (max-width: 767px) {
   .role-card {
-    padding-bottom: 16px;
     border-radius: 28px;
   }
 
@@ -3216,7 +3205,7 @@
 
   .role-copy {
     max-width: 100%;
-    padding-right: 0;
+    padding: 32px 28px 0;
   }
 
   .role-title {
@@ -3230,19 +3219,12 @@
     line-height: 1.65;
   }
 
-  .role-copy {
-    padding: 0;
-  }
-
   .role-media {
-    min-height: clamp(260px, 68vw, 310px);
-    margin: 0 -8px -8px;
-    border-radius: 22px;
+    min-height: clamp(280px, 72vw, 330px);
   }
 
   .role-photo {
-    object-position: 45% center;
-    transform: scale(1.02);
+    object-position: 55% center;
   }
 
   .role-media::before {
