@@ -27,7 +27,7 @@ const animationIn = {
 };
 
 const marketBrands = ['Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter', 'Santander', 'SuperSim'];
-const roleWomanImageSrc = '/images/role-thinking-woman.png';
+const roleWomanImageSrc = '/images/role-woman-purple.png';
 
 const editorialFeature = normalizeMojibakeDeep({
   tag: 'Comparação real'
@@ -525,30 +525,16 @@ function HomePage() {
                 </p>
               </div>
 
-              <motion.div
-                className="role-media"
-                initial={{ opacity: 0, y: 28, scale: 0.98 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, amount: 0.35 }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <div className="role-media-glow" />
-                <motion.div
-                  className="role-photo-wrap"
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <img
-                    src={roleWomanImageSrc}
-                    alt="Mulher analisando opções no notebook em ambiente clean"
-                    className="role-photo"
-                    loading="eager"
-                    decoding="async"
-                    fetchPriority="high"
-                  />
-                </motion.div>
-              </motion.div>
+              <div className="role-media">
+                <img
+                  src={roleWomanImageSrc}
+                  alt="Mulher com fones roxos segurando celular com interface de comparação"
+                  className="role-photo"
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
+                />
+              </div>
             </div>
           </div>
         </div>
