@@ -27,8 +27,6 @@ const animationIn = {
 };
 
 const marketBrands = ['Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter', 'Santander', 'SuperSim'];
-const roleWomanImageSrc = '/images/role-woman-purple.png';
-
 const editorialFeature = normalizeMojibakeDeep({
   tag: 'Comparação real'
 });
@@ -527,7 +525,7 @@ function HomePage() {
 
               <div className="role-media">
                 <img
-                  src={roleWomanImageSrc}
+                  src="/images/role-woman-purple.png"
                   alt="Mulher com fones roxos segurando celular com interface de comparação"
                   className="role-photo"
                   loading="eager"
