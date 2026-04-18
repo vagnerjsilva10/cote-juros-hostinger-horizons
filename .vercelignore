@@ -12,6 +12,8 @@ apps/*/node_modules
 *.tar.gz
 *.log
 *.png
+!apps/web/public/**/*.png
+!apps/web/src/assets/**/*.png
 
 .edge-*/
 apps/web/dist/
