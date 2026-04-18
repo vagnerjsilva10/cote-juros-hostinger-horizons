@@ -6,6 +6,13 @@ const FALLBACK_AUTHOR = 'Equipe Cote Juros';
 const FALLBACK_CATEGORY = 'Finanças pessoais';
 
 const isObjectRecord = (value) => Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+const extractTextValue = (value = '') => {
+  if (isObjectRecord(value)) {
+    return value.rendered || value.name || value.label || value.title || value.slug || value.value || '';
+  }
+
+  return value;
+};
 
 const normalizeText = (value = '') =>
   String(value)
@@ -14,8 +21,8 @@ const normalizeText = (value = '') =>
     .toLowerCase()
     .trim();
 
-const sanitizeInlineText = (value = '') => normalizeMojibake(String(value || '')).replace(/\s+/g, ' ').trim();
-const sanitizeRichText = (value = '') => normalizeMojibake(String(value || '')).trim();
+const sanitizeInlineText = (value = '') => normalizeMojibake(String(extractTextValue(value) || '')).replace(/\s+/g, ' ').trim();
+const sanitizeRichText = (value = '') => normalizeMojibake(String(extractTextValue(value) || '')).trim();
 
 const ROUTE_LABELS = {
   '/educacao-financeira': 'Educação Financeira',

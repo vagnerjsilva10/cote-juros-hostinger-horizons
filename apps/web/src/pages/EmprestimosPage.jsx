@@ -141,7 +141,6 @@ function EmprestimosPage() {
       <PageHero
         breadcrumbs={[homeBreadcrumb, { name: 'Empréstimos', path: brandPages.emprestimos.path }]}
         eyebrow="Empréstimos"
-        badge="Compare antes de contratar"
         title="Veja opções de empréstimo com mais clareza antes de decidir."
         subtitle="Compare valor, prazo e custo para entender por onde vale a pena começar."
       >

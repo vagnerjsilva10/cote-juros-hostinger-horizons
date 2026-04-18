@@ -147,8 +147,8 @@ function BlogPage() {
         breadcrumbs={[homeBreadcrumb, { name: 'Blog', path: brandPages.blog.path }]}
         className="blog-page-hero"
         badge="Blog Cote Juros"
-        title={t('Conteúdo para entender antes de contratar')}
-        subtitle={t('Guias editoriais com leitura clara, imagens mais humanas e contexto financeiro para decidir com mais confiança.')}
+        title={t('Conteúdo para entender crédito sem complicação')}
+        subtitle={t('Guias simples para comparar, organizar as contas e tomar decisões com mais calma.')}
       >
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
           <div className="relative">
@@ -180,9 +180,9 @@ function BlogPage() {
         <section className="blog-intro-panel grid gap-5 p-6 md:grid-cols-[1.15fr_0.85fr] md:p-8">
           <div className="space-y-3">
             <p className="blog-kicker text-sm font-semibold uppercase tracking-[0.18em]">Comece por aqui</p>
-            <h2 className="text-2xl text-foreground md:text-3xl">{t('Temas mais úteis para organizar a vida financeira com calma')}</h2>
+            <h2 className="text-2xl text-foreground md:text-3xl">{t('Os temas mais úteis para cuidar da vida financeira com mais calma')}</h2>
             <p className="max-w-3xl text-base leading-7 text-muted-foreground">
-              {t('Um blog mais silencioso, claro e útil para apoiar decisões financeiras sem poluição visual.')}
+              {t('Aqui você encontra explicações diretas, sem jargão e sem enrolação, para entender o que fazer em cada momento.')}
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-1">
@@ -212,7 +212,7 @@ function BlogPage() {
         {featured ? (
           <section className="space-y-5">
             <div className="flex items-center justify-between gap-4">
-              <h2 className="text-2xl text-foreground">Destaque da semana</h2>
+              <h2 className="text-2xl text-foreground">Leitura em destaque</h2>
               <Badge variant="outline">{normalizeMojibake(featured.category || '')}</Badge>
             </div>
 
@@ -320,9 +320,9 @@ function BlogPage() {
 
         <section className="blog-cta-panel p-6 md:p-8">
           <p className="blog-kicker text-sm font-semibold uppercase tracking-[0.2em]">Próximo passo</p>
-          <h2 className="mt-3 text-2xl text-foreground">Quando quiser sair da leitura, veja caminhos de crédito com mais contexto</h2>
+          <h2 className="mt-3 text-2xl text-foreground">Quando quiser sair da leitura, compare opções de crédito com mais clareza</h2>
           <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
-            O blog prepara a decisão. A jornada de crédito mostra possibilidades. E o redirecionamento ao parceiro só aparece depois, de forma separada.
+            O blog ajuda você a entender melhor o cenário. Quando fizer sentido, a comparação mostra caminhos possíveis para seguir com mais segurança.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Link to="/emprestimos" className="inline-flex">

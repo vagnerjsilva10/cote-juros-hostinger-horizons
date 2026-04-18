@@ -1,5 +1,6 @@
 ﻿import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -33,20 +34,20 @@ const editorialFeature = normalizeMojibakeDeep({
 
 const featureCards = normalizeMojibakeDeep([
   {
-    title: 'Preencha o básico',
-    description: 'Valor, renda e perfil para mostrar um começo mais claro.',
+    title: 'Conte o básico',
+    description: 'Informe valor, renda e perfil para começar a comparação com mais clareza.',
     metric: '01',
     bars: [42, 64, 86]
   },
   {
-    title: 'Compare opções',
+    title: 'Compare com calma',
     description: 'Veja caminhos possíveis antes de aceitar qualquer proposta.',
     metric: '02',
     bars: [78, 52, 68]
   },
   {
-    title: 'Decida melhor',
-    description: 'Você só segue quando fizer sentido para a sua situação.',
+    title: 'Avance se fizer sentido',
+    description: 'Você só segue quando a escolha combinar com o seu momento.',
     metric: '03',
     bars: [38, 58, 92]
   }
@@ -54,8 +55,8 @@ const featureCards = normalizeMojibakeDeep([
 
 const profileCards = normalizeMojibakeDeep([
   {
-    title: 'Perfil negativado?',
-    description: 'Veja por onde vale a pena começar antes de fechar qualquer contrato.',
+    title: 'Está com o nome negativado?',
+    description: 'Veja por onde pode valer a pena começar antes de fechar qualquer contrato.',
     tag: 'Perfil'
   },
   {
@@ -65,7 +66,7 @@ const profileCards = normalizeMojibakeDeep([
   },
   {
     title: 'Autônomo?',
-    description: 'Entenda caminhos possíveis para o seu perfil antes da decisão.',
+    description: 'Entenda caminhos possíveis para o seu perfil antes de tomar a decisão.',
     tag: 'Autônomo'
   }
 ]);
@@ -73,13 +74,13 @@ const profileCards = normalizeMojibakeDeep([
 const credibilityBlocks = normalizeMojibakeDeep([
   {
     icon: ShieldCheck,
-    title: 'Veja opções, condições e custo com mais clareza',
-    description: 'A proposta da CoteJuros é ajudar você a comparar crédito antes de contratar.'
+    title: 'Compare opções com mais clareza',
+    description: 'A CoteJuros ajuda você a entender condições e custo antes de contratar.'
   },
   {
     icon: TrendingUp,
-    title: 'Entenda por onde vale a pena começar',
-    description: 'Quando valor, renda e perfil aparecem juntos, a decisão fica mais segura.'
+    title: 'Decida no seu ritmo',
+    description: 'Você analisa com mais calma e avança só no que fizer sentido para o seu momento.'
   }
 ]);
 
@@ -119,10 +120,25 @@ function FaqItem({ item, isOpen, onToggle }) {
 }
 
 function HomePage() {
+  const location = useLocation();
   const [modalOpen, setModalOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
   const [heroPreviewFocusSignal, setHeroPreviewFocusSignal] = useState(0);
   const t = normalizeMojibake;
+
+  useEffect(() => {
+    if (!location.hash) return;
+
+    const id = location.hash.replace('#', '');
+    const target = document.getElementById(id);
+    if (!target) return;
+
+    const timeoutId = window.setTimeout(() => {
+      target.scrollIntoView({ behavior: 'auto', block: 'start' });
+    }, 220);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [location.hash]);
 
   const openPrimaryFlow = () => {
     trackingService.trackCtaClick({
@@ -168,7 +184,7 @@ function HomePage() {
 
       <QuickCreditFlowModal isOpen={modalOpen} onClose={() => setModalOpen(false)} sourcePage="/" originLabel="home" />
 
-      <section className="hero-section">
+      <section id="home-hero" className="hero-section">
         <div className="hero-ambient-grid" aria-hidden="true" />
         <div className="hero-ambient-orb hero-ambient-orb-one" aria-hidden="true" />
         <div className="hero-ambient-orb hero-ambient-orb-two" aria-hidden="true" />
@@ -178,17 +194,17 @@ function HomePage() {
             <motion.div {...animationIn} className="hero-copy">
               <span className="hero-eyebrow">
                 <Sparkles className="h-3.5 w-3.5" />
-                {t('SEM COMPROMISSO. SEM COBRANÇA ANTECIPADA.')}
+                {t('Grátis para comparar. Sem cobrança antecipada.')}
               </span>
 
               <h1 className="hero-title hero-heading heading-hero">
                 {t('Compare ')}
                 <span className="highlight">{t('crédito')}</span>
-                {t(' antes de contratar')}
+                {t(' com mais clareza antes de contratar')}
               </h1>
 
               <p className="hero-subtitle hero-subcopy">
-                {t('Compare opções de empréstimo, cartão e financiamento com mais clareza antes de decidir.')}
+                {t('A CoteJuros ajuda você a comparar empréstimo, cartão e financiamento com mais segurança, praticidade e sem pressão para fechar.')}
               </p>
 
               <div className="hero-data-rail" aria-hidden="true">
@@ -210,7 +226,7 @@ function HomePage() {
               </div>
 
               <div className="hero-trust">
-                {normalizeMojibakeDeep(['Sem compromisso', 'Sem cobrança antecipada', 'Você decide com mais calma']).map((item) => (
+                {normalizeMojibakeDeep(['Sem compromisso para começar', 'Sem cobrança antecipada', 'Você decide no seu ritmo']).map((item) => (
                   <div key={item} className="flex items-center gap-2">
                     <CheckCircle2 className="h-3.5 w-3.5 text-[var(--brand-2)]" />
                     <span>{item}</span>
@@ -250,7 +266,7 @@ function HomePage() {
           <motion.div {...animationIn} className="section-heading-left">
             <h2 className="section-title">{t('Primeiro você compara. Depois decide se vale seguir.')}</h2>
             <p className="section-subtitle">
-              {t('A CoteJuros organiza a leitura do crédito para você entender por onde vale a pena começar.')}
+              {t('A CoteJuros organiza valor, perfil e custo para você entender por onde vale a pena começar.')}
             </p>
           </motion.div>
 
@@ -278,7 +294,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="editorial-people-section">
+      <section id="experiencia-real" className="editorial-people-section">
         <div className="section-connector section-connector-top" aria-hidden="true" />
         <div className="page-shell">
           <motion.div {...animationIn} className="editorial-split editorial-people-grid">
@@ -286,7 +302,7 @@ function HomePage() {
               <span className="eyebrow">{t('Experiência real')}</span>
               <h2>{t('Crédito não é só taxa. É contexto, momento e escolha.')}</h2>
               <p>
-                {t('A CoteJuros ajuda você a comparar antes de contratar, com mais clareza sobre valor, perfil e custo real.')}
+                {t('A CoteJuros ajuda você a comparar com mais clareza para entender o que faz sentido hoje, no seu perfil e no seu orçamento.')}
               </p>
             </div>
 
@@ -312,11 +328,32 @@ function HomePage() {
                     <strong>visível</strong>
                   </div>
                 </div>
-                <div className="editorial-chart-lines">
-                  <span />
-                  <span />
-                  <span />
-                  <span />
+                <div className="editorial-chart-stage">
+                  <div className="editorial-chart-lines">
+                    {normalizeMojibakeDeep(['perfil', 'leitura', 'comparação', 'decisão']).map((label, index) => (
+                      <div key={label} className="editorial-chart-column">
+                        <span style={{ animationDelay: `${index * 120}ms` }} />
+                        <small>{label}</small>
+                      </div>
+                    ))}
+                  </div>
+                  <svg viewBox="0 0 320 96" className="editorial-chart-line" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="editorialComparisonLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#94A3FF" />
+                        <stop offset="100%" stopColor="#5B6CFF" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      d="M8 78 C 44 76, 74 62, 110 54 S 178 34, 214 28 S 270 26, 312 18"
+                      fill="none"
+                      stroke="url(#editorialComparisonLine)"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      className="editorial-line-path"
+                    />
+                    <circle cx="312" cy="18" r="4.5" fill="#5B6CFF" className="editorial-line-dot" />
+                  </svg>
                 </div>
               </div>
               <span className="floating-tag">{editorialFeature.tag}</span>
@@ -330,7 +367,7 @@ function HomePage() {
           <motion.div {...animationIn} className="section-heading-left">
             <h2 className="section-title">{t('Escolha um ponto de partida para comparar com mais precisão')}</h2>
             <p className="section-subtitle">
-              {t('Cada perfil pede uma leitura diferente. O importante é comparar antes de contratar.')}
+              {t('Cada perfil pede uma leitura diferente. O importante é entender seu ponto de partida antes de contratar.')}
             </p>
           </motion.div>
 
@@ -360,7 +397,7 @@ function HomePage() {
           <motion.div {...animationIn} className="visual-reading-section">
             <div className="main-copy-card">
               <span className="eyebrow">{t('Mais clareza')}</span>
-              <h2 className="block-title">{t('Compare crédito com uma leitura mais visual')}</h2>
+              <h2 className="block-title">{t('Compare crédito com uma leitura mais simples')}</h2>
               <p>
                 {t('A proposta não é empurrar contrato. É organizar valor, renda, perfil e próximos passos para você enxergar melhor antes de decidir.')}
               </p>
@@ -412,10 +449,10 @@ function HomePage() {
               <h2>
                 {t('Entender o crédito antes')}
                 <br />
-                de contratar muda tudo
+                {t('de contratar muda a decisão')}
               </h2>
               <p>
-                {t('Quando você compara antes, fica mais fácil separar o que realmente vale a pena do que só parece bom.')}
+                {t('Quando você compara com calma, fica mais fácil separar o que realmente vale a pena do que só parece bom.')}
               </p>
 
               <div className="dark-checklist">
@@ -481,7 +518,7 @@ function HomePage() {
       <section className="section section--compact art-section art-section-white">
         <div className="page-shell">
           <motion.div {...animationIn} className="section-heading-center">
-            <h2 className="section-title">{t('Comparar crédito fica melhor quando a proposta é direta')}</h2>
+            <h2 className="section-title">{t('Comparar crédito fica mais fácil quando a proposta é direta')}</h2>
             <p className="section-subtitle">
               {t('A CoteJuros mostra condições com mais clareza para você entender antes de fechar contrato.')}
             </p>
@@ -548,18 +585,18 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="final-cta-section">
+      <section id="final-cta" className="final-cta-section">
         <div className="page-shell">
           <motion.div {...animationIn} className="final-cta-card">
             <div className="final-cta-grid" aria-hidden="true" />
-            <span className="final-cta-badge">{t('Comece sem pressão')}</span>
+            <span className="final-cta-badge">{t('Comece com calma')}</span>
             <h2>
-              {t('Veja opções de crédito antes')}
+              {t('Compare opções de crédito antes')}
               <br />
-              de fechar qualquer contrato
+              {t('de fechar qualquer contrato')}
             </h2>
             <p>
-              {t('Compare antes de contratar e siga só no que fizer sentido para você.')}
+              {t('Veja caminhos possíveis sem pressão e avance só no que fizer sentido para você.')}
             </p>
             <a href="#hero-credit-preview" className="hero-primary-btn" onClick={focusHeroPreview}>
               {t('Ver minhas opções agora')}

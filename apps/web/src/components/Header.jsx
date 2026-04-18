@@ -46,7 +46,7 @@ function Header() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`rounded-full px-3 py-2 text-[13px] font-medium leading-none transition-all duration-300 ${
+                className={`rounded-full px-3 py-2 text-[14px] font-medium leading-none transition-all duration-300 ${
                   isActive(item.path)
                     ? 'bg-white/[0.08] text-[rgba(255,255,255,0.98)]'
                     : 'text-[rgba(255,255,255,0.72)] hover:text-[rgba(255,255,255,0.96)]'
@@ -59,7 +59,7 @@ function Header() {
 
           <div className="hidden items-center gap-3 lg:flex">
             <Link to="/emprestimos">
-              <Button className="cta-button h-[38px] rounded-[10px] border border-white/[0.08] bg-[linear-gradient(180deg,#5F70FF_0%,#5263FF_100%)] px-[15px] text-[13px] font-semibold text-white shadow-none transition-all duration-300 hover:-translate-y-[1px] hover:brightness-105">
+              <Button className="cta-button h-[38px] rounded-[10px] border border-white/[0.08] bg-[linear-gradient(180deg,#5F70FF_0%,#5263FF_100%)] px-[15px] text-[13.5px] font-semibold text-white shadow-none transition-all duration-300 hover:-translate-y-[1px] hover:brightness-105">
                 Ver minhas opções
               </Button>
             </Link>
