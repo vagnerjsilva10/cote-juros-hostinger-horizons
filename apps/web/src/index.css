@@ -3384,7 +3384,6 @@
   .role-block-title,
   .left-block-title,
   .cta-final-title,
-  .final-cta-card h2,
   .dark-panel h2,
   .main-copy-card h2,
   .brand-note-card h2,
@@ -3396,6 +3395,18 @@
     font-weight: 500 !important;
     max-width: 14ch;
     color: var(--color-heading) !important;
+    text-wrap: balance;
+  }
+
+  .final-cta-card h2,
+  .final-cta-card .cta-final-title {
+    font-size: var(--heading-lg) !important;
+    line-height: var(--heading-line-lg) !important;
+    letter-spacing: var(--heading-track-lg) !important;
+    font-weight: 500 !important;
+    max-width: 14ch;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
     text-wrap: balance;
   }
 
