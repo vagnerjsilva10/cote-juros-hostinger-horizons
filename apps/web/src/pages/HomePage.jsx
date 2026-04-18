@@ -13,7 +13,8 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import HeroComparisonCard from '@/components/HeroComparisonCard.jsx';
+import CreditHeroPreview from '@/components/CreditHeroPreview.jsx';
+import ExperienceRealVisual from '@/components/ExperienceRealVisual.jsx';
 import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import SeoHead from '@/components/SeoHead.jsx';
 import { trackingService } from '@/platform/services/trackingService.js';
@@ -123,6 +124,7 @@ function HomePage() {
   const location = useLocation();
   const [modalOpen, setModalOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
+  const [heroPreviewFocusSignal, setHeroPreviewFocusSignal] = useState(0);
   const t = normalizeMojibake;
 
   useEffect(() => {
@@ -139,6 +141,16 @@ function HomePage() {
     return () => window.clearTimeout(timeoutId);
   }, [location.hash]);
 
+  const openPrimaryFlow = () => {
+    trackingService.trackCtaClick({
+      sourcePage: '/',
+      ctaId: 'home_primary_cta',
+      ctaLabel: t('Ver minhas opções agora'),
+      productType: 'loan'
+    });
+    setModalOpen(true);
+  };
+
   const focusHeroPreview = () => {
     trackingService.trackCtaClick({
       sourcePage: '/',
@@ -149,11 +161,13 @@ function HomePage() {
 
     const previewElement = document.getElementById('hero-credit-preview');
     previewElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setHeroPreviewFocusSignal((value) => value + 1);
 
     window.setTimeout(() => {
-      if (previewElement instanceof HTMLElement) {
-        previewElement.setAttribute('tabindex', '-1');
-        previewElement.focus({ preventScroll: true });
+      const firstInput = previewElement?.querySelector('input');
+      if (firstInput instanceof HTMLInputElement) {
+        firstInput.focus();
+        firstInput.select();
       }
     }, 220);
   };
@@ -223,7 +237,10 @@ function HomePage() {
             </motion.div>
 
             <motion.div {...animationIn} className="hero-product-wrap">
-              <HeroComparisonCard />
+              <div className="hero-product-lens" aria-hidden="true" />
+              <div className="hero-floating-widget hero-floating-widget-one" aria-hidden="true">Perfil analisado</div>
+              <div className="hero-floating-widget hero-floating-widget-two" aria-hidden="true">{t('Sem pressão')}</div>
+              <CreditHeroPreview focusSignal={heroPreviewFocusSignal} onContinue={openPrimaryFlow} />
             </motion.div>
           </div>
         </div>
@@ -291,90 +308,7 @@ function HomePage() {
             </div>
 
             <div className="editorial-media" aria-label="Comparação de crédito organizada em uma tela de notebook">
-              <div className="editorial-visual-panel experience-panel" aria-hidden="true">
-                <div className="experience-grid" />
-                <div className="experience-sheen" />
-
-                <div className="editorial-browser-bar experience-window-bar">
-                  <span />
-                  <span />
-                  <span />
-                </div>
-
-                <div className="experience-card experience-card-primary">
-                  <span className="experience-label">{t('valor desejado')}</span>
-                  <strong>R$ 12.000</strong>
-                  <div className="experience-progress">
-                    <div className="experience-progress-fill" />
-                  </div>
-                </div>
-
-                <div className="experience-card experience-card-profile">
-                  <span className="experience-label">{t('perfil')}</span>
-                  <strong>claro</strong>
-                </div>
-
-                <div className="experience-card experience-card-cost">
-                  <span className="experience-label">{t('custo')}</span>
-                  <strong>visível</strong>
-                </div>
-
-                <div className="experience-mini-bars">
-                  <span className="experience-bar experience-bar-1" />
-                  <span className="experience-bar experience-bar-2" />
-                  <span className="experience-bar experience-bar-3" />
-                </div>
-
-                <div className="experience-chart">
-                  <div className="experience-chart-surface" />
-                  <svg className="experience-chart-svg" viewBox="0 0 640 220" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="experienceLine" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#8E96FF" />
-                        <stop offset="55%" stopColor="#6676FF" />
-                        <stop offset="100%" stopColor="#4F61F6" />
-                      </linearGradient>
-                      <linearGradient id="experienceArea" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="rgba(107, 120, 255, 0.18)" />
-                        <stop offset="100%" stopColor="rgba(107, 120, 255, 0)" />
-                      </linearGradient>
-                      <filter id="experienceGlow" x="-30%" y="-80%" width="160%" height="260%">
-                        <feGaussianBlur stdDeviation="8" result="blur" />
-                        <feMerge>
-                          <feMergeNode in="blur" />
-                          <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                      </filter>
-                    </defs>
-                    <path
-                      className="experience-chart-area"
-                      d="M30,182 C94,182 130,156 194,142 C264,126 320,100 388,84 C454,68 520,70 610,54 L610,214 L30,214 Z"
-                    />
-                    <path
-                      className="experience-chart-line-glow"
-                      d="M30,182 C94,182 130,156 194,142 C264,126 320,100 388,84 C454,68 520,70 610,54"
-                      fill="none"
-                    />
-                    <path
-                      className="experience-chart-line"
-                      d="M30,182 C94,182 130,156 194,142 C264,126 320,100 388,84 C454,68 520,70 610,54"
-                      fill="none"
-                      stroke="url(#experienceLine)"
-                      strokeWidth="5.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <line className="experience-chart-guide" x1="610" y1="54" x2="610" y2="196" />
-                    <circle className="experience-chart-dot-halo" cx="610" cy="54" r="13" />
-                    <circle className="experience-chart-dot" cx="610" cy="54" r="6.5" />
-                  </svg>
-                </div>
-
-                <div className="experience-floating-badge">
-                  <span className="experience-floating-dot" />
-                  {editorialFeature.tag}
-                </div>
-              </div>
+              <ExperienceRealVisual tag={editorialFeature.tag} t={t} />
             </div>
           </motion.div>
         </div>
