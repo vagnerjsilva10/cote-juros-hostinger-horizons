@@ -181,16 +181,13 @@ function HomePage() {
                 {t('SEM COMPROMISSO. SEM COBRANÇA ANTECIPADA.')}
               </span>
 
-              <h1 className="hero-title">
-                <span className="hero-title-line">{t('Cote Juros ajuda você')}</span>
-                <span className="hero-title-line">
-                  {t('a comparar ')}
-                  <span className="highlight">{t('crédito')}</span>
-                </span>
-                <span className="hero-title-line">{t('antes de contratar')}</span>
+              <h1 className="hero-title hero-heading heading-hero">
+                {t('Compare ')}
+                <span className="highlight">{t('crédito')}</span>
+                {t(' antes de contratar')}
               </h1>
 
-              <p className="hero-subtitle">
+              <p className="hero-subtitle hero-subcopy">
                 {t('Compare opções de empréstimo, cartão e financiamento com mais clareza antes de decidir.')}
               </p>
 
@@ -407,7 +404,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="dark-panel-section">
+      <section id="dark-section-proof" className="dark-panel-section">
         <div className="section-connector section-connector-dark" aria-hidden="true" />
         <div className="page-shell">
           <motion.div {...animationIn} className="dark-panel">

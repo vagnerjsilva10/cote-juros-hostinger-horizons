@@ -41,7 +41,7 @@ function Footer() {
   ];
 
   return (
-    <footer className="footer-premium-bg">
+    <footer id="site-footer" className="footer-premium-bg footer-dark">
       <div className="page-shell">
         <div className="mb-8 grid gap-8 lg:grid-cols-[1.45fr_repeat(4,1fr)] lg:gap-10">
           <div className="max-w-md space-y-4">
@@ -64,7 +64,7 @@ function Footer() {
 
           {footerSections.map((section) => (
             <div key={section.title}>
-              <span className="mb-4 block text-[11px] font-semibold uppercase tracking-[0.18em] text-white/50">
+              <span className="footer-column-title mb-4 block text-[11px] font-medium uppercase tracking-[0.18em] text-white/50">
                 {section.title}
               </span>
               <ul className="space-y-2">
