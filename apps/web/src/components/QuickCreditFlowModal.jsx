@@ -205,7 +205,7 @@ export function QuickCreditFlowModal({ isOpen, onClose, sourcePage = '/', origin
           <span className="inline-flex rounded-full border border-[rgba(91,108,255,0.14)] bg-[rgba(91,108,255,0.06)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--brand-primary)]">
             Crédito com clareza
           </span>
-          <h2 className="mt-3 max-w-xl text-[1.45rem] font-semibold tracking-[-0.04em] text-slate-950 sm:text-[1.65rem]">
+          <h2 className="mt-3 max-w-xl text-[1.45rem] font-medium tracking-[-0.028em] text-[#191F28] sm:text-[1.65rem]">
             Veja suas opções com mais clareza
           </h2>
           <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600">

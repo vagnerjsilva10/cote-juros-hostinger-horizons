@@ -59,7 +59,7 @@ function SuperSimInlineCTA({
           </div>
 
           <div>
-            <h3 className="text-2xl font-semibold tracking-[-0.04em] text-foreground">{title}</h3>
+            <h3 className="text-2xl font-medium tracking-[-0.028em] text-[#191F28]">{title}</h3>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
           </div>
 

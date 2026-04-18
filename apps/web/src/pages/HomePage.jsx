@@ -439,7 +439,7 @@ function HomePage() {
               <div className="mb-4 flex items-end justify-between gap-3">
                 <div>
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/[0.58]">{t('Visão de comparação')}</p>
-                  <h3 className="mt-2 text-[16px] font-semibold text-white">{t('Do impulso à decisão')}</h3>
+                  <h3 className="mt-2 text-[16px] font-medium text-white">{t('Do impulso à decisão')}</h3>
                 </div>
                 <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] text-white/70">
                   Em poucos minutos

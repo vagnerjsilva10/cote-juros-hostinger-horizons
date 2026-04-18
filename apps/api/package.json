@@ -21,6 +21,7 @@
     "process:responses": "node src/jobs/processResponses.js",
     "qualify:route": "node src/jobs/qualifyAndRoute.js",
     "follow:up": "node src/jobs/followUp.js",
+    "seed:public-catalog": "node scripts/seedPublicCatalog.js",
     "add:test:leads": "node scripts/addTestLeads.js",
     "jobs:start": "node src/jobs/scheduler.js"
   },

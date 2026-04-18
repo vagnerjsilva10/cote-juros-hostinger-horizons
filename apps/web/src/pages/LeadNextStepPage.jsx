@@ -46,7 +46,7 @@ function LeadNextStepPage() {
                 <CheckCircle2 className="h-7 w-7 text-emerald-600" />
               </div>
 
-              <h1 className="mt-5 text-[clamp(2rem,4vw,3rem)] font-semibold tracking-[-0.04em] text-slate-950">
+              <h1 className="mt-5 text-[clamp(2rem,4vw,3rem)] font-medium tracking-[-0.035em] text-[#191F28]">
                 Pronto. Agora ficou mais facil seguir
               </h1>
 

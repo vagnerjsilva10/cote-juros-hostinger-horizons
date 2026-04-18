@@ -20,8 +20,8 @@ export class ArticleService {
   }
 
   static async getBySlug(slug) {
-    return getPrisma().article.findUnique({
-      where: { slug },
+    return getPrisma().article.findFirst({
+      where: { slug, status: 'published' },
       include: { category: true }
     });
   }

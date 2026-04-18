@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import banksRoutes from './routes/banks.js';
 import offersRoutes from './routes/offers.js';
 import articlesRoutes from './routes/articles.js';
 import simulationsRoutes from './routes/simulations.js';
@@ -82,6 +83,7 @@ export const createApp = () => {
     });
   });
 
+  app.use('/api/banks', banksRoutes);
   app.use('/api/offers', offersRoutes);
   app.use('/api/articles', articlesRoutes);
   app.use('/api/simulations', simulationsRoutes);

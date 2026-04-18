@@ -155,6 +155,115 @@ const serializePartner = (partner) => ({
   fallbackPartnerName: partner.fallbackPartner?.name || null
 });
 
+const toNullableNumber = (value) => {
+  if (value === '' || value == null) return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+};
+
+const slugify = (value = '') =>
+  String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') || 'item';
+
+const serializeBank = (bank) => ({
+  ...bank,
+  logoUrl: bank.logo || '',
+  logo: bank.logo || ''
+});
+
+const serializeOffer = (offer) => ({
+  id: offer.id,
+  bankId: offer.bankId,
+  productId: offer.productId,
+  bankName: offer.bank?.name || '',
+  productType: offer.product?.type || null,
+  category: offer.product?.category?.name || offer.product?.name || '',
+  title: [offer.product?.name, offer.bank?.name].filter(Boolean).join(' '),
+  monthlyRate: offer.interestRate != null ? Number(offer.interestRate) : null,
+  annualRate: offer.cet != null ? Number(offer.cet) : null,
+  minValue: offer.minAmount != null ? Number(offer.minAmount) : null,
+  maxValue: offer.maxAmount != null ? Number(offer.maxAmount) : null,
+  minTerm: offer.minTerm,
+  maxTerm: offer.maxTerm,
+  minScore: offer.scoreRequirement || '',
+  redirectUrl: offer.redirectUrl,
+  partnerTrackingUrl: offer.partnerTrackingUrl || '',
+  isFeatured: offer.isFeatured,
+  status: offer.status,
+  createdAt: offer.createdAt,
+  updatedAt: offer.updatedAt
+});
+
+const serializeArticle = (article) => ({
+  ...article,
+  category: article.category?.name || '',
+  categorySlug: article.category?.slug || '',
+  summary: article.excerpt || '',
+  image: '',
+  publishDate: article.publishedAt || article.createdAt
+});
+
+const ensureProductForOffer = async (prisma, payload) => {
+  const productType = payload.productType || 'loan';
+  const categoryName = payload.category || (
+    productType === 'credit_card' ? 'Cartao de Credito' : productType === 'financing' ? 'Financiamento' : 'Emprestimo Pessoal'
+  );
+  const productName = payload.title || categoryName;
+  const categorySlug = slugify(`${productType}-${categoryName}`);
+
+  const category = await prisma.category.upsert({
+    where: { slug: categorySlug },
+    update: {
+      name: categoryName,
+      type: 'product'
+    },
+    create: {
+      slug: categorySlug,
+      name: categoryName,
+      type: 'product'
+    }
+  });
+
+  const existing = await prisma.financialProduct.findFirst({
+    where: {
+      type: productType,
+      name: productName,
+      categoryId: category.id
+    }
+  });
+
+  if (existing) return existing;
+
+  return prisma.financialProduct.create({
+    data: {
+      type: productType,
+      name: productName,
+      description: payload.description || null,
+      categoryId: category.id
+    }
+  });
+};
+
+const ensureArticleCategory = async (prisma, categoryName = 'Financas Pessoais') => {
+  const name = categoryName || 'Financas Pessoais';
+  return prisma.category.upsert({
+    where: { slug: slugify(`blog-${name}`) },
+    update: {
+      name,
+      type: 'blog'
+    },
+    create: {
+      slug: slugify(`blog-${name}`),
+      name,
+      type: 'blog'
+    }
+  });
+};
+
 export class AdminService {
   static async authenticateDefaultUser(password, req, user) {
     const prisma = getPrisma();
@@ -460,6 +569,274 @@ export class AdminService {
     });
 
     return users.map(serializeAdminUser);
+  }
+
+  static async listBanks({ search = '', status = '' } = {}) {
+    const prisma = getPrisma();
+    const where = {};
+
+    if (status && status !== 'all') where.status = status;
+    if (search) where.name = { contains: search, mode: 'insensitive' };
+
+    const banks = await prisma.bank.findMany({
+      where,
+      orderBy: { name: 'asc' }
+    });
+
+    return banks.map(serializeBank);
+  }
+
+  static async saveBank(payload, req, actorUser) {
+    const prisma = getPrisma();
+    const data = {
+      name: payload.name,
+      logo: payload.logoUrl || payload.logo || null,
+      website: payload.website || null,
+      status: payload.status || 'active'
+    };
+
+    const bank = payload.id
+      ? await prisma.bank.update({
+        where: { id: payload.id },
+        data
+      })
+      : await prisma.bank.create({ data });
+
+    await recordAdminAudit({
+      req,
+      user: actorUser,
+      action: payload.id ? 'bank_updated' : 'bank_created',
+      resource: 'banks',
+      resourceId: bank.id,
+      after: data
+    });
+
+    return serializeBank(bank);
+  }
+
+  static async toggleBankStatus(id, req, actorUser) {
+    const prisma = getPrisma();
+    const current = await prisma.bank.findUnique({ where: { id } });
+    if (!current) return null;
+
+    const bank = await prisma.bank.update({
+      where: { id },
+      data: {
+        status: current.status === 'inactive' ? 'active' : 'inactive'
+      }
+    });
+
+    await recordAdminAudit({
+      req,
+      user: actorUser,
+      action: 'bank_status_toggled',
+      resource: 'banks',
+      resourceId: bank.id,
+      before: { status: current.status },
+      after: { status: bank.status }
+    });
+
+    return serializeBank(bank);
+  }
+
+  static async listOffers({ search = '', productType = '', status = '', bankId = '' } = {}) {
+    const prisma = getPrisma();
+    const where = {};
+
+    if (status && status !== 'all') where.status = status;
+    if (bankId && bankId !== 'all') where.bankId = bankId;
+    if (productType && productType !== 'all') where.product = { type: productType };
+    if (search) {
+      where.OR = [
+        { bank: { name: { contains: search, mode: 'insensitive' } } },
+        { product: { name: { contains: search, mode: 'insensitive' } } }
+      ];
+    }
+
+    const offers = await prisma.offer.findMany({
+      where,
+      include: {
+        bank: true,
+        product: {
+          include: {
+            category: true
+          }
+        }
+      },
+      orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }]
+    });
+
+    return offers.map(serializeOffer);
+  }
+
+  static async saveOffer(payload, req, actorUser) {
+    const prisma = getPrisma();
+    const product = await ensureProductForOffer(prisma, payload);
+    const data = {
+      bankId: payload.bankId,
+      productId: product.id,
+      interestRate: toNullableNumber(payload.monthlyRate),
+      cet: toNullableNumber(payload.annualRate),
+      minAmount: toNullableNumber(payload.minValue),
+      maxAmount: toNullableNumber(payload.maxValue),
+      minTerm: payload.minTerm === '' || payload.minTerm == null ? null : Number(payload.minTerm),
+      maxTerm: payload.maxTerm === '' || payload.maxTerm == null ? null : Number(payload.maxTerm),
+      scoreRequirement: payload.minScore || null,
+      redirectUrl: payload.redirectUrl || 'https://www.cotejuros.com.br',
+      partnerTrackingUrl: payload.partnerTrackingUrl || null,
+      isFeatured: Boolean(payload.isFeatured),
+      status: payload.status || 'active'
+    };
+
+    const offer = payload.id
+      ? await prisma.offer.update({
+        where: { id: payload.id },
+        data,
+        include: {
+          bank: true,
+          product: { include: { category: true } }
+        }
+      })
+      : await prisma.offer.create({
+        data,
+        include: {
+          bank: true,
+          product: { include: { category: true } }
+        }
+      });
+
+    await recordAdminAudit({
+      req,
+      user: actorUser,
+      action: payload.id ? 'offer_updated' : 'offer_created',
+      resource: 'offers',
+      resourceId: offer.id,
+      after: data
+    });
+
+    return serializeOffer(offer);
+  }
+
+  static async toggleOfferStatus(id, req, actorUser) {
+    const prisma = getPrisma();
+    const current = await prisma.offer.findUnique({ where: { id } });
+    if (!current) return null;
+
+    const offer = await prisma.offer.update({
+      where: { id },
+      data: {
+        status: current.status === 'inactive' ? 'active' : 'inactive'
+      },
+      include: {
+        bank: true,
+        product: { include: { category: true } }
+      }
+    });
+
+    await recordAdminAudit({
+      req,
+      user: actorUser,
+      action: 'offer_status_toggled',
+      resource: 'offers',
+      resourceId: offer.id,
+      before: { status: current.status },
+      after: { status: offer.status }
+    });
+
+    return serializeOffer(offer);
+  }
+
+  static async listArticles({ search = '', status = '' } = {}) {
+    const prisma = getPrisma();
+    const where = {};
+
+    if (status && status !== 'all') where.status = status;
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { excerpt: { contains: search, mode: 'insensitive' } },
+        { content: { contains: search, mode: 'insensitive' } }
+      ];
+    }
+
+    const articles = await prisma.article.findMany({
+      where,
+      include: { category: true },
+      orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }]
+    });
+
+    return articles.map(serializeArticle);
+  }
+
+  static async saveArticle(payload, req, actorUser) {
+    const prisma = getPrisma();
+    const category = await ensureArticleCategory(prisma, payload.category);
+    const status = payload.status || 'draft';
+    const data = {
+      title: payload.title,
+      slug: payload.slug || slugify(payload.title),
+      content: payload.content || '',
+      excerpt: payload.summary || payload.excerpt || null,
+      categoryId: category.id,
+      author: payload.author || null,
+      seoTitle: payload.seoTitle || null,
+      seoDescription: payload.seoDescription || payload.metaDescription || null,
+      publishedAt: status === 'published' ? (payload.publishedAt ? new Date(payload.publishedAt) : new Date()) : null,
+      status
+    };
+
+    const article = payload.id
+      ? await prisma.article.update({
+        where: { id: payload.id },
+        data,
+        include: { category: true }
+      })
+      : await prisma.article.create({
+        data,
+        include: { category: true }
+      });
+
+    await recordAdminAudit({
+      req,
+      user: actorUser,
+      action: payload.id ? 'article_updated' : 'article_created',
+      resource: 'articles',
+      resourceId: article.id,
+      after: { title: article.title, slug: article.slug, status: article.status }
+    });
+
+    return serializeArticle(article);
+  }
+
+  static async toggleArticlePublish(id, req, actorUser) {
+    const prisma = getPrisma();
+    const current = await prisma.article.findUnique({
+      where: { id },
+      include: { category: true }
+    });
+    if (!current) return null;
+
+    const nextStatus = current.status === 'published' ? 'draft' : 'published';
+    const article = await prisma.article.update({
+      where: { id },
+      data: {
+        status: nextStatus,
+        publishedAt: nextStatus === 'published' ? new Date() : null
+      },
+      include: { category: true }
+    });
+
+    await recordAdminAudit({
+      req,
+      user: actorUser,
+      action: 'article_status_toggled',
+      resource: 'articles',
+      resourceId: article.id,
+      before: { status: current.status },
+      after: { status: article.status }
+    });
+
+    return serializeArticle(article);
   }
 
   static async createUser(payload, req, actorUser) {

@@ -12,7 +12,7 @@ function AffiliateOfferGrid({ offers = [], title, eyebrow = 'Destino externo', o
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">{eyebrow}</p>
         {title ? (
           <div className="mt-2 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <h2 className="max-w-3xl text-3xl font-semibold tracking-[-0.05em] text-foreground">{title}</h2>
+            <h2 className="max-w-3xl text-3xl font-medium tracking-[-0.028em] text-[#191F28]">{title}</h2>
             <p className="max-w-xl text-sm leading-7 text-muted-foreground">
               Compare com calma e avance apenas quando a proposta fizer sentido para o seu perfil.
             </p>

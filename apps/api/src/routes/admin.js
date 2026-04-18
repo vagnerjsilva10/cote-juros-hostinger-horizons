@@ -137,6 +137,70 @@ const partnerSaveSchema = z.object({
   metadata: z.any().optional().nullable()
 });
 
+const bankListQuerySchema = z.object({
+  search: z.string().optional(),
+  status: z.string().optional()
+});
+
+const bankSaveSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(2).max(160),
+  slug: z.string().optional(),
+  logoUrl: z.string().optional().nullable(),
+  logo: z.string().optional().nullable(),
+  color: z.string().optional().nullable(),
+  website: z.string().optional().nullable(),
+  status: z.enum(['active', 'inactive']).optional()
+});
+
+const offerListQuerySchema = z.object({
+  search: z.string().optional(),
+  productType: z.string().optional(),
+  status: z.string().optional(),
+  bankId: z.string().optional()
+});
+
+const offerSaveSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().optional(),
+  bankId: z.string().min(1),
+  productType: z.enum(['loan', 'credit_card', 'financing']).default('loan'),
+  category: z.string().optional(),
+  monthlyRate: z.coerce.number().optional().nullable(),
+  annualRate: z.coerce.number().optional().nullable(),
+  minValue: z.coerce.number().optional().nullable(),
+  maxValue: z.coerce.number().optional().nullable(),
+  minTerm: z.coerce.number().optional().nullable(),
+  maxTerm: z.coerce.number().optional().nullable(),
+  minScore: z.string().optional().nullable(),
+  redirectUrl: z.string().optional(),
+  partnerTrackingUrl: z.string().optional().nullable(),
+  isFeatured: z.boolean().optional(),
+  status: z.enum(['active', 'inactive', 'draft', 'published', 'archived']).optional()
+});
+
+const articleListQuerySchema = z.object({
+  search: z.string().optional(),
+  status: z.string().optional()
+});
+
+const articleSaveSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(2).max(220),
+  slug: z.string().optional(),
+  category: z.string().optional(),
+  status: z.enum(['draft', 'published', 'archived']).optional(),
+  summary: z.string().optional().nullable(),
+  excerpt: z.string().optional().nullable(),
+  seoTitle: z.string().optional().nullable(),
+  seoDescription: z.string().optional().nullable(),
+  metaDescription: z.string().optional().nullable(),
+  image: z.string().optional().nullable(),
+  author: z.string().optional().nullable(),
+  publishedAt: z.string().optional().nullable(),
+  content: z.string().optional()
+});
+
 router.use('/email-ops', requireEmailOpsPermission, reactivationAdminRoutes);
 
 router.post('/auth/login', asyncHandler(async (req, res) => {
@@ -388,6 +452,54 @@ router.post('/partners/:partnerId/test', requirePermission('partners', 'edit'), 
   const result = await AdminService.testPartner(req.params.partnerId, req, req.adminUser);
   if (!result) return res.status(404).json({ error: 'Partner not found' });
   res.json({ data: result });
+}));
+
+router.get('/banks', requirePermission('banks', 'view'), asyncHandler(async (req, res) => {
+  const filters = bankListQuerySchema.parse(req.query || {});
+  res.json({ data: await AdminService.listBanks(filters) });
+}));
+
+router.post('/banks', requirePermission('banks', 'create'), asyncHandler(async (req, res) => {
+  const payload = bankSaveSchema.parse(req.body || {});
+  res.status(payload.id ? 200 : 201).json({ data: await AdminService.saveBank(payload, req, req.adminUser) });
+}));
+
+router.post('/banks/:bankId/status', requirePermission('banks', 'edit'), asyncHandler(async (req, res) => {
+  const bank = await AdminService.toggleBankStatus(req.params.bankId, req, req.adminUser);
+  if (!bank) return res.status(404).json({ error: 'Bank not found' });
+  res.json({ data: bank });
+}));
+
+router.get('/offers', requirePermission('offers', 'view'), asyncHandler(async (req, res) => {
+  const filters = offerListQuerySchema.parse(req.query || {});
+  res.json({ data: await AdminService.listOffers(filters) });
+}));
+
+router.post('/offers', requirePermission('offers', 'create'), asyncHandler(async (req, res) => {
+  const payload = offerSaveSchema.parse(req.body || {});
+  res.status(payload.id ? 200 : 201).json({ data: await AdminService.saveOffer(payload, req, req.adminUser) });
+}));
+
+router.post('/offers/:offerId/status', requirePermission('offers', 'edit'), asyncHandler(async (req, res) => {
+  const offer = await AdminService.toggleOfferStatus(req.params.offerId, req, req.adminUser);
+  if (!offer) return res.status(404).json({ error: 'Offer not found' });
+  res.json({ data: offer });
+}));
+
+router.get('/articles', requirePermission('articles', 'view'), asyncHandler(async (req, res) => {
+  const filters = articleListQuerySchema.parse(req.query || {});
+  res.json({ data: await AdminService.listArticles(filters) });
+}));
+
+router.post('/articles', requirePermission('articles', 'create'), asyncHandler(async (req, res) => {
+  const payload = articleSaveSchema.parse(req.body || {});
+  res.status(payload.id ? 200 : 201).json({ data: await AdminService.saveArticle(payload, req, req.adminUser) });
+}));
+
+router.post('/articles/:articleId/publish', requirePermission('articles', 'publish'), asyncHandler(async (req, res) => {
+  const article = await AdminService.toggleArticlePublish(req.params.articleId, req, req.adminUser);
+  if (!article) return res.status(404).json({ error: 'Article not found' });
+  res.json({ data: article });
 }));
 
 router.get('/users', requirePermission('users', 'view'), asyncHandler(async (req, res) => {

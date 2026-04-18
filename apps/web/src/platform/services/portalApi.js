@@ -18,6 +18,7 @@ const resolveApiBase = () => {
 const API_BASE = resolveApiBase();
 const ADMIN_API_TOKEN = import.meta.env.VITE_ADMIN_API_TOKEN || '';
 const useRemote = Boolean(API_BASE);
+const publicFallbackWarnings = new Set();
 
 const isCoteJurosHost = () =>
   typeof window !== 'undefined'
@@ -138,6 +139,26 @@ const request = async (path, options = {}) => {
   return normalizeMojibakeDeep(payload?.data);
 };
 
+const warnPublicFallback = (key, details = {}) => {
+  if (publicFallbackWarnings.has(key)) return;
+  publicFallbackWarnings.add(key);
+  console.warn(`[portalApi] Catalogo remoto indisponivel ou vazio; usando fallback local para ${key}.`, details);
+};
+
+const withControlledPublicFallback = ({ key, remoteItems, localItems, details }) => {
+  if (Array.isArray(remoteItems) && remoteItems.length > 0) return remoteItems;
+  const fallbackItems = Array.isArray(localItems) ? localItems : [];
+  if (fallbackItems.length > 0) {
+    warnPublicFallback(key, {
+      ...details,
+      remoteCount: Array.isArray(remoteItems) ? remoteItems.length : null,
+      fallbackCount: fallbackItems.length
+    });
+    return fallbackItems;
+  }
+  return Array.isArray(remoteItems) ? remoteItems : [];
+};
+
 const normalizeOfferRecord = (offer = {}) => {
   const bankName = normalizeMojibake(offer.bankName || offer.bank?.name || '');
   const productType = offer.productType || offer.product?.type || null;
@@ -145,7 +166,7 @@ const normalizeOfferRecord = (offer = {}) => {
     ...offer,
     bankName,
     productType,
-    category: normalizeMojibake(offer.category || offer.product?.name || ''),
+    category: normalizeMojibake(offer.category || offer.product?.category?.name || offer.product?.name || ''),
     monthlyRate: offer.monthlyRate ?? (offer.interestRate != null ? Number(offer.interestRate) : undefined),
     annualRate: offer.annualRate ?? (offer.cet != null ? Number(offer.cet) : undefined),
     minValue: offer.minValue ?? (offer.minAmount != null ? Number(offer.minAmount) : undefined),
@@ -392,8 +413,24 @@ export const portalApi = {
   },
 
   async getBanks() {
-    await wait();
-    return portalRepository.listBanks();
+    if (!useRemote) {
+      await wait();
+      return portalRepository.listBanks();
+    }
+
+    const localItems = portalRepository.listBanks();
+    try {
+      const data = await request('/api/banks');
+      return withControlledPublicFallback({
+        key: 'banks',
+        remoteItems: Array.isArray(data) ? data : [],
+        localItems,
+        details: {}
+      });
+    } catch (error) {
+      warnPublicFallback('banks', { error: error?.message || String(error) });
+      return localItems;
+    }
   },
 
   async getCategories(kind) {
@@ -412,12 +449,19 @@ export const portalApi = {
       return portalRepository.listOffers(filters);
     }
 
+    const localItems = portalRepository.listOffers(filters);
     try {
       const qs = toQueryString(filters);
       const data = await request(`/api/offers${qs ? `?${qs}` : ''}`);
-      return Array.isArray(data) ? data.map(normalizeOfferRecord) : [];
-    } catch {
-      return portalRepository.listOffers(filters);
+      return withControlledPublicFallback({
+        key: `offers:${filters?.productType || 'all'}`,
+        remoteItems: Array.isArray(data) ? data.map(normalizeOfferRecord) : [],
+        localItems,
+        details: { filters }
+      });
+    } catch (error) {
+      warnPublicFallback(`offers:${filters?.productType || 'all'}`, { filters, error: error?.message || String(error) });
+      return localItems;
     }
   },
 
@@ -427,12 +471,19 @@ export const portalApi = {
       return portalRepository.listArticles(filters);
     }
 
+    const localItems = portalRepository.listArticles(filters);
     try {
       const qs = toQueryString(filters);
       const data = await request(`/api/articles${qs ? `?${qs}` : ''}`);
-      return Array.isArray(data) ? data.map(normalizeArticleRecord) : [];
-    } catch {
-      return portalRepository.listArticles(filters);
+      return withControlledPublicFallback({
+        key: 'articles',
+        remoteItems: Array.isArray(data) ? data.map(normalizeArticleRecord) : [],
+        localItems,
+        details: { filters }
+      });
+    } catch (error) {
+      warnPublicFallback('articles', { filters, error: error?.message || String(error) });
+      return localItems;
     }
   },
 
@@ -442,18 +493,24 @@ export const portalApi = {
       return portalRepository.listAffiliateOffers(filters).map(normalizeAffiliateOfferRecord);
     }
 
+    const localItems = portalRepository.listAffiliateOffers(filters).map(normalizeAffiliateOfferRecord);
     try {
       const qs = toQueryString(filters);
       const data = await request(`/api/affiliates/offers${qs ? `?${qs}` : ''}`);
-      return Array.isArray(data) ? data.map(normalizeAffiliateOfferRecord) : [];
-    } catch {
-      return portalRepository.listAffiliateOffers(filters).map(normalizeAffiliateOfferRecord);
+      return withControlledPublicFallback({
+        key: 'affiliate-offers',
+        remoteItems: Array.isArray(data) ? data.map(normalizeAffiliateOfferRecord) : [],
+        localItems,
+        details: { filters }
+      });
+    } catch (error) {
+      warnPublicFallback('affiliate-offers', { filters, error: error?.message || String(error) });
+      return localItems;
     }
   },
 
   async getAffiliatePlacements(filters) {
-    if (!useRemote) {
-      await wait();
+    const buildLocalPlacements = () => {
       const data = portalRepository.listAffiliatePlacements(filters);
       return {
         ...data,
@@ -464,31 +521,35 @@ export const portalApi = {
           ])
         )
       };
+    };
+
+    if (!useRemote) {
+      await wait();
+      return buildLocalPlacements();
     }
 
+    const localData = buildLocalPlacements();
     try {
       const qs = toQueryString(filters);
       const data = await request(`/api/affiliates/placements${qs ? `?${qs}` : ''}`);
+      const remotePlacements = Object.fromEntries(
+        Object.entries(data?.placements || {}).map(([placement, offers]) => [
+          placement,
+          Array.isArray(offers) ? offers.map(normalizeAffiliateOfferRecord) : []
+        ])
+      );
+      const remoteCount = Object.values(remotePlacements).reduce((sum, offers) => sum + offers.length, 0);
+      if (remoteCount === 0 && Object.values(localData.placements || {}).some((offers) => offers.length > 0)) {
+        warnPublicFallback('affiliate-placements', { filters, remoteCount: 0 });
+        return localData;
+      }
       return {
         ...data,
-        placements: Object.fromEntries(
-          Object.entries(data?.placements || {}).map(([placement, offers]) => [
-            placement,
-            Array.isArray(offers) ? offers.map(normalizeAffiliateOfferRecord) : []
-          ])
-        )
+        placements: remotePlacements
       };
-    } catch {
-      const data = portalRepository.listAffiliatePlacements(filters);
-      return {
-        ...data,
-        placements: Object.fromEntries(
-          Object.entries(data.placements || {}).map(([placement, offers]) => [
-            placement,
-            offers.map(normalizeAffiliateOfferRecord)
-          ])
-        )
-      };
+    } catch (error) {
+      warnPublicFallback('affiliate-placements', { filters, error: error?.message || String(error) });
+      return localData;
     }
   },
 
@@ -685,33 +746,71 @@ export const portalApi = {
   },
 
   async getAdminOffers(filters) {
-    await wait();
-    return portalRepository.listAdminOffers(filters);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.listAdminOffers(filters);
+    }
+
+    const qs = toQueryString(filters);
+    return request(`/api/admin/offers${qs ? `?${qs}` : ''}`);
   },
 
   async saveAdminOffer(payload) {
-    await wait();
-    return portalRepository.saveAdminOffer(payload);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.saveAdminOffer(payload);
+    }
+
+    return request('/api/admin/offers', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
   },
 
   async toggleAdminOfferStatus(id) {
-    await wait();
-    return portalRepository.toggleOfferStatus(id);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.toggleOfferStatus(id);
+    }
+
+    return request(`/api/admin/offers/${id}/status`, {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
   },
 
   async getAdminBanks(filters) {
-    await wait();
-    return portalRepository.listAdminBanks(filters);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.listAdminBanks(filters);
+    }
+
+    const qs = toQueryString(filters);
+    return request(`/api/admin/banks${qs ? `?${qs}` : ''}`);
   },
 
   async saveAdminBank(payload) {
-    await wait();
-    return portalRepository.saveAdminBank(payload);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.saveAdminBank(payload);
+    }
+
+    return request('/api/admin/banks', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
   },
 
   async toggleAdminBankStatus(id) {
-    await wait();
-    return portalRepository.toggleBankStatus(id);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.toggleBankStatus(id);
+    }
+
+    return request(`/api/admin/banks/${id}/status`, {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
   },
 
   async getAdminPartners(filters) {
@@ -780,18 +879,37 @@ export const portalApi = {
   },
 
   async getAdminArticles(filters) {
-    await wait();
-    return portalRepository.listAdminArticles(filters);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.listAdminArticles(filters);
+    }
+
+    const qs = toQueryString(filters);
+    return request(`/api/admin/articles${qs ? `?${qs}` : ''}`);
   },
 
   async saveAdminArticle(payload) {
-    await wait();
-    return portalRepository.saveAdminArticle(payload);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.saveAdminArticle(payload);
+    }
+
+    return request('/api/admin/articles', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
   },
 
   async toggleAdminArticlePublish(id) {
-    await wait();
-    return portalRepository.toggleArticlePublish(id);
+    if (!useRemote) {
+      await wait();
+      return portalRepository.toggleArticlePublish(id);
+    }
+
+    return request(`/api/admin/articles/${id}/publish`, {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
   },
 
   async getAdminSeoPages(filters) {

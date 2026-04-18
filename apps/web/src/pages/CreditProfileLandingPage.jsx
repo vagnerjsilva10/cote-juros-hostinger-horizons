@@ -10,7 +10,7 @@ function ProfilePreviewCard({ badge }) {
     <div className="hero-card max-w-[440px]">
       <div className="rounded-[16px] border border-[var(--line-soft)] bg-white/90 p-4">
         <span className="section-eyebrow bg-white">{badge}</span>
-        <h3 className="mt-4 text-[18px] font-bold text-[var(--text-strong)]">Comece vendo o que pode fazer sentido</h3>
+        <h3 className="mt-4 text-[18px] font-medium text-[var(--heading-color)]">Comece vendo o que pode fazer sentido</h3>
         <p className="mt-2 text-sm leading-6 text-[var(--text-soft)]">
           A leitura começa pelo seu perfil para mostrar opções mais coerentes antes de qualquer contratação.
         </p>
@@ -131,7 +131,7 @@ export function CreditProfileLandingPage({
               </div>
               <div>
                 <span className="section-eyebrow bg-[var(--surface-soft)]">Transparência</span>
-                <h2 className="mt-4 text-[28px] font-bold leading-[1.08] text-[var(--text-strong)]">
+                <h2 className="mt-4 text-[28px] font-medium leading-[1.1] text-[var(--heading-color)]">
                   Nosso papel é ajudar você a comparar com mais clareza
                 </h2>
                 <p className="mt-3 max-w-3xl text-[15px] leading-[1.65] text-[var(--text-soft)]">

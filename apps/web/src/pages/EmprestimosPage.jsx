@@ -193,7 +193,7 @@ function EmprestimosPage() {
         {creditJourneyLoading ? (
           <div className="mb-10 rounded-[22px] border border-border bg-white px-8 py-10 shadow-[var(--shadow-sm)]">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">Leitura personalizada</p>
-            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-foreground">Carregando o seu cenário...</h2>
+            <h2 className="mt-3 text-2xl font-medium tracking-[-0.02em] text-[#191F28]">Carregando o seu cenário...</h2>
           </div>
         ) : null}
 
@@ -202,7 +202,7 @@ function EmprestimosPage() {
             <div className="flex flex-col gap-4 border-b border-border pb-7 md:flex-row md:items-end md:justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Com base no seu momento...</p>
-                <h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">Caminhos que merecem sua atenção agora</h2>
+                <h2 className="mt-2 text-3xl font-medium tracking-[-0.028em] text-[#191F28]">Caminhos que merecem sua atenção agora</h2>
                 <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
                   Aqui você compara valor, prazo e custo com mais clareza antes de decidir o próximo passo.
                 </p>

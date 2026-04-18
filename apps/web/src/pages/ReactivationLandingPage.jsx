@@ -205,7 +205,7 @@ export default function ReactivationLandingPage() {
               <ShieldCheck className="h-4 w-4" />
               Link seguro Cote Juros
             </div>
-            <h1 className="max-w-3xl text-4xl font-bold leading-tight text-slate-950 md:text-6xl">{greeting}</h1>
+            <h1 className="max-w-3xl text-4xl font-medium leading-tight text-[#191F28] md:text-6xl">{greeting}</h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-700">
               Atualize poucos dados para avaliarmos seu perfil e encaminharmos sua solicitacao para um parceiro de credito
               autorizado, sem promessa de aprovacao e sem cobranca antecipada.
@@ -238,14 +238,14 @@ export default function ReactivationLandingPage() {
         <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[0.72fr_1.28fr]">
           <aside className="space-y-4">
             <div className="rounded-lg border border-slate-200 p-5">
-              <h2 className="text-xl font-bold text-slate-950">Uso dos dados</h2>
+              <h2 className="text-xl font-medium text-[#191F28]">Uso dos dados</h2>
               <p className="mt-3 text-sm leading-6 text-slate-700">
                 Seus dados serao usados para confirmar interesse, qualificar seu perfil, registrar consentimento e enviar a
                 solicitacao ao parceiro mais adequado.
               </p>
             </div>
             <div className="rounded-lg border border-slate-200 p-5">
-              <h2 className="text-xl font-bold text-slate-950">Preferencias</h2>
+              <h2 className="text-xl font-medium text-[#191F28]">Preferencias</h2>
               <div className="mt-3 flex flex-col gap-2 text-sm">
                 <button className="text-left font-semibold text-slate-700 underline" type="button" onClick={() => optOut('unsubscribe_whatsapp')}>
                   Nao quero receber WhatsApp
@@ -260,7 +260,7 @@ export default function ReactivationLandingPage() {
           <div className="rounded-lg border border-slate-200 p-5 md:p-7">
             {showOptOutPrompt ? (
               <div className="space-y-5">
-                <h2 className="text-3xl font-bold text-slate-950">Remover seu contato?</h2>
+                <h2 className="text-3xl font-medium text-[#191F28]">Remover seu contato?</h2>
                 <p className="text-slate-700">
                   Voce chegou pelo link de remocao. Se confirmar, a Cote Juros registrara sua preferencia e nao usara
                   este cadastro para novos contatos desta operacao.
@@ -277,7 +277,7 @@ export default function ReactivationLandingPage() {
               </div>
             ) : blockedStatus ? (
               <div className="space-y-3">
-                <h2 className="text-3xl font-bold text-slate-950">Preferencia registrada</h2>
+                <h2 className="text-3xl font-medium text-[#191F28]">Preferencia registrada</h2>
                 <p className="text-slate-700">
                   Seu link nao seguira para envio a parceiros. A Cote Juros registrou esta decisao na trilha de auditoria.
                 </p>
@@ -287,7 +287,7 @@ export default function ReactivationLandingPage() {
                 <div className="inline-flex h-12 w-12 items-center justify-center rounded-md bg-emerald-100 text-emerald-800">
                   <Sparkles className="h-6 w-6" />
                 </div>
-                <h2 className="text-3xl font-bold text-slate-950">Perfil atualizado</h2>
+                <h2 className="text-3xl font-medium text-[#191F28]">Perfil atualizado</h2>
                 <p className="text-slate-700">
                   Seu perfil foi direcionado para <strong>{result?.partner?.name || 'o parceiro mais adequado'}</strong>.
                   A analise final depende das politicas do parceiro.
@@ -306,7 +306,7 @@ export default function ReactivationLandingPage() {
               <form className="grid gap-5" onSubmit={submit}>
                 <div>
                   <p className="text-sm font-semibold text-emerald-800">Etapa {step} de 2</p>
-                  <h2 className="mt-1 text-3xl font-bold text-slate-950">
+                  <h2 className="mt-1 text-3xl font-medium text-[#191F28]">
                     {step === 1 ? 'Confirme seus dados' : 'Autorize a analise'}
                   </h2>
                   <p className="mt-2 text-sm text-slate-700">

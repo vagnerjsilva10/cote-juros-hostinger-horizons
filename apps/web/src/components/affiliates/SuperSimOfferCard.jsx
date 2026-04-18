@@ -76,7 +76,7 @@ function SuperSimOfferCard({
             </div>
 
             <div className="space-y-3">
-              <h2 className="text-2xl font-semibold tracking-[-0.04em] text-foreground sm:text-[1.95rem]">{title}</h2>
+              <h2 className="text-2xl font-medium tracking-[-0.028em] text-[#191F28] sm:text-[1.95rem]">{title}</h2>
               <p className="max-w-2xl text-sm leading-7 text-muted-foreground sm:text-[15px]">
                 {description}
               </p>

@@ -100,7 +100,7 @@ function AffiliateOfferCard({ offer, onSelect, featured = false }) {
             </div>
 
             <div className="max-w-2xl">
-              <h3 className="text-2xl font-semibold tracking-[-0.04em] text-foreground sm:text-[1.95rem]">
+              <h3 className="text-2xl font-medium tracking-[-0.028em] text-[#191F28] sm:text-[1.95rem]">
                 {offer.title}
               </h3>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-[15px]">

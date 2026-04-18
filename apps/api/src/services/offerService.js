@@ -3,7 +3,10 @@ import { getPrisma } from '../lib/prisma.js';
 export class OfferService {
   static async list(filters = {}) {
     const where = {
-      status: 'active'
+      status: 'active',
+      bank: {
+        status: 'active'
+      }
     };
 
     if (filters.productType) {
@@ -18,7 +21,11 @@ export class OfferService {
       where,
       include: {
         bank: true,
-        product: true
+        product: {
+          include: {
+            category: true
+          }
+        }
       },
       orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
       take: filters.limit ? Number(filters.limit) : 100
@@ -28,11 +35,21 @@ export class OfferService {
   }
 
   static async getById(id) {
-    return getPrisma().offer.findUnique({
-      where: { id },
+    return getPrisma().offer.findFirst({
+      where: {
+        id,
+        status: 'active',
+        bank: {
+          status: 'active'
+        }
+      },
       include: {
         bank: true,
-        product: true
+        product: {
+          include: {
+            category: true
+          }
+        }
       }
     });
   }

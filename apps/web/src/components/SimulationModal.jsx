@@ -431,7 +431,7 @@ export function SimulationModal({ isOpen, onClose, initialAmount = 10000 }) {
                   </button>
                 ) : null}
                 <div className="min-w-0">
-                  <h2 className="text-xl font-semibold tracking-[-0.03em] text-foreground sm:text-2xl">{current.title}</h2>
+                  <h2 className="text-xl font-medium tracking-[-0.02em] text-[#191F28] sm:text-2xl">{current.title}</h2>
                   <p className="mt-1 text-sm text-muted-foreground">{current.subtitle}</p>
                 </div>
               </div>
