@@ -3084,17 +3084,17 @@
 
 .role-content {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
-  gap: clamp(22px, 3vw, 36px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.96fr);
+  gap: clamp(12px, 1.6vw, 22px);
   align-items: center;
-  min-height: clamp(280px, 28vw, 350px);
+  min-height: clamp(315px, 30vw, 370px);
 }
 
 .role-copy {
   position: relative;
   z-index: 3;
-  max-width: 580px;
-  padding-right: clamp(0px, 1vw, 18px);
+  max-width: 560px;
+  padding-right: clamp(0px, 0.6vw, 10px);
 }
 
 .role-eyebrow {
@@ -3130,10 +3130,10 @@
 .role-media {
   position: relative;
   z-index: 1;
-  min-height: clamp(300px, 32vw, 392px);
+  min-height: clamp(320px, 33vw, 400px);
   height: 100%;
   align-self: stretch;
-  margin: calc(clamp(28px, 4vw, 42px) * -1) calc(clamp(28px, 4vw, 42px) * -1) calc(clamp(28px, 4vw, 42px) * -1) 0;
+  margin: calc(clamp(28px, 4vw, 42px) * -1) calc(clamp(28px, 4vw, 42px) * -1) calc(clamp(28px, 4vw, 42px) * -1) -18px;
   overflow: hidden;
   border-radius: 0 32px 32px 0;
 }
@@ -3146,11 +3146,11 @@
   pointer-events: none;
   background: linear-gradient(
     90deg,
-    rgba(251, 252, 254, 0.98) 0%,
-    rgba(251, 252, 254, 0.9) 14%,
-    rgba(251, 252, 254, 0.52) 28%,
-    rgba(251, 252, 254, 0.16) 42%,
-    rgba(251, 252, 254, 0) 58%
+    rgba(251, 252, 254, 0.96) 0%,
+    rgba(251, 252, 254, 0.7) 10%,
+    rgba(251, 252, 254, 0.28) 22%,
+    rgba(251, 252, 254, 0.08) 34%,
+    rgba(251, 252, 254, 0) 48%
   );
 }
 
@@ -3161,11 +3161,12 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  object-position: 47% center;
+  object-position: 42% center;
   opacity: 1;
   visibility: visible;
   filter: contrast(1.03) saturate(1.04);
   image-rendering: auto;
+  transform: scale(1.04);
 }
 
 @media (max-width: 1100px) {
@@ -3174,8 +3175,9 @@
   }
 
   .role-content {
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.88fr);
-    min-height: 320px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.96fr);
+    gap: clamp(10px, 1.4vw, 18px);
+    min-height: 330px;
   }
 
   .role-title {
@@ -3184,16 +3186,17 @@
   }
 
   .role-media {
-    min-height: 320px;
+    min-height: 330px;
+    margin-left: -12px;
   }
 
   .role-media::before {
     background: linear-gradient(
       90deg,
-      rgba(251, 252, 254, 0.98) 0%,
-      rgba(251, 252, 254, 0.84) 18%,
-      rgba(251, 252, 254, 0.36) 38%,
-      rgba(251, 252, 254, 0) 58%
+      rgba(251, 252, 254, 0.96) 0%,
+      rgba(251, 252, 254, 0.66) 12%,
+      rgba(251, 252, 254, 0.22) 28%,
+      rgba(251, 252, 254, 0) 48%
     );
   }
 }
@@ -3237,7 +3240,8 @@
   }
 
   .role-photo {
-    object-position: 47% center;
+    object-position: 44% center;
+    transform: scale(1.02);
   }
 
   .role-media::before {
