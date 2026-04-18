@@ -517,9 +517,9 @@ function HomePage() {
             <div className="role-content">
               <div className="role-copy">
                 <span className="role-eyebrow">PAPEL DA COTEJUROS</span>
-                <h2 className="role-title">{t('A CoteJuros ajuda você a comparar antes de contratar')}</h2>
+                <h2 className="role-title">{t('Compare empréstimos antes de contratar')}</h2>
                 <p className="role-text">
-                  {t('Você vê opções com mais clareza, entende o custo real e decide com mais segurança.')}
+                  {t('Veja opções de crédito com clareza, entenda o custo real e escolha com mais segurança.')}
                 </p>
               </div>
 
@@ -528,9 +528,6 @@ function HomePage() {
                   src="/images/role-woman-purple.png"
                   alt="Mulher com fones roxos segurando celular com interface de comparação"
                   className="role-photo"
-                  loading="eager"
-                  decoding="async"
-                  fetchPriority="high"
                 />
               </div>
             </div>
