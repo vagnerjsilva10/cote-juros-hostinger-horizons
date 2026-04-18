@@ -8445,3 +8445,423 @@ body {
     font-size: 9.5px;
   }
 }
+
+:root {
+  --hc-bg: rgba(255, 255, 255, 0.74);
+  --hc-surface: rgba(255, 255, 255, 0.82);
+  --hc-border: rgba(160, 174, 208, 0.16);
+  --hc-stroke: rgba(126, 144, 188, 0.2);
+  --hc-text: #0f172a;
+  --hc-muted: #7c8aa5;
+  --hc-blue: #5b6cff;
+  --hc-blue-soft: rgba(91, 108, 255, 0.16);
+  --hc-cyan: #58c7ff;
+  --hc-lilac: #c8c7ff;
+  --hc-shadow:
+    0 22px 60px rgba(15, 23, 42, 0.08),
+    0 8px 24px rgba(91, 108, 255, 0.08);
+}
+
+.public-site-shell.is-home .hero-product-wrap {
+  width: min(680px, 100%);
+  max-width: 680px !important;
+  justify-self: end;
+}
+
+.hero-comparison-wrap {
+  position: relative;
+  width: min(680px, 100%);
+  margin-inline: auto;
+  perspective: 1200px;
+}
+
+.hero-comparison-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 36px;
+  padding: 22px 34px 26px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 255, 0.78));
+  border: 1px solid var(--hc-border);
+  box-shadow: var(--hc-shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  animation: heroChartFloat 6s ease-in-out infinite;
+}
+
+.hero-comparison-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(91, 108, 255, 0.1), transparent 30%),
+    radial-gradient(circle at bottom left, rgba(88, 199, 255, 0.08), transparent 28%);
+  pointer-events: none;
+}
+
+.hero-comparison-card::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.54);
+  pointer-events: none;
+}
+
+.hero-comparison-windowbar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 26px;
+  margin-bottom: 18px;
+  padding-inline: 2px;
+}
+
+.hero-comparison-windowbar span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #bcc8da 0%, #98abc7 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.hero-comparison-top {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.35fr 0.9fr;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.hero-main-stat,
+.hero-side-stat {
+  border-radius: 28px;
+  border: 1px solid rgba(160, 174, 208, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(246, 249, 255, 0.76));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 26px rgba(15, 23, 42, 0.04);
+}
+
+.hero-main-stat {
+    padding: 28px 28px 24px;
+    min-height: 196px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+}
+
+.hero-side-col {
+  display: grid;
+  gap: 16px;
+}
+
+.hero-side-stat {
+  padding: 22px 22px 18px;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-label {
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hc-muted);
+  font-weight: 700;
+  margin-bottom: 14px;
+  white-space: nowrap;
+}
+
+.hero-main-value {
+  font-size: clamp(38px, 5.2vw, 58px);
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  color: var(--hc-text);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.hero-side-value {
+  font-size: clamp(28px, 3.2vw, 40px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--hc-text);
+  font-weight: 800;
+}
+
+.hero-progress {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(224, 231, 255, 0.9), rgba(213, 221, 242, 0.74));
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.hero-progress-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 72%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #6674ff 0%, #5b6cff 54%, #7e8bff 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.18) inset,
+    0 10px 18px rgba(91, 108, 255, 0.26);
+}
+
+.hero-chart-block {
+  position: relative;
+  z-index: 1;
+  margin-top: 22px;
+  height: 240px;
+  border-radius: 30px;
+  border: 1px solid rgba(160, 174, 208, 0.12);
+  background:
+    linear-gradient(180deg, rgba(251, 252, 255, 0.72), rgba(243, 247, 255, 0.58));
+  overflow: hidden;
+}
+
+.hero-chart-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(170, 184, 218, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(170, 184, 218, 0.1) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.65), transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.65), transparent 100%);
+}
+
+.hero-chart-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-chart-area {
+  fill: url(#heroChartArea);
+  opacity: 0.52;
+}
+
+.hero-chart-path-glow {
+  fill: none;
+  stroke: rgba(91, 108, 255, 0.16);
+  stroke-width: 14;
+  filter: blur(8px);
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: heroLineDraw 1.8s ease forwards;
+}
+
+.hero-chart-path {
+  fill: none;
+  stroke: url(#heroChartGradient);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 10px 20px rgba(91, 108, 255, 0.18));
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: heroLineDraw 1.8s ease forwards;
+}
+
+.hero-chart-point {
+  fill: #ffffff;
+  stroke: #6b79ff;
+  stroke-width: 4;
+}
+
+.hero-chart-point-ring {
+  fill: rgba(107, 121, 255, 0.12);
+}
+
+.hero-badge {
+  position: absolute;
+  left: 30px;
+  bottom: 52px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 18px 0 14px;
+  border-radius: 999px;
+  background: rgba(80, 90, 118, 0.78);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: heroBadgeLift 4s ease-in-out infinite;
+}
+
+.hero-badge-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffffff, #cdd5ff 42%, #8ea0ff 100%);
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.12);
+}
+
+.hero-badge-text {
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.hero-bottom-pills {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 0 6px;
+}
+
+.hero-bottom-pill {
+  height: 46px;
+  border-radius: 18px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 12px 24px rgba(91, 108, 255, 0.1);
+}
+
+.hero-bottom-pill.pill-lilac {
+  width: 130px;
+  background: linear-gradient(90deg, rgba(213, 210, 255, 0.94), rgba(190, 198, 255, 0.84));
+}
+
+.hero-bottom-pill.pill-cyan {
+  width: 168px;
+  background: linear-gradient(90deg, #4dbfff, #58c7ff 58%, #6ad4ff);
+}
+
+.hero-bottom-pill.pill-blue {
+  width: 182px;
+  background: linear-gradient(90deg, #7a85ff, #5b6cff 55%, #6c72ff);
+}
+
+@keyframes heroChartFloat {
+  0% {
+    transform: translateY(0px);
+    opacity: 0.96;
+  }
+
+  50% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(0px);
+    opacity: 0.96;
+  }
+}
+
+@keyframes heroLineDraw {
+  from {
+    stroke-dasharray: 900;
+    stroke-dashoffset: 900;
+  }
+
+  to {
+    stroke-dasharray: 900;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes heroBadgeLift {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-2px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@media (max-width: 900px) {
+  .public-site-shell.is-home .hero-product-wrap {
+    max-width: min(680px, 100%) !important;
+    justify-self: stretch;
+  }
+
+  .hero-comparison-card {
+    padding: 24px 20px 20px;
+    border-radius: 28px;
+  }
+
+  .hero-comparison-top {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-main-stat {
+    min-height: 164px;
+    padding: 22px;
+  }
+
+  .hero-chart-block {
+    height: 190px;
+  }
+
+  .hero-badge {
+    left: 18px;
+    bottom: 42px;
+    height: 42px;
+    padding: 0 15px 0 12px;
+  }
+
+  .hero-bottom-pill.pill-lilac {
+    width: 92px;
+  }
+
+  .hero-bottom-pill.pill-cyan {
+    width: 124px;
+  }
+
+  .hero-bottom-pill.pill-blue {
+    width: 136px;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero-main-value {
+    font-size: 38px;
+  }
+
+  .hero-side-value {
+    font-size: 28px;
+  }
+
+  .hero-chart-block {
+    height: 172px;
+  }
+
+  .hero-badge-text {
+    font-size: 12px;
+  }
+
+  .hero-bottom-pills {
+    gap: 8px;
+  }
+
+  .hero-bottom-pill {
+    height: 38px;
+    border-radius: 14px;
+  }
+}

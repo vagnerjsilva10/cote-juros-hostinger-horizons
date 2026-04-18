@@ -13,7 +13,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import CreditHeroPreview from '@/components/CreditHeroPreview.jsx';
+import HeroComparisonCard from '@/components/HeroComparisonCard.jsx';
 import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import SeoHead from '@/components/SeoHead.jsx';
 import { trackingService } from '@/platform/services/trackingService.js';
@@ -123,7 +123,6 @@ function HomePage() {
   const location = useLocation();
   const [modalOpen, setModalOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
-  const [heroPreviewFocusSignal, setHeroPreviewFocusSignal] = useState(0);
   const t = normalizeMojibake;
 
   useEffect(() => {
@@ -140,16 +139,6 @@ function HomePage() {
     return () => window.clearTimeout(timeoutId);
   }, [location.hash]);
 
-  const openPrimaryFlow = () => {
-    trackingService.trackCtaClick({
-      sourcePage: '/',
-      ctaId: 'home_primary_cta',
-      ctaLabel: t('Ver minhas opções agora'),
-      productType: 'loan'
-    });
-    setModalOpen(true);
-  };
-
   const focusHeroPreview = () => {
     trackingService.trackCtaClick({
       sourcePage: '/',
@@ -160,13 +149,11 @@ function HomePage() {
 
     const previewElement = document.getElementById('hero-credit-preview');
     previewElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setHeroPreviewFocusSignal((value) => value + 1);
 
     window.setTimeout(() => {
-      const firstInput = previewElement?.querySelector('input');
-      if (firstInput instanceof HTMLInputElement) {
-        firstInput.focus();
-        firstInput.select();
+      if (previewElement instanceof HTMLElement) {
+        previewElement.setAttribute('tabindex', '-1');
+        previewElement.focus({ preventScroll: true });
       }
     }, 220);
   };
@@ -236,10 +223,7 @@ function HomePage() {
             </motion.div>
 
             <motion.div {...animationIn} className="hero-product-wrap">
-              <div className="hero-product-lens" aria-hidden="true" />
-              <div className="hero-floating-widget hero-floating-widget-one" aria-hidden="true">Perfil analisado</div>
-              <div className="hero-floating-widget hero-floating-widget-two" aria-hidden="true">{t('Sem pressão')}</div>
-              <CreditHeroPreview focusSignal={heroPreviewFocusSignal} onContinue={openPrimaryFlow} />
+              <HeroComparisonCard />
             </motion.div>
           </div>
         </div>
