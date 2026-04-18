@@ -307,56 +307,90 @@ function HomePage() {
             </div>
 
             <div className="editorial-media" aria-label="Comparação de crédito organizada em uma tela de notebook">
-              <div className="editorial-visual-panel" aria-hidden="true">
-                <div className="editorial-browser-bar">
+              <div className="editorial-visual-panel experience-panel" aria-hidden="true">
+                <div className="experience-grid" />
+                <div className="experience-sheen" />
+
+                <div className="editorial-browser-bar experience-window-bar">
                   <span />
                   <span />
                   <span />
                 </div>
-                <div className="editorial-dashboard-grid">
-                  <div className="editorial-dashboard-card editorial-dashboard-card-main">
-                    <small>{t('valor desejado')}</small>
-                    <strong>R$ 12.000</strong>
-                    <div className="editorial-progress-line"><span /></div>
-                  </div>
-                  <div className="editorial-dashboard-card">
-                    <small>{t('perfil')}</small>
-                    <strong>claro</strong>
-                  </div>
-                  <div className="editorial-dashboard-card">
-                    <small>{t('custo')}</small>
-                    <strong>visível</strong>
+
+                <div className="experience-card experience-card-primary">
+                  <span className="experience-label">{t('valor desejado')}</span>
+                  <strong>R$ 12.000</strong>
+                  <div className="experience-progress">
+                    <div className="experience-progress-fill" />
                   </div>
                 </div>
-                <div className="editorial-chart-stage">
-                  <div className="editorial-chart-lines">
-                    {normalizeMojibakeDeep(['perfil', 'leitura', 'comparação', 'decisão']).map((label, index) => (
-                      <div key={label} className="editorial-chart-column">
-                        <span style={{ animationDelay: `${index * 120}ms` }} />
-                        <small>{label}</small>
-                      </div>
-                    ))}
-                  </div>
-                  <svg viewBox="0 0 320 96" className="editorial-chart-line" aria-hidden="true">
+
+                <div className="experience-card experience-card-profile">
+                  <span className="experience-label">{t('perfil')}</span>
+                  <strong>claro</strong>
+                </div>
+
+                <div className="experience-card experience-card-cost">
+                  <span className="experience-label">{t('custo')}</span>
+                  <strong>visível</strong>
+                </div>
+
+                <div className="experience-mini-bars">
+                  <span className="experience-bar experience-bar-1" />
+                  <span className="experience-bar experience-bar-2" />
+                  <span className="experience-bar experience-bar-3" />
+                </div>
+
+                <div className="experience-chart">
+                  <div className="experience-chart-surface" />
+                  <svg className="experience-chart-svg" viewBox="0 0 640 220" preserveAspectRatio="none">
                     <defs>
-                      <linearGradient id="editorialComparisonLine" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#94A3FF" />
-                        <stop offset="100%" stopColor="#5B6CFF" />
+                      <linearGradient id="experienceLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#8E96FF" />
+                        <stop offset="55%" stopColor="#6676FF" />
+                        <stop offset="100%" stopColor="#4F61F6" />
                       </linearGradient>
+                      <linearGradient id="experienceArea" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="rgba(107, 120, 255, 0.18)" />
+                        <stop offset="100%" stopColor="rgba(107, 120, 255, 0)" />
+                      </linearGradient>
+                      <filter id="experienceGlow" x="-30%" y="-80%" width="160%" height="260%">
+                        <feGaussianBlur stdDeviation="8" result="blur" />
+                        <feMerge>
+                          <feMergeNode in="blur" />
+                          <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                      </filter>
                     </defs>
                     <path
-                      d="M8 78 C 44 76, 74 62, 110 54 S 178 34, 214 28 S 270 26, 312 18"
-                      fill="none"
-                      stroke="url(#editorialComparisonLine)"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                      className="editorial-line-path"
+                      className="experience-chart-area"
+                      d="M30,182 C94,182 130,156 194,142 C264,126 320,100 388,84 C454,68 520,70 610,54 L610,214 L30,214 Z"
                     />
-                    <circle cx="312" cy="18" r="4.5" fill="#5B6CFF" className="editorial-line-dot" />
+                    <path
+                      className="experience-chart-line-glow"
+                      d="M30,182 C94,182 130,156 194,142 C264,126 320,100 388,84 C454,68 520,70 610,54"
+                      fill="none"
+                    />
+                    <path
+                      className="experience-chart-line"
+                      d="M30,182 C94,182 130,156 194,142 C264,126 320,100 388,84 C454,68 520,70 610,54"
+                      fill="none"
+                      stroke="url(#experienceLine)"
+                      strokeWidth="5.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <line className="experience-chart-guide" x1="610" y1="54" x2="610" y2="196" />
+                    <circle className="experience-chart-dot-halo" cx="610" cy="54" r="13" />
+                    <circle className="experience-chart-dot" cx="610" cy="54" r="6.5" />
                   </svg>
                 </div>
+
+                <div className="experience-floating-badge">
+                  <span className="experience-floating-dot" />
+                  {editorialFeature.tag}
+                </div>
               </div>
-              <span className="floating-tag">{editorialFeature.tag}</span>
             </div>
           </motion.div>
         </div>
