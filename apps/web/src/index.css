@@ -7947,9 +7947,6 @@ body {
   box-shadow: none !important;
   outline: none !important;
   filter: none !important;
-  clip-path: inset(18px 26px 12px 26px);
-  transform: scale(1.06);
-  transform-origin: center center;
 }
 
 .editorial-media .experience-hero-photo {
@@ -7959,7 +7956,6 @@ body {
   height: auto;
   object-fit: contain;
   filter: none !important;
-  clip-path: inset(18px 26px 12px 26px);
 }
 
 @media (max-width: 767px) {
@@ -7989,7 +7985,5 @@ body {
 
   .experience-hero-photo {
     max-width: 320px;
-    clip-path: inset(14px 18px 10px 18px);
-    transform: scale(1.04);
   }
 }
