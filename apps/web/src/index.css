@@ -4173,6 +4173,23 @@
   );
 }
 
+.role-media::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 56px;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(246, 248, 252, 0) 0%,
+    rgba(246, 248, 252, 0.86) 62%,
+    #f6f8fc 100%
+  );
+}
+
 .role-photo {
   position: absolute;
   inset: 0;
@@ -4180,12 +4197,12 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  object-position: 68% center;
+  object-position: 74% center;
 }
 
 @media (max-width: 1100px) {
   .role-photo {
-    object-position: 64% center;
+    object-position: 70% center;
   }
 
   .role-card {
@@ -4215,6 +4232,10 @@
       rgba(255, 255, 255, 0.9) 94%,
       #ffffff 100%
     );
+  }
+
+  .role-media::after {
+    width: 42px;
   }
 }
 
