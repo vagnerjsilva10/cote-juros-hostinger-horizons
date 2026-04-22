@@ -155,14 +155,6 @@ function CartoesPage() {
       </section>
 
       <div className="page-shell cards-page-shell py-14" id="resultados-cartoes">
-        <div className="cards-comparison-intro mb-10 rounded-[24px] border border-border bg-white p-7 shadow-[var(--shadow-sm)] sm:p-8">
-          <p className="cards-kicker text-xs font-semibold uppercase tracking-[0.18em]">Comparação interna</p>
-          <h2 className="cards-section-title mt-3 text-2xl text-foreground">Entenda custo, limite e benefícios antes de seguir.</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
-            Aqui a ideia é comparar com calma, tirar o excesso de ruído e decidir com mais segurança.
-          </p>
-        </div>
-
         <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
           <aside className="cards-filters lg:sticky lg:top-24 lg:h-fit">
             <Card className="cards-filter-card border-border bg-white shadow-[var(--shadow-sm)]">
@@ -242,7 +234,7 @@ function CartoesPage() {
                       <div className="cards-offer-visual relative h-48 border-b border-border bg-slate-100">
                         <div className="cards-offer-glow absolute inset-0 bg-[radial-gradient(circle_at_12%_10%,rgba(148,163,184,0.2),transparent_46%)]" />
                         <div className="absolute inset-0 flex items-center justify-center p-4">
-                          <div className="cards-card-media relative w-full max-w-[240px] -rotate-[6deg] transition-transform duration-300 hover:-translate-y-1 hover:rotate-[-4deg]">
+                          <div className="cards-card-media relative w-full max-w-[240px]">
                             {hasPremiumAsset ? (
                               <img
                                 src={cardImage}

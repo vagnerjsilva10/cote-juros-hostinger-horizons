@@ -131,14 +131,6 @@ function FinanciamentoPage() {
       </section>
 
       <div className="page-shell py-14" id="resultados-financiamento">
-        <div className="mb-10 rounded-[24px] border border-border bg-white p-7 shadow-[var(--shadow-sm)] sm:p-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Compare com mais calma</p>
-          <h2 className="mt-3 text-2xl text-foreground">{t('Entenda custos e prazos com menos ruído.')}</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
-            {t('Esta etapa foi desenhada para facilitar leitura, comparação e contexto antes da próxima decisão.')}
-          </p>
-        </div>
-
         <Tabs defaultValue="veiculos" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="veiculos" className="gap-2">

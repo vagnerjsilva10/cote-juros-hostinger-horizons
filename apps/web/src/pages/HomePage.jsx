@@ -155,7 +155,7 @@ function HomePage() {
     trackingService.trackCtaClick({
       sourcePage: '/',
       ctaId: 'home_hero_focus_cta',
-      ctaLabel: t('Ver minhas opções agora'),
+      ctaLabel: t('Começar comparação'),
       productType: 'loan'
     });
 
@@ -218,7 +218,7 @@ function HomePage() {
 
               <div className="hero-actions">
                 <a href="#hero-credit-preview" className="hero-primary-btn" onClick={focusHeroPreview}>
-                  {t('Ver minhas opções agora')}
+                  {t('Começar comparação')}
                   <ArrowRight className="h-4 w-4" />
                 </a>
                 <Link to="/como-funciona" className="hero-secondary-btn">

@@ -299,14 +299,6 @@ function EmprestimosPage() {
           </section>
         ) : null}
 
-        <div className="mb-10 rounded-[26px] border border-border bg-white p-7 shadow-[0_10px_30px_rgba(0,0,0,0.05)]">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">Compare com mais calma</p>
-          <h2 className="mt-3 text-2xl text-foreground">Ajuste o cenário e descubra o que pode fazer sentido</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
-            Esta parte existe para ajudar você a comparar com mais segurança antes de avançar.
-          </p>
-        </div>
-
         <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
           <aside className="lg:sticky lg:top-24 lg:h-fit">
             <Card className="border-border bg-white shadow-[var(--shadow-sm)]">
