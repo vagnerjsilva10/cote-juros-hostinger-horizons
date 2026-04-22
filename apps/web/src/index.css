@@ -7928,13 +7928,7 @@ body {
 }
 
 .experience-hero-image::before {
-  content: '';
-  position: absolute;
-  width: 380px;
-  height: 380px;
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.12), transparent 70%);
-  filter: blur(60px);
-  z-index: 0;
+  content: none;
 }
 
 .experience-hero-photo {
@@ -7950,8 +7944,7 @@ body {
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
-  mix-blend-mode: multiply;
-  filter: drop-shadow(0 20px 40px rgba(124, 58, 237, 0.12));
+  filter: none !important;
 }
 
 .editorial-media .experience-hero-photo {
@@ -7960,8 +7953,7 @@ body {
   width: 100%;
   height: auto;
   object-fit: contain;
-  mix-blend-mode: multiply;
-  filter: drop-shadow(0 20px 40px rgba(124, 58, 237, 0.12));
+  filter: none !important;
 }
 
 @media (max-width: 767px) {
