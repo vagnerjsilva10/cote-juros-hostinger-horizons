@@ -1,17 +1,11 @@
-function ExperienceRealVisual({ tag = 'Comparação real' }) {
+function ExperienceRealVisual() {
   return (
-    <div className="experience-visual">
-      <div className="experience-panel-shell">
-        <img
-          src="/images/experience-panel-premium.png"
-          alt="Painel visual de comparação de crédito"
-          className="experience-panel-image"
-        />
-        <div className="experience-floating-badge">
-          <span className="experience-floating-dot" />
-          {tag}
-        </div>
-      </div>
+    <div className="hero-image experience-hero-image">
+      <img
+        src="/images/nova-imagem-mulher.png"
+        alt="Cliente feliz com cartão aprovado"
+        className="experience-hero-photo"
+      />
     </div>
   );
 }

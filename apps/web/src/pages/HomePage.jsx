@@ -307,8 +307,8 @@ function HomePage() {
               </p>
             </div>
 
-            <div className="editorial-media" aria-label="Comparação de crédito organizada em uma tela de notebook">
-              <ExperienceRealVisual tag={editorialFeature.tag} />
+            <div className="editorial-media experience-hero-media" aria-label="Cliente feliz com cartão aprovado">
+              <ExperienceRealVisual />
             </div>
           </motion.div>
         </div>
