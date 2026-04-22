@@ -4184,12 +4184,12 @@
   height: 100%;
   display: block;
   object-fit: cover;
-  object-position: 82% center;
+  object-position: 54% center;
 }
 
 @media (max-width: 1100px) {
   .role-photo {
-    object-position: 76% center;
+    object-position: 58% center;
   }
 
   .role-card {
