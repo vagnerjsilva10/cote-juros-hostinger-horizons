@@ -7927,11 +7927,24 @@ body {
   width: 100%;
   isolation: isolate;
   overflow: visible;
-  background: transparent !important;
+  background: #ffffff !important;
 }
 
 .experience-hero-image::before {
   content: none;
+}
+
+.experience-hero-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  left: 50%;
+  width: 100%;
+  max-width: 520px;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.26);
+  pointer-events: none;
+  z-index: 2;
 }
 
 .experience-hero-photo {
