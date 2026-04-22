@@ -7939,7 +7939,7 @@ body {
   position: absolute;
   left: 50%;
   bottom: -1px;
-  width: min(100%, 520px);
+  width: min(100%, 488px);
   height: 28%;
   transform: translateX(-50%);
   background: linear-gradient(180deg, rgba(248, 249, 253, 0) 0%, #f8f9fd 82%);
@@ -7953,7 +7953,7 @@ body {
   z-index: 1;
   display: block;
   width: 100%;
-  max-width: 520px;
+  max-width: 488px;
   height: auto;
   object-fit: contain;
   background: transparent !important;
@@ -7961,6 +7961,7 @@ body {
   box-shadow: none !important;
   outline: none !important;
   filter: none !important;
+  mix-blend-mode: multiply;
 }
 
 .editorial-media .experience-hero-photo {
