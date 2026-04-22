@@ -8010,3 +8010,281 @@ body {
     max-width: 320px;
   }
 }
+
+/* Home visual hierarchy correction */
+
+.public-site-shell.is-home {
+  --bg-light: #F8F9FC;
+  --bg-soft: #F8F9FC;
+  --surface: #FFFFFF;
+  --surface-soft: #FFFFFF;
+  --text-strong: #0F172A;
+  --text-soft: #64748B;
+  --text-muted: #64748B;
+  --heading-color: #0F172A;
+  --color-heading: #0F172A;
+  --color-body: #64748B;
+  --color-body-strong: #64748B;
+  --line-soft: #EEF0F6;
+  --brand: #6D5EF3;
+  --brand-2: #6D5EF3;
+  --brand-3: #6D5EF3;
+  --brand-primary: #6D5EF3;
+  --brand-secondary: #6D5EF3;
+  --brand-accent: #6D5EF3;
+  --primary-hex: #6D5EF3;
+  --primary-hover-hex: #5B4FE0;
+  --heading-hero: clamp(48px, 5vw, 64px);
+  --heading-xl: clamp(32px, 3vw, 42px);
+  --heading-lg: clamp(32px, 3vw, 42px);
+  --heading-line-hero: 1.08;
+  --heading-line-xl: 1.12;
+  --heading-line-lg: 1.12;
+  --heading-track-hero: -0.035em;
+  --heading-track-xl: -0.03em;
+  --heading-track-lg: -0.03em;
+}
+
+.public-site-shell.is-home {
+  background: #F8F9FC;
+}
+
+.public-site-shell.is-home .hero-section {
+  min-height: 620px;
+  padding-top: 88px !important;
+  padding-bottom: 88px !important;
+  background: linear-gradient(180deg, #ECECFD 0%, #E7E9FA 100%) !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.04) !important;
+}
+
+.public-site-shell.is-home .hero-section::after {
+  height: 120px !important;
+  background: linear-gradient(to bottom, rgba(236, 236, 253, 0), #F8F9FC) !important;
+}
+
+.public-site-shell.is-home .hero-ambient-grid {
+  opacity: 0.08 !important;
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px) !important;
+}
+
+.public-site-shell.is-home .hero-ambient-orb-one {
+  background: rgba(109, 94, 243, 0.12) !important;
+}
+
+.public-site-shell.is-home .hero-ambient-orb-two {
+  background: rgba(109, 94, 243, 0.08) !important;
+}
+
+.public-site-shell.is-home .signal-strip-section,
+.public-site-shell.is-home .art-section-white,
+.public-site-shell.is-home .art-section-soft,
+.public-site-shell.is-home .editorial-people-section,
+.public-site-shell.is-home .insight-section,
+.public-site-shell.is-home .brand-note-section,
+.public-site-shell.is-home .faq-premium-section {
+  background: #F8F9FC !important;
+}
+
+.public-site-shell.is-home .hero-copy,
+.public-site-shell.is-home .section-heading-left,
+.public-site-shell.is-home .section-heading-center,
+.public-site-shell.is-home .editorial-copy,
+.public-site-shell.is-home .editorial-people-copy,
+.public-site-shell.is-home .main-copy-card,
+.public-site-shell.is-home .dark-panel-copy,
+.public-site-shell.is-home .role-copy,
+.public-site-shell.is-home .final-cta-card {
+  font-family: var(--heading-font) !important;
+}
+
+.public-site-shell.is-home .hero-title {
+  max-width: 720px !important;
+  color: #0F172A !important;
+  font-family: var(--heading-font) !important;
+  font-size: clamp(48px, 5vw, 64px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.035em !important;
+  font-weight: 650 !important;
+}
+
+.public-site-shell.is-home .hero-title .highlight {
+  color: #6D5EF3 !important;
+  font-weight: inherit !important;
+}
+
+.public-site-shell.is-home :is(
+  .section-title,
+  .editorial-people-copy h2,
+  .main-copy-card h2,
+  .dark-panel h2,
+  .final-cta-card h2,
+  .role-title
+) {
+  color: #0F172A !important;
+  font-family: var(--heading-font) !important;
+  font-size: clamp(32px, 3vw, 42px) !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.03em !important;
+  font-weight: 620 !important;
+}
+
+.public-site-shell.is-home :is(.card-title, .hero-card-title, .block-title) {
+  color: #0F172A !important;
+  font-family: var(--heading-font) !important;
+  font-size: 22px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+}
+
+.public-site-shell.is-home .hero-subtitle,
+.public-site-shell.is-home .hero-subcopy,
+.public-site-shell.is-home .section-subtitle {
+  color: #64748B !important;
+  font-family: var(--heading-font) !important;
+  font-size: 18px !important;
+  line-height: 1.65 !important;
+  font-weight: 400 !important;
+}
+
+.public-site-shell.is-home :is(
+  .card-text,
+  .hero-card-subtitle,
+  .hero-card-benefit,
+  .hero-trust,
+  .editorial-people-copy p,
+  .main-copy-card p,
+  .role-text,
+  .faq-content,
+  .dark-panel p
+) {
+  color: #64748B !important;
+  font-family: var(--heading-font) !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+  font-weight: 400 !important;
+}
+
+.public-site-shell.is-home .hero-preview-step,
+.public-site-shell.is-home .form-label,
+.public-site-shell.is-home .faq-trigger,
+.public-site-shell.is-home .signal-pill {
+  font-family: var(--heading-font) !important;
+}
+
+.public-site-shell.is-home .hero-eyebrow,
+.public-site-shell.is-home .profile-card-tag,
+.public-site-shell.is-home .hero-data-rail {
+  background: rgba(109, 94, 243, 0.08) !important;
+  border: 1px solid rgba(109, 94, 243, 0.16) !important;
+  color: #6D5EF3 !important;
+}
+
+.public-site-shell.is-home .hero-actions .hero-primary-btn,
+.public-site-shell.is-home .hero-preview-cta,
+.public-site-shell.is-home .cta-button {
+  background: #6D5EF3 !important;
+  color: #FFFFFF !important;
+}
+
+.public-site-shell.is-home .hero-actions .hero-primary-btn:hover,
+.public-site-shell.is-home .hero-preview-cta:hover,
+.public-site-shell.is-home .cta-button:hover {
+  background: #5B4FE0 !important;
+}
+
+.public-site-shell.is-home .site-header nav a {
+  font-size: 15px !important;
+  color: #CBD5F5 !important;
+}
+
+.public-site-shell.is-home .site-header nav a:hover {
+  color: #FFFFFF !important;
+}
+
+.public-site-shell.is-home .site-header .cta-button {
+  font-size: 15px !important;
+  border-radius: 10px !important;
+  padding: 12px 20px !important;
+}
+
+.public-site-shell.is-home :is(
+  .hero-card,
+  .card,
+  .art-card,
+  .profile-card,
+  .rich-card,
+  .main-copy-card,
+  .widget-card,
+  .mini-side-stack > .card,
+  .signal-strip,
+  .brand-note-card,
+  .role-card,
+  .faq-item
+) {
+  background: #FFFFFF !important;
+  border: 1px solid #EEF0F6 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04) !important;
+}
+
+.public-site-shell.is-home .art-card,
+.public-site-shell.is-home .profile-card,
+.public-site-shell.is-home .rich-card,
+.public-site-shell.is-home .main-copy-card,
+.public-site-shell.is-home .widget-card,
+.public-site-shell.is-home .mini-side-stack > .card {
+  background: #FFFFFF !important;
+}
+
+.public-site-shell.is-home .dark-panel-section,
+.public-site-shell.is-home .final-cta-section,
+.public-site-shell.is-home .footer-premium-bg {
+  background: linear-gradient(180deg, #0B1220 0%, #0E1525 100%) !important;
+}
+
+.public-site-shell.is-home .dark-panel,
+.public-site-shell.is-home .dark-chart-card,
+.public-site-shell.is-home .final-cta-card,
+.public-site-shell.is-home .custo-real-card {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+}
+
+.public-site-shell.is-home .dark-panel :is(h2, h3, strong),
+.public-site-shell.is-home .final-cta-card :is(h2, h3, strong),
+.public-site-shell.is-home .dark-chart-card :is(h2, h3, strong) {
+  color: #FFFFFF !important;
+}
+
+.public-site-shell.is-home .dark-panel :is(p, .item),
+.public-site-shell.is-home .final-cta-card p,
+.public-site-shell.is-home .dark-chart-card :is(p, .text-center, .rounded-full),
+.public-site-shell.is-home .custo-real-card span {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.public-site-shell.is-home .experience-hero-photo,
+.public-site-shell.is-home .role-photo {
+  filter: saturate(0.92) contrast(1.02) !important;
+}
+
+@media (max-width: 767px) {
+  .public-site-shell.is-home .hero-section {
+    min-height: 580px;
+    padding-top: 76px !important;
+    padding-bottom: 76px !important;
+  }
+
+  .public-site-shell.is-home .hero-title {
+    font-size: clamp(40px, 10vw, 52px) !important;
+  }
+
+  .public-site-shell.is-home .hero-subtitle,
+  .public-site-shell.is-home .hero-subcopy,
+  .public-site-shell.is-home .section-subtitle {
+    font-size: 18px !important;
+  }
+}
