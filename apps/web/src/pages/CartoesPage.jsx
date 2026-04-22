@@ -47,6 +47,7 @@ const resolveCardPalette = (card) => {
   if (bankName.includes('itau')) return ['#EA580C', '#F97316'];
   if (bankName.includes('santander')) return ['#B91C1C', '#EF4444'];
   if (bankName.includes('c6')) return ['#0F172A', '#334155'];
+  if (bankName.includes('caixa')) return ['#2563EB', '#60A5FA'];
   if (bankName.includes('inter')) return ['#EA580C', '#FDBA74'];
   return ['#5B6CFF', '#9AA8FF'];
 };

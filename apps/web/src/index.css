@@ -8364,22 +8364,48 @@ body {
   color: #FFFFFF !important;
 }
 
-.public-site-shell.is-domain-page :is(.cards-page-cta-section, .final-cta-section, .blog-article-related) {
+.public-site-shell.is-domain-page :is(.cards-page-cta-section, .final-cta-section) {
   background: var(--cj-dark-bg) !important;
 }
 
-.public-site-shell.is-domain-page :is(.final-cta-card, .cards-page-cta, .blog-article-conversion) {
+.public-site-shell.is-domain-page .blog-article-related {
+  background: #F8F9FC !important;
+}
+
+.public-site-shell.is-domain-page .blog-article-related :is(h2, h3) {
+  color: #0F172A !important;
+}
+
+.public-site-shell.is-domain-page .blog-article-related :is(p, .text-xs, .text-sm, .badge) {
+  color: #475569 !important;
+}
+
+.public-site-shell.is-domain-page :is(.final-cta-card, .cards-page-cta) {
   background: rgba(255, 255, 255, 0.04) !important;
   border: 1px solid rgba(255, 255, 255, 0.06) !important;
   box-shadow: none !important;
 }
 
-.public-site-shell.is-domain-page :is(.final-cta-card, .cards-page-cta, .blog-article-conversion) :is(h2, h3, strong) {
+.public-site-shell.is-domain-page :is(.final-cta-card, .cards-page-cta) :is(h2, h3, strong) {
   color: #FFFFFF !important;
 }
 
-.public-site-shell.is-domain-page :is(.final-cta-card, .cards-page-cta, .blog-article-conversion) :is(p, span, .item) {
+.public-site-shell.is-domain-page :is(.final-cta-card, .cards-page-cta) :is(p, span, .item) {
   color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.public-site-shell.is-domain-page .blog-article-conversion {
+  background: #FFFFFF !important;
+  border: 1px solid #EEF0F6 !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04) !important;
+}
+
+.public-site-shell.is-domain-page .blog-article-conversion :is(h2, h3, strong) {
+  color: #0F172A !important;
+}
+
+.public-site-shell.is-domain-page .blog-article-conversion :is(p, span, .item) {
+  color: #475569 !important;
 }
 
 .cards-card-media,
@@ -8398,6 +8424,42 @@ body {
   width: 100%;
   height: auto !important;
   object-fit: contain !important;
+}
+
+.cards-fallback-art :is(p, span) {
+  color: #FFFFFF !important;
+}
+
+.cards-fallback-art p:first-child {
+  color: rgba(255, 255, 255, 0.94) !important;
+}
+
+.cards-fallback-art p:nth-child(2) {
+  color: #FFFFFF !important;
+}
+
+.cards-fallback-art p:last-child {
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.hero-toggle-shell {
+  background: transparent !important;
+  border: none !important;
+  gap: 8px;
+}
+
+.hero-toggle-option {
+  background: #F1F5F9 !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #64748B !important;
+  box-shadow: none !important;
+}
+
+.hero-toggle-option.is-active {
+  background: #EEF2FF !important;
+  border-color: #C7D2FE !important;
+  color: #4F46E5 !important;
+  box-shadow: none !important;
 }
 
 .public-site-shell.is-domain-page :is(.experience-hero-photo, .role-photo, .blog-featured-card img, .blog-article-card-cover img, .blog-article-cover img) {

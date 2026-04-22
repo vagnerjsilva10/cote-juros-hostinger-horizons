@@ -517,7 +517,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                 <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
                   {conversionCta?.description}
                 </p>
-                <div className="blog-article-conversion-actions mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <div className="blog-article-conversion-actions mt-4 flex flex-col gap-3 border-t border-[#E5E7EB] pt-6 sm:flex-row sm:flex-wrap">
                   <Link to={conversionCta?.primary.to || '/emprestimos'} className="inline-flex w-full sm:w-auto">
                     <Button className="w-full sm:w-auto">
                       {conversionCta?.primary.label || t('Ver minhas opções agora')}
