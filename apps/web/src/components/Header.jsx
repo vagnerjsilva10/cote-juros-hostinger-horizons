@@ -9,7 +9,6 @@ function Header() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const isHome = location.pathname === '/';
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 10);
@@ -31,23 +30,13 @@ function Header() {
 
   return (
     <header
-      className={`site-header sticky top-0 z-50 w-full transition-all duration-300 ${
-        isHome
-          ? `border-b border-white/[0.05] bg-[rgba(11,18,32,0.88)] ${
-              isScrolled ? 'shadow-[0_22px_52px_rgba(15,23,42,0.18)]' : 'shadow-[0_1px_0_rgba(255,255,255,0.02)]'
-            }`
-          : `border-b border-white/[0.06] bg-[rgba(2,7,14,0.985)] ${
-              isScrolled ? 'shadow-[0_22px_52px_rgba(0,4,10,0.56)]' : 'shadow-[0_1px_0_rgba(255,255,255,0.02)]'
-            }`
+      className={`site-header sticky top-0 z-50 w-full border-b border-white/[0.06] bg-[rgba(2,7,14,0.985)] transition-all duration-300 ${
+        isScrolled ? 'shadow-[0_22px_52px_rgba(0,4,10,0.56)]' : 'shadow-[0_1px_0_rgba(255,255,255,0.02)]'
       }`}
-      style={
-        isHome
-          ? { backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }
-          : { backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }
-      }
+      style={{ backdropFilter: 'blur(16px)' }}
     >
       <div className="page-shell">
-        <div className={`flex items-center justify-between ${isHome ? 'h-[72px]' : 'h-[68px]'}`}>
+        <div className="flex h-[68px] items-center justify-between">
           <Link to="/" className="flex items-center">
             <CoteJurosLogo variant="original-light" className="site-logo" />
           </Link>
@@ -57,14 +46,10 @@ function Header() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`rounded-full px-3 py-2 font-medium leading-none ${
-                  isHome ? 'text-[15px] transition-colors duration-200' : 'text-[14px] transition-all duration-300'
-                } ${
+                className={`rounded-full px-3 py-2 text-[14px] font-medium leading-none transition-all duration-300 ${
                   isActive(item.path)
-                    ? 'bg-white/[0.08] text-white'
-                    : isHome
-                      ? 'text-[#CBD5F5] hover:text-white'
-                      : 'text-[rgba(255,255,255,0.72)] hover:text-[rgba(255,255,255,0.96)]'
+                    ? 'bg-white/[0.08] text-[rgba(255,255,255,0.98)]'
+                    : 'text-[rgba(255,255,255,0.72)] hover:text-[rgba(255,255,255,0.96)]'
                 }`}
               >
                 {item.label}
@@ -74,13 +59,7 @@ function Header() {
 
           <div className="hidden items-center gap-3 lg:flex">
             <Link to="/emprestimos">
-              <Button
-                className={`cta-button ${
-                  isHome
-                    ? 'h-auto rounded-[10px] border-0 bg-[#6D5EF3] px-5 py-3 text-[15px] font-semibold text-white shadow-[0_10px_24px_rgba(109,94,243,0.22)] transition-colors duration-200 hover:bg-[#5B4FE0]'
-                    : 'h-[38px] rounded-[10px] border border-white/[0.08] bg-[linear-gradient(180deg,#5F70FF_0%,#5263FF_100%)] px-[15px] text-[13.5px] font-semibold text-white shadow-none transition-all duration-300 hover:-translate-y-[1px] hover:brightness-105'
-                }`}
-              >
+              <Button className="cta-button h-[38px] rounded-[10px] border border-white/[0.08] bg-[linear-gradient(180deg,#5F70FF_0%,#5263FF_100%)] px-[15px] text-[13.5px] font-semibold text-white shadow-none transition-all duration-300 hover:-translate-y-[1px] hover:brightness-105">
                 Ver minhas opções
               </Button>
             </Link>
