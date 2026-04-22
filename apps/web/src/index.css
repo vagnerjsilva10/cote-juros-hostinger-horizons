@@ -7935,7 +7935,16 @@ body {
 }
 
 .experience-hero-image::after {
-  content: none;
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: min(100%, 520px);
+  height: 28%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(248, 249, 253, 0) 0%, #f8f9fd 82%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .experience-hero-photo {
