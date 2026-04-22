@@ -7909,7 +7909,11 @@ body {
 }
 
 .experience-hero-media {
-  background: transparent !important;
+  background-color: transparent !important;
+  background-image: url('/images/experience-real-grid-bg.png') !important;
+  background-position: center top !important;
+  background-repeat: repeat !important;
+  background-size: 206px 617px !important;
   border: none !important;
   box-shadow: none !important;
 }
@@ -7927,6 +7931,7 @@ body {
   width: 100%;
   isolation: isolate;
   overflow: visible;
+  background: transparent !important;
 }
 
 .experience-hero-image::before {
