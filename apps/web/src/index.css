@@ -8010,3 +8010,474 @@ body {
     max-width: 320px;
   }
 }
+
+/* Landing refinement overrides */
+
+.public-site-shell.is-home {
+  --bg-light: #ECECFD;
+  --bg-soft: #F6F7FB;
+  --surface: #FFFFFF;
+  --surface-soft: #F6F7FB;
+  --text-strong: #0F172A;
+  --text-soft: #64748B;
+  --text-muted: #64748B;
+  --heading-color: #0F172A;
+  --color-heading: #0F172A;
+  --color-body: #64748B;
+  --color-brand: #6D5EF3;
+  --line-soft: #EEF0F6;
+  --line-dark: rgba(255, 255, 255, 0.06);
+  --brand: #6D5EF3;
+  --brand-2: #6D5EF3;
+  --brand-3: #6D5EF3;
+  --brand-primary: #6D5EF3;
+  --brand-secondary: #6D5EF3;
+  --brand-accent: #6D5EF3;
+  --primary-hex: #6D5EF3;
+  --primary-hover-hex: #5B4FE0;
+  --border-default-hex: #EEF0F6;
+  --border-soft-hex: #EEF0F6;
+  --text-primary-hex: #0F172A;
+  --text-secondary-hex: #64748B;
+  --text-muted-hex: #64748B;
+  --text-small-hex: #64748B;
+  --heading-hero: clamp(48px, 5vw, 64px);
+  --heading-line-hero: 1.08;
+  --heading-track-hero: -0.035em;
+  --heading-weight-hero: 650;
+  --heading-weight-section: 600;
+  --heading-weight-card: 600;
+  --section-space-xl: 112px;
+  --section-space-lg: 96px;
+  --shadow-sm: 0 8px 24px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 18px 42px rgba(15, 23, 42, 0.06);
+  background: #ECECFD;
+}
+
+.public-site-shell.is-home main .section {
+  padding-top: 96px;
+  padding-bottom: 96px;
+}
+
+.public-site-shell.is-home :is(
+  .section--compact,
+  .faq-section,
+  .editorial-people-section,
+  .insight-section,
+  .dark-panel-section,
+  .final-cta-section
+) {
+  padding-top: 88px !important;
+  padding-bottom: 88px !important;
+}
+
+.public-site-shell.is-home :is(
+  .section-title,
+  .editorial-copy h2,
+  .editorial-people-copy h2,
+  .main-copy-card h2,
+  .dark-panel h2,
+  .final-cta-card h2,
+  .role-title,
+  .block-title
+) {
+  color: #0F172A !important;
+  letter-spacing: -0.035em !important;
+}
+
+.public-site-shell.is-home .section-title {
+  margin-bottom: 14px !important;
+}
+
+.public-site-shell.is-home :is(
+  .section-subtitle,
+  .editorial-copy p,
+  .editorial-people-copy p,
+  .main-copy-card p,
+  .role-text,
+  .card-text,
+  .faq-content,
+  p
+) {
+  color: #64748B;
+}
+
+.public-site-shell.is-home :is(
+  .eyebrow,
+  .hero-eyebrow,
+  .profile-card-tag,
+  .final-cta-badge
+) {
+  background: rgba(109, 94, 243, 0.08) !important;
+  color: #6D5EF3 !important;
+  border: 1px solid rgba(109, 94, 243, 0.16) !important;
+  border-radius: 999px !important;
+  padding: 8px 14px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  min-height: auto !important;
+  text-transform: none !important;
+}
+
+.public-site-shell.is-home .site-header nav a {
+  color: #CBD5F5 !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  transition: color 0.2s ease !important;
+}
+
+.public-site-shell.is-home .site-header nav a:hover,
+.public-site-shell.is-home .site-header nav a[aria-current='page'] {
+  color: #FFFFFF !important;
+}
+
+.public-site-shell.is-home .site-header .cta-button {
+  background: #6D5EF3 !important;
+  color: #FFFFFF !important;
+  border-radius: 10px !important;
+  padding: 12px 20px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 10px 24px rgba(109, 94, 243, 0.22) !important;
+}
+
+.public-site-shell.is-home .site-header .cta-button:hover {
+  background: #5B4FE0 !important;
+}
+
+.public-site-shell.is-home .page-shell {
+  max-width: 1200px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.public-site-shell.is-home .hero-section {
+  min-height: 620px;
+  padding-top: 88px !important;
+  padding-bottom: 88px !important;
+  background: linear-gradient(180deg, #ECECFD 0%, #E7E9FA 100%) !important;
+  border-bottom: none !important;
+}
+
+.public-site-shell.is-home .hero-section::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 120px !important;
+  background: linear-gradient(to bottom, rgba(236, 236, 253, 0), #ECECFD) !important;
+  pointer-events: none;
+}
+
+.public-site-shell.is-home .hero-ambient-grid {
+  opacity: 0.08 !important;
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px) !important;
+}
+
+.public-site-shell.is-home .hero-ambient-orb-one {
+  background: rgba(109, 94, 243, 0.12) !important;
+  filter: blur(60px) !important;
+}
+
+.public-site-shell.is-home .hero-ambient-orb-two {
+  background: rgba(109, 94, 243, 0.08) !important;
+  filter: blur(64px) !important;
+}
+
+.public-site-shell.is-home .hero-copy {
+  max-width: 720px !important;
+}
+
+.public-site-shell.is-home .hero-title {
+  max-width: 720px !important;
+  color: #0F172A !important;
+  font-size: clamp(48px, 5vw, 64px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.035em !important;
+  font-weight: 650 !important;
+}
+
+.public-site-shell.is-home .hero-title .highlight {
+  color: #6D5EF3 !important;
+  font-weight: 650 !important;
+}
+
+.public-site-shell.is-home .hero-subtitle,
+.public-site-shell.is-home .hero-subcopy {
+  max-width: 560px !important;
+  margin-top: 18px !important;
+  color: #64748B !important;
+  font-size: 19px !important;
+  line-height: 1.65 !important;
+}
+
+.public-site-shell.is-home .hero-data-rail {
+  border: 1px solid rgba(109, 94, 243, 0.16) !important;
+  background: rgba(109, 94, 243, 0.08) !important;
+  color: #6D5EF3 !important;
+  padding: 8px 14px !important;
+  font-size: 13px !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  backdrop-filter: none !important;
+}
+
+.public-site-shell.is-home .hero-data-rail i {
+  background: rgba(109, 94, 243, 0.24) !important;
+}
+
+.public-site-shell.is-home :is(.hero-primary-btn, .submit-btn, .hero-preview-cta) {
+  background: #6D5EF3 !important;
+  color: #FFFFFF !important;
+  border-radius: 12px !important;
+  padding: 15px 24px !important;
+  min-height: 54px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 12px 28px rgba(109, 94, 243, 0.22) !important;
+  transition: all 0.2s ease !important;
+}
+
+.public-site-shell.is-home :is(.hero-primary-btn, .submit-btn, .hero-preview-cta):hover {
+  background: #5B4FE0 !important;
+  transform: translateY(-1px) !important;
+  filter: none !important;
+}
+
+.public-site-shell.is-home .hero-secondary-btn {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 12px !important;
+  padding: 15px 24px !important;
+  min-height: 54px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+.public-site-shell.is-home .hero-secondary-btn:hover {
+  background: #FAFBFD !important;
+  border-color: #D8DCE8 !important;
+  color: #0F172A !important;
+  transform: translateY(-1px) !important;
+}
+
+.public-site-shell.is-home .hero-trust {
+  color: #64748B !important;
+  font-size: 13px !important;
+  gap: 14px 18px !important;
+  margin-top: 18px !important;
+}
+
+.public-site-shell.is-home .hero-card,
+.public-site-shell.is-home .main-copy-card,
+.public-site-shell.is-home .widget-card,
+.public-site-shell.is-home .mini-side-stack > .card,
+.public-site-shell.is-home .brand-note-card,
+.public-site-shell.is-home .role-card,
+.public-site-shell.is-home .faq-item,
+.public-site-shell.is-home .signal-strip,
+.public-site-shell.is-home .dark-chart-card {
+  background: #FFFFFF !important;
+  border: 1px solid #EEF0F6 !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04) !important;
+}
+
+.public-site-shell.is-home .hero-card {
+  padding: 24px !important;
+  border-radius: 16px !important;
+}
+
+.public-site-shell.is-home .hero-card::before {
+  background: radial-gradient(circle at center, rgba(109, 94, 243, 0.16) 0%, rgba(109, 94, 243, 0) 72%) !important;
+}
+
+.public-site-shell.is-home .hero-card-title {
+  color: #0F172A !important;
+  font-size: 22px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+}
+
+.public-site-shell.is-home .hero-card-subtitle,
+.public-site-shell.is-home .hero-preview-step,
+.public-site-shell.is-home .hero-card-benefit,
+.public-site-shell.is-home .form-label {
+  color: #64748B !important;
+}
+
+.public-site-shell.is-home .hero-preview-badge {
+  background: rgba(109, 94, 243, 0.08) !important;
+  border: 1px solid rgba(109, 94, 243, 0.16) !important;
+  color: #6D5EF3 !important;
+}
+
+.public-site-shell.is-home .hero-progress-shell,
+.public-site-shell.is-home .profile-card-meter {
+  background: #EEF0F6 !important;
+}
+
+.public-site-shell.is-home .hero-progress-bar,
+.public-site-shell.is-home .profile-card-meter span,
+.public-site-shell.is-home .art-card-visual span,
+.public-site-shell.is-home .dark-chart-bar,
+.public-site-shell.is-home .conditions-widget .mini-bars span {
+  background: #6D5EF3 !important;
+}
+
+.public-site-shell.is-home .form-control,
+.public-site-shell.is-home .hero-toggle-option {
+  border: 1px solid #E5E7EB !important;
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+.public-site-shell.is-home .form-control:focus,
+.public-site-shell.is-home .hero-toggle-option:focus,
+.public-site-shell.is-home .hero-toggle-option.is-active {
+  border-color: rgba(109, 94, 243, 0.36) !important;
+  box-shadow: 0 0 0 4px rgba(109, 94, 243, 0.1) !important;
+}
+
+.public-site-shell.is-home .hero-toggle-option.is-active {
+  background: rgba(109, 94, 243, 0.08) !important;
+  color: #6D5EF3 !important;
+}
+
+.public-site-shell.is-home .signal-strip-section,
+.public-site-shell.is-home .art-section-white,
+.public-site-shell.is-home .art-section-soft,
+.public-site-shell.is-home .insight-section,
+.public-site-shell.is-home .brand-note-section,
+.public-site-shell.is-home .faq-premium-section,
+.public-site-shell.is-home .editorial-people-section {
+  background: #ECECFD !important;
+}
+
+.public-site-shell.is-home .signal-strip > span,
+.public-site-shell.is-home .signal-pill,
+.public-site-shell.is-home .conditions-widget-header,
+.public-site-shell.is-home .faq-trigger {
+  color: #0F172A !important;
+}
+
+.public-site-shell.is-home .signal-pill {
+  background: #FFFFFF !important;
+  border: 1px solid #EEF0F6 !important;
+}
+
+.public-site-shell.is-home .signal-dot,
+.public-site-shell.is-home .rich-card-icon {
+  background: #6D5EF3 !important;
+  color: #FFFFFF !important;
+  box-shadow: none !important;
+}
+
+.public-site-shell.is-home .art-card,
+.public-site-shell.is-home .profile-card,
+.public-site-shell.is-home .rich-card,
+.public-site-shell.is-home .main-copy-card,
+.public-site-shell.is-home .widget-card,
+.public-site-shell.is-home .mini-side-stack > .card {
+  border-radius: 16px !important;
+  padding: 24px !important;
+}
+
+.public-site-shell.is-home .card-title,
+.public-site-shell.is-home .block-title,
+.public-site-shell.is-home .role-title,
+.public-site-shell.is-home .hero-card-title {
+  color: #0F172A !important;
+  font-size: 22px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+}
+
+.public-site-shell.is-home .card-text,
+.public-site-shell.is-home .main-copy-card p,
+.public-site-shell.is-home .conditions-widget-score span {
+  color: #64748B !important;
+  line-height: 1.6 !important;
+}
+
+.public-site-shell.is-home .editorial-media,
+.public-site-shell.is-home .role-card {
+  overflow: hidden !important;
+}
+
+.public-site-shell.is-home :is(.experience-hero-photo, .role-photo) {
+  filter: saturate(0.92) contrast(1.02) !important;
+}
+
+.public-site-shell.is-home :is(.experience-hero-image, .experience-hero-media, .role-media) {
+  overflow: hidden !important;
+  background: transparent !important;
+}
+
+.public-site-shell.is-home .role-media::before {
+  background: linear-gradient(to left, rgba(255, 255, 255, 0) 58%, rgba(236, 236, 253, 0.18) 72%, rgba(236, 236, 253, 0.54) 84%, rgba(236, 236, 253, 0.88) 94%, #ECECFD 100%) !important;
+}
+
+.public-site-shell.is-home .dark-panel-section,
+.public-site-shell.is-home .final-cta-section,
+.public-site-shell.is-home .footer-premium-bg {
+  background: linear-gradient(180deg, #0B1220 0%, #0E1525 100%) !important;
+}
+
+.public-site-shell.is-home .dark-panel,
+.public-site-shell.is-home .custo-real-card,
+.public-site-shell.is-home .final-cta-card,
+.public-site-shell.is-home .dark-chart-card {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+}
+
+.public-site-shell.is-home .dark-panel :is(h2, h3, strong),
+.public-site-shell.is-home .final-cta-card :is(h2, h3, strong),
+.public-site-shell.is-home .dark-chart-card :is(h2, h3, strong) {
+  color: #FFFFFF !important;
+}
+
+.public-site-shell.is-home .dark-panel p,
+.public-site-shell.is-home .dark-panel .item,
+.public-site-shell.is-home .final-cta-card p,
+.public-site-shell.is-home .dark-chart-card .text-center,
+.public-site-shell.is-home .dark-chart-card .rounded-full,
+.public-site-shell.is-home .custo-real-card span {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+@media (max-width: 767px) {
+  .public-site-shell.is-home .hero-section {
+    min-height: 580px;
+    padding-top: 76px !important;
+    padding-bottom: 76px !important;
+  }
+
+  .public-site-shell.is-home .hero-title {
+    font-size: clamp(40px, 10vw, 52px) !important;
+  }
+
+  .public-site-shell.is-home .hero-subtitle,
+  .public-site-shell.is-home .hero-subcopy {
+    font-size: 17px !important;
+    line-height: 1.6 !important;
+  }
+
+  .public-site-shell.is-home :is(.hero-primary-btn, .hero-secondary-btn, .submit-btn, .hero-preview-cta) {
+    min-height: 50px !important;
+    padding: 14px 20px !important;
+    font-size: 15px !important;
+  }
+
+  .public-site-shell.is-home :is(.site-header nav a, .site-header .cta-button) {
+    font-size: 15px !important;
+  }
+}
