@@ -11,6 +11,19 @@ import PageHero from '@/components/PageHero.jsx';
 import SeoHead from '@/components/SeoHead.jsx';
 import { brandPages, homeBreadcrumb } from '@/seo/brandSeo.js';
 
+const formatCurrency = (value = 0, options = {}) =>
+  Number(value || 0).toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    maximumFractionDigits: 0,
+    ...options
+  });
+
+const parseCurrencyInput = (value = '') => {
+  const digits = String(value).replace(/\D/g, '');
+  return digits ? Number(digits) : 0;
+};
+
 function FerramentasPage() {
   const [jcCapital, setJcCapital] = useState(10000);
   const [jcRate, setJcRate] = useState(10);
@@ -20,6 +33,8 @@ function FerramentasPage() {
   const [finEntry, setFinEntry] = useState(60000);
   const [finRate, setFinRate] = useState(9.5);
   const [finMonths, setFinMonths] = useState(360);
+  const [incomeValue, setIncomeValue] = useState(5000);
+  const [installmentValue, setInstallmentValue] = useState(1200);
 
   const calcJurosCompostos = () => {
     const data = [];
@@ -121,7 +136,12 @@ function FerramentasPage() {
                 <CardContent className="space-y-5">
                   <div className="space-y-2">
                     <Label>Capital inicial</Label>
-                    <Input type="number" value={jcCapital} onChange={(event) => setJcCapital(Number(event.target.value))} />
+                    <Input
+                      type="text"
+                      inputMode="numeric"
+                      value={formatCurrency(jcCapital)}
+                      onChange={(event) => setJcCapital(parseCurrencyInput(event.target.value))}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Taxa anual (%)</Label>
@@ -149,11 +169,11 @@ function FerramentasPage() {
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="rounded-[12px] border border-border bg-background-secondary p-5">
                       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Montante final</p>
-                      <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">R$ {jcResult.finalAmount.toLocaleString('pt-BR')}</p>
+                      <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">{formatCurrency(jcResult.finalAmount)}</p>
                     </div>
                     <div className="rounded-[12px] border border-border bg-background-secondary p-5">
                       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Juros acumulados</p>
-                      <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">R$ {jcResult.interest.toLocaleString('pt-BR')}</p>
+                      <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">{formatCurrency(jcResult.interest)}</p>
                     </div>
                   </div>
 
@@ -161,9 +181,9 @@ function FerramentasPage() {
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={jcResult.data}>
                         <XAxis dataKey="ano" tick={{ fill: '#6B7280', fontSize: 12 }} axisLine={false} tickLine={false} />
-                        <YAxis tickFormatter={(value) => `R$${value / 1000}k`} tick={{ fill: '#6B7280', fontSize: 12 }} axisLine={false} tickLine={false} />
+                        <YAxis tickFormatter={(value) => formatCurrency(value)} tick={{ fill: '#6B7280', fontSize: 12 }} axisLine={false} tickLine={false} />
                         <Tooltip
-                          formatter={(value) => `R$ ${value.toLocaleString('pt-BR')}`}
+                          formatter={(value) => formatCurrency(value)}
                           labelFormatter={(label) => `Ano ${label}`}
                           contentStyle={{ borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 10px 30px rgba(15,23,42,0.08)' }}
                         />
@@ -186,11 +206,21 @@ function FerramentasPage() {
                 <CardContent className="space-y-5">
                   <div className="space-y-2">
                     <Label>Valor do bem</Label>
-                    <Input type="number" value={finValue} onChange={(event) => setFinValue(Number(event.target.value))} />
+                    <Input
+                      type="text"
+                      inputMode="numeric"
+                      value={formatCurrency(finValue)}
+                      onChange={(event) => setFinValue(parseCurrencyInput(event.target.value))}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Entrada</Label>
-                    <Input type="number" value={finEntry} onChange={(event) => setFinEntry(Number(event.target.value))} />
+                    <Input
+                      type="text"
+                      inputMode="numeric"
+                      value={formatCurrency(finEntry)}
+                      onChange={(event) => setFinEntry(parseCurrencyInput(event.target.value))}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Taxa anual (%)</Label>
@@ -219,19 +249,19 @@ function FerramentasPage() {
                     <div className="rounded-[12px] border border-border bg-background-secondary p-5">
                       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Parcela</p>
                       <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-foreground">
-                        R$ {finResult.installment.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}
+                        {formatCurrency(finResult.installment, { maximumFractionDigits: 2 })}
                       </p>
                     </div>
                     <div className="rounded-[12px] border border-border bg-background-secondary p-5">
                       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Juros</p>
                       <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-foreground">
-                        R$ {finResult.interest.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
+                        {formatCurrency(finResult.interest)}
                       </p>
                     </div>
                     <div className="rounded-[12px] border border-border bg-background-secondary p-5">
                       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Total</p>
                       <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-foreground">
-                        R$ {finResult.totalPaid.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
+                        {formatCurrency(finResult.totalPaid)}
                       </p>
                     </div>
                   </div>
@@ -253,7 +283,7 @@ function FerramentasPage() {
                           ))}
                         </Pie>
                         <Tooltip
-                          formatter={(value) => `R$ ${value.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`}
+                          formatter={(value) => formatCurrency(value)}
                           contentStyle={{ borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 10px 30px rgba(15,23,42,0.08)' }}
                         />
                       </PieChart>
@@ -279,11 +309,21 @@ function FerramentasPage() {
                 <div className="mx-auto grid max-w-xl gap-4 text-left">
                   <div className="space-y-2">
                     <Label>Renda líquida</Label>
-                    <Input type="number" defaultValue="5000" />
+                    <Input
+                      type="text"
+                      inputMode="numeric"
+                      value={formatCurrency(incomeValue)}
+                      onChange={(event) => setIncomeValue(parseCurrencyInput(event.target.value))}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Parcela</Label>
-                    <Input type="number" defaultValue="1200" />
+                    <Input
+                      type="text"
+                      inputMode="numeric"
+                      value={formatCurrency(installmentValue)}
+                      onChange={(event) => setInstallmentValue(parseCurrencyInput(event.target.value))}
+                    />
                   </div>
                   <Button size="lg" onClick={() => toast.success('Comprometimento estimado: 24% da sua renda líquida')}>
                     Ver resultado
