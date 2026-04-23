@@ -26,6 +26,13 @@ const bankAccentById = {
   bradesco: '#CC092F'
 };
 
+const resolveOfferLink = (offer = {}) => {
+  const rawLink = offer.partnerTrackingUrl || offer.redirectUrl || '';
+  if (!rawLink) return '';
+  if (rawLink.startsWith('/') || /^https?:\/\//i.test(rawLink)) return rawLink;
+  return `https://${rawLink}`;
+};
+
 function EmprestimosPage() {
   const location = useLocation();
   const [banksData, setBanksData] = useState([]);
@@ -406,11 +413,12 @@ function EmprestimosPage() {
                   const badge = getBadge(loan.category, loan.monthlyRate);
                   const BadgeIcon = badge.icon;
                   const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#5B6CFF';
+                  const offerLink = resolveOfferLink(loan);
 
                   return (
-                    <Card key={loan.id} className="surface-card h-full border-border bg-white">
-                      <CardContent className="flex h-full flex-col gap-6 p-8">
-                        <div className="flex items-start justify-between gap-4">
+                    <Card key={loan.id} className="catalog-grid-card surface-card h-full border-border bg-white">
+                      <CardContent className="catalog-grid-card__content flex h-full flex-col gap-6 p-8">
+                        <div className="catalog-grid-card__header flex items-start justify-between gap-4">
                           <div className="space-y-2">
                             <div
                               className="flex h-11 w-11 items-center justify-center rounded-xl border text-sm font-semibold"
@@ -457,10 +465,19 @@ function EmprestimosPage() {
                           </div>
                         </div>
 
-                        <Button className="mt-auto w-full" onClick={openInternalFlow}>
-                          Quero entender melhor
-                          <ChevronRight className="h-4 w-4" />
-                        </Button>
+                        {offerLink ? (
+                          <Button asChild className="catalog-card-cta mt-auto w-full">
+                            <a href={offerLink} target="_blank" rel="noreferrer sponsored">
+                              Ver oferta
+                              <ChevronRight className="h-4 w-4" />
+                            </a>
+                          </Button>
+                        ) : (
+                          <Button className="catalog-card-cta mt-auto w-full" onClick={openInternalFlow}>
+                            Ver oferta
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
+                        )}
                       </CardContent>
                     </Card>
                   );
@@ -473,12 +490,13 @@ function EmprestimosPage() {
                   const badge = getBadge(loan.category, loan.monthlyRate);
                   const BadgeIcon = badge.icon;
                   const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#5B6CFF';
+                  const offerLink = resolveOfferLink(loan);
 
                   return (
-                    <Card key={loan.id} className="border-border bg-white shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
-                      <CardContent className="p-7">
-                        <div className="grid items-center gap-5 lg:grid-cols-[1.5fr_0.8fr_0.8fr_220px]">
-                          <div className="flex items-start gap-4">
+                    <Card key={loan.id} className="catalog-list-card border-border bg-white shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
+                      <CardContent className="catalog-list-card__content p-7">
+                        <div className="grid items-center gap-6 lg:grid-cols-[1.55fr_0.8fr_0.8fr_220px]">
+                          <div className="catalog-list-card__main flex items-start gap-4">
                             <div
                               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-sm font-semibold"
                               style={{ borderColor: `${bankAccent}40`, backgroundColor: `${bankAccent}1A`, color: bankAccent }}
@@ -495,12 +513,12 @@ function EmprestimosPage() {
                             </div>
                           </div>
 
-                          <div>
+                          <div className="catalog-list-card__stat">
                             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Taxa mensal</p>
                             <p className="mt-1 text-2xl font-medium tracking-[-0.04em] text-primary">{loan.monthlyRate}%</p>
                           </div>
 
-                          <div className="grid gap-2">
+                          <div className="catalog-list-card__meta grid gap-3">
                             <div>
                               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor máximo</p>
                               <p className="mt-1 text-sm font-medium text-foreground">R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
@@ -514,10 +532,21 @@ function EmprestimosPage() {
                             </div>
                           </div>
 
-                          <Button className="w-full lg:justify-center" onClick={openInternalFlow}>
-                            Quero entender melhor
-                            <ChevronRight className="h-4 w-4" />
-                          </Button>
+                          <div className="catalog-list-card__actions flex items-center lg:justify-end">
+                            {offerLink ? (
+                              <Button asChild className="catalog-card-cta w-full lg:w-auto">
+                                <a href={offerLink} target="_blank" rel="noreferrer sponsored">
+                                  Ver oferta
+                                  <ChevronRight className="h-4 w-4" />
+                                </a>
+                              </Button>
+                            ) : (
+                              <Button className="catalog-card-cta w-full lg:w-auto" onClick={openInternalFlow}>
+                                Ver oferta
+                                <ChevronRight className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       </CardContent>
                     </Card>

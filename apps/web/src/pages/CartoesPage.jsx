@@ -217,16 +217,6 @@ function CartoesPage() {
             <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <p className="cards-results-copy text-sm text-muted-foreground">{filteredCards.length} cartão(ões) visíveis na comparação.</p>
               <div className="flex flex-wrap items-center gap-3">
-                <Label className="whitespace-nowrap">Ordenar</Label>
-                <Select value={sort} onValueChange={setSort}>
-                  <SelectTrigger className="cards-select-trigger w-[220px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="cards-select-content">
-                    <SelectItem className="cards-select-item" value="limite-maior">Maior limite</SelectItem>
-                    <SelectItem className="cards-select-item" value="anuidade-menor">Menor anuidade</SelectItem>
-                  </SelectContent>
-                </Select>
                 <div className="catalog-view-toggle" role="tablist" aria-label="Modo de visualização dos cartões">
                   <Button
                     type="button"
@@ -249,6 +239,16 @@ function CartoesPage() {
                     Em lista
                   </Button>
                 </div>
+                <Label className="whitespace-nowrap">Ordenar</Label>
+                <Select value={sort} onValueChange={setSort}>
+                  <SelectTrigger className="cards-select-trigger w-[220px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="cards-select-content">
+                    <SelectItem className="cards-select-item" value="limite-maior">Maior limite</SelectItem>
+                    <SelectItem className="cards-select-item" value="anuidade-menor">Menor anuidade</SelectItem>
+                  </SelectContent>
+                </Select>
                 <Button variant="outline" className="cards-page-secondary-btn" onClick={openInternalFlow}>Ver opções para meu perfil</Button>
               </div>
             </div>
@@ -263,7 +263,7 @@ function CartoesPage() {
                   const offerLink = resolveOfferLink(card);
 
                   return (
-                    <Card key={card.id} className="cards-offer-card surface-card h-full overflow-hidden border-border bg-white">
+                    <Card key={card.id} className="catalog-grid-card cards-offer-card surface-card h-full overflow-hidden border-border bg-white">
                       <div className="cards-offer-visual relative h-48 border-b border-border bg-slate-100">
                         <div className="cards-offer-glow absolute inset-0 bg-[radial-gradient(circle_at_12%_10%,rgba(148,163,184,0.2),transparent_46%)]" />
                         <div className="absolute inset-0 flex items-center justify-center p-4">
@@ -297,7 +297,7 @@ function CartoesPage() {
                         </div>
                       </div>
 
-                      <CardContent className="cards-offer-content flex h-full flex-col gap-5 p-8">
+                      <CardContent className="catalog-grid-card__content cards-offer-content flex h-full flex-col gap-5 p-8">
                         <div className="cards-offer-bank border-b border-border pb-3">
                           <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-900">{card.bankName}</p>
                         </div>
@@ -330,14 +330,14 @@ function CartoesPage() {
                         </div>
 
                         {offerLink ? (
-                          <Button asChild className="cards-page-primary-btn mt-auto w-full">
+                          <Button asChild className="catalog-card-cta mt-auto w-full">
                             <a href={offerLink} target="_blank" rel="noreferrer sponsored">
                               Ver cartão
                               <ChevronRight className="h-4 w-4" />
                             </a>
                           </Button>
                         ) : (
-                          <Button className="cards-page-primary-btn mt-auto w-full" onClick={openInternalFlow}>
+                          <Button className="catalog-card-cta mt-auto w-full" onClick={openInternalFlow}>
                             Ver cartão
                             <ChevronRight className="h-4 w-4" />
                           </Button>
@@ -357,10 +357,10 @@ function CartoesPage() {
                   const offerLink = resolveOfferLink(card);
 
                   return (
-                    <Card key={card.id} className="cards-offer-list-card border-border bg-white shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
-                      <CardContent className="p-7">
-                        <div className="grid items-center gap-5 lg:grid-cols-[220px_1.5fr_220px]">
-                          <div className="cards-offer-list-visual flex items-center justify-center rounded-[18px] border border-border bg-slate-50 p-4">
+                    <Card key={card.id} className="catalog-list-card cards-offer-list-card border-border bg-white shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
+                      <CardContent className="catalog-list-card__content p-7">
+                        <div className="grid items-center gap-6 lg:grid-cols-[240px_1.55fr_220px]">
+                          <div className="catalog-list-card__visual cards-offer-list-visual flex items-center justify-center rounded-[18px] border border-border bg-slate-50 p-5">
                             <div className="cards-card-media relative w-full max-w-[188px]">
                               {hasPremiumAsset ? (
                                 <img
@@ -384,27 +384,27 @@ function CartoesPage() {
                             </div>
                           </div>
 
-                          <div className="space-y-4">
+                          <div className="catalog-list-card__main space-y-5">
                             <div className="flex flex-wrap items-center gap-3">
-                              <p className="text-base font-semibold text-foreground">{card.bankName}</p>
+                              <p className="text-lg font-semibold text-foreground">{card.bankName}</p>
                               <Badge variant="outline" className="cards-offer-badge">{card.category}</Badge>
                               {isFree ? <Badge variant="secondary" className="cards-offer-badge-secondary">Sem anuidade</Badge> : null}
                             </div>
 
-                            <div className="grid gap-4 sm:grid-cols-2">
-                              <div>
+                            <div className="catalog-list-card__meta-grid grid gap-4 sm:grid-cols-2">
+                              <div className="catalog-list-card__stat">
                                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Anuidade</p>
                                 <p className={`mt-2 text-sm font-medium ${isFree ? 'text-primary' : 'text-foreground'}`}>
                                   {isFree ? 'Grátis' : `R$ ${card.annualFee}/ano`}
                                 </p>
                               </div>
-                              <div>
+                              <div className="catalog-list-card__stat">
                                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Limite estimado</p>
                                 <p className="mt-2 text-sm font-medium text-foreground">R$ {card.maxLimit / 1000}k</p>
                               </div>
                             </div>
 
-                            <div className="cards-offer-benefits space-y-2">
+                            <div className="catalog-list-card__benefits cards-offer-benefits space-y-2">
                               {card.benefits?.slice(0, 3).map((benefit, index) => (
                                 <div key={`${benefit}-${index}`} className="flex items-start gap-3">
                                   <CheckCircle2 className="cards-benefit-icon mt-0.5 h-4 w-4" />
@@ -414,16 +414,16 @@ function CartoesPage() {
                             </div>
                           </div>
 
-                          <div className="flex items-center lg:justify-end">
+                          <div className="catalog-list-card__actions flex items-center lg:justify-end">
                             {offerLink ? (
-                              <Button asChild className="cards-page-primary-btn w-full lg:w-auto">
+                              <Button asChild className="catalog-card-cta w-full lg:w-auto">
                                 <a href={offerLink} target="_blank" rel="noreferrer sponsored">
                                   Ver cartão
                                   <ChevronRight className="h-4 w-4" />
                                 </a>
                               </Button>
                             ) : (
-                              <Button className="cards-page-primary-btn w-full lg:w-auto" onClick={openInternalFlow}>
+                              <Button className="catalog-card-cta w-full lg:w-auto" onClick={openInternalFlow}>
                                 Ver cartão
                                 <ChevronRight className="h-4 w-4" />
                               </Button>
@@ -454,11 +454,11 @@ function CartoesPage() {
       <section className="cards-page-cta-section cards-page-cta-section--light border-t border-border bg-background-secondary py-16 sm:py-20">
         <div className="page-shell">
           <div className="cards-page-cta cards-page-cta--aligned mx-auto max-w-4xl rounded-[24px] border bg-white px-8 py-11 text-center shadow-[var(--shadow-sm)]">
-            <h2 className="cards-section-title mb-3">Quer escolher um cartão com mais clareza?</h2>
-            <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
+            <h2 className="cards-section-title cards-page-cta-title mb-3">Quer escolher um cartão com mais clareza?</h2>
+            <p className="cards-page-cta-copy mx-auto mb-7 max-w-2xl text-muted-foreground">
               Responda o básico sobre o seu momento e veja caminhos que podem combinar melhor com o seu perfil, sem compromisso e sem cobrança antecipada.
             </p>
-            <Button size="lg" className="cards-page-primary-btn" onClick={openInternalFlow}>Ver minhas opções agora</Button>
+            <Button size="lg" className="catalog-card-cta cards-page-primary-btn" onClick={openInternalFlow}>Ver minhas opções agora</Button>
           </div>
         </div>
       </section>
