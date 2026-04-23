@@ -8526,6 +8526,14 @@ body {
   box-shadow: 0 6px 18px rgba(109, 94, 243, 0.25) !important;
 }
 
+.catalog-view-toggle-option.is-active,
+.catalog-view-toggle-option.is-active > *,
+.catalog-view-toggle-option.is-active svg,
+.catalog-view-toggle-option.is-active svg * {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
 .catalog-view-toggle-option.is-active:hover {
   background: #5B4FE0 !important;
   color: #FFFFFF !important;
