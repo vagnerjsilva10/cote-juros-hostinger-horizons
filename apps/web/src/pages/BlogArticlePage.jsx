@@ -412,7 +412,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     to={item.path}
                     className="blog-article-jump-link block min-w-0 rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors"
                   >
-                    <span className="block break-words font-semibold text-foreground">{item.title}</span>
+                    <h3 className="block break-words font-semibold text-foreground">{item.title}</h3>
                     <span className="mt-1 block leading-6 text-muted-foreground">{item.description}</span>
                   </Link>
                 ))}
@@ -498,7 +498,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                             to={item.path}
                             className="blog-article-chip-link min-w-0 rounded-[14px] border border-border bg-white px-4 py-4 text-sm leading-6 text-foreground transition-colors"
                           >
-                            <span className="block break-words font-semibold">{item.title}</span>
+                            <h3 className="block break-words font-semibold text-foreground">{item.title}</h3>
                             <span className="mt-1 block text-muted-foreground">{item.anchor}</span>
                           </Link>
                         ))}
