@@ -276,7 +276,7 @@ function CartoesPage() {
                   const offerLink = resolveOfferLink(card);
 
                   return (
-                    <Card key={card.id} className="catalog-grid-card cards-offer-card surface-card h-full overflow-hidden border-border bg-white">
+                    <Card key={card.id} className="catalog-grid-card cards-offer-card surface-card flex h-full flex-col overflow-hidden border-border bg-white">
                       <div className="cards-offer-visual relative h-48 border-b border-border bg-slate-100">
                         <div className="cards-offer-glow absolute inset-0 bg-[radial-gradient(circle_at_12%_10%,rgba(148,163,184,0.2),transparent_46%)]" />
                         <div className="absolute inset-0 flex items-center justify-center p-4">
@@ -310,7 +310,7 @@ function CartoesPage() {
                         </div>
                       </div>
 
-                      <CardContent className="catalog-grid-card__content cards-offer-content flex h-full flex-col gap-5 p-8">
+                      <CardContent className="catalog-grid-card__content cards-offer-content flex h-full flex-1 flex-col gap-4 p-6">
                         <div className="cards-offer-bank border-b border-border pb-3">
                           <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-900">{card.bankName}</p>
                         </div>
@@ -333,7 +333,7 @@ function CartoesPage() {
                           </div>
                         </div>
 
-                        <div className="cards-offer-benefits space-y-3">
+                        <div className="cards-offer-benefits cards-offer-benefits--grid space-y-2">
                           {card.benefits?.slice(0, 3).map((benefit, index) => (
                             <div key={`${benefit}-${index}`} className="flex items-start gap-3">
                               <CheckCircle2 className="cards-benefit-icon mt-0.5 h-4 w-4" />

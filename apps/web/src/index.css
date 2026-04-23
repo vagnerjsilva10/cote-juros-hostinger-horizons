@@ -6302,9 +6302,9 @@ body {
 .cards-offer-badge,
 .cards-offer-badge-secondary {
   border-radius: 999px !important;
-  font-size: 0.68rem !important;
+  font-size: 0.62rem !important;
   font-weight: 600 !important;
-  letter-spacing: 0.08em !important;
+  letter-spacing: 0.06em !important;
 }
 
 .cards-offer-badge {
@@ -6323,6 +6323,7 @@ body {
   border-color: var(--cards-line) !important;
   border-radius: 8px !important;
   background: linear-gradient(180deg, #ffffff 0%, #f6f9ff 100%) !important;
+  padding: 12px 14px !important;
 }
 
 .cards-offer-stat p:first-child,
@@ -6330,9 +6331,36 @@ body {
   color: var(--cards-text) !important;
 }
 
+.cards-offer-card .cards-offer-bank p {
+  font-size: 0.95rem !important;
+}
+
+.cards-offer-card .cards-offer-stat p:first-child {
+  font-size: 0.68rem !important;
+  letter-spacing: 0.12em !important;
+}
+
 .cards-offer-stat-value {
   color: var(--cards-title);
   font-weight: 600 !important;
+}
+
+.cards-offer-card .cards-offer-stat-value {
+  font-size: 1rem !important;
+  line-height: 1.35 !important;
+}
+
+.cards-offer-benefits--grid p {
+  font-size: 0.9rem !important;
+  line-height: 1.45 !important;
+}
+
+.cards-offer-benefits--grid > div {
+  gap: 10px !important;
+}
+
+.cards-offer-card .catalog-card-cta {
+  margin-top: 4px !important;
 }
 
 .cards-offer-stat-value.is-free {
@@ -8582,6 +8610,10 @@ body {
 
 .catalog-grid-card__content {
   gap: 1.35rem !important;
+}
+
+.cards-offer-card .catalog-grid-card__content {
+  padding: 24px !important;
 }
 
 .catalog-list-card {
