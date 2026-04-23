@@ -364,12 +364,24 @@ function EmprestimosPage() {
             <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <p className="text-sm text-muted-foreground">{filteredLoans.length} opções organizadas para facilitar sua decisão.</p>
               <div className="flex flex-wrap items-center gap-3">
-                <div className="inline-flex items-center rounded-[10px] border border-border bg-white p-1">
-                  <Button type="button" size="sm" variant={viewMode === 'grid' ? 'default' : 'ghost'} className="h-8 gap-1.5 px-3" onClick={() => setViewMode('grid')}>
+                <div className="catalog-view-toggle" role="tablist" aria-label="Modo de visualização dos empréstimos">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className={`catalog-view-toggle-option ${viewMode === 'grid' ? 'is-active' : ''}`}
+                    onClick={() => setViewMode('grid')}
+                  >
                     <LayoutGrid className="h-3.5 w-3.5" />
                     Em cards
                   </Button>
-                  <Button type="button" size="sm" variant={viewMode === 'list' ? 'default' : 'ghost'} className="h-8 gap-1.5 px-3" onClick={() => setViewMode('list')}>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className={`catalog-view-toggle-option ${viewMode === 'list' ? 'is-active' : ''}`}
+                    onClick={() => setViewMode('list')}
+                  >
                     <List className="h-3.5 w-3.5" />
                     Em lista
                   </Button>

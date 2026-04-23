@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, ChevronRight, CreditCard, Filter } from 'lucide-react';
+import { CheckCircle2, ChevronRight, CreditCard, Filter, LayoutGrid, List } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -52,6 +52,13 @@ const resolveCardPalette = (card) => {
   return ['#5B6CFF', '#9AA8FF'];
 };
 
+const resolveOfferLink = (card = {}) => {
+  const rawLink = card.partnerTrackingUrl || card.redirectUrl || '';
+  if (!rawLink) return '';
+  if (rawLink.startsWith('/') || /^https?:\/\//i.test(rawLink)) return rawLink;
+  return `https://${rawLink}`;
+};
+
 function CartoesPage() {
   const [cardsData, setCardsData] = useState([]);
   const [quickModalOpen, setQuickModalOpen] = useState(false);
@@ -59,6 +66,7 @@ function CartoesPage() {
   const [categories, setCategories] = useState({ Premium: false, Intermediario: false, Basico: false });
   const [benefits, setBenefits] = useState({ Cashback: false, Milhas: false, VIP: false });
   const [sort, setSort] = useState('limite-maior');
+  const [viewMode, setViewMode] = useState('grid');
   const categoryOptions = [
     { value: 'Premium', label: 'Premium' },
     { value: 'Intermediario', label: 'Intermediário' },
@@ -219,32 +227,59 @@ function CartoesPage() {
                     <SelectItem className="cards-select-item" value="anuidade-menor">Menor anuidade</SelectItem>
                   </SelectContent>
                 </Select>
+                <div className="catalog-view-toggle" role="tablist" aria-label="Modo de visualização dos cartões">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className={`catalog-view-toggle-option ${viewMode === 'grid' ? 'is-active' : ''}`}
+                    onClick={() => setViewMode('grid')}
+                  >
+                    <LayoutGrid className="h-3.5 w-3.5" />
+                    Em cards
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className={`catalog-view-toggle-option ${viewMode === 'list' ? 'is-active' : ''}`}
+                    onClick={() => setViewMode('list')}
+                  >
+                    <List className="h-3.5 w-3.5" />
+                    Em lista
+                  </Button>
+                </div>
                 <Button variant="outline" className="cards-page-secondary-btn" onClick={openInternalFlow}>Ver opções para meu perfil</Button>
               </div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
+            {viewMode === 'grid' ? (
+              <div className="grid gap-6 md:grid-cols-2">
                 {filteredCards.map((card) => {
                   const isFree = card.annualFee === 0;
                   const cardImage = resolveCardImage(card);
                   const hasPremiumAsset = Boolean(cardImage?.startsWith('/assets/cards/'));
                   const [toneA, toneB] = resolveCardPalette(card);
+                  const offerLink = resolveOfferLink(card);
 
                   return (
                     <Card key={card.id} className="cards-offer-card surface-card h-full overflow-hidden border-border bg-white">
                       <div className="cards-offer-visual relative h-48 border-b border-border bg-slate-100">
                         <div className="cards-offer-glow absolute inset-0 bg-[radial-gradient(circle_at_12%_10%,rgba(148,163,184,0.2),transparent_46%)]" />
                         <div className="absolute inset-0 flex items-center justify-center p-4">
-                          <div className="cards-card-media relative w-full max-w-[240px]">
+                          <div className="cards-card-media relative w-full max-w-[264px]">
                             {hasPremiumAsset ? (
                               <img
                                 src={cardImage}
                                 alt={card.title}
-                                className="h-[148px] w-full rounded-2xl object-contain shadow-[0_16px_34px_rgba(15,23,42,0.28)]"
+                                loading="eager"
+                                decoding="sync"
+                                draggable="false"
+                                className="w-full rounded-2xl object-contain shadow-[0_16px_34px_rgba(15,23,42,0.28)]"
                               />
                             ) : (
                               <div
-                                className="cards-fallback-art h-[148px] rounded-2xl border border-white/20 p-4 text-white shadow-[0_16px_34px_rgba(15,23,42,0.28)]"
+                                className="cards-fallback-art rounded-2xl border border-white/20 p-4 text-white shadow-[0_16px_34px_rgba(15,23,42,0.28)]"
                                 style={{ background: `linear-gradient(135deg, ${toneA}, ${toneB})` }}
                               >
                                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90 [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]">
@@ -294,15 +329,113 @@ function CartoesPage() {
                           ))}
                         </div>
 
-                        <Button className="cards-page-primary-btn mt-auto w-full" onClick={openInternalFlow}>
-                          Continuar no fluxo
-                          <ChevronRight className="h-4 w-4" />
-                        </Button>
+                        {offerLink ? (
+                          <Button asChild className="cards-page-primary-btn mt-auto w-full">
+                            <a href={offerLink} target="_blank" rel="noreferrer sponsored">
+                              Ver cartão
+                              <ChevronRight className="h-4 w-4" />
+                            </a>
+                          </Button>
+                        ) : (
+                          <Button className="cards-page-primary-btn mt-auto w-full" onClick={openInternalFlow}>
+                            Ver cartão
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
+                        )}
                       </CardContent>
                     </Card>
                   );
                 })}
-            </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredCards.map((card) => {
+                  const isFree = card.annualFee === 0;
+                  const cardImage = resolveCardImage(card);
+                  const hasPremiumAsset = Boolean(cardImage?.startsWith('/assets/cards/'));
+                  const [toneA, toneB] = resolveCardPalette(card);
+                  const offerLink = resolveOfferLink(card);
+
+                  return (
+                    <Card key={card.id} className="cards-offer-list-card border-border bg-white shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
+                      <CardContent className="p-7">
+                        <div className="grid items-center gap-5 lg:grid-cols-[220px_1.5fr_220px]">
+                          <div className="cards-offer-list-visual flex items-center justify-center rounded-[18px] border border-border bg-slate-50 p-4">
+                            <div className="cards-card-media relative w-full max-w-[188px]">
+                              {hasPremiumAsset ? (
+                                <img
+                                  src={cardImage}
+                                  alt={card.title}
+                                  loading="eager"
+                                  decoding="sync"
+                                  draggable="false"
+                                  className="w-full rounded-2xl object-contain shadow-[0_14px_28px_rgba(15,23,42,0.22)]"
+                                />
+                              ) : (
+                                <div
+                                  className="cards-fallback-art rounded-2xl border border-white/20 p-4 text-white shadow-[0_14px_28px_rgba(15,23,42,0.22)]"
+                                  style={{ background: `linear-gradient(135deg, ${toneA}, ${toneB})` }}
+                                >
+                                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90">{card.bankName}</p>
+                                  <p className="mt-4 text-base font-semibold leading-tight text-white">{card.title}</p>
+                                  <p className="mt-6 text-[11px] uppercase tracking-[0.14em] text-white/90">Crédito</p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="space-y-4">
+                            <div className="flex flex-wrap items-center gap-3">
+                              <p className="text-base font-semibold text-foreground">{card.bankName}</p>
+                              <Badge variant="outline" className="cards-offer-badge">{card.category}</Badge>
+                              {isFree ? <Badge variant="secondary" className="cards-offer-badge-secondary">Sem anuidade</Badge> : null}
+                            </div>
+
+                            <div className="grid gap-4 sm:grid-cols-2">
+                              <div>
+                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Anuidade</p>
+                                <p className={`mt-2 text-sm font-medium ${isFree ? 'text-primary' : 'text-foreground'}`}>
+                                  {isFree ? 'Grátis' : `R$ ${card.annualFee}/ano`}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Limite estimado</p>
+                                <p className="mt-2 text-sm font-medium text-foreground">R$ {card.maxLimit / 1000}k</p>
+                              </div>
+                            </div>
+
+                            <div className="cards-offer-benefits space-y-2">
+                              {card.benefits?.slice(0, 3).map((benefit, index) => (
+                                <div key={`${benefit}-${index}`} className="flex items-start gap-3">
+                                  <CheckCircle2 className="cards-benefit-icon mt-0.5 h-4 w-4" />
+                                  <p className="text-sm text-muted-foreground">{benefit}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center lg:justify-end">
+                            {offerLink ? (
+                              <Button asChild className="cards-page-primary-btn w-full lg:w-auto">
+                                <a href={offerLink} target="_blank" rel="noreferrer sponsored">
+                                  Ver cartão
+                                  <ChevronRight className="h-4 w-4" />
+                                </a>
+                              </Button>
+                            ) : (
+                              <Button className="cards-page-primary-btn w-full lg:w-auto" onClick={openInternalFlow}>
+                                Ver cartão
+                                <ChevronRight className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
 
             {filteredCards.length === 0 ? (
               <div className="cards-empty-state rounded-[20px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center">
@@ -318,9 +451,9 @@ function CartoesPage() {
         </div>
       </div>
 
-      <section className="cards-page-cta-section border-t border-border bg-background-secondary py-16 sm:py-20">
+      <section className="cards-page-cta-section cards-page-cta-section--light border-t border-border bg-background-secondary py-16 sm:py-20">
         <div className="page-shell">
-          <div className="cards-page-cta mx-auto max-w-4xl rounded-[24px] border bg-white px-8 py-10 text-center shadow-[var(--shadow-sm)]">
+          <div className="cards-page-cta cards-page-cta--aligned mx-auto max-w-4xl rounded-[24px] border bg-white px-8 py-11 text-center shadow-[var(--shadow-sm)]">
             <h2 className="cards-section-title mb-3">Quer escolher um cartão com mais clareza?</h2>
             <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
               Responda o básico sobre o seu momento e veja caminhos que podem combinar melhor com o seu perfil, sem compromisso e sem cobrança antecipada.
