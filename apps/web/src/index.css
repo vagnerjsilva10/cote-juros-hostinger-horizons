@@ -6971,13 +6971,19 @@ body {
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-page-cta-panel h2 {
-  max-width: 16ch !important;
+  max-width: 650px !important;
+  font-size: var(--heading-xl) !important;
+  font-weight: 640 !important;
+  line-height: var(--heading-line-xl) !important;
+  letter-spacing: var(--heading-track-tight) !important;
+  text-wrap: balance !important;
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-page-cta-panel p:not(.blog-kicker) {
-  max-width: 780px !important;
-  font-size: 1rem !important;
-  line-height: 1.72 !important;
+  max-width: 640px !important;
+  font-size: 15px !important;
+  line-height: 1.65 !important;
+  color: var(--domain-text-soft) !important;
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-page-cta-actions {
