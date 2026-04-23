@@ -20,7 +20,8 @@ const bankCardImages = {
   c6: '/assets/cards/c6-card.svg',
   inter: '/assets/cards/inter-card.svg',
   bradesco: '/assets/cards/bradesco-card.svg',
-  bb: '/assets/cards/bb-card.svg'
+  bb: '/assets/cards/bb-card.svg',
+  caixa: '/assets/cards/caixa-card.svg'
 };
 
 const normalizeBankKey = (value = '') =>
@@ -38,6 +39,7 @@ const resolveCardImage = (card) => {
   if (bankName.includes('inter')) return bankCardImages.inter;
   if (bankName.includes('bradesco')) return bankCardImages.bradesco;
   if (bankName.includes('banco do brasil') || bankName.includes('bb')) return bankCardImages.bb;
+  if (bankName.includes('caixa')) return bankCardImages.caixa;
   return card?.image;
 };
 
