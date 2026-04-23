@@ -9174,12 +9174,12 @@ body {
   }
 
   .public-site-shell.is-domain-page .blog-page-hero .hero-title {
-    max-width: 680px !important;
+    max-width: 600px !important;
     color: #0f172a !important;
-    font-size: clamp(2.45rem, 3vw, 3rem) !important;
-    font-weight: 700 !important;
-    letter-spacing: -0.04em !important;
-    line-height: 1.02 !important;
+    font-size: clamp(2rem, 2.35vw, 2.38rem) !important;
+    font-weight: 680 !important;
+    letter-spacing: -0.028em !important;
+    line-height: 1.1 !important;
   }
 
   .public-site-shell.is-domain-page .blog-page-hero .hero-subtitle {
@@ -9227,31 +9227,32 @@ body {
   .public-site-shell.is-domain-page .blog-article-related h2,
   .public-site-shell.is-domain-page .blog-article-related h3 {
     color: #0f172a !important;
-    font-weight: 560 !important;
-    letter-spacing: -0.028em !important;
+    font-weight: 540 !important;
+    letter-spacing: -0.022em !important;
   }
 
   .public-site-shell.is-domain-page .blog-page-shell h2 {
-    font-size: clamp(1.9rem, 2.15vw, 2.35rem) !important;
-    line-height: 1.08 !important;
+    font-size: clamp(1.78rem, 2vw, 2.08rem) !important;
+    line-height: 1.14 !important;
   }
 
   .public-site-shell.is-domain-page .blog-featured-card h3,
   .public-site-shell.is-domain-page .blog-article-card-title,
   .public-site-shell.is-domain-page .blog-article-pagination-link h3 {
     color: #0f172a !important;
-    font-weight: 560 !important;
-    letter-spacing: -0.024em !important;
+    font-weight: 540 !important;
+    letter-spacing: -0.018em !important;
   }
 
   .public-site-shell.is-domain-page .blog-featured-card h3 {
-    font-size: clamp(1.7rem, 2.1vw, 2.1rem) !important;
-    line-height: 1.1 !important;
+    max-width: 16ch !important;
+    font-size: clamp(1.38rem, 1.55vw, 1.62rem) !important;
+    line-height: 1.22 !important;
   }
 
   .public-site-shell.is-domain-page .blog-article-card-title {
-    font-size: 1.2rem !important;
-    line-height: 1.28 !important;
+    font-size: 1.12rem !important;
+    line-height: 1.34 !important;
   }
 
   .public-site-shell.is-domain-page .blog-page-shell :is(.blog-featured-card p, .blog-intro-panel p, .blog-status-panel p, .blog-page-cta-panel p:not(.blog-kicker), .blog-article-card-summary),
@@ -9319,10 +9320,10 @@ body {
   .public-site-shell.is-domain-page .blog-page-shell .blog-page-cta-panel h2 {
     max-width: 700px !important;
     color: #0f172a !important;
-    font-size: clamp(2rem, 2.3vw, 2.5rem) !important;
-    font-weight: 560 !important;
-    line-height: 1.1 !important;
-    letter-spacing: -0.03em !important;
+    font-size: clamp(1.82rem, 2.05vw, 2.18rem) !important;
+    font-weight: 540 !important;
+    line-height: 1.16 !important;
+    letter-spacing: -0.022em !important;
   }
 
   .public-site-shell.is-domain-page .blog-article-hero {
@@ -9333,10 +9334,10 @@ body {
   .public-site-shell.is-domain-page .blog-article-title {
     max-width: 840px !important;
     color: #0f172a !important;
-    font-size: clamp(2.5rem, 3vw, 3.15rem) !important;
-    font-weight: 620 !important;
-    letter-spacing: -0.04em !important;
-    line-height: 1.04 !important;
+    font-size: clamp(2.2rem, 2.5vw, 2.58rem) !important;
+    font-weight: 580 !important;
+    letter-spacing: -0.03em !important;
+    line-height: 1.12 !important;
   }
 
   .public-site-shell.is-domain-page .blog-article-summary {
@@ -9353,17 +9354,17 @@ body {
 
   .public-site-shell.is-domain-page :is(.blog-article-hero-aside, .blog-article-sidebar-card) h2 {
     color: #0f172a !important;
-    font-size: 1.35rem !important;
-    font-weight: 560 !important;
-    line-height: 1.14 !important;
-    letter-spacing: -0.025em !important;
+    font-size: 1.24rem !important;
+    font-weight: 540 !important;
+    line-height: 1.18 !important;
+    letter-spacing: -0.018em !important;
   }
 
   .public-site-shell.is-domain-page :is(.blog-article-hero-aside, .blog-article-sidebar-card) .blog-article-jump-link span:first-child {
     color: #0f172a !important;
-    font-size: 1rem !important;
-    font-weight: 560 !important;
-    line-height: 1.4 !important;
+    font-size: 0.96rem !important;
+    font-weight: 540 !important;
+    line-height: 1.46 !important;
   }
 
   .public-site-shell.is-domain-page .blog-article-related {
