@@ -117,6 +117,17 @@ function CartoesPage() {
     setQuickModalOpen(true);
   };
 
+  const getViewToggleStyle = (mode) =>
+    viewMode === mode
+      ? {
+          backgroundColor: '#6D5EF3',
+          color: '#FFFFFF'
+        }
+      : {
+          backgroundColor: 'transparent',
+          color: '#64748B'
+        };
+
   return (
     <>
       <SeoHead
@@ -224,6 +235,7 @@ function CartoesPage() {
                     variant="ghost"
                     className={`catalog-view-toggle-option ${viewMode === 'grid' ? 'is-active' : ''}`}
                     onClick={() => setViewMode('grid')}
+                    style={getViewToggleStyle('grid')}
                   >
                     <LayoutGrid className="h-3.5 w-3.5" />
                     Em cards
@@ -234,6 +246,7 @@ function CartoesPage() {
                     variant="ghost"
                     className={`catalog-view-toggle-option ${viewMode === 'list' ? 'is-active' : ''}`}
                     onClick={() => setViewMode('list')}
+                    style={getViewToggleStyle('list')}
                   >
                     <List className="h-3.5 w-3.5" />
                     Em lista
@@ -359,7 +372,7 @@ function CartoesPage() {
                   return (
                     <Card key={card.id} className="catalog-list-card cards-offer-list-card border-border bg-white shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
                       <CardContent className="catalog-list-card__content p-7">
-                        <div className="grid items-center gap-6 lg:grid-cols-[240px_1.55fr_220px]">
+                        <div className="grid items-start gap-6 lg:grid-cols-[240px_minmax(0,1fr)_240px]">
                           <div className="catalog-list-card__visual cards-offer-list-visual flex items-center justify-center rounded-[18px] border border-border bg-slate-50 p-5">
                             <div className="cards-card-media relative w-full max-w-[188px]">
                               {hasPremiumAsset ? (
@@ -391,7 +404,18 @@ function CartoesPage() {
                               {isFree ? <Badge variant="secondary" className="cards-offer-badge-secondary">Sem anuidade</Badge> : null}
                             </div>
 
-                            <div className="catalog-list-card__meta-grid grid gap-4 sm:grid-cols-2">
+                            <div className="catalog-list-card__benefits cards-offer-benefits space-y-2">
+                              {card.benefits?.slice(0, 3).map((benefit, index) => (
+                                <div key={`${benefit}-${index}`} className="flex items-start gap-3">
+                                  <CheckCircle2 className="cards-benefit-icon mt-0.5 h-4 w-4" />
+                                  <p className="text-sm text-muted-foreground">{benefit}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="catalog-list-card__actions cards-offer-list-side flex flex-col gap-4">
+                            <div className="cards-offer-list-side__stats grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
                               <div className="catalog-list-card__stat">
                                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Anuidade</p>
                                 <p className={`mt-2 text-sm font-medium ${isFree ? 'text-primary' : 'text-foreground'}`}>
@@ -404,26 +428,15 @@ function CartoesPage() {
                               </div>
                             </div>
 
-                            <div className="catalog-list-card__benefits cards-offer-benefits space-y-2">
-                              {card.benefits?.slice(0, 3).map((benefit, index) => (
-                                <div key={`${benefit}-${index}`} className="flex items-start gap-3">
-                                  <CheckCircle2 className="cards-benefit-icon mt-0.5 h-4 w-4" />
-                                  <p className="text-sm text-muted-foreground">{benefit}</p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="catalog-list-card__actions flex items-center lg:justify-end">
                             {offerLink ? (
-                              <Button asChild className="catalog-card-cta w-full lg:w-auto">
+                              <Button asChild className="catalog-card-cta w-full">
                                 <a href={offerLink} target="_blank" rel="noreferrer sponsored">
                                   Ver cartão
                                   <ChevronRight className="h-4 w-4" />
                                 </a>
                               </Button>
                             ) : (
-                              <Button className="catalog-card-cta w-full lg:w-auto" onClick={openInternalFlow}>
+                              <Button className="catalog-card-cta w-full" onClick={openInternalFlow}>
                                 Ver cartão
                                 <ChevronRight className="h-4 w-4" />
                               </Button>
@@ -451,11 +464,11 @@ function CartoesPage() {
         </div>
       </div>
 
-      <section className="cards-page-cta-section cards-page-cta-section--light final-cta-section border-t border-border bg-background-secondary py-[4.5rem]">
+      <section className="border-t border-border bg-background-secondary py-[4.5rem]">
         <div className="page-shell">
-          <div className="cards-page-cta cards-page-cta--aligned final-cta-card mx-auto max-w-4xl rounded-[24px] border border-primary/20 bg-white px-8 py-11 text-center shadow-[var(--shadow-sm)]">
-            <h2 className="cards-section-title cards-page-cta-title mb-3">Quer escolher um cartão com mais clareza?</h2>
-            <p className="cards-page-cta-copy mx-auto mb-7 max-w-2xl text-muted-foreground">
+          <div className="mx-auto max-w-4xl rounded-[24px] border border-primary/20 bg-white px-8 py-11 text-center shadow-[var(--shadow-sm)]">
+            <h2 className="mb-3">Quer escolher um cartão com mais clareza?</h2>
+            <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
               Responda o básico sobre o seu momento e veja caminhos que podem combinar melhor com o seu perfil, sem compromisso e sem cobrança antecipada.
             </p>
             <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>

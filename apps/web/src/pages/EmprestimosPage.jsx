@@ -129,6 +129,17 @@ function EmprestimosPage() {
     setQuickModalOpen(true);
   };
 
+  const getViewToggleStyle = (mode) =>
+    viewMode === mode
+      ? {
+          backgroundColor: '#6D5EF3',
+          color: '#FFFFFF'
+        }
+      : {
+          backgroundColor: 'transparent',
+          color: '#64748B'
+        };
+
   return (
     <>
       <SeoHead
@@ -378,6 +389,7 @@ function EmprestimosPage() {
                     variant="ghost"
                     className={`catalog-view-toggle-option ${viewMode === 'grid' ? 'is-active' : ''}`}
                     onClick={() => setViewMode('grid')}
+                    style={getViewToggleStyle('grid')}
                   >
                     <LayoutGrid className="h-3.5 w-3.5" />
                     Em cards
@@ -388,6 +400,7 @@ function EmprestimosPage() {
                     variant="ghost"
                     className={`catalog-view-toggle-option ${viewMode === 'list' ? 'is-active' : ''}`}
                     onClick={() => setViewMode('list')}
+                    style={getViewToggleStyle('list')}
                   >
                     <List className="h-3.5 w-3.5" />
                     Em lista
