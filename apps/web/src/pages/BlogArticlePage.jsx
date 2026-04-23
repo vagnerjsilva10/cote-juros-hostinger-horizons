@@ -86,11 +86,185 @@ const BLOG_SIDEBAR_READING = normalizeMojibakeDeep([
   }
 ]);
 
+const COMMERCIAL_LINK_LIBRARY = [
+  {
+    path: '/emprestimos',
+    title: 'opções de empréstimo',
+    anchor: 'compare opções de empréstimo antes de contratar'
+  },
+  {
+    path: '/cartoes',
+    title: 'cartões de crédito',
+    anchor: 'compare cartões antes de contratar'
+  },
+  {
+    path: '/financiamentos',
+    title: 'opções de financiamento',
+    anchor: 'compare opções de financiamento com calma'
+  }
+];
+
+const EXTERNAL_SOURCE_LIBRARY = {
+  bancoCentral: {
+    label: 'Banco Central',
+    url: 'https://www.bcb.gov.br/'
+  },
+  serasa: {
+    label: 'Serasa',
+    url: 'https://www.serasa.com.br/'
+  },
+  spc: {
+    label: 'SPC Brasil',
+    url: 'https://www.spcbrasil.org.br/'
+  },
+  ibge: {
+    label: 'IBGE',
+    url: 'https://www.ibge.gov.br/'
+  }
+};
+
+const dedupeLinksByPath = (items = []) => {
+  const seen = new Set();
+  return items.filter((item) => {
+    if (!item?.path || seen.has(item.path)) return false;
+    seen.add(item.path);
+    return true;
+  });
+};
+
+const dedupeExternalByUrl = (items = []) => {
+  const seen = new Set();
+  return items.filter((item) => {
+    if (!item?.url || seen.has(item.url)) return false;
+    seen.add(item.url);
+    return true;
+  });
+};
+
 const normalizeIntentText = (value = '') =>
   String(value)
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase();
+
+const tokenizeEditorialText = (value = '') =>
+  normalizeIntentText(value)
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .filter((token) => token.length > 2);
+
+const getCommercialLinkCandidates = (article) => {
+  const intent = normalizeIntentText([
+    article?.title,
+    article?.h1,
+    article?.category,
+    article?.summary,
+    article?.excerpt,
+    ...(article?.tags || [])
+  ].join(' '));
+
+  if (/(cart|anuidade|limite|cashback|milha|fatura|rotativo)/.test(intent)) {
+    return [
+      COMMERCIAL_LINK_LIBRARY[1],
+      COMMERCIAL_LINK_LIBRARY[0],
+      COMMERCIAL_LINK_LIBRARY[2]
+    ];
+  }
+
+  if (/(financ|veiculo|imovel|entrada|sac|price|parcela do carro|carro)/.test(intent)) {
+    return [
+      COMMERCIAL_LINK_LIBRARY[2],
+      COMMERCIAL_LINK_LIBRARY[0],
+      COMMERCIAL_LINK_LIBRARY[1]
+    ];
+  }
+
+  return [
+    COMMERCIAL_LINK_LIBRARY[0],
+    COMMERCIAL_LINK_LIBRARY[2],
+    COMMERCIAL_LINK_LIBRARY[1]
+  ];
+};
+
+const getExternalAuthorityLinks = (article) => {
+  const intent = normalizeIntentText([
+    article?.title,
+    article?.h1,
+    article?.category,
+    article?.summary,
+    article?.excerpt,
+    ...(article?.tags || [])
+  ].join(' '));
+
+  if (/(score|negativado|cpf|cadastro|restricao|serasa|spc)/.test(intent)) {
+    return [
+      EXTERNAL_SOURCE_LIBRARY.serasa,
+      EXTERNAL_SOURCE_LIBRARY.spc,
+      EXTERNAL_SOURCE_LIBRARY.bancoCentral
+    ];
+  }
+
+  if (/(reserva|orcamento|renda|familia|planejamento|organizacao|gastos)/.test(intent)) {
+    return [
+      EXTERNAL_SOURCE_LIBRARY.ibge,
+      EXTERNAL_SOURCE_LIBRARY.bancoCentral
+    ];
+  }
+
+  return [
+    EXTERNAL_SOURCE_LIBRARY.bancoCentral,
+    EXTERNAL_SOURCE_LIBRARY.ibge
+  ];
+};
+
+const getSemanticArticleLinks = (article, articles, count = 6) => {
+  const baseTokens = new Set(
+    tokenizeEditorialText([
+      article?.title,
+      article?.h1,
+      article?.category,
+      article?.summary,
+      ...(article?.tags || [])
+    ].join(' '))
+  );
+
+  const currentCategory = getArticleCategoryKey(article);
+
+  return (Array.isArray(articles) ? articles : [])
+    .map((item) => normalizeArticleData(item))
+    .filter((candidate) => candidate.slug !== article.slug)
+    .map((candidate) => {
+      const candidateTokens = tokenizeEditorialText([
+        candidate.title,
+        candidate.h1,
+        candidate.category,
+        candidate.summary,
+        ...(candidate.tags || [])
+      ].join(' '));
+
+      const sharedTokens = candidateTokens.filter((token) => baseTokens.has(token)).length;
+      const sameCategory = getArticleCategoryKey(candidate) === currentCategory ? 1 : 0;
+      const sharedTags = (candidate.tags || []).filter((tag) =>
+        (article.tags || []).some((ownTag) => normalizeIntentText(ownTag) === normalizeIntentText(tag))
+      ).length;
+
+      return {
+        candidate,
+        score: sharedTokens * 2 + sharedTags * 4 + sameCategory * 8
+      };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return new Date(b.candidate.publishedAt) - new Date(a.candidate.publishedAt);
+    })
+    .slice(0, count)
+    .map(({ candidate }) => ({
+      path: getArticlePath(candidate),
+      title: getEditorialTitle(candidate),
+      anchor: getArticleSummary(candidate)
+    }));
+};
 
 const getArticleConversionCta = (article, categoryRoute) => {
   const intent = normalizeIntentText([
@@ -210,6 +384,46 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
       })
       .slice(0, 3);
   }, [safeArticle, articles]);
+
+  const commercialLinks = useMemo(
+    () => (safeArticle ? getCommercialLinkCandidates(safeArticle) : []),
+    [safeArticle]
+  );
+
+  const semanticArticleLinks = useMemo(
+    () => (safeArticle ? getSemanticArticleLinks(safeArticle, articles, 6) : []),
+    [safeArticle, articles]
+  );
+
+  const authorityInternalLinks = useMemo(() => {
+    if (!safeArticle) return [];
+
+    return dedupeLinksByPath([
+      ...(safeArticle.internalLinks || []),
+      ...commercialLinks,
+      ...semanticArticleLinks
+    ]).slice(0, 6);
+  }, [safeArticle, commercialLinks, semanticArticleLinks]);
+
+  const contextualPrimaryLinks = useMemo(
+    () => authorityInternalLinks.slice(0, 3),
+    [authorityInternalLinks]
+  );
+
+  const contextualSecondaryLinks = useMemo(
+    () => authorityInternalLinks.slice(3, 6),
+    [authorityInternalLinks]
+  );
+
+  const continueExploringLinks = useMemo(
+    () => semanticArticleLinks.slice(0, 3),
+    [semanticArticleLinks]
+  );
+
+  const externalAuthorityLinks = useMemo(
+    () => (safeArticle ? dedupeExternalByUrl(getExternalAuthorityLinks(safeArticle)).slice(0, 3) : []),
+    [safeArticle]
+  );
 
   const sidebarReading = useMemo(() => {
     const findPath = (title) => {
@@ -432,6 +646,44 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     <p key={`intro-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{paragraph}</p>
                   ))}
 
+                  {contextualPrimaryLinks.length >= 3 ? (
+                    <p className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">
+                      Se você quer transformar essa leitura em decisão prática, vale{' '}
+                      <Link to={contextualPrimaryLinks[0].path} className="blog-inline-link font-medium hover:underline">
+                        {contextualPrimaryLinks[0].anchor}
+                      </Link>
+                      , entender{' '}
+                      <Link to={contextualPrimaryLinks[1].path} className="blog-inline-link font-medium hover:underline">
+                        {contextualPrimaryLinks[1].title}
+                      </Link>{' '}
+                      e, antes de avançar,{' '}
+                      <Link to={contextualPrimaryLinks[2].path} className="blog-inline-link font-medium hover:underline">
+                        {contextualPrimaryLinks[2].anchor}
+                      </Link>
+                      .
+                    </p>
+                  ) : null}
+
+                  {externalAuthorityLinks.length ? (
+                    <p className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">
+                      Para confrontar o tema com referências confiáveis, vale consultar{' '}
+                      {externalAuthorityLinks.map((item, index) => (
+                        <React.Fragment key={item.url}>
+                          {index > 0 ? (index === externalAuthorityLinks.length - 1 ? ' e ' : ', ') : null}
+                          <a
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="blog-inline-link font-medium hover:underline"
+                          >
+                            {item.label}
+                          </a>
+                        </React.Fragment>
+                      ))}
+                      .
+                    </p>
+                  ) : null}
+
                   {introSupersimOffer ? (
                     <SuperSimInlineCTA
                       offer={introSupersimOffer}
@@ -478,6 +730,20 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                       </section>
 
                       {index === midSectionIndex ? <AdSlotInline /> : null}
+                      {index === midSectionIndex && contextualSecondaryLinks.length ? (
+                        <p className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">
+                          Para aprofundar a comparação sem sair do contexto, veja também{' '}
+                          {contextualSecondaryLinks.map((item, itemIndex) => (
+                            <React.Fragment key={item.path}>
+                              {itemIndex > 0 ? (itemIndex === contextualSecondaryLinks.length - 1 ? ' e ' : ', ') : null}
+                              <Link to={item.path} className="blog-inline-link font-medium hover:underline">
+                                {itemIndex === 0 ? item.title : item.anchor}
+                              </Link>
+                            </React.Fragment>
+                          ))}
+                          .
+                        </p>
+                      ) : null}
                       {index === midSectionIndex && midSupersimOffer ? (
                         <SuperSimInlineCTA
                           offer={midSupersimOffer}
@@ -488,20 +754,37 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     </React.Fragment>
                   ))}
 
-                  {safeArticle.internalLinks.length ? (
+                  {authorityInternalLinks.length ? (
                     <section className="blog-article-link-grid min-w-0 rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
-                      <h2 className="text-xl text-foreground sm:text-2xl">Leituras recomendadas</h2>
+                      <h2 className="text-xl text-foreground sm:text-2xl">Artigos relacionados</h2>
                       <div className="blog-article-chip-grid mt-4 grid gap-3 sm:grid-cols-2">
-                        {safeArticle.internalLinks.slice(0, 6).map((item) => (
-                          <Link
-                            key={item.path}
-                            to={item.path}
-                            className="blog-article-chip-link min-w-0 rounded-[14px] border border-border bg-white px-4 py-4 text-sm leading-6 text-foreground transition-colors"
-                          >
-                            <h3 className="block break-words font-semibold text-foreground">{item.title}</h3>
-                            <span className="mt-1 block text-muted-foreground">{item.anchor}</span>
-                          </Link>
-                        ))}
+                        {authorityInternalLinks.map((item) => {
+                          const isCommercial = COMMERCIAL_LINK_LIBRARY.some((commercial) => commercial.path === item.path);
+                          const cardNode = (
+                            <>
+                              <h3 className="block break-words font-semibold text-foreground">{item.title}</h3>
+                              <span className="mt-1 block text-muted-foreground">{item.anchor}</span>
+                            </>
+                          );
+
+                          return isCommercial ? (
+                            <Link
+                              key={item.path}
+                              to={item.path}
+                              className="blog-article-chip-link min-w-0 rounded-[14px] border border-border bg-white px-4 py-4 text-sm leading-6 text-foreground transition-colors"
+                            >
+                              {cardNode}
+                            </Link>
+                          ) : (
+                            <Link
+                              key={item.path}
+                              to={item.path}
+                              className="blog-article-chip-link min-w-0 rounded-[14px] border border-border bg-white px-4 py-4 text-sm leading-6 text-foreground transition-colors"
+                            >
+                              {cardNode}
+                            </Link>
+                          );
+                        })}
                       </div>
                     </section>
                   ) : null}
@@ -536,6 +819,24 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                       {safeArticle.conclusion.map((paragraph, index) => (
                         <p key={`conclusion-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{paragraph}</p>
                       ))}
+                    </section>
+                  ) : null}
+
+                  {continueExploringLinks.length ? (
+                    <section className="blog-article-link-grid min-w-0 rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
+                      <h2 className="text-xl text-foreground sm:text-2xl">Continue explorando</h2>
+                      <div className="blog-article-chip-grid mt-4 grid gap-3 sm:grid-cols-2">
+                        {continueExploringLinks.map((item) => (
+                          <Link
+                            key={`continue-${item.path}`}
+                            to={item.path}
+                            className="blog-article-chip-link min-w-0 rounded-[14px] border border-border bg-white px-4 py-4 text-sm leading-6 text-foreground transition-colors"
+                          >
+                            <h3 className="block break-words font-semibold text-foreground">{item.title}</h3>
+                            <span className="mt-1 block text-muted-foreground">{item.anchor}</span>
+                          </Link>
+                        ))}
+                      </div>
                     </section>
                   ) : null}
                 </div>
