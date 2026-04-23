@@ -6885,38 +6885,45 @@ body {
 }
 
 .public-site-shell.is-domain-page .blog-page-shell h2 {
-  font-size: clamp(1.72rem, 2.2vw, 2.2rem) !important;
+  font-size: clamp(1.86rem, 2.35vw, 2.35rem) !important;
   font-weight: 640 !important;
-  letter-spacing: var(--heading-track-normal) !important;
-  line-height: var(--heading-line-lg) !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.08 !important;
+  color: var(--domain-title) !important;
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-kicker {
   color: var(--domain-brand) !important;
-  font-size: 0.72rem !important;
+  font-size: 0.74rem !important;
   font-weight: 700 !important;
-  letter-spacing: 0.18em !important;
+  letter-spacing: 0.2em !important;
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-featured-card h3,
 .public-site-shell.is-domain-page .blog-page-shell .blog-article-card-title {
   color: var(--domain-title) !important;
   font-weight: 640 !important;
-  letter-spacing: var(--heading-track-normal) !important;
+  letter-spacing: -0.03em !important;
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-featured-card h3 {
-  font-size: clamp(1.9rem, 2.8vw, 2.5rem) !important;
-  line-height: 1.08 !important;
+  font-size: clamp(2.05rem, 3vw, 2.75rem) !important;
+  line-height: 1.02 !important;
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-article-card-title {
-  font-size: clamp(1.12rem, 1.5vw, 1.3rem) !important;
-  line-height: 1.22 !important;
+  font-size: clamp(1.18rem, 1.58vw, 1.42rem) !important;
+  line-height: 1.16 !important;
 }
 
 .public-site-shell.is-domain-page .blog-page-shell :is(.blog-article-card-summary, .blog-featured-card p, .blog-intro-panel p, .blog-status-panel p) {
   color: var(--domain-text) !important;
+}
+
+.public-site-shell.is-domain-page .blog-page-shell .blog-intro-panel p,
+.public-site-shell.is-domain-page .blog-page-shell .blog-featured-card p {
+  font-size: 1rem !important;
+  line-height: 1.68 !important;
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-article-card-summary {
@@ -6930,8 +6937,16 @@ body {
 
 .public-site-shell.is-domain-page .blog-page-shell :is(.blog-topic-card, .blog-filter-chip) {
   border-color: var(--domain-line-brand) !important;
-  background: rgba(91, 108, 255, 0.05) !important;
+  background: rgba(109, 94, 243, 0.06) !important;
   color: var(--domain-title) !important;
+  box-shadow: none !important;
+}
+
+.public-site-shell.is-domain-page .blog-page-shell .blog-filter-chip {
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  padding: 10px 14px !important;
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-topic-card span:first-child {
@@ -6946,20 +6961,29 @@ body {
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-page-cta-panel {
-  padding: 36px 40px !important;
+  display: grid !important;
+  gap: 0 !important;
+  padding: 42px 44px !important;
+  border-radius: 18px !important;
+  background:
+    radial-gradient(circle at 22% 18%, rgba(109, 94, 243, 0.1), transparent 26%),
+    linear-gradient(180deg, #fbfcff 0%, #f4f7ff 100%) !important;
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-page-cta-panel h2 {
-  max-width: 15ch !important;
+  max-width: 16ch !important;
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-page-cta-panel p:not(.blog-kicker) {
-  max-width: 760px !important;
+  max-width: 780px !important;
+  font-size: 1rem !important;
+  line-height: 1.72 !important;
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-page-cta-actions {
   align-items: center;
   gap: 14px !important;
+  margin-top: 28px !important;
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-page-cta-actions > a {
@@ -6967,8 +6991,23 @@ body {
 }
 
 .public-site-shell.is-domain-page .blog-page-shell .blog-page-cta-actions button {
-  min-height: 48px;
-  padding-inline: 22px !important;
+  min-height: 50px;
+  padding-inline: 24px !important;
+  font-weight: 600 !important;
+}
+
+.public-site-shell.is-domain-page .blog-page-shell .blog-featured-card,
+.public-site-shell.is-domain-page .blog-page-shell .blog-intro-panel,
+.public-site-shell.is-domain-page .blog-page-shell .blog-status-panel,
+.public-site-shell.is-domain-page .blog-page-shell .blog-article-card-shell {
+  border-color: rgba(109, 94, 243, 0.12) !important;
+  background:
+    radial-gradient(circle at top right, rgba(109, 94, 243, 0.06), transparent 24%),
+    linear-gradient(180deg, #ffffff 0%, #fafbff 100%) !important;
+}
+
+.public-site-shell.is-domain-page .blog-page-shell .blog-article-card-shell {
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.045) !important;
 }
 
 .public-site-shell.is-domain-page .product-illustration,
@@ -7085,6 +7124,7 @@ body {
 
   .public-site-shell.is-domain-page .blog-page-shell .blog-page-cta-actions {
     gap: 12px !important;
+    margin-top: 22px !important;
   }
 
   .public-site-shell.is-domain-page .blog-page-shell .blog-page-cta-actions > a,
