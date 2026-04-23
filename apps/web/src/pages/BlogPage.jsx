@@ -318,13 +318,13 @@ function BlogPage() {
           ) : null}
         </section>
 
-        <section className="blog-cta-panel p-6 md:p-8">
+        <section className="blog-cta-panel blog-page-cta-panel p-6 md:p-8">
           <p className="blog-kicker text-sm font-semibold uppercase tracking-[0.2em]">Próximo passo</p>
           <h2 className="mt-3 text-2xl text-foreground">Quando quiser sair da leitura, compare opções de crédito com mais clareza</h2>
           <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
             O blog ajuda você a entender melhor o cenário. Quando fizer sentido, a comparação mostra caminhos possíveis para seguir com mais segurança.
           </p>
-          <div className="mt-5 flex flex-wrap gap-3">
+          <div className="blog-page-cta-actions mt-6 flex flex-wrap gap-3">
             <Link to="/emprestimos" className="inline-flex">
               <Button className="rounded-[8px]">
                 Ver minhas opções agora
