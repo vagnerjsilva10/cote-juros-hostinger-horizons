@@ -8534,6 +8534,16 @@ body {
   stroke: #FFFFFF !important;
 }
 
+.catalog-view-toggle-option.is-active,
+.catalog-view-toggle-option.is-active span,
+.catalog-view-toggle-option.is-active p,
+.catalog-view-toggle-option.is-active strong,
+.catalog-view-toggle-option.is-active small {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  opacity: 1 !important;
+}
+
 .catalog-view-toggle-option.is-active:hover {
   background: #5B4FE0 !important;
   color: #FFFFFF !important;
