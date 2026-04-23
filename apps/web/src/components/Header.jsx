@@ -69,18 +69,18 @@ function Header() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-9 w-9 rounded-full border-white/[0.12] bg-white/[0.04] text-white hover:bg-white/[0.08] hover:text-white"
+                  className="mobile-nav-trigger h-9 w-9 rounded-full border-white/[0.12] bg-white/[0.04] text-white hover:bg-white/[0.08] hover:text-white"
                 >
                   <Menu className="h-4.5 w-4.5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[88vw] max-w-[320px] border-l border-white/10 bg-[#060d18] px-5">
+              <SheetContent side="right" className="mobile-nav-sheet w-[88vw] max-w-[320px] border-l border-white/10 bg-[#060d18] px-5">
                 <div className="mt-6 flex flex-col gap-6">
                   <div className="border-b border-white/10 pb-4">
                     <CoteJurosLogo variant="original-light" className="site-logo" />
                   </div>
 
-                  <nav className="flex flex-col gap-2">
+                  <nav className="mobile-nav-links flex flex-col gap-2">
                     {navItems.map((item) => (
                       <Link
                         key={item.path}
@@ -97,7 +97,7 @@ function Header() {
                     ))}
                     <div className="mt-3 border-t border-white/10 pt-4">
                       <Link to="/emprestimos" onClick={() => setMobileOpen(false)}>
-                        <Button className="h-10 w-full rounded-[10px] border-0 bg-[#6D5EF3] text-[13px] font-semibold text-white shadow-[0_10px_24px_rgba(109,94,243,0.22)] transition-colors duration-200 hover:bg-[#5B4FE0]">
+                        <Button className="mobile-nav-cta h-10 w-full rounded-[10px] border-0 bg-[#6D5EF3] text-[13px] font-semibold text-white shadow-[0_10px_24px_rgba(109,94,243,0.22)] transition-colors duration-200 hover:bg-[#5B4FE0]">
                           {'Ver minhas op\u00E7\u00F5es'}
                         </Button>
                       </Link>

@@ -71,6 +71,21 @@ const getCategoryRoute = (article) => {
   return CATEGORY_ROUTES.find((item) => key.includes(item.match)) || { path: '/blog', label: article?.category || 'Blog' };
 };
 
+const BLOG_SIDEBAR_READING = normalizeMojibakeDeep([
+  {
+    title: 'Melhores bancos para solicitar empréstimo',
+    description: 'Compare perfis de crédito antes de assumir um contrato maior.'
+  },
+  {
+    title: 'Calculadora do Cidadão',
+    description: 'Use simulações para enxergar melhor juros e parcelas.'
+  },
+  {
+    title: 'Reserva de emergência',
+    description: 'Veja por que manter folga financeira é essencial antes de financiar.'
+  }
+]);
+
 const normalizeIntentText = (value = '') =>
   String(value)
     .normalize('NFD')
@@ -195,6 +210,23 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
       })
       .slice(0, 3);
   }, [safeArticle, articles]);
+
+  const sidebarReading = useMemo(() => {
+    const findPath = (title) => {
+      const lookup = normalizeIntentText(title);
+      const matchedArticle = articles.find((item) => {
+        const candidate = normalizeIntentText(getEditorialTitle(normalizeArticleData(item)));
+        return candidate.includes(lookup);
+      });
+
+      return matchedArticle ? getArticlePath(normalizeArticleData(matchedArticle)) : '/blog';
+    };
+
+    return BLOG_SIDEBAR_READING.map((item) => ({
+      ...item,
+      path: findPath(item.title)
+    }));
+  }, [articles]);
 
   const orderedArticles = useMemo(
     () => [...articles].sort((a, b) => new Date(a.publishedAt) - new Date(b.publishedAt)),
@@ -364,30 +396,12 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
             </Link>
           </div>
 
-          <div className="blog-article-cover-grid grid min-w-0 gap-5 pt-2 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+          <div className="blog-article-cover-grid grid min-w-0 gap-5 pt-2">
             <ArticleCoverImage
               article={safeArticle}
               className="blog-article-cover min-w-0 w-full max-h-[430px] rounded-[18px] border border-border md:rounded-[20px]"
               aspectRatio="16 / 9"
             />
-
-            {safeArticle.internalLinks.length ? (
-              <aside className="blog-article-hero-aside min-w-0 rounded-[18px] border border-border bg-white p-4 sm:p-5 md:p-6">
-                <h2 className="text-xl text-foreground">Continue a leitura</h2>
-                <div className="blog-article-hero-aside-list mt-4 space-y-3">
-                  {safeArticle.internalLinks.slice(0, 3).map((item) => (
-                    <Link
-                      key={`hero-aside-${item.path}`}
-                      to={item.path}
-                      className="blog-article-jump-link block min-w-0 rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors"
-                    >
-                      <span className="block break-words font-semibold text-foreground">{item.title}</span>
-                      <span className="mt-1 block leading-6 text-muted-foreground">{item.anchor}</span>
-                    </Link>
-                  ))}
-                </div>
-              </aside>
-            ) : null}
           </div>
         </div>
       </section>
@@ -560,6 +574,21 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
             </div>
 
             <aside className="blog-article-sidebar min-w-0 space-y-6 lg:sticky lg:top-24 lg:h-fit">
+              <section className="blog-article-sidebar-card min-w-0 rounded-[18px] border border-border bg-white p-5 md:p-6">
+                <h2 className="text-xl text-foreground">Continue a leitura</h2>
+                <div className="mt-4 space-y-3">
+                  {sidebarReading.map((item) => (
+                    <Link
+                      key={`sidebar-reading-${item.title}`}
+                      to={item.path}
+                      className="blog-article-jump-link block min-w-0 rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors"
+                    >
+                      <span className="block break-words font-semibold text-foreground">{item.title}</span>
+                      <span className="mt-1 block leading-6 text-muted-foreground">{item.description}</span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
               {sidebarSupersimOffer ? (
                 <SuperSimSidebarCard
                   offer={sidebarSupersimOffer}

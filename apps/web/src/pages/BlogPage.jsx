@@ -177,7 +177,7 @@ function BlogPage() {
       </PageHero>
 
       <div className="page-shell blog-page-shell space-y-12 py-12 md:space-y-16 md:py-16">
-        <section className="blog-intro-panel grid gap-5 p-6 md:grid-cols-[1.15fr_0.85fr] md:p-8">
+        <section className="blog-page-section blog-page-section--muted blog-intro-panel grid gap-5 p-6 md:grid-cols-[1.15fr_0.85fr] md:p-8">
           <div className="space-y-3">
             <p className="blog-kicker text-sm font-semibold uppercase tracking-[0.18em]">Comece por aqui</p>
             <h2 className="text-2xl text-foreground md:text-3xl">{t('Os temas mais úteis para cuidar da vida financeira com mais calma')}</h2>
@@ -210,7 +210,7 @@ function BlogPage() {
         ) : null}
 
         {featured ? (
-          <section className="space-y-5">
+          <section className="blog-page-section space-y-5">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-2xl text-foreground">Leitura em destaque</h2>
               <Badge variant="outline">{normalizeMojibake(featured.category || '')}</Badge>
@@ -248,7 +248,7 @@ function BlogPage() {
         <AdSlotHorizontal />
 
         {trendingGuides.length ? (
-          <section className="space-y-5">
+          <section className="blog-page-section blog-page-section--muted space-y-5">
             <h2 className="text-2xl text-foreground">Leituras recomendadas</h2>
             <div className="grid gap-5 md:grid-cols-3">
               {trendingGuides.map((article) => (
@@ -264,7 +264,7 @@ function BlogPage() {
           </section>
         ) : null}
 
-        <section className="space-y-4">
+        <section className="blog-page-section space-y-4">
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-2xl text-foreground">Navegue por tema</h2>
             <span className="text-sm text-muted-foreground">{filteredArticles.length} artigos</span>
@@ -285,7 +285,7 @@ function BlogPage() {
 
         <AdSlotInline />
 
-        <section className="space-y-5">
+        <section className="blog-page-section blog-page-section--muted space-y-5">
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-2xl text-foreground">Artigos recentes</h2>
             <span className="text-sm text-muted-foreground">{filteredArticles.length} artigos</span>
@@ -318,7 +318,7 @@ function BlogPage() {
           ) : null}
         </section>
 
-        <section className="blog-cta-panel blog-page-cta-panel p-6 md:p-8">
+        <section className="blog-page-section blog-page-section--plain blog-cta-panel blog-page-cta-panel p-6 md:p-8">
           <p className="blog-kicker text-sm font-semibold uppercase tracking-[0.2em]">Próximo passo</p>
           <h2 className="mt-3 text-2xl text-foreground">Quando quiser sair da leitura, compare opções de crédito com mais clareza</h2>
           <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">

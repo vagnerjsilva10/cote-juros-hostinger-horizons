@@ -132,12 +132,12 @@ function FinanciamentoPage() {
 
       <div className="page-shell py-14" id="resultados-financiamento">
         <Tabs defaultValue="veiculos" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="veiculos" className="gap-2">
+          <TabsList className="financing-tabs-list grid w-full grid-cols-2">
+            <TabsTrigger value="veiculos" className="financing-tab-trigger gap-2">
               <Car className="h-4 w-4" />
               {t('Veículos')}
             </TabsTrigger>
-            <TabsTrigger value="imobiliario" className="gap-2">
+            <TabsTrigger value="imobiliario" className="financing-tab-trigger gap-2">
               <Home className="h-4 w-4" />
               {t('Imóveis')}
             </TabsTrigger>
