@@ -9140,6 +9140,29 @@ body {
   filter: saturate(0.92) contrast(1.02);
 }
 
+.public-site-shell.is-domain-page .blog-page-shell :is(h2, h3),
+.public-site-shell.is-domain-page .blog-article-page :is(h2, h3),
+.public-site-shell.is-domain-page .blog-article-related :is(h2, h3) {
+  font-weight: 560 !important;
+  letter-spacing: -0.015em !important;
+}
+
+.public-site-shell.is-domain-page .blog-page-hero .hero-title,
+.public-site-shell.is-domain-page .blog-article-title,
+.public-site-shell.is-domain-page .blog-featured-card h3,
+.public-site-shell.is-domain-page .blog-article-card-title {
+  font-weight: 580 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.public-site-shell.is-domain-page .blog-featured-card h3 {
+  line-height: 1.1 !important;
+}
+
+.public-site-shell.is-domain-page .blog-article-card-title {
+  line-height: 1.26 !important;
+}
+
 @media (max-width: 767px) {
   .public-site-shell.is-home .hero-section {
     min-height: 580px;
