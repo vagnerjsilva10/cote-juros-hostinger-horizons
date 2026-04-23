@@ -1,18 +1,25 @@
 <svg width="960" height="600" viewBox="0 0 960 600" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="960" y2="600" gradientUnits="userSpaceOnUse">
+    <linearGradient id="nubank-bg" x1="48" y1="34" x2="908" y2="566" gradientUnits="userSpaceOnUse">
       <stop stop-color="#8A05BE"/>
       <stop offset="1" stop-color="#5B0A89"/>
     </linearGradient>
-    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(760 130) rotate(136.2) scale(350 300)">
-      <stop stop-color="#B467D8" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#B467D8" stop-opacity="0"/>
+    <radialGradient id="nubank-glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(760 128) rotate(132) scale(340 280)">
+      <stop stop-color="#C48AE0" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#C48AE0" stop-opacity="0"/>
     </radialGradient>
+    <linearGradient id="nubank-shine" x1="152" y1="94" x2="536" y2="334" gradientUnits="userSpaceOnUse">
+      <stop stop-color="white" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
   </defs>
-  <rect width="960" height="600" rx="36" fill="url(#bg)"/>
-  <rect width="960" height="600" rx="36" fill="url(#glow)"/>
-  <rect x="70" y="88" width="92" height="68" rx="12" fill="#EAD6F3" fill-opacity="0.9"/>
-  <text x="76" y="366" fill="white" fill-opacity="0.9" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.08em">•••• 3412</text>
-  <text x="70" y="488" fill="white" fill-opacity="0.95" font-family="Inter, Arial, sans-serif" font-size="62" font-weight="700">Nubank</text>
-  <text x="760" y="512" fill="white" fill-opacity="0.92" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">Mastercard</text>
+  <rect width="960" height="600" rx="42" fill="url(#nubank-bg)"/>
+  <rect x="18" y="18" width="924" height="564" rx="34" stroke="rgba(255,255,255,0.18)"/>
+  <rect width="960" height="600" rx="42" fill="url(#nubank-glow)"/>
+  <rect x="86" y="96" width="104" height="76" rx="14" fill="#E9D5F5" fill-opacity="0.92"/>
+  <rect x="86" y="96" width="360" height="186" rx="30" fill="url(#nubank-shine)"/>
+  <text x="88" y="236" fill="white" fill-opacity="0.94" font-family="Arial, sans-serif" font-size="36" font-weight="700" letter-spacing="0.18em">NUBANK</text>
+  <text x="88" y="366" fill="white" fill-opacity="0.94" font-family="Arial, sans-serif" font-size="62" font-weight="700">Ultravioleta</text>
+  <text x="88" y="500" fill="white" fill-opacity="0.88" font-family="Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.14em">•••• 3412</text>
+  <text x="706" y="500" fill="white" fill-opacity="0.92" font-family="Arial, sans-serif" font-size="34" font-weight="700">Mastercard Black</text>
 </svg>

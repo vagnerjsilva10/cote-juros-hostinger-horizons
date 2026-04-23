@@ -8404,9 +8404,11 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0;
-  background: #FFFFFF !important;
-  border: 1px solid #EEF0F6 !important;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04) !important;
+  padding-top: 52px !important;
+  padding-bottom: 52px !important;
+  background: linear-gradient(180deg, #F6F7FF 0%, #EEF2FF 100%) !important;
+  border: 1px solid #D9DFFF !important;
+  box-shadow: none !important;
 }
 
 .public-site-shell.is-domain-page .cards-page-cta--aligned :is(h2, h3, strong) {
@@ -8418,15 +8420,18 @@ body {
 }
 
 .cards-page-cta-title {
-  max-width: 18ch;
+  max-width: 24ch;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+  line-height: 1.08;
 }
 
 .cards-page-cta-copy {
-  max-width: 700px !important;
+  max-width: 760px !important;
   text-align: center;
+  font-size: 17px;
+  line-height: 1.65;
 }
 
 .public-site-shell.is-domain-page .blog-article-conversion {
@@ -8461,17 +8466,17 @@ body {
   object-fit: contain !important;
   display: block;
   image-rendering: -webkit-optimize-contrast;
-  filter: saturate(0.98) contrast(1.04);
+  filter: none !important;
 }
 
 .cards-card-media {
-  max-width: 264px;
+  max-width: 276px;
 }
 
 .cards-fallback-art {
-  min-height: 148px;
+  min-height: 154px;
   border-radius: 20px !important;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14) !important;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12) !important;
 }
 
 .catalog-view-toggle {
@@ -8492,12 +8497,11 @@ body {
   color: #475569 !important;
   background: #FFFFFF !important;
   box-shadow: none !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
 }
 
 .catalog-view-toggle-option:hover {
-  color: #0F172A !important;
+  color: #475569 !important;
   background: #F8F9FC !important;
 }
 
@@ -8514,7 +8518,7 @@ body {
 
 .catalog-view-toggle-option svg {
   color: inherit !important;
-  opacity: 0.95;
+  opacity: 1;
 }
 
 .catalog-card-cta {
@@ -8582,8 +8586,65 @@ body {
   min-height: 100%;
 }
 
+.cards-offer-list-card .catalog-list-card__content > div {
+  grid-template-columns: 248px minmax(0, 1fr) 178px !important;
+}
+
+.cards-offer-list-card .catalog-list-card__visual {
+  min-height: 192px;
+  padding: 20px 24px !important;
+  border-radius: 18px !important;
+  background: linear-gradient(180deg, #FBFCFF 0%, #F2F6FC 100%) !important;
+}
+
 .cards-offer-list-card .cards-card-media {
-  max-width: 188px;
+  max-width: 212px;
+}
+
+.cards-offer-list-card .catalog-list-card__meta-grid {
+  grid-template-columns: repeat(2, minmax(0, 188px));
+  gap: 14px !important;
+}
+
+.cards-offer-list-card .catalog-list-card__stat {
+  padding: 15px 16px;
+  border: 1px solid #EEF0F6;
+  border-radius: 14px;
+  background: #F8F9FC;
+}
+
+.cards-offer-list-card .catalog-list-card__benefits {
+  max-width: 480px;
+}
+
+.cards-offer-list-card .catalog-list-card__actions {
+  align-self: stretch;
+}
+
+.cards-offer-list-card .catalog-card-cta {
+  min-width: 148px;
+  justify-content: center;
+}
+
+.catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__content > div {
+  grid-template-columns: minmax(0, 1.45fr) 176px 188px 176px !important;
+}
+
+.catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__stat,
+.catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__meta {
+  padding: 14px 16px;
+  border: 1px solid #EEF0F6;
+  border-radius: 14px;
+  background: #F8F9FC;
+}
+
+.catalog-list-card__benefits p,
+.cards-offer-benefits p {
+  line-height: 1.55;
+}
+
+.cards-page-cta--aligned .catalog-card-cta {
+  min-width: 258px;
 }
 
 .cards-offer-list-card .cards-benefit-icon,
@@ -8596,8 +8657,37 @@ body {
     grid-template-columns: 1fr !important;
   }
 
+  .cards-offer-list-card .catalog-list-card__visual {
+    min-height: 176px;
+  }
+
+  .cards-offer-list-card .catalog-list-card__meta-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
   .catalog-list-card__actions {
     justify-content: flex-start !important;
+  }
+}
+
+@media (max-width: 639px) {
+  .cards-page-cta-title {
+    max-width: none;
+  }
+
+  .cards-page-cta-copy {
+    font-size: 16px;
+  }
+
+  .cards-offer-list-card .catalog-list-card__meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cards-offer-list-card .catalog-card-cta,
+  .catalog-list-card:not(.cards-offer-list-card) .catalog-card-cta,
+  .cards-page-cta--aligned .catalog-card-cta {
+    width: 100%;
+    min-width: 0;
   }
 }
 
