@@ -275,11 +275,11 @@ function CartoesPage() {
                                 loading="eager"
                                 decoding="sync"
                                 draggable="false"
-                                className="w-full rounded-2xl object-contain shadow-[0_16px_34px_rgba(15,23,42,0.28)]"
+                                className="cards-card-art w-full rounded-2xl object-contain shadow-[0_16px_34px_rgba(15,23,42,0.28)]"
                               />
                             ) : (
                               <div
-                                className="cards-fallback-art rounded-2xl border border-white/20 p-4 text-white shadow-[0_16px_34px_rgba(15,23,42,0.28)]"
+                                className="cards-card-art cards-fallback-art rounded-2xl border border-white/20 p-4 text-white shadow-[0_16px_34px_rgba(15,23,42,0.28)]"
                                 style={{ background: `linear-gradient(135deg, ${toneA}, ${toneB})` }}
                               >
                                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90 [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]">
@@ -369,11 +369,11 @@ function CartoesPage() {
                                   loading="eager"
                                   decoding="sync"
                                   draggable="false"
-                                  className="w-full rounded-2xl object-contain shadow-[0_14px_28px_rgba(15,23,42,0.22)]"
+                                  className="cards-card-art w-full rounded-2xl object-contain shadow-[0_14px_28px_rgba(15,23,42,0.22)]"
                                 />
                               ) : (
                                 <div
-                                  className="cards-fallback-art rounded-2xl border border-white/20 p-4 text-white shadow-[0_14px_28px_rgba(15,23,42,0.22)]"
+                                  className="cards-card-art cards-fallback-art rounded-2xl border border-white/20 p-4 text-white shadow-[0_14px_28px_rgba(15,23,42,0.22)]"
                                   style={{ background: `linear-gradient(135deg, ${toneA}, ${toneB})` }}
                                 >
                                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90">{card.bankName}</p>
@@ -451,14 +451,14 @@ function CartoesPage() {
         </div>
       </div>
 
-      <section className="cards-page-cta-section cards-page-cta-section--light border-t border-border bg-background-secondary py-16 sm:py-20">
+      <section className="cards-page-cta-section cards-page-cta-section--light final-cta-section border-t border-border bg-background-secondary py-[4.5rem]">
         <div className="page-shell">
-          <div className="cards-page-cta cards-page-cta--aligned mx-auto max-w-4xl rounded-[24px] border bg-white px-8 py-11 text-center shadow-[var(--shadow-sm)]">
+          <div className="cards-page-cta cards-page-cta--aligned final-cta-card mx-auto max-w-4xl rounded-[24px] border border-primary/20 bg-white px-8 py-11 text-center shadow-[var(--shadow-sm)]">
             <h2 className="cards-section-title cards-page-cta-title mb-3">Quer escolher um cartão com mais clareza?</h2>
             <p className="cards-page-cta-copy mx-auto mb-7 max-w-2xl text-muted-foreground">
               Responda o básico sobre o seu momento e veja caminhos que podem combinar melhor com o seu perfil, sem compromisso e sem cobrança antecipada.
             </p>
-            <Button size="lg" className="catalog-card-cta cards-page-primary-btn" onClick={openInternalFlow}>Ver minhas opções agora</Button>
+            <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
           </div>
         </div>
       </section>

@@ -20,6 +20,6 @@
   <rect x="86" y="96" width="360" height="186" rx="30" fill="url(#nubank-shine)"/>
   <text x="88" y="236" fill="white" fill-opacity="0.94" font-family="Arial, sans-serif" font-size="36" font-weight="700" letter-spacing="0.18em">NUBANK</text>
   <text x="88" y="366" fill="white" fill-opacity="0.94" font-family="Arial, sans-serif" font-size="62" font-weight="700">Ultravioleta</text>
-  <text x="88" y="500" fill="white" fill-opacity="0.88" font-family="Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.14em">•••• 3412</text>
-  <text x="706" y="500" fill="white" fill-opacity="0.92" font-family="Arial, sans-serif" font-size="34" font-weight="700">Mastercard Black</text>
+  <text x="88" y="500" fill="white" fill-opacity="0.88" font-family="Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.14em">**** 3412</text>
+  <text x="872" y="500" fill="white" fill-opacity="0.92" font-family="Arial, sans-serif" font-size="30" font-weight="700" text-anchor="end">Mastercard Black</text>
 </svg>

@@ -13,8 +13,8 @@
   <rect x="18" y="18" width="924" height="564" rx="34" stroke="rgba(255,255,255,0.18)"/>
   <rect width="960" height="600" rx="42" fill="url(#bb-glow)"/>
   <rect x="86" y="96" width="104" height="76" rx="14" fill="#FFE066" fill-opacity="0.96"/>
-  <text x="212" y="146" fill="white" fill-opacity="0.98" font-family="Arial, sans-serif" font-size="32" font-weight="800" letter-spacing="0.08em">BANCO DO BRASIL</text>
+  <text x="212" y="146" fill="white" fill-opacity="0.98" font-family="Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="0.05em">BANCO DO BRASIL</text>
   <text x="88" y="366" fill="white" fill-opacity="0.96" font-family="Arial, sans-serif" font-size="56" font-weight="700">Ourocard Elo</text>
-  <text x="88" y="500" fill="white" fill-opacity="0.9" font-family="Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.14em">•••• 6614</text>
-  <text x="746" y="500" fill="white" fill-opacity="0.92" font-family="Arial, sans-serif" font-size="34" font-weight="700">Nanquim</text>
+  <text x="88" y="500" fill="white" fill-opacity="0.9" font-family="Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.14em">**** 6614</text>
+  <text x="872" y="500" fill="white" fill-opacity="0.92" font-family="Arial, sans-serif" font-size="30" font-weight="700" text-anchor="end">Nanquim</text>
 </svg>

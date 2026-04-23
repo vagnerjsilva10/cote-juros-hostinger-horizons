@@ -15,6 +15,6 @@
   <rect x="86" y="96" width="104" height="76" rx="14" fill="#E5E5E5" fill-opacity="0.94"/>
   <text x="88" y="236" fill="white" fill-opacity="0.92" font-family="Arial, sans-serif" font-size="40" font-weight="700" letter-spacing="0.2em">C6</text>
   <text x="88" y="366" fill="white" fill-opacity="0.96" font-family="Arial, sans-serif" font-size="62" font-weight="700">C6 Carbon</text>
-  <text x="88" y="500" fill="white" fill-opacity="0.88" font-family="Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.14em">•••• 9356</text>
-  <text x="706" y="500" fill="white" fill-opacity="0.9" font-family="Arial, sans-serif" font-size="34" font-weight="700">Mastercard Black</text>
+  <text x="88" y="500" fill="white" fill-opacity="0.88" font-family="Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.14em">**** 9356</text>
+  <text x="872" y="500" fill="white" fill-opacity="0.9" font-family="Arial, sans-serif" font-size="30" font-weight="700" text-anchor="end">Mastercard Black</text>
 </svg>
