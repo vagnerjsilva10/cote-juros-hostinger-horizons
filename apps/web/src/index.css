@@ -6332,11 +6332,11 @@ body {
 }
 
 .cards-offer-card .cards-offer-bank p {
-  font-size: 0.95rem !important;
+  font-size: 0.88rem !important;
 }
 
 .cards-offer-card .cards-offer-stat p:first-child {
-  font-size: 0.68rem !important;
+  font-size: 0.64rem !important;
   letter-spacing: 0.12em !important;
 }
 
@@ -6346,13 +6346,13 @@ body {
 }
 
 .cards-offer-card .cards-offer-stat-value {
-  font-size: 1rem !important;
-  line-height: 1.35 !important;
+  font-size: 0.92rem !important;
+  line-height: 1.3 !important;
 }
 
 .cards-offer-benefits--grid p {
-  font-size: 0.9rem !important;
-  line-height: 1.45 !important;
+  font-size: 0.82rem !important;
+  line-height: 1.4 !important;
 }
 
 .cards-offer-benefits--grid > div {
@@ -8616,6 +8616,47 @@ body {
   padding: 24px !important;
 }
 
+.catalog-grid-card:not(.cards-offer-card) .catalog-grid-card__content {
+  gap: 1.1rem !important;
+  padding: 24px !important;
+}
+
+.catalog-grid-card:not(.cards-offer-card) .catalog-grid-card__header > div > div > p:first-child {
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+}
+
+.catalog-grid-card:not(.cards-offer-card) .catalog-grid-card__header > div > div > p:last-child {
+  font-size: 0.78rem !important;
+  line-height: 1.4 !important;
+}
+
+.catalog-grid-card:not(.cards-offer-card) .badge {
+  font-size: 0.62rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.05em !important;
+}
+
+.catalog-grid-card:not(.cards-offer-card) p.text-xs.font-semibold.uppercase,
+.catalog-grid-card:not(.cards-offer-card) p.flex.items-center.gap-1.text-xs.font-semibold.uppercase {
+  font-size: 0.64rem !important;
+  letter-spacing: 0.12em !important;
+}
+
+.catalog-grid-card:not(.cards-offer-card) .text-4xl {
+  font-size: 2.45rem !important;
+  line-height: 1 !important;
+}
+
+.catalog-grid-card:not(.cards-offer-card) .rounded-\[14px\] p.text-sm.leading-7 {
+  font-size: 0.84rem !important;
+  line-height: 1.55 !important;
+}
+
+.catalog-grid-card:not(.cards-offer-card) .grid.grid-cols-2 p.mt-2.text-sm.font-medium {
+  font-size: 0.9rem !important;
+}
+
 .catalog-list-card {
   border-radius: 16px !important;
   border: 1px solid #EEF0F6 !important;
@@ -8707,12 +8748,47 @@ body {
   grid-template-columns: minmax(0, 1.45fr) 180px 220px !important;
 }
 
+.catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__content {
+  padding: 24px !important;
+}
+
 .catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__stat,
 .catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__meta {
   padding: 14px 16px;
   border: 1px solid #EEF0F6;
   border-radius: 14px;
   background: #F8F9FC;
+}
+
+.catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__main p:first-child {
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+}
+
+.catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__main p:nth-child(2) {
+  font-size: 0.78rem !important;
+  line-height: 1.4 !important;
+}
+
+.catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__main .badge {
+  font-size: 0.62rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.05em !important;
+}
+
+.catalog-list-card:not(.cards-offer-list-card) p.text-xs.font-semibold.uppercase,
+.catalog-list-card:not(.cards-offer-list-card) p.flex.items-center.gap-1.text-xs.font-semibold.uppercase {
+  font-size: 0.64rem !important;
+  letter-spacing: 0.12em !important;
+}
+
+.catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__stat .text-2xl {
+  font-size: 1.85rem !important;
+  line-height: 1.05 !important;
+}
+
+.catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__meta p.mt-1.text-sm.font-medium {
+  font-size: 0.88rem !important;
 }
 
 .loans-list-side {
