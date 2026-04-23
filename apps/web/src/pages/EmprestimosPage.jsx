@@ -508,7 +508,7 @@ function EmprestimosPage() {
                   return (
                     <Card key={loan.id} className="catalog-list-card border-border bg-white shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
                       <CardContent className="catalog-list-card__content p-7">
-                        <div className="grid items-center gap-6 lg:grid-cols-[1.55fr_0.8fr_0.8fr_220px]">
+                        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.5fr)_180px_220px]">
                           <div className="catalog-list-card__main flex items-start gap-4">
                             <div
                               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-sm font-semibold"
@@ -531,30 +531,30 @@ function EmprestimosPage() {
                             <p className="mt-1 text-2xl font-medium tracking-[-0.04em] text-primary">{loan.monthlyRate}%</p>
                           </div>
 
-                          <div className="catalog-list-card__meta grid gap-3">
-                            <div>
-                              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor máximo</p>
-                              <p className="mt-1 text-sm font-medium text-foreground">R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
+                          <div className="catalog-list-card__actions loans-list-side flex flex-col gap-4">
+                            <div className="catalog-list-card__meta loans-list-side__meta grid gap-3">
+                              <div>
+                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor máximo</p>
+                                <p className="mt-1 text-sm font-medium text-foreground">R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
+                              </div>
+                              <div>
+                                <p className="flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                                  <Clock className="h-3 w-3" />
+                                  Prazo
+                                </p>
+                                <p className="mt-1 text-sm font-medium text-foreground">{loan.maxTerm} meses</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                                <Clock className="h-3 w-3" />
-                                Prazo
-                              </p>
-                              <p className="mt-1 text-sm font-medium text-foreground">{loan.maxTerm} meses</p>
-                            </div>
-                          </div>
 
-                          <div className="catalog-list-card__actions flex items-center lg:justify-end">
                             {offerLink ? (
-                              <Button asChild className="catalog-card-cta w-full lg:w-auto">
+                              <Button asChild className="catalog-card-cta w-full">
                                 <a href={offerLink} target="_blank" rel="noreferrer sponsored">
                                   Ver oferta
                                   <ChevronRight className="h-4 w-4" />
                                 </a>
                               </Button>
                             ) : (
-                              <Button className="catalog-card-cta w-full lg:w-auto" onClick={openInternalFlow}>
+                              <Button className="catalog-card-cta w-full" onClick={openInternalFlow}>
                                 Ver oferta
                                 <ChevronRight className="h-4 w-4" />
                               </Button>

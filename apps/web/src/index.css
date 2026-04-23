@@ -8672,7 +8672,7 @@ body {
 }
 
 .catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__content > div {
-  grid-template-columns: minmax(0, 1.45fr) 176px 188px 176px !important;
+  grid-template-columns: minmax(0, 1.45fr) 180px 220px !important;
 }
 
 .catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__stat,
@@ -8681,6 +8681,19 @@ body {
   border: 1px solid #EEF0F6;
   border-radius: 14px;
   background: #F8F9FC;
+}
+
+.loans-list-side {
+  min-width: 0;
+}
+
+.loans-list-side__meta {
+  width: 100%;
+}
+
+.catalog-list-card:not(.cards-offer-list-card) .catalog-card-cta {
+  min-width: 0;
+  justify-content: center;
 }
 
 .catalog-list-card__benefits p,
