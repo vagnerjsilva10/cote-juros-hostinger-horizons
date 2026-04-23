@@ -9227,7 +9227,7 @@ body {
   .public-site-shell.is-domain-page .blog-article-related h2,
   .public-site-shell.is-domain-page .blog-article-related h3 {
     color: #0f172a !important;
-    font-weight: 600 !important;
+    font-weight: 560 !important;
     letter-spacing: -0.028em !important;
   }
 
@@ -9240,7 +9240,7 @@ body {
   .public-site-shell.is-domain-page .blog-article-card-title,
   .public-site-shell.is-domain-page .blog-article-pagination-link h3 {
     color: #0f172a !important;
-    font-weight: 600 !important;
+    font-weight: 560 !important;
     letter-spacing: -0.024em !important;
   }
 
@@ -9320,7 +9320,7 @@ body {
     max-width: 700px !important;
     color: #0f172a !important;
     font-size: clamp(2rem, 2.3vw, 2.5rem) !important;
-    font-weight: 600 !important;
+    font-weight: 560 !important;
     line-height: 1.1 !important;
     letter-spacing: -0.03em !important;
   }
@@ -9334,17 +9334,13 @@ body {
     max-width: 840px !important;
     color: #0f172a !important;
     font-size: clamp(2.5rem, 3vw, 3.15rem) !important;
-    font-weight: 700 !important;
+    font-weight: 620 !important;
     letter-spacing: -0.04em !important;
     line-height: 1.04 !important;
   }
 
   .public-site-shell.is-domain-page .blog-article-summary {
     max-width: 760px !important;
-  }
-
-  .public-site-shell.is-domain-page .blog-article-cover-grid {
-    grid-template-columns: minmax(0, 1fr) !important;
   }
 
   .public-site-shell.is-domain-page .blog-article-layout {
@@ -9355,18 +9351,18 @@ body {
     display: block !important;
   }
 
-  .public-site-shell.is-domain-page .blog-article-sidebar-card h2 {
+  .public-site-shell.is-domain-page :is(.blog-article-hero-aside, .blog-article-sidebar-card) h2 {
     color: #0f172a !important;
     font-size: 1.35rem !important;
-    font-weight: 600 !important;
+    font-weight: 560 !important;
     line-height: 1.14 !important;
     letter-spacing: -0.025em !important;
   }
 
-  .public-site-shell.is-domain-page .blog-article-sidebar-card .blog-article-jump-link span:first-child {
+  .public-site-shell.is-domain-page :is(.blog-article-hero-aside, .blog-article-sidebar-card) .blog-article-jump-link span:first-child {
     color: #0f172a !important;
     font-size: 1rem !important;
-    font-weight: 600 !important;
+    font-weight: 560 !important;
     line-height: 1.4 !important;
   }
 

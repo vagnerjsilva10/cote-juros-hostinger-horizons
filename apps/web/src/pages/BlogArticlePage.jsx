@@ -396,12 +396,28 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
             </Link>
           </div>
 
-          <div className="blog-article-cover-grid grid min-w-0 gap-5 pt-2">
+          <div className="blog-article-cover-grid grid min-w-0 gap-5 pt-2 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
             <ArticleCoverImage
               article={safeArticle}
               className="blog-article-cover min-w-0 w-full max-h-[430px] rounded-[18px] border border-border md:rounded-[20px]"
               aspectRatio="16 / 9"
             />
+
+            <aside className="blog-article-hero-aside min-w-0 rounded-[18px] border border-border bg-white p-5 md:p-6">
+              <h2 className="text-xl text-foreground">Continue a leitura</h2>
+              <div className="mt-4 space-y-3">
+                {sidebarReading.map((item) => (
+                  <Link
+                    key={`hero-reading-${item.title}`}
+                    to={item.path}
+                    className="blog-article-jump-link block min-w-0 rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors"
+                  >
+                    <span className="block break-words font-semibold text-foreground">{item.title}</span>
+                    <span className="mt-1 block leading-6 text-muted-foreground">{item.description}</span>
+                  </Link>
+                ))}
+              </div>
+            </aside>
           </div>
         </div>
       </section>
@@ -574,21 +590,6 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
             </div>
 
             <aside className="blog-article-sidebar min-w-0 space-y-6 lg:sticky lg:top-24 lg:h-fit">
-              <section className="blog-article-sidebar-card min-w-0 rounded-[18px] border border-border bg-white p-5 md:p-6">
-                <h2 className="text-xl text-foreground">Continue a leitura</h2>
-                <div className="mt-4 space-y-3">
-                  {sidebarReading.map((item) => (
-                    <Link
-                      key={`sidebar-reading-${item.title}`}
-                      to={item.path}
-                      className="blog-article-jump-link block min-w-0 rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors"
-                    >
-                      <span className="block break-words font-semibold text-foreground">{item.title}</span>
-                      <span className="mt-1 block leading-6 text-muted-foreground">{item.description}</span>
-                    </Link>
-                  ))}
-                </div>
-              </section>
               {sidebarSupersimOffer ? (
                 <SuperSimSidebarCard
                   offer={sidebarSupersimOffer}
