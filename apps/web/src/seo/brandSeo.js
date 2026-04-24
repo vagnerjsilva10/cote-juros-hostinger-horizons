@@ -1,8 +1,9 @@
 export const SITE_URL = 'https://www.cotejuros.com.br';
 export const SITE_NAME = 'Cote Juros';
 export const SITE_ALTERNATE_NAME = 'CoteJuros';
-export const SITE_LOGO_URL = `${SITE_URL}/assets/logo/logo-current-site.svg`;
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/assets/blog/fallbacks/editorial-global.svg`;
+export const SITE_LOGO_URL = `${SITE_URL}/logo.png`;
+export const DEFAULT_OG_IMAGE =
+  'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80';
 
 const cleanPath = (path = '/') => {
   if (!path || path === '/') return '/';
@@ -17,9 +18,9 @@ export const canonicalUrl = (path = '/') => {
 export const brandPages = {
   home: {
     path: '/',
-    title: 'Cote Juros | Compare crédito, cartões e financiamentos com clareza',
+    title: 'Cote Juros | Compare crédito com mais clareza antes de contratar',
     description:
-      'Compare opções de empréstimo, cartão e financiamento com mais clareza antes de contratar. A Cote Juros ajuda você a decidir sem cobrança antecipada.'
+      'Compare opções de crédito com mais clareza antes de contratar. Entenda custo real, parcelas e escolha com mais segurança, sem pressão.'
   },
   emprestimos: {
     path: '/emprestimos',

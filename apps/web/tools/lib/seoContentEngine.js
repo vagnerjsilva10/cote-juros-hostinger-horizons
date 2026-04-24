@@ -300,61 +300,19 @@ const buildConclusion = (topic) => [
 ];
 
 const buildArticleIllustration = (topic, cluster, index) => {
-  const theme = CLUSTER_THEMES[cluster.id] || CLUSTER_THEMES['educacao-financeira-pratica'];
-  const [bgStart, bgEnd, accent, ink] = theme.palette;
-  const label = theme.accent.toUpperCase();
-  const slugSeed = hashString(topic.slug);
-  const title = buildEditorialTitle(topic, cluster);
-  const shortTitle = title.length > 54 ? `${title.slice(0, 51)}...` : title;
-  const bars = [52, 94, 138, 182].map((x, idx) => {
-    const height = 40 + ((slugSeed + idx * 17) % 90);
-    const y = 224 - height;
-    return `<rect x="${x}" y="${y}" width="24" height="${height}" rx="10" fill="${accent}" opacity="${0.18 + idx * 0.14}" />`;
-  }).join('');
-
-  const linePath = `M36 ${176 - (slugSeed % 22)} C94 ${108 + (slugSeed % 28)}, 148 ${180 - (slugSeed % 33)}, 204 ${118 + (slugSeed % 26)} S308 ${86 + (slugSeed % 34)}, 372 ${66 + (slugSeed % 18)}`;
-
-  const iconMap = {
-    loan: '<circle cx="360" cy="88" r="18" fill="none" stroke-width="3" /><path d="M346 88h28M360 74v28" stroke-width="3" stroke-linecap="round" />',
-    card: '<rect x="338" y="68" width="48" height="32" rx="8" fill="none" stroke-width="3" /><path d="M344 82h36" stroke-width="3" stroke-linecap="round" />',
-    score: '<path d="M338 102l16-22 14 12 18-28" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /><circle cx="338" cy="102" r="4" /><circle cx="354" cy="80" r="4" /><circle cx="368" cy="92" r="4" /><circle cx="386" cy="64" r="4" />',
-    planning: '<rect x="338" y="66" width="52" height="38" rx="10" fill="none" stroke-width="3" /><path d="M352 84h24M352 94h16" stroke-width="3" stroke-linecap="round" />',
-    chart: '<path d="M338 102h52" fill="none" stroke-width="3" stroke-linecap="round" /><path d="M344 96l10-12 10 8 14-18 10 6" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />',
-    warning: '<path d="M364 66l24 40a8 8 0 0 1-7 12h-34a8 8 0 0 1-7-12l17-28z" fill="none" stroke-width="3" stroke-linejoin="round" /><path d="M364 84v12M364 104h.01" stroke-width="3" stroke-linecap="round" />',
-    house: '<path d="M338 90l26-20 26 20" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /><path d="M346 88v24h36V88" fill="none" stroke-width="3" stroke-linejoin="round" />',
-    growth: '<path d="M340 106c8-18 18-28 30-28 10 0 16 5 22 14 4-14 12-24 24-30" fill="none" stroke-width="3" stroke-linecap="round" />'
+  const knownCluster = CLUSTER_THEMES[cluster.id];
+  const photos = {
+    emprestimos: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1200&q=80',
+    cartoes: 'https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1200&q=80',
+    score: 'https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=1200&q=80',
+    'organizacao-financeira': 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1200&q=80',
+    'comparadores-simulacoes': 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80',
+    'dividas-renegociacao': 'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=1200&q=80',
+    'financiamento-credito': 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80',
+    'educacao-financeira-pratica': 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80'
   };
 
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-label="${title}">
-      <defs>
-        <linearGradient id="bg-${slugSeed}" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="${bgStart}" />
-          <stop offset="100%" stop-color="${bgEnd}" />
-        </linearGradient>
-      </defs>
-      <rect width="1200" height="720" fill="url(#bg-${slugSeed})" />
-      <rect x="52" y="58" width="1096" height="604" rx="32" fill="rgba(255,255,255,0.78)" />
-      <rect x="84" y="96" width="212" height="38" rx="19" fill="${accent}" opacity="0.14" />
-      <text x="110" y="121" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="${accent}" letter-spacing="1.6">${label}</text>
-      <text x="84" y="208" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" fill="${ink}">${shortTitle.replace(/&/g, '&amp;')}</text>
-      <text x="84" y="268" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="500" fill="${ink}" opacity="0.72">${cluster.label}</text>
-      <g transform="translate(0 18)">
-        <rect x="730" y="140" width="372" height="254" rx="28" fill="white" />
-        <path d="${linePath}" fill="none" stroke="${accent}" stroke-width="10" stroke-linecap="round" />
-        ${bars}
-        <g transform="translate(712 12)" fill="none" stroke="${ink}" stroke="${ink}">
-          ${iconMap[theme.icon] || iconMap.growth}
-        </g>
-      </g>
-      <rect x="84" y="560" width="264" height="18" rx="9" fill="${accent}" opacity="0.16" />
-      <rect x="84" y="596" width="318" height="18" rx="9" fill="${ink}" opacity="0.08" />
-      <rect x="730" y="450" width="372" height="96" rx="26" fill="${accent}" opacity="0.1" />
-      <text x="764" y="506" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700" fill="${accent}">Guia editorial Cote Juros</text>
-    </svg>
-  `.trim();
-
-  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+  return photos[cluster.id] || (knownCluster ? photos['educacao-financeira-pratica'] : photos['educacao-financeira-pratica']);
 };
 
 const buildArticle = (topic, cluster, template, allTopics, index) => {

@@ -2,16 +2,20 @@ export const SITE_BASE_URL = (process.env.SITE_BASE_URL || 'https://www.cotejuro
 export const WEB_PUBLIC_DIR = new URL('../../../web/public/', import.meta.url);
 export const BLOG_IMAGE_DIR = new URL('../../../web/public/images/blog/', import.meta.url);
 export const BLOG_IMAGE_VARIANTS_DIR = new URL('../../../web/public/images/blog/variants/', import.meta.url);
+export const WEB_STORIES_DIR = new URL('../../../web/public/stories/', import.meta.url);
+export const PINTEREST_IMAGE_DIR = new URL('../../../web/public/images/pinterest/', import.meta.url);
 export const EDITORIAL_TMP_DIR = new URL('../../tmp/generated-images/', import.meta.url);
 export const EDITORIAL_LOG_DIR = new URL('../../logs/editorial/', import.meta.url);
-export const EDITORIAL_FALLBACK_IMAGE_PATH = '/images/blog/default-cover.svg';
-export const EDITORIAL_FALLBACK_IMAGE_ABSOLUTE_URL = `${SITE_BASE_URL}${EDITORIAL_FALLBACK_IMAGE_PATH}`;
+export const EDITORIAL_FALLBACK_IMAGE_PATH =
+  'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80';
+export const EDITORIAL_FALLBACK_IMAGE_ABSOLUTE_URL = EDITORIAL_FALLBACK_IMAGE_PATH;
+export const PINTEREST_API_BASE_URL = process.env.PINTEREST_API_BASE_URL || 'https://api.pinterest.com/v5';
 export const BLOG_CLUSTER_FALLBACKS = Object.freeze({
-  emprestimos: '/images/blog/fallback-loans.png',
-  cartoes: '/images/blog/fallback-cards.png',
-  financiamentos: '/images/blog/fallback-financing.png',
-  score: '/images/blog/fallback-score.png',
-  educacao: '/images/blog/fallback-education.png'
+  emprestimos: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1200&q=80',
+  cartoes: 'https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1200&q=80',
+  financiamentos: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1200&q=80',
+  score: 'https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=1200&q=80',
+  educacao: 'https://images.unsplash.com/photo-1573497491208-6b1acb260507?auto=format&fit=crop&w=1200&q=80'
 });
 
 export const COMMERCIAL_DESTINATIONS = Object.freeze([
