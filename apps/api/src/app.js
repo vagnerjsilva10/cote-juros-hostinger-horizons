@@ -13,6 +13,7 @@ import reactivationRoutes from './routes/reactivation.js';
 import reactivationAdminRoutes from './routes/reactivationAdmin.js';
 import adminRoutes from './routes/admin.js';
 import internalRoutes from './routes/internal.js';
+import distributionPublicRoutes from './routes/distributionPublic.js';
 import { PrismaConfigError } from './lib/prisma.js';
 import { AdminAuthSetupError } from './lib/adminAuth.js';
 import { IntegrationConfigurationError, JurosBaixosIntegrationError } from './integrations/jurosBaixos/errors.js';
@@ -97,6 +98,7 @@ export const createApp = () => {
   app.use('/api/reactivation-admin', reactivationAdminRoutes);
   app.use('/api/admin', adminRoutes);
   app.use('/api/internal', internalRoutes);
+  app.use('/', distributionPublicRoutes);
 
   app.use((err, req, res, _next) => {
     if (err?.name === 'ZodError') {
@@ -174,4 +176,5 @@ export const createApp = () => {
 
   return app;
 };
+
 

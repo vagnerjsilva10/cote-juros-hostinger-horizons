@@ -3,6 +3,7 @@ import { asyncHandler } from '../lib/http.js';
 import { getPrisma } from '../lib/prisma.js';
 import { ContentDistributionService } from '../services/contentDistributionService.js';
 import { EditorialService } from '../services/editorialService.js';
+import { SendReactivationEmailsJob } from '../jobs/sendReactivationEmails.js';
 
 const router = express.Router();
 
@@ -158,6 +159,20 @@ router.get(
       scanned: records.length,
       processed: items.length,
       items
+    });
+  })
+);
+
+router.get(
+  '/reactivation/send-emails',
+  asyncHandler(async (req, res) => {
+    const job = new SendReactivationEmailsJob();
+    const stats = await job.run();
+
+    res.json({
+      ok: true,
+      trigger: req.get('user-agent')?.includes('vercel-cron') ? 'vercel-cron' : (req.query.trigger || 'internal'),
+      stats
     });
   })
 );

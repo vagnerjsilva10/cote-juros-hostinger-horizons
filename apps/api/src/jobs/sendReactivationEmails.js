@@ -1,5 +1,6 @@
 import 'dotenv/config.js';
 import crypto from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 import axios from 'axios';
 import sgMail from '@sendgrid/mail';
 import { googleSheetsClient } from '../integrations/googleSheets.js';
@@ -39,7 +40,7 @@ const FALLBACK_SEQUENCE = [
 
 const nowIso = () => new Date().toISOString();
 
-class SendReactivationEmailsJob {
+export class SendReactivationEmailsJob {
   constructor() {
     this.validateEnv();
     this.prisma = getPrisma();
@@ -658,8 +659,10 @@ class SendReactivationEmailsJob {
   }
 }
 
-const job = new SendReactivationEmailsJob();
-job.run().catch((error) => {
-  console.error('[SendEmails] Fatal error:', error.message);
-  process.exit(1);
-});
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  const job = new SendReactivationEmailsJob();
+  job.run().catch((error) => {
+    console.error('[SendEmails] Fatal error:', error.message);
+    process.exit(1);
+  });
+}

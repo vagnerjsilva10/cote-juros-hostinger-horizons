@@ -13,6 +13,7 @@ import { createEditorialLogger } from './editorialLogger.js';
 const logger = createEditorialLogger('content-distribution');
 const MAX_STORY_SLIDES = 8;
 const MIN_STORY_SLIDES = 5;
+const WRITE_LOCAL_DISTRIBUTION_FILES = process.env.DISTRIBUTION_WRITE_LOCAL_FILES === 'true';
 
 const stripTags = (value = '') => String(value || '').replace(/<[^>]*>/g, ' ');
 const compactWhitespace = (value = '') => stripTags(value).replace(/\s+/g, ' ').trim();
@@ -292,8 +293,10 @@ const ensureDistributionDirs = async (slug) => {
   const storyAssetsDir = path.join(storyDir, 'assets');
   const pinterestDir = fileURLToPath(PINTEREST_IMAGE_DIR);
 
-  await fs.mkdir(storyAssetsDir, { recursive: true });
-  await fs.mkdir(pinterestDir, { recursive: true });
+  if (WRITE_LOCAL_DISTRIBUTION_FILES) {
+    await fs.mkdir(storyAssetsDir, { recursive: true });
+    await fs.mkdir(pinterestDir, { recursive: true });
+  }
 
   return {
     safeSlug,
@@ -306,16 +309,18 @@ const ensureDistributionDirs = async (slug) => {
 
 const validateGeneratedFiles = async ({ storyIndexPath, pinterestImagePath, articleUrl }) => {
   const issues = [];
-  try {
-    await fs.access(storyIndexPath);
-  } catch {
-    issues.push('Web Story index.html ausente');
-  }
+  if (WRITE_LOCAL_DISTRIBUTION_FILES) {
+    try {
+      await fs.access(storyIndexPath);
+    } catch {
+      issues.push('Web Story index.html ausente');
+    }
 
-  try {
-    await fs.access(pinterestImagePath);
-  } catch {
-    issues.push('Imagem Pinterest ausente');
+    try {
+      await fs.access(pinterestImagePath);
+    } catch {
+      issues.push('Imagem Pinterest ausente');
+    }
   }
 
   try {
@@ -463,37 +468,34 @@ export class ContentDistributionService {
       const slides = buildStorySlides(article);
       const pinterestPublicPath = `/images/pinterest/${dirs.safeSlug}.svg`;
       const pinterestImagePath = path.join(dirs.pinterestDir, `${dirs.safeSlug}.svg`);
-
-      await Promise.all(slides.map((slide, index) => fs.writeFile(
-        path.join(dirs.storyAssetsDir, `slide-${index + 1}.svg`),
-        buildStoryBackgroundSvg({ slide, index, article }),
-        'utf8'
-      )));
-
-      await fs.writeFile(
-        pinterestImagePath,
-        buildPinterestSvg({ article, keywords }),
-        'utf8'
-      );
+      const slideAssets = slides.map((slide, index) => ({
+        path: `${dirs.storyPublicPath}/assets/slide-${index + 1}.svg`,
+        content: buildStoryBackgroundSvg({ slide, index, article })
+      }));
+      const pinterestSvg = buildPinterestSvg({ article, keywords });
 
       const posterImageUrl = `${SITE_BASE_URL}${pinterestPublicPath}`;
       const storyIndexPath = path.join(dirs.storyDir, 'index.html');
-      await fs.writeFile(
-        storyIndexPath,
-        buildStoryHtml({
-          article,
-          slides,
-          storyPublicPath: dirs.storyPublicPath,
-          articleUrl,
-          posterImageUrl
-        }),
-        'utf8'
-      );
-      await fs.writeFile(
-        path.join(dirs.storyDir, 'bookend.json'),
-        buildBookendJson({ article, articleUrl }),
-        'utf8'
-      );
+      const storyHtml = buildStoryHtml({
+        article,
+        slides,
+        storyPublicPath: dirs.storyPublicPath,
+        articleUrl,
+        posterImageUrl
+      });
+      const bookendJson = buildBookendJson({ article, articleUrl });
+
+      if (WRITE_LOCAL_DISTRIBUTION_FILES) {
+        await Promise.all(slideAssets.map((asset, index) => fs.writeFile(
+          path.join(dirs.storyAssetsDir, `slide-${index + 1}.svg`),
+          asset.content,
+          'utf8'
+        )));
+
+        await fs.writeFile(pinterestImagePath, pinterestSvg, 'utf8');
+        await fs.writeFile(storyIndexPath, storyHtml, 'utf8');
+        await fs.writeFile(path.join(dirs.storyDir, 'bookend.json'), bookendJson, 'utf8');
+      }
 
       const validation = await validateGeneratedFiles({
         storyIndexPath,
@@ -531,6 +533,12 @@ export class ContentDistributionService {
         },
         validation
       };
+      const distributionAssets = {
+        webStoryHtml: storyHtml,
+        bookendJson,
+        slides: slideAssets,
+        pinterestSvg
+      };
 
       await recordDistributionAssets({
         articleId: articleRecord.id,
@@ -545,7 +553,8 @@ export class ContentDistributionService {
         data: {
           structuredContent: {
             ...articlePayload,
-            distribution
+            distribution,
+            distributionAssets
           }
         }
       });
