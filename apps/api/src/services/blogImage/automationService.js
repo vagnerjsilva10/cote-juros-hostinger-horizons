@@ -8,6 +8,7 @@ import { searchUnsplashImages } from './providers/unsplashProvider.js';
 import { readImageDimensions } from './imageMetadata.js';
 import { isTemplateOrPlaceholderImage, validateBlogImage } from './validator.js';
 import { syncArticleImageToWordpress } from './wordpressPublisher.js';
+import { UsedBlogImageStore, hashImageBuffer } from './usedImageStore.js';
 
 const logger = createEditorialLogger('blog-image-automation');
 const MAX_DAILY_IMAGES = Number(process.env.BLOG_IMAGE_MAX_PER_DAY || 3);
@@ -106,14 +107,20 @@ const getArticleImageContext = (article) => ({
 });
 
 const searchCandidatesByPriority = async ({ keywords }) => {
-  const freepik = await searchFreepikImages({ keywords, perKeyword: 4 });
-  if (freepik.length) return { candidates: freepik, providerStage: 'freepik' };
+  const stages = [
+    { providerStage: 'freepik', candidates: await searchFreepikImages({ keywords, perKeyword: 3 }) },
+    { providerStage: 'pexels', candidates: await searchPexelsImages({ keywords, perKeyword: 3 }) },
+    { providerStage: 'unsplash', candidates: await searchUnsplashImages({ keywords, perKeyword: 3 }) }
+  ];
 
-  const pexels = await searchPexelsImages({ keywords, perKeyword: 4 });
-  if (pexels.length) return { candidates: pexels, providerStage: 'pexels' };
-
-  const unsplash = await searchUnsplashImages({ keywords, perKeyword: 4 });
-  return { candidates: unsplash, providerStage: 'unsplash' };
+  return stages.map((stage) => ({
+    ...stage,
+    candidates: Array.from(new Map(
+      stage.candidates
+        .filter((item) => item?.pageUrl || item?.downloadUrl)
+        .map((item) => [item.pageUrl || item.downloadUrl, item])
+    ).values())
+  }));
 };
 
 export const findValidatedBlogImageCandidate = async (article) => {
@@ -127,48 +134,120 @@ export const findValidatedBlogImageCandidate = async (article) => {
     tags: article.structured?.tags || []
   });
 
-  const { candidates, providerStage } = await searchCandidatesByPriority({ keywords });
+  const providerStages = await searchCandidatesByPriority({ keywords });
   const articleContext = getArticleImageContext(article);
+  const usageIndex = await UsedBlogImageStore.buildUsageIndex({ excludePostId: article.id || null });
 
-  const ranked = rankBlogImageCandidates({
-    article: articleContext,
-    candidates
-  });
+  const allRanked = [];
 
   const rejected = [];
-  for (const candidate of ranked) {
-    const validation = validateBlogImage(candidate, {
+  for (const stage of providerStages) {
+    const ranked = rankBlogImageCandidates({
       article: articleContext,
-      intent
+      candidates: stage.candidates
     });
+    allRanked.push(...ranked);
 
-    if (validation.passed) {
-      return {
-        keywords,
-        intent,
-        providerStage,
-        candidates: ranked,
-        rejected,
-        winner: {
-          ...candidate,
-          validation
+    for (const candidate of ranked) {
+      const candidateUnique = UsedBlogImageStore.checkCandidate({ candidate, usageIndex });
+      if (!candidateUnique.unique) {
+        rejected.push({
+          provider: candidate.provider,
+          query: candidate.query,
+          pageUrl: candidate.pageUrl,
+          reason: candidateUnique.reason,
+          matchedUrl: candidateUnique.matchedUrl || '',
+          visualSignature: candidateUnique.visualSignature || ''
+        });
+        continue;
+      }
+
+      const validation = validateBlogImage(candidate, {
+        article: articleContext,
+        intent
+      });
+
+      if (!validation.passed) {
+        rejected.push({
+          provider: candidate.provider,
+          query: candidate.query,
+          pageUrl: candidate.pageUrl,
+          reason: 'quality_validation_failed',
+          errors: validation.errors
+        });
+        continue;
+      }
+
+      try {
+        const { buffer, contentType } = await downloadImageBuffer(candidate.downloadUrl);
+        const hash = hashImageBuffer(buffer);
+        const hashUnique = UsedBlogImageStore.checkHash(hash, usageIndex);
+        if (!hashUnique.unique) {
+          rejected.push({
+            provider: candidate.provider,
+            query: candidate.query,
+            pageUrl: candidate.pageUrl,
+            reason: hashUnique.reason,
+            hash
+          });
+          continue;
         }
-      };
-    }
 
-    rejected.push({
-      provider: candidate.provider,
-      query: candidate.query,
-      pageUrl: candidate.pageUrl,
-      errors: validation.errors
-    });
+        const dimensions = readImageDimensions(buffer);
+        const candidateWithDimensions = {
+          ...candidate,
+          width: dimensions?.width || candidate.width,
+          height: dimensions?.height || candidate.height
+        };
+        const finalValidation = validateBlogImage(candidateWithDimensions, {
+          article: articleContext,
+          intent
+        });
+
+        if (!finalValidation.passed) {
+          rejected.push({
+            provider: candidate.provider,
+            query: candidate.query,
+            pageUrl: candidate.pageUrl,
+            reason: 'downloaded_quality_validation_failed',
+            errors: finalValidation.errors,
+            dimensions
+          });
+          continue;
+        }
+
+        return {
+          keywords,
+          intent,
+          providerStage: stage.providerStage,
+          candidates: allRanked,
+          rejected,
+          winner: {
+            ...candidateWithDimensions,
+            validation: finalValidation,
+            uniqueness: candidateUnique,
+            hash,
+            buffer,
+            contentType
+          }
+        };
+      } catch (error) {
+        rejected.push({
+          provider: candidate.provider,
+          query: candidate.query,
+          pageUrl: candidate.pageUrl,
+          reason: 'download_failed',
+          error: error?.message || String(error)
+        });
+      }
+    }
   }
 
   return {
     keywords,
     intent,
-    providerStage,
-    candidates: ranked,
+    providerStage: providerStages.find((stage) => stage.candidates.length)?.providerStage || 'none',
+    candidates: allRanked,
     rejected,
     winner: null
   };
@@ -177,6 +256,7 @@ export const findValidatedBlogImageCandidate = async (article) => {
 const updateLocalArticle = async ({ article, wordpressSync, selectedImage, keywords }) => {
   const prisma = getPrisma();
   const structured = parseStructuredContent(article);
+  const syncedAt = new Date().toISOString();
   const nextStructured = {
     ...structured,
     coverImage: wordpressSync.imageUrl,
@@ -186,7 +266,11 @@ const updateLocalArticle = async ({ article, wordpressSync, selectedImage, keywo
       provider: selectedImage.provider,
       searchKeyword: selectedImage.query,
       sourceUrl: selectedImage.pageUrl || selectedImage.downloadUrl,
-      selectedAt: new Date().toISOString(),
+      downloadUrl: selectedImage.downloadUrl,
+      hash: selectedImage.hash,
+      visualSignature: selectedImage.uniqueness?.visualSignature || '',
+      selectedAt: syncedAt,
+      syncedAt,
       score: selectedImage.score,
       keywords
     }
@@ -202,37 +286,62 @@ const updateLocalArticle = async ({ article, wordpressSync, selectedImage, keywo
   });
 };
 
-export class BlogImageAutomationService {
-  static async processNextArticle({ trigger = 'manual' } = {}) {
-    const processedToday = await countImagesProcessedToday();
-    if (processedToday >= MAX_DAILY_IMAGES) {
-      await logger.info('blog_image_daily_limit_reached', { trigger, processedToday, limit: MAX_DAILY_IMAGES });
-      return { processed: false, reason: 'daily_limit_reached' };
+const markArticleDraftOnImageFailure = async ({ article, reason, details = {} }) => {
+  if (!article?.id) return null;
+  const prisma = getPrisma();
+  const structured = parseStructuredContent(article);
+  return prisma.article.update({
+    where: { id: article.id },
+    data: {
+      status: 'draft',
+      structuredContent: {
+        ...structured,
+        blogImageAutomation: {
+          ...(structured.blogImageAutomation || {}),
+          blockedAt: new Date().toISOString(),
+          blockedReason: reason,
+          blockedDetails: details
+        }
+      }
     }
+  });
+};
 
-    const [article] = await listPendingArticles(1);
-    if (!article) {
-      await logger.info('blog_image_no_pending_articles');
-      return { processed: false, reason: 'no_pending_articles' };
-    }
+export class BlogImageAutomationService {
+  static async processArticleImage(article, { trigger = 'manual' } = {}) {
+    if (!article) return { processed: false, reason: 'article_not_found' };
 
     const selection = await findValidatedBlogImageCandidate(article);
     if (!selection.winner) {
-      await logger.warn('blog_image_no_candidate_found', {
+      await logger.error('no_unique_image_found', new Error('no unique image found'), {
         slug: article.slug,
         keywords: selection.keywords,
         intent: selection.intent,
         rejected: selection.rejected
       });
-      return { processed: false, reason: 'no_candidate_found', slug: article.slug };
+      await markArticleDraftOnImageFailure({
+        article,
+        reason: 'no unique image found',
+        details: {
+          keywords: selection.keywords,
+          rejected: selection.rejected
+        }
+      });
+      return {
+        processed: false,
+        reason: 'no_unique_image_found',
+        slug: article.slug,
+        rejected: selection.rejected,
+        keywords: selection.keywords
+      };
     }
 
-    const { buffer, contentType } = await downloadImageBuffer(selection.winner.downloadUrl);
-    const dimensions = readImageDimensions(buffer);
+    const { buffer, contentType } = selection.winner;
+    const dimensions = { width: selection.winner.width, height: selection.winner.height };
     const winnerWithDimensions = {
       ...selection.winner,
-      width: dimensions?.width || selection.winner.width,
-      height: dimensions?.height || selection.winner.height
+      buffer: undefined,
+      contentType: undefined
     };
     const finalValidation = validateBlogImage(winnerWithDimensions, {
       article: getArticleImageContext(article),
@@ -246,6 +355,15 @@ export class BlogImageAutomationService {
         pageUrl: selection.winner.pageUrl,
         dimensions,
         errors: finalValidation.errors
+      });
+      await markArticleDraftOnImageFailure({
+        article,
+        reason: 'downloaded candidate rejected',
+        details: {
+          provider: selection.winner.provider,
+          pageUrl: selection.winner.pageUrl,
+          errors: finalValidation.errors
+        }
       });
       return { processed: false, reason: 'downloaded_candidate_rejected', slug: article.slug };
     }
@@ -271,13 +389,25 @@ export class BlogImageAutomationService {
       keywords: selection.keywords
     });
 
+    const usageRecord = await UsedBlogImageStore.record({
+      candidate: winnerWithDimensions,
+      hash: selection.winner.hash,
+      keywords: selection.keywords,
+      postId: article.id,
+      visualSignature: selection.winner.uniqueness?.visualSignature || ''
+    });
+
     await logger.info('blog_image_article_processed', {
       slug: article.slug,
+      trigger,
       provider: selection.winner.provider,
       keyword: selection.winner.query,
       imageUrl: selection.winner.pageUrl || selection.winner.downloadUrl,
       featuredImageUrl: wordpressSync.imageUrl,
       source: selection.winner.provider,
+      hash: selection.winner.hash,
+      usedImageRecordId: usageRecord.id,
+      discarded: selection.rejected,
       validation: finalValidation
     });
 
@@ -288,7 +418,24 @@ export class BlogImageAutomationService {
       imageUrl: selection.winner.pageUrl || selection.winner.downloadUrl,
       featuredImageUrl: wordpressSync.imageUrl,
       provider: selection.winner.provider,
-      score: selection.winner.score
+      score: selection.winner.score,
+      hash: selection.winner.hash
     };
+  }
+
+  static async processNextArticle({ trigger = 'manual' } = {}) {
+    const processedToday = await countImagesProcessedToday();
+    if (processedToday >= MAX_DAILY_IMAGES) {
+      await logger.info('blog_image_daily_limit_reached', { trigger, processedToday, limit: MAX_DAILY_IMAGES });
+      return { processed: false, reason: 'daily_limit_reached' };
+    }
+
+    const [article] = await listPendingArticles(1);
+    if (!article) {
+      await logger.info('blog_image_no_pending_articles');
+      return { processed: false, reason: 'no_pending_articles' };
+    }
+
+    return this.processArticleImage(article, { trigger });
   }
 }

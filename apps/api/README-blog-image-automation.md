@@ -11,6 +11,41 @@ Automacao rigida para imagens reais do blog. O sistema nao gera cards, templates
 - Preferencia visual: foto horizontal 16:9, editorial, profissional e contextual.
 - Se nenhuma foto valida for encontrada, o artigo fica como rascunho e o erro entra no log.
 - Limite diario: `BLOG_IMAGE_MAX_PER_DAY`, padrao `3`.
+- A mesma imagem nunca pode ser usada em mais de um artigo.
+- Imagens com composicao visual muito parecida sao descartadas.
+
+## Controle Anti Repeticao
+
+O historico persistente fica em `apps/api/data/blog-used-images.json` por padrao, ou no caminho definido por `BLOG_USED_IMAGES_STORE`.
+
+Formato:
+
+```json
+{
+  "used_images": [
+    {
+      "id": "uuid",
+      "url": "https://...",
+      "page_url": "https://...",
+      "download_url": "https://...",
+      "hash": "sha1",
+      "source": "freepik",
+      "keywords": ["personal loan"],
+      "post_id": "article-id",
+      "visual_signature": "provider|author|ratio|tokens",
+      "used_at": "2026-04-24T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+Antes de salvar, o sistema:
+
+- rejeita URL ja usada no JSON ou em qualquer artigo existente;
+- baixa o arquivo e calcula hash SHA-1;
+- rejeita hash ja usado;
+- rejeita assinatura visual parecida para evitar mesmo cenario, mesma pessoa ou composicao repetida;
+- registra a imagem escolhida, hash, keywords e descartes nos logs.
 
 ## Validador
 
@@ -37,12 +72,14 @@ Retorna sinais como:
 
 Antes de buscar, o artigo e classificado por intencao:
 
-- Financiamento de veiculo: `car financing`, `car loan`, `person with car`, `vehicle financing`, `car dealership`
-- Emprestimo pessoal: `personal loan`, `financial planning`, `person using calculator`, `loan agreement`, `money and documents`
-- Nome negativado: `debt`, `financial problem`, `worried person bills`, `bills debt`, `credit score`
-- Cartao de credito: `credit card payment`, `person holding credit card`, `online shopping credit card`
-- Financiamento imobiliario: `home financing`, `mortgage`, `family house`, `real estate contract`
-- Educacao financeira: `financial education`, `family budget`, `personal finance`, `person planning finances`
+Cada intencao usa 8 a 10 variacoes rotacionadas por artigo para evitar cair sempre nas mesmas imagens.
+
+- Financiamento de veiculo: `car financing`, `car loan`, `person with car`, `vehicle financing`, `car dealership`, `couple buying car`, `car keys contract`
+- Emprestimo pessoal: `personal loan`, `financial stress person`, `money planning`, `loan discussion`, `bank meeting`, `family budget`, `paying bills`
+- Nome negativado: `debt`, `financial problem`, `worried person bills`, `person reviewing bills`, `debt negotiation`, `overdue bills table`
+- Cartao de credito: `credit card payment`, `person holding credit card`, `online shopping credit card`, `credit card laptop`, `card payment smartphone`
+- Financiamento imobiliario: `home financing`, `mortgage`, `family house`, `real estate contract`, `couple signing mortgage`, `house keys contract`
+- Educacao financeira: `financial education`, `family budget`, `personal finance`, `couple budget planning`, `home finance planning`
 
 ## WordPress
 
@@ -67,6 +104,7 @@ BLOG_IMAGE_CRON_MORNING="20 8 * * *"
 BLOG_IMAGE_CRON_AFTERNOON="20 14 * * *"
 BLOG_IMAGE_CRON_EVENING="20 20 * * *"
 BLOG_IMAGE_MAX_PER_DAY="3"
+BLOG_USED_IMAGES_STORE="apps/api/data/blog-used-images.json"
 ```
 
 Freepik usa busca publica HTML de fotos gratuitas. Pexels e Unsplash exigem chave oficial das respectivas APIs.
@@ -84,6 +122,8 @@ Revisar e corrigir posts antigos com placeholder/template:
 ```bash
 npm run blog-images:backfill --prefix apps/api
 ```
+
+O backfill tambem identifica posts publicados com imagem repetida e substitui as copias por fotos novas e unicas.
 
 Iniciar scheduler:
 

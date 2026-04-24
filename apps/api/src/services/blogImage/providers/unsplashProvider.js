@@ -4,7 +4,7 @@ export const searchUnsplashImages = async ({ keywords = [], perKeyword = 2 }) =>
   if (!process.env.UNSPLASH_ACCESS_KEY) return [];
 
   const results = [];
-  for (const keyword of (Array.isArray(keywords) ? keywords : []).slice(0, 3)) {
+  for (const keyword of (Array.isArray(keywords) ? keywords : []).slice(0, 10)) {
     const response = await fetch(`${UNSPLASH_ENDPOINT}?query=${encodeURIComponent(keyword)}&orientation=landscape&per_page=${perKeyword}`, {
       headers: {
         Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`

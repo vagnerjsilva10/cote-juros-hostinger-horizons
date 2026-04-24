@@ -6,6 +6,7 @@ import { createEditorialLogger } from './editorialLogger.js';
 import { findValidatedBlogImageCandidate } from './blogImage/automationService.js';
 import { readImageDimensions } from './blogImage/imageMetadata.js';
 import { validateBlogImage } from './blogImage/validator.js';
+import { UsedBlogImageStore, hashImageBuffer } from './blogImage/usedImageStore.js';
 
 const logger = createEditorialLogger('image-generator');
 
@@ -120,7 +121,30 @@ export const generateBlogImage = async ({ title, topic, slug, cluster }) => {
   }
 
   try {
-    const { buffer, contentType } = await downloadStockImageBuffer(selection.winner.downloadUrl);
+    const downloaded = selection.winner.buffer
+      ? { buffer: selection.winner.buffer, contentType: selection.winner.contentType || 'image/jpeg' }
+      : await downloadStockImageBuffer(selection.winner.downloadUrl);
+    const { buffer, contentType } = downloaded;
+    const hash = selection.winner.hash || hashImageBuffer(buffer);
+    const usageIndex = await UsedBlogImageStore.buildUsageIndex();
+    const hashUnique = UsedBlogImageStore.checkHash(hash, usageIndex);
+    if (!selection.winner.hash && !hashUnique.unique) {
+      await logger.error('stock_image_duplicate_hash_rejected', new Error('Image hash already used'), {
+        slug,
+        provider: selection.winner.provider,
+        sourceUrl: selection.winner.pageUrl || selection.winner.downloadUrl,
+        hash
+      });
+
+      return buildDraftImageResult({
+        reason: 'Imagem unica obrigatoria nao encontrada.',
+        errorMessage: 'Imagem descartada porque o hash ja foi usado em outro artigo.',
+        metadata: {
+          winnerKey: 'duplicate_hash',
+          hash
+        }
+      });
+    }
     const dimensions = readImageDimensions(buffer);
     const candidate = {
       ...selection.winner,
@@ -161,11 +185,19 @@ export const generateBlogImage = async ({ title, topic, slug, cluster }) => {
 
     const published = await writeWinnerImage({ slug, buffer, contentType });
     const sourceUrl = candidate.pageUrl || candidate.downloadUrl;
+    await UsedBlogImageStore.record({
+      candidate,
+      hash,
+      keywords: selection.keywords,
+      postId: slug || candidate.pageUrl,
+      visualSignature: selection.winner.uniqueness?.visualSignature || ''
+    });
 
     await logger.info('stock_image_selected_for_editorial_article', {
       slug,
       provider: candidate.provider,
       sourceUrl,
+      hash,
       publicPath: published.publicPath,
       validation
     });
@@ -210,12 +242,14 @@ export const generateBlogImage = async ({ title, topic, slug, cluster }) => {
             label: 'Imagem: Freepik',
             sourceName: 'Freepik',
             url: 'https://www.freepik.com',
-            sourceUrl
+            sourceUrl,
+            hash
           }
         : {
             provider: candidate.provider,
             sourceName: candidate.provider,
-            sourceUrl
+            sourceUrl,
+            hash
           }
     };
   } catch (error) {

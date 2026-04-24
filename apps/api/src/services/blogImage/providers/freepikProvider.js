@@ -23,7 +23,7 @@ const parseMetaContent = (html = '', property = '') => {
 
 const extractSearchPaths = (html = '') => {
   const matches = [...html.matchAll(/href="([^"]*\/free-photo\/[^"]+)"/gi)];
-  return Array.from(new Set(matches.map((item) => item[1]).filter(Boolean))).slice(0, 8);
+  return Array.from(new Set(matches.map((item) => item[1]).filter(Boolean))).slice(0, 18);
 };
 
 const parseDimensionsFromUrl = (url = '') => {
@@ -75,7 +75,7 @@ const fetchCandidateDetails = async (pageUrl, query) => {
 export const searchFreepikImages = async ({ keywords = [], perKeyword = 3 }) => {
   const results = [];
 
-  for (const keyword of (Array.isArray(keywords) ? keywords : []).slice(0, 4)) {
+  for (const keyword of (Array.isArray(keywords) ? keywords : []).slice(0, 10)) {
     const searchUrl = `${FREEPIK_BASE_URL}/search?format=search&last_filter=query&last_value=${encodeURIComponent(keyword)}&query=${encodeURIComponent(keyword)}&type=photo`;
     const response = await fetch(searchUrl, {
       headers: {

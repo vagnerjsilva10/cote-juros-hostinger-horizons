@@ -4,7 +4,7 @@ export const searchPexelsImages = async ({ keywords = [], perKeyword = 2 }) => {
   if (!process.env.PEXELS_API_KEY) return [];
 
   const results = [];
-  for (const keyword of (Array.isArray(keywords) ? keywords : []).slice(0, 3)) {
+  for (const keyword of (Array.isArray(keywords) ? keywords : []).slice(0, 10)) {
     const response = await fetch(`${PEXELS_ENDPOINT}?query=${encodeURIComponent(keyword)}&orientation=landscape&size=large&per_page=${perKeyword}`, {
       headers: {
         Authorization: process.env.PEXELS_API_KEY

@@ -25,38 +25,69 @@ const INTENT_QUERY_LIBRARY = {
     'car loan',
     'person with car',
     'vehicle financing',
-    'car dealership'
+    'car dealership',
+    'couple buying car',
+    'car keys contract',
+    'auto loan office',
+    'family car dealership',
+    'person signing car contract'
   ],
   'personal-loan': [
     'personal loan',
     'financial planning',
     'person using calculator',
     'loan agreement',
-    'money and documents'
+    'money and documents',
+    'financial stress person',
+    'money planning',
+    'loan discussion',
+    'bank meeting',
+    'family budget',
+    'paying bills'
   ],
   'debt-negative-name': [
     'debt',
     'financial problem',
     'worried person bills',
     'bills debt',
-    'credit score'
+    'credit score',
+    'person reviewing bills',
+    'debt negotiation',
+    'financial stress documents',
+    'overdue bills table',
+    'budget problem'
   ],
   'credit-card': [
     'credit card payment',
     'person holding credit card',
-    'online shopping credit card'
+    'online shopping credit card',
+    'credit card laptop',
+    'card payment smartphone',
+    'person paying online',
+    'credit card bill',
+    'woman using credit card'
   ],
   'home-financing': [
     'home financing',
     'mortgage',
     'family house',
-    'real estate contract'
+    'real estate contract',
+    'couple signing mortgage',
+    'house keys contract',
+    'family new home',
+    'real estate agent meeting',
+    'home loan documents'
   ],
   'financial-education': [
     'financial education',
     'family budget',
     'personal finance',
-    'person planning finances'
+    'person planning finances',
+    'couple budget planning',
+    'home finance planning',
+    'person using calculator bills',
+    'financial planning notebook',
+    'money management family'
   ]
 };
 
@@ -76,6 +107,12 @@ const buildPhraseFromTokens = (tokens = [], fallback = '') => {
   return `${slice.join(' ')} brazil financial planning`.trim();
 };
 
+const rotate = (items = [], seed = '') => {
+  if (!items.length) return [];
+  const offset = Array.from(String(seed || '')).reduce((sum, char) => sum + char.charCodeAt(0), 0) % items.length;
+  return [...items.slice(offset), ...items.slice(0, offset)];
+};
+
 export const extractImageSearchKeywords = (article = {}) => {
   const clusterKey = inferClusterKey(article);
   const weightedTokens = tokenize(
@@ -89,11 +126,16 @@ export const extractImageSearchKeywords = (article = {}) => {
   );
 
   const firstPhrase = buildPhraseFromTokens(weightedTokens, 'brazilian personal finance planning');
+  const titlePhrase = `${normalize(article.title || article.h1 || '').replace(/[^a-z0-9\s]/g, ' ').trim()} real photo`;
+  const rotatedLibrary = rotate(INTENT_QUERY_LIBRARY[clusterKey], article.slug || article.title || article.h1 || clusterKey);
   const keywordPhrases = [
-    ...INTENT_QUERY_LIBRARY[clusterKey],
+    ...rotatedLibrary,
     firstPhrase,
-    `${normalize(article.title || article.h1 || '').replace(/[^a-z0-9\s]/g, ' ').trim()} real photo`,
-    `${clusterKey.replace(/-/g, ' ')} person finance photo`
+    titlePhrase,
+    `${clusterKey.replace(/-/g, ' ')} person finance photo`,
+    `${clusterKey.replace(/-/g, ' ')} professional editorial photo`,
+    'brazil financial documents person',
+    'modern bank meeting finance'
   ]
     .map((item) => item.replace(/\s+/g, ' ').trim())
     .filter((item) => item.length >= 8);
@@ -101,7 +143,7 @@ export const extractImageSearchKeywords = (article = {}) => {
   return {
     clusterKey,
     intent: clusterKey,
-    keywords: unique(keywordPhrases).slice(0, 6)
+    keywords: unique(keywordPhrases).slice(0, 10)
   };
 };
 
