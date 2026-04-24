@@ -37,8 +37,7 @@ router.get('/stories-sitemap.xml', async (req, res, next) => {
     const prisma = getPrisma();
     const articles = await prisma.article.findMany({
       where: {
-        status: 'published',
-        NOT: [{ structuredContent: null }]
+        status: 'published'
       },
       select: {
         slug: true,
