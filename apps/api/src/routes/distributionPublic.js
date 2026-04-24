@@ -3,6 +3,7 @@ import { getPrisma } from '../lib/prisma.js';
 import { SITE_BASE_URL } from '../services/editorialConfig.js';
 
 const router = express.Router();
+const DISTRIBUTION_PUBLIC_BASE_URL = (process.env.DISTRIBUTION_PUBLIC_BASE_URL || SITE_BASE_URL).replace(/\/$/, '');
 
 const escapeXml = (value = '') =>
   String(value || '')
@@ -118,7 +119,7 @@ router.get('/images/pinterest/:slug.svg', async (req, res, next) => {
 });
 
 router.get('/stories', (_req, res) => {
-  res.redirect(301, `${SITE_BASE_URL}/stories-sitemap.xml`);
+  res.redirect(301, `${DISTRIBUTION_PUBLIC_BASE_URL}/stories-sitemap.xml`);
 });
 
 export default router;

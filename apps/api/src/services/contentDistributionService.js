@@ -14,6 +14,7 @@ const logger = createEditorialLogger('content-distribution');
 const MAX_STORY_SLIDES = 8;
 const MIN_STORY_SLIDES = 5;
 const WRITE_LOCAL_DISTRIBUTION_FILES = process.env.DISTRIBUTION_WRITE_LOCAL_FILES === 'true';
+const DISTRIBUTION_PUBLIC_BASE_URL = (process.env.DISTRIBUTION_PUBLIC_BASE_URL || SITE_BASE_URL).replace(/\/$/, '');
 
 const stripTags = (value = '') => String(value || '').replace(/<[^>]*>/g, ' ');
 const compactWhitespace = (value = '') => stripTags(value).replace(/\s+/g, ' ').trim();
@@ -197,7 +198,7 @@ const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterIm
 
   const pages = slides.map((slide, index) => {
     const id = `slide-${index + 1}`;
-    const bgUrl = `${SITE_BASE_URL}${storyPublicPath}/assets/${id}.svg`;
+    const bgUrl = `${DISTRIBUTION_PUBLIC_BASE_URL}${storyPublicPath}/assets/${id}.svg`;
     const isCta = slide.kind === 'cta';
     const cta = isCta
       ? `<amp-story-cta-layer>
@@ -224,7 +225,7 @@ const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterIm
 <head>
   <meta charset="utf-8">
   <title>${title}</title>
-  <link rel="canonical" href="${escapeHtml(`${SITE_BASE_URL}${storyPublicPath}/`)}">
+  <link rel="canonical" href="${escapeHtml(`${DISTRIBUTION_PUBLIC_BASE_URL}${storyPublicPath}/`)}">
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="description" content="${escapeHtml(article.metaDescription || article.summary || article.excerpt || article.title)}">
@@ -246,7 +247,7 @@ const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterIm
     headline: article.title,
     description: article.metaDescription || article.summary || article.excerpt,
     image: posterImageUrl,
-    mainEntityOfPage: `${SITE_BASE_URL}${storyPublicPath}/`,
+    mainEntityOfPage: `${DISTRIBUTION_PUBLIC_BASE_URL}${storyPublicPath}/`,
     isPartOf: articleUrl,
     publisher: {
       '@type': 'Organization',
@@ -261,7 +262,7 @@ const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterIm
     publisher-logo-src="${publisherLogo}"
     poster-portrait-src="${escapeHtml(posterImageUrl)}">
     ${pages}
-    <amp-story-bookend src="${escapeHtml(`${SITE_BASE_URL}${storyPublicPath}/bookend.json`)}" layout="nodisplay"></amp-story-bookend>
+    <amp-story-bookend src="${escapeHtml(`${DISTRIBUTION_PUBLIC_BASE_URL}${storyPublicPath}/bookend.json`)}" layout="nodisplay"></amp-story-bookend>
   </amp-story>
 </body>
 </html>`;
@@ -354,7 +355,7 @@ const createPinterestPayload = ({ article, articleUrl, imageUrl, keywords }) => 
 const publishPinterestPin = async ({ article, articleUrl, pinterestPublicPath, keywords }) => {
   const accessToken = process.env.PINTEREST_ACCESS_TOKEN;
   const boardId = process.env.PINTEREST_BOARD_ID;
-  const imageUrl = `${SITE_BASE_URL}${pinterestPublicPath}`;
+  const imageUrl = `${DISTRIBUTION_PUBLIC_BASE_URL}${pinterestPublicPath}`;
   const payload = createPinterestPayload({ article, articleUrl, imageUrl, keywords });
 
   if (!accessToken || !boardId) {
@@ -479,7 +480,7 @@ export class ContentDistributionService {
       }));
       const pinterestSvg = buildPinterestSvg({ article, keywords });
 
-      const posterImageUrl = `${SITE_BASE_URL}${pinterestPublicPath}`;
+      const posterImageUrl = `${DISTRIBUTION_PUBLIC_BASE_URL}${pinterestPublicPath}`;
       const storyIndexPath = path.join(dirs.storyDir, 'index.html');
       const storyHtml = buildStoryHtml({
         article,
@@ -523,13 +524,13 @@ export class ContentDistributionService {
         webStory: {
           status: 'created',
           path: `${dirs.storyPublicPath}/`,
-          url: `${SITE_BASE_URL}${dirs.storyPublicPath}/`,
+          url: `${DISTRIBUTION_PUBLIC_BASE_URL}${dirs.storyPublicPath}/`,
           slideCount: slides.length
         },
         pinterest: {
           status: pinterest.status,
           imagePath: pinterestPublicPath,
-          imageUrl: `${SITE_BASE_URL}${pinterestPublicPath}`,
+          imageUrl: `${DISTRIBUTION_PUBLIC_BASE_URL}${pinterestPublicPath}`,
           title: pinterest.payload.title,
           description: pinterest.payload.description,
           pinId: pinterest.pinId || null,
