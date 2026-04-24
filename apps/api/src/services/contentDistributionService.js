@@ -383,7 +383,12 @@ const publishPinterestPin = async ({ article, articleUrl, pinterestPublicPath, k
   }
 
   if (!response.ok) {
-    throw new Error(`Pinterest pin creation failed (${response.status}): ${responseText}`);
+    return {
+      status: 'draft_saved',
+      reason: `Pinterest pin creation failed (${response.status}): ${responseText}`,
+      response: responsePayload,
+      payload
+    };
   }
 
   return {
