@@ -141,10 +141,10 @@ export const resolveArticleImageSources = (article = {}) => {
     : [
         manifestImage,
         ...explicitImageCandidates.filter((image) => !String(image).startsWith('data:image/')),
-        stockImage,
+        generatedFallback,
         categoryFallback,
-        globalFallback,
-        generatedFallback
+        stockImage,
+        globalFallback
       ].filter(Boolean);
 
   const unique = ordered.filter((value, index) => ordered.indexOf(value) === index);

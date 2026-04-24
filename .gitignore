@@ -15,3 +15,5 @@ credentials*.json
 *service-account*.json
 *service_account*.json
 cote-finance-ai-*.json
+tmp/generated-images/
+apps/api/tmp/generated-images/

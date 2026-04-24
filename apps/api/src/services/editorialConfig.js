@@ -1,9 +1,18 @@
 export const SITE_BASE_URL = (process.env.SITE_BASE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
 export const WEB_PUBLIC_DIR = new URL('../../../web/public/', import.meta.url);
 export const BLOG_IMAGE_DIR = new URL('../../../web/public/images/blog/', import.meta.url);
+export const BLOG_IMAGE_VARIANTS_DIR = new URL('../../../web/public/images/blog/variants/', import.meta.url);
+export const EDITORIAL_TMP_DIR = new URL('../../tmp/generated-images/', import.meta.url);
 export const EDITORIAL_LOG_DIR = new URL('../../logs/editorial/', import.meta.url);
-export const EDITORIAL_FALLBACK_IMAGE_PATH = '/images/blog/default-cover.png';
+export const EDITORIAL_FALLBACK_IMAGE_PATH = '/images/blog/default-cover.svg';
 export const EDITORIAL_FALLBACK_IMAGE_ABSOLUTE_URL = `${SITE_BASE_URL}${EDITORIAL_FALLBACK_IMAGE_PATH}`;
+export const BLOG_CLUSTER_FALLBACKS = Object.freeze({
+  emprestimos: '/images/blog/fallback-loans.png',
+  cartoes: '/images/blog/fallback-cards.png',
+  financiamentos: '/images/blog/fallback-financing.png',
+  score: '/images/blog/fallback-score.png',
+  educacao: '/images/blog/fallback-education.png'
+});
 
 export const COMMERCIAL_DESTINATIONS = Object.freeze([
   {

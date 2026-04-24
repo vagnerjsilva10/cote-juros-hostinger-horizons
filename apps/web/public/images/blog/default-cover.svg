@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="184" y1="108" x2="1406" y2="782" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5F7FF"/>
+      <stop offset="1" stop-color="#EEF2FF"/>
+    </linearGradient>
+    <linearGradient id="card" x1="302" y1="210" x2="1226" y2="692" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F8FAFC"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="420" y1="244" x2="1132" y2="654" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C6CFF"/>
+      <stop offset="1" stop-color="#4F46E5"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" rx="48" fill="url(#bg)"/>
+  <rect x="108" y="84" width="1384" height="732" rx="38" fill="url(#card)" stroke="#D9E1FF" stroke-width="2"/>
+  <rect x="210" y="174" width="520" height="546" rx="34" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+  <rect x="246" y="216" width="168" height="40" rx="20" fill="#EEF2FF"/>
+  <text x="276" y="242" fill="#6D5EF3" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" letter-spacing="3">BLOG COTE JUROS</text>
+  <text x="246" y="332" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="700">Conteúdo</text>
+  <text x="246" y="398" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="700">editorial</text>
+  <text x="246" y="464" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="700">premium</text>
+  <text x="246" y="548" fill="#64748B" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400">Imagem padrão neutra para artigos</text>
+  <text x="246" y="590" fill="#64748B" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400">quando a geração automática não estiver disponível.</text>
+  <rect x="840" y="210" width="552" height="474" rx="34" fill="url(#accent)"/>
+  <circle cx="1116" cy="386" r="124" fill="rgba(255,255,255,0.12)"/>
+  <rect x="936" y="306" width="206" height="164" rx="28" fill="rgba(255,255,255,0.16)"/>
+  <path d="M980 430C1004 388 1038 360 1088 338C1126 322 1162 306 1190 274" stroke="white" stroke-opacity="0.72" stroke-width="20" stroke-linecap="round"/>
+  <rect x="928" y="520" width="148" height="20" rx="10" fill="rgba(255,255,255,0.68)"/>
+  <rect x="928" y="560" width="236" height="20" rx="10" fill="rgba(255,255,255,0.42)"/>
+  <rect x="928" y="600" width="188" height="20" rx="10" fill="rgba(255,255,255,0.28)"/>
+</svg>

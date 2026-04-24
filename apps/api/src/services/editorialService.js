@@ -19,6 +19,7 @@ const GEMINI_TEXT_MODELS = Array.from(new Set([
 
 const GeneratedSectionSchema = z.object({
   heading: z.string().min(8),
+  subheading: z.string().min(20).max(180).optional().default(''),
   paragraphs: z.array(z.string().min(40)).min(2).max(4),
   bullets: z.array(z.string().min(8)).max(5).default([])
 });
@@ -69,7 +70,27 @@ const toSlug = (value = '') =>
 
 const toCategorySlug = (value = '') => `blog-${toSlug(value || 'financas-pessoais')}`;
 const countWords = (value = '') => String(value).trim().split(/\s+/).filter(Boolean).length;
-const compactWhitespace = (value = '') => String(value || '').replace(/\s+/g, ' ').trim();
+const stripMarkdownArtifacts = (value = '') =>
+  String(value || '')
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/(^|\s)#{1,6}\s*/g, ' ')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/__(.*?)__/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/_(.*?)_/g, '$1')
+    .replace(/`([^`]+)`/g, '$1');
+const compactWhitespace = (value = '') => stripMarkdownArtifacts(value).replace(/\s+/g, ' ').trim();
+const ensureSentencePunctuation = (value = '') => {
+  const text = compactWhitespace(value);
+  if (!text) return '';
+  return /[.!?:]$/.test(text) ? text : `${text}.`;
+};
+const normalizeKeyword = (value = '') =>
+  String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
 const extractJsonObject = (value = '') => {
   const text = String(value || '').trim();
   if (!text) throw new Error('Model response is empty');
@@ -91,6 +112,7 @@ const compilePlainTextContent = (article = {}) =>
     ...(article.intro || []),
     ...((article.sections || []).flatMap((section) => [
       section.heading,
+      section.subheading,
       ...(section.paragraphs || []),
       ...(section.bullets || [])
     ])),
@@ -102,6 +124,7 @@ const compilePlainTextContent = (article = {}) =>
 
 const calculateReadTime = (wordCount) => Math.max(6, Math.round(wordCount / 190));
 const normalizeDate = (date) => new Date(date).toISOString();
+const toAssetUrl = (value = '') => (/^https?:\/\//i.test(value) ? value : `${SITE_BASE_URL}${value}`);
 
 const flattenOpenAiOutput = (payload = {}) => {
   if (typeof payload.output_text === 'string' && payload.output_text.trim()) {
@@ -158,13 +181,14 @@ const normalizeParagraphList = (items = []) => {
     }
   }
 
-  return merged.slice(0, 4);
+  return merged.slice(0, 4).map((item) => ensureSentencePunctuation(item));
 };
 
 const normalizeSections = (sections = []) =>
   (Array.isArray(sections) ? sections : [])
     .map((section) => ({
       heading: compactWhitespace(section?.heading || section?.title || ''),
+      subheading: ensureSentencePunctuation(section?.subheading || section?.description || section?.deck || ''),
       paragraphs: normalizeParagraphList(section?.paragraphs || section?.content || []),
       bullets: (Array.isArray(section?.bullets) ? section.bullets : [])
         .map((item) => compactWhitespace(item))
@@ -177,6 +201,7 @@ const normalizeSections = (sections = []) =>
 const buildFallbackSections = (title = '', category = '') => ([
   {
     heading: `O que ${compactWhitespace(title).toLowerCase()} significa na pratica`,
+    subheading: 'Uma abertura objetiva para entender conceito, contexto e impacto real antes de comparar opcoes.',
     paragraphs: [
       `Entender ${compactWhitespace(title).toLowerCase()} exige olhar para custo, contexto e impacto no orcamento, em vez de decidir apenas pela promessa mais chamativa.`,
       `Quando a leitura fica organizada por objetivo, prazo e risco real, fica mais facil separar uma opcao util de uma proposta que pode apertar o mes seguinte.`
@@ -185,6 +210,7 @@ const buildFallbackSections = (title = '', category = '') => ([
   },
   {
     heading: 'Quais pontos merecem mais atencao antes de contratar',
+    subheading: 'Os fatores que realmente pesam na comparacao e ajudam a evitar uma decisao financeira mal dimensionada.',
     paragraphs: [
       `Antes de seguir, vale comparar taxa, CET, prazo, valor de parcela, margem do orcamento e flexibilidade para lidar com imprevistos sem entrar em bola de neve.`,
       `Esse tipo de analise ajuda a transformar uma busca genérica em uma decisao mais madura, com menos pressa e mais clareza sobre o que cabe no seu momento.`
@@ -193,6 +219,7 @@ const buildFallbackSections = (title = '', category = '') => ([
   },
   {
     heading: `Como ${compactWhitespace(category || 'o tema').toLowerCase()} entra nessa decisao`,
+    subheading: 'A conexao entre o assunto do artigo, a realidade do orcamento e os cuidados mais praticos da contratacao.',
     paragraphs: [
       `No contexto de ${compactWhitespace(category || 'financas pessoais').toLowerCase()}, o mais importante e cruzar informacao tecnica com realidade financeira, porque a melhor opcao no papel nem sempre e a melhor no dia a dia.`,
       `Quanto maior o compromisso de longo prazo, mais importante fica revisar contrato, condicoes, margem mensal e o plano para nao depender de credito caro depois.`
@@ -213,13 +240,34 @@ const trimMetaTitle = (value = '') => {
   return `${text.slice(0, 77).trim()}...`;
 };
 
+const ensureKeywordInTitle = (title = '', keyword = '') => {
+  const cleanTitle = compactWhitespace(title);
+  const cleanKeyword = compactWhitespace(keyword);
+  if (!cleanKeyword) return cleanTitle;
+  if (normalizeKeyword(cleanTitle).includes(normalizeKeyword(cleanKeyword))) return cleanTitle;
+  return `${cleanKeyword}: ${cleanTitle}`.trim();
+};
+
+const ensureKeywordInFirstParagraph = (intro = [], keyword = '') => {
+  const list = Array.isArray(intro) ? [...intro] : [];
+  const cleanKeyword = compactWhitespace(keyword);
+  if (!list.length || !cleanKeyword) return list;
+
+  if (normalizeKeyword(list[0]).includes(normalizeKeyword(cleanKeyword))) {
+    return list;
+  }
+
+  list[0] = ensureSentencePunctuation(`Antes de decidir, vale entender ${cleanKeyword} com clareza e sem pressa. ${list[0]}`);
+  return list;
+};
+
 const coerceGeneratedArticle = (raw = {}) => ({
   ...raw,
   title: compactWhitespace(raw?.title || raw?.h1 || ''),
   h1: compactWhitespace(raw?.h1 || raw?.title || ''),
-  summary: compactWhitespace(raw?.summary || raw?.excerpt || ''),
+  summary: ensureSentencePunctuation(raw?.summary || raw?.excerpt || ''),
   metaTitle: trimMetaTitle(raw?.metaTitle || raw?.seoTitle || raw?.title || ''),
-  metaDescription: trimMetaDescription(raw?.metaDescription || raw?.seoDescription || raw?.summary || ''),
+  metaDescription: trimMetaDescription(ensureSentencePunctuation(raw?.metaDescription || raw?.seoDescription || raw?.summary || '')),
   category: compactWhitespace(raw?.category || 'Emprestimos'),
   tags: (Array.isArray(raw?.tags) ? raw.tags : [])
     .map((item) => compactWhitespace(item))
@@ -242,8 +290,8 @@ const coerceGeneratedArticle = (raw = {}) => ({
   })(),
   faq: (Array.isArray(raw?.faq) ? raw.faq : [])
     .map((item) => ({
-      question: compactWhitespace(item?.question || ''),
-      answer: compactWhitespace(item?.answer || '')
+      question: ensureSentencePunctuation(compactWhitespace(item?.question || '')).replace(/\.$/, '?'),
+      answer: ensureSentencePunctuation(item?.answer || '')
     }))
     .filter((item) => item.question.length >= 12 && item.answer.length >= 40)
     .slice(0, 5),
@@ -251,7 +299,7 @@ const coerceGeneratedArticle = (raw = {}) => ({
   cta: {
     eyebrow: compactWhitespace(raw?.cta?.eyebrow || 'Proximo passo'),
     title: compactWhitespace(raw?.cta?.title || 'Compare opcoes com mais clareza'),
-    description: compactWhitespace(raw?.cta?.description || 'Veja caminhos de credito que podem fazer sentido para o seu momento, com contexto e sem pressa.'),
+    description: ensureSentencePunctuation(raw?.cta?.description || 'Veja caminhos de credito que podem fazer sentido para o seu momento, com contexto e sem pressa.'),
     primary: {
       to: compactWhitespace(raw?.cta?.primary?.to || '/emprestimos'),
       label: compactWhitespace(raw?.cta?.primary?.label || 'Ver opcoes agora')
@@ -262,6 +310,29 @@ const coerceGeneratedArticle = (raw = {}) => ({
     }
   }
 });
+
+const applySeoBestPractices = ({ article, brief }) => {
+  const keyword = compactWhitespace(brief?.primaryKeyword || article?.clusterKeyword || '');
+  const title = ensureKeywordInTitle(article.title || article.h1 || '', keyword);
+  const intro = ensureKeywordInFirstParagraph(article.intro || [], keyword);
+  const summary = ensureSentencePunctuation(article.summary || '');
+  const metaTitle = trimMetaTitle(ensureKeywordInTitle(article.metaTitle || title, keyword));
+  let metaDescription = trimMetaDescription(article.metaDescription || summary);
+
+  if (keyword && !normalizeKeyword(metaDescription).includes(normalizeKeyword(keyword))) {
+    metaDescription = trimMetaDescription(`Entenda ${keyword} com mais clareza, veja custos reais, riscos e alternativas seguras antes de contratar.`);
+  }
+
+  return {
+    ...article,
+    title,
+    h1: ensureKeywordInTitle(article.h1 || title, keyword),
+    intro,
+    summary,
+    metaTitle,
+    metaDescription
+  };
+};
 
 const getAvailableAiProviders = () => {
   const providers = [];
@@ -310,7 +381,9 @@ Escreva um artigo original em portugues do Brasil, profundo e natural, com lingu
 Requisitos absolutos:
 - entre 1200 e 2000 palavras
 - H1 forte e objetivo
-- 5 a 8 secoes com H2 e, quando fizer sentido, H3 dentro dos paragrafos
+- 5 a 8 secoes com H2 claros e bem determinados
+- cada secao deve ter um subtitulo curto, explicativo e diferente do H2
+- os subtitulos devem orientar a leitura e deixar evidente o foco da secao
 - 3 a 5 FAQs
 - CTA final orientada a comparacao com clareza
 - sem fluff, sem frases vazias, sem promessas de aprovacao
@@ -340,7 +413,7 @@ Responda somente JSON valido, sem markdown, com o seguinte formato:
   "category": string,
   "tags": string[],
   "intro": string[],
-  "sections": [{ "heading": string, "paragraphs": string[], "bullets": string[] }],
+  "sections": [{ "heading": string, "subheading": string, "paragraphs": string[], "bullets": string[] }],
   "faq": [{ "question": string, "answer": string }],
   "conclusion": string[],
   "cta": {
@@ -351,6 +424,17 @@ Responda somente JSON valido, sem markdown, com o seguinte formato:
     "secondary": { "to": string, "label": string }
   }
 }`.trim();
+
+const buildExpandedGenerationPrompt = (prompt) => `${prompt}
+
+Reforce estes pontos obrigatorios:
+- entregue entre 1400 e 1800 palavras reais
+- use pelo menos 6 secoes desenvolvidas com paragrafos completos
+- escreva H2 objetivos e subtitulos logo abaixo de cada secao
+- evite respostas enxutas
+- cada secao deve aprofundar o tema com contexto, comparacao, risco, custo e orientacao pratica
+- nao reduza FAQ nem conclusao
+`.trim();
 
 const getContextualLinks = ({ cluster, relatedArticles = [] }) => ({
   pillar: {
@@ -416,7 +500,7 @@ const buildExternalLinks = ({ article, cluster }) => {
   }).slice(0, 3);
 };
 
-const validateArticlePayload = ({ article, internalLinks, externalLinks, existingSlugs = new Set(), existingTitles = new Set() }) => {
+const validateArticlePayload = ({ article, internalLinks, externalLinks, image, existingSlugs = new Set(), existingTitles = new Set() }) => {
   const plainText = compilePlainTextContent(article);
   const wordCount = countWords(plainText);
   const issues = [];
@@ -429,6 +513,9 @@ const validateArticlePayload = ({ article, internalLinks, externalLinks, existin
   if (!Array.isArray(internalLinks) || internalLinks.length < 3) issues.push('Links internos insuficientes');
   if (!Array.isArray(externalLinks) || externalLinks.length < 1) issues.push('Links externos insuficientes');
   if (!article.cta?.primary?.to) issues.push('CTA primaria ausente');
+  if (!image?.publicPath) issues.push('Imagem vencedora ausente');
+  if (!Array.isArray(image?.scores) || image.scores.length < 3) issues.push('Menos de 3 imagens avaliadas');
+  if (!image?.validationPassed) issues.push('Imagem nao validada pelo seletor');
   if (existingSlugs.has(article.slug)) issues.push(`Slug duplicado: ${article.slug}`);
   if (existingTitles.has(article.title.trim().toLowerCase())) issues.push(`Titulo duplicado: ${article.title}`);
 
@@ -438,6 +525,58 @@ const validateArticlePayload = ({ article, internalLinks, externalLinks, existin
     issues,
     passed: issues.length === 0
   };
+};
+
+const buildEditorialAssetRows = ({ articleId, brief, image }) => {
+  const variantAssets = (Array.isArray(image?.variants) ? image.variants : []).map((variant) => {
+    const score = (image.scores || []).find((item) => item.key === variant.key);
+    return {
+      articleId,
+      slug: `${brief.slug}-${variant.key}`,
+      provider: variant.provider === 'gemini' ? 'gemini' : variant.provider === 'openai' ? 'openai' : 'fallback',
+      prompt: variant.prompt,
+      publicPath: variant.publicPath,
+      width: variant.width,
+      height: variant.height,
+      fileSizeBytes: variant.fileSizeBytes,
+      status: 'succeeded',
+      errorMessage: null,
+      metadata: {
+        variantKey: variant.key,
+        intent: variant.intent,
+        label: variant.label,
+        sourceType: image.sourceType || (variant.librarySource ? 'curated-library' : 'generated'),
+        librarySource: variant.librarySource || null,
+        score: score?.total || null,
+        scoreBreakdown: score?.breakdown || null,
+        usedVisualEvaluation: Boolean(score?.usedVisualEvaluation),
+        isWinner: image.winnerKey === variant.key
+      }
+    };
+  });
+
+  const winnerAsset = {
+    articleId,
+    slug: brief.slug,
+    provider: image.provider === 'gemini' ? 'gemini' : image.provider === 'openai' ? 'openai' : 'fallback',
+    prompt: typeof image.prompt === 'string' ? image.prompt : JSON.stringify(image.prompt || []),
+    publicPath: image.publicPath,
+    width: image.width,
+    height: image.height,
+    fileSizeBytes: image.fileSizeBytes,
+    status: image.isFallback ? 'draft_saved' : 'succeeded',
+    errorMessage: image.errorMessage || null,
+      metadata: {
+        isFallback: image.isFallback,
+        sourceType: image.sourceType || (image.isFallback ? 'cluster-fallback' : 'generated'),
+        winnerKey: image.winnerKey,
+        winnerScore: image.winnerScore,
+        winnerReason: image.winnerReason,
+      scores: image.scores || []
+    }
+  };
+
+  return [...variantAssets, winnerAsset];
 };
 
 const ensureBlogCategory = async (prisma, name = 'Financas pessoais') => prisma.category.upsert({
@@ -639,11 +778,15 @@ export class EditorialService {
         relatedArticles
       });
 
-      const generated = await this.generateArticleFromAi({ brief, cluster: brief.cluster, contextualLinks });
+      const generated = applySeoBestPractices({
+        article: await this.generateArticleFromAi({ brief, cluster: brief.cluster, contextualLinks }),
+        brief
+      });
       const image = await generateBlogImage({
         title: generated.title,
         topic: brief.primaryKeyword,
-        slug: brief.slug
+        slug: brief.slug,
+        cluster: brief.cluster.name
       });
       const internalLinks = buildInternalLinks({
         cluster: brief.cluster,
@@ -661,7 +804,7 @@ export class EditorialService {
         routePath: `/blog/${brief.slug}`,
         canonicalUrl: `${SITE_BASE_URL}/blog/${brief.slug}/`,
         coverImage: image.publicPath,
-        ogImage: `${SITE_BASE_URL}${image.publicPath}`,
+        ogImage: toAssetUrl(image.publicPath),
         clusterLabel: brief.cluster.name,
         clusterKeyword: brief.cluster.primaryKeyword,
         internalLinks,
@@ -686,6 +829,7 @@ export class EditorialService {
         article: articlePayload,
         internalLinks,
         externalLinks,
+        image,
         existingSlugs,
         existingTitles
       });
@@ -707,7 +851,7 @@ export class EditorialService {
           seoTitle: generated.metaTitle,
           seoDescription: generated.metaDescription,
           coverImage: image.publicPath,
-          ogImage: `${SITE_BASE_URL}${image.publicPath}`,
+          ogImage: toAssetUrl(image.publicPath),
           readTime: validation.readTime,
           wordCount: validation.wordCount,
           isPillar: brief.stage === 'pillar',
@@ -727,7 +871,7 @@ export class EditorialService {
           seoTitle: generated.metaTitle,
           seoDescription: generated.metaDescription,
           coverImage: image.publicPath,
-          ogImage: `${SITE_BASE_URL}${image.publicPath}`,
+          ogImage: toAssetUrl(image.publicPath),
           readTime: validation.readTime,
           wordCount: validation.wordCount,
           isPillar: brief.stage === 'pillar',
@@ -741,22 +885,12 @@ export class EditorialService {
         }
       });
 
-      await prisma.editorialAsset.create({
-        data: {
+      await prisma.editorialAsset.createMany({
+        data: buildEditorialAssetRows({
           articleId: articleRecord.id,
-          slug: brief.slug,
-          provider: image.provider,
-          prompt: image.prompt,
-          publicPath: image.publicPath,
-          width: image.width,
-          height: image.height,
-          fileSizeBytes: image.fileSizeBytes,
-          status: image.isFallback ? 'draft_saved' : 'succeeded',
-          errorMessage: image.errorMessage || null,
-          metadata: {
-            isFallback: image.isFallback
-          }
-        }
+          brief,
+          image
+        })
       });
 
       await prisma.editorialBrief.update({
@@ -779,7 +913,10 @@ export class EditorialService {
             image: {
               provider: image.provider,
               publicPath: image.publicPath,
-              fallback: image.isFallback
+              fallback: image.isFallback,
+              winnerKey: image.winnerKey,
+              winnerScore: image.winnerScore,
+              winnerReason: image.winnerReason
             }
           },
           errorMessage: validation.passed ? null : validation.issues.join(' | ')
@@ -836,31 +973,39 @@ export class EditorialService {
     }
 
     for (const provider of providers) {
-      try {
-        const rawText = provider === 'openai'
-          ? await this.generateWithOpenAi(prompt)
-          : await this.generateWithGemini(prompt);
+      for (const providerPrompt of [prompt, buildExpandedGenerationPrompt(prompt)]) {
+        try {
+          const rawText = provider === 'openai'
+            ? await this.generateWithOpenAi(providerPrompt)
+            : await this.generateWithGemini(providerPrompt);
 
-        const parsed = JSON.parse(extractJsonObject(rawText));
-        const validated = GeneratedArticleSchema.parse(coerceGeneratedArticle(parsed));
+          const parsed = JSON.parse(extractJsonObject(rawText));
+          const validated = GeneratedArticleSchema.parse(coerceGeneratedArticle(parsed));
+          const generatedWordCount = countWords(compilePlainTextContent(validated));
 
-        return {
-          ...validated,
-          title: validated.title.trim(),
-          h1: validated.h1.trim(),
-          summary: validated.summary.trim(),
-          metaTitle: validated.metaTitle.trim(),
-          metaDescription: validated.metaDescription.trim(),
-          category: validated.category.trim()
-        };
-      } catch (error) {
-        lastError = error;
-        await logger.warn('editorial_generation_provider_failed', {
-          provider,
-          briefId: brief.id,
-          slug: brief.slug,
-          error: error?.message || String(error)
-        });
+          if (generatedWordCount < 1200) {
+            throw new Error(`Generated article too short: ${generatedWordCount} words`);
+          }
+
+          return {
+            ...validated,
+            title: validated.title.trim(),
+            h1: validated.h1.trim(),
+            summary: validated.summary.trim(),
+            metaTitle: validated.metaTitle.trim(),
+            metaDescription: validated.metaDescription.trim(),
+            category: validated.category.trim()
+          };
+        } catch (error) {
+          lastError = error;
+          await logger.warn('editorial_generation_provider_failed', {
+            provider,
+            briefId: brief.id,
+            slug: brief.slug,
+            promptMode: providerPrompt === prompt ? 'default' : 'expanded',
+            error: error?.message || String(error)
+          });
+        }
       }
     }
 

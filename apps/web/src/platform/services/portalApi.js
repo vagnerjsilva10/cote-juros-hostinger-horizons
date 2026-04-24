@@ -230,9 +230,7 @@ const normalizeArticleRecord = (article = {}) =>
     : undefined,
   publishDate: article.publishDate || article.publishedAt || article.createdAt || new Date().toISOString(),
   readTime: article.readTime || 6,
-  image:
-    article.image ||
-    'https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=1200&q=80',
+  image: article.image || article.coverImage || '',
   category: normalizeMojibake(article.category || article.categoryName || article.category?.name || 'Finanças Pessoais')
 });
 
