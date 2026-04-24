@@ -40,7 +40,10 @@ const main = async () => {
       slug: item.article?.slug,
       status: item.article?.status,
       wordCount: item.validation?.wordCount,
-      image: item.image?.publicPath
+      image: item.image?.publicPath,
+      webStory: item.distribution?.webStory?.path || null,
+      pinterest: item.distribution?.pinterest?.status || null,
+      distributionError: item.distributionError || null
     }))
   }, null, 2));
 };

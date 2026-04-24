@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { getPrisma } from '../lib/prisma.js';
+import { ContentDistributionService } from './contentDistributionService.js';
 import { generateBlogImage } from './imageGenerator.js';
 import {
   AUTHORITY_SOURCES,
@@ -885,6 +886,26 @@ export class EditorialService {
         }
       });
 
+      let distribution = null;
+      let distributionError = null;
+      if (validation.passed) {
+        try {
+          distribution = await ContentDistributionService.distributePublishedArticle({
+            articleRecord,
+            articlePayload,
+            brief,
+            triggerSource
+          });
+        } catch (error) {
+          distributionError = error?.message || String(error);
+          await logger.error('editorial_distribution_failed_after_publish', error, {
+            briefId: brief.id,
+            slug: brief.slug,
+            articleId: articleRecord.id
+          });
+        }
+      }
+
       await prisma.editorialAsset.createMany({
         data: buildEditorialAssetRows({
           articleId: articleRecord.id,
@@ -917,7 +938,9 @@ export class EditorialService {
               winnerKey: image.winnerKey,
               winnerScore: image.winnerScore,
               winnerReason: image.winnerReason
-            }
+            },
+            distribution,
+            distributionError
           },
           errorMessage: validation.passed ? null : validation.issues.join(' | ')
         }
@@ -934,7 +957,9 @@ export class EditorialService {
         jobRunId: jobRun.id,
         article: serializeArticleRecord(articleRecord),
         validation,
-        image
+        image,
+        distribution,
+        distributionError
       };
     } catch (error) {
       await prisma.editorialBrief.update({
