@@ -28,7 +28,7 @@
     },
     {
       "path": "/api/internal/reactivation/send-emails",
-      "schedule": "30 12-20 * * 1-5"
+      "schedule": "30 12 * * 1-5"
     }
   ],
   "routes": [
