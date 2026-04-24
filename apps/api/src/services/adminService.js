@@ -203,7 +203,11 @@ const serializeArticle = (article) => ({
   category: article.category?.name || '',
   categorySlug: article.category?.slug || '',
   summary: article.excerpt || '',
-  image: '',
+  image: article.coverImage || '',
+  coverImage: article.coverImage || '',
+  ogImage: article.ogImage || '',
+  readTime: article.readTime || 0,
+  wordCount: article.wordCount || 0,
   publishDate: article.publishedAt || article.createdAt
 });
 

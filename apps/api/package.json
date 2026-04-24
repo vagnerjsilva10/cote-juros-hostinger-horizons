@@ -23,7 +23,10 @@
     "follow:up": "node src/jobs/followUp.js",
     "seed:public-catalog": "node scripts/seedPublicCatalog.js",
     "add:test:leads": "node scripts/addTestLeads.js",
-    "jobs:start": "node src/jobs/scheduler.js"
+    "jobs:start": "node src/jobs/scheduler.js",
+    "editorial:ensure": "node src/jobs/runEditorialPipeline.js --ensure=true",
+    "editorial:run": "node src/jobs/runEditorialPipeline.js --limit=1 --trigger=manual",
+    "editorial:jobs:start": "node src/jobs/editorialScheduler.js"
   },
   "dependencies": {
     "@prisma/client": "^6.12.0",

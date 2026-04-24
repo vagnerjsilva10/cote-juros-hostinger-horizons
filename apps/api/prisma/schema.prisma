@@ -27,6 +27,36 @@ enum RecordStatus {
   inactive
 }
 
+enum EditorialBriefStatus {
+  planned
+  briefing_ready
+  generating
+  draft
+  published
+  failed
+}
+
+enum EditorialIntentStage {
+  pillar
+  top
+  middle
+  bottom
+}
+
+enum EditorialJobStatus {
+  queued
+  running
+  succeeded
+  failed
+  draft_saved
+}
+
+enum EditorialImageProvider {
+  openai
+  gemini
+  fallback
+}
+
 enum AffiliateNetworkCode {
   awin
   admitad
@@ -309,19 +339,127 @@ model Article {
   content        String
   excerpt        String?
   categoryId     String?      @map("category_id")
+  clusterId      String?      @map("cluster_id")
+  briefId        String?      @unique @map("brief_id")
   author         String?
   seoTitle       String?      @map("seo_title")
   seoDescription String?      @map("seo_description")
+  coverImage     String?      @map("cover_image")
+  ogImage        String?      @map("og_image")
+  readTime       Int?         @map("read_time")
+  wordCount      Int?         @map("word_count")
+  isPillar       Boolean      @default(false) @map("is_pillar")
+  structuredContent Json?     @map("structured_content")
   publishedAt    DateTime?    @map("published_at")
   status         RecordStatus @default(draft)
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")
 
   category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  cluster  SeoCluster? @relation(fields: [clusterId], references: [id], onDelete: SetNull)
+  brief    EditorialBrief? @relation(fields: [briefId], references: [id], onDelete: SetNull)
+  assets   EditorialAsset[]
+  jobRuns  EditorialJobRun[]
 
   @@index([status, publishedAt])
   @@index([categoryId])
+  @@index([clusterId])
+  @@index([isPillar, status])
   @@map("articles")
+}
+
+model SeoCluster {
+  id             String       @id @default(cuid())
+  slug           String       @unique
+  name           String
+  primaryKeyword String       @map("primary_keyword")
+  pillarTitle    String       @map("pillar_title")
+  pillarSlug     String       @unique @map("pillar_slug")
+  description    String?
+  status         RecordStatus @default(active)
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  articles Article[]
+  briefs   EditorialBrief[]
+  jobRuns  EditorialJobRun[]
+
+  @@index([status, createdAt])
+  @@map("seo_clusters")
+}
+
+model EditorialBrief {
+  id                 String               @id @default(cuid())
+  clusterId          String               @map("cluster_id")
+  slug               String               @unique
+  title              String
+  primaryKeyword     String               @map("primary_keyword")
+  secondaryKeywords  Json?                @map("secondary_keywords")
+  stage              EditorialIntentStage
+  brief              Json
+  seoTitle           String?              @map("seo_title")
+  metaDescription    String?              @map("meta_description")
+  scheduledFor       DateTime?            @map("scheduled_for")
+  status             EditorialBriefStatus @default(planned)
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updatedAt          DateTime             @updatedAt @map("updated_at")
+
+  cluster SeoCluster @relation(fields: [clusterId], references: [id], onDelete: Cascade)
+  article Article?
+  jobRuns EditorialJobRun[]
+
+  @@index([clusterId, status])
+  @@index([scheduledFor, status])
+  @@map("editorial_briefs")
+}
+
+model EditorialAsset {
+  id            String                @id @default(cuid())
+  articleId     String                @map("article_id")
+  slug          String
+  provider      EditorialImageProvider
+  prompt        String
+  publicPath    String                @map("public_path")
+  width         Int?
+  height        Int?
+  fileSizeBytes Int?                  @map("file_size_bytes")
+  status        EditorialJobStatus    @default(queued)
+  errorMessage  String?               @map("error_message")
+  metadata      Json?
+  createdAt     DateTime              @default(now()) @map("created_at")
+  updatedAt     DateTime              @updatedAt @map("updated_at")
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId, createdAt])
+  @@index([slug, createdAt])
+  @@map("editorial_assets")
+}
+
+model EditorialJobRun {
+  id            String             @id @default(cuid())
+  jobName       String             @map("job_name")
+  triggerSource String?            @map("trigger_source")
+  clusterId     String?            @map("cluster_id")
+  briefId       String?            @map("brief_id")
+  articleId     String?            @map("article_id")
+  status        EditorialJobStatus @default(queued)
+  startedAt     DateTime           @default(now()) @map("started_at")
+  finishedAt    DateTime?          @map("finished_at")
+  durationMs    Int?               @map("duration_ms")
+  metadata      Json?
+  errorMessage  String?            @map("error_message")
+  createdAt     DateTime           @default(now()) @map("created_at")
+
+  cluster SeoCluster?      @relation(fields: [clusterId], references: [id], onDelete: SetNull)
+  brief   EditorialBrief?  @relation(fields: [briefId], references: [id], onDelete: SetNull)
+  article Article?         @relation(fields: [articleId], references: [id], onDelete: SetNull)
+
+  @@index([jobName, startedAt])
+  @@index([status, startedAt])
+  @@index([clusterId, startedAt])
+  @@index([briefId, startedAt])
+  @@map("editorial_job_runs")
 }
 
 model SimulationLead {

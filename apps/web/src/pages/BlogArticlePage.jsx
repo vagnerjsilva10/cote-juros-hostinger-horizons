@@ -421,7 +421,14 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
   );
 
   const externalAuthorityLinks = useMemo(
-    () => (safeArticle ? dedupeExternalByUrl(getExternalAuthorityLinks(safeArticle)).slice(0, 3) : []),
+    () => (
+      safeArticle
+        ? dedupeExternalByUrl([
+          ...(Array.isArray(safeArticle.externalLinks) ? safeArticle.externalLinks : []),
+          ...getExternalAuthorityLinks(safeArticle)
+        ]).slice(0, 3)
+        : []
+    ),
     [safeArticle]
   );
 
@@ -496,7 +503,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
   const editorialTitle = getEditorialTitle(safeArticle);
   const canonicalUrl = safeArticle.canonicalUrl || `https://www.cotejuros.com.br${getArticlePath(safeArticle)}/`;
-  const socialImage = getArticleImage(safeArticle);
+  const socialImage = safeArticle.ogImage || getArticleImage(safeArticle);
   const faqSchema = toFaqSchema(safeArticle);
   const introParagraphs = getArticleParagraphs(safeArticle);
   const sections = Array.isArray(safeArticle.sections) ? safeArticle.sections : [];

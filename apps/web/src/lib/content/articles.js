@@ -207,6 +207,17 @@ const normalizeInternalLinks = (links) => {
     .filter((item) => item.path && item.title);
 };
 
+const normalizeExternalLinks = (links) => {
+  if (!Array.isArray(links)) return [];
+
+  return links
+    .map((item) => ({
+      label: sanitizeInlineText(item?.label || item?.title || ''),
+      url: sanitizeInlineText(item?.url || item?.href || '')
+    }))
+    .filter((item) => item.label && item.url);
+};
+
 const estimateReadTime = ({ intro = [], sections = [], faq = [], conclusion = [], content = '' }) => {
   const source = [
     sanitizeRichText(content),
@@ -314,6 +325,7 @@ export const normalizeArticleData = (article = {}, options = {}) => {
     faq,
     content: editorial.content,
     internalLinks: normalizeInternalLinks(source.internalLinks),
+    externalLinks: normalizeExternalLinks(source.externalLinks),
     metaTitle: sanitizeInlineText(source.metaTitle || ''),
     seoTitle: sanitizeInlineText(source.seoTitle || source.metaTitle || `${title} | Blog Cote Juros`) || `${title} | Blog Cote Juros`,
     metaDescription:
@@ -321,8 +333,11 @@ export const normalizeArticleData = (article = {}, options = {}) => {
       `Guia da Cote Juros sobre ${title.toLowerCase()} com foco em clareza, organização e decisões financeiras mais seguras.`,
     coverImage: sanitizeInlineText(source.coverImage || source.image || source.imageUrl || source.featuredImage || ''),
     coverImageAlt: sanitizeInlineText(source.coverImageAlt || source.imageAlt || source.alt || '') || `Capa editorial do artigo ${title}`,
+    ogImage: sanitizeInlineText(source.ogImage || source.image || source.coverImage || ''),
     image: sanitizeInlineText(source.coverImage || source.image || source.imageUrl || source.featuredImage || ''),
     imageAlt: sanitizeInlineText(source.coverImageAlt || source.imageAlt || source.alt || '') || `Capa editorial do artigo ${title}`,
+    cta: isObjectRecord(source.cta) ? source.cta : null,
+    clusterLabel: sanitizeInlineText(source.clusterLabel || source.cluster || ''),
     routePath,
     canonicalUrl,
     legacyUrl: sanitizeInlineText(source.legacyUrl || ''),
