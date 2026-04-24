@@ -4,6 +4,10 @@ import { fileURLToPath } from 'node:url';
 import { EDITORIAL_LOG_DIR } from './editorialConfig.js';
 
 const resolveLogPath = (name = 'editorial.log') => {
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    return path.join('/tmp', 'cote-juros-editorial', name);
+  }
+
   const dirPath = fileURLToPath(EDITORIAL_LOG_DIR);
   return path.join(dirPath, name);
 };
@@ -24,16 +28,20 @@ const normalizeError = (error) => {
 };
 
 export const appendEditorialLog = async (event, payload = {}) => {
-  const dirPath = path.dirname(resolveLogPath());
-  await fs.mkdir(dirPath, { recursive: true });
-
-  const line = JSON.stringify({
+  const entry = {
     timestamp: new Date().toISOString(),
     event,
     ...payload
-  });
+  };
+  const line = JSON.stringify(entry);
 
-  await fs.appendFile(resolveLogPath(), `${line}\n`, 'utf8');
+  try {
+    const logPath = resolveLogPath();
+    await fs.mkdir(path.dirname(logPath), { recursive: true });
+    await fs.appendFile(logPath, `${line}\n`, 'utf8');
+  } catch (error) {
+    console.log('[editorial-log-fallback]', entry, error?.message || String(error));
+  }
 };
 
 export const createEditorialLogger = (scope) => ({
