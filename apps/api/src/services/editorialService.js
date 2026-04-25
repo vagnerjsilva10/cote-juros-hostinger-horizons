@@ -126,6 +126,7 @@ const compilePlainTextContent = (article = {}) =>
 const calculateReadTime = (wordCount) => Math.max(6, Math.round(wordCount / 190));
 const normalizeDate = (date) => new Date(date).toISOString();
 const toAssetUrl = (value = '') => (/^https?:\/\//i.test(value) ? value : `${SITE_BASE_URL}${value}`);
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
 const flattenOpenAiOutput = (payload = {}) => {
   if (typeof payload.output_text === 'string' && payload.output_text.trim()) {
@@ -501,6 +502,122 @@ const buildExternalLinks = ({ article, cluster }) => {
   }).slice(0, 3);
 };
 
+const STAGE_OPPORTUNITY_SCORE = Object.freeze({
+  bottom: 24,
+  middle: 20,
+  pillar: 18,
+  top: 14
+});
+
+const COMMERCIAL_INTENT_TERMS = Object.freeze([
+  { pattern: /negativad|nome sujo|restricao/, score: 24 },
+  { pattern: /financiamento|financiar|veiculo|carro|imovel|entrada/, score: 22 },
+  { pattern: /emprestimo|credito|garantia|consignado/, score: 20 },
+  { pattern: /cartao|limite|anuidade|rotativo|fatura/, score: 18 },
+  { pattern: /score|serasa|spc/, score: 14 },
+  { pattern: /juros|cet|taxa|parcela/, score: 12 },
+  { pattern: /educacao|orcamento|reserva|organiza/, score: 6 }
+]);
+
+const TOPICAL_MODIFIERS = Object.freeze([
+  { pattern: /online|sem garantia|com garantia|sem entrada|baixo|negativad/, score: 12 },
+  { pattern: /vale a pena|como escolher|como comparar|como avaliar/, score: 10 },
+  { pattern: /mei|autonom|aposentad|familia|casais|renda/, score: 8 },
+  { pattern: /\b\d+\b|7 pontos|primeiro/, score: 6 }
+]);
+
+const keywordTokenCount = (value = '') =>
+  normalizeKeyword(value)
+    .split(/[^a-z0-9]+/)
+    .filter((item) => item.length >= 3)
+    .length;
+
+const scoreByPatterns = (text = '', rules = []) => {
+  const normalized = normalizeKeyword(text);
+  return rules.reduce((max, rule) => rule.pattern.test(normalized) ? Math.max(max, rule.score) : max, 0);
+};
+
+const sumPatternScores = (text = '', rules = [], cap = 18) => {
+  const normalized = normalizeKeyword(text);
+  return clamp(rules.reduce((total, rule) => total + (rule.pattern.test(normalized) ? rule.score : 0), 0), 0, cap);
+};
+
+const calculateDueScore = (scheduledFor, now = new Date()) => {
+  if (!scheduledFor) return 4;
+  const hoursOverdue = (now.getTime() - new Date(scheduledFor).getTime()) / 36e5;
+  return clamp(Math.round(hoursOverdue * 2), 0, 18);
+};
+
+const calculateClusterCoverageScore = (publishedCount = 0) => {
+  if (publishedCount <= 0) return 18;
+  if (publishedCount === 1) return 12;
+  if (publishedCount === 2) return 8;
+  return 3;
+};
+
+const calculateFailurePenalty = (failedCount = 0, status = '') => {
+  const statusPenalty = status === 'failed' ? 12 : status === 'draft' ? 8 : 0;
+  return statusPenalty + clamp(failedCount * 8, 0, 24);
+};
+
+const calculateEditorialOpportunity = ({ brief, now = new Date(), clusterPublishedCount = 0, recentFailedRuns = 0 }) => {
+  const text = [
+    brief.title,
+    brief.primaryKeyword,
+    brief.cluster?.primaryKeyword,
+    brief.cluster?.name,
+    ...(Array.isArray(brief.secondaryKeywords) ? brief.secondaryKeywords : [])
+  ].filter(Boolean).join(' ');
+  const keywordWords = keywordTokenCount(brief.primaryKeyword);
+  const longTailScore = keywordWords >= 4 ? 16 : keywordWords === 3 ? 12 : 7;
+  const score =
+    (STAGE_OPPORTUNITY_SCORE[brief.stage] || 10)
+    + scoreByPatterns(text, COMMERCIAL_INTENT_TERMS)
+    + sumPatternScores(text, TOPICAL_MODIFIERS)
+    + longTailScore
+    + calculateDueScore(brief.scheduledFor, now)
+    + calculateClusterCoverageScore(clusterPublishedCount)
+    - calculateFailurePenalty(recentFailedRuns, brief.status);
+
+  return {
+    score: clamp(score, 0, 100),
+    factors: {
+      stage: STAGE_OPPORTUNITY_SCORE[brief.stage] || 10,
+      commercialIntent: scoreByPatterns(text, COMMERCIAL_INTENT_TERMS),
+      topicalModifiers: sumPatternScores(text, TOPICAL_MODIFIERS),
+      longTail: longTailScore,
+      overdue: calculateDueScore(brief.scheduledFor, now),
+      clusterCoverage: calculateClusterCoverageScore(clusterPublishedCount),
+      failurePenalty: calculateFailurePenalty(recentFailedRuns, brief.status)
+    }
+  };
+};
+
+const rankEditorialBriefsByOpportunity = ({ briefs = [], now = new Date(), publishedCounts = new Map(), failedCounts = new Map() }) =>
+  briefs
+    .map((brief) => {
+      const opportunity = calculateEditorialOpportunity({
+        brief,
+        now,
+        clusterPublishedCount: publishedCounts.get(brief.clusterId) || 0,
+        recentFailedRuns: failedCounts.get(brief.id) || 0
+      });
+
+      return {
+        brief,
+        opportunity
+      };
+    })
+    .sort((left, right) => {
+      if (right.opportunity.score !== left.opportunity.score) {
+        return right.opportunity.score - left.opportunity.score;
+      }
+
+      const leftDate = left.brief.scheduledFor ? new Date(left.brief.scheduledFor).getTime() : 0;
+      const rightDate = right.brief.scheduledFor ? new Date(right.brief.scheduledFor).getTime() : 0;
+      return leftDate - rightDate;
+    });
+
 const validateArticlePayload = ({ article, internalLinks, externalLinks, image, existingSlugs = new Set(), existingTitles = new Set() }) => {
   const plainText = compilePlainTextContent(article);
   const wordCount = countWords(plainText);
@@ -716,8 +833,9 @@ export class EditorialService {
     await this.ensureClusterCalendar();
     const prisma = getPrisma();
     const now = new Date();
+    const useOpportunityPriority = process.env.EDITORIAL_PRIORITIZE_OPPORTUNITY !== 'false';
 
-    const briefs = await prisma.editorialBrief.findMany({
+    const eligibleBriefs = await prisma.editorialBrief.findMany({
       where: {
         status: {
           in: ['planned', 'briefing_ready', 'draft', 'failed']
@@ -731,18 +849,68 @@ export class EditorialService {
         cluster: true
       },
       orderBy: [{ scheduledFor: 'asc' }, { createdAt: 'asc' }],
-      take: limit
+      take: useOpportunityPriority ? 50 : limit
     });
 
+    let rankedBriefs = eligibleBriefs.map((brief) => ({
+      brief,
+      opportunity: null
+    }));
+
+    if (useOpportunityPriority && eligibleBriefs.length) {
+      const [publishedByCluster, failedRuns] = await Promise.all([
+        prisma.article.groupBy({
+          by: ['clusterId'],
+          where: {
+            status: 'published',
+            clusterId: {
+              in: eligibleBriefs.map((brief) => brief.clusterId)
+            }
+          },
+          _count: {
+            _all: true
+          }
+        }),
+        prisma.editorialJobRun.groupBy({
+          by: ['briefId'],
+          where: {
+            status: 'failed',
+            briefId: {
+              in: eligibleBriefs.map((brief) => brief.id)
+            },
+            startedAt: {
+              gte: new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000)
+            }
+          },
+          _count: {
+            _all: true
+          }
+        })
+      ]);
+
+      rankedBriefs = rankEditorialBriefsByOpportunity({
+        briefs: eligibleBriefs,
+        now,
+        publishedCounts: new Map(publishedByCluster.map((item) => [item.clusterId, item._count._all])),
+        failedCounts: new Map(failedRuns.filter((item) => item.briefId).map((item) => [item.briefId, item._count._all]))
+      });
+    }
+
+    const briefs = rankedBriefs.slice(0, limit);
+
     const results = [];
-    for (const brief of briefs) {
-      results.push(await this.processBrief({ brief, triggerSource }));
+    for (const item of briefs) {
+      results.push(await this.processBrief({
+        brief: item.brief,
+        triggerSource,
+        opportunity: item.opportunity
+      }));
     }
 
     return results;
   }
 
-  static async processBrief({ brief, triggerSource = 'manual' }) {
+  static async processBrief({ brief, triggerSource = 'manual', opportunity = null }) {
     const prisma = getPrisma();
     const jobRun = await prisma.editorialJobRun.create({
       data: {
@@ -753,7 +921,8 @@ export class EditorialService {
         status: 'running',
         metadata: {
           slug: brief.slug,
-          title: brief.title
+          title: brief.title,
+          opportunity
         }
       }
     });
@@ -951,6 +1120,7 @@ export class EditorialService {
           durationMs: Date.now() - new Date(jobRun.startedAt).getTime(),
           metadata: {
             slug: brief.slug,
+            opportunity,
             validation,
             image: {
               provider: image.provider,
@@ -1002,11 +1172,85 @@ export class EditorialService {
 
       await logger.error('editorial_brief_failed', error, {
         briefId: brief.id,
-        slug: brief.slug
+        slug: brief.slug,
+        opportunity
       });
 
       throw error;
     }
+  }
+
+  static async previewOpportunityQueue({ limit = 10, dueOnly = false } = {}) {
+    await this.ensureClusterCalendar();
+    const prisma = getPrisma();
+    const now = new Date();
+    const briefs = await prisma.editorialBrief.findMany({
+      where: {
+        status: {
+          in: ['planned', 'briefing_ready', 'draft', 'failed']
+        },
+        ...(dueOnly
+          ? {
+              OR: [
+                { scheduledFor: null },
+                { scheduledFor: { lte: now } }
+              ]
+            }
+          : {})
+      },
+      include: {
+        cluster: true
+      },
+      orderBy: [{ scheduledFor: 'asc' }, { createdAt: 'asc' }],
+      take: 50
+    });
+
+    if (!briefs.length) return [];
+
+    const [publishedByCluster, failedRuns] = await Promise.all([
+      prisma.article.groupBy({
+        by: ['clusterId'],
+        where: {
+          status: 'published',
+          clusterId: {
+            in: briefs.map((brief) => brief.clusterId)
+          }
+        },
+        _count: {
+          _all: true
+        }
+      }),
+      prisma.editorialJobRun.groupBy({
+        by: ['briefId'],
+        where: {
+          status: 'failed',
+          briefId: {
+            in: briefs.map((brief) => brief.id)
+          },
+          startedAt: {
+            gte: new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000)
+          }
+        },
+        _count: {
+          _all: true
+        }
+      })
+    ]);
+
+    return rankEditorialBriefsByOpportunity({
+      briefs,
+      now,
+      publishedCounts: new Map(publishedByCluster.map((item) => [item.clusterId, item._count._all])),
+      failedCounts: new Map(failedRuns.filter((item) => item.briefId).map((item) => [item.briefId, item._count._all]))
+    }).slice(0, limit).map(({ brief, opportunity }) => ({
+      slug: brief.slug,
+      title: brief.title,
+      primaryKeyword: brief.primaryKeyword,
+      stage: brief.stage,
+      scheduledFor: brief.scheduledFor,
+      cluster: brief.cluster?.name || '',
+      opportunity
+    }));
   }
 
   static async generateArticleFromAi({ brief, cluster, contextualLinks }) {

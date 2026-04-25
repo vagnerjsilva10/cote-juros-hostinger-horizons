@@ -68,6 +68,22 @@ const toArticlePayload = (record) => {
 router.use(requireInternalAuth);
 
 router.get(
+  '/editorial/opportunities',
+  asyncHandler(async (req, res) => {
+    const limit = parseLimit(req.query.limit, 10, 50);
+    const dueOnly = req.query.dueOnly === 'true';
+    const items = await EditorialService.previewOpportunityQueue({ limit, dueOnly });
+
+    res.json({
+      ok: true,
+      dueOnly,
+      count: items.length,
+      items
+    });
+  })
+);
+
+router.get(
   '/editorial/run',
   asyncHandler(async (req, res) => {
     const limit = parseLimit(req.query.limit, 1, 3);
