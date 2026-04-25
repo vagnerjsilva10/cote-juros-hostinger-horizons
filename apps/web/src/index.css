@@ -2752,6 +2752,48 @@
   text-transform: uppercase;
 }
 
+#site-footer .site-logo {
+  align-items: center;
+  gap: 10px;
+}
+
+#site-footer .site-logo img {
+  display: block;
+  height: 38px;
+  width: 38px;
+}
+
+#site-footer .site-logo-mark {
+  filter: saturate(0.9) brightness(1.02) !important;
+  opacity: 1;
+}
+
+#site-footer .site-logo-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  justify-content: center;
+  min-width: 0;
+}
+
+#site-footer .site-logo-wordmark {
+  color: #F8FAFC !important;
+  font-family: var(--font-sans);
+  font-size: 21px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+
+#site-footer .site-logo-tagline {
+  color: #AFC1D6 !important;
+  font-family: var(--font-sans);
+  font-size: 8px;
+  font-weight: 550;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
 .cookie-consent {
   position: fixed;
   left: 24px;
