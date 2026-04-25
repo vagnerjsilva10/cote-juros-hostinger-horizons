@@ -4,6 +4,22 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/stories-sitemap.xml",
+      "destination": "https://api.cotejuros.com.br/stories-sitemap.xml"
+    },
+    {
+      "source": "/stories",
+      "destination": "https://api.cotejuros.com.br/stories"
+    },
+    {
+      "source": "/stories/(.*)",
+      "destination": "https://api.cotejuros.com.br/stories/$1"
+    },
+    {
+      "source": "/images/pinterest/(.*)",
+      "destination": "https://api.cotejuros.com.br/images/pinterest/$1"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "https://api.cotejuros.com.br/api/$1"
     },

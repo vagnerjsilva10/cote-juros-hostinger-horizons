@@ -534,7 +534,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
   const midSectionIndex = sections.length > 2 ? Math.ceil(sections.length / 2) - 1 : -1;
   const showPreConclusionAd = Boolean((Array.isArray(safeArticle.faq) && safeArticle.faq.length) || (Array.isArray(safeArticle.conclusion) && safeArticle.conclusion.length));
   const webStory = safeArticle.distribution?.webStory;
-  const webStoryUrl = webStory?.url || (webStory?.path ? `https://www.cotejuros.com.br${webStory.path}` : '');
+  const webStoryUrl = webStory?.url || (webStory?.path ? `https://api.cotejuros.com.br${webStory.path}` : '');
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
