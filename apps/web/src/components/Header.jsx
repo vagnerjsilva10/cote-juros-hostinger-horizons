@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu } from 'lucide-react';
+import { ChevronDown, Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { CoteJurosLogo } from './CoteJurosLogo.jsx';
+import { primaryNavItems } from '@/navigation/seoNavigation.js';
 
 function Header() {
   const location = useLocation();
@@ -17,14 +18,7 @@ function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navItems = [
-    { label: 'Empr\u00E9stimos', path: '/emprestimos' },
-    { label: 'Cart\u00F5es', path: '/cartoes' },
-    { label: 'Financiamentos', path: '/financiamentos' },
-    { label: 'Como funciona', path: '/como-funciona' },
-    { label: 'Ferramentas', path: '/ferramentas' },
-    { label: 'Blog', path: '/blog' }
-  ];
+  const navItems = primaryNavItems;
 
   const isActive = (path) => location.pathname.startsWith(path);
 
@@ -41,17 +35,42 @@ function Header() {
             <CoteJurosLogo variant="original-light" className="site-logo" />
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex">
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="Navega\u00E7\u00E3o principal">
             {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`rounded-full px-3 py-2 text-[15px] font-medium leading-none transition-colors duration-200 ${
-                  isActive(item.path) ? 'bg-white/[0.08] text-white' : 'text-[#CBD5F5] hover:text-white'
-                }`}
-              >
-                {item.label}
-              </Link>
+              <div key={item.path} className="group relative">
+                <Link
+                  to={item.path}
+                  className={`inline-flex items-center gap-1 rounded-full px-3 py-2 text-[15px] font-medium leading-none transition-colors duration-200 ${
+                    isActive(item.path) ? 'bg-white/[0.08] text-white' : 'text-[#CBD5F5] hover:text-white'
+                  }`}
+                >
+                  {item.label}
+                  <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+                </Link>
+
+                <div className="pointer-events-none absolute left-0 top-full z-50 hidden min-w-[260px] pt-3 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:block group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:block group-focus-within:opacity-100">
+                  <div className="rounded-[16px] border border-white/10 bg-[#07111f] p-3 shadow-[0_24px_70px_rgba(0,0,0,0.32)]">
+                    <Link
+                      to={item.path}
+                      className="mb-2 block rounded-[12px] px-3 py-2 text-sm font-semibold text-white hover:bg-white/[0.06]"
+                    >
+                      Ver tudo em {item.label}
+                    </Link>
+                    <div className="h-px bg-white/10" />
+                    <div className="mt-2 grid gap-1">
+                      {item.links.slice(0, 6).map((link) => (
+                        <Link
+                          key={link.path}
+                          to={link.path}
+                          className="rounded-[10px] px-3 py-2 text-sm leading-5 text-[#CBD5F5] transition-colors hover:bg-white/[0.06] hover:text-white"
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))}
           </nav>
 
@@ -80,20 +99,33 @@ function Header() {
                     <CoteJurosLogo variant="original-light" className="site-logo" />
                   </div>
 
-                  <nav className="mobile-nav-links flex flex-col gap-2">
+                  <nav className="mobile-nav-links flex flex-col gap-3" aria-label="Navega\u00E7\u00E3o mobile">
                     {navItems.map((item) => (
-                      <Link
-                        key={item.path}
-                        to={item.path}
-                        onClick={() => setMobileOpen(false)}
-                        className={`rounded-[12px] px-4 py-3 text-sm font-medium ${
-                          isActive(item.path)
-                            ? 'bg-white/[0.08] text-white'
-                            : 'text-[rgba(255,255,255,0.78)] hover:bg-white/[0.08] hover:text-white'
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
+                      <div key={item.path} className="rounded-[14px] border border-white/10 bg-white/[0.03] p-2">
+                        <Link
+                          to={item.path}
+                          onClick={() => setMobileOpen(false)}
+                          className={`block rounded-[10px] px-3 py-2 text-sm font-semibold ${
+                            isActive(item.path)
+                              ? 'bg-white/[0.08] text-white'
+                              : 'text-[rgba(255,255,255,0.86)] hover:bg-white/[0.08] hover:text-white'
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                        <div className="mt-1 grid gap-1">
+                          {item.links.slice(0, 4).map((link) => (
+                            <Link
+                              key={link.path}
+                              to={link.path}
+                              onClick={() => setMobileOpen(false)}
+                              className="rounded-[9px] px-3 py-2 text-xs leading-5 text-[rgba(255,255,255,0.62)] hover:bg-white/[0.07] hover:text-white"
+                            >
+                              {link.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
                     ))}
                     <div className="mt-3 border-t border-white/10 pt-4">
                       <Link to="/emprestimos" onClick={() => setMobileOpen(false)}>
