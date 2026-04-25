@@ -11,15 +11,15 @@
   ],
   "crons": [
     {
-      "path": "/api/internal/editorial/run",
+      "path": "/api/internal/editorial/run/morning",
       "schedule": "15 11 * * *"
     },
     {
-      "path": "/api/internal/editorial/run",
+      "path": "/api/internal/editorial/run/afternoon",
       "schedule": "15 17 * * *"
     },
     {
-      "path": "/api/internal/editorial/run",
+      "path": "/api/internal/editorial/run/evening",
       "schedule": "15 23 * * *"
     },
     {

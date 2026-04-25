@@ -174,33 +174,52 @@ router.get(
   })
 );
 
+const runEditorialPublication = asyncHandler(async (req, res) => {
+  const limit = parseLimit(req.query.limit, 1, 3);
+  const cronSlot = req.params.slot || req.query.slot || null;
+  const isVercelCron = req.get('user-agent')?.includes('vercel-cron');
+  const triggerSource = isVercelCron
+    ? `vercel-cron${cronSlot ? `-${cronSlot}` : ''}`
+    : (req.query.trigger || 'internal');
+
+  const result = await EditorialService.runScheduledPublication({
+    limit,
+    triggerSource
+  });
+
+  res.json({
+    ok: true,
+    triggerSource,
+    cronSlot,
+    processed: result.length,
+    items: result.map((item) => ({
+      jobRunId: item.jobRunId,
+      slug: item.article?.slug,
+      status: item.article?.status,
+      wordCount: item.validation?.wordCount,
+      validationPassed: item.validation?.passed ?? null,
+      validationIssues: item.validation?.issues || [],
+      webStory: item.distribution?.webStory?.path || null,
+      pinterest: item.distribution?.pinterest?.status || null,
+      distributionError: item.distributionError || null
+    }))
+  });
+});
+
+router.get('/editorial/run', runEditorialPublication);
 router.get(
-  '/editorial/run',
+  '/editorial/run/:slot',
+  runEditorialPublication
+);
+
+router.get(
+  '/editorial/cron/health',
   asyncHandler(async (req, res) => {
-    const limit = parseLimit(req.query.limit, 1, 3);
-    const triggerSource = req.get('user-agent')?.includes('vercel-cron')
-      ? 'vercel-cron'
-      : (req.query.trigger || 'internal');
-
-    const result = await EditorialService.runScheduledPublication({
-      limit,
-      triggerSource
-    });
-
     res.json({
       ok: true,
-      processed: result.length,
-      items: result.map((item) => ({
-        jobRunId: item.jobRunId,
-        slug: item.article?.slug,
-        status: item.article?.status,
-        wordCount: item.validation?.wordCount,
-        validationPassed: item.validation?.passed ?? null,
-        validationIssues: item.validation?.issues || [],
-        webStory: item.distribution?.webStory?.path || null,
-        pinterest: item.distribution?.pinterest?.status || null,
-        distributionError: item.distributionError || null
-      }))
+      route: 'editorial-cron',
+      slots: ['morning', 'afternoon', 'evening'],
+      timestamp: new Date().toISOString()
     });
   })
 );
