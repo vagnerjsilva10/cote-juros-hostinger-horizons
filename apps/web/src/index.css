@@ -2718,8 +2718,16 @@
 .site-header .site-logo img {
   display: block;
   height: 48px;
-  width: auto;
+  width: 48px;
   filter: none !important;
+}
+
+.site-header .site-logo-wordmark {
+  color: #E8EEF5 !important;
+  font-family: var(--font-sans);
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
 }
 
 .cookie-consent {
@@ -9467,7 +9475,11 @@ body {
 
   .site-header .site-logo img {
     height: 34px !important;
-    width: auto;
+    width: 34px !important;
+  }
+
+  .site-header .site-logo-wordmark {
+    font-size: 21px !important;
   }
 
   .mobile-nav-trigger {
