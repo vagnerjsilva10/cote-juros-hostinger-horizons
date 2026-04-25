@@ -114,7 +114,7 @@ function Header() {
                           {item.label}
                         </Link>
                         <div className="mt-1 grid gap-1">
-                          {item.links.slice(0, 4).map((link) => (
+                          {item.links.slice(0, 6).map((link) => (
                             <Link
                               key={link.path}
                               to={link.path}

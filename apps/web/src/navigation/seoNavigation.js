@@ -42,7 +42,8 @@ export const primaryNavItems = [
       { label: 'Calculadora de empr\u00E9stimo', path: '/calculadora-emprestimo' },
       { label: 'Calculadora de financiamento', path: '/calculadora-financiamento' },
       { label: 'Comprometimento de renda', path: '/simulador-comprometimento-renda' },
-      { label: 'Diagn\u00F3stico financeiro', path: '/diagnostico-financeiro' }
+      { label: 'Diagn\u00F3stico financeiro', path: '/diagnostico-financeiro' },
+      { label: 'Cote Finance AI', path: '/cote-finance-ai' }
     ]
   },
   {
@@ -187,7 +188,8 @@ export const compactFooterSections = [
       { label: 'Calculadora de empr\u00E9stimo', path: '/calculadora-emprestimo' },
       { label: 'Calculadora de financiamento', path: '/calculadora-financiamento' },
       { label: 'Comprometimento de renda', path: '/simulador-comprometimento-renda' },
-      { label: 'Diagn\u00F3stico financeiro', path: '/diagnostico-financeiro' }
+      { label: 'Diagn\u00F3stico financeiro', path: '/diagnostico-financeiro' },
+      { label: 'Cote Finance AI', path: '/cote-finance-ai' }
     ]
   },
   {
