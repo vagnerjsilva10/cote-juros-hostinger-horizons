@@ -3,6 +3,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getPrisma } from '../lib/prisma.js';
 import {
+  BLOG_CLUSTER_FALLBACKS,
+  EDITORIAL_FALLBACK_IMAGE_ABSOLUTE_URL,
   PINTEREST_API_BASE_URL,
   PINTEREST_IMAGE_DIR,
   SITE_BASE_URL,
@@ -69,6 +71,47 @@ const normalizeAbsoluteUrl = (value = '') => {
 const isValidStoryImageUrl = (value = '') => {
   const url = normalizeAbsoluteUrl(value);
   return /^https?:\/\//i.test(url) && !isTemplateOrPlaceholderImage(url) && !url.endsWith('.svg');
+};
+
+const normalizeTextKey = (value = '') =>
+  String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+
+const getStoryFallbackImage = (article = {}) => {
+  const text = normalizeTextKey([
+    article.category,
+    article.clusterLabel,
+    article.clusterKeyword,
+    article.title,
+    article.slug
+  ].filter(Boolean).join(' '));
+
+  if (text.includes('emprest')) return BLOG_CLUSTER_FALLBACKS.emprestimos;
+  if (text.includes('cart')) return BLOG_CLUSTER_FALLBACKS.cartoes;
+  if (text.includes('financ')) return BLOG_CLUSTER_FALLBACKS.financiamentos;
+  if (text.includes('score')) return BLOG_CLUSTER_FALLBACKS.score;
+  if (text.includes('educ')) return BLOG_CLUSTER_FALLBACKS.educacao;
+
+  return EDITORIAL_FALLBACK_IMAGE_ABSOLUTE_URL;
+};
+
+const resolveStoryImageUrl = (article = {}) => {
+  const candidates = [
+    article.coverImage,
+    article.ogImage,
+    article.image,
+    article.featuredImageUrl,
+    article.blogImageAutomation?.featuredImageUrl,
+    article.blogImageAutomation?.imageUrl,
+    article.imageAttribution?.imageUrl,
+    article.imageAttribution?.originalUrl,
+    getStoryFallbackImage(article)
+  ];
+
+  const valid = candidates.map(normalizeAbsoluteUrl).find(isValidStoryImageUrl);
+  return valid || EDITORIAL_FALLBACK_IMAGE_ABSOLUTE_URL;
 };
 
 const parseScopeList = (value = '') =>
@@ -291,22 +334,45 @@ const validateWebStorySlides = (slides = []) => {
   };
 };
 
+const getStoryImageFocus = (slide = {}, index = 0) => {
+  if (slide.imageFocus) return slide.imageFocus;
+  if (slide.kind === 'cover') return 'xMinYMid';
+
+  const cycle = ['xMinYMid', 'xMidYMid', 'xMinYMid', 'xMaxYMid'];
+  return cycle[index % cycle.length];
+};
+
+const getStoryObjectPosition = (slide = {}, index = 0) => {
+  const focus = getStoryImageFocus(slide, index);
+  if (focus.startsWith('xMin')) return 'left center';
+  if (focus.startsWith('xMax')) return 'right center';
+  return 'center center';
+};
+
 const buildStoryBackgroundSvg = ({ slide, index, article }) => {
   const label = escapeHtml(article.category || article.clusterLabel || 'Cote Juros');
   const imageUrl = escapeHtml(slide.imageUrl);
+  const imageFocus = getStoryImageFocus(slide, index);
   const headlineSize = slide.headline.length > 34 ? 48 : slide.headline.length > 24 ? 54 : 58;
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="720" height="1280" viewBox="0 0 720 1280" role="img" aria-label="${escapeHtml(slide.headline)}">
   <defs>
     <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#020617" stop-opacity="0.34"/>
-      <stop offset="0.48" stop-color="#020617" stop-opacity="0.44"/>
-      <stop offset="1" stop-color="#020617" stop-opacity="0.82"/>
+      <stop offset="0" stop-color="#020617" stop-opacity="0.08"/>
+      <stop offset="0.38" stop-color="#020617" stop-opacity="0.12"/>
+      <stop offset="0.68" stop-color="#020617" stop-opacity="0.58"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0.88"/>
+    </linearGradient>
+    <linearGradient id="readability" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#020617" stop-opacity="0"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0.72"/>
     </linearGradient>
   </defs>
-  <image href="${imageUrl}" x="0" y="0" width="720" height="1280" preserveAspectRatio="xMidYMid slice"/>
+  <rect width="720" height="1280" fill="#111827"/>
+  <image href="${imageUrl}" x="0" y="0" width="720" height="1280" preserveAspectRatio="${imageFocus} slice"/>
   <rect width="720" height="1280" fill="url(#shade)"/>
+  <rect x="0" y="612" width="720" height="668" fill="url(#readability)"/>
   <rect x="32" y="72" width="656" height="1112" fill="transparent"/>
   <rect x="48" y="82" width="220" height="44" rx="22" fill="#020617" opacity="0.42"/>
   <text x="70" y="111" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="17" font-weight="800" opacity="0.95">${label}</text>
@@ -366,8 +432,8 @@ const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterIm
 
   const pages = slides.map((slide, index) => {
     const id = `slide-${index + 1}`;
-    const bgUrl = `${DISTRIBUTION_PUBLIC_BASE_URL}${storyPublicPath}/assets/${id}.svg`;
     const isCta = slide.kind === 'cta';
+    const objectPosition = getStoryObjectPosition(slide, index);
     const cta = isCta
       ? `<amp-story-cta-layer>
           <a href="${escapeHtml(articleUrl)}" class="cta">Veja completo no site</a>
@@ -376,9 +442,19 @@ const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterIm
 
     return `<amp-story-page id="${id}">
       <amp-story-grid-layer template="fill">
-        <amp-img src="${escapeHtml(bgUrl)}" width="720" height="1280" layout="responsive" alt="${escapeHtml(slide.headline)}"></amp-img>
+        <amp-img
+          src="${escapeHtml(slide.imageUrl)}"
+          width="720"
+          height="1280"
+          layout="fill"
+          object-fit="cover"
+          object-position="${escapeHtml(objectPosition)}"
+          alt="${escapeHtml(slide.headline)}"></amp-img>
       </amp-story-grid-layer>
-      <amp-story-grid-layer template="vertical" class="copy">
+      <amp-story-grid-layer template="fill">
+        <div class="story-shade"></div>
+      </amp-story-grid-layer>
+      <amp-story-grid-layer template="vertical" class="story-copy">
         <div class="spacer"></div>
         <p class="kicker">${escapeHtml(article.category || 'Cote Juros')}</p>
         <h1>${escapeHtml(slide.headline)}</h1>
@@ -402,9 +478,13 @@ const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterIm
   <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
   <style amp-custom>
     amp-story{font-family:Arial,sans-serif;color:#fff}
-    .copy{padding:72px 32px 96px;text-shadow:0 2px 18px rgba(0,0,0,.34)}
-    .spacer{height:0}
-    .kicker,h1,p{display:none}
+    .story-shade{width:100%;height:100%;background:linear-gradient(180deg,rgba(2,6,23,.08) 0%,rgba(2,6,23,.14) 38%,rgba(2,6,23,.62) 68%,rgba(2,6,23,.9) 100%)}
+    .story-copy *{box-sizing:border-box}
+    .story-copy{padding:72px 32px 96px;text-shadow:0 2px 18px rgba(0,0,0,.38)}
+    .spacer{height:38vh;min-height:300px;max-height:360px}
+    .kicker{display:inline-flex;align-items:center;max-width:250px;width:max-content;margin:0 0 22px;padding:10px 22px;border-radius:999px;background:rgba(2,6,23,.48);color:#fff;font-size:14px;line-height:1;font-weight:900}
+    h1{margin:0;width:300px;max-width:calc(100vw - 64px);color:#fff;font-size:31px;line-height:1.08;font-weight:900;letter-spacing:0;overflow-wrap:break-word;word-break:normal}
+    p{margin:22px 0 0;width:320px;max-width:calc(100vw - 64px);color:rgba(255,255,255,.94);font-size:16px;line-height:1.28;font-weight:800;overflow-wrap:break-word}
     .cta{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 28px;border-radius:999px;background:#fff;color:#111827;font-size:18px;font-weight:900;text-decoration:none}
   </style>
   <script type="application/ld+json">${JSON.stringify({
@@ -662,7 +742,7 @@ export class ContentDistributionService {
       const dirs = await ensureDistributionDirs(article.slug);
       const articleUrl = getArticleUrl(article);
       const keywords = getSecondaryKeywords(article, brief);
-      const storyImageUrl = normalizeAbsoluteUrl(article.coverImage || article.ogImage || '');
+      const storyImageUrl = resolveStoryImageUrl(article);
       if (!isValidStoryImageUrl(storyImageUrl)) {
         throw new Error('no valid image for web story');
       }

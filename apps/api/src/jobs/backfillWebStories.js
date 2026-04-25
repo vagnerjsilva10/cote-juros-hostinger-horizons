@@ -35,7 +35,11 @@ const hasLegacyStoryIssue = (record = {}) => {
     && (
       html.includes('linearGradient id="bg"')
       || html.includes('class="copy"')
+      || html.includes('/assets/slide-')
+      || !html.includes('object-fit="cover"')
       || slides.some((slide) => !String(slide.content || '').includes('<image href="http'))
+      || slides.some((slide) => String(slide.content || '').includes('preserveAspectRatio="xMidYMid slice"'))
+      || slides.some((slide) => !String(slide.content || '').includes('linearGradient id="readability"'))
       || !webStory.validation?.passed
     );
 };
