@@ -3,6 +3,7 @@ import { asyncHandler } from '../lib/http.js';
 import { getPrisma } from '../lib/prisma.js';
 import { ContentDistributionService } from '../services/contentDistributionService.js';
 import { EditorialService } from '../services/editorialService.js';
+import { SeoGrowthService } from '../services/seoGrowthService.js';
 import { SendReactivationEmailsJob } from '../jobs/sendReactivationEmails.js';
 
 const router = express.Router();
@@ -66,6 +67,33 @@ const toArticlePayload = (record) => {
 };
 
 router.use(requireInternalAuth);
+
+router.get(
+  '/seo/search-console/sync',
+  asyncHandler(async (req, res) => {
+    const days = parseLimit(req.query.days, 28, 90);
+    const rowLimit = parseLimit(req.query.rowLimit, 25000, 25000);
+    const result = await SeoGrowthService.syncSearchConsole({ days, rowLimit });
+    res.status(result.ok === false ? 202 : 200).json(result);
+  })
+);
+
+router.get(
+  '/seo/opportunities',
+  asyncHandler(async (req, res) => {
+    const limit = parseLimit(req.query.limit, 25, 100);
+    const minImpressions = parseLimit(req.query.minImpressions, 20, 10000);
+    res.json(await SeoGrowthService.listSearchOpportunities({ limit, minImpressions }));
+  })
+);
+
+router.get(
+  '/seo/refresh/run',
+  asyncHandler(async (req, res) => {
+    const limit = parseLimit(req.query.limit, 5, 20);
+    res.json(await SeoGrowthService.applySafeRefresh({ limit }));
+  })
+);
 
 router.get(
   '/editorial/opportunities',

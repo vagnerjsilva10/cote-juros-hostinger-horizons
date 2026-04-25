@@ -1,4 +1,4 @@
-import { writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { articlesData } from '../src/data/articlesData.js';
@@ -19,6 +19,7 @@ const sitemapPath = resolve(publicDir, 'sitemap.xml');
 const robotsPath = resolve(publicDir, 'robots.txt');
 
 const siteUrl = (process.env.SITE_URL || process.env.VITE_SITE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
+const apiBaseUrl = (process.env.VITE_API_BASE_URL || process.env.API_BASE_URL || 'https://api.cotejuros.com.br').replace(/\/$/, '');
 const now = new Date().toISOString();
 
 const fixedRoutes = [
@@ -45,6 +46,31 @@ const blogRoutes = [
     .map((article) => `/blog/${slugify(article.slug || article.title || '')}`)
 ];
 const importedWordpressRoutes = wordpressMigratedArticlePaths;
+const storiesDir = resolve(publicDir, 'stories');
+const storyRoutes = existsSync(storiesDir)
+  ? readdirSync(storiesDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => `/stories/${entry.name}/`)
+  : [];
+
+const fetchPublishedArticleRoutes = async () => {
+  if (process.env.SITEMAP_FETCH_API === 'false') return [];
+
+  try {
+    const response = await fetch(`${apiBaseUrl}/api/articles?limit=5000`);
+    if (!response.ok) throw new Error(`API respondeu ${response.status}`);
+    const payload = await response.json();
+    const items = Array.isArray(payload?.data) ? payload.data : [];
+    return items
+      .map((article) => article?.routePath || (article?.slug ? `/blog/${article.slug}` : ''))
+      .filter(Boolean);
+  } catch (error) {
+    console.warn(`[sitemap] Nao foi possivel buscar artigos publicados da API: ${error.message}`);
+    return [];
+  }
+};
+
+const apiArticleRoutes = await fetchPublishedArticleRoutes();
 
 const allRoutes = Array.from(
   new Set([
@@ -54,7 +80,9 @@ const allRoutes = Array.from(
     ...bankRoutes,
     ...cardRoutes,
     ...blogRoutes,
-    ...importedWordpressRoutes
+    ...apiArticleRoutes,
+    ...importedWordpressRoutes,
+    ...storyRoutes
   ])
 ).filter(Boolean);
 

@@ -190,5 +190,220 @@ export const DEFAULT_EDITORIAL_CLUSTERS = Object.freeze([
         angle: 'decision'
       }
     ]
+  },
+  {
+    slug: 'emprestimo-pessoal-online',
+    primaryKeyword: 'emprestimo pessoal online',
+    name: 'Emprestimo pessoal online',
+    pillarTitle: 'Emprestimo pessoal online: como comparar taxas, prazo e risco antes de contratar',
+    description: 'Cluster para buscas de emprestimo pessoal com foco em simulacao, seguranca, CET e comparacao.',
+    category: 'Emprestimos',
+    commercialPath: '/emprestimos',
+    briefs: [
+      {
+        slug: 'emprestimo-pessoal-online-como-escolher',
+        stage: 'pillar',
+        title: 'Emprestimo pessoal online: como escolher sem cair em custo escondido',
+        primaryKeyword: 'emprestimo pessoal online',
+        secondaryKeywords: ['emprestimo online seguro', 'simular emprestimo pessoal', 'taxa de emprestimo pessoal'],
+        angle: 'pillar'
+      },
+      {
+        slug: 'emprestimo-online-seguro-como-identificar',
+        stage: 'top',
+        title: 'Emprestimo online seguro: sinais para identificar uma oferta confiavel',
+        primaryKeyword: 'emprestimo online seguro',
+        secondaryKeywords: ['golpe do emprestimo online', 'emprestimo sem taxa antecipada', 'credito online confiavel'],
+        angle: 'awareness'
+      },
+      {
+        slug: 'simulacao-de-emprestimo-pessoal-como-comparar',
+        stage: 'middle',
+        title: 'Simulacao de emprestimo pessoal: como comparar parcela, prazo e CET',
+        primaryKeyword: 'simulacao de emprestimo pessoal',
+        secondaryKeywords: ['simular emprestimo online', 'comparar parcela de emprestimo', 'custo efetivo total emprestimo'],
+        angle: 'consideration'
+      },
+      {
+        slug: 'emprestimo-pessoal-com-menor-juros',
+        stage: 'bottom',
+        title: 'Emprestimo pessoal com menor juros: o que realmente muda no custo final',
+        primaryKeyword: 'emprestimo pessoal com menor juros',
+        secondaryKeywords: ['menor taxa de emprestimo', 'comparar juros de emprestimo', 'emprestimo barato'],
+        angle: 'decision'
+      }
+    ]
+  },
+  {
+    slug: 'financiamento-de-veiculo',
+    primaryKeyword: 'financiamento de veiculo',
+    name: 'Financiamento de veiculo',
+    pillarTitle: 'Financiamento de veiculo: como comparar entrada, parcela, CET e prazo',
+    description: 'Cluster para financiamento automotivo com foco em carro usado, novo, entrada e score.',
+    category: 'Financiamentos',
+    commercialPath: '/financiamentos',
+    briefs: [
+      {
+        slug: 'financiamento-de-veiculo-guia-completo',
+        stage: 'pillar',
+        title: 'Financiamento de veiculo: guia para avaliar parcela, entrada e custo total',
+        primaryKeyword: 'financiamento de veiculo',
+        secondaryKeywords: ['financiamento de carro', 'financiar carro usado', 'CET financiamento veiculo'],
+        angle: 'pillar'
+      },
+      {
+        slug: 'financiamento-de-carro-usado-cuidados',
+        stage: 'top',
+        title: 'Financiamento de carro usado: cuidados antes de assinar o contrato',
+        primaryKeyword: 'financiamento de carro usado',
+        secondaryKeywords: ['financiar usado', 'entrada carro usado', 'contrato financiamento automovel'],
+        angle: 'awareness'
+      },
+      {
+        slug: 'financiamento-de-veiculo-para-score-baixo',
+        stage: 'middle',
+        title: 'Financiamento de veiculo para score baixo: o que pode pesar na analise',
+        primaryKeyword: 'financiamento de veiculo para score baixo',
+        secondaryKeywords: ['score baixo financiamento carro', 'aprovar financiamento veiculo', 'credito para financiar carro'],
+        angle: 'consideration'
+      },
+      {
+        slug: 'financiamento-de-veiculo-com-entrada-ou-sem-entrada',
+        stage: 'bottom',
+        title: 'Financiamento de veiculo com entrada ou sem entrada: como decidir',
+        primaryKeyword: 'financiamento de veiculo com entrada',
+        secondaryKeywords: ['entrada financiamento carro', 'financiamento sem entrada carro', 'reduzir parcela do carro'],
+        angle: 'decision'
+      }
+    ]
+  },
+  {
+    slug: 'score-de-credito',
+    primaryKeyword: 'score de credito',
+    name: 'Score de credito',
+    pillarTitle: 'Score de credito: como funciona e como usar a pontuacao a seu favor',
+    description: 'Cluster para buscas sobre score, aprovacao, consulta, aumento de pontuacao e credito.',
+    category: 'Score',
+    commercialPath: '/emprestimos',
+    briefs: [
+      {
+        slug: 'score-de-credito-guia-completo',
+        stage: 'pillar',
+        title: 'Score de credito: como funciona e o que realmente influencia a pontuacao',
+        primaryKeyword: 'score de credito',
+        secondaryKeywords: ['consulta score', 'pontuacao de credito', 'score serasa'],
+        angle: 'pillar'
+      },
+      {
+        slug: 'como-aumentar-score-rapido-com-seguranca',
+        stage: 'top',
+        title: 'Como aumentar score com seguranca: o que ajuda e o que e mito',
+        primaryKeyword: 'como aumentar score',
+        secondaryKeywords: ['aumentar score rapido', 'melhorar score de credito', 'score baixo'],
+        angle: 'awareness'
+      },
+      {
+        slug: 'score-baixo-consegue-emprestimo',
+        stage: 'middle',
+        title: 'Score baixo consegue emprestimo? Veja como comparar alternativas',
+        primaryKeyword: 'score baixo consegue emprestimo',
+        secondaryKeywords: ['emprestimo para score baixo', 'credito com score baixo', 'aprovacao com score baixo'],
+        angle: 'consideration'
+      },
+      {
+        slug: 'score-para-financiamento-qual-pontuacao-ajuda',
+        stage: 'bottom',
+        title: 'Score para financiamento: qual pontuacao ajuda e o que o banco avalia',
+        primaryKeyword: 'score para financiamento',
+        secondaryKeywords: ['score bom para financiar', 'score para financiar carro', 'score para financiamento imovel'],
+        angle: 'decision'
+      }
+    ]
+  },
+  {
+    slug: 'renegociacao-de-dividas',
+    primaryKeyword: 'renegociacao de dividas',
+    name: 'Renegociacao de dividas',
+    pillarTitle: 'Renegociacao de dividas: como organizar prioridades e evitar acordos ruins',
+    description: 'Cluster para dividas, limpar nome, cartao, cheque especial e acordos.',
+    category: 'Dividas',
+    commercialPath: '/emprestimos',
+    briefs: [
+      {
+        slug: 'renegociacao-de-dividas-guia-completo',
+        stage: 'pillar',
+        title: 'Renegociacao de dividas: guia para negociar sem piorar o orcamento',
+        primaryKeyword: 'renegociacao de dividas',
+        secondaryKeywords: ['renegociar divida', 'limpar nome', 'acordo de divida'],
+        angle: 'pillar'
+      },
+      {
+        slug: 'como-limpar-o-nome-com-seguranca',
+        stage: 'top',
+        title: 'Como limpar o nome com seguranca: cuidados antes de fechar acordo',
+        primaryKeyword: 'como limpar o nome',
+        secondaryKeywords: ['nome negativado', 'acordo para limpar nome', 'serasa limpar nome'],
+        angle: 'awareness'
+      },
+      {
+        slug: 'renegociar-divida-do-cartao-ou-pegar-emprestimo',
+        stage: 'middle',
+        title: 'Renegociar divida do cartao ou pegar emprestimo? Como comparar',
+        primaryKeyword: 'renegociar divida do cartao',
+        secondaryKeywords: ['divida do cartao', 'emprestimo para quitar cartao', 'rotativo do cartao'],
+        angle: 'consideration'
+      },
+      {
+        slug: 'acordo-de-divida-vale-a-pena',
+        stage: 'bottom',
+        title: 'Acordo de divida vale a pena? Veja quando a parcela cabe no bolso',
+        primaryKeyword: 'acordo de divida vale a pena',
+        secondaryKeywords: ['parcelar divida', 'desconto para quitar divida', 'negociar divida atrasada'],
+        angle: 'decision'
+      }
+    ]
+  },
+  {
+    slug: 'juros-abusivos',
+    primaryKeyword: 'juros abusivos',
+    name: 'Juros abusivos',
+    pillarTitle: 'Juros abusivos: como identificar sinais, comparar contrato e buscar orientacao',
+    description: 'Cluster para educacao e comparacao sobre juros abusivos em cartao, emprestimo e financiamento.',
+    category: 'Juros abusivos',
+    commercialPath: '/emprestimos',
+    briefs: [
+      {
+        slug: 'juros-abusivos-guia-completo',
+        stage: 'pillar',
+        title: 'Juros abusivos: como identificar sinais no contrato e no custo total',
+        primaryKeyword: 'juros abusivos',
+        secondaryKeywords: ['como identificar juros abusivos', 'juros abusivos no contrato', 'taxa abusiva'],
+        angle: 'pillar'
+      },
+      {
+        slug: 'juros-abusivos-no-cartao-como-identificar',
+        stage: 'top',
+        title: 'Juros abusivos no cartao: como identificar rotativo, parcelamento e encargos',
+        primaryKeyword: 'juros abusivos no cartao',
+        secondaryKeywords: ['rotativo do cartao', 'parcelamento da fatura', 'encargos do cartao'],
+        angle: 'awareness'
+      },
+      {
+        slug: 'juros-abusivos-em-financiamento-de-veiculo',
+        stage: 'middle',
+        title: 'Juros abusivos em financiamento de veiculo: quais pontos analisar',
+        primaryKeyword: 'juros abusivos em financiamento de veiculo',
+        secondaryKeywords: ['revisao de financiamento', 'CET financiamento veiculo', 'contrato de carro'],
+        angle: 'consideration'
+      },
+      {
+        slug: 'revisao-de-juros-abusivos-quando-procurar-ajuda',
+        stage: 'bottom',
+        title: 'Revisao de juros abusivos: quando procurar ajuda e quais documentos separar',
+        primaryKeyword: 'revisao de juros abusivos',
+        secondaryKeywords: ['documentos para revisar contrato', 'juros abusivos emprestimo', 'analise de contrato'],
+        angle: 'decision'
+      }
+    ]
   }
 ]);

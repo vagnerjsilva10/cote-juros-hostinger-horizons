@@ -490,6 +490,31 @@ model EditorialJobRun {
   @@map("editorial_job_runs")
 }
 
+model SeoSearchConsoleMetric {
+  id          String   @id @default(cuid())
+  siteUrl     String   @map("site_url")
+  page        String
+  query       String
+  dateFrom    DateTime @map("date_from")
+  dateTo      DateTime @map("date_to")
+  clicks      Int      @default(0)
+  impressions Int      @default(0)
+  ctr         Decimal  @default(0) @db.Decimal(10, 6)
+  position    Decimal  @default(0) @db.Decimal(10, 3)
+  source      String   @default("search_console")
+  syncedAt    DateTime @default(now()) @map("synced_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([siteUrl, page, query, dateFrom, dateTo])
+  @@index([page])
+  @@index([query])
+  @@index([dateTo])
+  @@index([impressions])
+  @@index([position])
+  @@map("seo_search_console_metrics")
+}
+
 model SimulationLead {
   id               String      @id @default(cuid())
   productType      ProductType @map("product_type")

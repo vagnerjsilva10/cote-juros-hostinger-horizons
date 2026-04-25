@@ -20,6 +20,7 @@ import { IntegrationConfigurationError, JurosBaixosIntegrationError } from './in
 import { getJurosBaixosHealth } from './integrations/jurosBaixos/config.js';
 import { getCreditasHealth } from './integrations/creditas/config.js';
 import { CreditasIntegrationError } from './integrations/creditas/errors.js';
+import { SeoGrowthService } from './services/seoGrowthService.js';
 
 export const createApp = () => {
   const app = express();
@@ -86,6 +87,9 @@ export const createApp = () => {
       integrations: {
         jurosBaixos: getJurosBaixosHealth(),
         creditas: getCreditasHealth()
+      },
+      seo: {
+        searchConsole: SeoGrowthService.getSearchConsoleHealth()
       },
       timestamp: new Date().toISOString()
     });

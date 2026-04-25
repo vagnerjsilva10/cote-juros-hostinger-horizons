@@ -33,6 +33,112 @@ const findPublishedArticleBySlug = async (slug) => {
   });
 };
 
+const getCanonicalArticleUrl = (article = {}) => {
+  const structured = getStructured(article);
+  return structured.canonicalUrl || `${SITE_BASE_URL}/blog/${article.slug}/`;
+};
+
+router.get('/sitemap.xml', async (req, res, next) => {
+  try {
+    const prisma = getPrisma();
+    const [articles, stories] = await Promise.all([
+      prisma.article.findMany({
+        where: { status: 'published' },
+        select: {
+          slug: true,
+          updatedAt: true,
+          publishedAt: true,
+          structuredContent: true
+        },
+        orderBy: [{ publishedAt: 'desc' }, { updatedAt: 'desc' }],
+        take: 5000
+      }),
+      prisma.article.findMany({
+        where: { status: 'published' },
+        select: {
+          slug: true,
+          updatedAt: true,
+          structuredContent: true
+        },
+        orderBy: { updatedAt: 'desc' },
+        take: 5000
+      })
+    ]);
+
+    const fixedRoutes = [
+      '/',
+      '/blog',
+      '/emprestimos',
+      '/cartoes',
+      '/cartoes-de-credito',
+      '/financiamento',
+      '/diagnostico-financeiro',
+      '/cote-finance-ai',
+      '/como-funciona',
+      '/sobre-nos',
+      '/contato',
+      '/perguntas-frequentes',
+      '/politica-de-privacidade',
+      '/termos-de-uso'
+    ];
+
+    const fixedNodes = fixedRoutes.map((path) => ({
+      loc: `${SITE_BASE_URL}${path === '/' ? '' : path}`,
+      lastmod: new Date().toISOString(),
+      priority: path === '/' ? '1.0' : '0.7'
+    }));
+    const articleNodes = articles.map((article) => ({
+      loc: getCanonicalArticleUrl(article),
+      lastmod: new Date(article.updatedAt || article.publishedAt).toISOString(),
+      priority: '0.8'
+    }));
+    const storyNodes = stories
+      .map((article) => {
+        const storyUrl = getStructured(article).distribution?.webStory?.url;
+        return storyUrl
+          ? {
+              loc: storyUrl,
+              lastmod: new Date(article.updatedAt).toISOString(),
+              priority: '0.6'
+            }
+          : null;
+      })
+      .filter(Boolean);
+
+    const seen = new Set();
+    const urls = [...fixedNodes, ...articleNodes, ...storyNodes]
+      .filter((item) => {
+        if (!item?.loc || seen.has(item.loc)) return false;
+        seen.add(item.loc);
+        return true;
+      })
+      .map((item) => [
+        '  <url>',
+        `    <loc>${escapeXml(item.loc)}</loc>`,
+        `    <lastmod>${escapeXml(item.lastmod)}</lastmod>`,
+        '    <changefreq>daily</changefreq>',
+        `    <priority>${item.priority}</priority>`,
+        '  </url>'
+      ].join('\n'))
+      .join('\n');
+
+    res.set('Cache-Control', 'public, max-age=300, s-maxage=1800');
+    return res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.get('/robots.txt', (_req, res) => {
+  res.type('text/plain').send([
+    'User-agent: *',
+    'Allow: /',
+    '',
+    `Sitemap: ${SITE_BASE_URL}/sitemap.xml`,
+    `Sitemap: ${DISTRIBUTION_PUBLIC_BASE_URL}/stories-sitemap.xml`
+  ].join('\n'));
+});
+
 router.get('/stories-sitemap.xml', async (req, res, next) => {
   try {
     const prisma = getPrisma();

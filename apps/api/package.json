@@ -32,7 +32,8 @@
     "blog-images:backfill": "node src/jobs/backfillBlogImages.js --limit=3",
     "blog-images:jobs:start": "node src/jobs/blogImageScheduler.js",
     "blog-images:validate": "node scripts/validateBlogImagePipeline.js",
-    "meta:fix": "node scripts/fixArticleMetaDescriptions.js"
+    "meta:fix": "node scripts/fixArticleMetaDescriptions.js",
+    "seo:growth": "node src/jobs/runSeoGrowth.js"
   },
   "dependencies": {
     "@prisma/client": "^6.12.0",
