@@ -733,7 +733,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 
                   {safeArticle.featuredSnippet ? (
                     <section className="blog-article-featured-snippet min-w-0 border-l-4 border-primary bg-background-secondary px-4 py-4 sm:px-5">
-                      <p className="blog-kicker text-xs font-semibold uppercase tracking-[0.18em]">Resposta rÃ¡pida</p>
+                      <p className="blog-kicker text-xs font-semibold uppercase tracking-[0.18em]">Resposta rápida</p>
                       <p className="mt-2 text-base leading-7 text-foreground sm:text-lg">{safeArticle.featuredSnippet}</p>
                     </section>
                   ) : null}
@@ -838,13 +838,13 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                       {index === midSectionIndex ? <AdSlotInline /> : null}
                       {index === midSectionIndex && safeArticle.example ? (
                         <section className="blog-article-example min-w-0 rounded-[16px] border border-border bg-background-secondary p-4 sm:p-5">
-                          <h2 className="text-xl text-foreground sm:text-2xl">Exemplo com nÃºmeros</h2>
+                          <h2 className="text-xl text-foreground sm:text-2xl">Exemplo com números</h2>
                           <p className="mt-3 text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{safeArticle.example}</p>
                         </section>
                       ) : null}
                       {index === midSectionIndex && safeArticle.alert ? (
                         <section className="blog-article-alert min-w-0 rounded-[16px] border border-amber-200 bg-amber-50 p-4 text-amber-950 sm:p-5">
-                          <h2 className="text-xl sm:text-2xl">AtenÃ§Ã£o</h2>
+                          <h2 className="text-xl sm:text-2xl">Atenção</h2>
                           <p className="mt-3 text-base leading-7">{safeArticle.alert}</p>
                         </section>
                       ) : null}
