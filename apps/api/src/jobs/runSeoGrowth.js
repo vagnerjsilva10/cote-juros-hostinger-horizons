@@ -45,9 +45,21 @@ const main = async () => {
 
   if (options.mode === 'refresh') {
     const result = await SeoGrowthService.applySafeRefresh({
-      limit: Number.isFinite(options.limit) ? options.limit : 5
+      limit: Number.isFinite(options.limit) ? options.limit : 5,
+      minImpressions: Number.isFinite(options.minImpressions) ? options.minImpressions : 20
     });
     console.log(JSON.stringify(result, null, 2));
+    return;
+  }
+
+  if (options.mode === 'weekly') {
+    const result = await SeoGrowthService.runWeeklyOptimization({
+      days: Number.isFinite(options.days) ? options.days : 28,
+      limit: Number.isFinite(options.limit) ? options.limit : 8,
+      minImpressions: Number.isFinite(options.minImpressions) ? options.minImpressions : 5
+    });
+    console.log(JSON.stringify(result, null, 2));
+    if (!result.ok) process.exitCode = 1;
     return;
   }
 

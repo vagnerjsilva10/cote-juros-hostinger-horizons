@@ -81,6 +81,12 @@ const stripMarkdownArtifacts = (value = '') =>
     .replace(/_(.*?)_/g, '$1')
     .replace(/`([^`]+)`/g, '$1');
 const compactWhitespace = (value = '') => stripMarkdownArtifacts(value).replace(/\s+/g, ' ').trim();
+const SIMILARITY_STOP_WORDS = new Set([
+  'a', 'o', 'as', 'os', 'um', 'uma', 'uns', 'umas', 'de', 'da', 'do', 'das', 'dos',
+  'e', 'em', 'no', 'na', 'nos', 'nas', 'para', 'por', 'com', 'sem', 'sobre', 'como',
+  'quando', 'qual', 'quais', 'que', 'mais', 'menos', 'antes', 'depois', 'voce',
+  'seu', 'sua', 'seus', 'suas', 'vale', 'pena', 'entenda', 'veja'
+]);
 const ensureSentencePunctuation = (value = '') => {
   const text = compactWhitespace(value);
   if (!text) return '';
@@ -122,6 +128,58 @@ const compilePlainTextContent = (article = {}) =>
   ]
     .filter(Boolean)
     .join('\n\n');
+
+const similarityTokens = (value = '') =>
+  new Set(
+    normalizeKeyword(compactWhitespace(value))
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter((token) => token.length >= 3 && !SIMILARITY_STOP_WORDS.has(token))
+  );
+
+const jaccardSimilarity = (leftValue = '', rightValue = '') => {
+  const left = similarityTokens(leftValue);
+  const right = similarityTokens(rightValue);
+  if (!left.size || !right.size) return 0;
+  let intersection = 0;
+  for (const token of left) {
+    if (right.has(token)) intersection += 1;
+  }
+  return intersection / (left.size + right.size - intersection);
+};
+
+const findMostSimilarArticle = ({ article, existingArticles = [] }) => {
+  const articleText = [
+    article.title,
+    article.h1,
+    article.summary,
+    article.metaDescription,
+    compilePlainTextContent(article)
+  ].filter(Boolean).join(' ');
+
+  return existingArticles.reduce((best, existing) => {
+    const existingStructured = existing.structuredContent && typeof existing.structuredContent === 'object'
+      ? existing.structuredContent
+      : {};
+    const existingText = [
+      existing.title,
+      existing.excerpt,
+      existing.seoDescription,
+      existing.content,
+      existingStructured.summary,
+      existingStructured.metaDescription
+    ].filter(Boolean).join(' ');
+    const score = Math.max(
+      jaccardSimilarity(article.title, existing.title),
+      jaccardSimilarity(`${article.title} ${article.summary}`, `${existing.title} ${existing.excerpt || ''}`),
+      jaccardSimilarity(articleText, existingText)
+    );
+
+    return score > best.score
+      ? { score, slug: existing.slug, title: existing.title }
+      : best;
+  }, { score: 0, slug: '', title: '' });
+};
 
 const calculateReadTime = (wordCount) => Math.max(6, Math.round(wordCount / 190));
 const normalizeDate = (date) => new Date(date).toISOString();
@@ -618,10 +676,37 @@ const rankEditorialBriefsByOpportunity = ({ briefs = [], now = new Date(), publi
       return leftDate - rightDate;
     });
 
-const validateArticlePayload = ({ article, internalLinks, externalLinks, image, existingSlugs = new Set(), existingTitles = new Set() }) => {
+const selectBriefsWithQualityGate = ({ rankedBriefs = [], recentClusterIds = new Set(), limit = 1 }) => {
+  const selected = [];
+  const selectedClusters = new Set();
+  const hasNonCooldownOption = rankedBriefs.some((item) => !recentClusterIds.has(item.brief.clusterId));
+
+  for (const item of rankedBriefs) {
+    const clusterId = item.brief.clusterId;
+    if (selectedClusters.has(clusterId)) continue;
+    if (hasNonCooldownOption && recentClusterIds.has(clusterId)) continue;
+
+    selected.push(item);
+    selectedClusters.add(clusterId);
+    if (selected.length >= limit) break;
+  }
+
+  return selected;
+};
+
+const validateArticlePayload = ({
+  article,
+  internalLinks,
+  externalLinks,
+  image,
+  existingSlugs = new Set(),
+  existingTitles = new Set(),
+  existingArticles = []
+}) => {
   const plainText = compilePlainTextContent(article);
   const wordCount = countWords(plainText);
   const issues = [];
+  const mostSimilar = findMostSimilarArticle({ article, existingArticles });
 
   if (wordCount < 1200) issues.push(`Conteudo curto demais: ${wordCount} palavras`);
   if (wordCount > 2200) issues.push(`Conteudo longo demais: ${wordCount} palavras`);
@@ -636,11 +721,15 @@ const validateArticlePayload = ({ article, internalLinks, externalLinks, image, 
   if (image?.isFallback) issues.push('Imagem fallback/template bloqueada');
   if (existingSlugs.has(article.slug)) issues.push(`Slug duplicado: ${article.slug}`);
   if (existingTitles.has(article.title.trim().toLowerCase())) issues.push(`Titulo duplicado: ${article.title}`);
+  if (mostSimilar.score >= 0.7) {
+    issues.push(`Tema parecido demais com ${mostSimilar.slug}: similaridade ${mostSimilar.score.toFixed(2)}`);
+  }
 
   return {
     wordCount,
     readTime: calculateReadTime(wordCount),
     issues,
+    similarity: mostSimilar,
     passed: issues.length === 0
   };
 };
@@ -896,7 +985,29 @@ export class EditorialService {
       });
     }
 
-    const briefs = rankedBriefs.slice(0, limit);
+    const recentClusterWindow = new Date(now.getTime() - 48 * 60 * 60 * 1000);
+    const recentClusterRows = await prisma.article.findMany({
+      where: {
+        status: 'published',
+        clusterId: { in: eligibleBriefs.map((brief) => brief.clusterId) },
+        publishedAt: { gte: recentClusterWindow }
+      },
+      select: { clusterId: true }
+    });
+    const recentClusterIds = new Set(recentClusterRows.map((item) => item.clusterId).filter(Boolean));
+    const briefs = selectBriefsWithQualityGate({
+      rankedBriefs,
+      recentClusterIds,
+      limit
+    });
+
+    if (rankedBriefs.length && !briefs.length) {
+      await logger.warn('editorial_quality_gate_no_eligible_briefs', {
+        reason: 'recent_cluster_cooldown',
+        candidateCount: rankedBriefs.length,
+        recentClusterIds: [...recentClusterIds]
+      });
+    }
 
     const results = [];
     for (const item of briefs) {
@@ -999,7 +1110,15 @@ export class EditorialService {
               slug: brief.slug
             }
           },
-          select: { slug: true, title: true }
+          select: {
+            slug: true,
+            title: true,
+            excerpt: true,
+            seoDescription: true,
+            content: true,
+            structuredContent: true
+          },
+          take: 1000
         });
       const existingSlugs = new Set(existingArticles.map((item) => item.slug));
       const existingTitles = new Set(existingArticles.map((item) => item.title.trim().toLowerCase()));
@@ -1010,7 +1129,8 @@ export class EditorialService {
         externalLinks,
         image,
         existingSlugs,
-        existingTitles
+        existingTitles,
+        existingArticles
       });
 
       articlePayload.wordCount = validation.wordCount;

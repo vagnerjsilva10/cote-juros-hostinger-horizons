@@ -27,6 +27,10 @@
       "schedule": "45 2 * * *"
     },
     {
+      "path": "/api/internal/seo/weekly-optimization",
+      "schedule": "30 9 * * 1"
+    },
+    {
       "path": "/api/internal/reactivation/send-emails",
       "schedule": "30 12 * * 1-5"
     }

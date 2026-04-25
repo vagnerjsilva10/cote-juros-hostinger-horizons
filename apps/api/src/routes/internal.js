@@ -104,6 +104,17 @@ router.get(
 );
 
 router.get(
+  '/seo/weekly-optimization',
+  asyncHandler(async (req, res) => {
+    const days = parseLimit(req.query.days, 28, 90);
+    const limit = parseLimit(req.query.limit, 8, 20);
+    const minImpressions = parseLimit(req.query.minImpressions, 5, 10000);
+    const result = await SeoGrowthService.runWeeklyOptimization({ days, limit, minImpressions });
+    res.status(result.ok ? 200 : 202).json(result);
+  })
+);
+
+router.get(
   '/editorial/opportunities',
   asyncHandler(async (req, res) => {
     const limit = parseLimit(req.query.limit, 10, 50);

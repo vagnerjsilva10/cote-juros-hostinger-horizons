@@ -3,6 +3,7 @@ import { getPrisma } from '../lib/prisma.js';
 import { SITE_BASE_URL } from './editorialConfig.js';
 
 const DEFAULT_SITE_URL = process.env.SEARCH_CONSOLE_SITE_URL || SITE_BASE_URL;
+const DEFAULT_SITEMAP_URL = process.env.SEARCH_CONSOLE_SITEMAP_URL || `${SITE_BASE_URL}/sitemap.xml`;
 const SEARCH_CONSOLE_SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly';
 const BLOG_PATH_RE = /\/blog\/([^/?#]+)/i;
 
@@ -124,6 +125,15 @@ const serializeMetric = (metric = {}) => ({
   dateFrom: metric.dateFrom,
   dateTo: metric.dateTo
 });
+
+const dedupeLinks = (links = []) => {
+  const seen = new Set();
+  return links.filter((link) => {
+    if (!link?.path || seen.has(link.path)) return false;
+    seen.add(link.path);
+    return true;
+  });
+};
 
 export class SeoGrowthService {
   static getSearchConsoleHealth() {
@@ -280,6 +290,30 @@ export class SeoGrowthService {
     };
   }
 
+  static async submitSitemap({ sitemapUrl = DEFAULT_SITEMAP_URL } = {}) {
+    const auth = getAuthClient();
+    if (!auth) {
+      return {
+        ok: false,
+        reason: 'search_console_not_configured',
+        health: this.getSearchConsoleHealth()
+      };
+    }
+
+    const searchconsole = google.searchconsole({ version: 'v1', auth });
+    await searchconsole.sitemaps.submit({
+      siteUrl: DEFAULT_SITE_URL,
+      feedpath: sitemapUrl
+    });
+
+    return {
+      ok: true,
+      siteUrl: DEFAULT_SITE_URL,
+      sitemapUrl,
+      submittedAt: new Date().toISOString()
+    };
+  }
+
   static async listSearchOpportunities({ limit = 25, minImpressions = 20 } = {}) {
     const prisma = getPrisma();
     const latest = await prisma.seoSearchConsoleMetric.findFirst({
@@ -360,14 +394,15 @@ export class SeoGrowthService {
     };
   }
 
-  static async applySafeRefresh({ limit = 5 } = {}) {
+  static async applySafeRefresh({ limit = 5, minImpressions = 20 } = {}) {
     const prisma = getPrisma();
-    const opportunities = await this.listSearchOpportunities({ limit, minImpressions: 20 });
+    const opportunities = await this.listSearchOpportunities({ limit, minImpressions });
     const updates = [];
 
     for (const item of opportunities.items || []) {
       const article = await prisma.article.findUnique({
-        where: { id: item.articleId }
+        where: { id: item.articleId },
+        include: { cluster: true, category: true }
       });
       if (!article) continue;
 
@@ -389,6 +424,52 @@ export class SeoGrowthService {
               answer: `Antes de decidir, compare custo total, taxas, prazo, riscos e alternativas. Essa consulta aparece nas buscas do Google e merece uma resposta direta dentro do artigo.`
             }
           ].slice(0, 6);
+      const relatedArticles = await prisma.article.findMany({
+        where: {
+          status: 'published',
+          id: { not: article.id },
+          OR: [
+            article.clusterId ? { clusterId: article.clusterId } : undefined,
+            article.categoryId ? { categoryId: article.categoryId } : undefined
+          ].filter(Boolean)
+        },
+        orderBy: [{ updatedAt: 'desc' }, { publishedAt: 'desc' }],
+        select: { slug: true, title: true, excerpt: true },
+        take: 6
+      });
+      const existingInternalLinks = Array.isArray(structured.internalLinks) ? structured.internalLinks : [];
+      const queryLink = {
+        path: `/blog/${article.slug}`,
+        title: article.title,
+        anchor: `voltar ao guia sobre ${query}`
+      };
+      const nextInternalLinks = dedupeLinks([
+        ...existingInternalLinks,
+        ...relatedArticles.map((related) => ({
+          path: `/blog/${related.slug}`,
+          title: related.title,
+          anchor: related.title
+        })),
+        queryLink
+      ]).filter((link) => link.path !== `/blog/${article.slug}`).slice(0, 8);
+      const seoRefreshNote = {
+        heading: `Resposta direta sobre ${query}`,
+        subheading: 'Atualizacao guiada por dados reais do Google Search Console.',
+        paragraphs: [
+          `A busca por "${query}" indica que leitores querem uma resposta direta antes de comparar opcoes. O ponto principal e avaliar custo total, taxa, prazo, risco de inadimplencia e alternativas antes de tomar uma decisao.`,
+          'Use simulacoes, leia o contrato com calma e compare ofertas equivalentes. Pequenas diferencas de taxa podem mudar bastante o custo final quando o prazo e longo.'
+        ],
+        bullets: [
+          'Compare o CET, nao apenas a taxa mensal.',
+          'Confira se ha tarifas, seguros ou custo de abertura.',
+          'Evite contratar por pressa ou promessa de aprovacao facil.'
+        ]
+      };
+      const sections = Array.isArray(structured.sections) ? structured.sections : [];
+      const hasQuerySection = sections.some((section) =>
+        normalize(`${section.heading || ''} ${section.subheading || ''}`).includes(normalize(query))
+      );
+      const nextSections = hasQuerySection ? sections : [...sections, seoRefreshNote].slice(0, 9);
 
       const seoGrowth = {
         ...(structured.seoGrowth || {}),
@@ -410,8 +491,15 @@ export class SeoGrowthService {
           structuredContent: {
             ...structured,
             faq: nextFaq,
+            sections: nextSections,
+            internalLinks: nextInternalLinks,
             seoGrowth
-          }
+          },
+          content: [
+            article.content,
+            !hasQuerySection ? `${seoRefreshNote.heading}\n${seoRefreshNote.paragraphs.join('\n')}` : ''
+          ].filter(Boolean).join('\n\n'),
+          updatedAt: new Date()
         }
       });
 
@@ -419,14 +507,50 @@ export class SeoGrowthService {
         slug: item.slug,
         query,
         score: item.score,
-        faqAdded: !faqExists
+        faqAdded: !faqExists,
+        sectionAdded: !hasQuerySection,
+        internalLinks: nextInternalLinks.length
       });
     }
 
     return {
       ok: true,
+      sourceRange: opportunities.range || null,
       updated: updates.length,
       updates
+    };
+  }
+
+  static async runWeeklyOptimization({ days = 28, limit = 8, minImpressions = 5 } = {}) {
+    const sync = await this.syncSearchConsole({ days });
+    const refresh = sync.ok
+      ? await this.applySafeRefresh({ limit, minImpressions })
+      : { ok: false, skipped: true, reason: sync.reason || 'sync_failed' };
+    let sitemap = sync.ok
+      ? null
+      : { ok: false, skipped: true, reason: sync.reason || 'sync_failed' };
+
+    if (sync.ok) {
+      try {
+        sitemap = await this.submitSitemap();
+      } catch (error) {
+        const message = error?.message || String(error);
+        sitemap = {
+          ok: false,
+          skipped: true,
+          reason: /insufficient authentication scopes/i.test(message)
+            ? 'insufficient_search_console_scope'
+            : 'sitemap_submit_failed',
+          message
+        };
+      }
+    }
+
+    return {
+      ok: Boolean(sync.ok && refresh.ok),
+      sync,
+      refresh,
+      sitemap
     };
   }
 }
