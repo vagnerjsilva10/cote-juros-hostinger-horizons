@@ -360,12 +360,40 @@ model Article {
   brief    EditorialBrief? @relation(fields: [briefId], references: [id], onDelete: SetNull)
   assets   EditorialAsset[]
   jobRuns  EditorialJobRun[]
+  usedImages BlogUsedImage[]
 
   @@index([status, publishedAt])
   @@index([categoryId])
   @@index([clusterId])
   @@index([isPillar, status])
   @@map("articles")
+}
+
+model BlogUsedImage {
+  id             String   @id @default(cuid())
+  postId         String?  @map("post_id")
+  source         String
+  sourceImageId  String?  @map("source_image_id")
+  originalUrl    String?  @map("original_url")
+  downloadUrl    String?  @map("download_url")
+  imageHash      String?  @map("image_hash")
+  perceptualHash String?  @map("perceptual_hash")
+  visualSignature String? @map("visual_signature")
+  keywords       Json?
+  articleTitle   String?  @map("article_title")
+  usedAt         DateTime @default(now()) @map("used_at")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  article Article? @relation(fields: [postId], references: [id], onDelete: SetNull)
+
+  @@unique([source, sourceImageId])
+  @@unique([originalUrl])
+  @@unique([downloadUrl])
+  @@unique([imageHash])
+  @@index([postId])
+  @@index([source])
+  @@index([usedAt])
+  @@map("blog_used_images")
 }
 
 model SeoCluster {

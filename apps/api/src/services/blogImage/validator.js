@@ -20,6 +20,17 @@ const asText = (image = {}) =>
     image.downloadUrl
   ].filter(Boolean).join(' '));
 
+const asDescriptiveText = (image = {}) =>
+  normalize([
+    image.title,
+    image.description,
+    image.alt,
+    image.provider,
+    image.kind,
+    image.pageUrl,
+    image.downloadUrl
+  ].filter(Boolean).join(' '));
+
 const hasAny = (text = '', terms = []) => terms.some((term) => text.includes(term));
 
 const BIG_TEXT_TERMS = [
@@ -50,6 +61,22 @@ const PLACEHOLDER_TERMS = [
   'render',
   'clipart',
   'infographic'
+];
+
+const OFF_TOPIC_TERMS = [
+  'football',
+  'soccer',
+  'player',
+  'players',
+  'referee',
+  'student cheating',
+  'exam',
+  'passport',
+  'passports',
+  'citizen card',
+  'id cards',
+  'musicians',
+  'performance on street'
 ];
 
 const GENERIC_CHART_TERMS = [
@@ -101,6 +128,12 @@ const allowedSubjectTerms = [
   'hands',
   'money',
   'cash',
+  'currency',
+  'banknote',
+  'banknotes',
+  'pesos',
+  'dollars',
+  'euro',
   'credit card',
   'card',
   'smartphone',
@@ -160,12 +193,13 @@ const validateDimensions = (image = {}) => {
 
 const validateContext = ({ image, article = {}, intent = '' }) => {
   const text = asText(image);
+  const descriptiveText = asDescriptiveText(image);
   const articleText = getArticleContextTerms(article);
   const intentTerms = getIntentTerms(intent);
-  const hasSubject = hasAny(text, allowedSubjectTerms);
-  const hasIntentMatch = hasAny(text, intentTerms);
+  const hasSubject = hasAny(descriptiveText, allowedSubjectTerms);
+  const hasIntentMatch = hasAny(descriptiveText, intentTerms);
   const articleTokens = articleText.split(/[^a-z0-9]+/).filter((term) => term.length >= 4);
-  const overlap = articleTokens.filter((term) => text.includes(term)).length;
+  const overlap = articleTokens.filter((term) => descriptiveText.includes(term)).length;
   return hasSubject && (hasIntentMatch || overlap >= 1);
 };
 
@@ -176,6 +210,7 @@ export const validateBlogImage = (image = {}, { article = {}, intent = '' } = {}
     hasNoBigTextOverlay: !hasAny(text, BIG_TEXT_TERMS),
     isContextual: validateContext({ image, article, intent }),
     isNotPlaceholder: !hasAny(text, PLACEHOLDER_TERMS),
+    isNotOffTopic: !hasAny(text, OFF_TOPIC_TERMS),
     isNotGenericChart: !hasAny(text, GENERIC_CHART_TERMS),
     hasValidLicense: validateLicense(image, text),
     widthMin: MIN_WIDTH,

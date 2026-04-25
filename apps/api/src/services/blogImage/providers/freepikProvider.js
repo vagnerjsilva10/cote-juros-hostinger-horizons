@@ -58,6 +58,7 @@ const fetchCandidateDetails = async (pageUrl, query) => {
 
   return {
     provider: 'freepik',
+    sourceImageId: pageUrl.split('/').filter(Boolean).pop() || pageUrl,
     kind: 'photo',
     isFree: true,
     attributionRequired: true,

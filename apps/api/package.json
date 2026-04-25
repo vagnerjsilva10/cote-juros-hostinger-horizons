@@ -30,7 +30,9 @@
     "distribution:run": "node src/jobs/runContentDistribution.js --limit=5 --trigger=manual",
     "blog-images:run": "node src/jobs/runBlogImageAutomation.js --limit=1 --trigger=manual",
     "blog-images:backfill": "node src/jobs/backfillBlogImages.js --limit=3",
-    "blog-images:jobs:start": "node src/jobs/blogImageScheduler.js"
+    "blog-images:jobs:start": "node src/jobs/blogImageScheduler.js",
+    "blog-images:validate": "node scripts/validateBlogImagePipeline.js",
+    "meta:fix": "node scripts/fixArticleMetaDescriptions.js"
   },
   "dependencies": {
     "@prisma/client": "^6.12.0",

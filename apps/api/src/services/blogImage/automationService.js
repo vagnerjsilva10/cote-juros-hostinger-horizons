@@ -8,7 +8,7 @@ import { searchUnsplashImages } from './providers/unsplashProvider.js';
 import { readImageDimensions } from './imageMetadata.js';
 import { isTemplateOrPlaceholderImage, validateBlogImage } from './validator.js';
 import { syncArticleImageToWordpress } from './wordpressPublisher.js';
-import { UsedBlogImageStore, hashImageBuffer } from './usedImageStore.js';
+import { UsedBlogImageStore, buildPerceptualHash, hashImageBuffer } from './usedImageStore.js';
 
 const logger = createEditorialLogger('blog-image-automation');
 const MAX_DAILY_IMAGES = Number(process.env.BLOG_IMAGE_MAX_PER_DAY || 3);
@@ -108,9 +108,9 @@ const getArticleImageContext = (article) => ({
 
 const searchCandidatesByPriority = async ({ keywords }) => {
   const stages = [
-    { providerStage: 'freepik', candidates: await searchFreepikImages({ keywords, perKeyword: 3 }) },
-    { providerStage: 'pexels', candidates: await searchPexelsImages({ keywords, perKeyword: 3 }) },
-    { providerStage: 'unsplash', candidates: await searchUnsplashImages({ keywords, perKeyword: 3 }) }
+    { providerStage: 'pexels', candidates: await searchPexelsImages({ keywords, perKeyword: 10 }) },
+    { providerStage: 'unsplash', candidates: await searchUnsplashImages({ keywords, perKeyword: 10 }) },
+    { providerStage: 'freepik', candidates: await searchFreepikImages({ keywords, perKeyword: 6 }) }
   ];
 
   return stages.map((stage) => ({
@@ -181,6 +181,7 @@ export const findValidatedBlogImageCandidate = async (article) => {
       try {
         const { buffer, contentType } = await downloadImageBuffer(candidate.downloadUrl);
         const hash = hashImageBuffer(buffer);
+        const perceptualHash = buildPerceptualHash(buffer);
         const hashUnique = UsedBlogImageStore.checkHash(hash, usageIndex);
         if (!hashUnique.unique) {
           rejected.push({
@@ -189,6 +190,17 @@ export const findValidatedBlogImageCandidate = async (article) => {
             pageUrl: candidate.pageUrl,
             reason: hashUnique.reason,
             hash
+          });
+          continue;
+        }
+        const perceptualUnique = UsedBlogImageStore.checkPerceptualHash(perceptualHash, usageIndex);
+        if (!perceptualUnique.unique) {
+          rejected.push({
+            provider: candidate.provider,
+            query: candidate.query,
+            pageUrl: candidate.pageUrl,
+            reason: perceptualUnique.reason,
+            perceptualHash
           });
           continue;
         }
@@ -227,6 +239,7 @@ export const findValidatedBlogImageCandidate = async (article) => {
             validation: finalValidation,
             uniqueness: candidateUnique,
             hash,
+            perceptualHash,
             buffer,
             contentType
           }
@@ -268,6 +281,7 @@ const updateLocalArticle = async ({ article, wordpressSync, selectedImage, keywo
       sourceUrl: selectedImage.pageUrl || selectedImage.downloadUrl,
       downloadUrl: selectedImage.downloadUrl,
       hash: selectedImage.hash,
+      perceptualHash: selectedImage.perceptualHash,
       visualSignature: selectedImage.uniqueness?.visualSignature || '',
       selectedAt: syncedAt,
       syncedAt,
@@ -313,7 +327,7 @@ export class BlogImageAutomationService {
 
     const selection = await findValidatedBlogImageCandidate(article);
     if (!selection.winner) {
-      await logger.error('no_unique_image_found', new Error('no unique image found'), {
+      await logger.error('no_unique_contextual_image_found', new Error('no unique contextual image found'), {
         slug: article.slug,
         keywords: selection.keywords,
         intent: selection.intent,
@@ -321,7 +335,7 @@ export class BlogImageAutomationService {
       });
       await markArticleDraftOnImageFailure({
         article,
-        reason: 'no unique image found',
+        reason: 'no unique contextual image found',
         details: {
           keywords: selection.keywords,
           rejected: selection.rejected
@@ -329,7 +343,7 @@ export class BlogImageAutomationService {
       });
       return {
         processed: false,
-        reason: 'no_unique_image_found',
+        reason: 'no_unique_contextual_image_found',
         slug: article.slug,
         rejected: selection.rejected,
         keywords: selection.keywords
@@ -392,8 +406,10 @@ export class BlogImageAutomationService {
     const usageRecord = await UsedBlogImageStore.record({
       candidate: winnerWithDimensions,
       hash: selection.winner.hash,
+      perceptualHash: selection.winner.perceptualHash,
       keywords: selection.keywords,
       postId: article.id,
+      articleTitle: article.title,
       visualSignature: selection.winner.uniqueness?.visualSignature || ''
     });
 

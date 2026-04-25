@@ -16,6 +16,7 @@ export const searchPexelsImages = async ({ keywords = [], perKeyword = 2 }) => {
     for (const photo of payload.photos || []) {
       results.push({
         provider: 'pexels',
+        sourceImageId: String(photo.id || ''),
         kind: 'photo',
         isFree: true,
         attributionRequired: false,

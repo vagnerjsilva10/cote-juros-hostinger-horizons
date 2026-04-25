@@ -93,10 +93,11 @@ const INTENT_QUERY_LIBRARY = {
 
 const inferClusterKey = ({ category = '', clusterLabel = '', title = '', tags = [] }) => {
   const haystack = normalize([category, clusterLabel, title, ...(tags || [])].join(' '));
-  if (/imovel|casa|habitacional|mortgage|real estate|refinanciamento de imovel/.test(haystack)) return 'home-financing';
+  if (/imovel|imobiliario|casa|habitacional|mortgage|real estate|refinanciamento de imovel|tabela sac|tabela price|sac ou price/.test(haystack)) return 'home-financing';
   if (/financi|veiculo|entrada|leasing|parcela do carro|carro|fipe|dealership/.test(haystack)) return 'vehicle-financing';
   if (/cart|credito|anuidade|limite|fatura|rotativo/.test(haystack)) return 'credit-card';
   if (/score|cpf|serasa|spc|negativado|nome sujo|divid|renegoci|cheque especial|atras/.test(haystack)) return 'debt-negative-name';
+  if (/aposentado|consignado|inss|clt|renda|salario|rescisao|trabalhista|demissao/.test(haystack)) return 'personal-loan';
   if (/educ|reserva|orcamento|planejamento|gastos|casal|mei|organiza|decisoes financeiras/.test(haystack)) return 'financial-education';
   return 'personal-loan';
 };

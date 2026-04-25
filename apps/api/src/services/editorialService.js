@@ -515,8 +515,8 @@ const validateArticlePayload = ({ article, internalLinks, externalLinks, image, 
   if (!Array.isArray(externalLinks) || externalLinks.length < 1) issues.push('Links externos insuficientes');
   if (!article.cta?.primary?.to) issues.push('CTA primaria ausente');
   if (!image?.publicPath) issues.push('Imagem vencedora ausente');
-  if (!Array.isArray(image?.scores) || image.scores.length < 3) issues.push('Menos de 3 imagens avaliadas');
   if (!image?.validationPassed) issues.push('Imagem nao validada pelo seletor');
+  if (image?.isFallback) issues.push('Imagem fallback/template bloqueada');
   if (existingSlugs.has(article.slug)) issues.push(`Slug duplicado: ${article.slug}`);
   if (existingTitles.has(article.title.trim().toLowerCase())) issues.push(`Titulo duplicado: ${article.title}`);
 
@@ -675,8 +675,7 @@ export class EditorialService {
             stage: briefConfig.stage,
             brief: briefPayload,
             seoTitle: `${briefConfig.title} | Blog Cote Juros`,
-            metaDescription: `Entenda ${briefConfig.primaryKeyword} com mais clareza, compare custo real e veja como decidir sem pressa.`,
-            scheduledFor
+            metaDescription: `Entenda ${briefConfig.primaryKeyword} com mais clareza, compare custo real e veja como decidir sem pressa.`
           },
           create: {
             clusterId: cluster.id,
@@ -806,6 +805,16 @@ export class EditorialService {
         canonicalUrl: `${SITE_BASE_URL}/blog/${brief.slug}/`,
         coverImage: image.publicPath,
         ogImage: toAssetUrl(image.publicPath),
+        imageAttribution: image.attribution || null,
+        blogImageAutomation: {
+          provider: image.provider,
+          sourceType: image.sourceType || '',
+          sourceUrl: image.attribution?.sourceUrl || image.variants?.[0]?.sourceUrl || '',
+          hash: image.attribution?.hash || '',
+          perceptualHash: image.attribution?.perceptualHash || '',
+          usedImageRecordId: image.usedImageRecordId || null,
+          validatedAt: new Date().toISOString()
+        },
         clusterLabel: brief.cluster.name,
         clusterKeyword: brief.cluster.primaryKeyword,
         internalLinks,
@@ -885,6 +894,18 @@ export class EditorialService {
           cluster: true
         }
       });
+
+      if (image.usedImageRecordId) {
+        await prisma.blogUsedImage.update({
+          where: { id: image.usedImageRecordId },
+          data: { postId: articleRecord.id }
+        }).catch((error) => logger.warn('blog_used_image_post_link_failed', {
+          slug: brief.slug,
+          articleId: articleRecord.id,
+          usedImageRecordId: image.usedImageRecordId,
+          error: error?.message || String(error)
+        }));
+      }
 
       let distribution = null;
       let distributionError = null;

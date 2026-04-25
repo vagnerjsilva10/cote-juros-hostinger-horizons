@@ -1,6 +1,9 @@
+import { config as loadEnv } from 'dotenv';
 import { BlogImageAutomationService } from '../services/blogImage/automationService.js';
 
 const args = process.argv.slice(2);
+loadEnv();
+loadEnv({ path: 'apps/api/.env', override: true });
 const limitArg = args.find((item) => item.startsWith('--limit='));
 const triggerArg = args.find((item) => item.startsWith('--trigger='));
 const limit = Number(limitArg?.split('=')[1] || 1);

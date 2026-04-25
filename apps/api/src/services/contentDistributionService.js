@@ -15,6 +15,15 @@ const MAX_STORY_SLIDES = 8;
 const MIN_STORY_SLIDES = 5;
 const WRITE_LOCAL_DISTRIBUTION_FILES = process.env.DISTRIBUTION_WRITE_LOCAL_FILES === 'true';
 const DISTRIBUTION_PUBLIC_BASE_URL = (process.env.DISTRIBUTION_PUBLIC_BASE_URL || SITE_BASE_URL).replace(/\/$/, '');
+const DEFAULT_PINTEREST_REQUIRED_SCOPES = [
+  'pins:read',
+  'pins:write',
+  'boards:read',
+  'boards:write',
+  'user_accounts:read'
+];
+const PINTEREST_PUBLICATION_SCOPE_ERROR =
+  'Pinterest token sem permissão de publicação. Gere um novo token após aprovação Standard Access com scopes pins:write e boards:write.';
 
 const stripTags = (value = '') => String(value || '').replace(/<[^>]*>/g, ' ');
 const compactWhitespace = (value = '') => stripTags(value).replace(/\s+/g, ' ').trim();
@@ -48,6 +57,114 @@ const normalizeAbsoluteUrl = (value = '') => {
   if (!value) return '';
   if (/^https?:\/\//i.test(value)) return value;
   return `${SITE_BASE_URL}${value.startsWith('/') ? value : `/${value}`}`;
+};
+
+const parseScopeList = (value = '') =>
+  String(value || '')
+    .split(/[\s,]+/)
+    .map((scope) => scope.trim())
+    .filter(Boolean);
+
+const getRequiredPinterestScopes = () => {
+  const configured = parseScopeList(process.env.PINTEREST_REQUIRED_SCOPES);
+  return configured.length ? configured : DEFAULT_PINTEREST_REQUIRED_SCOPES;
+};
+
+const parsePinterestMissingScopes = (responseText = '') => {
+  const text = String(responseText || '');
+  const match = text.match(/Missing:\s*\[([^\]]+)\]/i);
+  if (!match) return [];
+
+  return match[1]
+    .split(',')
+    .map((scope) => scope.replace(/['"]/g, '').trim())
+    .filter(Boolean);
+};
+
+const safePinterestJson = async (response) => {
+  const text = await response.text();
+  if (!text) return { text, data: null };
+
+  try {
+    return { text, data: JSON.parse(text) };
+  } catch {
+    return { text, data: { raw: text } };
+  }
+};
+
+const probePinterestReadScope = async ({ accessToken, scope, path: endpointPath }) => {
+  const response = await fetch(`${PINTEREST_API_BASE_URL}${endpointPath}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  const body = await safePinterestJson(response);
+
+  return {
+    scope,
+    ok: response.ok,
+    status: response.status,
+    missingScopes: parsePinterestMissingScopes(body.text),
+    response: body.data
+  };
+};
+
+export const validatePinterestTokenScopes = async ({
+  accessToken = process.env.PINTEREST_ACCESS_TOKEN,
+  boardId = process.env.PINTEREST_BOARD_ID
+} = {}) => {
+  const requiredScopes = getRequiredPinterestScopes();
+  const configuredTokenScopes = parseScopeList(
+    process.env.PINTEREST_TOKEN_SCOPES || process.env.PINTEREST_ACCESS_TOKEN_SCOPES
+  );
+
+  if (!accessToken || !boardId) {
+    return {
+      ok: false,
+      message: 'Missing PINTEREST_ACCESS_TOKEN or PINTEREST_BOARD_ID',
+      requiredScopes,
+      configuredTokenScopes,
+      missingScopes: requiredScopes,
+      missingConfig: [
+        !accessToken ? 'PINTEREST_ACCESS_TOKEN' : null,
+        !boardId ? 'PINTEREST_BOARD_ID' : null
+      ].filter(Boolean)
+    };
+  }
+
+  if (configuredTokenScopes.length) {
+    const missingScopes = requiredScopes.filter((scope) => !configuredTokenScopes.includes(scope));
+    return {
+      ok: missingScopes.length === 0,
+      message: missingScopes.length ? PINTEREST_PUBLICATION_SCOPE_ERROR : null,
+      requiredScopes,
+      configuredTokenScopes,
+      missingScopes,
+      source: 'configured_token_scopes'
+    };
+  }
+
+  const readScopeProbes = await Promise.all([
+    probePinterestReadScope({ accessToken, scope: 'user_accounts:read', path: '/user_account' }),
+    probePinterestReadScope({ accessToken, scope: 'boards:read', path: '/boards?page_size=1' }),
+    probePinterestReadScope({ accessToken, scope: 'pins:read', path: '/pins?page_size=1' })
+  ]);
+  const failedReadScopes = readScopeProbes
+    .filter((probe) => !probe.ok)
+    .flatMap((probe) => probe.missingScopes.length ? probe.missingScopes : [probe.scope]);
+  const unverifiedWriteScopes = requiredScopes.filter((scope) => scope.endsWith(':write'));
+  const missingScopes = Array.from(new Set([...failedReadScopes, ...unverifiedWriteScopes]));
+
+  return {
+    ok: missingScopes.length === 0,
+    message: missingScopes.length ? PINTEREST_PUBLICATION_SCOPE_ERROR : null,
+    requiredScopes,
+    configuredTokenScopes,
+    missingScopes,
+    readScopeProbes,
+    source: 'pinterest_read_probe'
+  };
 };
 
 const getArticleUrl = (article = {}) =>
@@ -357,11 +474,24 @@ const publishPinterestPin = async ({ article, articleUrl, pinterestPublicPath, k
   const boardId = process.env.PINTEREST_BOARD_ID;
   const imageUrl = `${DISTRIBUTION_PUBLIC_BASE_URL}${pinterestPublicPath}`;
   const payload = createPinterestPayload({ article, articleUrl, imageUrl, keywords });
+  const scopeValidation = await validatePinterestTokenScopes({ accessToken, boardId });
 
-  if (!accessToken || !boardId) {
+  if (!scopeValidation.ok) {
+    await logger.warn('pinterest_token_scope_validation_failed', {
+      slug: article.slug,
+      message: scopeValidation.message,
+      missingScopes: scopeValidation.missingScopes,
+      requiredScopes: scopeValidation.requiredScopes,
+      missingConfig: scopeValidation.missingConfig || [],
+      validationSource: scopeValidation.source || 'config'
+    });
+
     return {
-      status: 'draft_saved',
-      reason: 'Missing PINTEREST_ACCESS_TOKEN or PINTEREST_BOARD_ID',
+      status: 'failed',
+      reason: scopeValidation.message,
+      missingScopes: scopeValidation.missingScopes,
+      requiredScopes: scopeValidation.requiredScopes,
+      validation: scopeValidation,
       payload
     };
   }
@@ -384,9 +514,19 @@ const publishPinterestPin = async ({ article, articleUrl, pinterestPublicPath, k
   }
 
   if (!response.ok) {
+    const missingScopes = parsePinterestMissingScopes(responseText);
+    await logger.warn('pinterest_pin_creation_failed', {
+      slug: article.slug,
+      status: response.status,
+      missingScopes,
+      response: responsePayload
+    });
+
     return {
-      status: 'draft_saved',
+      status: 'failed',
       reason: `Pinterest pin creation failed (${response.status}): ${responseText}`,
+      missingScopes,
+      requiredScopes: scopeValidation.requiredScopes,
       response: responsePayload,
       payload
     };
@@ -535,7 +675,10 @@ export class ContentDistributionService {
           description: pinterest.payload.description,
           pinId: pinterest.pinId || null,
           url: pinterest.url || null,
-          draftReason: pinterest.reason || null
+          draftReason: pinterest.reason || null,
+          errorMessage: pinterest.status === 'failed' ? pinterest.reason : null,
+          missingScopes: pinterest.missingScopes || [],
+          requiredScopes: pinterest.requiredScopes || getRequiredPinterestScopes()
         },
         validation
       };
@@ -582,7 +725,8 @@ export class ContentDistributionService {
       await logger.info('article_distribution_completed', {
         slug: article.slug,
         storyPath: distribution.webStory.path,
-        pinterestStatus: pinterest.status
+        pinterestStatus: pinterest.status,
+        pinterestMissingScopes: pinterest.missingScopes || []
       });
 
       return distribution;

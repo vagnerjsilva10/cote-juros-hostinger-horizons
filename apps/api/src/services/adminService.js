@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { getPrisma } from '../lib/prisma.js';
 import { hashPassword, hashValue, recordAdminAudit } from '../lib/adminAuth.js';
 import { getJurosBaixosHealth } from '../integrations/jurosBaixos/config.js';
+import { getCreditasHealth } from '../integrations/creditas/config.js';
 import { QuickCreditRoutingService } from './quickCreditRoutingService.js';
 
 const leadDetailInclude = {
@@ -424,7 +425,8 @@ export class AdminService {
         environment: process.env.NODE_ENV || 'development'
       },
       integrations: {
-        jurosBaixos: getJurosBaixosHealth()
+        jurosBaixos: getJurosBaixosHealth(),
+        creditas: getCreditasHealth()
       },
       alerts: {
         open: openAlerts.length,

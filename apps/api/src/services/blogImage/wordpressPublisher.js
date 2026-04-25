@@ -143,14 +143,36 @@ const updatePost = async ({ postId, payload }) => {
 
 export const syncArticleImageToWordpress = async ({ slug, articleTitle, imageCandidate, buffer, contentType = 'image/jpeg' }) => {
   const post = await findPostBySlug(slug);
-  if (!post) {
-    throw new Error(`WordPress post not found for slug ${slug}`);
-  }
 
   const extension = extractMimeExtension(contentType);
   const filename = `${slug}.${extension}`;
   const altText = articleTitle || slug;
   const media = await uploadMedia({ buffer, filename, altText });
+
+  if (!post) {
+    await logger.warn('wordpress_post_not_found_media_uploaded_only', {
+      slug,
+      mediaId: media.id,
+      imageUrl: media.source_url
+    });
+
+    return {
+      postId: null,
+      mediaId: media.id,
+      imageUrl: media.source_url,
+      imageAttribution: {
+        provider: imageCandidate.provider,
+        label: getAttributionConfig(imageCandidate.provider).label,
+        sourceName: getAttributionConfig(imageCandidate.provider).sourceName,
+        url: getAttributionConfig(imageCandidate.provider).sourceLink,
+        sourceUrl: imageCandidate.pageUrl || imageCandidate.downloadUrl,
+        originalUrl: imageCandidate.pageUrl || imageCandidate.downloadUrl,
+        syncedAt: new Date().toISOString(),
+        wordpressPostFound: false
+      },
+      updatedPost: null
+    };
+  }
 
   const topHtml = buildAttributionHtml({
     provider: imageCandidate.provider,

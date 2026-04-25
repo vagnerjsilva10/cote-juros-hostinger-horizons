@@ -59,9 +59,9 @@ const scoreBackgroundAndStyle = (candidateText) => {
 };
 
 const scoreProviderPriority = (provider = '') => {
-  if (provider === 'freepik') return 10;
-  if (provider === 'pexels') return 6;
-  if (provider === 'unsplash') return 5;
+  if (provider === 'pexels') return 10;
+  if (provider === 'unsplash') return 8;
+  if (provider === 'freepik') return 3;
   return 0;
 };
 

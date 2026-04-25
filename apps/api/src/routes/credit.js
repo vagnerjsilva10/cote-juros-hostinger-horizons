@@ -5,6 +5,22 @@ import { CreditOfferService } from '../services/creditOfferService.js';
 import { CreditSimulationService } from '../services/creditSimulationService.js';
 import { CreditTrackingService } from '../services/creditTrackingService.js';
 import { getJurosBaixosConfig, getJurosBaixosHealth } from '../integrations/jurosBaixos/config.js';
+import {
+  checkCreditasEligibility,
+  createCreditasAutoEquityOffer,
+  createCreditasAutoEquityProposal,
+  createCreditasHomeEquityProposal,
+  creditasDocumentPayloadSchema,
+  creditasProposalRequestSchema,
+  creditasProposalStatusQuerySchema,
+  getCreditasAccessToken,
+  getCreditasAutoEquityOffer,
+  getCreditasHealth,
+  getCreditasProposalStatus,
+  listCreditasProposalDocuments,
+  sendCreditasProposalDocument,
+  verifyCreditasWebhookSignature
+} from '../integrations/creditas/index.js';
 
 const router = express.Router();
 
@@ -113,14 +129,153 @@ const clickSchema = z.object({
 
 const webhookSchema = z.object({}).passthrough();
 
+const creditasEligibilitySchema = z.object({
+  cpf: z.string().min(11),
+  email: z.string().email(),
+  productType: z.enum(['AUTO_REFINANCING', 'HOME_REFINANCING']).optional(),
+  scope: z.enum(['PRE_APPROVAL']).optional()
+});
+
 router.get(
   '/health',
   asyncHandler(async (_req, res) => {
     res.json({
       data: {
         ok: true,
-        ...getJurosBaixosHealth(),
+        providers: {
+          jurosBaixos: getJurosBaixosHealth(),
+          creditas: getCreditasHealth()
+        },
         timestamp: new Date().toISOString()
+      }
+    });
+  })
+);
+
+router.get(
+  '/creditas/health',
+  asyncHandler(async (_req, res) => {
+    res.json({
+      data: {
+        ok: true,
+        ...getCreditasHealth(),
+        timestamp: new Date().toISOString()
+      }
+    });
+  })
+);
+
+router.post(
+  '/creditas/token/check',
+  asyncHandler(async (_req, res) => {
+    const token = await getCreditasAccessToken({ forceRefresh: true });
+    res.json({
+      data: {
+        ok: true,
+        tokenType: token.tokenType,
+        expiresAt: token.expiresAt,
+        expiresIn: token.expiresIn
+      }
+    });
+  })
+);
+
+router.post(
+  '/creditas/eligibility',
+  asyncHandler(async (req, res) => {
+    const payload = creditasEligibilitySchema.parse(req.body || {});
+    const data = await checkCreditasEligibility(payload);
+    res.json({ data });
+  })
+);
+
+router.post(
+  '/creditas/offers',
+  asyncHandler(async (req, res) => {
+    const data = await createCreditasAutoEquityOffer(req.body || {});
+    res.status(201).json({ data });
+  })
+);
+
+router.get(
+  '/creditas/offers/:id',
+  asyncHandler(async (req, res) => {
+    const data = await getCreditasAutoEquityOffer(req.params.id);
+    res.json({ data });
+  })
+);
+
+router.post(
+  '/creditas/proposals',
+  asyncHandler(async (req, res) => {
+    const { product, payload } = creditasProposalRequestSchema.parse(req.body || {});
+    const data = product === 'home_equity'
+      ? await createCreditasHomeEquityProposal(payload)
+      : await createCreditasAutoEquityProposal(payload);
+    res.status(201).json({ data });
+  })
+);
+
+router.get(
+  '/creditas/proposals/:id/status',
+  asyncHandler(async (req, res) => {
+    const query = creditasProposalStatusQuerySchema.parse(req.query || {});
+    const data = await getCreditasProposalStatus({
+      proposalId: req.params.id,
+      includes: query.includes
+    });
+    res.json({ data });
+  })
+);
+
+router.get(
+  '/creditas/proposals/:id/documents',
+  asyncHandler(async (req, res) => {
+    const data = await listCreditasProposalDocuments(req.params.id);
+    res.json({ data });
+  })
+);
+
+router.post(
+  '/creditas/proposals/:id/documents',
+  asyncHandler(async (req, res) => {
+    const payload = creditasDocumentPayloadSchema.parse(req.body || {});
+    const data = await sendCreditasProposalDocument({
+      proposalId: req.params.id,
+      payload
+    });
+    res.status(201).json({ data });
+  })
+);
+
+router.post(
+  '/creditas/webhook',
+  asyncHandler(async (req, res) => {
+    const rawBody = req.rawBody || Buffer.from(JSON.stringify(req.body || {}));
+    const targetUri = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+    const verification = verifyCreditasWebhookSignature({
+      headers: req.headers,
+      rawBody,
+      targetUri
+    });
+
+    if (!verification.valid) {
+      return res.status(401).json({
+        error: 'Invalid Creditas webhook signature',
+        details: verification.reason
+      });
+    }
+
+    CreditTrackingService.log('CREDIT_WEBHOOK_RECEIVED', {
+      provider: 'creditas',
+      signatureChecked: verification.checked,
+      keys: Object.keys(req.body || {})
+    });
+
+    return res.status(202).json({
+      data: {
+        received: true,
+        signatureChecked: verification.checked
       }
     });
   })

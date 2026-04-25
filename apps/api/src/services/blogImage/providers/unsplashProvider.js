@@ -16,6 +16,7 @@ export const searchUnsplashImages = async ({ keywords = [], perKeyword = 2 }) =>
     for (const photo of payload.results || []) {
       results.push({
         provider: 'unsplash',
+        sourceImageId: photo.id || '',
         kind: 'photo',
         isFree: true,
         attributionRequired: false,

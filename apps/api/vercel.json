@@ -12,15 +12,15 @@
   "crons": [
     {
       "path": "/api/internal/editorial/run",
-      "schedule": "0 11 * * *"
+      "schedule": "15 11 * * *"
     },
     {
       "path": "/api/internal/editorial/run",
-      "schedule": "0 17 * * *"
+      "schedule": "15 17 * * *"
     },
     {
       "path": "/api/internal/editorial/run",
-      "schedule": "0 23 * * *"
+      "schedule": "15 23 * * *"
     },
     {
       "path": "/api/internal/distribution/backfill",

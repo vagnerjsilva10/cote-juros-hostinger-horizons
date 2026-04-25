@@ -18,6 +18,8 @@ import { PrismaConfigError } from './lib/prisma.js';
 import { AdminAuthSetupError } from './lib/adminAuth.js';
 import { IntegrationConfigurationError, JurosBaixosIntegrationError } from './integrations/jurosBaixos/errors.js';
 import { getJurosBaixosHealth } from './integrations/jurosBaixos/config.js';
+import { getCreditasHealth } from './integrations/creditas/config.js';
+import { CreditasIntegrationError } from './integrations/creditas/errors.js';
 
 export const createApp = () => {
   const app = express();
@@ -67,7 +69,10 @@ export const createApp = () => {
   app.use(express.json({
     limit: '1mb',
     verify: (req, _res, buf) => {
-      if (req.originalUrl?.startsWith('/api/reactivation-admin/webhooks/sendgrid')) {
+      if (
+        req.originalUrl?.startsWith('/api/reactivation-admin/webhooks/sendgrid') ||
+        req.originalUrl?.startsWith('/api/credit/creditas/webhook')
+      ) {
         req.rawBody = Buffer.from(buf);
       }
     }
@@ -79,7 +84,8 @@ export const createApp = () => {
       service: 'cote-juros-api',
       databaseConfigured: Boolean(process.env.DATABASE_URL),
       integrations: {
-        jurosBaixos: getJurosBaixosHealth()
+        jurosBaixos: getJurosBaixosHealth(),
+        creditas: getCreditasHealth()
       },
       timestamp: new Date().toISOString()
     });
@@ -139,6 +145,15 @@ export const createApp = () => {
       });
     }
 
+    if (err instanceof CreditasIntegrationError) {
+      return res.status(err.statusCode || 502).json({
+        error: 'Creditas integration error',
+        code: err.code || null,
+        message: err.message,
+        details: err.expose ? err.details : null
+      });
+    }
+
     if (req.originalUrl?.includes('/api/admin/email-ops') || req.originalUrl?.includes('/api/reactivation-admin')) {
       if (String(err?.message || '').includes('SENDGRID_API_KEY')) {
         return res.status(503).json({
@@ -176,5 +191,3 @@ export const createApp = () => {
 
   return app;
 };
-
-

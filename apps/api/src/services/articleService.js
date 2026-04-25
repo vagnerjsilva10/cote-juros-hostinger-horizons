@@ -39,6 +39,8 @@ const serializeArticle = (article) => {
     coverImage: article.coverImage || structured.coverImage || '',
     image: article.ogImage || structured.ogImage || article.coverImage || structured.coverImage || '',
     ogImage: article.ogImage || structured.ogImage || '',
+    imageAttribution: structured.imageAttribution || null,
+    blogImageAutomation: structured.blogImageAutomation || null,
     readTime: article.readTime || structured.readTime || 6,
     wordCount: article.wordCount || structured.wordCount || 0,
     internalLinks: Array.isArray(structured.internalLinks) ? structured.internalLinks : [],
