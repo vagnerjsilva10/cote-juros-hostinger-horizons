@@ -16,7 +16,7 @@ export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
   const src = LOGO_MAP[variant] || LOGO_MAP.horizontal;
   const isSymbol = ['symbol', 'symbolLight', 'icon', 'square'].includes(variant);
   const isLight = variant === 'original-light' || variant === 'symbolLight';
-  const iconClass = isSymbol ? 'h-9 w-9' : 'h-9 w-9';
+  const iconClass = isSymbol ? 'h-8 w-8' : 'h-8 w-8';
 
   return (
     <span className={cn('inline-flex items-center gap-2', className)} aria-label="Cote Juros">
@@ -25,14 +25,14 @@ export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
         <span className="site-logo-copy">
           <span
             className={cn(
-              'site-logo-wordmark whitespace-nowrap text-[21px] font-semibold leading-none tracking-[-0.01em]',
+              'site-logo-wordmark whitespace-nowrap text-[19px] font-semibold leading-none tracking-[-0.01em]',
               isLight ? 'text-white' : 'text-slate-950'
             )}
           >
             Cote Juros
           </span>
           <span className={cn('site-logo-tagline', isLight ? 'text-slate-300' : 'text-slate-500')}>
-            juros claros
+            compare melhor
           </span>
         </span>
       )}

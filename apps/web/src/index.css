@@ -2717,8 +2717,8 @@
 /* Landing refinement: quieter, monochromatic, more product-like */
 .site-header .site-logo img {
   display: block;
-  height: 36px;
-  width: 36px;
+  height: 32px;
+  width: 32px;
 }
 
 .site-header .site-logo-mark {
@@ -2737,7 +2737,7 @@
 .site-header .site-logo-wordmark {
   color: #E8EEF5 !important;
   font-family: var(--font-sans);
-  font-size: 21px;
+  font-size: 19px;
   font-weight: 610;
   letter-spacing: -0.01em;
 }
@@ -2745,7 +2745,7 @@
 .site-header .site-logo-tagline {
   color: #93A4B8 !important;
   font-family: var(--font-sans);
-  font-size: 8.5px;
+  font-size: 7.5px;
   font-weight: 500;
   letter-spacing: 0;
   line-height: 1;
@@ -9496,16 +9496,16 @@ body {
   }
 
   .site-header .site-logo img {
-    height: 28px !important;
-    width: 28px !important;
+    height: 26px !important;
+    width: 26px !important;
   }
 
   .site-header .site-logo-wordmark {
-    font-size: 16.5px !important;
+    font-size: 15.5px !important;
   }
 
   .site-header .site-logo-tagline {
-    font-size: 7.5px !important;
+    font-size: 7px !important;
   }
 
   .mobile-nav-trigger {
