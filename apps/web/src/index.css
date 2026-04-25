@@ -2717,7 +2717,7 @@
 /* Landing refinement: quieter, monochromatic, more product-like */
 .site-header .site-logo img {
   display: block;
-  height: 34px;
+  height: 48px;
   width: auto;
   filter: none !important;
 }
@@ -9466,7 +9466,7 @@ body {
   }
 
   .site-header .site-logo img {
-    height: 24px !important;
+    height: 34px !important;
     width: auto;
   }
 

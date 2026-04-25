@@ -1,0 +1,24 @@
+<svg width="720" height="200" viewBox="0 0 720 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Cote Juros</title>
+  <desc id="desc">Logo premium da Cote Juros com icone de crescimento financeiro e tipografia refinada.</desc>
+  <defs>
+    <linearGradient id="coteJurosBlue" x1="28" y1="102" x2="112" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4C8DFF"/>
+      <stop offset="1" stop-color="#78AEFF"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(34 34)">
+    <rect x="0.75" y="0.75" width="132.5" height="132.5" rx="30" fill="#0F1620" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+    <path d="M22 98L50 76L72 82L111 41" stroke="url(#coteJurosBlue)" stroke-width="7.1" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="22" cy="98" r="5.2" fill="#4C8DFF"/>
+    <circle cx="50" cy="76" r="5.2" fill="#4C8DFF" opacity="0.94"/>
+    <circle cx="72" cy="82" r="5.2" fill="#5D99FF" opacity="0.94"/>
+    <circle cx="111" cy="41" r="6.6" fill="#78AEFF"/>
+    <path d="M96 41H111V56" stroke="#78AEFF" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g transform="translate(194 76)">
+    <text x="0" y="47" fill="#E8EEF5" font-family="Inter, Plus Jakarta Sans, Manrope, Arial, sans-serif" font-size="66" font-weight="750" letter-spacing="-0.055em">
+      Cote Juros
+    </text>
+  </g>
+</svg>

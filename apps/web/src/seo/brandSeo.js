@@ -1,7 +1,7 @@
 export const SITE_URL = 'https://www.cotejuros.com.br';
 export const SITE_NAME = 'Cote Juros';
 export const SITE_ALTERNATE_NAME = 'CoteJuros';
-export const SITE_LOGO_URL = `${SITE_URL}/logo.png`;
+export const SITE_LOGO_URL = `${SITE_URL}/brand/cote-juros-logo.svg`;
 export const DEFAULT_OG_IMAGE =
   'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80';
 

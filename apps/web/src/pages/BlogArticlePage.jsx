@@ -30,7 +30,7 @@ import { getSupersimOffer, SUPERSIM_TARGET_ARTICLE_PATHS } from '@/lib/supersim.
 import { normalizeMojibake, normalizeMojibakeDeep } from '@/lib/textEncoding.js';
 
 const BLOG_BASE_URL = 'https://www.cotejuros.com.br/blog';
-const SITE_LOGO_URL = 'https://www.cotejuros.com.br/assets/logo/logo-current-site.svg';
+const SITE_LOGO_URL = 'https://www.cotejuros.com.br/brand/cote-juros-logo.svg';
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString('pt-BR', {
