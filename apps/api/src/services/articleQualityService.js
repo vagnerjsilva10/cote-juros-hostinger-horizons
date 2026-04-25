@@ -1,5 +1,12 @@
 const MAX_HEADLINE_LENGTH = 70;
 const MIN_INTERNAL_LINKS = 3;
+const INTENT_RULES = [
+  { intent: 'news', pattern: /pris[aã]o|governo|lan[cç]a|recorde|2025|2026|stf|pf|banco master|selic hoje|cdi|sal[aá]rio|inss/i },
+  { intent: 'tool', pattern: /calculadora|simulador|consulta|tabela|fipe/i },
+  { intent: 'comparison', pattern: /melhor|diferen[cç]a|versus| ou |comparar|op[cç][oõ]es/i },
+  { intent: 'howto', pattern: /^(como|qual|quais|posso|fiz|o que|quando|por que)\b/i },
+  { intent: 'decision', pattern: /vale a pena|emprestimo|empr[eé]stimo|cr[eé]dito|financiamento|cart[aã]o|juros|d[ií]vida|score|reserva|consignado|renegoci|parcel|fatura|c[eé]t|pix|banco|invest/i }
+];
 
 const stripMarkdownArtifacts = (value = '') =>
   String(value || '')
@@ -60,6 +67,11 @@ const trimToSentence = (value = '', max = 160) => {
   return `${slice.slice(0, lastSpace > 80 ? lastSpace : slice.length).trim()}.`;
 };
 
+export const classifyArticleIntent = ({ title = '', keyword = '', slug = '', category = '' } = {}) => {
+  const haystack = compactText(`${title} ${keyword} ${String(slug).replace(/-/g, ' ')} ${category}`);
+  return INTENT_RULES.find((rule) => rule.pattern.test(haystack))?.intent || 'guide';
+};
+
 const textArray = (items = [], max = 3) =>
   (Array.isArray(items) ? items : [])
     .map((item) => ensureSentence(item))
@@ -78,6 +90,18 @@ const buildQuestionHeadline = (keyword = '', fallbackTitle = '') => {
     ? rawKeyword.slice(0, 52).replace(/\s+\S*$/g, '').trim()
     : rawKeyword;
   const lowerKeyword = baseKeyword.charAt(0).toUpperCase() + baseKeyword.slice(1);
+  const intent = classifyArticleIntent({ title: fallbackTitle, keyword: lowerKeyword });
+  if (intent === 'news' || intent === 'tool' || intent === 'guide') {
+    return lowerKeyword.length <= MAX_HEADLINE_LENGTH
+      ? lowerKeyword
+      : lowerKeyword.slice(0, MAX_HEADLINE_LENGTH).replace(/\s+\S*$/g, '').trim();
+  }
+  if (intent === 'comparison') {
+    const candidate = `${lowerKeyword}: compare custos e riscos`;
+    return candidate.length <= MAX_HEADLINE_LENGTH
+      ? candidate
+      : lowerKeyword.slice(0, MAX_HEADLINE_LENGTH).replace(/\s+\S*$/g, '').trim();
+  }
   if (/^(como|qual|quais|posso|fiz|o que|quando|por que)\b/i.test(lowerKeyword)) {
     const question = lowerKeyword.endsWith('?') ? lowerKeyword : `${lowerKeyword}?`;
     return question.length <= MAX_HEADLINE_LENGTH ? question : `${question.slice(0, MAX_HEADLINE_LENGTH - 1).replace(/\s+\S*$/g, '').trim()}?`;
@@ -235,6 +259,12 @@ const ensureFaq = ({ faq = [], keyword = '' } = {}) => {
 
 export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', internalLinks = [] } = {}) => {
   const keyword = compactText(primaryKeyword || article.clusterKeyword || article.tags?.[0] || article.title || '');
+  const editorialIntent = classifyArticleIntent({
+    title: article.title || article.h1,
+    keyword,
+    slug: article.slug,
+    category: article.category
+  });
   const title = buildQuestionHeadline(keyword, article.title || article.h1);
   const intro = textArray(article.intro || [], 2);
   const fallbackIntro = [
@@ -294,12 +324,24 @@ export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', inte
     ctas: buildCtas(),
     financialImpact: buildFinancialImpact({ keyword }),
     alternatives: buildAlternatives({ keyword }),
-    qualityStandardVersion: '2026-04-finance-portal'
+    qualityStandardVersion: '2026-04-finance-portal',
+    discoverProfile: {
+      intent: editorialIntent,
+      headlineLength: title.length,
+      imageRequired: true,
+      mobileScanReady: true,
+      recommendation: editorialIntent === 'news'
+        ? 'priorizar atualidade, imagem forte e titulo factual'
+        : editorialIntent === 'decision'
+          ? 'priorizar comparacao, risco, exemplo numerico e CTA'
+          : 'priorizar resposta direta, FAQ e links para guias relacionados'
+    }
   };
 
   return {
     ...article,
     clusterKeyword: keyword,
+    editorialIntent,
     title,
     h1: title,
     summary: trimToSentence(article.summary || `${keyword}: veja custos, riscos, exemplos e alternativas para decidir com mais clareza antes de contratar.`, 155),
@@ -335,6 +377,12 @@ export const validateArticle = ({ article = {}, internalLinks = [], image = null
   const sections = Array.isArray(article.sections) ? article.sections : [];
   const faq = Array.isArray(article.faq) ? article.faq : [];
   const ctas = Array.isArray(article.ctas) ? article.ctas : [];
+  const editorialIntent = article.editorialIntent || classifyArticleIntent({
+    title,
+    keyword,
+    slug: article.slug,
+    category: article.category
+  });
   const plain = [
     ...intro,
     article.featuredSnippet,
@@ -349,9 +397,9 @@ export const validateArticle = ({ article = {}, internalLinks = [], image = null
   ].filter(Boolean).join(' ');
 
   if (!title || title.length > MAX_HEADLINE_LENGTH) issues.push('Headline ausente ou acima de 70 caracteres');
-  if (keyword && !includesKeyword(title, keyword)) issues.push('Keyword principal ausente no titulo');
+  if (editorialIntent === 'decision' && keyword && !includesKeyword(title, keyword)) issues.push('Keyword principal ausente no titulo');
   if (intro.length < 1 || intro.length > 2) issues.push('Introducao deve ter 1 ou 2 paragrafos');
-  if (keyword && !includesKeyword(intro[0] || '', keyword)) issues.push('Keyword principal ausente no primeiro paragrafo');
+  if (editorialIntent === 'decision' && keyword && !includesKeyword(intro[0] || '', keyword)) issues.push('Keyword principal ausente no primeiro paragrafo');
   if (!article.featuredSnippet || compactText(article.featuredSnippet).length < 50) issues.push('Featured snippet ausente ou fraco');
   if (!sections.length || sections.length < 5) issues.push('Corpo explicativo insuficiente');
   if (!article.example || !/R\$\s?\d|[0-9]+%|\d+\s*mes/i.test(article.example)) issues.push('Exemplo real com numeros ausente');
@@ -363,8 +411,8 @@ export const validateArticle = ({ article = {}, internalLinks = [], image = null
   if (!Array.isArray(article.alternatives) || article.alternatives.length < 3) issues.push('Alternativas insuficientes');
   if (faq.length < 4 || faq.length > 6) issues.push('FAQ final deve ter 4 a 6 perguntas');
   if (!Array.isArray(article.conclusion) || !article.conclusion.length) issues.push('Conclusao ausente');
-  if (keyword && !includesKeyword((article.conclusion || []).join(' '), keyword)) issues.push('Keyword principal ausente na conclusao');
-  if (sections.filter((section) => includesKeyword(section.heading, keyword)).length < 2) issues.push('Keyword principal em menos de 2 subtitulos');
+  if (editorialIntent === 'decision' && keyword && !includesKeyword((article.conclusion || []).join(' '), keyword)) issues.push('Keyword principal ausente na conclusao');
+  if (editorialIntent === 'decision' && sections.filter((section) => includesKeyword(section.heading, keyword)).length < 2) issues.push('Keyword principal em menos de 2 subtitulos');
   if (!Array.isArray(internalLinks) || internalLinks.length < MIN_INTERNAL_LINKS) issues.push('Minimo de 3 links internos ausente');
   if (/<a\b|<\/a>|<[^>]+>/i.test(plain)) issues.push('HTML cru encontrado no texto do artigo');
   if (plain.split(/\s+/).some((word) => word.length > 42 && /[<>]/.test(word))) issues.push('Possivel artefato HTML em palavra longa');
@@ -380,6 +428,7 @@ export const validateArticle = ({ article = {}, internalLinks = [], image = null
       faq: faq.length,
       ctas: ctas.length,
       internalLinks: Array.isArray(internalLinks) ? internalLinks.length : 0
-    }
+    },
+    intent: editorialIntent
   };
 };

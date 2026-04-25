@@ -4,6 +4,7 @@ import { getPrisma } from '../lib/prisma.js';
 import { ContentDistributionService } from '../services/contentDistributionService.js';
 import { CompetitorSeoResearchService } from '../services/competitorSeoResearchService.js';
 import { EditorialService } from '../services/editorialService.js';
+import { ArticleScaleService } from '../services/articleScaleService.js';
 import { SeoGrowthService } from '../services/seoGrowthService.js';
 import { SendReactivationEmailsJob } from '../jobs/sendReactivationEmails.js';
 
@@ -155,6 +156,48 @@ router.get(
     const limit = parseLimit(req.query.limit, 5, 20);
     const minScore = parseLimit(req.query.minScore, 60, 100);
     res.json(await CompetitorSeoResearchService.createBriefsFromGaps({ limit, minScore }));
+  })
+);
+
+router.get(
+  '/articles/scale',
+  asyncHandler(async (req, res) => {
+    const limit = parseLimit(req.query.limit, 200, 1000);
+    const result = await ArticleScaleService.runScaleLayers({ limit });
+    res.json(result);
+  })
+);
+
+router.get(
+  '/articles/quality-monitor',
+  asyncHandler(async (req, res) => {
+    const limit = parseLimit(req.query.limit, 500, 1000);
+    const includeDrafts = req.query.includeDrafts === 'true';
+    res.json(await ArticleScaleService.runQualityMonitor({ limit, includeDrafts }));
+  })
+);
+
+router.get(
+  '/articles/cluster-queue',
+  asyncHandler(async (req, res) => {
+    const limit = parseLimit(req.query.limit, 20, 100);
+    res.json(await ArticleScaleService.buildClusterQueue({ limit }));
+  })
+);
+
+router.get(
+  '/articles/search-priority',
+  asyncHandler(async (req, res) => {
+    const limit = parseLimit(req.query.limit, 25, 100);
+    res.json(await ArticleScaleService.buildSearchConsolePriority({ limit }));
+  })
+);
+
+router.get(
+  '/articles/discover-audit',
+  asyncHandler(async (req, res) => {
+    const limit = parseLimit(req.query.limit, 200, 500);
+    res.json(await ArticleScaleService.runDiscoverAudit({ limit }));
   })
 );
 

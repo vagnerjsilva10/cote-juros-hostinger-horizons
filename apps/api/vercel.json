@@ -35,6 +35,10 @@
       "schedule": "30 10 * * 3"
     },
     {
+      "path": "/api/internal/articles/scale",
+      "schedule": "10 8 * * *"
+    },
+    {
       "path": "/api/internal/reactivation/send-emails",
       "schedule": "30 12 * * 1-5"
     }
