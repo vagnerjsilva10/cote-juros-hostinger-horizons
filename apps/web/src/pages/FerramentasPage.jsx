@@ -114,17 +114,17 @@ function FerramentasPage() {
         {[
           {
             title: 'Calculadora de CET',
-            description: 'Compare custo efetivo total, parcela e tarifas antes de contratar credito.',
+            description: 'Compare custo efetivo total, parcela e tarifas antes de contratar crédito.',
             path: '/calculadora-cet'
           },
           {
             title: 'Comprometimento de renda',
-            description: 'Veja se uma nova parcela cabe na renda sem apertar demais o orcamento.',
+            description: 'Veja se uma nova parcela cabe na renda sem apertar demais o orçamento.',
             path: '/simulador-comprometimento-renda'
           },
           {
-            title: 'Estudo credito para negativado',
-            description: 'Material de referencia para citar em pautas sobre custo de credito.',
+            title: 'Estudo crédito para negativado',
+            description: 'Material de referência para citar em pautas sobre custo de crédito.',
             path: '/estudos/custo-emprestimo-negativado-2026'
           }
         ].map((item) => (

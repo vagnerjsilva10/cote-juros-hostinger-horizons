@@ -305,6 +305,32 @@ const getArticleConversionCta = (article, categoryRoute) => {
   });
 };
 
+const buildInlineLinkMoments = ({ internalLinks = [], externalLinks = [] }) => {
+  const [firstInternal, secondInternal, thirdInternal, fourthInternal, fifthInternal, sixthInternal] = internalLinks;
+  const [firstExternal, secondExternal, thirdExternal] = externalLinks;
+
+  return {
+    opening: firstInternal && secondInternal
+      ? {
+        internal: [firstInternal, secondInternal],
+        external: firstExternal ? [firstExternal] : []
+      }
+      : null,
+    middle: thirdInternal || fourthInternal || secondExternal
+      ? {
+        internal: [thirdInternal, fourthInternal].filter(Boolean),
+        external: secondExternal ? [secondExternal] : []
+      }
+      : null,
+    closing: fifthInternal || sixthInternal || thirdExternal
+      ? {
+        internal: [fifthInternal, sixthInternal].filter(Boolean),
+        external: thirdExternal ? [thirdExternal] : []
+      }
+      : null
+  };
+};
+
 function BlogArticlePage({ articleSlugOverride = '' }) {
   const t = normalizeMojibake;
   const { articleSlug } = useParams();
@@ -405,16 +431,6 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
     ]).slice(0, 6);
   }, [safeArticle, commercialLinks, semanticArticleLinks]);
 
-  const contextualPrimaryLinks = useMemo(
-    () => authorityInternalLinks.slice(0, 3),
-    [authorityInternalLinks]
-  );
-
-  const contextualSecondaryLinks = useMemo(
-    () => authorityInternalLinks.slice(3, 6),
-    [authorityInternalLinks]
-  );
-
   const continueExploringLinks = useMemo(
     () => semanticArticleLinks.slice(0, 3),
     [semanticArticleLinks]
@@ -430,6 +446,14 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         : []
     ),
     [safeArticle]
+  );
+
+  const inlineLinkMoments = useMemo(
+    () => buildInlineLinkMoments({
+      internalLinks: authorityInternalLinks,
+      externalLinks: externalAuthorityLinks
+    }),
+    [authorityInternalLinks, externalAuthorityLinks]
   );
 
   const sidebarReading = useMemo(() => {
@@ -509,6 +533,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
   const sections = Array.isArray(safeArticle.sections) ? safeArticle.sections : [];
   const midSectionIndex = sections.length > 2 ? Math.ceil(sections.length / 2) - 1 : -1;
   const showPreConclusionAd = Boolean((Array.isArray(safeArticle.faq) && safeArticle.faq.length) || (Array.isArray(safeArticle.conclusion) && safeArticle.conclusion.length));
+  const webStory = safeArticle.distribution?.webStory;
+  const webStoryUrl = webStory?.url || (webStory?.path ? `https://www.cotejuros.com.br${webStory.path}` : '');
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -568,6 +594,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         <meta name="twitter:description" content={safeArticle.metaDescription || getArticleSummary(safeArticle)} />
         <meta name="twitter:image" content={socialImage} />
         <link rel="canonical" href={canonicalUrl} />
+        {webStoryUrl ? <link rel="amphtml" href={webStoryUrl} /> : null}
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
         {faqSchema ? <script type="application/ld+json">{JSON.stringify(faqSchema)}</script> : null}
@@ -615,18 +642,48 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
               Mais em {categoryRoute.label}
               <ArrowRight className="h-4 w-4" />
             </Link>
+            {webStoryUrl ? (
+              <a href={webStoryUrl} className="blog-inline-link inline-flex items-center gap-2 hover:underline">
+                Ver Web Story
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            ) : null}
           </div>
 
           <div className="blog-article-cover-grid grid min-w-0 gap-5 pt-2 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
-            <ArticleCoverImage
-              article={safeArticle}
-              className="blog-article-cover min-w-0 w-full max-h-[430px] rounded-[18px] border border-border md:rounded-[20px]"
-              aspectRatio="16 / 9"
-            />
+            <div className="space-y-3">
+              <ArticleCoverImage
+                article={safeArticle}
+                className="blog-article-cover min-w-0 w-full max-h-[430px] rounded-[18px] border border-border md:rounded-[20px]"
+                aspectRatio="16 / 9"
+              />
+              {safeArticle.imageAttribution?.label ? (
+                <p className="text-sm leading-6 text-muted-foreground">
+                  {safeArticle.imageAttribution.label}{' '}
+                  <a
+                    href={safeArticle.imageAttribution.url || 'https://www.freepik.com'}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="blog-inline-link font-medium hover:underline"
+                  >
+                    {safeArticle.imageAttribution.sourceName || 'Freepik'}
+                  </a>
+                </p>
+              ) : null}
+            </div>
 
             <aside className="blog-article-hero-aside min-w-0 rounded-[18px] border border-border bg-white p-5 md:p-6">
               <h2 className="text-xl text-foreground">Continue a leitura</h2>
               <div className="mt-4 space-y-3">
+                {webStoryUrl ? (
+                  <a
+                    href={webStoryUrl}
+                    className="blog-article-jump-link block min-w-0 rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors"
+                  >
+                    <h3 className="block break-words font-semibold text-foreground">Resumo em Web Story</h3>
+                    <span className="mt-1 block leading-6 text-muted-foreground">Veja os principais pontos em formato visual.</span>
+                  </a>
+                ) : null}
                 {sidebarReading.map((item) => (
                   <Link
                     key={`hero-reading-${item.title}`}
@@ -653,25 +710,32 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     <p key={`intro-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{paragraph}</p>
                   ))}
 
-                  {contextualPrimaryLinks.length >= 3 ? (
+                  {inlineLinkMoments.opening ? (
                     <p className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">
                       Se você quer transformar essa leitura em decisão prática, vale{' '}
-                      <Link to={contextualPrimaryLinks[0].path} className="blog-inline-link font-medium hover:underline">
-                        {contextualPrimaryLinks[0].anchor}
+                      <Link to={inlineLinkMoments.opening.internal[0].path} className="blog-inline-link font-medium hover:underline">
+                        {inlineLinkMoments.opening.internal[0].anchor}
                       </Link>
-                      , entender{' '}
-                      <Link to={contextualPrimaryLinks[1].path} className="blog-inline-link font-medium hover:underline">
-                        {contextualPrimaryLinks[1].title}
+                      {' '}e também entender{' '}
+                      <Link to={inlineLinkMoments.opening.internal[1].path} className="blog-inline-link font-medium hover:underline">
+                        {inlineLinkMoments.opening.internal[1].title}
                       </Link>{' '}
-                      e, antes de avançar,{' '}
-                      <Link to={contextualPrimaryLinks[2].path} className="blog-inline-link font-medium hover:underline">
-                        {contextualPrimaryLinks[2].anchor}
-                      </Link>
+                      enquanto você confere a leitura com dados do{' '}
+                      {inlineLinkMoments.opening.external.length ? (
+                        <a
+                          href={inlineLinkMoments.opening.external[0].url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="blog-inline-link font-medium hover:underline"
+                        >
+                          {inlineLinkMoments.opening.external[0].label}
+                        </a>
+                      ) : null}
                       .
                     </p>
                   ) : null}
 
-                  {externalAuthorityLinks.length ? (
+                  {false && externalAuthorityLinks.length ? (
                     <p className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">
                       Para confrontar o tema com referências confiáveis, vale consultar{' '}
                       {externalAuthorityLinks.map((item, index) => (
@@ -722,6 +786,11 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     <React.Fragment key={`section-${index}`}>
                       <section id={`secao-${index + 1}`} className="blog-article-section min-w-0 scroll-mt-28 space-y-4 md:space-y-5">
                         <h2 className="text-xl leading-tight text-foreground sm:text-2xl">{section.heading}</h2>
+                        {section.subheading ? (
+                          <p className="max-w-3xl text-sm leading-6 text-muted-foreground sm:text-base">
+                            {section.subheading}
+                          </p>
+                        ) : null}
                         {section.paragraphs?.map((paragraph, paragraphIndex) => (
                           <p key={`section-${index}-p-${paragraphIndex}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">
                             {paragraph}
@@ -737,17 +806,30 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                       </section>
 
                       {index === midSectionIndex ? <AdSlotInline /> : null}
-                      {index === midSectionIndex && contextualSecondaryLinks.length ? (
+                      {index === midSectionIndex && inlineLinkMoments.middle ? (
                         <p className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">
                           Para aprofundar a comparação sem sair do contexto, veja também{' '}
-                          {contextualSecondaryLinks.map((item, itemIndex) => (
+                          {inlineLinkMoments.middle.internal.map((item, itemIndex) => (
                             <React.Fragment key={item.path}>
-                              {itemIndex > 0 ? (itemIndex === contextualSecondaryLinks.length - 1 ? ' e ' : ', ') : null}
+                              {itemIndex > 0 ? (itemIndex === inlineLinkMoments.middle.internal.length - 1 ? ' e ' : ', ') : null}
                               <Link to={item.path} className="blog-inline-link font-medium hover:underline">
                                 {itemIndex === 0 ? item.title : item.anchor}
                               </Link>
                             </React.Fragment>
                           ))}
+                          {inlineLinkMoments.middle.external.length ? (
+                            <>
+                              {' '}e cruzar esses pontos com a base do{' '}
+                              <a
+                                href={inlineLinkMoments.middle.external[0].url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="blog-inline-link font-medium hover:underline"
+                              >
+                                {inlineLinkMoments.middle.external[0].label}
+                              </a>
+                            </>
+                          ) : null}
                           .
                         </p>
                       ) : null}
@@ -794,6 +876,34 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                         })}
                       </div>
                     </section>
+                  ) : null}
+
+                  {inlineLinkMoments.closing ? (
+                    <p className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">
+                      Antes de fechar a leitura, ainda vale passar por{' '}
+                      {inlineLinkMoments.closing.internal.map((item, index) => (
+                        <React.Fragment key={item.path}>
+                          {index > 0 ? (index === inlineLinkMoments.closing.internal.length - 1 ? ' e ' : ', ') : null}
+                          <Link to={item.path} className="blog-inline-link font-medium hover:underline">
+                            {index === 0 ? item.title : item.anchor}
+                          </Link>
+                        </React.Fragment>
+                      ))}
+                      {inlineLinkMoments.closing.external.length ? (
+                        <>
+                          {' '}além de conferir a referência do{' '}
+                          <a
+                            href={inlineLinkMoments.closing.external[0].url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="blog-inline-link font-medium hover:underline"
+                          >
+                            {inlineLinkMoments.closing.external[0].label}
+                          </a>
+                        </>
+                      ) : null}
+                      .
+                    </p>
                   ) : null}
 
                   {showPreConclusionAd ? <AdSlotHorizontal /> : null}
@@ -935,3 +1045,5 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
 }
 
 export default BlogArticlePage;
+
+

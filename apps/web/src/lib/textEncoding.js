@@ -18,7 +18,7 @@ export const normalizeMojibake = (value) => {
 
   try {
     const decoded = decodeLatin1AsUtf8(value);
-    return decoded.includes('�') ? value : decoded;
+    return decoded.includes('\uFFFD') ? value : decoded;
   } catch {
     return value;
   }

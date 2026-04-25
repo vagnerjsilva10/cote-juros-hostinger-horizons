@@ -1,18 +1,20 @@
 <svg width="960" height="600" viewBox="0 0 960 600" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="960" y2="600" gradientUnits="userSpaceOnUse">
+    <linearGradient id="c6-bg" x1="62" y1="34" x2="900" y2="564" gradientUnits="userSpaceOnUse">
       <stop stop-color="#1A1A1A"/>
       <stop offset="1" stop-color="#0C0C0C"/>
     </linearGradient>
-    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(760 120) rotate(131) scale(340 300)">
-      <stop stop-color="#525252" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#525252" stop-opacity="0"/>
+    <radialGradient id="c6-glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(756 122) rotate(132) scale(336 286)">
+      <stop stop-color="#575757" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#575757" stop-opacity="0"/>
     </radialGradient>
   </defs>
-  <rect width="960" height="600" rx="36" fill="url(#bg)"/>
-  <rect width="960" height="600" rx="36" fill="url(#glow)"/>
-  <rect x="72" y="90" width="92" height="68" rx="12" fill="#E5E5E5" fill-opacity="0.9"/>
-  <text x="78" y="366" fill="white" fill-opacity="0.9" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.08em">•••• 9356</text>
-  <text x="74" y="500" fill="white" fill-opacity="0.95" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="700">C6 Carbon</text>
-  <text x="762" y="512" fill="white" fill-opacity="0.9" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">Mastercard</text>
+  <rect width="960" height="600" rx="42" fill="url(#c6-bg)"/>
+  <rect x="18" y="18" width="924" height="564" rx="34" stroke="rgba(255,255,255,0.14)"/>
+  <rect width="960" height="600" rx="42" fill="url(#c6-glow)"/>
+  <rect x="86" y="96" width="104" height="76" rx="14" fill="#E5E5E5" fill-opacity="0.94"/>
+  <text x="88" y="236" fill="white" fill-opacity="0.92" font-family="Arial, sans-serif" font-size="40" font-weight="700" letter-spacing="0.2em">C6</text>
+  <text x="88" y="366" fill="white" fill-opacity="0.96" font-family="Arial, sans-serif" font-size="62" font-weight="700">C6 Carbon</text>
+  <text x="88" y="500" fill="white" fill-opacity="0.88" font-family="Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.14em">**** 9356</text>
+  <text x="872" y="500" fill="white" fill-opacity="0.9" font-family="Arial, sans-serif" font-size="30" font-weight="700" text-anchor="end">Mastercard Black</text>
 </svg>

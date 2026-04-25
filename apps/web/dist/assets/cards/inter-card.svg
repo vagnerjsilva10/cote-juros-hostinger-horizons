@@ -1,19 +1,21 @@
-<svg width="640" height="380" viewBox="0 0 640 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="960" height="600" viewBox="0 0 960 600" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bg" x1="40" y1="30" x2="600" y2="350" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#EA580C" />
-      <stop offset="1" stop-color="#FDBA74" />
+    <linearGradient id="inter-bg" x1="58" y1="36" x2="902" y2="564" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#EA580C"/>
     </linearGradient>
-    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(110 88) rotate(29.5) scale(280 250)">
-      <stop stop-color="white" stop-opacity="0.38" />
-      <stop offset="1" stop-color="white" stop-opacity="0" />
+    <radialGradient id="inter-glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(204 96) rotate(28) scale(330 260)">
+      <stop stop-color="white" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
     </radialGradient>
   </defs>
-  <rect width="640" height="380" rx="32" fill="url(#bg)" />
-  <rect x="22" y="22" width="596" height="336" rx="24" stroke="white" stroke-opacity="0.35" />
-  <rect x="0" y="0" width="640" height="380" rx="32" fill="url(#glow)" />
-  <rect x="74" y="142" width="74" height="58" rx="10" fill="white" fill-opacity="0.88" />
-  <text x="76" y="88" fill="white" fill-opacity="0.9" font-family="Inter, Arial, sans-serif" font-size="20" letter-spacing="5.8">BANCO</text>
-  <text x="76" y="116" fill="white" font-family="Inter, Arial, sans-serif" font-size="31" font-weight="700" letter-spacing="0.6">INTER</text>
-  <text x="452" y="306" fill="white" fill-opacity="0.86" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" letter-spacing="3.2">MASTERCARD</text>
+  <rect width="960" height="600" rx="42" fill="url(#inter-bg)"/>
+  <rect x="18" y="18" width="924" height="564" rx="34" stroke="rgba(255,255,255,0.18)"/>
+  <rect width="960" height="600" rx="42" fill="url(#inter-glow)"/>
+  <rect x="86" y="96" width="104" height="76" rx="14" fill="white" fill-opacity="0.9"/>
+  <text x="88" y="236" fill="white" fill-opacity="0.9" font-family="Arial, sans-serif" font-size="34" letter-spacing="0.18em">BANCO</text>
+  <text x="88" y="282" fill="white" font-family="Arial, sans-serif" font-size="52" font-weight="700">INTER</text>
+  <text x="88" y="406" fill="white" fill-opacity="0.96" font-family="Arial, sans-serif" font-size="54" font-weight="700">Mastercard Black</text>
+  <text x="88" y="500" fill="white" fill-opacity="0.88" font-family="Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.14em">**** 1184</text>
+  <text x="872" y="500" fill="white" fill-opacity="0.9" font-family="Arial, sans-serif" font-size="30" font-weight="700" text-anchor="end">Black</text>
 </svg>

@@ -1,0 +1,20 @@
+<svg width="960" height="600" viewBox="0 0 960 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="caixa-bg" x1="72" y1="46" x2="910" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2D6EF2"/>
+      <stop offset="1" stop-color="#5EA0FF"/>
+    </linearGradient>
+    <radialGradient id="caixa-glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(792 108) rotate(136) scale(332 278)">
+      <stop stop-color="#DDEBFF" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#DDEBFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="960" height="600" rx="42" fill="url(#caixa-bg)"/>
+  <rect x="18" y="18" width="924" height="564" rx="34" stroke="rgba(255,255,255,0.18)"/>
+  <rect width="960" height="600" rx="42" fill="url(#caixa-glow)"/>
+  <text x="88" y="138" fill="white" fill-opacity="0.96" font-family="Arial, sans-serif" font-size="30" font-weight="800" letter-spacing="0.06em">CAIXA</text>
+  <text x="88" y="194" fill="white" fill-opacity="0.96" font-family="Arial, sans-serif" font-size="30" font-weight="800" letter-spacing="0.06em">ECONÔMICA</text>
+  <text x="88" y="386" fill="white" fill-opacity="0.98" font-family="Arial, sans-serif" font-size="58" font-weight="700">Sim Visa</text>
+  <text x="88" y="448" fill="white" fill-opacity="0.94" font-family="Arial, sans-serif" font-size="46" font-weight="700">Caixa Econômica</text>
+  <text x="88" y="518" fill="white" fill-opacity="0.9" font-family="Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.14em">CRÉDITO</text>
+</svg>

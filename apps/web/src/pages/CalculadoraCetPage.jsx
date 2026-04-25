@@ -61,7 +61,7 @@ function CalculadoraCetPage() {
     <>
       <SeoHead
         title="Calculadora de CET | Custo efetivo total aproximado | Cote Juros"
-        description="Calcule uma estimativa de CET mensal e anual para comparar emprestimos com mais clareza antes de contratar."
+        description="Calcule uma estimativa de CET mensal e anual para comparar empréstimos com mais clareza antes de contratar."
         path="/calculadora-cet"
         breadcrumbs={[homeBreadcrumb, { name: 'Ferramentas', path: '/ferramentas' }, { name: 'Calculadora de CET', path: '/calculadora-cet' }]}
         structuredData={[
@@ -84,7 +84,7 @@ function CalculadoraCetPage() {
               Ferramenta gratuita
             </div>
             <h1 className="text-3xl font-semibold leading-tight text-foreground md:text-5xl">
-              Calculadora de CET para comparar emprestimos
+              Calculadora de CET para comparar empréstimos
             </h1>
             <p className="text-lg leading-8 text-muted-foreground">
               Estime o custo efetivo total a partir do valor liberado, parcela, prazo e tarifas. Use o resultado como ponto de partida para comparar propostas equivalentes.
@@ -101,7 +101,7 @@ function CalculadoraCetPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Resultado rapido</CardTitle>
+              <CardTitle>Resultado rápido</CardTitle>
               <CardDescription>Estimativa baseada nos dados preenchidos.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -123,7 +123,7 @@ function CalculadoraCetPage() {
           <Card>
             <CardHeader>
               <CardTitle>Dados da proposta</CardTitle>
-              <CardDescription>Inclua tarifas, seguros e custos obrigatorios conhecidos.</CardDescription>
+              <CardDescription>Inclua tarifas, seguros e custos obrigatórios conhecidos.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
               <div className="space-y-2">
@@ -167,7 +167,7 @@ function CalculadoraCetPage() {
                 <CardDescription>O CET aproximado ajuda a comparar propostas com prazos e custos semelhantes.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 text-muted-foreground">
-                <p>Quanto maior o CET, maior tende a ser o custo real da operacao. Compare sempre propostas de mesmo valor, prazo e perfil de risco.</p>
+                <p>Quanto maior o CET, maior tende a ser o custo real da operação. Compare sempre propostas de mesmo valor, prazo e perfil de risco.</p>
                 <p>Se uma oferta tiver parcela menor, mas prazo muito maior, o total pago pode ficar mais caro. Por isso o CET deve ser lido junto com total pago e tarifas.</p>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <Button onClick={copySummary} variant="outline">
@@ -186,8 +186,8 @@ function CalculadoraCetPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Referencia para citar</CardTitle>
-                <CardDescription>Use esta ferramenta como fonte em conteudos sobre custo de credito.</CardDescription>
+                <CardTitle>Referência para citar</CardTitle>
+                <CardDescription>Use esta ferramenta como fonte em conteúdos sobre custo de crédito.</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-2 rounded-[10px] border border-border bg-background-secondary p-3 text-sm text-muted-foreground">

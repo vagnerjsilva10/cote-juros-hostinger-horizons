@@ -7,10 +7,10 @@ import SeoHead from '@/components/SeoHead.jsx';
 import { homeBreadcrumb } from '@/seo/brandSeo.js';
 
 const dataRows = [
-  ['Emprestimo pessoal sem garantia', 'Maior', 'Analise de renda, score e historico', 'Comparar CET e evitar taxa antecipada'],
-  ['Credito com garantia de veiculo', 'Menor que pessoal sem garantia', 'Risco de perder o bem', 'Avaliar prazo e valor total pago'],
-  ['Cartao consignado', 'Pode parecer baixo no inicio', 'Desconto e uso recorrente do limite', 'Entender custo de saque e rotativo'],
-  ['Renegociacao de divida', 'Variavel', 'Acordo depende do credor', 'Priorizar desconto real e parcela que cabe']
+  ['Empréstimo pessoal sem garantia', 'Maior', 'Análise de renda, score e histórico', 'Comparar CET e evitar taxa antecipada'],
+  ['Crédito com garantia de veículo', 'Menor que pessoal sem garantia', 'Risco de perder o bem', 'Avaliar prazo e valor total pago'],
+  ['Cartão consignado', 'Pode parecer baixo no início', 'Desconto e uso recorrente do limite', 'Entender custo de saque e rotativo'],
+  ['Renegociação de dívida', 'Variável', 'Acordo depende do credor', 'Priorizar desconto real e parcela que cabe']
 ];
 
 const sourceLinks = [
@@ -23,15 +23,15 @@ function EstudoCreditoNegativadoPage() {
   return (
     <>
       <SeoHead
-        title="Estudo: custo do credito para negativado em 2026 | Cote Juros"
-        description="Estudo editorial da Cote Juros sobre credito para negativado, riscos, modalidades e pontos de comparacao antes de contratar."
+        title="Estudo: custo do crédito para negativado em 2026 | Cote Juros"
+        description="Estudo editorial da Cote Juros sobre crédito para negativado, riscos, modalidades e pontos de comparação antes de contratar."
         path="/estudos/custo-emprestimo-negativado-2026"
         breadcrumbs={[homeBreadcrumb, { name: 'Estudos', path: '/estudos/custo-emprestimo-negativado-2026' }]}
         structuredData={[
           {
             '@context': 'https://schema.org',
             '@type': 'Report',
-            name: 'Custo do credito para negativado em 2026',
+            name: 'Custo do crédito para negativado em 2026',
             publisher: { '@type': 'Organization', name: 'Cote Juros' },
             inLanguage: 'pt-BR'
           }
@@ -45,10 +45,10 @@ function EstudoCreditoNegativadoPage() {
             Estudo Cote Juros 2026
           </div>
           <h1 className="max-w-4xl text-3xl font-semibold leading-tight text-foreground md:text-5xl">
-            Custo do credito para negativado: riscos, alternativas e pontos de comparacao
+            Custo do crédito para negativado: riscos, alternativas e pontos de comparação
           </h1>
           <p className="max-w-3xl text-lg leading-8 text-muted-foreground">
-            Um material de referencia para quem escreve, pesquisa ou compara credito para pessoas com restricao no nome.
+            Um material de referência para quem escreve, pesquisa ou compara crédito para pessoas com restrição no nome.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <a href="#tabela-comparativa">
@@ -66,19 +66,19 @@ function EstudoCreditoNegativadoPage() {
           <Card>
             <CardHeader>
               <CardTitle>Resumo executivo</CardTitle>
-              <CardDescription>Principais conclusoes para citar em conteudos e pautas.</CardDescription>
+              <CardDescription>Principais conclusões para citar em conteúdos e pautas.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground">
-              <p>Credito para negativado tende a ter custo mais alto porque o risco percebido pelo credor aumenta. Por isso, comparar somente a parcela pode esconder diferencas relevantes no custo total.</p>
-              <p>As alternativas com garantia podem reduzir a taxa, mas transferem parte do risco para um bem do consumidor. Ja ofertas sem garantia exigem cuidado maior com CET, tarifas e prazo.</p>
-              <p>A melhor decisao depende de renda disponivel, urgencia, valor necessario, risco de inadimplencia e existencia de alternativas como renegociacao.</p>
+              <p>Crédito para negativado tende a ter custo mais alto porque o risco percebido pelo credor aumenta. Por isso, comparar somente a parcela pode esconder diferenças relevantes no custo total.</p>
+              <p>As alternativas com garantia podem reduzir a taxa, mas transferem parte do risco para um bem do consumidor. Já ofertas sem garantia exigem cuidado maior com CET, tarifas e prazo.</p>
+              <p>A melhor decisão depende de renda disponível, urgência, valor necessário, risco de inadimplência e existência de alternativas como renegociação.</p>
             </CardContent>
           </Card>
 
           <Card id="tabela-comparativa">
             <CardHeader>
               <CardTitle>Tabela comparativa</CardTitle>
-              <CardDescription>Leitura qualitativa para orientar comparacoes iniciais.</CardDescription>
+              <CardDescription>Leitura qualitativa para orientar comparações iniciais.</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
@@ -86,7 +86,7 @@ function EstudoCreditoNegativadoPage() {
                   <thead className="border-b border-border text-muted-foreground">
                     <tr>
                       <th className="py-3 pr-4 font-medium">Modalidade</th>
-                      <th className="py-3 pr-4 font-medium">Tendencia de custo</th>
+                      <th className="py-3 pr-4 font-medium">Tendência de custo</th>
                       <th className="py-3 pr-4 font-medium">Risco principal</th>
                       <th className="py-3 font-medium">O que comparar</th>
                     </tr>
@@ -111,8 +111,8 @@ function EstudoCreditoNegativadoPage() {
               <CardDescription>Como este estudo deve ser lido.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground">
-              <p>Este material combina analise editorial da Cote Juros com criterios usados em educacao financeira: CET, prazo, renda comprometida, risco de garantia e clareza contratual.</p>
-              <p>Ele nao substitui uma simulacao formal nem representa taxa media oficial de mercado. O objetivo e oferecer um quadro de comparacao para jornalistas, blogs e consumidores.</p>
+              <p>Este material combina análise editorial da Cote Juros com critérios usados em educação financeira: CET, prazo, renda comprometida, risco de garantia e clareza contratual.</p>
+              <p>Ele não substitui uma simulação formal nem representa taxa média oficial de mercado. O objetivo é oferecer um quadro de comparação para jornalistas, blogs e consumidores.</p>
             </CardContent>
           </Card>
         </article>
@@ -121,7 +121,7 @@ function EstudoCreditoNegativadoPage() {
           <Card>
             <CardHeader>
               <CardTitle>Cite este estudo</CardTitle>
-              <CardDescription>URL permanente para referencia.</CardDescription>
+              <CardDescription>URL permanente para referência.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="break-words rounded-[10px] border border-border bg-background-secondary p-3 text-sm text-muted-foreground">
@@ -129,15 +129,15 @@ function EstudoCreditoNegativadoPage() {
               </p>
               <Button variant="outline" className="w-full">
                 <Download className="h-4 w-4" />
-                Relatorio online
+                Relatório online
               </Button>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Fontes uteis</CardTitle>
-              <CardDescription>Referencias institucionais para aprofundar.</CardDescription>
+              <CardTitle>Fontes úteis</CardTitle>
+              <CardDescription>Referências institucionais para aprofundar.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {sourceLinks.map((source) => (

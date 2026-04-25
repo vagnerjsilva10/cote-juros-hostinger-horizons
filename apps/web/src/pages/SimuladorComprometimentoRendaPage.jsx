@@ -18,9 +18,9 @@ const formatMoney = (value = 0) =>
 const formatPercent = (value = 0) => `${Number(value || 0).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`;
 
 const classifyRisk = (ratio) => {
-  if (ratio <= 20) return { label: 'Confortavel', tone: 'text-emerald-700', text: 'A parcela ocupa uma parte menor da renda. Ainda assim, confira outras despesas fixas.' };
-  if (ratio <= 30) return { label: 'Atenção', tone: 'text-amber-700', text: 'A parcela ja pesa no orcamento. Simule prazos e mantenha reserva para imprevistos.' };
-  return { label: 'Alto risco', tone: 'text-red-700', text: 'A parcela pode comprometer demais a renda. Considere reduzir valor, aumentar prazo ou adiar a contratacao.' };
+  if (ratio <= 20) return { label: 'Confortável', tone: 'text-emerald-700', text: 'A parcela ocupa uma parte menor da renda. Ainda assim, confira outras despesas fixas.' };
+  if (ratio <= 30) return { label: 'Atenção', tone: 'text-amber-700', text: 'A parcela já pesa no orçamento. Simule prazos e mantenha reserva para imprevistos.' };
+  return { label: 'Alto risco', tone: 'text-red-700', text: 'A parcela pode comprometer demais a renda. Considere reduzir valor, aumentar prazo ou adiar a contratação.' };
 };
 
 function SimuladorComprometimentoRendaPage() {
@@ -40,7 +40,7 @@ function SimuladorComprometimentoRendaPage() {
     <>
       <SeoHead
         title="Simulador de comprometimento de renda | Cote Juros"
-        description="Simule quanto uma parcela compromete da sua renda e veja sinais de risco antes de contratar emprestimo ou financiamento."
+        description="Simule quanto uma parcela compromete da sua renda e veja sinais de risco antes de contratar empréstimo ou financiamento."
         path="/simulador-comprometimento-renda"
         breadcrumbs={[homeBreadcrumb, { name: 'Ferramentas', path: '/ferramentas' }, { name: 'Comprometimento de renda', path: '/simulador-comprometimento-renda' }]}
         structuredData={[
@@ -65,7 +65,7 @@ function SimuladorComprometimentoRendaPage() {
             Simulador de comprometimento de renda
           </h1>
           <p className="max-w-3xl text-lg leading-8 text-muted-foreground">
-            Veja se a parcela de um emprestimo, cartao parcelado ou financiamento cabe no seu orcamento antes de seguir com a proposta.
+            Veja se a parcela de um empréstimo, cartão parcelado ou financiamento cabe no seu orçamento antes de seguir com a proposta.
           </p>
         </div>
       </section>
@@ -75,11 +75,11 @@ function SimuladorComprometimentoRendaPage() {
           <Card>
             <CardHeader>
               <CardTitle>Preencha os valores</CardTitle>
-              <CardDescription>Use sua renda liquida e suas despesas fixas mensais.</CardDescription>
+              <CardDescription>Use sua renda líquida e suas despesas fixas mensais.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
               <div className="space-y-2">
-                <Label>Renda mensal liquida</Label>
+                <Label>Renda mensal líquida</Label>
                 <Input value={formatMoney(income)} inputMode="numeric" onChange={(event) => setIncome(parseMoney(event.target.value))} />
               </div>
               <div className="space-y-2">
@@ -129,7 +129,7 @@ function SimuladorComprometimentoRendaPage() {
                     <Button>Comparar CET</Button>
                   </Link>
                   <Link to="/emprestimos">
-                    <Button variant="outline">Ver emprestimos</Button>
+                    <Button variant="outline">Ver empréstimos</Button>
                   </Link>
                 </div>
               </CardContent>
@@ -138,7 +138,7 @@ function SimuladorComprometimentoRendaPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Como citar esta ferramenta</CardTitle>
-                <CardDescription>Link recomendado para conteudos sobre orcamento e credito responsavel.</CardDescription>
+                <CardDescription>Link recomendado para conteúdos sobre orçamento e crédito responsável.</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="rounded-[10px] border border-border bg-background-secondary p-3 text-sm text-muted-foreground">

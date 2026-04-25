@@ -1,22 +1,20 @@
-﻿<svg width="960" height="600" viewBox="0 0 960 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="960" height="600" viewBox="0 0 960 600" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="960" y2="600" gradientUnits="userSpaceOnUse">
+    <linearGradient id="bb-bg" x1="56" y1="34" x2="904" y2="564" gradientUnits="userSpaceOnUse">
       <stop stop-color="#0E4FAF"/>
       <stop offset="1" stop-color="#063C92"/>
     </linearGradient>
-    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(780 110) rotate(134) scale(360 300)">
-      <stop stop-color="#6FA6FF" stop-opacity="0.36"/>
-      <stop offset="1" stop-color="#6FA6FF" stop-opacity="0"/>
+    <radialGradient id="bb-glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(782 110) rotate(134) scale(346 286)">
+      <stop stop-color="#79B2FF" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#79B2FF" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="accent" x1="0" y1="0" x2="330" y2="140" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFE066"/>
-      <stop offset="1" stop-color="#FFD23A"/>
-    </linearGradient>
   </defs>
-  <rect width="960" height="600" rx="36" fill="url(#bg)"/>
-  <rect width="960" height="600" rx="36" fill="url(#glow)"/>
-  <rect x="70" y="88" width="92" height="68" rx="12" fill="url(#accent)"/>
-  <text x="186" y="141" fill="white" fill-opacity="0.98" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="0.06em">BANCO DO BRASIL</text>
-  <text x="74" y="304" fill="white" fill-opacity="0.96" font-family="Inter, Arial, sans-serif" font-size="62" font-weight="700">Ourocard Elo Nanquim</text>
-  <text x="74" y="500" fill="white" fill-opacity="0.94" font-family="Inter, Arial, sans-serif" font-size="46" font-weight="700" letter-spacing="0.12em">CRÉDITO</text>
+  <rect width="960" height="600" rx="42" fill="url(#bb-bg)"/>
+  <rect x="18" y="18" width="924" height="564" rx="34" stroke="rgba(255,255,255,0.18)"/>
+  <rect width="960" height="600" rx="42" fill="url(#bb-glow)"/>
+  <rect x="86" y="96" width="104" height="76" rx="14" fill="#FFE066" fill-opacity="0.96"/>
+  <text x="212" y="146" fill="white" fill-opacity="0.98" font-family="Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="0.05em">BANCO DO BRASIL</text>
+  <text x="88" y="366" fill="white" fill-opacity="0.96" font-family="Arial, sans-serif" font-size="56" font-weight="700">Ourocard Elo</text>
+  <text x="88" y="500" fill="white" fill-opacity="0.9" font-family="Arial, sans-serif" font-size="34" font-weight="600" letter-spacing="0.14em">**** 6614</text>
+  <text x="872" y="500" fill="white" fill-opacity="0.92" font-family="Arial, sans-serif" font-size="30" font-weight="700" text-anchor="end">Nanquim</text>
 </svg>
