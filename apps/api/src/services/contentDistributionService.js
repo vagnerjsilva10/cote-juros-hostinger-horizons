@@ -9,6 +9,7 @@ import {
   WEB_STORIES_DIR
 } from './editorialConfig.js';
 import { createEditorialLogger } from './editorialLogger.js';
+import { isTemplateOrPlaceholderImage } from './blogImage/validator.js';
 
 const logger = createEditorialLogger('content-distribution');
 const MAX_STORY_SLIDES = 8;
@@ -53,10 +54,21 @@ const truncate = (value = '', max = 84) => {
   return `${sliced.replace(/\s+\S*$/, '')}...`;
 };
 
+const truncateClean = (value = '', max = 84) => {
+  const text = compactWhitespace(value).replace(/\s*[:|-]\s*.+$/, '').trim();
+  if (text.length <= max) return text;
+  return text.slice(0, max).trim().replace(/\s+\S*$/, '');
+};
+
 const normalizeAbsoluteUrl = (value = '') => {
   if (!value) return '';
   if (/^https?:\/\//i.test(value)) return value;
   return `${SITE_BASE_URL}${value.startsWith('/') ? value : `/${value}`}`;
+};
+
+const isValidStoryImageUrl = (value = '') => {
+  const url = normalizeAbsoluteUrl(value);
+  return /^https?:\/\//i.test(url) && !isTemplateOrPlaceholderImage(url) && !url.endsWith('.svg');
 };
 
 const parseScopeList = (value = '') =>
@@ -181,16 +193,26 @@ const getSecondaryKeywords = (article = {}, brief = {}) => {
   return Array.from(new Set(candidates.map(compactWhitespace).filter(Boolean))).slice(0, 8);
 };
 
+const pruneDanglingWords = (value = '') =>
+  compactWhitespace(value).replace(/\s+(a|as|ao|aos|com|da|das|de|do|dos|e|em|na|nas|no|nos|o|os|para|por|se|sem|um|uma)$/i, '');
+
+const buildShortStoryTitle = (value = '') => pruneDanglingWords(truncateClean(value, 42)) || 'Guia Cote Juros';
+
+const trimStoryText = (value = '', max = 90) => {
+  const text = compactWhitespace(value).split(/(?<=[.!?])\s+/).slice(0, 2).join(' ');
+  return truncate(text, max);
+};
+
 const buildStorySlides = (article = {}) => {
   const sections = Array.isArray(article.sections) ? article.sections : [];
   const slideCandidates = sections
     .flatMap((section) => [
       {
-        title: section.heading,
+        title: buildShortStoryTitle(section.heading),
         body: section.subheading || section.paragraphs?.[0] || ''
       },
       ...(Array.isArray(section.bullets) ? section.bullets.slice(0, 1).map((bullet) => ({
-        title: bullet,
+        title: buildShortStoryTitle(bullet),
         body: section.heading
       })) : [])
     ])
@@ -199,18 +221,18 @@ const buildStorySlides = (article = {}) => {
   const slides = [
     {
       kind: 'cover',
-      headline: truncate(article.h1 || article.title, 72),
-      subline: truncate(article.summary || article.excerpt, 96)
+      headline: buildShortStoryTitle(article.h1 || article.title),
+      subline: trimStoryText(article.summary || article.excerpt, 90)
     },
     ...slideCandidates.slice(0, MAX_STORY_SLIDES - 2).map((item) => ({
       kind: 'content',
-      headline: truncate(item.title, 62),
-      subline: truncate(item.body, 104)
+      headline: buildShortStoryTitle(item.title),
+      subline: trimStoryText(item.body, 90)
     })),
     {
       kind: 'cta',
-      headline: 'Veja completo no site',
-      subline: truncate(article.summary || article.title, 92)
+      headline: 'Veja o guia completo',
+      subline: trimStoryText(article.summary || article.title, 90)
     }
   ];
 
@@ -219,7 +241,7 @@ const buildStorySlides = (article = {}) => {
     const fallbackText = article.intro?.[index - 1] || article.conclusion?.[0] || article.summary || article.title;
     slides.splice(slides.length - 1, 0, {
       kind: 'content',
-      headline: truncate(fallbackText, 62),
+      headline: buildShortStoryTitle(fallbackText),
       subline: truncate(article.clusterLabel || article.category || 'Guia Cote Juros', 72)
     });
   }
@@ -241,31 +263,60 @@ const paletteForIndex = (index) => {
   return palettes[index % palettes.length];
 };
 
+const validateWebStorySlide = (slide = {}) => {
+  const issues = [];
+  if (!isValidStoryImageUrl(slide.imageUrl)) issues.push('no valid image for web story');
+  if (!slide.headline || slide.headline.length > 42) issues.push('headline exceeds safe length');
+  if ((slide.subline || '').length > 90) issues.push('subtitle exceeds safe length');
+  if ((slide.body || '').length > 160) issues.push('body exceeds safe length');
+  if (/[^\s]{24,}/.test(slide.headline || '')) issues.push('headline has unsafe long word');
+
+  return {
+    passed: issues.length === 0,
+    issues,
+    checkedViewports: ['360x640', '412x915']
+  };
+};
+
+const validateWebStorySlides = (slides = []) => {
+  const slideResults = slides.map((slide, index) => ({
+    index: index + 1,
+    ...validateWebStorySlide(slide)
+  }));
+  const issues = slideResults.flatMap((result) => result.issues.map((issue) => `slide ${result.index}: ${issue}`));
+  return {
+    passed: issues.length === 0,
+    issues,
+    slideResults
+  };
+};
+
 const buildStoryBackgroundSvg = ({ slide, index, article }) => {
-  const [base, accent, highlight] = paletteForIndex(index);
   const label = escapeHtml(article.category || article.clusterLabel || 'Cote Juros');
+  const imageUrl = escapeHtml(slide.imageUrl);
+  const headlineSize = slide.headline.length > 34 ? 48 : slide.headline.length > 24 ? 54 : 58;
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="720" height="1280" viewBox="0 0 720 1280" role="img" aria-label="${escapeHtml(slide.headline)}">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="${base}"/>
-      <stop offset="0.58" stop-color="${accent}"/>
-      <stop offset="1" stop-color="${highlight}"/>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#020617" stop-opacity="0.34"/>
+      <stop offset="0.48" stop-color="#020617" stop-opacity="0.44"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0.82"/>
     </linearGradient>
-    <radialGradient id="glow" cx="50%" cy="35%" r="65%">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.36"/>
-      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
-    </radialGradient>
   </defs>
-  <rect width="720" height="1280" fill="url(#bg)"/>
-  <rect width="720" height="1280" fill="url(#glow)"/>
-  <circle cx="92" cy="210" r="155" fill="#FFFFFF" opacity="0.08"/>
-  <circle cx="638" cy="1100" r="245" fill="#FFFFFF" opacity="0.10"/>
-  <path d="M86 854 C216 744 322 798 442 682 C528 598 588 520 684 548 L684 1280 L86 1280 Z" fill="#020617" opacity="0.28"/>
-  <rect x="64" y="72" width="196" height="44" rx="22" fill="#FFFFFF" opacity="0.16"/>
-  <text x="88" y="101" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="18" font-weight="700" opacity="0.92">${label}</text>
-  <text x="64" y="1192" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="18" font-weight="700" opacity="0.82">cotejuros.com.br</text>
+  <image href="${imageUrl}" x="0" y="0" width="720" height="1280" preserveAspectRatio="xMidYMid slice"/>
+  <rect width="720" height="1280" fill="url(#shade)"/>
+  <rect x="32" y="72" width="656" height="1112" fill="transparent"/>
+  <rect x="48" y="82" width="220" height="44" rx="22" fill="#020617" opacity="0.42"/>
+  <text x="70" y="111" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="17" font-weight="800" opacity="0.95">${label}</text>
+  <foreignObject x="48" y="700" width="634" height="300">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="max-width:88%;font-family:Arial,sans-serif;color:#fff;font-size:${headlineSize}px;line-height:1.02;font-weight:900;letter-spacing:0;overflow-wrap:break-word;word-break:normal;hyphens:auto;text-shadow:0 3px 18px rgba(0,0,0,.45);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(slide.headline)}</div>
+  </foreignObject>
+  <foreignObject x="48" y="1008" width="624" height="130">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Arial,sans-serif;color:rgba(255,255,255,.92);font-size:25px;line-height:1.22;font-weight:700;overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 2px 14px rgba(0,0,0,.42);">${escapeHtml(slide.subline || '')}</div>
+  </foreignObject>
+  <text x="48" y="1184" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="18" font-weight="800" opacity="0.88">cotejuros.com.br</text>
 </svg>`;
 };
 
@@ -351,11 +402,9 @@ const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterIm
   <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
   <style amp-custom>
     amp-story{font-family:Arial,sans-serif;color:#fff}
-    .copy{padding:64px 48px 76px;text-shadow:0 2px 18px rgba(0,0,0,.34)}
-    .spacer{height:38vh}
-    .kicker{display:inline-block;margin:0 0 18px;padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.16);font-size:16px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-    h1{margin:0;font-size:54px;line-height:1.02;font-weight:900;letter-spacing:0}
-    p{max-width:600px;margin:18px 0 0;font-size:24px;line-height:1.28;font-weight:650;color:rgba(255,255,255,.9)}
+    .copy{padding:72px 32px 96px;text-shadow:0 2px 18px rgba(0,0,0,.34)}
+    .spacer{height:0}
+    .kicker,h1,p{display:none}
     .cta{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 28px;border-radius:999px;background:#fff;color:#111827;font-size:18px;font-weight:900;text-decoration:none}
   </style>
   <script type="application/ld+json">${JSON.stringify({
@@ -548,7 +597,7 @@ const recordDistributionAssets = async ({ articleId, slug, slides, storyPublicPa
       articleId,
       slug: `${slug}-story-slide-${index + 1}`,
       provider: 'fallback',
-      prompt: `Generated visual background for Web Story slide: ${slide.headline}`,
+      prompt: `Web Story slide with real image: ${slide.headline}`,
       publicPath: `${storyPublicPath}/assets/slide-${index + 1}.svg`,
       width: 720,
       height: 1280,
@@ -556,7 +605,9 @@ const recordDistributionAssets = async ({ articleId, slug, slides, storyPublicPa
       metadata: {
         distributionType: 'web_story',
         slideIndex: index + 1,
-        headline: slide.headline
+        headline: slide.headline,
+        sourceImageUrl: slide.imageUrl,
+        validation: validateWebStorySlide(slide)
       }
     })),
     {
@@ -611,7 +662,18 @@ export class ContentDistributionService {
       const dirs = await ensureDistributionDirs(article.slug);
       const articleUrl = getArticleUrl(article);
       const keywords = getSecondaryKeywords(article, brief);
-      const slides = buildStorySlides(article);
+      const storyImageUrl = normalizeAbsoluteUrl(article.coverImage || article.ogImage || '');
+      if (!isValidStoryImageUrl(storyImageUrl)) {
+        throw new Error('no valid image for web story');
+      }
+      const slides = buildStorySlides(article).map((slide) => ({
+        ...slide,
+        imageUrl: storyImageUrl
+      }));
+      const storyValidation = validateWebStorySlides(slides);
+      if (!storyValidation.passed) {
+        throw new Error(`Web Story validation failed: ${storyValidation.issues.join(' | ')}`);
+      }
       const pinterestPublicPath = `/images/pinterest/${dirs.safeSlug}.svg`;
       const pinterestImagePath = path.join(dirs.pinterestDir, `${dirs.safeSlug}.svg`);
       const slideAssets = slides.map((slide, index) => ({
@@ -682,6 +744,7 @@ export class ContentDistributionService {
         },
         validation
       };
+      distribution.webStory.validation = storyValidation;
       const distributionAssets = {
         webStoryHtml: storyHtml,
         bookendJson,
@@ -725,6 +788,10 @@ export class ContentDistributionService {
       await logger.info('article_distribution_completed', {
         slug: article.slug,
         storyPath: distribution.webStory.path,
+        storyImageUrl,
+        originalTitle: article.title,
+        shortTitle: slides[0]?.headline,
+        storyValidation,
         pinterestStatus: pinterest.status,
         pinterestMissingScopes: pinterest.missingScopes || []
       });

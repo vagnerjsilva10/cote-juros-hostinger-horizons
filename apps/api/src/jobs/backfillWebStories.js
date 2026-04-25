@@ -1,0 +1,133 @@
+import 'dotenv/config.js';
+import { getPrisma } from '../lib/prisma.js';
+import { ContentDistributionService } from '../services/contentDistributionService.js';
+
+const parseArgs = () => {
+  const args = process.argv.slice(2);
+  const entries = new Map();
+
+  for (const arg of args) {
+    if (!arg.startsWith('--')) continue;
+    const [key, value] = arg.slice(2).split('=');
+    entries.set(key, value ?? 'true');
+  }
+
+  return {
+    limit: Number(entries.get('limit') || 25),
+    slug: entries.get('slug') || '',
+    dryRun: entries.get('dryRun') === 'true',
+    triggerSource: entries.get('trigger') || 'web-story-backfill'
+  };
+};
+
+const getStructured = (record = {}) =>
+  record.structuredContent && typeof record.structuredContent === 'object'
+    ? record.structuredContent
+    : {};
+
+const hasLegacyStoryIssue = (record = {}) => {
+  const structured = getStructured(record);
+  const html = structured.distributionAssets?.webStoryHtml || '';
+  const slides = structured.distributionAssets?.slides || [];
+  const webStory = structured.distribution?.webStory;
+
+  return Boolean(webStory?.url)
+    && (
+      html.includes('linearGradient id="bg"')
+      || html.includes('class="copy"')
+      || slides.some((slide) => !String(slide.content || '').includes('<image href="http'))
+      || !webStory.validation?.passed
+    );
+};
+
+const toArticlePayload = (record) => {
+  const structured = getStructured(record);
+
+  return {
+    ...structured,
+    id: record.id,
+    slug: record.slug,
+    title: record.title,
+    h1: structured.h1 || record.title,
+    summary: record.excerpt || structured.summary || '',
+    excerpt: record.excerpt || structured.summary || '',
+    metaTitle: record.seoTitle || structured.metaTitle || record.title,
+    metaDescription: record.seoDescription || structured.metaDescription || record.excerpt || '',
+    category: record.category?.name || structured.category || '',
+    clusterLabel: record.cluster?.name || structured.clusterLabel || '',
+    clusterKeyword: record.cluster?.primaryKeyword || structured.clusterKeyword || '',
+    coverImage: record.coverImage || structured.coverImage || '',
+    ogImage: record.ogImage || structured.ogImage || '',
+    routePath: structured.routePath || `/blog/${record.slug}`,
+    canonicalUrl: structured.canonicalUrl || `${process.env.SITE_BASE_URL || 'https://www.cotejuros.com.br'}/blog/${record.slug}/`,
+    tags: Array.isArray(structured.tags) ? structured.tags : [],
+    intro: Array.isArray(structured.intro) ? structured.intro : [],
+    sections: Array.isArray(structured.sections) ? structured.sections : [],
+    conclusion: Array.isArray(structured.conclusion) ? structured.conclusion : []
+  };
+};
+
+const main = async () => {
+  const options = parseArgs();
+  const prisma = getPrisma();
+  const records = await prisma.article.findMany({
+    where: {
+      status: 'published',
+      ...(options.slug ? { slug: options.slug } : {})
+    },
+    include: {
+      category: true,
+      cluster: true,
+      brief: true
+    },
+    orderBy: [{ publishedAt: 'desc' }, { createdAt: 'desc' }],
+    take: Number.isFinite(options.limit) && options.limit > 0 ? options.limit : 25
+  });
+
+  const targets = records.filter(hasLegacyStoryIssue);
+  const corrected = [];
+  const skipped = [];
+
+  for (const record of targets) {
+    if (options.dryRun) {
+      skipped.push({ slug: record.slug, reason: 'dry_run' });
+      continue;
+    }
+
+    try {
+      const distribution = await ContentDistributionService.distributePublishedArticle({
+        articleRecord: record,
+        articlePayload: toArticlePayload(record),
+        brief: record.brief || {},
+        triggerSource: options.triggerSource
+      });
+
+      corrected.push({
+        slug: record.slug,
+        webStory: distribution.webStory.path,
+        validation: distribution.webStory.validation
+      });
+    } catch (error) {
+      skipped.push({
+        slug: record.slug,
+        reason: 'web_story_backfill_failed',
+        error: error?.message || String(error)
+      });
+    }
+  }
+
+  console.log(JSON.stringify({
+    ok: true,
+    dryRun: options.dryRun,
+    scanned: records.length,
+    targetCount: targets.length,
+    correctedCount: corrected.length,
+    corrected,
+    skipped
+  }, null, 2));
+};
+
+main().catch((error) => {
+  console.error('[web-story-backfill] failed', error);
+  process.exitCode = 1;
+});

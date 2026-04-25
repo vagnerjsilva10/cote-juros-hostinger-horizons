@@ -28,6 +28,7 @@
     "editorial:run": "node src/jobs/runEditorialPipeline.js --limit=1 --trigger=manual",
     "editorial:jobs:start": "node src/jobs/editorialScheduler.js",
     "distribution:run": "node src/jobs/runContentDistribution.js --limit=5 --trigger=manual",
+    "web-stories:backfill": "node src/jobs/backfillWebStories.js --limit=25",
     "blog-images:run": "node src/jobs/runBlogImageAutomation.js --limit=1 --trigger=manual",
     "blog-images:backfill": "node src/jobs/backfillBlogImages.js --limit=3",
     "blog-images:jobs:start": "node src/jobs/blogImageScheduler.js",
