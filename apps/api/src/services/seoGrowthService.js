@@ -253,6 +253,33 @@ export class SeoGrowthService {
     };
   }
 
+  static async checkSearchConsoleAccess() {
+    const health = this.getSearchConsoleHealth();
+    const sitesResult = await this.listSearchConsoleSites();
+
+    if (sitesResult.ok === false) {
+      return {
+        ok: false,
+        status: 'not_configured',
+        health: sitesResult.health || health,
+        reason: sitesResult.reason
+      };
+    }
+
+    const configuredSiteUrl = health.siteUrl;
+    const matchedSite = sitesResult.sites.find((site) => site.siteUrl === configuredSiteUrl) || null;
+
+    return {
+      ok: Boolean(matchedSite),
+      status: matchedSite ? 'ready' : 'configured_site_not_found',
+      health,
+      configuredSiteUrl,
+      matchedSite,
+      availableSites: sitesResult.sites,
+      availableSiteCount: sitesResult.count
+    };
+  }
+
   static async listSearchOpportunities({ limit = 25, minImpressions = 20 } = {}) {
     const prisma = getPrisma();
     const latest = await prisma.seoSearchConsoleMetric.findFirst({

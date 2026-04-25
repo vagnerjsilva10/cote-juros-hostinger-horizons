@@ -36,6 +36,13 @@ const main = async () => {
     return;
   }
 
+  if (options.mode === 'health') {
+    const result = await SeoGrowthService.checkSearchConsoleAccess();
+    console.log(JSON.stringify(result, null, 2));
+    if (!result.ok) process.exitCode = 1;
+    return;
+  }
+
   if (options.mode === 'refresh') {
     const result = await SeoGrowthService.applySafeRefresh({
       limit: Number.isFinite(options.limit) ? options.limit : 5

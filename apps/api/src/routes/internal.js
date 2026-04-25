@@ -69,6 +69,14 @@ const toArticlePayload = (record) => {
 router.use(requireInternalAuth);
 
 router.get(
+  '/seo/search-console/health',
+  asyncHandler(async (req, res) => {
+    const result = await SeoGrowthService.checkSearchConsoleAccess();
+    res.status(result.ok ? 200 : 503).json(result);
+  })
+);
+
+router.get(
   '/seo/search-console/sync',
   asyncHandler(async (req, res) => {
     const days = parseLimit(req.query.days, 28, 90);
