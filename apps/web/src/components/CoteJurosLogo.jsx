@@ -16,19 +16,24 @@ export function CoteJurosLogo({ variant = 'horizontal', className = '' }) {
   const src = LOGO_MAP[variant] || LOGO_MAP.horizontal;
   const isSymbol = ['symbol', 'symbolLight', 'icon', 'square'].includes(variant);
   const isLight = variant === 'original-light' || variant === 'symbolLight';
-  const iconClass = isSymbol ? 'h-11 w-11' : 'h-12 w-12';
+  const iconClass = isSymbol ? 'h-10 w-10' : 'h-10 w-10';
 
   return (
-    <span className={cn('inline-flex items-center gap-3', className)} aria-label="Cote Juros">
-      <img src={src} alt="" className={cn(iconClass, 'shrink-0 object-contain')} loading="eager" aria-hidden="true" />
+    <span className={cn('inline-flex items-center gap-2.5', className)} aria-label="Cote Juros">
+      <img src={src} alt="" className={cn(iconClass, 'site-logo-mark shrink-0 object-contain')} loading="eager" aria-hidden="true" />
       {!isSymbol && (
-        <span
-          className={cn(
-            'site-logo-wordmark whitespace-nowrap text-[28px] font-semibold leading-none tracking-[-0.02em]',
-            isLight ? 'text-white' : 'text-slate-950'
-          )}
-        >
-          Cote Juros
+        <span className="site-logo-copy">
+          <span
+            className={cn(
+              'site-logo-wordmark whitespace-nowrap text-[23px] font-semibold leading-none tracking-[-0.01em]',
+              isLight ? 'text-white' : 'text-slate-950'
+            )}
+          >
+            Cote Juros
+          </span>
+          <span className={cn('site-logo-tagline', isLight ? 'text-slate-300' : 'text-slate-500')}>
+            crédito com clareza
+          </span>
         </span>
       )}
     </span>
