@@ -8332,8 +8332,15 @@ body {
 }
 
 .site-header {
-  background: rgba(11, 18, 32, 0.88) !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(91, 108, 255, 0.12), transparent 26%),
+    linear-gradient(180deg, rgba(7, 17, 29, 0.96) 0%, rgba(10, 20, 34, 0.96) 100%) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.site-header .page-shell {
+  position: relative;
+  z-index: 1;
 }
 
 .site-header nav a {

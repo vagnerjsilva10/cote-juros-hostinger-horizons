@@ -24,7 +24,7 @@ function Header() {
 
   return (
     <header
-      className={`site-header sticky top-0 z-50 w-full border-b border-white/[0.05] bg-[rgba(11,18,32,0.88)] transition-all duration-300 ${
+      className={`site-header sticky top-0 z-50 w-full border-b border-white/[0.05] transition-all duration-300 ${
         isScrolled ? 'shadow-[0_22px_52px_rgba(15,23,42,0.18)]' : 'shadow-[0_1px_0_rgba(255,255,255,0.02)]'
       }`}
       style={{ backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }}
