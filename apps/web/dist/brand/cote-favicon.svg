@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" role="img" aria-label="Cote Finance AI">
+  <defs>
+    <linearGradient id="favBlueDark" x1="13" y1="47" x2="46" y2="17" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4C8DFF"/>
+      <stop offset="1" stop-color="#78AEFF"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="#0F1620" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+  <path d="M11.5 45.5L24.5 34L34.5 38L51 20.5" stroke="url(#favBlueDark)" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="11.5" cy="45.5" r="2.9" fill="#4C8DFF"/>
+  <circle cx="24.5" cy="34" r="2.9" fill="#4C8DFF" opacity="0.94"/>
+  <circle cx="34.5" cy="38" r="2.9" fill="#5D99FF" opacity="0.94"/>
+  <circle cx="51" cy="20.5" r="3.5" fill="#78AEFF"/>
+  <path d="M44.5 20.5H51V27" stroke="#78AEFF" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
