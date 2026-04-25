@@ -195,6 +195,8 @@ router.get(
         slug: item.article?.slug,
         status: item.article?.status,
         wordCount: item.validation?.wordCount,
+        validationPassed: item.validation?.passed ?? null,
+        validationIssues: item.validation?.issues || [],
         webStory: item.distribution?.webStory?.path || null,
         pinterest: item.distribution?.pinterest?.status || null,
         distributionError: item.distributionError || null

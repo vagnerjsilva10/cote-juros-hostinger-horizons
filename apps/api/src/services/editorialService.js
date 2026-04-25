@@ -709,7 +709,7 @@ const validateArticlePayload = ({
   const mostSimilar = findMostSimilarArticle({ article, existingArticles });
 
   if (wordCount < 1200) issues.push(`Conteudo curto demais: ${wordCount} palavras`);
-  if (wordCount > 2200) issues.push(`Conteudo longo demais: ${wordCount} palavras`);
+  if (wordCount > 3000) issues.push(`Conteudo longo demais: ${wordCount} palavras`);
   if (!article.h1 || article.h1.length < 24) issues.push('H1 ausente ou fraco');
   if (!Array.isArray(article.sections) || article.sections.length < 5) issues.push('Menos de 5 secoes editoriais');
   if (!Array.isArray(article.faq) || article.faq.length < 3) issues.push('FAQ insuficiente');
