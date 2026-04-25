@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Cell, Pie, PieChart, ResponsiveContainer, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { ArrowRight, Download, DollarSign, Home, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
@@ -108,6 +109,31 @@ function FerramentasPage() {
           </a>
         </div>
       </PageHero>
+
+      <section className="page-shell grid gap-4 py-8 md:grid-cols-3">
+        {[
+          {
+            title: 'Calculadora de CET',
+            description: 'Compare custo efetivo total, parcela e tarifas antes de contratar credito.',
+            path: '/calculadora-cet'
+          },
+          {
+            title: 'Comprometimento de renda',
+            description: 'Veja se uma nova parcela cabe na renda sem apertar demais o orcamento.',
+            path: '/simulador-comprometimento-renda'
+          },
+          {
+            title: 'Estudo credito para negativado',
+            description: 'Material de referencia para citar em pautas sobre custo de credito.',
+            path: '/estudos/custo-emprestimo-negativado-2026'
+          }
+        ].map((item) => (
+          <Link key={item.path} to={item.path} className="rounded-[12px] border border-border bg-background p-5 transition-colors hover:bg-background-secondary">
+            <h2 className="text-lg font-semibold text-foreground">{item.title}</h2>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.description}</p>
+          </Link>
+        ))}
+      </section>
 
       <div className="page-shell py-12" id="calculadoras-financeiras">
         <Tabs defaultValue="juros-compostos" className="w-full">

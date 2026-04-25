@@ -22,6 +22,8 @@ function Footer() {
         { label: 'Blog', path: '/blog' },
         { label: 'Como funciona', path: '/como-funciona' },
         { label: 'Ferramentas', path: '/ferramentas' },
+        { label: 'Calculadora de CET', path: '/calculadora-cet' },
+        { label: 'Estudo de credito', path: '/estudos/custo-emprestimo-negativado-2026' },
         { label: 'Perguntas frequentes', path: '/perguntas-frequentes' }
       ]
     },

@@ -12,6 +12,9 @@ import CartoesPage from '@/pages/CartoesPage.jsx';
 import FinanciamentoPage from '@/pages/FinanciamentoPage.jsx';
 import OfertasPage from '@/pages/OfertasPage.jsx';
 import FerramentasPage from '@/pages/FerramentasPage.jsx';
+import CalculadoraCetPage from '@/pages/CalculadoraCetPage.jsx';
+import SimuladorComprometimentoRendaPage from '@/pages/SimuladorComprometimentoRendaPage.jsx';
+import EstudoCreditoNegativadoPage from '@/pages/EstudoCreditoNegativadoPage.jsx';
 import DiagnosticoPage from '@/pages/DiagnosticoPage.jsx';
 import BlogPage from '@/pages/BlogPage.jsx';
 import BlogArticlePage from '@/pages/BlogArticlePage.jsx';
@@ -137,6 +140,9 @@ function App() {
         <Route path="/ofertas" element={<AppLayout><OfertasPage /></AppLayout>} />
         <Route path="/parceiros" element={<AppLayout><OfertasPage /></AppLayout>} />
         <Route path="/ferramentas" element={<AppLayout><FerramentasPage /></AppLayout>} />
+        <Route path="/calculadora-cet" element={<AppLayout><CalculadoraCetPage /></AppLayout>} />
+        <Route path="/simulador-comprometimento-renda" element={<AppLayout><SimuladorComprometimentoRendaPage /></AppLayout>} />
+        <Route path="/estudos/custo-emprestimo-negativado-2026" element={<AppLayout><EstudoCreditoNegativadoPage /></AppLayout>} />
         <Route path="/diagnostico-financeiro" element={<AppLayout><DiagnosticoPage /></AppLayout>} />
         <Route
           path="/blog"
