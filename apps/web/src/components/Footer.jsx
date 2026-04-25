@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { CoteJurosLogo } from './CoteJurosLogo.jsx';
-import { footerNavigationSections, footerPopularLinks } from '@/navigation/seoNavigation.js';
+import { compactFooterSections } from '@/navigation/seoNavigation.js';
 
 function Footer() {
   const currentYear = new Date().getFullYear();
@@ -10,8 +10,8 @@ function Footer() {
   return (
     <footer id="site-footer" className="footer-premium-bg footer-dark">
       <div className="page-shell">
-        <div className="mb-8 grid gap-8 lg:grid-cols-[1.35fr_2fr] lg:gap-12">
-          <div className="max-w-md space-y-4">
+        <div className="mb-8 grid gap-8 lg:grid-cols-[1.15fr_2fr] lg:gap-12">
+          <div className="max-w-sm space-y-4">
             <Link to="/" className="inline-block">
               <CoteJurosLogo variant="original-light" className="site-logo" />
             </Link>
@@ -29,8 +29,8 @@ function Footer() {
             </div>
           </div>
 
-          <nav aria-label="Mapa do site" className="grid min-w-0 gap-x-8 gap-y-7 sm:grid-cols-2 xl:grid-cols-4">
-            {footerNavigationSections.map((section) => (
+          <nav aria-label="Links principais do site" className="grid min-w-0 gap-x-8 gap-y-7 sm:grid-cols-2 xl:grid-cols-4">
+            {compactFooterSections.map((section) => (
               <div key={section.title}>
                 <span className="footer-column-title mb-4 block text-[11px] font-medium uppercase tracking-[0.18em] text-white/50">
                   {section.title}
@@ -51,23 +51,6 @@ function Footer() {
               </div>
             ))}
           </nav>
-        </div>
-
-        <div className="mb-6 rounded-[16px] border border-white/10 bg-white/[0.035] p-4">
-          <span className="footer-column-title mb-3 block text-[11px] font-medium uppercase tracking-[0.18em] text-white/50">
-            Buscas populares
-          </span>
-          <div className="flex flex-wrap gap-2">
-            {footerPopularLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className="rounded-full border border-white/10 px-3 py-2 text-xs font-medium text-white/70 transition-colors hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
         </div>
 
         <div className="flex flex-col gap-2 border-t border-white/10 pt-5 md:flex-row md:items-center md:justify-between">

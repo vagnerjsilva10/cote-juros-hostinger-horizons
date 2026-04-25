@@ -158,3 +158,46 @@ export const footerPopularLinks = [
   { label: 'Financiamento para score baixo', path: '/financiamento-para-score-baixo' },
   { label: 'Renegocia\u00E7\u00E3o de d\u00EDvidas', path: '/renegociacao-de-dividas-para-quem-quer-limpar-o-nome' }
 ];
+
+export const compactFooterSections = [
+  {
+    title: 'Comparar',
+    links: [
+      { label: 'Empr\u00E9stimos', path: '/emprestimos' },
+      { label: 'Cart\u00F5es de cr\u00E9dito', path: '/cartoes' },
+      { label: 'Financiamentos', path: '/financiamentos' },
+      { label: 'Bancos', path: '/bancos' },
+      { label: 'Ofertas financeiras', path: '/ofertas' }
+    ]
+  },
+  {
+    title: 'Guias essenciais',
+    links: [
+      { label: 'Empr\u00E9stimo para negativado', path: '/emprestimo-para-negativado' },
+      { label: 'Empr\u00E9stimo online seguro', path: '/emprestimo-online-seguro' },
+      { label: 'Score de cr\u00E9dito', path: '/score-de-credito-como-funciona' },
+      { label: 'Como comparar taxas', path: '/como-comparar-taxas-de-juros' },
+      { label: 'Juros abusivos no cart\u00E3o', path: '/juros-abusivos-no-cartao' }
+    ]
+  },
+  {
+    title: 'Ferramentas',
+    links: [
+      { label: 'Calculadora de CET', path: '/calculadora-cet' },
+      { label: 'Calculadora de empr\u00E9stimo', path: '/calculadora-emprestimo' },
+      { label: 'Calculadora de financiamento', path: '/calculadora-financiamento' },
+      { label: 'Comprometimento de renda', path: '/simulador-comprometimento-renda' },
+      { label: 'Diagn\u00F3stico financeiro', path: '/diagnostico-financeiro' }
+    ]
+  },
+  {
+    title: 'Cote Juros',
+    links: [
+      { label: 'Como funciona', path: '/como-funciona' },
+      { label: 'Sobre', path: '/sobre-nos' },
+      { label: 'Perguntas frequentes', path: '/perguntas-frequentes' },
+      { label: 'Contato', path: '/contato' },
+      { label: 'Privacidade', path: '/politica-de-privacidade' }
+    ]
+  }
+];
