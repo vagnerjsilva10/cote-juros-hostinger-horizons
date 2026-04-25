@@ -515,6 +515,35 @@ model SeoSearchConsoleMetric {
   @@map("seo_search_console_metrics")
 }
 
+model CompetitorSeoOpportunity {
+  id               String   @id @default(cuid())
+  query            String
+  clusterSlug      String?  @map("cluster_slug")
+  clusterName      String?  @map("cluster_name")
+  competitorDomain String   @map("competitor_domain")
+  competitorUrl    String   @map("competitor_url")
+  competitorTitle  String?  @map("competitor_title")
+  snippet          String?
+  position         Int?
+  score            Int      @default(0)
+  opportunityType  String   @default("content_gap") @map("opportunity_type")
+  gapReason        String?  @map("gap_reason")
+  recommendedTitle String?  @map("recommended_title")
+  recommendedSlug  String?  @map("recommended_slug")
+  status           String   @default("new")
+  rawResult        Json?    @map("raw_result")
+  analyzedAt       DateTime @default(now()) @map("analyzed_at")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@unique([query, competitorUrl])
+  @@index([clusterSlug])
+  @@index([competitorDomain])
+  @@index([score])
+  @@index([status, analyzedAt])
+  @@map("competitor_seo_opportunities")
+}
+
 model SimulationLead {
   id               String      @id @default(cuid())
   productType      ProductType @map("product_type")

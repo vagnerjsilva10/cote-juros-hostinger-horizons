@@ -33,7 +33,8 @@
     "blog-images:jobs:start": "node src/jobs/blogImageScheduler.js",
     "blog-images:validate": "node scripts/validateBlogImagePipeline.js",
     "meta:fix": "node scripts/fixArticleMetaDescriptions.js",
-    "seo:growth": "node src/jobs/runSeoGrowth.js"
+    "seo:growth": "node src/jobs/runSeoGrowth.js",
+    "seo:competitors": "node src/jobs/runCompetitorSeoResearch.js"
   },
   "dependencies": {
     "@prisma/client": "^6.12.0",

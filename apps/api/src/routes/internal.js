@@ -2,6 +2,7 @@ import express from 'express';
 import { asyncHandler } from '../lib/http.js';
 import { getPrisma } from '../lib/prisma.js';
 import { ContentDistributionService } from '../services/contentDistributionService.js';
+import { CompetitorSeoResearchService } from '../services/competitorSeoResearchService.js';
 import { EditorialService } from '../services/editorialService.js';
 import { SeoGrowthService } from '../services/seoGrowthService.js';
 import { SendReactivationEmailsJob } from '../jobs/sendReactivationEmails.js';
@@ -111,6 +112,49 @@ router.get(
     const minImpressions = parseLimit(req.query.minImpressions, 5, 10000);
     const result = await SeoGrowthService.runWeeklyOptimization({ days, limit, minImpressions });
     res.status(result.ok ? 200 : 202).json(result);
+  })
+);
+
+router.get(
+  '/seo/competitors/health',
+  asyncHandler(async (req, res) => {
+    const result = CompetitorSeoResearchService.getHealth();
+    res.status(result.configured ? 200 : 202).json(result);
+  })
+);
+
+router.get(
+  '/seo/competitors/run',
+  asyncHandler(async (req, res) => {
+    const queryLimit = parseLimit(req.query.queryLimit, 25, 100);
+    const resultsPerQuery = parseLimit(req.query.resultsPerQuery, 10, 20);
+    const briefLimit = parseLimit(req.query.briefLimit, 5, 20);
+    const createBriefs = req.query.createBriefs !== 'false';
+    const result = await CompetitorSeoResearchService.runResearch({
+      queryLimit,
+      resultsPerQuery,
+      createBriefs,
+      briefLimit
+    });
+    res.status(result.ok ? 200 : 202).json(result);
+  })
+);
+
+router.get(
+  '/seo/competitors/opportunities',
+  asyncHandler(async (req, res) => {
+    const limit = parseLimit(req.query.limit, 25, 100);
+    const minScore = parseLimit(req.query.minScore, 45, 100);
+    res.json(await CompetitorSeoResearchService.listOpportunities({ limit, minScore }));
+  })
+);
+
+router.get(
+  '/seo/competitors/briefs',
+  asyncHandler(async (req, res) => {
+    const limit = parseLimit(req.query.limit, 5, 20);
+    const minScore = parseLimit(req.query.minScore, 60, 100);
+    res.json(await CompetitorSeoResearchService.createBriefsFromGaps({ limit, minScore }));
   })
 );
 

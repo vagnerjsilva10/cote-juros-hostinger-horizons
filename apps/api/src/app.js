@@ -20,6 +20,7 @@ import { IntegrationConfigurationError, JurosBaixosIntegrationError } from './in
 import { getJurosBaixosHealth } from './integrations/jurosBaixos/config.js';
 import { getCreditasHealth } from './integrations/creditas/config.js';
 import { CreditasIntegrationError } from './integrations/creditas/errors.js';
+import { CompetitorSeoResearchService } from './services/competitorSeoResearchService.js';
 import { SeoGrowthService } from './services/seoGrowthService.js';
 
 export const createApp = () => {
@@ -89,7 +90,8 @@ export const createApp = () => {
         creditas: getCreditasHealth()
       },
       seo: {
-        searchConsole: SeoGrowthService.getSearchConsoleHealth()
+        searchConsole: SeoGrowthService.getSearchConsoleHealth(),
+        competitors: CompetitorSeoResearchService.getHealth()
       },
       timestamp: new Date().toISOString()
     });
