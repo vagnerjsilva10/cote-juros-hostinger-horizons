@@ -71,6 +71,23 @@ const getCategoryRoute = (article) => {
   return CATEGORY_ROUTES.find((item) => key.includes(item.match)) || { path: '/blog', label: article?.category || 'Blog' };
 };
 
+const ArticleQualityCta = ({ item }) => {
+  if (!item?.to || !item?.label) return null;
+
+  return (
+    <section className="blog-article-quality-cta min-w-0 rounded-[16px] border border-[rgba(91,108,255,0.22)] bg-background-secondary p-4 sm:p-5">
+      <h2 className="text-lg text-foreground sm:text-xl">{item.title}</h2>
+      {item.description ? <p className="mt-2 text-base leading-7 text-muted-foreground">{item.description}</p> : null}
+      <Link to={item.to} className="mt-4 inline-flex">
+        <Button>
+          {item.label}
+          <ArrowRight className="h-4 w-4" />
+        </Button>
+      </Link>
+    </section>
+  );
+};
+
 const BLOG_SIDEBAR_READING = normalizeMojibakeDeep([
   {
     title: 'Melhores bancos para solicitar empréstimo',
@@ -531,6 +548,10 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
   const faqSchema = toFaqSchema(safeArticle);
   const introParagraphs = getArticleParagraphs(safeArticle);
   const sections = Array.isArray(safeArticle.sections) ? safeArticle.sections : [];
+  const articleCtas = Array.isArray(safeArticle.ctas) ? safeArticle.ctas : [];
+  const introCta = articleCtas.find((item) => item.position === 'after_intro') || articleCtas[0];
+  const middleCta = articleCtas.find((item) => item.position === 'middle') || articleCtas[1];
+  const closingCta = articleCtas.find((item) => item.position === 'before_conclusion') || articleCtas[2];
   const midSectionIndex = sections.length > 2 ? Math.ceil(sections.length / 2) - 1 : -1;
   const showPreConclusionAd = Boolean((Array.isArray(safeArticle.faq) && safeArticle.faq.length) || (Array.isArray(safeArticle.conclusion) && safeArticle.conclusion.length));
   const webStory = safeArticle.distribution?.webStory;
@@ -710,6 +731,15 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     <p key={`intro-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{paragraph}</p>
                   ))}
 
+                  {safeArticle.featuredSnippet ? (
+                    <section className="blog-article-featured-snippet min-w-0 border-l-4 border-primary bg-background-secondary px-4 py-4 sm:px-5">
+                      <p className="blog-kicker text-xs font-semibold uppercase tracking-[0.18em]">Resposta rÃ¡pida</p>
+                      <p className="mt-2 text-base leading-7 text-foreground sm:text-lg">{safeArticle.featuredSnippet}</p>
+                    </section>
+                  ) : null}
+
+                  <ArticleQualityCta item={introCta} />
+
                   {inlineLinkMoments.opening ? (
                     <p className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">
                       Se você quer transformar essa leitura em decisão prática, vale{' '}
@@ -806,6 +836,29 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                       </section>
 
                       {index === midSectionIndex ? <AdSlotInline /> : null}
+                      {index === midSectionIndex && safeArticle.example ? (
+                        <section className="blog-article-example min-w-0 rounded-[16px] border border-border bg-background-secondary p-4 sm:p-5">
+                          <h2 className="text-xl text-foreground sm:text-2xl">Exemplo com nÃºmeros</h2>
+                          <p className="mt-3 text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{safeArticle.example}</p>
+                        </section>
+                      ) : null}
+                      {index === midSectionIndex && safeArticle.alert ? (
+                        <section className="blog-article-alert min-w-0 rounded-[16px] border border-amber-200 bg-amber-50 p-4 text-amber-950 sm:p-5">
+                          <h2 className="text-xl sm:text-2xl">AtenÃ§Ã£o</h2>
+                          <p className="mt-3 text-base leading-7">{safeArticle.alert}</p>
+                        </section>
+                      ) : null}
+                      {index === midSectionIndex && safeArticle.midQuestions?.length ? (
+                        <section className="blog-article-mid-questions min-w-0 space-y-4">
+                          {safeArticle.midQuestions.map((item, questionIndex) => (
+                            <div key={`mid-question-${questionIndex}`} className="space-y-2">
+                              <h2 className="text-xl text-foreground sm:text-2xl">{item.question}</h2>
+                              <p className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{item.answer}</p>
+                            </div>
+                          ))}
+                        </section>
+                      ) : null}
+                      {index === midSectionIndex ? <ArticleQualityCta item={middleCta} /> : null}
                       {index === midSectionIndex && inlineLinkMoments.middle ? (
                         <p className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">
                           Para aprofundar a comparação sem sair do contexto, veja também{' '}
@@ -907,6 +960,30 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   ) : null}
 
                   {showPreConclusionAd ? <AdSlotHorizontal /> : null}
+
+                  {safeArticle.financialImpact?.length ? (
+                    <section className="blog-article-impact min-w-0 scroll-mt-28 space-y-4">
+                      <h2 className="text-xl text-foreground sm:text-2xl">Impacto financeiro</h2>
+                      <ul className="blog-article-list list-disc space-y-2 pl-6 text-base leading-7 text-muted-foreground sm:leading-8">
+                        {safeArticle.financialImpact.map((item, index) => (
+                          <li key={`impact-${index}`} className="pl-1">{item}</li>
+                        ))}
+                      </ul>
+                    </section>
+                  ) : null}
+
+                  {safeArticle.alternatives?.length ? (
+                    <section className="blog-article-alternatives min-w-0 scroll-mt-28 space-y-4">
+                      <h2 className="text-xl text-foreground sm:text-2xl">Alternativas antes de contratar</h2>
+                      <ul className="blog-article-list list-disc space-y-2 pl-6 text-base leading-7 text-muted-foreground sm:leading-8">
+                        {safeArticle.alternatives.map((item, index) => (
+                          <li key={`alternative-${index}`} className="pl-1">{item}</li>
+                        ))}
+                      </ul>
+                    </section>
+                  ) : null}
+
+                  <ArticleQualityCta item={closingCta} />
 
                   {faqSupersimOffer ? (
                     <SuperSimInlineCTA

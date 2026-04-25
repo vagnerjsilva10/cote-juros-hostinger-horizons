@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { getPrisma } from '../lib/prisma.js';
 import { ContentDistributionService } from './contentDistributionService.js';
 import { generateBlogImage } from './imageGenerator.js';
+import { enforceArticleStandard, stripHtmlArtifacts, validateArticle } from './articleQualityService.js';
 import {
   AUTHORITY_SOURCES,
   COMMERCIAL_DESTINATIONS,
@@ -80,7 +81,7 @@ const stripMarkdownArtifacts = (value = '') =>
     .replace(/\*(.*?)\*/g, '$1')
     .replace(/_(.*?)_/g, '$1')
     .replace(/`([^`]+)`/g, '$1');
-const compactWhitespace = (value = '') => stripMarkdownArtifacts(value).replace(/\s+/g, ' ').trim();
+const compactWhitespace = (value = '') => stripHtmlArtifacts(stripMarkdownArtifacts(value)).replace(/\s+/g, ' ').trim();
 const SIMILARITY_STOP_WORDS = new Set([
   'a', 'o', 'as', 'os', 'um', 'uma', 'uns', 'umas', 'de', 'da', 'do', 'das', 'dos',
   'e', 'em', 'no', 'na', 'nos', 'nas', 'para', 'por', 'com', 'sem', 'sobre', 'como',
@@ -425,7 +426,20 @@ const buildBriefPayload = ({ cluster, brief, scheduleDate }) => ({
   stage: brief.stage,
   angle: brief.angle,
   targetLength: '1200-2000 palavras',
-  requiredStructure: ['h1', 'summary', '6-8 h2/h3 blocks', 'faq', 'cta'],
+  requiredStructure: [
+    'headline SEO com keyword no inicio e ate 70 caracteres',
+    'intro curta com resposta rapida',
+    'featured snippet direto',
+    'corpo explicativo escaneavel',
+    'exemplo real com numeros',
+    'bloco de alerta financeiro',
+    'perguntas no meio do texto',
+    '3 CTAs',
+    'impacto financeiro',
+    'alternativas',
+    'FAQ final',
+    'conclusao com CTA'
+  ],
   requiredLinks: {
     pillar: `/blog/${cluster.pillarSlug}`,
     commercial: cluster.commercialPath
@@ -440,14 +454,22 @@ Escreva um artigo original em portugues do Brasil, profundo e natural, com lingu
 
 Requisitos absolutos:
 - entre 1200 e 2000 palavras
-- H1 forte e objetivo
+- H1 forte, objetivo, com a palavra-chave no inicio e no maximo 70 caracteres
+- introducao com no maximo 2 paragrafos e resposta rapida
+- incluir resposta direta para featured snippet no inicio
 - 5 a 8 secoes com H2 claros e bem determinados
 - cada secao deve ter um subtitulo curto, explicativo e diferente do H2
 - os subtitulos devem orientar a leitura e deixar evidente o foco da secao
-- 3 a 5 FAQs
-- CTA final orientada a comparacao com clareza
+- pelo menos 1 exemplo real com numeros em reais, percentual ou prazo
+- pelo menos 1 bloco de alerta sobre risco financeiro
+- perguntas reais no meio do conteudo com resposta direta
+- impacto na renda, risco de endividamento e cenario negativo
+- alternativas antes da contratacao
+- 4 a 6 FAQs
+- 3 CTAs naturais: depois da introducao, no meio e antes da conclusao
 - sem fluff, sem frases vazias, sem promessas de aprovacao
 - tom premium fintech, parecido com grandes portais financeiros
+- nunca inclua HTML cru nos campos de texto; nao escreva tags como <a href>
 
 Contexto do cluster:
 ${JSON.stringify({
@@ -1058,9 +1080,13 @@ export class EditorialService {
         relatedArticles
       });
 
-      const generated = applySeoBestPractices({
+      const generatedBase = applySeoBestPractices({
         article: await this.generateArticleFromAi({ brief, cluster: brief.cluster, contextualLinks }),
         brief
+      });
+      const generated = enforceArticleStandard({
+        article: generatedBase,
+        primaryKeyword: brief.primaryKeyword
       });
       const image = await generateBlogImage({
         title: generated.title,
@@ -1078,31 +1104,35 @@ export class EditorialService {
         cluster: brief.cluster
       });
 
-      const articlePayload = {
-        ...generated,
-        slug: brief.slug,
-        routePath: `/blog/${brief.slug}`,
-        canonicalUrl: `${SITE_BASE_URL}/blog/${brief.slug}/`,
-        coverImage: image.publicPath,
-        ogImage: toAssetUrl(image.publicPath),
-        imageAttribution: image.attribution || null,
-        blogImageAutomation: {
-          provider: image.provider,
-          sourceType: image.sourceType || '',
-          sourceUrl: image.attribution?.sourceUrl || image.variants?.[0]?.sourceUrl || '',
-          hash: image.attribution?.hash || '',
-          perceptualHash: image.attribution?.perceptualHash || '',
-          usedImageRecordId: image.usedImageRecordId || null,
-          validatedAt: new Date().toISOString()
+      const articlePayload = enforceArticleStandard({
+        article: {
+          ...generated,
+          slug: brief.slug,
+          routePath: `/blog/${brief.slug}`,
+          canonicalUrl: `${SITE_BASE_URL}/blog/${brief.slug}/`,
+          coverImage: image.publicPath,
+          ogImage: toAssetUrl(image.publicPath),
+          imageAttribution: image.attribution || null,
+          blogImageAutomation: {
+            provider: image.provider,
+            sourceType: image.sourceType || '',
+            sourceUrl: image.attribution?.sourceUrl || image.variants?.[0]?.sourceUrl || '',
+            hash: image.attribution?.hash || '',
+            perceptualHash: image.attribution?.perceptualHash || '',
+            usedImageRecordId: image.usedImageRecordId || null,
+            validatedAt: new Date().toISOString()
+          },
+          clusterLabel: brief.cluster.name,
+          clusterKeyword: brief.cluster.primaryKeyword,
+          internalLinks,
+          externalLinks,
+          readTime: 0,
+          wordCount: 0,
+          sourceType: 'editorial-automation'
         },
-        clusterLabel: brief.cluster.name,
-        clusterKeyword: brief.cluster.primaryKeyword,
-        internalLinks,
-        externalLinks,
-        readTime: 0,
-        wordCount: 0,
-        sourceType: 'editorial-automation'
-      };
+        primaryKeyword: brief.primaryKeyword,
+        internalLinks
+      });
 
       const existingArticles = await prisma.article.findMany({
           where: {
@@ -1132,6 +1162,15 @@ export class EditorialService {
         existingTitles,
         existingArticles
       });
+      const qualityValidation = validateArticle({
+        article: articlePayload,
+        internalLinks,
+        image,
+        existingIssues: validation.issues
+      });
+      validation.issues = qualityValidation.issues;
+      validation.quality = qualityValidation.checks;
+      validation.passed = qualityValidation.passed;
 
       articlePayload.wordCount = validation.wordCount;
       articlePayload.readTime = validation.readTime;

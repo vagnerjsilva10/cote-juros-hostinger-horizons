@@ -21,8 +21,23 @@ const normalizeText = (value = '') =>
     .toLowerCase()
     .trim();
 
-const sanitizeInlineText = (value = '') => normalizeMojibake(String(extractTextValue(value) || '')).replace(/\s+/g, ' ').trim();
-const sanitizeRichText = (value = '') => normalizeMojibake(String(extractTextValue(value) || '')).trim();
+const stripHtmlArtifacts = (value = '') =>
+  String(value || '')
+    .replace(/<a\b[^>]*>([\s\S]*?)<\/a>/gi, '$1')
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/<\/p\s*>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const sanitizeInlineText = (value = '') => normalizeMojibake(stripHtmlArtifacts(extractTextValue(value) || '')).replace(/\s+/g, ' ').trim();
+const sanitizeRichText = (value = '') => normalizeMojibake(stripHtmlArtifacts(extractTextValue(value) || '')).trim();
 
 const ROUTE_LABELS = {
   '/educacao-financeira': 'Educação Financeira',
@@ -176,6 +191,31 @@ const normalizeFaq = (faq) => {
     .filter((item) => item.question && item.answer);
 };
 
+const normalizeQuestionBlocks = (items) => {
+  if (!Array.isArray(items)) return [];
+
+  return items
+    .map((item) => ({
+      question: sanitizeInlineText(item?.question || ''),
+      answer: sanitizeInlineText(item?.answer || '')
+    }))
+    .filter((item) => item.question && item.answer);
+};
+
+const normalizeCtas = (items) => {
+  if (!Array.isArray(items)) return [];
+
+  return items
+    .map((item) => ({
+      position: sanitizeInlineText(item?.position || ''),
+      title: sanitizeInlineText(item?.title || ''),
+      description: sanitizeInlineText(item?.description || ''),
+      to: sanitizeInlineText(item?.to || item?.href || ''),
+      label: sanitizeInlineText(item?.label || '')
+    }))
+    .filter((item) => item.title && item.to && item.label);
+};
+
 const normalizeInternalLinks = (links) => {
   if (!Array.isArray(links)) return [];
 
@@ -324,6 +364,13 @@ export const normalizeArticleData = (article = {}, options = {}) => {
     conclusion: editorial.conclusion,
     faq,
     content: editorial.content,
+    featuredSnippet: sanitizeInlineText(source.featuredSnippet || ''),
+    example: sanitizeInlineText(source.example || ''),
+    alert: sanitizeInlineText(source.alert || ''),
+    midQuestions: normalizeQuestionBlocks(source.midQuestions),
+    ctas: normalizeCtas(source.ctas),
+    financialImpact: sanitizeStringArray(source.financialImpact),
+    alternatives: sanitizeStringArray(source.alternatives),
     internalLinks: normalizeInternalLinks(source.internalLinks),
     externalLinks: normalizeExternalLinks(source.externalLinks),
     metaTitle: sanitizeInlineText(source.metaTitle || ''),
