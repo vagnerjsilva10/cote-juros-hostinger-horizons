@@ -91,6 +91,18 @@ const GENERIC_CHART_TERMS = [
   'candlestick'
 ];
 
+const DATED_STYLE_TERMS = [
+  'black and white',
+  'monochrome',
+  'grayscale',
+  'vintage',
+  'retro',
+  'old fashioned',
+  'film noir',
+  '1950',
+  '1960'
+];
+
 const REAL_PHOTO_TERMS = [
   'photo',
   'person',
@@ -212,6 +224,7 @@ export const validateBlogImage = (image = {}, { article = {}, intent = '' } = {}
     isNotPlaceholder: !hasAny(text, PLACEHOLDER_TERMS),
     isNotOffTopic: !hasAny(text, OFF_TOPIC_TERMS),
     isNotGenericChart: !hasAny(text, GENERIC_CHART_TERMS),
+    isNotDatedStyle: !hasAny(text, DATED_STYLE_TERMS),
     hasValidLicense: validateLicense(image, text),
     widthMin: MIN_WIDTH,
     heightMin: MIN_HEIGHT,

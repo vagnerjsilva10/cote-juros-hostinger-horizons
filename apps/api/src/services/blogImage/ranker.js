@@ -17,7 +17,24 @@ const unique = (items = []) => Array.from(new Set(items.filter(Boolean)));
 
 const PERSON_TERMS = ['person', 'people', 'woman', 'man', 'couple', 'family', 'adult', 'worker', 'businesswoman', 'businessman'];
 const FINANCE_TERMS = ['finance', 'loan', 'credit', 'budget', 'money', 'bank', 'card', 'contract', 'calculator', 'smartphone', 'financial'];
-const BAD_TERMS = ['cartoon', 'kid', 'child', 'children', 'vector', 'illustration', 'clipart', 'colorful', 'festival'];
+const BAD_TERMS = [
+  'cartoon',
+  'kid',
+  'child',
+  'children',
+  'vector',
+  'illustration',
+  'clipart',
+  'colorful',
+  'festival',
+  'black and white',
+  'monochrome',
+  'grayscale',
+  'vintage',
+  'retro',
+  'old fashioned',
+  'film noir'
+];
 const MODERN_TERMS = ['modern', 'home', 'office', 'laptop', 'smartphone', 'clean', 'minimal', 'professional', 'realistic'];
 
 const scoreKeywordAlignment = (candidateTerms, targetTerms) => {
@@ -54,7 +71,7 @@ const scoreVisualQuality = (candidate = {}) => {
 const scoreBackgroundAndStyle = (candidateText) => {
   let score = 6;
   if (/clean|neutral|minimal|modern|professional|natural light/.test(candidateText)) score += 5;
-  if (/vector|illustration|cartoon|bright colors/.test(candidateText)) score -= 6;
+  if (/vector|illustration|cartoon|bright colors|black and white|monochrome|grayscale|vintage|retro|old fashioned|film noir/.test(candidateText)) score -= 10;
   return clamp(score, 0, 15);
 };
 

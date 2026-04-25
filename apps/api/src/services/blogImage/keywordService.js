@@ -21,16 +21,17 @@ const unique = (items = []) => Array.from(new Set(items.filter(Boolean)));
 
 const INTENT_QUERY_LIBRARY = {
   'vehicle-financing': [
+    'auto financing contract calculator',
+    'car loan documents office',
+    'person signing vehicle financing contract',
+    'car keys contract calculator',
     'car financing',
     'car loan',
-    'person with car',
     'vehicle financing',
     'car dealership',
     'couple buying car',
-    'car keys contract',
     'auto loan office',
-    'family car dealership',
-    'person signing car contract'
+    'family car dealership'
   ],
   'personal-loan': [
     'personal loan',
