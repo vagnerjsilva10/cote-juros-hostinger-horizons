@@ -157,6 +157,7 @@ function EmprestimosPage() {
       />
 
       <PageHero
+        className="loans-page-hero"
         breadcrumbs={[homeBreadcrumb, { name: 'Empréstimos', path: brandPages.emprestimos.path }]}
         eyebrow="Empréstimos"
         title="Veja opções de empréstimo com mais clareza antes de decidir."
@@ -185,8 +186,8 @@ function EmprestimosPage() {
         </section>
       ) : null}
 
-      <section className="border-b border-border bg-background-secondary py-10">
-        <div className="page-shell grid gap-4 md:grid-cols-4">
+      <section className="loans-summary-section border-b border-border bg-background-secondary py-10">
+        <div className="loans-summary-grid page-shell grid gap-4 md:grid-cols-4">
           <div className="interactive-card px-5 py-5">
             <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Valor escolhido</p>
             <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">R$ {amount[0].toLocaleString('pt-BR')}</p>
@@ -206,7 +207,7 @@ function EmprestimosPage() {
         </div>
       </section>
 
-      <div className="page-shell py-14" id="resultados-emprestimos">
+      <div className="loans-results-shell page-shell py-14" id="resultados-emprestimos">
         {creditJourneyLoading ? (
           <div className="mb-10 rounded-[22px] border border-border bg-white px-8 py-10 shadow-[var(--shadow-sm)]">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">Leitura personalizada</p>
@@ -318,8 +319,8 @@ function EmprestimosPage() {
         ) : null}
 
         <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
-          <aside className="lg:sticky lg:top-24 lg:h-fit">
-            <Card className="border-border bg-white shadow-[var(--shadow-sm)]">
+          <aside className="loans-filter-sidebar lg:sticky lg:top-24 lg:h-fit">
+            <Card className="loans-filter-card border-border bg-white shadow-[var(--shadow-sm)]">
               <CardContent className="space-y-8 p-8">
                 <div className="flex items-center justify-between border-b border-border pb-4">
                   <div className="flex items-center gap-2">
@@ -379,9 +380,9 @@ function EmprestimosPage() {
           </aside>
 
           <section>
-            <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="loans-results-toolbar mb-7 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <p className="text-sm text-muted-foreground">{filteredLoans.length} opções organizadas para facilitar sua decisão.</p>
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="loans-results-controls flex flex-wrap items-center gap-3">
                 <div className="catalog-view-toggle" role="tablist" aria-label="Modo de visualização dos empréstimos">
                   <Button
                     type="button"
@@ -408,7 +409,7 @@ function EmprestimosPage() {
                 </div>
                 <Label className="whitespace-nowrap">Ordenar</Label>
                 <Select value={sort} onValueChange={setSort}>
-                  <SelectTrigger className="w-[220px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="loans-sort-trigger w-[220px]"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="taxa-baixa">Menor taxa</SelectItem>
                     <SelectItem value="valor-maximo">Maior valor</SelectItem>

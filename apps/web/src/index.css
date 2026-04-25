@@ -9113,6 +9113,40 @@ body {
   width: 100%;
 }
 
+.loans-page-hero,
+.loans-results-shell,
+.loans-filter-sidebar,
+.loans-filter-card,
+.loans-results-toolbar,
+.loans-results-controls,
+.loans-summary-grid,
+.loans-summary-grid > *,
+.catalog-grid-card,
+.catalog-list-card,
+.catalog-list-card__content,
+.catalog-list-card__main,
+.catalog-list-card__actions {
+  min-width: 0;
+}
+
+.loans-page-hero .page-shell,
+.loans-page-hero .page-hero-copy {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.loans-results-controls {
+  max-width: 100%;
+}
+
+.loans-sort-trigger {
+  max-width: 100%;
+}
+
+.loans-results-shell > .grid {
+  min-width: 0;
+}
+
 .catalog-list-card:not(.cards-offer-list-card) .catalog-card-cta {
   min-width: 0;
   justify-content: center;
@@ -9133,8 +9167,33 @@ body {
 }
 
 @media (max-width: 1023px) {
+  .loans-results-shell > .grid {
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .loans-results-shell > .grid > *,
+  .loans-filter-sidebar,
+  .loans-filter-card,
+  .loans-results-shell section {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
   .catalog-list-card__content > div {
     grid-template-columns: 1fr !important;
+  }
+
+  .catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__content > div {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__actions,
+  .catalog-list-card:not(.cards-offer-list-card) .catalog-list-card__meta {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .cards-offer-list-card .catalog-list-card__visual {
@@ -9155,6 +9214,96 @@ body {
 }
 
 @media (max-width: 639px) {
+  .public-site-shell.is-domain-page .loans-page-hero {
+    overflow: hidden;
+  }
+
+  .public-site-shell.is-domain-page .loans-page-hero .page-shell {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .public-site-shell.is-domain-page .loans-page-hero .page-hero-copy {
+    width: 100%;
+    max-width: 100% !important;
+  }
+
+  .public-site-shell.is-domain-page .loans-page-hero .hero-title {
+    width: auto;
+    max-width: min(100%, 10.8em) !important;
+    font-size: clamp(2rem, 8.2vw, 2.16rem) !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.025em !important;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+    text-wrap: wrap;
+  }
+
+  .public-site-shell.is-domain-page .loans-page-hero .hero-subtitle {
+    width: 100%;
+    max-width: 100% !important;
+  }
+
+  .loans-summary-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .loans-summary-grid .interactive-card {
+    padding: 18px 20px !important;
+  }
+
+  .loans-results-shell {
+    overflow-x: clip;
+  }
+
+  .loans-filter-card .p-8,
+  .loans-filter-card [class*='p-8'] {
+    padding: 20px !important;
+  }
+
+  .loans-results-toolbar {
+    align-items: stretch !important;
+  }
+
+  .loans-results-controls {
+    display: grid !important;
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 10px !important;
+  }
+
+  .loans-results-controls > * {
+    width: 100%;
+  }
+
+  .loans-results-controls > label {
+    align-self: end;
+  }
+
+  .loans-results-controls .catalog-view-toggle {
+    width: 100%;
+  }
+
+  .loans-sort-trigger {
+    width: 100% !important;
+  }
+
+  .catalog-grid-card__header {
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .catalog-grid-card__header .badge,
+  .catalog-list-card__main .badge {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .catalog-list-card__main {
+    align-items: flex-start;
+  }
+
   .cards-page-cta-title {
     max-width: none;
   }
@@ -9977,5 +10126,23 @@ body {
   .blog-page-cta-panel,
   .blog-article-conversion {
     padding: 22px 18px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .public-site-shell.is-domain-page .loans-page-hero.page-hero .page-hero-copy .hero-title {
+    width: auto;
+    max-width: min(100%, 10.8em) !important;
+    font-size: clamp(2rem, 8.2vw, 2.16rem) !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.025em !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+    text-wrap: wrap !important;
+  }
+
+  .public-site-shell.is-domain-page .loans-page-hero.page-hero .page-hero-copy .hero-subtitle {
+    max-width: min(100%, 24rem) !important;
   }
 }
