@@ -56,9 +56,9 @@ export const AUTHORITY_SOURCES = Object.freeze([
 ]);
 
 export const DEFAULT_EDITORIAL_SCHEDULE = Object.freeze({
-  morning: process.env.EDITORIAL_CRON_MORNING || '15 8 * * *',
-  afternoon: process.env.EDITORIAL_CRON_AFTERNOON || '15 14 * * *',
-  evening: process.env.EDITORIAL_CRON_EVENING || '15 20 * * *'
+  morning: process.env.EDITORIAL_CRON_MORNING || '30 8 * * *',
+  afternoon: process.env.EDITORIAL_CRON_AFTERNOON || '30 13 * * *',
+  evening: process.env.EDITORIAL_CRON_EVENING || '30 19 * * *'
 });
 
 export const DEFAULT_EDITORIAL_CLUSTERS = Object.freeze([

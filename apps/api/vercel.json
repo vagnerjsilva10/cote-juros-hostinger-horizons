@@ -11,16 +11,16 @@
   ],
   "crons": [
     {
-      "path": "/api/internal/editorial/run/morning",
-      "schedule": "15 11 * * *"
+      "path": "/api/cron/articles/run",
+      "schedule": "30 11 * * *"
     },
     {
-      "path": "/api/internal/editorial/run/afternoon",
-      "schedule": "15 17 * * *"
+      "path": "/api/cron/articles/run",
+      "schedule": "30 16 * * *"
     },
     {
-      "path": "/api/internal/editorial/run/evening",
-      "schedule": "15 23 * * *"
+      "path": "/api/cron/articles/run",
+      "schedule": "30 22 * * *"
     },
     {
       "path": "/api/internal/distribution/backfill",

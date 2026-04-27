@@ -4,13 +4,13 @@ import PageHero from '@/components/PageHero.jsx';
 
 function TermosUsoPage() {
   const sections = [
-    ['Uso da Cote Juros', 'Ao usar o site, voce concorda em informar dados verdadeiros e usar a experiencia de forma licita e responsavel.'],
-    ['Nosso papel', 'A Cote Juros ajuda voce a encontrar caminhos de credito, comparar informacoes e seguir para a proxima etapa com parceiros.'],
-    ['O que nao somos', 'Nao somos banco, nao concedemos credito diretamente, nao garantimos aprovacao e nao cobramos valor antecipado para liberacao de credito.'],
-    ['Parceiros e condicoes', 'Taxas, limites, prazos, aprovacao e contratacao final dependem do parceiro, da analise feita por ele e das regras vigentes no momento da solicitacao.'],
-    ['Conteudo e simulacoes', 'Conteudos, comparacoes e simulacoes servem como apoio para decisao. Eles nao substituem proposta formal, contrato ou orientacao profissional individual.'],
-    ['Cote Finance', 'Cote Finance e um produto separado de organizacao financeira. Ele pode aparecer em areas secundarias do ecossistema, mas nao faz parte da concessao de credito.'],
-    ['Contato', 'Para duvidas sobre os termos, escreva para legal@cotejuros.com.br.']
+    ['Uso da Cote Juros', 'Ao usar o site, você concorda em informar dados verdadeiros e usar a experiência de forma lícita e responsável.'],
+    ['Nosso papel', 'A Cote Juros ajuda você a encontrar caminhos de crédito, comparar informações e seguir para a próxima etapa com parceiros.'],
+    ['O que não somos', 'Não somos banco, não concedemos crédito diretamente, não garantimos aprovação e não cobramos valor antecipado para liberação de crédito.'],
+    ['Parceiros e condições', 'Taxas, limites, prazos, aprovação e contratação final dependem do parceiro, da análise feita por ele e das regras vigentes no momento da solicitação.'],
+    ['Conteúdo e simulações', 'Conteúdos, comparações e simulações servem como apoio para decisão. Eles não substituem proposta formal, contrato ou orientação profissional individual.'],
+    ['Cote Finance', 'Cote Finance é um produto separado de organização financeira. Ele pode aparecer em áreas secundárias do ecossistema, mas não faz parte da concessão de crédito.'],
+    ['Contato', 'Para dúvidas sobre os termos, escreva para legal@cotejuros.com.br.']
   ];
 
   return (
@@ -19,14 +19,14 @@ function TermosUsoPage() {
         <title>Termos de uso - Cote Juros</title>
         <meta
           name="description"
-          content="Entenda os termos de uso da Cote Juros e o papel do site na comparacao e encaminhamento de caminhos de credito."
+          content="Entenda os termos de uso da Cote Juros e o papel do site na comparação e encaminhamento de caminhos de crédito."
         />
       </Helmet>
 
       <PageHero
         badge="Termos"
-        title="Uma relacao clara desde o primeiro clique."
-        subtitle={`Ultima atualizacao: ${new Date().toLocaleDateString('pt-BR')}`}
+        title="Uma relação clara desde o primeiro clique."
+        subtitle={`Última atualização: ${new Date().toLocaleDateString('pt-BR')}`}
       />
 
       <section className="page-section bg-background">

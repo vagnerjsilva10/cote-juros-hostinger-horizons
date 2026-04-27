@@ -26,7 +26,7 @@ export default function AdminAuthGuard({ children }) {
       const nextSession = { authenticated: false, user: null };
       setSession(nextSession);
       if (location.pathname === '/admin/login') {
-        setError(sessionError.message || 'Nao foi possivel validar a sessao do admin.');
+        setError(sessionError.message || 'Não foi possível validar a sessão do admin.');
       }
       return nextSession;
     } finally {
@@ -48,10 +48,10 @@ export default function AdminAuthGuard({ children }) {
       setPassword('');
       const nextSession = await refreshSession();
       if (!nextSession.authenticated) {
-        setError('Login aceito, mas a sessao nao foi persistida. Verifique cookie, CORS e dominio da API.');
+        setError('Login aceito, mas a sessão não foi persistida. Verifique cookie, CORS e domínio da API.');
       }
     } catch (submitError) {
-      setError(submitError.message || 'Nao foi possivel autenticar no admin.');
+      setError(submitError.message || 'Não foi possível autenticar no admin.');
     } finally {
       setBusy(false);
     }
@@ -90,7 +90,7 @@ export default function AdminAuthGuard({ children }) {
               </Button>
               {busy ? (
                 <p className="text-xs text-muted-foreground">
-                  Validando API, banco, senha e cookie de sessao. Se passar de alguns segundos, a chamada sera interrompida com diagnostico.
+                  Validando API, banco, senha e cookie de sessão. Se passar de alguns segundos, a chamada será interrompida com diagnóstico.
                 </p>
               ) : null}
               <p className="text-xs text-muted-foreground">

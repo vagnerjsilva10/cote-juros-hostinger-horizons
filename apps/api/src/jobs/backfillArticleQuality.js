@@ -43,11 +43,82 @@ const getStructured = (article = {}) =>
     ? article.structuredContent
     : {};
 
+const accentMap = new Map([
+  ['emprestimo', 'empréstimo'],
+  ['emprestimos', 'empréstimos'],
+  ['credito', 'crédito'],
+  ['cartao', 'cartão'],
+  ['cartoes', 'cartões'],
+  ['veiculo', 'veículo'],
+  ['veiculos', 'veículos'],
+  ['imovel', 'imóvel'],
+  ['imoveis', 'imóveis'],
+  ['simulacao', 'simulação'],
+  ['simulacoes', 'simulações'],
+  ['divida', 'dívida'],
+  ['dividas', 'dívidas'],
+  ['financas', 'finanças'],
+  ['educacao', 'educação'],
+  ['salario', 'salário'],
+  ['salarios', 'salários'],
+  ['minimo', 'mínimo'],
+  ['minimos', 'mínimos'],
+  ['rapido', 'rápido'],
+  ['rapida', 'rápida'],
+  ['opcao', 'opção'],
+  ['opcoes', 'opções'],
+  ['emergencia', 'emergência'],
+  ['revisao', 'revisão'],
+  ['importancia', 'importância'],
+  ['prisao', 'prisão'],
+  ['historico', 'histórico'],
+  ['inadimplencia', 'inadimplência'],
+  ['operacao', 'operação'],
+  ['investigacao', 'investigação'],
+  ['lanca', 'lança'],
+  ['maquinas', 'máquinas'],
+  ['mao', 'mão'],
+  ['debito', 'débito'],
+  ['automatico', 'automático'],
+  ['codigo', 'código'],
+  ['cidadao', 'cidadão'],
+  ['criancas', 'crianças'],
+  ['diferenca', 'diferença'],
+  ['consorcio', 'consórcio'],
+  ['objecoes', 'objeções'],
+  ['bancarias', 'bancárias'],
+  ['projecoes', 'projeções'],
+  ['economicas', 'econômicas'],
+  ['fiscalizacao', 'fiscalização'],
+  ['apreensao', 'apreensão'],
+  ['autonomo', 'autônomo'],
+  ['autonomos', 'autônomos'],
+  ['devolucao', 'devolução'],
+  ['amigavel', 'amigável'],
+  ['economico', 'econômico'],
+  ['definitivo', 'definitivo']
+]);
+
+const matchCase = (source, target) => {
+  if (source.toUpperCase() === source) return target.toUpperCase();
+  if (source[0] === source[0].toUpperCase()) return target[0].toUpperCase() + target.slice(1);
+  return target;
+};
+
+const restoreCommonAccents = (value = '') => {
+  let text = String(value || '');
+  for (const [plain, accented] of accentMap) {
+    text = text.replace(new RegExp(`\\b${plain}\\b`, 'gi'), (match) => matchCase(match, accented));
+  }
+  return text;
+};
+
 const slugToLabel = (slug = '') =>
-  String(slug || '')
-    .replace(/-/g, ' ')
-    .replace(/\b\w/g, (letter) => letter.toUpperCase())
-    .trim();
+  restoreCommonAccents(
+    String(slug || '')
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, (letter) => letter.toUpperCase())
+  ).trim();
 
 const buildInternalLinks = ({ article, candidates = [] }) => {
   const structured = getStructured(article);
@@ -90,11 +161,11 @@ const inferKeyword = (article = {}) => {
     return slugToLabel(article.slug);
   }
 
-  return structured.clusterKeyword
+  return restoreCommonAccents(structured.clusterKeyword
     || article.cluster?.primaryKeyword
     || structured.tags?.[0]
     || slugToLabel(article.slug)
-    || article.title;
+    || article.title);
 };
 
 const repairArticle = ({ article, relatedArticles }) => {
@@ -104,8 +175,8 @@ const repairArticle = ({ article, relatedArticles }) => {
     article: {
       ...structured,
       slug: article.slug,
-      title: article.title,
-      h1: structured.h1 || article.title,
+      title: restoreCommonAccents(article.title),
+      h1: restoreCommonAccents(structured.h1 || article.title),
       summary: article.excerpt || structured.summary || '',
       metaTitle: article.seoTitle || structured.metaTitle || article.title,
       metaDescription: article.seoDescription || structured.metaDescription || article.excerpt || '',

@@ -192,7 +192,7 @@ export default function ReactivationLandingPage() {
   return (
     <>
       <SeoHead
-        title="Atualize seu perfil de credito | Cote Juros"
+        title="Atualize seu perfil de crédito | Cote Juros"
         description="Confirme seu interesse, autorize o uso dos dados e veja caminhos de credito compativeis com seu momento."
         path={`/r/${token}`}
         robots="noindex,nofollow"

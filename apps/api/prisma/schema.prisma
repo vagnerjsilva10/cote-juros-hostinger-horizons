@@ -361,12 +361,34 @@ model Article {
   assets   EditorialAsset[]
   jobRuns  EditorialJobRun[]
   usedImages BlogUsedImage[]
+  automationJobs AutomationJob[]
 
   @@index([status, publishedAt])
   @@index([categoryId])
   @@index([clusterId])
   @@index([isPillar, status])
   @@map("articles")
+}
+
+model AutomationJob {
+  id                String    @id @default(cuid())
+  jobName           String    @map("job_name")
+  startedAt         DateTime  @default(now()) @map("started_at")
+  finishedAt        DateTime? @map("finished_at")
+  status            String
+  errorMessage      String?   @map("error_message")
+  payload           Json?
+  result            Json?
+  createdArticleId  String?   @map("created_article_id")
+  wordpressPostId   Int?      @map("wordpress_post_id")
+
+  article Article? @relation(fields: [createdArticleId], references: [id], onDelete: SetNull)
+
+  @@index([jobName, startedAt])
+  @@index([status, startedAt])
+  @@index([createdArticleId])
+  @@index([wordpressPostId])
+  @@map("automation_jobs")
 }
 
 model BlogUsedImage {

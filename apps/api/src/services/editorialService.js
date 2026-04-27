@@ -70,7 +70,7 @@ const toSlug = (value = '') =>
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
 
-const toCategorySlug = (value = '') => `blog-${toSlug(value || 'financas-pessoais')}`;
+const toCategorySlug = (value = '') => `blog-${toSlug(value || 'finanças-pessoais')}`;
 const countWords = (value = '') => String(value).trim().split(/\s+/).filter(Boolean).length;
 const stripMarkdownArtifacts = (value = '') =>
   String(value || '')
@@ -85,7 +85,7 @@ const compactWhitespace = (value = '') => stripHtmlArtifacts(stripMarkdownArtifa
 const SIMILARITY_STOP_WORDS = new Set([
   'a', 'o', 'as', 'os', 'um', 'uma', 'uns', 'umas', 'de', 'da', 'do', 'das', 'dos',
   'e', 'em', 'no', 'na', 'nos', 'nas', 'para', 'por', 'com', 'sem', 'sobre', 'como',
-  'quando', 'qual', 'quais', 'que', 'mais', 'menos', 'antes', 'depois', 'voce',
+  'quando', 'qual', 'quais', 'que', 'mais', 'menos', 'antes', 'depois', 'você',
   'seu', 'sua', 'seus', 'suas', 'vale', 'pena', 'entenda', 'veja'
 ]);
 const ensureSentencePunctuation = (value = '') => {
@@ -261,29 +261,29 @@ const normalizeSections = (sections = []) =>
 
 const buildFallbackSections = (title = '', category = '') => ([
   {
-    heading: `O que ${compactWhitespace(title).toLowerCase()} significa na pratica`,
-    subheading: 'Uma abertura objetiva para entender conceito, contexto e impacto real antes de comparar opcoes.',
+    heading: `O que ${compactWhitespace(title).toLowerCase()} significa na prática`,
+    subheading: 'Uma abertura objetiva para entender conceito, contexto e impacto real antes de comparar opções.',
     paragraphs: [
-      `Entender ${compactWhitespace(title).toLowerCase()} exige olhar para custo, contexto e impacto no orcamento, em vez de decidir apenas pela promessa mais chamativa.`,
-      `Quando a leitura fica organizada por objetivo, prazo e risco real, fica mais facil separar uma opcao util de uma proposta que pode apertar o mes seguinte.`
+      `Entender ${compactWhitespace(title).toLowerCase()} exige olhar para custo, contexto e impacto no orçamento, em vez de decidir apenas pela promessa mais chamativa.`,
+      `Quando a leitura fica organizada por objetivo, prazo e risco real, fica mais fácil separar uma opção útil de uma proposta que pode apertar o mês seguinte.`
     ],
     bullets: []
   },
   {
-    heading: 'Quais pontos merecem mais atencao antes de contratar',
-    subheading: 'Os fatores que realmente pesam na comparacao e ajudam a evitar uma decisao financeira mal dimensionada.',
+    heading: 'Quais pontos merecem mais atenção antes de contratar',
+    subheading: 'Os fatores que realmente pesam na comparação e ajudam a evitar uma decisão financeira mal dimensionada.',
     paragraphs: [
-      `Antes de seguir, vale comparar taxa, CET, prazo, valor de parcela, margem do orcamento e flexibilidade para lidar com imprevistos sem entrar em bola de neve.`,
-      `Esse tipo de analise ajuda a transformar uma busca genérica em uma decisao mais madura, com menos pressa e mais clareza sobre o que cabe no seu momento.`
+      `Antes de seguir, vale comparar taxa, CET, prazo, valor de parcela, margem do orçamento e flexibilidade para lidar com imprevistos sem entrar em bola de neve.`,
+      `Esse tipo de análise ajuda a transformar uma busca genérica em uma decisão mais madura, com menos pressa e mais clareza sobre o que cabe no seu momento.`
     ],
-    bullets: ['compare custo total e nao apenas parcela', 'veja como a decisao afeta os proximos meses']
+    bullets: ['compare custo total e não apenas parcela', 'veja como a decisão afeta os próximos meses']
   },
   {
-    heading: `Como ${compactWhitespace(category || 'o tema').toLowerCase()} entra nessa decisao`,
-    subheading: 'A conexao entre o assunto do artigo, a realidade do orcamento e os cuidados mais praticos da contratacao.',
+    heading: `Como ${compactWhitespace(category || 'o tema').toLowerCase()} entra nessa decisão`,
+    subheading: 'A conexão entre o assunto do artigo, a realidade do orçamento e os cuidados mais práticos da contratação.',
     paragraphs: [
-      `No contexto de ${compactWhitespace(category || 'financas pessoais').toLowerCase()}, o mais importante e cruzar informacao tecnica com realidade financeira, porque a melhor opcao no papel nem sempre e a melhor no dia a dia.`,
-      `Quanto maior o compromisso de longo prazo, mais importante fica revisar contrato, condicoes, margem mensal e o plano para nao depender de credito caro depois.`
+      `No contexto de ${compactWhitespace(category || 'finanças pessoais').toLowerCase()}, o mais importante é cruzar informação técnica com realidade financeira, porque a melhor opção no papel nem sempre é a melhor no dia a dia.`,
+      `Quanto maior o compromisso de longo prazo, mais importante fica revisar contrato, condições, margem mensal e o plano para não depender de crédito caro depois.`
     ],
     bullets: []
   }
@@ -359,11 +359,11 @@ const coerceGeneratedArticle = (raw = {}) => ({
   conclusion: normalizeParagraphList(raw?.conclusion || []).slice(0, 3),
   cta: {
     eyebrow: compactWhitespace(raw?.cta?.eyebrow || 'Proximo passo'),
-    title: compactWhitespace(raw?.cta?.title || 'Compare opcoes com mais clareza'),
-    description: ensureSentencePunctuation(raw?.cta?.description || 'Veja caminhos de credito que podem fazer sentido para o seu momento, com contexto e sem pressa.'),
+    title: compactWhitespace(raw?.cta?.title || 'Compare opções com mais clareza'),
+    description: ensureSentencePunctuation(raw?.cta?.description || 'Veja caminhos de crédito que podem fazer sentido para o seu momento, com contexto e sem pressa.'),
     primary: {
       to: compactWhitespace(raw?.cta?.primary?.to || '/emprestimos'),
-      label: compactWhitespace(raw?.cta?.primary?.label || 'Ver opcoes agora')
+      label: compactWhitespace(raw?.cta?.primary?.label || 'Ver opções agora')
     },
     secondary: {
       to: compactWhitespace(raw?.cta?.secondary?.to || '/blog'),
@@ -405,9 +405,9 @@ const getAvailableAiProviders = () => {
 const getScheduleSlotDate = (baseDate, slotIndex) => {
   const date = new Date(baseDate);
   const slots = [
-    { hours: 8, minutes: 15 },
-    { hours: 14, minutes: 15 },
-    { hours: 20, minutes: 15 }
+    { hours: 8, minutes: 30 },
+    { hours: 13, minutes: 30 },
+    { hours: 19, minutes: 30 }
   ];
   const slot = slots[slotIndex % slots.length];
   const dayOffset = Math.floor(slotIndex / slots.length);
@@ -427,18 +427,18 @@ const buildBriefPayload = ({ cluster, brief, scheduleDate }) => ({
   angle: brief.angle,
   targetLength: '1200-2000 palavras',
   requiredStructure: [
-    'headline SEO com keyword no inicio e ate 70 caracteres',
-    'intro curta com resposta rapida',
+    'headline SEO com keyword no início e ate 70 caracteres',
+    'intro curta com resposta rápida',
     'featured snippet direto',
-    'corpo explicativo escaneavel',
-    'exemplo real com numeros',
+    'corpo explicativo escaneável',
+    'exemplo real com números',
     'bloco de alerta financeiro',
     'perguntas no meio do texto',
     '3 CTAs',
     'impacto financeiro',
     'alternativas',
     'FAQ final',
-    'conclusao com CTA'
+    'conclusão com CTA'
   ],
   requiredLinks: {
     pillar: `/blog/${cluster.pillarSlug}`,
@@ -448,28 +448,28 @@ const buildBriefPayload = ({ cluster, brief, scheduleDate }) => ({
 });
 
 const buildGenerationPrompt = ({ cluster, brief, contextualLinks }) => `
-Voce e um editor senior de conteudo SEO da Cote Juros, um portal brasileiro de comparacao de credito.
+Você e um editor sênior de conteúdo SEO da Cote Juros, um portal brasileiro de comparação de crédito.
 
-Escreva um artigo original em portugues do Brasil, profundo e natural, com linguagem clara, adulta e sem exageros promocionais.
+Escreva um artigo original em português do Brasil, profundo e natural, com linguagem clara, adulta e sem exageros promocionais.
 
 Requisitos absolutos:
 - entre 1200 e 2000 palavras
-- H1 forte, objetivo, com a palavra-chave no inicio e no maximo 70 caracteres
-- introducao com no maximo 2 paragrafos e resposta rapida
-- incluir resposta direta para featured snippet no inicio
-- 5 a 8 secoes com H2 claros e bem determinados
-- cada secao deve ter um subtitulo curto, explicativo e diferente do H2
-- os subtitulos devem orientar a leitura e deixar evidente o foco da secao
-- pelo menos 1 exemplo real com numeros em reais, percentual ou prazo
+- H1 forte, objetivo, com a palavra-chave no início e no máximo 70 caracteres
+- introdução com no máximo 2 parágrafos e resposta rápida
+- incluir resposta direta para featured snippet no início
+- 5 a 8 seções com H2 claros e bem determinados
+- cada seção deve ter um subtítulo curto, explicativo e diferente do H2
+- os subtítulos devem orientar a leitura e deixar evidente o foco da seção
+- pelo menos 1 exemplo real com números em reais, percentual ou prazo
 - pelo menos 1 bloco de alerta sobre risco financeiro
-- perguntas reais no meio do conteudo com resposta direta
-- impacto na renda, risco de endividamento e cenario negativo
-- alternativas antes da contratacao
+- perguntas reais no meio do conteúdo com resposta direta
+- impacto na renda, risco de endividamento e cenário negativo
+- alternativas antes da contratação
 - 4 a 6 FAQs
-- 3 CTAs naturais: depois da introducao, no meio e antes da conclusao
-- sem fluff, sem frases vazias, sem promessas de aprovacao
+- 3 CTAs naturais: depois da introdução, no meio e antes da conclusão
+- sem fluff, sem frases vazias, sem promessas de aprovação
 - tom premium fintech, parecido com grandes portais financeiros
-- nunca inclua HTML cru nos campos de texto; nao escreva tags como <a href>
+- nunca inclua HTML cru nos campos de texto; não escreva tags como <a href>
 
 Contexto do cluster:
 ${JSON.stringify({
@@ -509,13 +509,13 @@ Responda somente JSON valido, sem markdown, com o seguinte formato:
 
 const buildExpandedGenerationPrompt = (prompt) => `${prompt}
 
-Reforce estes pontos obrigatorios:
+Reforce estes pontos obrigatórios:
 - entregue entre 1400 e 1800 palavras reais
-- use pelo menos 6 secoes desenvolvidas com paragrafos completos
-- escreva H2 objetivos e subtitulos logo abaixo de cada secao
+- use pelo menos 6 seções desenvolvidas com parágrafos completos
+- escreva H2 objetivos e subtítulos logo abaixo de cada seção
 - evite respostas enxutas
-- cada secao deve aprofundar o tema com contexto, comparacao, risco, custo e orientacao pratica
-- nao reduza FAQ nem conclusao
+- cada seção deve aprofundar o tema com contexto, comparação, risco, custo e orientação prática
+- não reduza FAQ nem conclusão
 `.trim();
 
 const getContextualLinks = ({ cluster, relatedArticles = [] }) => ({
@@ -568,7 +568,7 @@ const buildExternalLinks = ({ article, cluster }) => {
 
   if (/negativ|score|cpf|restricao|cadastro/.test(haystack)) {
     list.push(AUTHORITY_SOURCES[1], AUTHORITY_SOURCES[2]);
-  } else if (/orcamento|renda|reserva|familia|gasto|planejamento/.test(haystack)) {
+  } else if (/orçamento|renda|reserva|familia|gasto|planejamento/.test(haystack)) {
     list.push(AUTHORITY_SOURCES[3]);
   } else {
     list.push(AUTHORITY_SOURCES[1]);
@@ -592,11 +592,11 @@ const STAGE_OPPORTUNITY_SCORE = Object.freeze({
 const COMMERCIAL_INTENT_TERMS = Object.freeze([
   { pattern: /negativad|nome sujo|restricao/, score: 24 },
   { pattern: /financiamento|financiar|veiculo|carro|imovel|entrada/, score: 22 },
-  { pattern: /emprestimo|credito|garantia|consignado/, score: 20 },
+  { pattern: /emprestimo|crédito|garantia|consignado/, score: 20 },
   { pattern: /cartao|limite|anuidade|rotativo|fatura/, score: 18 },
   { pattern: /score|serasa|spc/, score: 14 },
   { pattern: /juros|cet|taxa|parcela/, score: 12 },
-  { pattern: /educacao|orcamento|reserva|organiza/, score: 6 }
+  { pattern: /educacao|orçamento|reserva|organiza/, score: 6 }
 ]);
 
 const TOPICAL_MODIFIERS = Object.freeze([
@@ -730,16 +730,16 @@ const validateArticlePayload = ({
   const issues = [];
   const mostSimilar = findMostSimilarArticle({ article, existingArticles });
 
-  if (wordCount < 1200) issues.push(`Conteudo curto demais: ${wordCount} palavras`);
-  if (wordCount > 3000) issues.push(`Conteudo longo demais: ${wordCount} palavras`);
+  if (wordCount < 1200) issues.push(`Conteúdo curto demais: ${wordCount} palavras`);
+  if (wordCount > 3000) issues.push(`Conteúdo longo demais: ${wordCount} palavras`);
   if (!article.h1 || article.h1.length < 24) issues.push('H1 ausente ou fraco');
-  if (!Array.isArray(article.sections) || article.sections.length < 5) issues.push('Menos de 5 secoes editoriais');
+  if (!Array.isArray(article.sections) || article.sections.length < 5) issues.push('Menos de 5 seções editoriais');
   if (!Array.isArray(article.faq) || article.faq.length < 3) issues.push('FAQ insuficiente');
   if (!Array.isArray(internalLinks) || internalLinks.length < 3) issues.push('Links internos insuficientes');
   if (!Array.isArray(externalLinks) || externalLinks.length < 1) issues.push('Links externos insuficientes');
   if (!article.cta?.primary?.to) issues.push('CTA primaria ausente');
   if (!image?.publicPath) issues.push('Imagem vencedora ausente');
-  if (!image?.validationPassed) issues.push('Imagem nao validada pelo seletor');
+  if (!image?.validationPassed) issues.push('Imagem não validada pelo seletor');
   if (image?.isFallback) issues.push('Imagem fallback/template bloqueada');
   if (existingSlugs.has(article.slug)) issues.push(`Slug duplicado: ${article.slug}`);
   if (existingTitles.has(article.title.trim().toLowerCase())) issues.push(`Titulo duplicado: ${article.title}`);
@@ -808,7 +808,7 @@ const buildEditorialAssetRows = ({ articleId, brief, image }) => {
   return [...variantAssets, winnerAsset];
 };
 
-const ensureBlogCategory = async (prisma, name = 'Financas pessoais') => prisma.category.upsert({
+const ensureBlogCategory = async (prisma, name = 'Finanças pessoais') => prisma.category.upsert({
   where: { slug: toCategorySlug(name) },
   update: {
     name,
@@ -940,28 +940,52 @@ export class EditorialService {
     });
   }
 
-  static async runScheduledPublication({ limit = 1, triggerSource = 'manual' } = {}) {
+  static async runScheduledPublication({
+    limit = 1,
+    triggerSource = 'manual',
+    ignoreSchedule = false,
+    ignoreRecentClusterCooldown = false
+  } = {}) {
     await this.ensureClusterCalendar();
     const prisma = getPrisma();
     const now = new Date();
     const useOpportunityPriority = process.env.EDITORIAL_PRIORITIZE_OPPORTUNITY !== 'false';
 
-    const eligibleBriefs = await prisma.editorialBrief.findMany({
+    const rawEligibleBriefs = await prisma.editorialBrief.findMany({
       where: {
         status: {
           in: ['planned', 'briefing_ready', 'draft', 'failed']
         },
-        OR: [
-          { scheduledFor: null },
-          { scheduledFor: { lte: now } }
-        ]
+        ...(ignoreSchedule
+          ? {}
+          : {
+              OR: [
+                { scheduledFor: null },
+                { scheduledFor: { lte: now } }
+              ]
+            })
       },
       include: {
-        cluster: true
+        cluster: true,
+        article: {
+          select: {
+            id: true,
+            status: true,
+            publishedAt: true
+          }
+        }
       },
       orderBy: [{ scheduledFor: 'asc' }, { createdAt: 'asc' }],
       take: useOpportunityPriority ? 50 : limit
     });
+    const skippedDraftBriefs = rawEligibleBriefs.filter((brief) => brief.article?.status === 'draft');
+    if (skippedDraftBriefs.length) {
+      await logger.warn('editorial_skipped_existing_draft_articles', {
+        count: skippedDraftBriefs.length,
+        slugs: skippedDraftBriefs.map((brief) => brief.slug)
+      });
+    }
+    const eligibleBriefs = rawEligibleBriefs.filter((brief) => brief.article?.status !== 'draft');
 
     let rankedBriefs = eligibleBriefs.map((brief) => ({
       brief,
@@ -1008,14 +1032,16 @@ export class EditorialService {
     }
 
     const recentClusterWindow = new Date(now.getTime() - 48 * 60 * 60 * 1000);
-    const recentClusterRows = await prisma.article.findMany({
-      where: {
-        status: 'published',
-        clusterId: { in: eligibleBriefs.map((brief) => brief.clusterId) },
-        publishedAt: { gte: recentClusterWindow }
-      },
-      select: { clusterId: true }
-    });
+    const recentClusterRows = ignoreRecentClusterCooldown
+      ? []
+      : await prisma.article.findMany({
+          where: {
+            status: 'published',
+            clusterId: { in: eligibleBriefs.map((brief) => brief.clusterId) },
+            publishedAt: { gte: recentClusterWindow }
+          },
+          select: { clusterId: true }
+        });
     const recentClusterIds = new Set(recentClusterRows.map((item) => item.clusterId).filter(Boolean));
     const briefs = selectBriefsWithQualityGate({
       rankedBriefs,
@@ -1136,6 +1162,7 @@ export class EditorialService {
 
       const existingArticles = await prisma.article.findMany({
           where: {
+            status: 'published',
             NOT: {
               slug: brief.slug
             }
@@ -1476,7 +1503,7 @@ export class EditorialService {
             content: [
               {
                 type: 'input_text',
-                text: 'Voce escreve conteudo SEO premium em portugues do Brasil para um portal financeiro. Responda apenas JSON valido.'
+                text: 'Você escreve conteúdo SEO premium em português do Brasil para um portal financeiro. Responda apenas JSON valido.'
               }
             ]
           },
