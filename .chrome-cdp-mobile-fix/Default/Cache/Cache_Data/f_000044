@@ -1,0 +1,194 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/components/blog/ArticleComments.jsx");import __vite__cjsImport0_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=f3f27a3e"; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+var _s = $RefreshSig$();
+import __vite__cjsImport1_react from "/node_modules/.vite/deps/react.js?v=f3f27a3e"; const React = __vite__cjsImport1_react.__esModule ? __vite__cjsImport1_react.default : __vite__cjsImport1_react; const useMemo = __vite__cjsImport1_react["useMemo"]; const useState = __vite__cjsImport1_react["useState"];
+import { MessageSquare } from "/node_modules/.vite/deps/lucide-react.js?v=f3f27a3e";
+import { Button } from "/src/components/ui/button.jsx";
+import { Input } from "/src/components/ui/input.jsx";
+import { Textarea } from "/src/components/ui/textarea.jsx";
+function ArticleComments({ articleSlug }) {
+  _s();
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    comment: ""
+  });
+  const [submitted, setSubmitted] = useState([]);
+  const comments = useMemo(() => submitted.filter((item) => item.articleSlug === articleSlug), [submitted, articleSlug]);
+  const handleChange = (field) => (event) => {
+    setForm((current) => ({
+      ...current,
+      [field]: event.target.value
+    }));
+  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!form.name.trim() || !form.email.trim() || !form.comment.trim()) return;
+    setSubmitted(
+      (current) => [
+        {
+          id: `${articleSlug}-${Date.now()}`,
+          articleSlug,
+          name: form.name.trim(),
+          email: form.email.trim(),
+          comment: form.comment.trim(),
+          createdAt: (/* @__PURE__ */ new Date()).toISOString()
+        },
+        ...current
+      ]
+    );
+    setForm({ name: "", email: "", comment: "" });
+  };
+  return /* @__PURE__ */ jsxDEV("section", { className: "blog-comments min-w-0 rounded-[20px] border border-border bg-white p-5 sm:p-6 md:p-8", children: [
+    /* @__PURE__ */ jsxDEV("div", { className: "flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center", children: [
+      /* @__PURE__ */ jsxDEV("div", { className: "blog-comments-icon flex h-11 w-11 items-center justify-center rounded-full", children: /* @__PURE__ */ jsxDEV(MessageSquare, { className: "h-5 w-5" }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+        lineNumber: 47,
+        columnNumber: 11
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+        lineNumber: 46,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: "min-w-0", children: [
+        /* @__PURE__ */ jsxDEV("h2", { className: "blog-comments-title text-2xl text-foreground", children: "Comentários" }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+          lineNumber: 50,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV("p", { className: "text-sm text-muted-foreground", children: "Use este espaço para deixar uma dúvida ou contar se o conteúdo ajudou no seu caso." }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+          lineNumber: 51,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+        lineNumber: 49,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+      lineNumber: 45,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV("form", { className: "mt-6 grid min-w-0 gap-4", onSubmit: handleSubmit, children: [
+      /* @__PURE__ */ jsxDEV("div", { className: "grid min-w-0 gap-4 md:grid-cols-2", children: [
+        /* @__PURE__ */ jsxDEV(Input, { value: form.name, onChange: handleChange("name"), placeholder: "Seu nome", "aria-label": "Seu nome" }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+          lineNumber: 59,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV(Input, { value: form.email, onChange: handleChange("email"), placeholder: "Seu e-mail", type: "email", "aria-label": "Seu e-mail" }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+          lineNumber: 60,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+        lineNumber: 58,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(
+        Textarea,
+        {
+          value: form.comment,
+          onChange: handleChange("comment"),
+          placeholder: "Escreva seu comentário",
+          "aria-label": "Escreva seu comentário",
+          className: "min-h-[140px]"
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+          lineNumber: 62,
+          columnNumber: 9
+        },
+        this
+      ),
+      /* @__PURE__ */ jsxDEV("div", { className: "flex justify-end", children: /* @__PURE__ */ jsxDEV(Button, { type: "submit", className: "w-full sm:w-auto", children: "Enviar comentário" }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+        lineNumber: 70,
+        columnNumber: 11
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+        lineNumber: 69,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+      lineNumber: 57,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV("div", { className: "mt-8 space-y-4", children: comments.length ? comments.map(
+      (comment) => /* @__PURE__ */ jsxDEV("article", { className: "blog-comments-item min-w-0 rounded-[16px] border border-border bg-background-secondary p-4", children: [
+        /* @__PURE__ */ jsxDEV("div", { className: "flex flex-wrap items-center justify-between gap-3", children: [
+          /* @__PURE__ */ jsxDEV("strong", { className: "text-sm text-foreground", children: comment.name }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+            lineNumber: 79,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV("span", { className: "text-xs text-muted-foreground", children: new Date(comment.createdAt).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" }) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+            lineNumber: 80,
+            columnNumber: 17
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+          lineNumber: 78,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ jsxDEV("p", { className: "mt-3 text-sm leading-7 text-muted-foreground", children: comment.comment }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+          lineNumber: 84,
+          columnNumber: 15
+        }, this)
+      ] }, comment.id, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+        lineNumber: 77,
+        columnNumber: 9
+      }, this)
+    ) : /* @__PURE__ */ jsxDEV("div", { className: "blog-comments-empty min-w-0 rounded-[16px] border border-dashed border-border bg-background-secondary p-5 text-sm text-muted-foreground", children: "Ainda não há comentários neste artigo. Se quiser, você pode ser a primeira pessoa a compartilhar uma dúvida ou experiência." }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+      lineNumber: 88,
+      columnNumber: 9
+    }, this) }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+      lineNumber: 74,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx",
+    lineNumber: 44,
+    columnNumber: 5
+  }, this);
+}
+_s(ArticleComments, "Teq1qYkwi13I8YGJ9NfFemkKZcs=");
+_c = ArticleComments;
+export default ArticleComments;
+var _c;
+$RefreshReg$(_c, "ArticleComments");
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+  RefreshRuntime.__hmr_import(import.meta.url).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+function $RefreshReg$(type, id) {
+  return RefreshRuntime.register(type, "C:/dev/cote-juros-hostinger-horizons/apps/web/src/components/blog/ArticleComments.jsx " + id);
+}
+function $RefreshSig$() {
+  return RefreshRuntime.createSignatureFunctionForTransform();
+}
+
+//# sourceMappingURL=data:application/json;base64,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eEo7QUFBQTtBQUFBO0FBQUE7QUFBQSxXQUVBLEtBaEJKO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0FrQkE7QUFBQSxPQWhERjtBQUFBO0FBQUE7QUFBQTtBQUFBLFNBaURBO0FBRUo7QUFBQ3BCLEdBeEZRRixpQkFBZTtBQUFBLEtBQWZBO0FBMEZULGVBQWVBO0FBQWdCLElBQUFpQztBQUFBLGFBQUFBLElBQUEiLCJuYW1lcyI6WyJSZWFjdCIsInVzZU1lbW8iLCJ1c2VTdGF0ZSIsIk1lc3NhZ2VTcXVhcmUiLCJCdXR0b24iLCJJbnB1dCIsIlRleHRhcmVhIiwiQXJ0aWNsZUNvbW1lbnRzIiwiYXJ0aWNsZVNsdWciLCJfcyIsImZvcm0iLCJzZXRGb3JtIiwibmFtZSIsImVtYWlsIiwiY29tbWVudCIsInN1Ym1pdHRlZCIsInNldFN1Ym1pdHRlZCIsImNvbW1lbnRzIiwiZmlsdGVyIiwiaXRlbSIsImhhbmRsZUNoYW5nZSIsImZpZWxkIiwiZXZlbnQiLCJjdXJyZW50IiwidGFyZ2V0IiwidmFsdWUiLCJoYW5kbGVTdWJtaXQiLCJwcmV2ZW50RGVmYXVsdCIsInRyaW0iLCJpZCIsIkRhdGUiLCJub3ciLCJjcmVhdGVkQXQiLCJ0b0lTT1N0cmluZyIsImxlbmd0aCIsIm1hcCIsInRvTG9jYWxlRGF0ZVN0cmluZyIsImRheSIsIm1vbnRoIiwieWVhciIsIl9jIl0sImlnbm9yZUxpc3QiOltdLCJzb3VyY2VzIjpbIkFydGljbGVDb21tZW50cy5qc3giXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IFJlYWN0LCB7IHVzZU1lbW8sIHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnO1xyXG5pbXBvcnQgeyBNZXNzYWdlU3F1YXJlIH0gZnJvbSAnbHVjaWRlLXJlYWN0JztcclxuaW1wb3J0IHsgQnV0dG9uIH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL2J1dHRvbi5qc3gnO1xyXG5pbXBvcnQgeyBJbnB1dCB9IGZyb20gJ0AvY29tcG9uZW50cy91aS9pbnB1dC5qc3gnO1xyXG5pbXBvcnQgeyBUZXh0YXJlYSB9IGZyb20gJ0AvY29tcG9uZW50cy91aS90ZXh0YXJlYS5qc3gnO1xyXG5cclxuZnVuY3Rpb24gQXJ0aWNsZUNvbW1lbnRzKHsgYXJ0aWNsZVNsdWcgfSkge1xyXG4gIGNvbnN0IFtmb3JtLCBzZXRGb3JtXSA9IHVzZVN0YXRlKHtcclxuICAgIG5hbWU6ICcnLFxyXG4gICAgZW1haWw6ICcnLFxyXG4gICAgY29tbWVudDogJydcclxuICB9KTtcclxuICBjb25zdCBbc3VibWl0dGVkLCBzZXRTdWJtaXR0ZWRdID0gdXNlU3RhdGUoW10pO1xyXG5cclxuICBjb25zdCBjb21tZW50cyA9IHVzZU1lbW8oKCkgPT4gc3VibWl0dGVkLmZpbHRlcigoaXRlbSkgPT4gaXRlbS5hcnRpY2xlU2x1ZyA9PT0gYXJ0aWNsZVNsdWcpLCBbc3VibWl0dGVkLCBhcnRpY2xlU2x1Z10pO1xyXG5cclxuICBjb25zdCBoYW5kbGVDaGFuZ2UgPSAoZmllbGQpID0+IChldmVudCkgPT4ge1xyXG4gICAgc2V0Rm9ybSgoY3VycmVudCkgPT4gKHtcclxuICAgICAgLi4uY3VycmVudCxcclxuICAgICAgW2ZpZWxkXTogZXZlbnQudGFyZ2V0LnZhbHVlXHJcbiAgICB9KSk7XHJcbiAgfTtcclxuXHJcbiAgY29uc3QgaGFuZGxlU3VibWl0ID0gKGV2ZW50KSA9PiB7XHJcbiAgICBldmVudC5wcmV2ZW50RGVmYXVsdCgpO1xyXG4gICAgaWYgKCFmb3JtLm5hbWUudHJpbSgpIHx8ICFmb3JtLmVtYWlsLnRyaW0oKSB8fCAhZm9ybS5jb21tZW50LnRyaW0oKSkgcmV0dXJuO1xyXG5cclxuICAgIHNldFN1Ym1pdHRlZCgoY3VycmVudCkgPT4gW1xyXG4gICAgICB7XHJcbiAgICAgICAgaWQ6IGAke2FydGljbGVTbHVnfS0ke0RhdGUubm93KCl9YCxcclxuICAgICAgICBhcnRpY2xlU2x1ZyxcclxuICAgICAgICBuYW1lOiBmb3JtLm5hbWUudHJpbSgpLFxyXG4gICAgICAgIGVtYWlsOiBmb3JtLmVtYWlsLnRyaW0oKSxcclxuICAgICAgICBjb21tZW50OiBmb3JtLmNvbW1lbnQudHJpbSgpLFxyXG4gICAgICAgIGNyZWF0ZWRBdDogbmV3IERhdGUoKS50b0lTT1N0cmluZygpXHJcbiAgICAgIH0sXHJcbiAgICAgIC4uLmN1cnJlbnRcclxuICAgIF0pO1xyXG5cclxuICAgIHNldEZvcm0oeyBuYW1lOiAnJywgZW1haWw6ICcnLCBjb21tZW50OiAnJyB9KTtcclxuICB9O1xyXG5cclxuICByZXR1cm4gKFxyXG4gICAgPHNlY3Rpb24gY2xhc3NOYW1lPVwiYmxvZy1jb21tZW50cyBtaW4tdy0wIHJvdW5kZWQtWzIwcHhdIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLXdoaXRlIHAtNSBzbTpwLTYgbWQ6cC04XCI+XG4gICAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXggbWluLXctMCBmbGV4LWNvbCBnYXAtMyBzbTpmbGV4LXJvdyBzbTppdGVtcy1jZW50ZXJcIj5cclxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImJsb2ctY29tbWVudHMtaWNvbiBmbGV4IGgtMTEgdy0xMSBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcm91bmRlZC1mdWxsXCI+XG4gICAgICAgICAgPE1lc3NhZ2VTcXVhcmUgY2xhc3NOYW1lPVwiaC01IHctNVwiIC8+XHJcbiAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtaW4tdy0wXCI+XHJcbiAgICAgICAgICA8aDIgY2xhc3NOYW1lPVwiYmxvZy1jb21tZW50cy10aXRsZSB0ZXh0LTJ4bCB0ZXh0LWZvcmVncm91bmRcIj5Db21lbnTDoXJpb3M8L2gyPlxuICAgICAgICAgIDxwIGNsYXNzTmFtZT1cInRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kXCI+XHJcbiAgICAgICAgICAgIFVzZSBlc3RlIGVzcGHDp28gcGFyYSBkZWl4YXIgdW1hIGTDunZpZGEgb3UgY29udGFyIHNlIG8gY29udGXDumRvIGFqdWRvdSBubyBzZXUgY2Fzby5cclxuICAgICAgICAgIDwvcD5cclxuICAgICAgICA8L2Rpdj5cclxuICAgICAgPC9kaXY+XHJcblxyXG4gICAgICA8Zm9ybSBjbGFzc05hbWU9XCJtdC02IGdyaWQgbWluLXctMCBnYXAtNFwiIG9uU3VibWl0PXtoYW5kbGVTdWJtaXR9PlxyXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZ3JpZCBtaW4tdy0wIGdhcC00IG1kOmdyaWQtY29scy0yXCI+XHJcbiAgICAgICAgICA8SW5wdXQgdmFsdWU9e2Zvcm0ubmFtZX0gb25DaGFuZ2U9e2hhbmRsZUNoYW5nZSgnbmFtZScpfSBwbGFjZWhvbGRlcj1cIlNldSBub21lXCIgYXJpYS1sYWJlbD1cIlNldSBub21lXCIgLz5cclxuICAgICAgICAgIDxJbnB1dCB2YWx1ZT17Zm9ybS5lbWFpbH0gb25DaGFuZ2U9e2hhbmRsZUNoYW5nZSgnZW1haWwnKX0gcGxhY2Vob2xkZXI9XCJTZXUgZS1tYWlsXCIgdHlwZT1cImVtYWlsXCIgYXJpYS1sYWJlbD1cIlNldSBlLW1haWxcIiAvPlxyXG4gICAgICAgIDwvZGl2PlxyXG4gICAgICAgIDxUZXh0YXJlYVxyXG4gICAgICAgICAgdmFsdWU9e2Zvcm0uY29tbWVudH1cclxuICAgICAgICAgIG9uQ2hhbmdlPXtoYW5kbGVDaGFuZ2UoJ2NvbW1lbnQnKX1cclxuICAgICAgICAgIHBsYWNlaG9sZGVyPVwiRXNjcmV2YSBzZXUgY29tZW50w6FyaW9cIlxyXG4gICAgICAgICAgYXJpYS1sYWJlbD1cIkVzY3JldmEgc2V1IGNvbWVudMOhcmlvXCJcclxuICAgICAgICAgIGNsYXNzTmFtZT1cIm1pbi1oLVsxNDBweF1cIlxyXG4gICAgICAgIC8+XHJcbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4IGp1c3RpZnktZW5kXCI+XHJcbiAgICAgICAgICA8QnV0dG9uIHR5cGU9XCJzdWJtaXRcIiBjbGFzc05hbWU9XCJ3LWZ1bGwgc206dy1hdXRvXCI+RW52aWFyIGNvbWVudMOhcmlvPC9CdXR0b24+XHJcbiAgICAgICAgPC9kaXY+XHJcbiAgICAgIDwvZm9ybT5cclxuXHJcbiAgICAgIDxkaXYgY2xhc3NOYW1lPVwibXQtOCBzcGFjZS15LTRcIj5cclxuICAgICAgICB7Y29tbWVudHMubGVuZ3RoID8gKFxyXG4gICAgICAgICAgY29tbWVudHMubWFwKChjb21tZW50KSA9PiAoXHJcbiAgICAgICAgICAgIDxhcnRpY2xlIGtleT17Y29tbWVudC5pZH0gY2xhc3NOYW1lPVwiYmxvZy1jb21tZW50cy1pdGVtIG1pbi13LTAgcm91bmRlZC1bMTZweF0gYm9yZGVyIGJvcmRlci1ib3JkZXIgYmctYmFja2dyb3VuZC1zZWNvbmRhcnkgcC00XCI+XG4gICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZmxleCBmbGV4LXdyYXAgaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiBnYXAtM1wiPlxyXG4gICAgICAgICAgICAgICAgPHN0cm9uZyBjbGFzc05hbWU9XCJ0ZXh0LXNtIHRleHQtZm9yZWdyb3VuZFwiPntjb21tZW50Lm5hbWV9PC9zdHJvbmc+XHJcbiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9XCJ0ZXh0LXhzIHRleHQtbXV0ZWQtZm9yZWdyb3VuZFwiPlxyXG4gICAgICAgICAgICAgICAgICB7bmV3IERhdGUoY29tbWVudC5jcmVhdGVkQXQpLnRvTG9jYWxlRGF0ZVN0cmluZygncHQtQlInLCB7IGRheTogJzItZGlnaXQnLCBtb250aDogJzItZGlnaXQnLCB5ZWFyOiAnbnVtZXJpYycgfSl9XHJcbiAgICAgICAgICAgICAgICA8L3NwYW4+XHJcbiAgICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwibXQtMyB0ZXh0LXNtIGxlYWRpbmctNyB0ZXh0LW11dGVkLWZvcmVncm91bmRcIj57Y29tbWVudC5jb21tZW50fTwvcD5cclxuICAgICAgICAgICAgPC9hcnRpY2xlPlxyXG4gICAgICAgICAgKSlcclxuICAgICAgICApIDogKFxyXG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJibG9nLWNvbW1lbnRzLWVtcHR5IG1pbi13LTAgcm91bmRlZC1bMTZweF0gYm9yZGVyIGJvcmRlci1kYXNoZWQgYm9yZGVyLWJvcmRlciBiZy1iYWNrZ3JvdW5kLXNlY29uZGFyeSBwLTUgdGV4dC1zbSB0ZXh0LW11dGVkLWZvcmVncm91bmRcIj5cbiAgICAgICAgICAgIEFpbmRhIG7Do28gaMOhIGNvbWVudMOhcmlvcyBuZXN0ZSBhcnRpZ28uIFNlIHF1aXNlciwgdm9jw6ogcG9kZSBzZXIgYSBwcmltZWlyYSBwZXNzb2EgYSBjb21wYXJ0aWxoYXIgdW1hIGTDunZpZGEgb3UgZXhwZXJpw6puY2lhLlxyXG4gICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgKX1cclxuICAgICAgPC9kaXY+XHJcbiAgICA8L3NlY3Rpb24+XHJcbiAgKTtcclxufVxyXG5cclxuZXhwb3J0IGRlZmF1bHQgQXJ0aWNsZUNvbW1lbnRzO1xyXG4iXSwiZmlsZSI6IkM6L2Rldi9jb3RlLWp1cm9zLWhvc3Rpbmdlci1ob3Jpem9ucy9hcHBzL3dlYi9zcmMvY29tcG9uZW50cy9ibG9nL0FydGljbGVDb21tZW50cy5qc3gifQ==

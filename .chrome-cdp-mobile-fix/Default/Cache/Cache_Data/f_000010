@@ -1,0 +1,541 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/pages/OfertasPage.jsx");import __vite__cjsImport0_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=f3f27a3e"; const Fragment = __vite__cjsImport0_react_jsxDevRuntime["Fragment"]; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+var _s = $RefreshSig$();
+import __vite__cjsImport1_react from "/node_modules/.vite/deps/react.js?v=f3f27a3e"; const React = __vite__cjsImport1_react.__esModule ? __vite__cjsImport1_react.default : __vite__cjsImport1_react; const useMemo = __vite__cjsImport1_react["useMemo"];
+import { Helmet } from "/node_modules/.vite/deps/react-helmet.js?v=f3f27a3e";
+import { Link } from "/node_modules/.vite/deps/react-router-dom.js?v=f3f27a3e";
+import { ArrowRight, ExternalLink, ShieldCheck } from "/node_modules/.vite/deps/lucide-react.js?v=f3f27a3e";
+import { toast } from "/node_modules/.vite/deps/sonner.js?v=f3f27a3e";
+import PageHero from "/src/components/PageHero.jsx";
+import AffiliateOfferGrid from "/src/components/affiliates/AffiliateOfferGrid.jsx";
+import SuperSimOfferCard from "/src/components/affiliates/SuperSimOfferCard.jsx";
+import { Button } from "/src/components/ui/button.jsx";
+import { useAffiliatePlacements } from "/src/hooks/useAffiliatePlacements.js";
+import { affiliateRedirectService } from "/src/platform/services/affiliateRedirectService.js";
+import { getNonSupersimOffers, getSupersimOffer } from "/src/lib/supersim.js";
+const collectOffers = (placements = {}) => {
+  const seen = /* @__PURE__ */ new Set();
+  return Object.values(placements).flat().filter(Boolean).filter((offer) => {
+    const key = offer.offerSlug || offer.id;
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+const handoffPoints = [
+  "Esta �rea existe s� para sa�das externas, sem misturar com a compara��o principal.",
+  "Voc� entende o contexto antes e s� clica quando a oferta fizer sentido.",
+  "Se voc� avan�ar, a Cote Juros pode receber comiss�o sem custo extra para voc�."
+];
+function OfertasPage() {
+  _s();
+  const loanPlacements = useAffiliatePlacements({ pageSlug: "/emprestimos", productType: "loan" });
+  const creditCardPlacements = useAffiliatePlacements({ pageSlug: "/cartoes-de-credito", productType: "credit_card" });
+  const financingPlacements = useAffiliatePlacements({ pageSlug: "/financiamento", productType: "financing" });
+  const loanOffers = useMemo(() => collectOffers(loanPlacements), [loanPlacements]);
+  const creditCardOffers = useMemo(() => collectOffers(creditCardPlacements), [creditCardPlacements]);
+  const financingOffers = useMemo(() => collectOffers(financingPlacements), [financingPlacements]);
+  const supersimOffer = useMemo(() => getSupersimOffer(loanOffers), [loanOffers]);
+  const otherLoanOffers = useMemo(() => getNonSupersimOffers(loanOffers), [loanOffers]);
+  const hasAnyOffer = loanOffers.length || creditCardOffers.length || financingOffers.length;
+  const handleAffiliateClick = async (offer, position) => {
+    try {
+      const result = await affiliateRedirectService.create({
+        offerSlug: offer.offerSlug,
+        pageSlug: "/ofertas",
+        position
+      });
+      if (!result?.redirectUrl) {
+        toast.error("Esta oferta n�o est� dispon�vel agora.");
+        return;
+      }
+      window.location.href = result.redirectUrl;
+    } catch (error) {
+      toast.error(error.message || "N�o foi poss�vel abrir esta oferta agora.");
+    }
+  };
+  return /* @__PURE__ */ jsxDEV(Fragment, { children: [
+    /* @__PURE__ */ jsxDEV(Helmet, { children: [
+      /* @__PURE__ */ jsxDEV("title", { children: "Ofertas externas selecionadas | Cote Juros" }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+        lineNumber: 69,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(
+        "meta",
+        {
+          name: "description",
+          content: "Veja sa�das externas em uma �rea separada, com leitura clara, aviso de sa�da e mais contexto antes do clique."
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 70,
+          columnNumber: 9
+        },
+        this
+      )
+    ] }, void 0, true, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+      lineNumber: 68,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV(
+      PageHero,
+      {
+        eyebrow: "Sa�das externas",
+        badge: "�rea separada da experi�ncia principal",
+        centered: true,
+        title: "Quando fizer sentido sair da Cote Juros, as op��es ficam aqui.",
+        subtitle: "A compara��o principal continua nas p�ginas de produto. Esta rota existe s� para organizar ofertas externas com mais clareza, contexto e transpar�ncia.",
+        children: /* @__PURE__ */ jsxDEV("div", { className: "mx-auto flex w-full max-w-4xl flex-col gap-4", children: [
+          /* @__PURE__ */ jsxDEV("div", { className: "grid gap-4 md:grid-cols-3", children: handoffPoints.map(
+            (item) => /* @__PURE__ */ jsxDEV(
+              "div",
+              {
+                className: "rounded-[20px] border border-white/[0.08] bg-white/[0.04] px-5 py-5 text-left shadow-[0_16px_42px_rgba(2,6,23,0.16)] backdrop-blur",
+                children: /* @__PURE__ */ jsxDEV("p", { className: "text-sm leading-7 text-white/78", children: item }, void 0, false, {
+                  fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+                  lineNumber: 90,
+                  columnNumber: 17
+                }, this)
+              },
+              item,
+              false,
+              {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+                lineNumber: 86,
+                columnNumber: 13
+              },
+              this
+            )
+          ) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 84,
+            columnNumber: 11
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "flex flex-col justify-center gap-3 sm:flex-row", children: [
+            /* @__PURE__ */ jsxDEV(Link, { to: "/emprestimos", children: /* @__PURE__ */ jsxDEV(Button, { size: "lg", variant: "outline", className: "hero-secondary-btn", children: "Voltar para a compara��o" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 97,
+              columnNumber: 15
+            }, this) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 96,
+              columnNumber: 13
+            }, this),
+            /* @__PURE__ */ jsxDEV("a", { href: "#ofertas-disponiveis", className: "inline-flex", children: /* @__PURE__ */ jsxDEV(Button, { size: "lg", children: "Ver ofertas agora" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 102,
+              columnNumber: 15
+            }, this) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 101,
+              columnNumber: 13
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 95,
+            columnNumber: 11
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 83,
+          columnNumber: 9
+        }, this)
+      },
+      void 0,
+      false,
+      {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+        lineNumber: 76,
+        columnNumber: 7
+      },
+      this
+    ),
+    /* @__PURE__ */ jsxDEV("div", { className: "page-shell py-14 sm:py-18", children: [
+      /* @__PURE__ */ jsxDEV("section", { className: "grid gap-5 rounded-[28px] border border-border bg-white p-6 shadow-[var(--shadow-sm)] md:grid-cols-[1.1fr_0.9fr] md:p-8", children: [
+        /* @__PURE__ */ jsxDEV("div", { children: [
+          /* @__PURE__ */ jsxDEV("p", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-primary/80", children: "Leitura direta" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 111,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV("h2", { className: "mt-3 text-3xl text-foreground", children: "A �rea existe para n�o poluir a experi�ncia principal." }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 112,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV("p", { className: "mt-4 max-w-2xl text-base leading-8 text-muted-foreground", children: "Em vez de misturar sa�da externa com a leitura do produto, a Cote Juros deixa esse passo separado. Assim, voc� compara primeiro e s� considera um clique externo quando isso fizer sentido." }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 113,
+            columnNumber: 13
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 110,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { className: "rounded-[24px] border border-border bg-background-secondary p-6", children: [
+          /* @__PURE__ */ jsxDEV("p", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-primary/80", children: "Antes de seguir" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 119,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "mt-5 space-y-4", children: [
+            "Leia a descri��o e o perfil mais comum da oferta.",
+            "Entenda que o pr�ximo passo acontece fora da Cote Juros.",
+            "Compare custo, prazo e contexto antes de contratar."
+          ].map(
+            (item) => /* @__PURE__ */ jsxDEV("div", { className: "flex items-start gap-3", children: [
+              /* @__PURE__ */ jsxDEV(ShieldCheck, { className: "mt-1 h-4 w-4 shrink-0 text-primary" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+                lineNumber: 127,
+                columnNumber: 19
+              }, this),
+              /* @__PURE__ */ jsxDEV("p", { className: "text-sm leading-7 text-foreground", children: item }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+                lineNumber: 128,
+                columnNumber: 19
+              }, this)
+            ] }, item, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 126,
+              columnNumber: 15
+            }, this)
+          ) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 120,
+            columnNumber: 13
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 118,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+        lineNumber: 109,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV("section", { id: "ofertas-disponiveis", className: "mt-14 space-y-10", children: [
+        !hasAnyOffer ? /* @__PURE__ */ jsxDEV("div", { className: "rounded-[24px] border border-dashed border-border bg-background-secondary px-6 py-14 text-center", children: [
+          /* @__PURE__ */ jsxDEV("h2", { className: "text-2xl text-foreground", children: "Nenhuma oferta externa dispon�vel agora" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 138,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("p", { className: "mt-3 text-muted-foreground", children: "Continue pela compara��o principal para entender melhor o seu cen�rio antes de tentar novamente." }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 139,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "mt-6", children: /* @__PURE__ */ jsxDEV(Link, { to: "/emprestimos", className: "inline-flex", children: /* @__PURE__ */ jsxDEV(Button, { children: "Ir para empr�stimos" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 142,
+            columnNumber: 19
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 141,
+            columnNumber: 17
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 140,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 137,
+          columnNumber: 11
+        }, this) : null,
+        loanOffers.length ? /* @__PURE__ */ jsxDEV("section", { className: "space-y-6", children: [
+          /* @__PURE__ */ jsxDEV("div", { className: "max-w-3xl", children: [
+            /* @__PURE__ */ jsxDEV("p", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-primary/80", children: "Empr�stimos" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 151,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV("h2", { className: "mt-3 text-3xl text-foreground", children: "Ofertas externas para quem j� decidiu olhar cr�dito pessoal." }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 152,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV("p", { className: "mt-4 text-base leading-8 text-muted-foreground", children: "Esta vitrine s� faz sentido depois da leitura principal. Aqui entram sa�das objetivas, sem prometer mais do que a oferta realmente entrega." }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 153,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 150,
+            columnNumber: 15
+          }, this),
+          supersimOffer ? /* @__PURE__ */ jsxDEV(
+            SuperSimOfferCard,
+            {
+              offer: {
+                ...supersimOffer,
+                disclosureText: supersimOffer.disclosureText || "Se voc� avan�ar por este link, a Cote Juros pode receber comiss�o sem custo extra para voc�."
+              },
+              title: "SuperSim",
+              description: "Uma alternativa externa para quem quer seguir com empr�stimo online de forma mais direta, depois de j� ter comparado o cen�rio.",
+              ctaLabel: "Simular empr�stimo",
+              badgeLabel: "Sa�da externa",
+              onSelect: (offer) => handleAffiliateClick(offer, "ofertas-loan-featured")
+            },
+            void 0,
+            false,
+            {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 159,
+              columnNumber: 13
+            },
+            this
+          ) : null,
+          otherLoanOffers.length ? /* @__PURE__ */ jsxDEV(
+            AffiliateOfferGrid,
+            {
+              offers: otherLoanOffers.map((offer) => ({
+                ...offer,
+                ctaText: offer.ctaText || "Ver condi��es",
+                disclosureText: offer.disclosureText || "Se voc� avan�ar por este link, a Cote Juros pode receber comiss�o sem custo extra para voc�."
+              })),
+              title: "Ao continuar, voc� ser� direcionado para uma institui��o externa",
+              eyebrow: "Ofertas externas",
+              onSelect: (offer) => handleAffiliateClick(offer, "ofertas-loan-grid")
+            },
+            void 0,
+            false,
+            {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 174,
+              columnNumber: 13
+            },
+            this
+          ) : null
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 149,
+          columnNumber: 11
+        }, this) : null,
+        creditCardOffers.length ? /* @__PURE__ */ jsxDEV("section", { className: "space-y-6", children: [
+          /* @__PURE__ */ jsxDEV("div", { className: "max-w-3xl", children: [
+            /* @__PURE__ */ jsxDEV("p", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-primary/80", children: "Cart�es" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 192,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV("h2", { className: "mt-3 text-3xl text-foreground", children: "Sa�das externas para quem quer seguir olhando cart�es." }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 193,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV("p", { className: "mt-4 text-base leading-8 text-muted-foreground", children: "A compara��o principal continua na navega��o do produto. Esta se��o existe s� para organizar alternativas externas de forma mais limpa." }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 194,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 191,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV(
+            AffiliateOfferGrid,
+            {
+              offers: creditCardOffers.map((offer) => ({
+                ...offer,
+                ctaText: offer.ctaText || "Ver condi��es",
+                disclosureText: offer.disclosureText || "Se voc� avan�ar por este link, a Cote Juros pode receber comiss�o sem custo extra para voc�."
+              })),
+              title: "Ao continuar, voc� ser� direcionado para uma institui��o externa",
+              eyebrow: "Ofertas externas",
+              onSelect: (offer) => handleAffiliateClick(offer, "ofertas-credit-card")
+            },
+            void 0,
+            false,
+            {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 199,
+              columnNumber: 15
+            },
+            this
+          )
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 190,
+          columnNumber: 11
+        }, this) : null,
+        financingOffers.length ? /* @__PURE__ */ jsxDEV("section", { className: "space-y-6", children: [
+          /* @__PURE__ */ jsxDEV("div", { className: "max-w-3xl", children: [
+            /* @__PURE__ */ jsxDEV("p", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-primary/80", children: "Financiamentos" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 216,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV("h2", { className: "mt-3 text-3xl text-foreground", children: "Alternativas externas para quem quer seguir com financiamento." }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 217,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV("p", { className: "mt-4 text-base leading-8 text-muted-foreground", children: "Mantivemos esta �rea separada para o site continuar mais claro. A sa�da externa aparece aqui, e n�o no meio da jornada principal." }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 218,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 215,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV(
+            AffiliateOfferGrid,
+            {
+              offers: financingOffers.map((offer) => ({
+                ...offer,
+                ctaText: offer.ctaText || "Simular financiamento",
+                disclosureText: offer.disclosureText || "Se voc� avan�ar por este link, a Cote Juros pode receber comiss�o sem custo extra para voc�."
+              })),
+              title: "Ao continuar, voc� ser� direcionado para uma institui��o externa",
+              eyebrow: "Ofertas externas",
+              onSelect: (offer) => handleAffiliateClick(offer, "ofertas-financing")
+            },
+            void 0,
+            false,
+            {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+              lineNumber: 223,
+              columnNumber: 15
+            },
+            this
+          )
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 214,
+          columnNumber: 11
+        }, this) : null
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+        lineNumber: 135,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+      lineNumber: 108,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV("section", { className: "border-t border-border bg-background-secondary py-16 sm:py-20", children: /* @__PURE__ */ jsxDEV("div", { className: "page-shell", children: /* @__PURE__ */ jsxDEV("div", { className: "mx-auto max-w-4xl rounded-[28px] border border-border bg-white p-8 shadow-[var(--shadow-sm)] sm:p-10", children: /* @__PURE__ */ jsxDEV("div", { className: "grid gap-8 md:grid-cols-[1fr_auto] md:items-center", children: [
+      /* @__PURE__ */ jsxDEV("div", { children: [
+        /* @__PURE__ */ jsxDEV("p", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-primary/80", children: "Voltar para o produto" }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 244,
+          columnNumber: 17
+        }, this),
+        /* @__PURE__ */ jsxDEV("h2", { className: "mt-3 text-3xl text-foreground", children: "Prefere decidir com mais calma dentro da Cote Juros?" }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 245,
+          columnNumber: 17
+        }, this),
+        /* @__PURE__ */ jsxDEV("p", { className: "mt-4 text-base leading-8 text-muted-foreground", children: "Se voc� ainda quer comparar antes de sair do portal, continue pelas p�ginas principais e mantenha a leitura dentro da experi�ncia principal." }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 246,
+          columnNumber: 17
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+        lineNumber: 243,
+        columnNumber: 15
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: "flex flex-col gap-3 sm:flex-row md:flex-col", children: [
+        /* @__PURE__ */ jsxDEV(Link, { to: "/emprestimos", children: /* @__PURE__ */ jsxDEV(Button, { className: "w-full justify-between", children: [
+          "Ir para empr�stimos",
+          /* @__PURE__ */ jsxDEV(ArrowRight, { className: "h-4 w-4" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 255,
+            columnNumber: 21
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 253,
+          columnNumber: 19
+        }, this) }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 252,
+          columnNumber: 17
+        }, this),
+        /* @__PURE__ */ jsxDEV(Link, { to: "/cartoes", children: /* @__PURE__ */ jsxDEV(Button, { variant: "outline", className: "w-full justify-between", children: [
+          "Ver cart�es",
+          /* @__PURE__ */ jsxDEV(ExternalLink, { className: "h-4 w-4" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+            lineNumber: 261,
+            columnNumber: 21
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 259,
+          columnNumber: 19
+        }, this) }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+          lineNumber: 258,
+          columnNumber: 17
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+        lineNumber: 251,
+        columnNumber: 15
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+      lineNumber: 242,
+      columnNumber: 13
+    }, this) }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+      lineNumber: 241,
+      columnNumber: 11
+    }, this) }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+      lineNumber: 240,
+      columnNumber: 9
+    }, this) }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+      lineNumber: 239,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx",
+    lineNumber: 67,
+    columnNumber: 5
+  }, this);
+}
+_s(OfertasPage, "DA7406ADsKVmE9N1wFNPxR9Czek=", false, function() {
+  return [useAffiliatePlacements, useAffiliatePlacements, useAffiliatePlacements];
+});
+_c = OfertasPage;
+export default OfertasPage;
+var _c;
+$RefreshReg$(_c, "OfertasPage");
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+  RefreshRuntime.__hmr_import(import.meta.url).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+function $RefreshReg$(type, id) {
+  return RefreshRuntime.register(type, "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/OfertasPage.jsx " + id);
+}
+function $RefreshSig$() {
+  return RefreshRuntime.createSignatureFunctionForTransform();
+}
+
+//# sourceMappingURL=data:application/json;base64,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YUFBVztBQUFBLFVBQ0twQix3QkFDTUEsd0JBQ0RBLHNCQUFzQjtBQUFBO0FBQUEsS0FIM0NvQjtBQStPVCxlQUFlQTtBQUFZLElBQUE0QjtBQUFBLGFBQUFBLElBQUEiLCJuYW1lcyI6WyJSZWFjdCIsInVzZU1lbW8iLCJIZWxtZXQiLCJMaW5rIiwiQXJyb3dSaWdodCIsIkV4dGVybmFsTGluayIsIlNoaWVsZENoZWNrIiwidG9hc3QiLCJQYWdlSGVybyIsIkFmZmlsaWF0ZU9mZmVyR3JpZCIsIlN1cGVyU2ltT2ZmZXJDYXJkIiwiQnV0dG9uIiwidXNlQWZmaWxpYXRlUGxhY2VtZW50cyIsImFmZmlsaWF0ZVJlZGlyZWN0U2VydmljZSIsImdldE5vblN1cGVyc2ltT2ZmZXJzIiwiZ2V0U3VwZXJzaW1PZmZlciIsImNvbGxlY3RPZmZlcnMiLCJwbGFjZW1lbnRzIiwic2VlbiIsIlNldCIsIk9iamVjdCIsInZhbHVlcyIsImZsYXQiLCJmaWx0ZXIiLCJCb29sZWFuIiwib2ZmZXIiLCJrZXkiLCJvZmZlclNsdWciLCJpZCIsImhhcyIsImFkZCIsImhhbmRvZmZQb2ludHMiLCJPZmVydGFzUGFnZSIsIl9zIiwibG9hblBsYWNlbWVudHMiLCJwYWdlU2x1ZyIsInByb2R1Y3RUeXBlIiwiY3JlZGl0Q2FyZFBsYWNlbWVudHMiLCJmaW5hbmNpbmdQbGFjZW1lbnRzIiwibG9hbk9mZmVycyIsImNyZWRpdENhcmRPZmZlcnMiLCJmaW5hbmNpbmdPZmZlcnMiLCJzdXBlcnNpbU9mZmVyIiwib3RoZXJMb2FuT2ZmZXJzIiwiaGFzQW55T2ZmZXIiLCJsZW5ndGgiLCJoYW5kbGVBZmZpbGlhdGVDbGljayIsInBvc2l0aW9uIiwicmVzdWx0IiwiY3JlYXRlIiwicmVkaXJlY3RVcmwiLCJlcnJvciIsIndpbmRvdyIsImxvY2F0aW9uIiwiaHJlZiIsIm1lc3NhZ2UiLCJtYXAiLCJpdGVtIiwiZGlzY2xvc3VyZVRleHQiLCJjdGFUZXh0IiwiX2MiXSwiaWdub3JlTGlzdCI6W10sInNvdXJjZXMiOlsiT2ZlcnRhc1BhZ2UuanN4Il0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBSZWFjdCwgeyB1c2VNZW1vIH0gZnJvbSAncmVhY3QnO1xuaW1wb3J0IHsgSGVsbWV0IH0gZnJvbSAncmVhY3QtaGVsbWV0JztcbmltcG9ydCB7IExpbmsgfSBmcm9tICdyZWFjdC1yb3V0ZXItZG9tJztcbmltcG9ydCB7IEFycm93UmlnaHQsIEV4dGVybmFsTGluaywgU2hpZWxkQ2hlY2sgfSBmcm9tICdsdWNpZGUtcmVhY3QnO1xuaW1wb3J0IHsgdG9hc3QgfSBmcm9tICdzb25uZXInO1xuaW1wb3J0IFBhZ2VIZXJvIGZyb20gJ0AvY29tcG9uZW50cy9QYWdlSGVyby5qc3gnO1xuaW1wb3J0IEFmZmlsaWF0ZU9mZmVyR3JpZCBmcm9tICdAL2NvbXBvbmVudHMvYWZmaWxpYXRlcy9BZmZpbGlhdGVPZmZlckdyaWQuanN4JztcbmltcG9ydCBTdXBlclNpbU9mZmVyQ2FyZCBmcm9tICdAL2NvbXBvbmVudHMvYWZmaWxpYXRlcy9TdXBlclNpbU9mZmVyQ2FyZC5qc3gnO1xuaW1wb3J0IHsgQnV0dG9uIH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL2J1dHRvbic7XG5pbXBvcnQgeyB1c2VBZmZpbGlhdGVQbGFjZW1lbnRzIH0gZnJvbSAnQC9ob29rcy91c2VBZmZpbGlhdGVQbGFjZW1lbnRzLmpzJztcbmltcG9ydCB7IGFmZmlsaWF0ZVJlZGlyZWN0U2VydmljZSB9IGZyb20gJ0AvcGxhdGZvcm0vc2VydmljZXMvYWZmaWxpYXRlUmVkaXJlY3RTZXJ2aWNlLmpzJztcbmltcG9ydCB7IGdldE5vblN1cGVyc2ltT2ZmZXJzLCBnZXRTdXBlcnNpbU9mZmVyIH0gZnJvbSAnQC9saWIvc3VwZXJzaW0uanMnO1xuXG5jb25zdCBjb2xsZWN0T2ZmZXJzID0gKHBsYWNlbWVudHMgPSB7fSkgPT4ge1xuICBjb25zdCBzZWVuID0gbmV3IFNldCgpO1xuXG4gIHJldHVybiBPYmplY3QudmFsdWVzKHBsYWNlbWVudHMpXG4gICAgLmZsYXQoKVxuICAgIC5maWx0ZXIoQm9vbGVhbilcbiAgICAuZmlsdGVyKChvZmZlcikgPT4ge1xuICAgICAgY29uc3Qga2V5ID0gb2ZmZXIub2ZmZXJTbHVnIHx8IG9mZmVyLmlkO1xuICAgICAgaWYgKCFrZXkgfHwgc2Vlbi5oYXMoa2V5KSkgcmV0dXJuIGZhbHNlO1xuICAgICAgc2Vlbi5hZGQoa2V5KTtcbiAgICAgIHJldHVybiB0cnVlO1xuICAgIH0pO1xufTtcblxuY29uc3QgaGFuZG9mZlBvaW50cyA9IFtcbiAgJ0VzdGEg77+9cmVhIGV4aXN0ZSBz77+9IHBhcmEgc2Hvv71kYXMgZXh0ZXJuYXMsIHNlbSBtaXN0dXJhciBjb20gYSBjb21wYXJh77+977+9byBwcmluY2lwYWwuJyxcbiAgJ1ZvY++/vSBlbnRlbmRlIG8gY29udGV4dG8gYW50ZXMgZSBz77+9IGNsaWNhIHF1YW5kbyBhIG9mZXJ0YSBmaXplciBzZW50aWRvLicsXG4gICdTZSB2b2Pvv70gYXZhbu+/vWFyLCBhIENvdGUgSnVyb3MgcG9kZSByZWNlYmVyIGNvbWlzc++/vW8gc2VtIGN1c3RvIGV4dHJhIHBhcmEgdm9j77+9Lidcbl07XG5cbmZ1bmN0aW9uIE9mZXJ0YXNQYWdlKCkge1xuICBjb25zdCBsb2FuUGxhY2VtZW50cyA9IHVzZUFmZmlsaWF0ZVBsYWNlbWVudHMoeyBwYWdlU2x1ZzogJy9lbXByZXN0aW1vcycsIHByb2R1Y3RUeXBlOiAnbG9hbicgfSk7XG4gIGNvbnN0IGNyZWRpdENhcmRQbGFjZW1lbnRzID0gdXNlQWZmaWxpYXRlUGxhY2VtZW50cyh7IHBhZ2VTbHVnOiAnL2NhcnRvZXMtZGUtY3JlZGl0bycsIHByb2R1Y3RUeXBlOiAnY3JlZGl0X2NhcmQnIH0pO1xuICBjb25zdCBmaW5hbmNpbmdQbGFjZW1lbnRzID0gdXNlQWZmaWxpYXRlUGxhY2VtZW50cyh7IHBhZ2VTbHVnOiAnL2ZpbmFuY2lhbWVudG8nLCBwcm9kdWN0VHlwZTogJ2ZpbmFuY2luZycgfSk7XG5cbiAgY29uc3QgbG9hbk9mZmVycyA9IHVzZU1lbW8oKCkgPT4gY29sbGVjdE9mZmVycyhsb2FuUGxhY2VtZW50cyksIFtsb2FuUGxhY2VtZW50c10pO1xuICBjb25zdCBjcmVkaXRDYXJkT2ZmZXJzID0gdXNlTWVtbygoKSA9PiBjb2xsZWN0T2ZmZXJzKGNyZWRpdENhcmRQbGFjZW1lbnRzKSwgW2NyZWRpdENhcmRQbGFjZW1lbnRzXSk7XG4gIGNvbnN0IGZpbmFuY2luZ09mZmVycyA9IHVzZU1lbW8oKCkgPT4gY29sbGVjdE9mZmVycyhmaW5hbmNpbmdQbGFjZW1lbnRzKSwgW2ZpbmFuY2luZ1BsYWNlbWVudHNdKTtcblxuICBjb25zdCBzdXBlcnNpbU9mZmVyID0gdXNlTWVtbygoKSA9PiBnZXRTdXBlcnNpbU9mZmVyKGxvYW5PZmZlcnMpLCBbbG9hbk9mZmVyc10pO1xuICBjb25zdCBvdGhlckxvYW5PZmZlcnMgPSB1c2VNZW1vKCgpID0+IGdldE5vblN1cGVyc2ltT2ZmZXJzKGxvYW5PZmZlcnMpLCBbbG9hbk9mZmVyc10pO1xuICBjb25zdCBoYXNBbnlPZmZlciA9IGxvYW5PZmZlcnMubGVuZ3RoIHx8IGNyZWRpdENhcmRPZmZlcnMubGVuZ3RoIHx8IGZpbmFuY2luZ09mZmVycy5sZW5ndGg7XG5cbiAgY29uc3QgaGFuZGxlQWZmaWxpYXRlQ2xpY2sgPSBhc3luYyAob2ZmZXIsIHBvc2l0aW9uKSA9PiB7XG4gICAgdHJ5IHtcbiAgICAgIGNvbnN0IHJlc3VsdCA9IGF3YWl0IGFmZmlsaWF0ZVJlZGlyZWN0U2VydmljZS5jcmVhdGUoe1xuICAgICAgICBvZmZlclNsdWc6IG9mZmVyLm9mZmVyU2x1ZyxcbiAgICAgICAgcGFnZVNsdWc6ICcvb2ZlcnRhcycsXG4gICAgICAgIHBvc2l0aW9uXG4gICAgICB9KTtcblxuICAgICAgaWYgKCFyZXN1bHQ/LnJlZGlyZWN0VXJsKSB7XG4gICAgICAgIHRvYXN0LmVycm9yKCdFc3RhIG9mZXJ0YSBu77+9byBlc3Tvv70gZGlzcG9u77+9dmVsIGFnb3JhLicpO1xuICAgICAgICByZXR1cm47XG4gICAgICB9XG5cbiAgICAgIHdpbmRvdy5sb2NhdGlvbi5ocmVmID0gcmVzdWx0LnJlZGlyZWN0VXJsO1xuICAgIH0gY2F0Y2ggKGVycm9yKSB7XG4gICAgICB0b2FzdC5lcnJvcihlcnJvci5tZXNzYWdlIHx8ICdO77+9byBmb2kgcG9zc++/vXZlbCBhYnJpciBlc3RhIG9mZXJ0YSBhZ29yYS4nKTtcbiAgICB9XG4gIH07XG5cbiAgcmV0dXJuIChcbiAgICA8PlxuICAgICAgPEhlbG1ldD5cbiAgICAgICAgPHRpdGxlPk9mZXJ0YXMgZXh0ZXJuYXMgc2VsZWNpb25hZGFzIHwgQ290ZSBKdXJvczwvdGl0bGU+XG4gICAgICAgIDxtZXRhXG4gICAgICAgICAgbmFtZT1cImRlc2NyaXB0aW9uXCJcbiAgICAgICAgICBjb250ZW50PVwiVmVqYSBzYe+/vWRhcyBleHRlcm5hcyBlbSB1bWEg77+9cmVhIHNlcGFyYWRhLCBjb20gbGVpdHVyYSBjbGFyYSwgYXZpc28gZGUgc2Hvv71kYSBlIG1haXMgY29udGV4dG8gYW50ZXMgZG8gY2xpcXVlLlwiXG4gICAgICAgIC8+XG4gICAgICA8L0hlbG1ldD5cblxuICAgICAgPFBhZ2VIZXJvXG4gICAgICAgIGV5ZWJyb3c9XCJTYe+/vWRhcyBleHRlcm5hc1wiXG4gICAgICAgIGJhZGdlPVwi77+9cmVhIHNlcGFyYWRhIGRhIGV4cGVyae+/vW5jaWEgcHJpbmNpcGFsXCJcbiAgICAgICAgY2VudGVyZWRcbiAgICAgICAgdGl0bGU9XCJRdWFuZG8gZml6ZXIgc2VudGlkbyBzYWlyIGRhIENvdGUgSnVyb3MsIGFzIG9w77+977+9ZXMgZmljYW0gYXF1aS5cIlxuICAgICAgICBzdWJ0aXRsZT1cIkEgY29tcGFyYe+/ve+/vW8gcHJpbmNpcGFsIGNvbnRpbnVhIG5hcyBw77+9Z2luYXMgZGUgcHJvZHV0by4gRXN0YSByb3RhIGV4aXN0ZSBz77+9IHBhcmEgb3JnYW5pemFyIG9mZXJ0YXMgZXh0ZXJuYXMgY29tIG1haXMgY2xhcmV6YSwgY29udGV4dG8gZSB0cmFuc3Bhcu+/vW5jaWEuXCJcbiAgICAgID5cbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJteC1hdXRvIGZsZXggdy1mdWxsIG1heC13LTR4bCBmbGV4LWNvbCBnYXAtNFwiPlxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZ3JpZCBnYXAtNCBtZDpncmlkLWNvbHMtM1wiPlxuICAgICAgICAgICAge2hhbmRvZmZQb2ludHMubWFwKChpdGVtKSA9PiAoXG4gICAgICAgICAgICAgIDxkaXZcbiAgICAgICAgICAgICAgICBrZXk9e2l0ZW19XG4gICAgICAgICAgICAgICAgY2xhc3NOYW1lPVwicm91bmRlZC1bMjBweF0gYm9yZGVyIGJvcmRlci13aGl0ZS9bMC4wOF0gYmctd2hpdGUvWzAuMDRdIHB4LTUgcHktNSB0ZXh0LWxlZnQgc2hhZG93LVswXzE2cHhfNDJweF9yZ2JhKDIsNiwyMywwLjE2KV0gYmFja2Ryb3AtYmx1clwiXG4gICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJ0ZXh0LXNtIGxlYWRpbmctNyB0ZXh0LXdoaXRlLzc4XCI+e2l0ZW19PC9wPlxuICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICkpfVxuICAgICAgICAgIDwvZGl2PlxuXG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4IGZsZXgtY29sIGp1c3RpZnktY2VudGVyIGdhcC0zIHNtOmZsZXgtcm93XCI+XG4gICAgICAgICAgICA8TGluayB0bz1cIi9lbXByZXN0aW1vc1wiPlxuICAgICAgICAgICAgICA8QnV0dG9uIHNpemU9XCJsZ1wiIHZhcmlhbnQ9XCJvdXRsaW5lXCIgY2xhc3NOYW1lPVwiaGVyby1zZWNvbmRhcnktYnRuXCI+XG4gICAgICAgICAgICAgICAgVm9sdGFyIHBhcmEgYSBjb21wYXJh77+977+9b1xuICAgICAgICAgICAgICA8L0J1dHRvbj5cbiAgICAgICAgICAgIDwvTGluaz5cbiAgICAgICAgICAgIDxhIGhyZWY9XCIjb2ZlcnRhcy1kaXNwb25pdmVpc1wiIGNsYXNzTmFtZT1cImlubGluZS1mbGV4XCI+XG4gICAgICAgICAgICAgIDxCdXR0b24gc2l6ZT1cImxnXCI+VmVyIG9mZXJ0YXMgYWdvcmE8L0J1dHRvbj5cbiAgICAgICAgICAgIDwvYT5cbiAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgPC9kaXY+XG4gICAgICA8L1BhZ2VIZXJvPlxuXG4gICAgICA8ZGl2IGNsYXNzTmFtZT1cInBhZ2Utc2hlbGwgcHktMTQgc206cHktMThcIj5cbiAgICAgICAgPHNlY3Rpb24gY2xhc3NOYW1lPVwiZ3JpZCBnYXAtNSByb3VuZGVkLVsyOHB4XSBib3JkZXIgYm9yZGVyLWJvcmRlciBiZy13aGl0ZSBwLTYgc2hhZG93LVt2YXIoLS1zaGFkb3ctc20pXSBtZDpncmlkLWNvbHMtWzEuMWZyXzAuOWZyXSBtZDpwLThcIj5cbiAgICAgICAgICA8ZGl2PlxuICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC14cyBmb250LXNlbWlib2xkIHVwcGVyY2FzZSB0cmFja2luZy1bMC4xOGVtXSB0ZXh0LXByaW1hcnkvODBcIj5MZWl0dXJhIGRpcmV0YTwvcD5cbiAgICAgICAgICAgIDxoMiBjbGFzc05hbWU9XCJtdC0zIHRleHQtM3hsIHRleHQtZm9yZWdyb3VuZFwiPkEg77+9cmVhIGV4aXN0ZSBwYXJhIG7vv71vIHBvbHVpciBhIGV4cGVyae+/vW5jaWEgcHJpbmNpcGFsLjwvaDI+XG4gICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJtdC00IG1heC13LTJ4bCB0ZXh0LWJhc2UgbGVhZGluZy04IHRleHQtbXV0ZWQtZm9yZWdyb3VuZFwiPlxuICAgICAgICAgICAgICBFbSB2ZXogZGUgbWlzdHVyYXIgc2Hvv71kYSBleHRlcm5hIGNvbSBhIGxlaXR1cmEgZG8gcHJvZHV0bywgYSBDb3RlIEp1cm9zIGRlaXhhIGVzc2UgcGFzc28gc2VwYXJhZG8uIEFzc2ltLCB2b2Pvv70gY29tcGFyYSBwcmltZWlybyBlIHPvv70gY29uc2lkZXJhIHVtIGNsaXF1ZSBleHRlcm5vIHF1YW5kbyBpc3NvIGZpemVyIHNlbnRpZG8uXG4gICAgICAgICAgICA8L3A+XG4gICAgICAgICAgPC9kaXY+XG5cbiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInJvdW5kZWQtWzI0cHhdIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLWJhY2tncm91bmQtc2Vjb25kYXJ5IHAtNlwiPlxuICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC14cyBmb250LXNlbWlib2xkIHVwcGVyY2FzZSB0cmFja2luZy1bMC4xOGVtXSB0ZXh0LXByaW1hcnkvODBcIj5BbnRlcyBkZSBzZWd1aXI8L3A+XG4gICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cIm10LTUgc3BhY2UteS00XCI+XG4gICAgICAgICAgICAgIHtbXG4gICAgICAgICAgICAgICAgJ0xlaWEgYSBkZXNjcmnvv73vv71vIGUgbyBwZXJmaWwgbWFpcyBjb211bSBkYSBvZmVydGEuJyxcbiAgICAgICAgICAgICAgICAnRW50ZW5kYSBxdWUgbyBwcu+/vXhpbW8gcGFzc28gYWNvbnRlY2UgZm9yYSBkYSBDb3RlIEp1cm9zLicsXG4gICAgICAgICAgICAgICAgJ0NvbXBhcmUgY3VzdG8sIHByYXpvIGUgY29udGV4dG8gYW50ZXMgZGUgY29udHJhdGFyLidcbiAgICAgICAgICAgICAgXS5tYXAoKGl0ZW0pID0+IChcbiAgICAgICAgICAgICAgICA8ZGl2IGtleT17aXRlbX0gY2xhc3NOYW1lPVwiZmxleCBpdGVtcy1zdGFydCBnYXAtM1wiPlxuICAgICAgICAgICAgICAgICAgPFNoaWVsZENoZWNrIGNsYXNzTmFtZT1cIm10LTEgaC00IHctNCBzaHJpbmstMCB0ZXh0LXByaW1hcnlcIiAvPlxuICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC1zbSBsZWFkaW5nLTcgdGV4dC1mb3JlZ3JvdW5kXCI+e2l0ZW19PC9wPlxuICAgICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICApKX1cbiAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgIDwvZGl2PlxuICAgICAgICA8L3NlY3Rpb24+XG5cbiAgICAgICAgPHNlY3Rpb24gaWQ9XCJvZmVydGFzLWRpc3Bvbml2ZWlzXCIgY2xhc3NOYW1lPVwibXQtMTQgc3BhY2UteS0xMFwiPlxuICAgICAgICAgIHshaGFzQW55T2ZmZXIgPyAoXG4gICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInJvdW5kZWQtWzI0cHhdIGJvcmRlciBib3JkZXItZGFzaGVkIGJvcmRlci1ib3JkZXIgYmctYmFja2dyb3VuZC1zZWNvbmRhcnkgcHgtNiBweS0xNCB0ZXh0LWNlbnRlclwiPlxuICAgICAgICAgICAgICA8aDIgY2xhc3NOYW1lPVwidGV4dC0yeGwgdGV4dC1mb3JlZ3JvdW5kXCI+TmVuaHVtYSBvZmVydGEgZXh0ZXJuYSBkaXNwb27vv712ZWwgYWdvcmE8L2gyPlxuICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJtdC0zIHRleHQtbXV0ZWQtZm9yZWdyb3VuZFwiPkNvbnRpbnVlIHBlbGEgY29tcGFyYe+/ve+/vW8gcHJpbmNpcGFsIHBhcmEgZW50ZW5kZXIgbWVsaG9yIG8gc2V1IGNlbu+/vXJpbyBhbnRlcyBkZSB0ZW50YXIgbm92YW1lbnRlLjwvcD5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtdC02XCI+XG4gICAgICAgICAgICAgICAgPExpbmsgdG89XCIvZW1wcmVzdGltb3NcIiBjbGFzc05hbWU9XCJpbmxpbmUtZmxleFwiPlxuICAgICAgICAgICAgICAgICAgPEJ1dHRvbj5JciBwYXJhIGVtcHLvv71zdGltb3M8L0J1dHRvbj5cbiAgICAgICAgICAgICAgICA8L0xpbms+XG4gICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgKSA6IG51bGx9XG5cbiAgICAgICAgICB7bG9hbk9mZmVycy5sZW5ndGggPyAoXG4gICAgICAgICAgICA8c2VjdGlvbiBjbGFzc05hbWU9XCJzcGFjZS15LTZcIj5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtYXgtdy0zeGxcIj5cbiAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJ0ZXh0LXhzIGZvbnQtc2VtaWJvbGQgdXBwZXJjYXNlIHRyYWNraW5nLVswLjE4ZW1dIHRleHQtcHJpbWFyeS84MFwiPkVtcHLvv71zdGltb3M8L3A+XG4gICAgICAgICAgICAgICAgPGgyIGNsYXNzTmFtZT1cIm10LTMgdGV4dC0zeGwgdGV4dC1mb3JlZ3JvdW5kXCI+T2ZlcnRhcyBleHRlcm5hcyBwYXJhIHF1ZW0gau+/vSBkZWNpZGl1IG9saGFyIGNy77+9ZGl0byBwZXNzb2FsLjwvaDI+XG4gICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwibXQtNCB0ZXh0LWJhc2UgbGVhZGluZy04IHRleHQtbXV0ZWQtZm9yZWdyb3VuZFwiPlxuICAgICAgICAgICAgICAgICAgRXN0YSB2aXRyaW5lIHPvv70gZmF6IHNlbnRpZG8gZGVwb2lzIGRhIGxlaXR1cmEgcHJpbmNpcGFsLiBBcXVpIGVudHJhbSBzYe+/vWRhcyBvYmpldGl2YXMsIHNlbSBwcm9tZXRlciBtYWlzIGRvIHF1ZSBhIG9mZXJ0YSByZWFsbWVudGUgZW50cmVnYS5cbiAgICAgICAgICAgICAgICA8L3A+XG4gICAgICAgICAgICAgIDwvZGl2PlxuXG4gICAgICAgICAgICAgIHtzdXBlcnNpbU9mZmVyID8gKFxuICAgICAgICAgICAgICAgIDxTdXBlclNpbU9mZmVyQ2FyZFxuICAgICAgICAgICAgICAgICAgb2ZmZXI9e3tcbiAgICAgICAgICAgICAgICAgICAgLi4uc3VwZXJzaW1PZmZlcixcbiAgICAgICAgICAgICAgICAgICAgZGlzY2xvc3VyZVRleHQ6XG4gICAgICAgICAgICAgICAgICAgICAgc3VwZXJzaW1PZmZlci5kaXNjbG9zdXJlVGV4dCB8fCAnU2Ugdm9j77+9IGF2YW7vv71hciBwb3IgZXN0ZSBsaW5rLCBhIENvdGUgSnVyb3MgcG9kZSByZWNlYmVyIGNvbWlzc++/vW8gc2VtIGN1c3RvIGV4dHJhIHBhcmEgdm9j77+9LidcbiAgICAgICAgICAgICAgICAgIH19XG4gICAgICAgICAgICAgICAgICB0aXRsZT1cIlN1cGVyU2ltXCJcbiAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uPVwiVW1hIGFsdGVybmF0aXZhIGV4dGVybmEgcGFyYSBxdWVtIHF1ZXIgc2VndWlyIGNvbSBlbXBy77+9c3RpbW8gb25saW5lIGRlIGZvcm1hIG1haXMgZGlyZXRhLCBkZXBvaXMgZGUgau+/vSB0ZXIgY29tcGFyYWRvIG8gY2Vu77+9cmlvLlwiXG4gICAgICAgICAgICAgICAgICBjdGFMYWJlbD1cIlNpbXVsYXIgZW1wcu+/vXN0aW1vXCJcbiAgICAgICAgICAgICAgICAgIGJhZGdlTGFiZWw9XCJTYe+/vWRhIGV4dGVybmFcIlxuICAgICAgICAgICAgICAgICAgb25TZWxlY3Q9eyhvZmZlcikgPT4gaGFuZGxlQWZmaWxpYXRlQ2xpY2sob2ZmZXIsICdvZmVydGFzLWxvYW4tZmVhdHVyZWQnKX1cbiAgICAgICAgICAgICAgICAvPlxuICAgICAgICAgICAgICApIDogbnVsbH1cblxuICAgICAgICAgICAgICB7b3RoZXJMb2FuT2ZmZXJzLmxlbmd0aCA/IChcbiAgICAgICAgICAgICAgICA8QWZmaWxpYXRlT2ZmZXJHcmlkXG4gICAgICAgICAgICAgICAgICBvZmZlcnM9e290aGVyTG9hbk9mZmVycy5tYXAoKG9mZmVyKSA9PiAoe1xuICAgICAgICAgICAgICAgICAgICAuLi5vZmZlcixcbiAgICAgICAgICAgICAgICAgICAgY3RhVGV4dDogb2ZmZXIuY3RhVGV4dCB8fCAnVmVyIGNvbmRp77+977+9ZXMnLFxuICAgICAgICAgICAgICAgICAgICBkaXNjbG9zdXJlVGV4dDpcbiAgICAgICAgICAgICAgICAgICAgICBvZmZlci5kaXNjbG9zdXJlVGV4dCB8fCAnU2Ugdm9j77+9IGF2YW7vv71hciBwb3IgZXN0ZSBsaW5rLCBhIENvdGUgSnVyb3MgcG9kZSByZWNlYmVyIGNvbWlzc++/vW8gc2VtIGN1c3RvIGV4dHJhIHBhcmEgdm9j77+9LidcbiAgICAgICAgICAgICAgICAgIH0pKX1cbiAgICAgICAgICAgICAgICAgIHRpdGxlPVwiQW8gY29udGludWFyLCB2b2Pvv70gc2Vy77+9IGRpcmVjaW9uYWRvIHBhcmEgdW1hIGluc3RpdHVp77+977+9byBleHRlcm5hXCJcbiAgICAgICAgICAgICAgICAgIGV5ZWJyb3c9XCJPZmVydGFzIGV4dGVybmFzXCJcbiAgICAgICAgICAgICAgICAgIG9uU2VsZWN0PXsob2ZmZXIpID0+IGhhbmRsZUFmZmlsaWF0ZUNsaWNrKG9mZmVyLCAnb2ZlcnRhcy1sb2FuLWdyaWQnKX1cbiAgICAgICAgICAgICAgICAvPlxuICAgICAgICAgICAgICApIDogbnVsbH1cbiAgICAgICAgICAgIDwvc2VjdGlvbj5cbiAgICAgICAgICApIDogbnVsbH1cblxuICAgICAgICAgIHtjcmVkaXRDYXJkT2ZmZXJzLmxlbmd0aCA/IChcbiAgICAgICAgICAgIDxzZWN0aW9uIGNsYXNzTmFtZT1cInNwYWNlLXktNlwiPlxuICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cIm1heC13LTN4bFwiPlxuICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cInRleHQteHMgZm9udC1zZW1pYm9sZCB1cHBlcmNhc2UgdHJhY2tpbmctWzAuMThlbV0gdGV4dC1wcmltYXJ5LzgwXCI+Q2FydO+/vWVzPC9wPlxuICAgICAgICAgICAgICAgIDxoMiBjbGFzc05hbWU9XCJtdC0zIHRleHQtM3hsIHRleHQtZm9yZWdyb3VuZFwiPlNh77+9ZGFzIGV4dGVybmFzIHBhcmEgcXVlbSBxdWVyIHNlZ3VpciBvbGhhbmRvIGNhcnTvv71lcy48L2gyPlxuICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cIm10LTQgdGV4dC1iYXNlIGxlYWRpbmctOCB0ZXh0LW11dGVkLWZvcmVncm91bmRcIj5cbiAgICAgICAgICAgICAgICAgIEEgY29tcGFyYe+/ve+/vW8gcHJpbmNpcGFsIGNvbnRpbnVhIG5hIG5hdmVnYe+/ve+/vW8gZG8gcHJvZHV0by4gRXN0YSBzZe+/ve+/vW8gZXhpc3RlIHPvv70gcGFyYSBvcmdhbml6YXIgYWx0ZXJuYXRpdmFzIGV4dGVybmFzIGRlIGZvcm1hIG1haXMgbGltcGEuXG4gICAgICAgICAgICAgICAgPC9wPlxuICAgICAgICAgICAgICA8L2Rpdj5cblxuICAgICAgICAgICAgICA8QWZmaWxpYXRlT2ZmZXJHcmlkXG4gICAgICAgICAgICAgICAgb2ZmZXJzPXtjcmVkaXRDYXJkT2ZmZXJzLm1hcCgob2ZmZXIpID0+ICh7XG4gICAgICAgICAgICAgICAgICAuLi5vZmZlcixcbiAgICAgICAgICAgICAgICAgIGN0YVRleHQ6IG9mZmVyLmN0YVRleHQgfHwgJ1ZlciBjb25kae+/ve+/vWVzJyxcbiAgICAgICAgICAgICAgICAgIGRpc2Nsb3N1cmVUZXh0OlxuICAgICAgICAgICAgICAgICAgICBvZmZlci5kaXNjbG9zdXJlVGV4dCB8fCAnU2Ugdm9j77+9IGF2YW7vv71hciBwb3IgZXN0ZSBsaW5rLCBhIENvdGUgSnVyb3MgcG9kZSByZWNlYmVyIGNvbWlzc++/vW8gc2VtIGN1c3RvIGV4dHJhIHBhcmEgdm9j77+9LidcbiAgICAgICAgICAgICAgICB9KSl9XG4gICAgICAgICAgICAgICAgdGl0bGU9XCJBbyBjb250aW51YXIsIHZvY++/vSBzZXLvv70gZGlyZWNpb25hZG8gcGFyYSB1bWEgaW5zdGl0dWnvv73vv71vIGV4dGVybmFcIlxuICAgICAgICAgICAgICAgIGV5ZWJyb3c9XCJPZmVydGFzIGV4dGVybmFzXCJcbiAgICAgICAgICAgICAgICBvblNlbGVjdD17KG9mZmVyKSA9PiBoYW5kbGVBZmZpbGlhdGVDbGljayhvZmZlciwgJ29mZXJ0YXMtY3JlZGl0LWNhcmQnKX1cbiAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgIDwvc2VjdGlvbj5cbiAgICAgICAgICApIDogbnVsbH1cblxuICAgICAgICAgIHtmaW5hbmNpbmdPZmZlcnMubGVuZ3RoID8gKFxuICAgICAgICAgICAgPHNlY3Rpb24gY2xhc3NOYW1lPVwic3BhY2UteS02XCI+XG4gICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwibWF4LXctM3hsXCI+XG4gICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC14cyBmb250LXNlbWlib2xkIHVwcGVyY2FzZSB0cmFja2luZy1bMC4xOGVtXSB0ZXh0LXByaW1hcnkvODBcIj5GaW5hbmNpYW1lbnRvczwvcD5cbiAgICAgICAgICAgICAgICA8aDIgY2xhc3NOYW1lPVwibXQtMyB0ZXh0LTN4bCB0ZXh0LWZvcmVncm91bmRcIj5BbHRlcm5hdGl2YXMgZXh0ZXJuYXMgcGFyYSBxdWVtIHF1ZXIgc2VndWlyIGNvbSBmaW5hbmNpYW1lbnRvLjwvaDI+XG4gICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwibXQtNCB0ZXh0LWJhc2UgbGVhZGluZy04IHRleHQtbXV0ZWQtZm9yZWdyb3VuZFwiPlxuICAgICAgICAgICAgICAgICAgTWFudGl2ZW1vcyBlc3RhIO+/vXJlYSBzZXBhcmFkYSBwYXJhIG8gc2l0ZSBjb250aW51YXIgbWFpcyBjbGFyby4gQSBzYe+/vWRhIGV4dGVybmEgYXBhcmVjZSBhcXVpLCBlIG7vv71vIG5vIG1laW8gZGEgam9ybmFkYSBwcmluY2lwYWwuXG4gICAgICAgICAgICAgICAgPC9wPlxuICAgICAgICAgICAgICA8L2Rpdj5cblxuICAgICAgICAgICAgICA8QWZmaWxpYXRlT2ZmZXJHcmlkXG4gICAgICAgICAgICAgICAgb2ZmZXJzPXtmaW5hbmNpbmdPZmZlcnMubWFwKChvZmZlcikgPT4gKHtcbiAgICAgICAgICAgICAgICAgIC4uLm9mZmVyLFxuICAgICAgICAgICAgICAgICAgY3RhVGV4dDogb2ZmZXIuY3RhVGV4dCB8fCAnU2ltdWxhciBmaW5hbmNpYW1lbnRvJyxcbiAgICAgICAgICAgICAgICAgIGRpc2Nsb3N1cmVUZXh0OlxuICAgICAgICAgICAgICAgICAgICBvZmZlci5kaXNjbG9zdXJlVGV4dCB8fCAnU2Ugdm9j77+9IGF2YW7vv71hciBwb3IgZXN0ZSBsaW5rLCBhIENvdGUgSnVyb3MgcG9kZSByZWNlYmVyIGNvbWlzc++/vW8gc2VtIGN1c3RvIGV4dHJhIHBhcmEgdm9j77+9LidcbiAgICAgICAgICAgICAgICB9KSl9XG4gICAgICAgICAgICAgICAgdGl0bGU9XCJBbyBjb250aW51YXIsIHZvY++/vSBzZXLvv70gZGlyZWNpb25hZG8gcGFyYSB1bWEgaW5zdGl0dWnvv73vv71vIGV4dGVybmFcIlxuICAgICAgICAgICAgICAgIGV5ZWJyb3c9XCJPZmVydGFzIGV4dGVybmFzXCJcbiAgICAgICAgICAgICAgICBvblNlbGVjdD17KG9mZmVyKSA9PiBoYW5kbGVBZmZpbGlhdGVDbGljayhvZmZlciwgJ29mZXJ0YXMtZmluYW5jaW5nJyl9XG4gICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICA8L3NlY3Rpb24+XG4gICAgICAgICAgKSA6IG51bGx9XG4gICAgICAgIDwvc2VjdGlvbj5cbiAgICAgIDwvZGl2PlxuXG4gICAgICA8c2VjdGlvbiBjbGFzc05hbWU9XCJib3JkZXItdCBib3JkZXItYm9yZGVyIGJnLWJhY2tncm91bmQtc2Vjb25kYXJ5IHB5LTE2IHNtOnB5LTIwXCI+XG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwicGFnZS1zaGVsbFwiPlxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwibXgtYXV0byBtYXgtdy00eGwgcm91bmRlZC1bMjhweF0gYm9yZGVyIGJvcmRlci1ib3JkZXIgYmctd2hpdGUgcC04IHNoYWRvdy1bdmFyKC0tc2hhZG93LXNtKV0gc206cC0xMFwiPlxuICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJncmlkIGdhcC04IG1kOmdyaWQtY29scy1bMWZyX2F1dG9dIG1kOml0ZW1zLWNlbnRlclwiPlxuICAgICAgICAgICAgICA8ZGl2PlxuICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cInRleHQteHMgZm9udC1zZW1pYm9sZCB1cHBlcmNhc2UgdHJhY2tpbmctWzAuMThlbV0gdGV4dC1wcmltYXJ5LzgwXCI+Vm9sdGFyIHBhcmEgbyBwcm9kdXRvPC9wPlxuICAgICAgICAgICAgICAgIDxoMiBjbGFzc05hbWU9XCJtdC0zIHRleHQtM3hsIHRleHQtZm9yZWdyb3VuZFwiPlByZWZlcmUgZGVjaWRpciBjb20gbWFpcyBjYWxtYSBkZW50cm8gZGEgQ290ZSBKdXJvcz88L2gyPlxuICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cIm10LTQgdGV4dC1iYXNlIGxlYWRpbmctOCB0ZXh0LW11dGVkLWZvcmVncm91bmRcIj5cbiAgICAgICAgICAgICAgICAgIFNlIHZvY++/vSBhaW5kYSBxdWVyIGNvbXBhcmFyIGFudGVzIGRlIHNhaXIgZG8gcG9ydGFsLCBjb250aW51ZSBwZWxhcyBw77+9Z2luYXMgcHJpbmNpcGFpcyBlIG1hbnRlbmhhIGEgbGVpdHVyYSBkZW50cm8gZGEgZXhwZXJp77+9bmNpYSBwcmluY2lwYWwuXG4gICAgICAgICAgICAgICAgPC9wPlxuICAgICAgICAgICAgICA8L2Rpdj5cblxuICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXggZmxleC1jb2wgZ2FwLTMgc206ZmxleC1yb3cgbWQ6ZmxleC1jb2xcIj5cbiAgICAgICAgICAgICAgICA8TGluayB0bz1cIi9lbXByZXN0aW1vc1wiPlxuICAgICAgICAgICAgICAgICAgPEJ1dHRvbiBjbGFzc05hbWU9XCJ3LWZ1bGwganVzdGlmeS1iZXR3ZWVuXCI+XG4gICAgICAgICAgICAgICAgICAgIElyIHBhcmEgZW1wcu+/vXN0aW1vc1xuICAgICAgICAgICAgICAgICAgICA8QXJyb3dSaWdodCBjbGFzc05hbWU9XCJoLTQgdy00XCIgLz5cbiAgICAgICAgICAgICAgICAgIDwvQnV0dG9uPlxuICAgICAgICAgICAgICAgIDwvTGluaz5cbiAgICAgICAgICAgICAgICA8TGluayB0bz1cIi9jYXJ0b2VzXCI+XG4gICAgICAgICAgICAgICAgICA8QnV0dG9uIHZhcmlhbnQ9XCJvdXRsaW5lXCIgY2xhc3NOYW1lPVwidy1mdWxsIGp1c3RpZnktYmV0d2VlblwiPlxuICAgICAgICAgICAgICAgICAgICBWZXIgY2FydO+/vWVzXG4gICAgICAgICAgICAgICAgICAgIDxFeHRlcm5hbExpbmsgY2xhc3NOYW1lPVwiaC00IHctNFwiIC8+XG4gICAgICAgICAgICAgICAgICA8L0J1dHRvbj5cbiAgICAgICAgICAgICAgICA8L0xpbms+XG4gICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgPC9kaXY+XG4gICAgICAgIDwvZGl2PlxuICAgICAgPC9zZWN0aW9uPlxuICAgIDwvPlxuICApO1xufVxuXG5leHBvcnQgZGVmYXVsdCBPZmVydGFzUGFnZTtcclxuIl0sImZpbGUiOiJDOi9kZXYvY290ZS1qdXJvcy1ob3N0aW5nZXItaG9yaXpvbnMvYXBwcy93ZWIvc3JjL3BhZ2VzL09mZXJ0YXNQYWdlLmpzeCJ9

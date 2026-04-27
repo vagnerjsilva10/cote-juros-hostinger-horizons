@@ -1,0 +1,391 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/pages/SimuladorComprometimentoRendaPage.jsx");import __vite__cjsImport0_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=f3f27a3e"; const Fragment = __vite__cjsImport0_react_jsxDevRuntime["Fragment"]; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+var _s = $RefreshSig$();
+import __vite__cjsImport1_react from "/node_modules/.vite/deps/react.js?v=f3f27a3e"; const React = __vite__cjsImport1_react.__esModule ? __vite__cjsImport1_react.default : __vite__cjsImport1_react; const useMemo = __vite__cjsImport1_react["useMemo"]; const useState = __vite__cjsImport1_react["useState"];
+import { Link } from "/node_modules/.vite/deps/react-router-dom.js?v=f3f27a3e";
+import { Gauge, ShieldCheck } from "/node_modules/.vite/deps/lucide-react.js?v=f3f27a3e";
+import { Button } from "/src/components/ui/button.jsx";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "/src/components/ui/card.jsx";
+import { Input } from "/src/components/ui/input.jsx";
+import { Label } from "/src/components/ui/label.jsx";
+import SeoHead from "/src/components/SeoHead.jsx";
+import { homeBreadcrumb } from "/src/seo/brandSeo.js";
+const parseMoney = (value = "") => Number(String(value).replace(/\D/g, "") || 0);
+const formatMoney = (value = 0) => Number(value || 0).toLocaleString("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+  maximumFractionDigits: 0
+});
+const formatPercent = (value = 0) => `${Number(value || 0).toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`;
+const classifyRisk = (ratio) => {
+  if (ratio <= 20) return { label: "Confortável", tone: "text-emerald-700", text: "A parcela ocupa uma parte menor da renda. Ainda assim, confira outras despesas fixas." };
+  if (ratio <= 30) return { label: "Atenção", tone: "text-amber-700", text: "A parcela já pesa no orçamento. Simule prazos e mantenha reserva para imprevistos." };
+  return { label: "Alto risco", tone: "text-red-700", text: "A parcela pode comprometer demais a renda. Considere reduzir valor, aumentar prazo ou adiar a contratação." };
+};
+function SimuladorComprometimentoRendaPage() {
+  _s();
+  const [income, setIncome] = useState(5200);
+  const [installment, setInstallment] = useState(1250);
+  const [fixedCosts, setFixedCosts] = useState(2300);
+  const result = useMemo(() => {
+    const ratio = income > 0 ? installment / income * 100 : 0;
+    const fixedRatio = income > 0 ? (installment + fixedCosts) / income * 100 : 0;
+    const freeIncome = income - fixedCosts - installment;
+    const risk = classifyRisk(ratio);
+    return { ratio, fixedRatio, freeIncome, risk };
+  }, [income, installment, fixedCosts]);
+  return /* @__PURE__ */ jsxDEV(Fragment, { children: [
+    /* @__PURE__ */ jsxDEV(
+      SeoHead,
+      {
+        title: "Simulador de comprometimento de renda | Cote Juros",
+        description: "Simule quanto uma parcela compromete da sua renda e veja sinais de risco antes de contratar empréstimo ou financiamento.",
+        path: "/simulador-comprometimento-renda",
+        breadcrumbs: [homeBreadcrumb, { name: "Ferramentas", path: "/ferramentas" }, { name: "Comprometimento de renda", path: "/simulador-comprometimento-renda" }],
+        structuredData: [
+          {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "Simulador de comprometimento de renda Cote Juros",
+            applicationCategory: "FinanceApplication",
+            operatingSystem: "Web",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "BRL" }
+          }
+        ]
+      },
+      void 0,
+      false,
+      {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+        lineNumber: 41,
+        columnNumber: 7
+      },
+      this
+    ),
+    /* @__PURE__ */ jsxDEV("section", { className: "border-b border-border bg-background py-10 md:py-14", children: /* @__PURE__ */ jsxDEV("div", { className: "page-shell max-w-5xl space-y-5", children: [
+      /* @__PURE__ */ jsxDEV("div", { className: "inline-flex items-center gap-2 rounded-full border border-border bg-background-secondary px-3 py-2 text-sm font-medium text-muted-foreground", children: [
+        /* @__PURE__ */ jsxDEV(Gauge, { className: "h-4 w-4 text-primary" }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+          lineNumber: 61,
+          columnNumber: 13
+        }, this),
+        "Simulador gratuito"
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+        lineNumber: 60,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV("h1", { className: "max-w-3xl text-3xl font-semibold leading-tight text-foreground md:text-5xl", children: "Simulador de comprometimento de renda" }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+        lineNumber: 64,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV("p", { className: "max-w-3xl text-lg leading-8 text-muted-foreground", children: "Veja se a parcela de um empréstimo, cartão parcelado ou financiamento cabe no seu orçamento antes de seguir com a proposta." }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+        lineNumber: 67,
+        columnNumber: 11
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+      lineNumber: 59,
+      columnNumber: 9
+    }, this) }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+      lineNumber: 58,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV("section", { className: "page-shell py-12", children: /* @__PURE__ */ jsxDEV("div", { className: "grid gap-8 lg:grid-cols-[360px_1fr]", children: [
+      /* @__PURE__ */ jsxDEV(Card, { children: [
+        /* @__PURE__ */ jsxDEV(CardHeader, { children: [
+          /* @__PURE__ */ jsxDEV(CardTitle, { children: "Preencha os valores" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+            lineNumber: 77,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV(CardDescription, { children: "Use sua renda líquida e suas despesas fixas mensais." }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+            lineNumber: 78,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+          lineNumber: 76,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV(CardContent, { className: "space-y-5", children: [
+          /* @__PURE__ */ jsxDEV("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxDEV(Label, { children: "Renda mensal líquida" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 82,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV(Input, { value: formatMoney(income), inputMode: "numeric", onChange: (event) => setIncome(parseMoney(event.target.value)) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 83,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+            lineNumber: 81,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxDEV(Label, { children: "Parcela nova" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 86,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV(Input, { value: formatMoney(installment), inputMode: "numeric", onChange: (event) => setInstallment(parseMoney(event.target.value)) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 87,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+            lineNumber: 85,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxDEV(Label, { children: "Despesas fixas atuais" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 90,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV(Input, { value: formatMoney(fixedCosts), inputMode: "numeric", onChange: (event) => setFixedCosts(parseMoney(event.target.value)) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 91,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+            lineNumber: 89,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+          lineNumber: 80,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+        lineNumber: 75,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: "space-y-6", children: [
+        /* @__PURE__ */ jsxDEV(Card, { children: [
+          /* @__PURE__ */ jsxDEV(CardHeader, { children: [
+            /* @__PURE__ */ jsxDEV(CardTitle, { children: "Leitura do resultado" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 99,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV(CardDescription, { children: "Quanto menor o percentual, maior a folga para imprevistos." }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 100,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+            lineNumber: 98,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV(CardContent, { className: "grid gap-4 md:grid-cols-3", children: [
+            /* @__PURE__ */ jsxDEV("div", { className: "rounded-[10px] border border-border bg-background-secondary p-5", children: [
+              /* @__PURE__ */ jsxDEV("p", { className: "text-sm text-muted-foreground", children: "Parcela sobre renda" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+                lineNumber: 104,
+                columnNumber: 19
+              }, this),
+              /* @__PURE__ */ jsxDEV("p", { className: "mt-2 text-3xl font-semibold text-foreground", children: formatPercent(result.ratio) }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+                lineNumber: 105,
+                columnNumber: 19
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 103,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "rounded-[10px] border border-border bg-background-secondary p-5", children: [
+              /* @__PURE__ */ jsxDEV("p", { className: "text-sm text-muted-foreground", children: "Gastos fixos + parcela" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+                lineNumber: 108,
+                columnNumber: 19
+              }, this),
+              /* @__PURE__ */ jsxDEV("p", { className: "mt-2 text-3xl font-semibold text-foreground", children: formatPercent(result.fixedRatio) }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+                lineNumber: 109,
+                columnNumber: 19
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 107,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "rounded-[10px] border border-border bg-background-secondary p-5", children: [
+              /* @__PURE__ */ jsxDEV("p", { className: "text-sm text-muted-foreground", children: "Renda livre estimada" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+                lineNumber: 112,
+                columnNumber: 19
+              }, this),
+              /* @__PURE__ */ jsxDEV("p", { className: "mt-2 text-3xl font-semibold text-foreground", children: formatMoney(result.freeIncome) }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+                lineNumber: 113,
+                columnNumber: 19
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 111,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+            lineNumber: 102,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+          lineNumber: 97,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV(Card, { children: /* @__PURE__ */ jsxDEV(CardContent, { className: "space-y-4 p-6", children: [
+          /* @__PURE__ */ jsxDEV("div", { className: "flex items-start gap-3", children: [
+            /* @__PURE__ */ jsxDEV(ShieldCheck, { className: "mt-1 h-5 w-5 text-primary" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 121,
+              columnNumber: 19
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { children: [
+              /* @__PURE__ */ jsxDEV("p", { className: `text-xl font-semibold ${result.risk.tone}`, children: result.risk.label }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+                lineNumber: 123,
+                columnNumber: 21
+              }, this),
+              /* @__PURE__ */ jsxDEV("p", { className: "mt-2 text-muted-foreground", children: result.risk.text }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+                lineNumber: 124,
+                columnNumber: 21
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 122,
+              columnNumber: 19
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+            lineNumber: 120,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "flex flex-col gap-3 sm:flex-row", children: [
+            /* @__PURE__ */ jsxDEV(Link, { to: "/calculadora-cet", children: /* @__PURE__ */ jsxDEV(Button, { children: "Comparar CET" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 129,
+              columnNumber: 21
+            }, this) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 128,
+              columnNumber: 19
+            }, this),
+            /* @__PURE__ */ jsxDEV(Link, { to: "/emprestimos", children: /* @__PURE__ */ jsxDEV(Button, { variant: "outline", children: "Ver empréstimos" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 132,
+              columnNumber: 21
+            }, this) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 131,
+              columnNumber: 19
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+            lineNumber: 127,
+            columnNumber: 17
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+          lineNumber: 119,
+          columnNumber: 15
+        }, this) }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+          lineNumber: 118,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV(Card, { children: [
+          /* @__PURE__ */ jsxDEV(CardHeader, { children: [
+            /* @__PURE__ */ jsxDEV(CardTitle, { children: "Como citar esta ferramenta" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 140,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV(CardDescription, { children: "Link recomendado para conteúdos sobre orçamento e crédito responsável." }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+              lineNumber: 141,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+            lineNumber: 139,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV(CardContent, { children: /* @__PURE__ */ jsxDEV("p", { className: "rounded-[10px] border border-border bg-background-secondary p-3 text-sm text-muted-foreground", children: "https://www.cotejuros.com.br/simulador-comprometimento-renda" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+            lineNumber: 144,
+            columnNumber: 17
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+            lineNumber: 143,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+          lineNumber: 138,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+        lineNumber: 96,
+        columnNumber: 11
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+      lineNumber: 74,
+      columnNumber: 9
+    }, this) }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+      lineNumber: 73,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx",
+    lineNumber: 40,
+    columnNumber: 5
+  }, this);
+}
+_s(SimuladorComprometimentoRendaPage, "q5sn5usxxFClXsj4lX59S2Y/sHM=");
+_c = SimuladorComprometimentoRendaPage;
+export default SimuladorComprometimentoRendaPage;
+var _c;
+$RefreshReg$(_c, "SimuladorComprometimentoRendaPage");
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+  RefreshRuntime.__hmr_import(import.meta.url).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+function $RefreshReg$(type, id) {
+  return RefreshRuntime.register(type, "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/SimuladorComprometimentoRendaPage.jsx " + id);
+}
+function $RefreshSig$() {
+  return RefreshRuntime.createSignatureFunctionForTransform();
+}
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJtYXBwaW5ncyI6IkFBdUNJLG1CQUNFLGNBREY7O0FBdkNKLE9BQU9BLFNBQVNDLFNBQVNDLGdCQUFnQjtBQUN6QyxTQUFTQyxZQUFZO0FBQ3JCLFNBQVNDLE9BQU9DLG1CQUFtQjtBQUNuQyxTQUFTQyxjQUFjO0FBQ3ZCLFNBQVNDLE1BQU1DLGFBQWFDLGlCQUFpQkMsWUFBWUMsaUJBQWlCO0FBQzFFLFNBQVNDLGFBQWE7QUFDdEIsU0FBU0MsYUFBYTtBQUN0QixPQUFPQyxhQUFhO0FBQ3BCLFNBQVNDLHNCQUFzQjtBQUUvQixNQUFNQyxhQUFhQSxDQUFDQyxRQUFRLE9BQU9DLE9BQU9DLE9BQU9GLEtBQUssRUFBRUcsUUFBUSxPQUFPLEVBQUUsS0FBSyxDQUFDO0FBQy9FLE1BQU1DLGNBQWNBLENBQUNKLFFBQVEsTUFDM0JDLE9BQU9ELFNBQVMsQ0FBQyxFQUFFSyxlQUFlLFNBQVM7QUFBQSxFQUN6Q0MsT0FBTztBQUFBLEVBQ1BDLFVBQVU7QUFBQSxFQUNWQyx1QkFBdUI7QUFDekIsQ0FBQztBQUNILE1BQU1DLGdCQUFnQkEsQ0FBQ1QsUUFBUSxNQUFNLEdBQUdDLE9BQU9ELFNBQVMsQ0FBQyxFQUFFSyxlQUFlLFNBQVMsRUFBRUcsdUJBQXVCLEVBQUUsQ0FBQyxDQUFDO0FBRWhILE1BQU1FLGVBQWVBLENBQUNDLFVBQVU7QUFDOUIsTUFBSUEsU0FBUyxHQUFJLFFBQU8sRUFBRUMsT0FBTyxlQUFlQyxNQUFNLG9CQUFvQkMsTUFBTSx3RkFBd0Y7QUFDeEssTUFBSUgsU0FBUyxHQUFJLFFBQU8sRUFBRUMsT0FBTyxXQUFXQyxNQUFNLGtCQUFrQkMsTUFBTSxxRkFBcUY7QUFDL0osU0FBTyxFQUFFRixPQUFPLGNBQWNDLE1BQU0sZ0JBQWdCQyxNQUFNLDZHQUE2RztBQUN6SztBQUVBLFNBQVNDLG9DQUFvQztBQUFBQyxLQUFBO0FBQzNDLFFBQU0sQ0FBQ0MsUUFBUUMsU0FBUyxJQUFJakMsU0FBUyxJQUFJO0FBQ3pDLFFBQU0sQ0FBQ2tDLGFBQWFDLGNBQWMsSUFBSW5DLFNBQVMsSUFBSTtBQUNuRCxRQUFNLENBQUNvQyxZQUFZQyxhQUFhLElBQUlyQyxTQUFTLElBQUk7QUFFakQsUUFBTXNDLFNBQVN2QyxRQUFRLE1BQU07QUFDM0IsVUFBTTJCLFFBQVFNLFNBQVMsSUFBS0UsY0FBY0YsU0FBVSxNQUFNO0FBQzFELFVBQU1PLGFBQWFQLFNBQVMsS0FBTUUsY0FBY0UsY0FBY0osU0FBVSxNQUFNO0FBQzlFLFVBQU1RLGFBQWFSLFNBQVNJLGFBQWFGO0FBQ3pDLFVBQU1PLE9BQU9oQixhQUFhQyxLQUFLO0FBQy9CLFdBQU8sRUFBRUEsT0FBT2EsWUFBWUMsWUFBWUMsS0FBSztBQUFBLEVBQy9DLEdBQUcsQ0FBQ1QsUUFBUUUsYUFBYUUsVUFBVSxDQUFDO0FBRXBDLFNBQ0UsbUNBQ0U7QUFBQTtBQUFBLE1BQUM7QUFBQTtBQUFBLFFBQ0MsT0FBTTtBQUFBLFFBQ04sYUFBWTtBQUFBLFFBQ1osTUFBSztBQUFBLFFBQ0wsYUFBYSxDQUFDdkIsZ0JBQWdCLEVBQUU2QixNQUFNLGVBQWVDLE1BQU0sZUFBZSxHQUFHLEVBQUVELE1BQU0sNEJBQTRCQyxNQUFNLG1DQUFtQyxDQUFDO0FBQUEsUUFDM0osZ0JBQWdCO0FBQUEsVUFDZDtBQUFBLFlBQ0UsWUFBWTtBQUFBLFlBQ1osU0FBUztBQUFBLFlBQ1RELE1BQU07QUFBQSxZQUNORSxxQkFBcUI7QUFBQSxZQUNyQkMsaUJBQWlCO0FBQUEsWUFDakJDLFFBQVEsRUFBRSxTQUFTLFNBQVNDLE9BQU8sS0FBS0MsZUFBZSxNQUFNO0FBQUEsVUFDL0Q7QUFBQSxRQUFDO0FBQUE7QUFBQSxNQWJMO0FBQUE7QUFBQTtBQUFBO0FBQUE7QUFBQTtBQUFBO0FBQUE7QUFBQSxJQWNJO0FBQUEsSUFHSix1QkFBQyxhQUFRLFdBQVUsdURBQ2pCLGlDQUFDLFNBQUksV0FBVSxrQ0FDYjtBQUFBLDZCQUFDLFNBQUksV0FBVSxnSkFDYjtBQUFBLCtCQUFDLFNBQU0sV0FBVSwwQkFBakI7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQUF1QztBQUFBO0FBQUEsV0FEekM7QUFBQTtBQUFBO0FBQUE7QUFBQSxhQUdBO0FBQUEsTUFDQSx1QkFBQyxRQUFHLFdBQVUsOEVBQTRFLHFEQUExRjtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBRUE7QUFBQSxNQUNBLHVCQUFDLE9BQUUsV0FBVSxxREFBbUQsMklBQWhFO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFFQTtBQUFBLFNBVkY7QUFBQTtBQUFBO0FBQUE7QUFBQSxXQVdBLEtBWkY7QUFBQTtBQUFBO0FBQUE7QUFBQSxXQWFBO0FBQUEsSUFFQSx1QkFBQyxhQUFRLFdBQVUsb0JBQ2pCLGlDQUFDLFNBQUksV0FBVSx1Q0FDYjtBQUFBLDZCQUFDLFFBQ0M7QUFBQSwrQkFBQyxjQUNDO0FBQUEsaUNBQUMsYUFBVSxtQ0FBWDtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUE4QjtBQUFBLFVBQzlCLHVCQUFDLG1CQUFnQixvRUFBakI7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFBcUU7QUFBQSxhQUZ2RTtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBR0E7QUFBQSxRQUNBLHVCQUFDLGVBQVksV0FBVSxhQUNyQjtBQUFBLGlDQUFDLFNBQUksV0FBVSxhQUNiO0FBQUEsbUNBQUMsU0FBTSxvQ0FBUDtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUEyQjtBQUFBLFlBQzNCLHVCQUFDLFNBQU0sT0FBTzdCLFlBQVlhLE1BQU0sR0FBRyxXQUFVLFdBQVUsVUFBVSxDQUFDaUIsVUFBVWhCLFVBQVVuQixXQUFXbUMsTUFBTUMsT0FBT25DLEtBQUssQ0FBQyxLQUFwSDtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFzSDtBQUFBLGVBRnhIO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBR0E7QUFBQSxVQUNBLHVCQUFDLFNBQUksV0FBVSxhQUNiO0FBQUEsbUNBQUMsU0FBTSw0QkFBUDtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFtQjtBQUFBLFlBQ25CLHVCQUFDLFNBQU0sT0FBT0ksWUFBWWUsV0FBVyxHQUFHLFdBQVUsV0FBVSxVQUFVLENBQUNlLFVBQVVkLGVBQWVyQixXQUFXbUMsTUFBTUMsT0FBT25DLEtBQUssQ0FBQyxLQUE5SDtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFnSTtBQUFBLGVBRmxJO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBR0E7QUFBQSxVQUNBLHVCQUFDLFNBQUksV0FBVSxhQUNiO0FBQUEsbUNBQUMsU0FBTSxxQ0FBUDtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUE0QjtBQUFBLFlBQzVCLHVCQUFDLFNBQU0sT0FBT0ksWUFBWWlCLFVBQVUsR0FBRyxXQUFVLFdBQVUsVUFBVSxDQUFDYSxVQUFVWixjQUFjdkIsV0FBV21DLE1BQU1DLE9BQU9uQyxLQUFLLENBQUMsS0FBNUg7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBOEg7QUFBQSxlQUZoSTtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUdBO0FBQUEsYUFaRjtBQUFBO0FBQUE7QUFBQTtBQUFBLGVBYUE7QUFBQSxXQWxCRjtBQUFBO0FBQUE7QUFBQTtBQUFBLGFBbUJBO0FBQUEsTUFFQSx1QkFBQyxTQUFJLFdBQVUsYUFDYjtBQUFBLCtCQUFDLFFBQ0M7QUFBQSxpQ0FBQyxjQUNDO0FBQUEsbUNBQUMsYUFBVSxvQ0FBWDtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUErQjtBQUFBLFlBQy9CLHVCQUFDLG1CQUFnQiwwRUFBakI7QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFBMkU7QUFBQSxlQUY3RTtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQUdBO0FBQUEsVUFDQSx1QkFBQyxlQUFZLFdBQVUsNkJBQ3JCO0FBQUEsbUNBQUMsU0FBSSxXQUFVLG1FQUNiO0FBQUEscUNBQUMsT0FBRSxXQUFVLGlDQUFnQyxtQ0FBN0M7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFBZ0U7QUFBQSxjQUNoRSx1QkFBQyxPQUFFLFdBQVUsK0NBQStDUyx3QkFBY2MsT0FBT1osS0FBSyxLQUF0RjtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUF3RjtBQUFBLGlCQUYxRjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUdBO0FBQUEsWUFDQSx1QkFBQyxTQUFJLFdBQVUsbUVBQ2I7QUFBQSxxQ0FBQyxPQUFFLFdBQVUsaUNBQWdDLHNDQUE3QztBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUFtRTtBQUFBLGNBQ25FLHVCQUFDLE9BQUUsV0FBVSwrQ0FBK0NGLHdCQUFjYyxPQUFPQyxVQUFVLEtBQTNGO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQTZGO0FBQUEsaUJBRi9GO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBR0E7QUFBQSxZQUNBLHVCQUFDLFNBQUksV0FBVSxtRUFDYjtBQUFBLHFDQUFDLE9BQUUsV0FBVSxpQ0FBZ0Msb0NBQTdDO0FBQUE7QUFBQTtBQUFBO0FBQUEscUJBQWlFO0FBQUEsY0FDakUsdUJBQUMsT0FBRSxXQUFVLCtDQUErQ3BCLHNCQUFZbUIsT0FBT0UsVUFBVSxLQUF6RjtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUEyRjtBQUFBLGlCQUY3RjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUdBO0FBQUEsZUFaRjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQWFBO0FBQUEsYUFsQkY7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQW1CQTtBQUFBLFFBRUEsdUJBQUMsUUFDQyxpQ0FBQyxlQUFZLFdBQVUsaUJBQ3JCO0FBQUEsaUNBQUMsU0FBSSxXQUFVLDBCQUNiO0FBQUEsbUNBQUMsZUFBWSxXQUFVLCtCQUF2QjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFrRDtBQUFBLFlBQ2xELHVCQUFDLFNBQ0M7QUFBQSxxQ0FBQyxPQUFFLFdBQVcseUJBQXlCRixPQUFPRyxLQUFLYixJQUFJLElBQUtVLGlCQUFPRyxLQUFLZCxTQUF4RTtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUE4RTtBQUFBLGNBQzlFLHVCQUFDLE9BQUUsV0FBVSw4QkFBOEJXLGlCQUFPRyxLQUFLWixRQUF2RDtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUE0RDtBQUFBLGlCQUY5RDtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUdBO0FBQUEsZUFMRjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQU1BO0FBQUEsVUFDQSx1QkFBQyxTQUFJLFdBQVUsbUNBQ2I7QUFBQSxtQ0FBQyxRQUFLLElBQUcsb0JBQ1AsaUNBQUMsVUFBTyw0QkFBUjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUFvQixLQUR0QjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUVBO0FBQUEsWUFDQSx1QkFBQyxRQUFLLElBQUcsZ0JBQ1AsaUNBQUMsVUFBTyxTQUFRLFdBQVUsK0JBQTFCO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQXlDLEtBRDNDO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBRUE7QUFBQSxlQU5GO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBT0E7QUFBQSxhQWZGO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFnQkEsS0FqQkY7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQWtCQTtBQUFBLFFBRUEsdUJBQUMsUUFDQztBQUFBLGlDQUFDLGNBQ0M7QUFBQSxtQ0FBQyxhQUFVLDBDQUFYO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBQXFDO0FBQUEsWUFDckMsdUJBQUMsbUJBQWdCLHNGQUFqQjtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUF1RjtBQUFBLGVBRnpGO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBR0E7QUFBQSxVQUNBLHVCQUFDLGVBQ0MsaUNBQUMsT0FBRSxXQUFVLGlHQUErRiw0RUFBNUc7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFFQSxLQUhGO0FBQUE7QUFBQTtBQUFBO0FBQUEsaUJBSUE7QUFBQSxhQVRGO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUFVQTtBQUFBLFdBcERGO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFxREE7QUFBQSxTQTNFRjtBQUFBO0FBQUE7QUFBQTtBQUFBLFdBNEVBLEtBN0VGO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0E4RUE7QUFBQSxPQS9HRjtBQUFBO0FBQUE7QUFBQTtBQUFBLFNBZ0hBO0FBRUo7QUFBQ0UsR0FoSVFELG1DQUFpQztBQUFBLEtBQWpDQTtBQWtJVCxlQUFlQTtBQUFrQyxJQUFBcUI7QUFBQSxhQUFBQSxJQUFBIiwibmFtZXMiOlsiUmVhY3QiLCJ1c2VNZW1vIiwidXNlU3RhdGUiLCJMaW5rIiwiR2F1Z2UiLCJTaGllbGRDaGVjayIsIkJ1dHRvbiIsIkNhcmQiLCJDYXJkQ29udGVudCIsIkNhcmREZXNjcmlwdGlvbiIsIkNhcmRIZWFkZXIiLCJDYXJkVGl0bGUiLCJJbnB1dCIsIkxhYmVsIiwiU2VvSGVhZCIsImhvbWVCcmVhZGNydW1iIiwicGFyc2VNb25leSIsInZhbHVlIiwiTnVtYmVyIiwiU3RyaW5nIiwicmVwbGFjZSIsImZvcm1hdE1vbmV5IiwidG9Mb2NhbGVTdHJpbmciLCJzdHlsZSIsImN1cnJlbmN5IiwibWF4aW11bUZyYWN0aW9uRGlnaXRzIiwiZm9ybWF0UGVyY2VudCIsImNsYXNzaWZ5UmlzayIsInJhdGlvIiwibGFiZWwiLCJ0b25lIiwidGV4dCIsIlNpbXVsYWRvckNvbXByb21ldGltZW50b1JlbmRhUGFnZSIsIl9zIiwiaW5jb21lIiwic2V0SW5jb21lIiwiaW5zdGFsbG1lbnQiLCJzZXRJbnN0YWxsbWVudCIsImZpeGVkQ29zdHMiLCJzZXRGaXhlZENvc3RzIiwicmVzdWx0IiwiZml4ZWRSYXRpbyIsImZyZWVJbmNvbWUiLCJyaXNrIiwibmFtZSIsInBhdGgiLCJhcHBsaWNhdGlvbkNhdGVnb3J5Iiwib3BlcmF0aW5nU3lzdGVtIiwib2ZmZXJzIiwicHJpY2UiLCJwcmljZUN1cnJlbmN5IiwiZXZlbnQiLCJ0YXJnZXQiLCJfYyJdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlcyI6WyJTaW11bGFkb3JDb21wcm9tZXRpbWVudG9SZW5kYVBhZ2UuanN4Il0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBSZWFjdCwgeyB1c2VNZW1vLCB1c2VTdGF0ZSB9IGZyb20gJ3JlYWN0JztcbmltcG9ydCB7IExpbmsgfSBmcm9tICdyZWFjdC1yb3V0ZXItZG9tJztcbmltcG9ydCB7IEdhdWdlLCBTaGllbGRDaGVjayB9IGZyb20gJ2x1Y2lkZS1yZWFjdCc7XG5pbXBvcnQgeyBCdXR0b24gfSBmcm9tICdAL2NvbXBvbmVudHMvdWkvYnV0dG9uJztcbmltcG9ydCB7IENhcmQsIENhcmRDb250ZW50LCBDYXJkRGVzY3JpcHRpb24sIENhcmRIZWFkZXIsIENhcmRUaXRsZSB9IGZyb20gJ0AvY29tcG9uZW50cy91aS9jYXJkJztcbmltcG9ydCB7IElucHV0IH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL2lucHV0JztcbmltcG9ydCB7IExhYmVsIH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL2xhYmVsJztcbmltcG9ydCBTZW9IZWFkIGZyb20gJ0AvY29tcG9uZW50cy9TZW9IZWFkLmpzeCc7XG5pbXBvcnQgeyBob21lQnJlYWRjcnVtYiB9IGZyb20gJ0Avc2VvL2JyYW5kU2VvLmpzJztcblxuY29uc3QgcGFyc2VNb25leSA9ICh2YWx1ZSA9ICcnKSA9PiBOdW1iZXIoU3RyaW5nKHZhbHVlKS5yZXBsYWNlKC9cXEQvZywgJycpIHx8IDApO1xuY29uc3QgZm9ybWF0TW9uZXkgPSAodmFsdWUgPSAwKSA9PlxuICBOdW1iZXIodmFsdWUgfHwgMCkudG9Mb2NhbGVTdHJpbmcoJ3B0LUJSJywge1xuICAgIHN0eWxlOiAnY3VycmVuY3knLFxuICAgIGN1cnJlbmN5OiAnQlJMJyxcbiAgICBtYXhpbXVtRnJhY3Rpb25EaWdpdHM6IDBcbiAgfSk7XG5jb25zdCBmb3JtYXRQZXJjZW50ID0gKHZhbHVlID0gMCkgPT4gYCR7TnVtYmVyKHZhbHVlIHx8IDApLnRvTG9jYWxlU3RyaW5nKCdwdC1CUicsIHsgbWF4aW11bUZyYWN0aW9uRGlnaXRzOiAxIH0pfSVgO1xuXG5jb25zdCBjbGFzc2lmeVJpc2sgPSAocmF0aW8pID0+IHtcbiAgaWYgKHJhdGlvIDw9IDIwKSByZXR1cm4geyBsYWJlbDogJ0NvbmZvcnTDoXZlbCcsIHRvbmU6ICd0ZXh0LWVtZXJhbGQtNzAwJywgdGV4dDogJ0EgcGFyY2VsYSBvY3VwYSB1bWEgcGFydGUgbWVub3IgZGEgcmVuZGEuIEFpbmRhIGFzc2ltLCBjb25maXJhIG91dHJhcyBkZXNwZXNhcyBmaXhhcy4nIH07XG4gIGlmIChyYXRpbyA8PSAzMCkgcmV0dXJuIHsgbGFiZWw6ICdBdGVuw6fDo28nLCB0b25lOiAndGV4dC1hbWJlci03MDAnLCB0ZXh0OiAnQSBwYXJjZWxhIGrDoSBwZXNhIG5vIG9yw6dhbWVudG8uIFNpbXVsZSBwcmF6b3MgZSBtYW50ZW5oYSByZXNlcnZhIHBhcmEgaW1wcmV2aXN0b3MuJyB9O1xuICByZXR1cm4geyBsYWJlbDogJ0FsdG8gcmlzY28nLCB0b25lOiAndGV4dC1yZWQtNzAwJywgdGV4dDogJ0EgcGFyY2VsYSBwb2RlIGNvbXByb21ldGVyIGRlbWFpcyBhIHJlbmRhLiBDb25zaWRlcmUgcmVkdXppciB2YWxvciwgYXVtZW50YXIgcHJhem8gb3UgYWRpYXIgYSBjb250cmF0YcOnw6NvLicgfTtcbn07XG5cbmZ1bmN0aW9uIFNpbXVsYWRvckNvbXByb21ldGltZW50b1JlbmRhUGFnZSgpIHtcbiAgY29uc3QgW2luY29tZSwgc2V0SW5jb21lXSA9IHVzZVN0YXRlKDUyMDApO1xuICBjb25zdCBbaW5zdGFsbG1lbnQsIHNldEluc3RhbGxtZW50XSA9IHVzZVN0YXRlKDEyNTApO1xuICBjb25zdCBbZml4ZWRDb3N0cywgc2V0Rml4ZWRDb3N0c10gPSB1c2VTdGF0ZSgyMzAwKTtcblxuICBjb25zdCByZXN1bHQgPSB1c2VNZW1vKCgpID0+IHtcbiAgICBjb25zdCByYXRpbyA9IGluY29tZSA+IDAgPyAoaW5zdGFsbG1lbnQgLyBpbmNvbWUpICogMTAwIDogMDtcbiAgICBjb25zdCBmaXhlZFJhdGlvID0gaW5jb21lID4gMCA/ICgoaW5zdGFsbG1lbnQgKyBmaXhlZENvc3RzKSAvIGluY29tZSkgKiAxMDAgOiAwO1xuICAgIGNvbnN0IGZyZWVJbmNvbWUgPSBpbmNvbWUgLSBmaXhlZENvc3RzIC0gaW5zdGFsbG1lbnQ7XG4gICAgY29uc3QgcmlzayA9IGNsYXNzaWZ5UmlzayhyYXRpbyk7XG4gICAgcmV0dXJuIHsgcmF0aW8sIGZpeGVkUmF0aW8sIGZyZWVJbmNvbWUsIHJpc2sgfTtcbiAgfSwgW2luY29tZSwgaW5zdGFsbG1lbnQsIGZpeGVkQ29zdHNdKTtcblxuICByZXR1cm4gKFxuICAgIDw+XG4gICAgICA8U2VvSGVhZFxuICAgICAgICB0aXRsZT1cIlNpbXVsYWRvciBkZSBjb21wcm9tZXRpbWVudG8gZGUgcmVuZGEgfCBDb3RlIEp1cm9zXCJcbiAgICAgICAgZGVzY3JpcHRpb249XCJTaW11bGUgcXVhbnRvIHVtYSBwYXJjZWxhIGNvbXByb21ldGUgZGEgc3VhIHJlbmRhIGUgdmVqYSBzaW5haXMgZGUgcmlzY28gYW50ZXMgZGUgY29udHJhdGFyIGVtcHLDqXN0aW1vIG91IGZpbmFuY2lhbWVudG8uXCJcbiAgICAgICAgcGF0aD1cIi9zaW11bGFkb3ItY29tcHJvbWV0aW1lbnRvLXJlbmRhXCJcbiAgICAgICAgYnJlYWRjcnVtYnM9e1tob21lQnJlYWRjcnVtYiwgeyBuYW1lOiAnRmVycmFtZW50YXMnLCBwYXRoOiAnL2ZlcnJhbWVudGFzJyB9LCB7IG5hbWU6ICdDb21wcm9tZXRpbWVudG8gZGUgcmVuZGEnLCBwYXRoOiAnL3NpbXVsYWRvci1jb21wcm9tZXRpbWVudG8tcmVuZGEnIH1dfVxuICAgICAgICBzdHJ1Y3R1cmVkRGF0YT17W1xuICAgICAgICAgIHtcbiAgICAgICAgICAgICdAY29udGV4dCc6ICdodHRwczovL3NjaGVtYS5vcmcnLFxuICAgICAgICAgICAgJ0B0eXBlJzogJ1NvZnR3YXJlQXBwbGljYXRpb24nLFxuICAgICAgICAgICAgbmFtZTogJ1NpbXVsYWRvciBkZSBjb21wcm9tZXRpbWVudG8gZGUgcmVuZGEgQ290ZSBKdXJvcycsXG4gICAgICAgICAgICBhcHBsaWNhdGlvbkNhdGVnb3J5OiAnRmluYW5jZUFwcGxpY2F0aW9uJyxcbiAgICAgICAgICAgIG9wZXJhdGluZ1N5c3RlbTogJ1dlYicsXG4gICAgICAgICAgICBvZmZlcnM6IHsgJ0B0eXBlJzogJ09mZmVyJywgcHJpY2U6ICcwJywgcHJpY2VDdXJyZW5jeTogJ0JSTCcgfVxuICAgICAgICAgIH1cbiAgICAgICAgXX1cbiAgICAgIC8+XG5cbiAgICAgIDxzZWN0aW9uIGNsYXNzTmFtZT1cImJvcmRlci1iIGJvcmRlci1ib3JkZXIgYmctYmFja2dyb3VuZCBweS0xMCBtZDpweS0xNFwiPlxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInBhZ2Utc2hlbGwgbWF4LXctNXhsIHNwYWNlLXktNVwiPlxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGdhcC0yIHJvdW5kZWQtZnVsbCBib3JkZXIgYm9yZGVyLWJvcmRlciBiZy1iYWNrZ3JvdW5kLXNlY29uZGFyeSBweC0zIHB5LTIgdGV4dC1zbSBmb250LW1lZGl1bSB0ZXh0LW11dGVkLWZvcmVncm91bmRcIj5cbiAgICAgICAgICAgIDxHYXVnZSBjbGFzc05hbWU9XCJoLTQgdy00IHRleHQtcHJpbWFyeVwiIC8+XG4gICAgICAgICAgICBTaW11bGFkb3IgZ3JhdHVpdG9cbiAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICA8aDEgY2xhc3NOYW1lPVwibWF4LXctM3hsIHRleHQtM3hsIGZvbnQtc2VtaWJvbGQgbGVhZGluZy10aWdodCB0ZXh0LWZvcmVncm91bmQgbWQ6dGV4dC01eGxcIj5cbiAgICAgICAgICAgIFNpbXVsYWRvciBkZSBjb21wcm9tZXRpbWVudG8gZGUgcmVuZGFcbiAgICAgICAgICA8L2gxPlxuICAgICAgICAgIDxwIGNsYXNzTmFtZT1cIm1heC13LTN4bCB0ZXh0LWxnIGxlYWRpbmctOCB0ZXh0LW11dGVkLWZvcmVncm91bmRcIj5cbiAgICAgICAgICAgIFZlamEgc2UgYSBwYXJjZWxhIGRlIHVtIGVtcHLDqXN0aW1vLCBjYXJ0w6NvIHBhcmNlbGFkbyBvdSBmaW5hbmNpYW1lbnRvIGNhYmUgbm8gc2V1IG9yw6dhbWVudG8gYW50ZXMgZGUgc2VndWlyIGNvbSBhIHByb3Bvc3RhLlxuICAgICAgICAgIDwvcD5cbiAgICAgICAgPC9kaXY+XG4gICAgICA8L3NlY3Rpb24+XG5cbiAgICAgIDxzZWN0aW9uIGNsYXNzTmFtZT1cInBhZ2Utc2hlbGwgcHktMTJcIj5cbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJncmlkIGdhcC04IGxnOmdyaWQtY29scy1bMzYwcHhfMWZyXVwiPlxuICAgICAgICAgIDxDYXJkPlxuICAgICAgICAgICAgPENhcmRIZWFkZXI+XG4gICAgICAgICAgICAgIDxDYXJkVGl0bGU+UHJlZW5jaGEgb3MgdmFsb3JlczwvQ2FyZFRpdGxlPlxuICAgICAgICAgICAgICA8Q2FyZERlc2NyaXB0aW9uPlVzZSBzdWEgcmVuZGEgbMOtcXVpZGEgZSBzdWFzIGRlc3Blc2FzIGZpeGFzIG1lbnNhaXMuPC9DYXJkRGVzY3JpcHRpb24+XG4gICAgICAgICAgICA8L0NhcmRIZWFkZXI+XG4gICAgICAgICAgICA8Q2FyZENvbnRlbnQgY2xhc3NOYW1lPVwic3BhY2UteS01XCI+XG4gICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwic3BhY2UteS0yXCI+XG4gICAgICAgICAgICAgICAgPExhYmVsPlJlbmRhIG1lbnNhbCBsw61xdWlkYTwvTGFiZWw+XG4gICAgICAgICAgICAgICAgPElucHV0IHZhbHVlPXtmb3JtYXRNb25leShpbmNvbWUpfSBpbnB1dE1vZGU9XCJudW1lcmljXCIgb25DaGFuZ2U9eyhldmVudCkgPT4gc2V0SW5jb21lKHBhcnNlTW9uZXkoZXZlbnQudGFyZ2V0LnZhbHVlKSl9IC8+XG4gICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInNwYWNlLXktMlwiPlxuICAgICAgICAgICAgICAgIDxMYWJlbD5QYXJjZWxhIG5vdmE8L0xhYmVsPlxuICAgICAgICAgICAgICAgIDxJbnB1dCB2YWx1ZT17Zm9ybWF0TW9uZXkoaW5zdGFsbG1lbnQpfSBpbnB1dE1vZGU9XCJudW1lcmljXCIgb25DaGFuZ2U9eyhldmVudCkgPT4gc2V0SW5zdGFsbG1lbnQocGFyc2VNb25leShldmVudC50YXJnZXQudmFsdWUpKX0gLz5cbiAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwic3BhY2UteS0yXCI+XG4gICAgICAgICAgICAgICAgPExhYmVsPkRlc3Blc2FzIGZpeGFzIGF0dWFpczwvTGFiZWw+XG4gICAgICAgICAgICAgICAgPElucHV0IHZhbHVlPXtmb3JtYXRNb25leShmaXhlZENvc3RzKX0gaW5wdXRNb2RlPVwibnVtZXJpY1wiIG9uQ2hhbmdlPXsoZXZlbnQpID0+IHNldEZpeGVkQ29zdHMocGFyc2VNb25leShldmVudC50YXJnZXQudmFsdWUpKX0gLz5cbiAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICA8L0NhcmRDb250ZW50PlxuICAgICAgICAgIDwvQ2FyZD5cblxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwic3BhY2UteS02XCI+XG4gICAgICAgICAgICA8Q2FyZD5cbiAgICAgICAgICAgICAgPENhcmRIZWFkZXI+XG4gICAgICAgICAgICAgICAgPENhcmRUaXRsZT5MZWl0dXJhIGRvIHJlc3VsdGFkbzwvQ2FyZFRpdGxlPlxuICAgICAgICAgICAgICAgIDxDYXJkRGVzY3JpcHRpb24+UXVhbnRvIG1lbm9yIG8gcGVyY2VudHVhbCwgbWFpb3IgYSBmb2xnYSBwYXJhIGltcHJldmlzdG9zLjwvQ2FyZERlc2NyaXB0aW9uPlxuICAgICAgICAgICAgICA8L0NhcmRIZWFkZXI+XG4gICAgICAgICAgICAgIDxDYXJkQ29udGVudCBjbGFzc05hbWU9XCJncmlkIGdhcC00IG1kOmdyaWQtY29scy0zXCI+XG4gICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJyb3VuZGVkLVsxMHB4XSBib3JkZXIgYm9yZGVyLWJvcmRlciBiZy1iYWNrZ3JvdW5kLXNlY29uZGFyeSBwLTVcIj5cbiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cInRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kXCI+UGFyY2VsYSBzb2JyZSByZW5kYTwvcD5cbiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cIm10LTIgdGV4dC0zeGwgZm9udC1zZW1pYm9sZCB0ZXh0LWZvcmVncm91bmRcIj57Zm9ybWF0UGVyY2VudChyZXN1bHQucmF0aW8pfTwvcD5cbiAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInJvdW5kZWQtWzEwcHhdIGJvcmRlciBib3JkZXItYm9yZGVyIGJnLWJhY2tncm91bmQtc2Vjb25kYXJ5IHAtNVwiPlxuICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC1zbSB0ZXh0LW11dGVkLWZvcmVncm91bmRcIj5HYXN0b3MgZml4b3MgKyBwYXJjZWxhPC9wPlxuICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwibXQtMiB0ZXh0LTN4bCBmb250LXNlbWlib2xkIHRleHQtZm9yZWdyb3VuZFwiPntmb3JtYXRQZXJjZW50KHJlc3VsdC5maXhlZFJhdGlvKX08L3A+XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJyb3VuZGVkLVsxMHB4XSBib3JkZXIgYm9yZGVyLWJvcmRlciBiZy1iYWNrZ3JvdW5kLXNlY29uZGFyeSBwLTVcIj5cbiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cInRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kXCI+UmVuZGEgbGl2cmUgZXN0aW1hZGE8L3A+XG4gICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJtdC0yIHRleHQtM3hsIGZvbnQtc2VtaWJvbGQgdGV4dC1mb3JlZ3JvdW5kXCI+e2Zvcm1hdE1vbmV5KHJlc3VsdC5mcmVlSW5jb21lKX08L3A+XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIDwvQ2FyZENvbnRlbnQ+XG4gICAgICAgICAgICA8L0NhcmQ+XG5cbiAgICAgICAgICAgIDxDYXJkPlxuICAgICAgICAgICAgICA8Q2FyZENvbnRlbnQgY2xhc3NOYW1lPVwic3BhY2UteS00IHAtNlwiPlxuICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZmxleCBpdGVtcy1zdGFydCBnYXAtM1wiPlxuICAgICAgICAgICAgICAgICAgPFNoaWVsZENoZWNrIGNsYXNzTmFtZT1cIm10LTEgaC01IHctNSB0ZXh0LXByaW1hcnlcIiAvPlxuICAgICAgICAgICAgICAgICAgPGRpdj5cbiAgICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPXtgdGV4dC14bCBmb250LXNlbWlib2xkICR7cmVzdWx0LnJpc2sudG9uZX1gfT57cmVzdWx0LnJpc2subGFiZWx9PC9wPlxuICAgICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJtdC0yIHRleHQtbXV0ZWQtZm9yZWdyb3VuZFwiPntyZXN1bHQucmlzay50ZXh0fTwvcD5cbiAgICAgICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZmxleCBmbGV4LWNvbCBnYXAtMyBzbTpmbGV4LXJvd1wiPlxuICAgICAgICAgICAgICAgICAgPExpbmsgdG89XCIvY2FsY3VsYWRvcmEtY2V0XCI+XG4gICAgICAgICAgICAgICAgICAgIDxCdXR0b24+Q29tcGFyYXIgQ0VUPC9CdXR0b24+XG4gICAgICAgICAgICAgICAgICA8L0xpbms+XG4gICAgICAgICAgICAgICAgICA8TGluayB0bz1cIi9lbXByZXN0aW1vc1wiPlxuICAgICAgICAgICAgICAgICAgICA8QnV0dG9uIHZhcmlhbnQ9XCJvdXRsaW5lXCI+VmVyIGVtcHLDqXN0aW1vczwvQnV0dG9uPlxuICAgICAgICAgICAgICAgICAgPC9MaW5rPlxuICAgICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICA8L0NhcmRDb250ZW50PlxuICAgICAgICAgICAgPC9DYXJkPlxuXG4gICAgICAgICAgICA8Q2FyZD5cbiAgICAgICAgICAgICAgPENhcmRIZWFkZXI+XG4gICAgICAgICAgICAgICAgPENhcmRUaXRsZT5Db21vIGNpdGFyIGVzdGEgZmVycmFtZW50YTwvQ2FyZFRpdGxlPlxuICAgICAgICAgICAgICAgIDxDYXJkRGVzY3JpcHRpb24+TGluayByZWNvbWVuZGFkbyBwYXJhIGNvbnRlw7pkb3Mgc29icmUgb3LDp2FtZW50byBlIGNyw6lkaXRvIHJlc3BvbnPDoXZlbC48L0NhcmREZXNjcmlwdGlvbj5cbiAgICAgICAgICAgICAgPC9DYXJkSGVhZGVyPlxuICAgICAgICAgICAgICA8Q2FyZENvbnRlbnQ+XG4gICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwicm91bmRlZC1bMTBweF0gYm9yZGVyIGJvcmRlci1ib3JkZXIgYmctYmFja2dyb3VuZC1zZWNvbmRhcnkgcC0zIHRleHQtc20gdGV4dC1tdXRlZC1mb3JlZ3JvdW5kXCI+XG4gICAgICAgICAgICAgICAgICBodHRwczovL3d3dy5jb3RlanVyb3MuY29tLmJyL3NpbXVsYWRvci1jb21wcm9tZXRpbWVudG8tcmVuZGFcbiAgICAgICAgICAgICAgICA8L3A+XG4gICAgICAgICAgICAgIDwvQ2FyZENvbnRlbnQ+XG4gICAgICAgICAgICA8L0NhcmQ+XG4gICAgICAgICAgPC9kaXY+XG4gICAgICAgIDwvZGl2PlxuICAgICAgPC9zZWN0aW9uPlxuICAgIDwvPlxuICApO1xufVxuXG5leHBvcnQgZGVmYXVsdCBTaW11bGFkb3JDb21wcm9tZXRpbWVudG9SZW5kYVBhZ2U7XG4iXSwiZmlsZSI6IkM6L2Rldi9jb3RlLWp1cm9zLWhvc3Rpbmdlci1ob3Jpem9ucy9hcHBzL3dlYi9zcmMvcGFnZXMvU2ltdWxhZG9yQ29tcHJvbWV0aW1lbnRvUmVuZGFQYWdlLmpzeCJ9

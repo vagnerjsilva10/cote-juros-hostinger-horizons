@@ -1,0 +1,666 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/pages/admin/AdminHealthPage.jsx");import __vite__cjsImport0_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=f3f27a3e"; const Fragment = __vite__cjsImport0_react_jsxDevRuntime["Fragment"]; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+var _s = $RefreshSig$();
+import __vite__cjsImport1_react from "/node_modules/.vite/deps/react.js?v=f3f27a3e"; const React = __vite__cjsImport1_react.__esModule ? __vite__cjsImport1_react.default : __vite__cjsImport1_react; const useEffect = __vite__cjsImport1_react["useEffect"]; const useState = __vite__cjsImport1_react["useState"];
+import { toast } from "/node_modules/.vite/deps/sonner.js?v=f3f27a3e";
+import AdminPageHeader from "/src/admin/AdminPageHeader.jsx";
+import { portalApi } from "/src/platform/services/portalApi.js";
+import { Card, CardContent } from "/src/components/ui/card.jsx";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "/src/components/ui/table.jsx";
+const healthTone = {
+  healthy: "text-emerald-700",
+  warning: "text-amber-700",
+  error: "text-red-700",
+  unknown: "text-slate-500",
+  disabled: "text-slate-500",
+  available: "text-emerald-700"
+};
+function MetricCard({ label, value, hint }) {
+  return /* @__PURE__ */ jsxDEV("div", { className: "rounded-lg border border-slate-200 bg-white p-5", children: [
+    /* @__PURE__ */ jsxDEV("p", { className: "text-sm font-semibold text-slate-500", children: label }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+      lineNumber: 20,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV("p", { className: "mt-2 text-3xl font-bold text-slate-950", children: value }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+      lineNumber: 21,
+      columnNumber: 7
+    }, this),
+    hint ? /* @__PURE__ */ jsxDEV("p", { className: "mt-2 text-sm text-slate-600", children: hint }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+      lineNumber: 22,
+      columnNumber: 15
+    }, this) : null
+  ] }, void 0, true, {
+    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+    lineNumber: 19,
+    columnNumber: 5
+  }, this);
+}
+_c = MetricCard;
+const renderStatus = (value) => /* @__PURE__ */ jsxDEV("span", { className: healthTone[value] || "text-slate-600", children: value || "unknown" }, void 0, false, {
+  fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+  lineNumber: 28,
+  columnNumber: 1
+}, this);
+export default function AdminHealthPage() {
+  _s();
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    let active = true;
+    portalApi.getAdminHealth().then((response) => {
+      if (!active) return;
+      setData(response);
+    }).catch((error) => {
+      if (!active) return;
+      toast.error(error.message || "Não foi possível carregar a saúde da plataforma.");
+    }).finally(() => {
+      if (!active) return;
+      setLoading(false);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+  return /* @__PURE__ */ jsxDEV("div", { className: "space-y-6", children: [
+    /* @__PURE__ */ jsxDEV(
+      AdminPageHeader,
+      {
+        title: "Saúde operacional",
+        description: "Acompanhe integrações, alertas, checks recentes e o estado dos jobs agendados."
+      },
+      void 0,
+      false,
+      {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+        lineNumber: 61,
+        columnNumber: 7
+      },
+      this
+    ),
+    loading ? /* @__PURE__ */ jsxDEV(Card, { className: "border-slate-200", children: /* @__PURE__ */ jsxDEV(CardContent, { className: "pt-6 text-sm text-slate-600", children: "Carregando saúde operacional..." }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+      lineNumber: 68,
+      columnNumber: 11
+    }, this) }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+      lineNumber: 67,
+      columnNumber: 7
+    }, this) : null,
+    data ? /* @__PURE__ */ jsxDEV(Fragment, { children: [
+      /* @__PURE__ */ jsxDEV("div", { className: "grid gap-4 sm:grid-cols-2 xl:grid-cols-4", children: [
+        /* @__PURE__ */ jsxDEV(
+          MetricCard,
+          {
+            label: "Alertas abertos",
+            value: data.alerts?.open || 0,
+            hint: `${data.alerts?.total || 0} alertas recentes registrados`
+          },
+          void 0,
+          false,
+          {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 75,
+            columnNumber: 13
+          },
+          this
+        ),
+        /* @__PURE__ */ jsxDEV(
+          MetricCard,
+          {
+            label: "Checks recentes",
+            value: (data.checks || []).length,
+            hint: "Últimas verificações de integração salvas no banco"
+          },
+          void 0,
+          false,
+          {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 80,
+            columnNumber: 13
+          },
+          this
+        ),
+        /* @__PURE__ */ jsxDEV(
+          MetricCard,
+          {
+            label: "Parceiros saudáveis",
+            value: data.partners?.byHealthStatus?.healthy || 0,
+            hint: `${data.partners?.byHealthStatus?.warning || 0} em atenção · ${data.partners?.byHealthStatus?.error || 0} com erro`
+          },
+          void 0,
+          false,
+          {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 85,
+            columnNumber: 13
+          },
+          this
+        ),
+        /* @__PURE__ */ jsxDEV(
+          MetricCard,
+          {
+            label: "Jobs ativos",
+            value: (data.scheduledJobs || []).filter((item) => item.enabled).length,
+            hint: `${(data.scheduledJobs || []).length} rotinas agendadas mapeadas`
+          },
+          void 0,
+          false,
+          {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 90,
+            columnNumber: 13
+          },
+          this
+        )
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+        lineNumber: 74,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+        /* @__PURE__ */ jsxDEV(Card, { className: "border-slate-200", children: /* @__PURE__ */ jsxDEV(CardContent, { className: "space-y-4 pt-6", children: [
+          /* @__PURE__ */ jsxDEV("div", { children: [
+            /* @__PURE__ */ jsxDEV("h2", { className: "text-base font-bold text-slate-950", children: "API e integrações" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 101,
+              columnNumber: 19
+            }, this),
+            /* @__PURE__ */ jsxDEV("p", { className: "mt-1 text-sm text-slate-500", children: [
+              "Snapshot gerado em ",
+              data.generatedAt ? new Date(data.generatedAt).toLocaleString("pt-BR") : "-",
+              "."
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 102,
+              columnNumber: 19
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 100,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "space-y-3 text-sm", children: [
+            /* @__PURE__ */ jsxDEV("div", { className: "flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2", children: [
+              /* @__PURE__ */ jsxDEV("span", { className: "text-slate-600", children: "Serviço" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 109,
+                columnNumber: 21
+              }, this),
+              /* @__PURE__ */ jsxDEV("span", { className: "font-medium text-slate-950", children: data.api?.service || "-" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 110,
+                columnNumber: 21
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 108,
+              columnNumber: 19
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2", children: [
+              /* @__PURE__ */ jsxDEV("span", { className: "text-slate-600", children: "Ambiente" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 113,
+                columnNumber: 21
+              }, this),
+              /* @__PURE__ */ jsxDEV("span", { className: "font-medium text-slate-950", children: data.api?.environment || "-" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 114,
+                columnNumber: 21
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 112,
+              columnNumber: 19
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2", children: [
+              /* @__PURE__ */ jsxDEV("span", { className: "text-slate-600", children: "Banco configurado" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 117,
+                columnNumber: 21
+              }, this),
+              /* @__PURE__ */ jsxDEV("span", { className: "font-medium text-slate-950", children: data.api?.databaseConfigured ? "Sim" : "Não" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 118,
+                columnNumber: 21
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 116,
+              columnNumber: 19
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "rounded-lg border border-slate-200 px-3 py-3", children: [
+              /* @__PURE__ */ jsxDEV("div", { className: "flex items-center justify-between", children: [
+                /* @__PURE__ */ jsxDEV("span", { className: "text-slate-600", children: "Juros Baixos" }, void 0, false, {
+                  fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                  lineNumber: 122,
+                  columnNumber: 23
+                }, this),
+                /* @__PURE__ */ jsxDEV("span", { className: "font-medium", children: renderStatus(data.integrations?.jurosBaixos?.status) }, void 0, false, {
+                  fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                  lineNumber: 123,
+                  columnNumber: 23
+                }, this)
+              ] }, void 0, true, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 121,
+                columnNumber: 21
+              }, this),
+              /* @__PURE__ */ jsxDEV("p", { className: "mt-2 text-xs text-slate-500", children: [
+                "Timeout: ",
+                data.integrations?.jurosBaixos?.timeoutMs || 0,
+                " ms · Retries: ",
+                data.integrations?.jurosBaixos?.retryCount || 0
+              ] }, void 0, true, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 125,
+                columnNumber: 21
+              }, this),
+              (data.integrations?.jurosBaixos?.missing || []).length ? /* @__PURE__ */ jsxDEV("p", { className: "mt-2 text-xs text-amber-700", children: [
+                "Pendências: ",
+                (data.integrations.jurosBaixos.missing || []).join(", ")
+              ] }, void 0, true, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 129,
+                columnNumber: 19
+              }, this) : null
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 120,
+              columnNumber: 19
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 107,
+            columnNumber: 17
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+          lineNumber: 99,
+          columnNumber: 15
+        }, this) }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+          lineNumber: 98,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV(Card, { className: "border-slate-200", children: /* @__PURE__ */ jsxDEV(CardContent, { className: "space-y-4 pt-6", children: [
+          /* @__PURE__ */ jsxDEV("div", { children: [
+            /* @__PURE__ */ jsxDEV("h2", { className: "text-base font-bold text-slate-950", children: "Severidade dos alertas" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 141,
+              columnNumber: 19
+            }, this),
+            /* @__PURE__ */ jsxDEV("p", { className: "mt-1 text-sm text-slate-500", children: "Alertas operacionais abertos para acompanhamento manual." }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 142,
+              columnNumber: 19
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 140,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "grid gap-3 sm:grid-cols-3", children: ["critical", "high", "medium", "low"].map(
+            (severity) => /* @__PURE__ */ jsxDEV("div", { className: "rounded-lg border border-slate-200 p-4", children: [
+              /* @__PURE__ */ jsxDEV("p", { className: "text-xs uppercase tracking-[0.14em] text-slate-500", children: severity }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 149,
+                columnNumber: 23
+              }, this),
+              /* @__PURE__ */ jsxDEV("p", { className: "mt-2 text-2xl font-bold text-slate-950", children: data.alerts?.bySeverity?.[severity] || 0 }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 150,
+                columnNumber: 23
+              }, this)
+            ] }, severity, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 148,
+              columnNumber: 17
+            }, this)
+          ) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 146,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "rounded-lg border border-slate-200", children: /* @__PURE__ */ jsxDEV(Table, { children: [
+            /* @__PURE__ */ jsxDEV(TableHeader, { children: /* @__PURE__ */ jsxDEV(TableRow, { children: [
+              /* @__PURE__ */ jsxDEV(TableHead, { children: "Alerta" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 159,
+                columnNumber: 25
+              }, this),
+              /* @__PURE__ */ jsxDEV(TableHead, { children: "Severidade" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 160,
+                columnNumber: 25
+              }, this),
+              /* @__PURE__ */ jsxDEV(TableHead, { children: "Status" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 161,
+                columnNumber: 25
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 158,
+              columnNumber: 23
+            }, this) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 157,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ jsxDEV(TableBody, { children: [
+              (data.alerts?.items || []).slice(0, 5).map(
+                (alert) => /* @__PURE__ */ jsxDEV(TableRow, { children: [
+                  /* @__PURE__ */ jsxDEV(TableCell, { children: [
+                    /* @__PURE__ */ jsxDEV("p", { className: "font-medium text-slate-950", children: alert.message }, void 0, false, {
+                      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                      lineNumber: 168,
+                      columnNumber: 29
+                    }, this),
+                    /* @__PURE__ */ jsxDEV("p", { className: "text-xs text-slate-500", children: alert.key }, void 0, false, {
+                      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                      lineNumber: 169,
+                      columnNumber: 29
+                    }, this)
+                  ] }, void 0, true, {
+                    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                    lineNumber: 167,
+                    columnNumber: 27
+                  }, this),
+                  /* @__PURE__ */ jsxDEV(TableCell, { children: alert.severity }, void 0, false, {
+                    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                    lineNumber: 171,
+                    columnNumber: 27
+                  }, this),
+                  /* @__PURE__ */ jsxDEV(TableCell, { children: alert.status }, void 0, false, {
+                    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                    lineNumber: 172,
+                    columnNumber: 27
+                  }, this)
+                ] }, alert.id, true, {
+                  fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                  lineNumber: 166,
+                  columnNumber: 21
+                }, this)
+              ),
+              (data.alerts?.items || []).length === 0 ? /* @__PURE__ */ jsxDEV(TableRow, { children: /* @__PURE__ */ jsxDEV(TableCell, { colSpan: 3, className: "text-slate-500", children: "Nenhum alerta recente registrado." }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 177,
+                columnNumber: 27
+              }, this) }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 176,
+                columnNumber: 21
+              }, this) : null
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 164,
+              columnNumber: 21
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 156,
+            columnNumber: 19
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 155,
+            columnNumber: 17
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+          lineNumber: 139,
+          columnNumber: 15
+        }, this) }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+          lineNumber: 138,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+        lineNumber: 97,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+        /* @__PURE__ */ jsxDEV(Card, { className: "border-slate-200", children: /* @__PURE__ */ jsxDEV(CardContent, { className: "pt-6", children: [
+          /* @__PURE__ */ jsxDEV("h2", { className: "text-base font-bold text-slate-950", children: "Checks de integração" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 192,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "mt-4 overflow-x-auto", children: /* @__PURE__ */ jsxDEV(Table, { children: [
+            /* @__PURE__ */ jsxDEV(TableHeader, { children: /* @__PURE__ */ jsxDEV(TableRow, { children: [
+              /* @__PURE__ */ jsxDEV(TableHead, { children: "Integração" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 197,
+                columnNumber: 25
+              }, this),
+              /* @__PURE__ */ jsxDEV(TableHead, { children: "Status" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 198,
+                columnNumber: 25
+              }, this),
+              /* @__PURE__ */ jsxDEV(TableHead, { children: "Tempo" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 199,
+                columnNumber: 25
+              }, this),
+              /* @__PURE__ */ jsxDEV(TableHead, { children: "Quando" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 200,
+                columnNumber: 25
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 196,
+              columnNumber: 23
+            }, this) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 195,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ jsxDEV(TableBody, { children: [
+              (data.checks || []).map(
+                (check) => /* @__PURE__ */ jsxDEV(TableRow, { children: [
+                  /* @__PURE__ */ jsxDEV(TableCell, { className: "font-medium text-slate-950", children: check.integrationKey }, void 0, false, {
+                    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                    lineNumber: 206,
+                    columnNumber: 27
+                  }, this),
+                  /* @__PURE__ */ jsxDEV(TableCell, { children: renderStatus(check.status) }, void 0, false, {
+                    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                    lineNumber: 207,
+                    columnNumber: 27
+                  }, this),
+                  /* @__PURE__ */ jsxDEV(TableCell, { children: check.responseTimeMs != null ? `${check.responseTimeMs} ms` : "-" }, void 0, false, {
+                    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                    lineNumber: 208,
+                    columnNumber: 27
+                  }, this),
+                  /* @__PURE__ */ jsxDEV(TableCell, { children: check.checkedAt ? new Date(check.checkedAt).toLocaleString("pt-BR") : "-" }, void 0, false, {
+                    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                    lineNumber: 209,
+                    columnNumber: 27
+                  }, this)
+                ] }, check.id, true, {
+                  fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                  lineNumber: 205,
+                  columnNumber: 21
+                }, this)
+              ),
+              (data.checks || []).length === 0 ? /* @__PURE__ */ jsxDEV(TableRow, { children: /* @__PURE__ */ jsxDEV(TableCell, { colSpan: 4, className: "text-slate-500", children: "Ainda não há checks salvos. Rode testes de integração ou operações de parceiro para alimentar esta trilha." }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 214,
+                columnNumber: 27
+              }, this) }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 213,
+                columnNumber: 21
+              }, this) : null
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 203,
+              columnNumber: 21
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 194,
+            columnNumber: 19
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 193,
+            columnNumber: 17
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+          lineNumber: 191,
+          columnNumber: 15
+        }, this) }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+          lineNumber: 190,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV(Card, { className: "border-slate-200", children: /* @__PURE__ */ jsxDEV(CardContent, { className: "pt-6", children: [
+          /* @__PURE__ */ jsxDEV("h2", { className: "text-base font-bold text-slate-950", children: "Jobs agendados" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 227,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "mt-4 overflow-x-auto", children: /* @__PURE__ */ jsxDEV(Table, { children: [
+            /* @__PURE__ */ jsxDEV(TableHeader, { children: /* @__PURE__ */ jsxDEV(TableRow, { children: [
+              /* @__PURE__ */ jsxDEV(TableHead, { children: "Job" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 232,
+                columnNumber: 25
+              }, this),
+              /* @__PURE__ */ jsxDEV(TableHead, { children: "Cron" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 233,
+                columnNumber: 25
+              }, this),
+              /* @__PURE__ */ jsxDEV(TableHead, { children: "Ativo" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 234,
+                columnNumber: 25
+              }, this),
+              /* @__PURE__ */ jsxDEV(TableHead, { children: "Descrição" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 235,
+                columnNumber: 25
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 231,
+              columnNumber: 23
+            }, this) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 230,
+              columnNumber: 21
+            }, this),
+            /* @__PURE__ */ jsxDEV(TableBody, { children: [
+              (data.scheduledJobs || []).map(
+                (job) => /* @__PURE__ */ jsxDEV(TableRow, { children: [
+                  /* @__PURE__ */ jsxDEV(TableCell, { className: "font-medium text-slate-950", children: job.key }, void 0, false, {
+                    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                    lineNumber: 241,
+                    columnNumber: 27
+                  }, this),
+                  /* @__PURE__ */ jsxDEV(TableCell, { className: "font-mono text-xs", children: job.cron }, void 0, false, {
+                    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                    lineNumber: 242,
+                    columnNumber: 27
+                  }, this),
+                  /* @__PURE__ */ jsxDEV(TableCell, { children: job.enabled ? "Sim" : "Não" }, void 0, false, {
+                    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                    lineNumber: 243,
+                    columnNumber: 27
+                  }, this),
+                  /* @__PURE__ */ jsxDEV(TableCell, { className: "text-slate-600", children: job.description }, void 0, false, {
+                    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                    lineNumber: 244,
+                    columnNumber: 27
+                  }, this)
+                ] }, job.key, true, {
+                  fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                  lineNumber: 240,
+                  columnNumber: 21
+                }, this)
+              ),
+              (data.scheduledJobs || []).length === 0 ? /* @__PURE__ */ jsxDEV(TableRow, { children: /* @__PURE__ */ jsxDEV(TableCell, { colSpan: 4, className: "text-slate-500", children: "Nenhuma rotina operacional mapeada no ambiente atual." }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 249,
+                columnNumber: 27
+              }, this) }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+                lineNumber: 248,
+                columnNumber: 21
+              }, this) : null
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+              lineNumber: 238,
+              columnNumber: 21
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 229,
+            columnNumber: 19
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+            lineNumber: 228,
+            columnNumber: 17
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+          lineNumber: 226,
+          columnNumber: 15
+        }, this) }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+          lineNumber: 225,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+        lineNumber: 189,
+        columnNumber: 11
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+      lineNumber: 73,
+      columnNumber: 7
+    }, this) : null
+  ] }, void 0, true, {
+    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx",
+    lineNumber: 60,
+    columnNumber: 5
+  }, this);
+}
+_s(AdminHealthPage, "Zn4cs3026OJRBhxLd0Oqj+bUOXY=");
+_c2 = AdminHealthPage;
+var _c, _c2;
+$RefreshReg$(_c, "MetricCard");
+$RefreshReg$(_c2, "AdminHealthPage");
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+  RefreshRuntime.__hmr_import(import.meta.url).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+function $RefreshReg$(type, id) {
+  return RefreshRuntime.register(type, "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/admin/AdminHealthPage.jsx " + id);
+}
+function $RefreshSig$() {
+  return RefreshRuntime.createSignatureFunctionForTransform();
+}
+
+//# sourceMappingURL=data:application/json;base64,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O0FBQUE7QUFBQSx5QkFBdUQ7QUFBQSxxQkFKMUNGLElBQUlOLEtBQW5CO0FBQUE7QUFBQTtBQUFBO0FBQUEsdUJBS0E7QUFBQSxjQUNEO0FBQUEsZUFDQzFDLEtBQUtrQixpQkFBaUIsSUFBSUgsV0FBVyxJQUNyQyx1QkFBQyxZQUNDLGlDQUFDLGFBQVUsU0FBUyxHQUFHLFdBQVUsa0JBQWdCLHFFQUFqRDtBQUFBO0FBQUE7QUFBQTtBQUFBLHFCQUVBLEtBSEY7QUFBQTtBQUFBO0FBQUE7QUFBQSxxQkFJQSxJQUNFO0FBQUEsaUJBZk47QUFBQTtBQUFBO0FBQUE7QUFBQSxtQkFnQkE7QUFBQSxlQXpCRjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQTBCQSxLQTNCRjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQTRCQTtBQUFBLGFBOUJGO0FBQUE7QUFBQTtBQUFBO0FBQUEsZUErQkEsS0FoQ0Y7QUFBQTtBQUFBO0FBQUE7QUFBQSxlQWlDQTtBQUFBLFdBckVGO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFzRUE7QUFBQSxTQTFMRjtBQUFBO0FBQUE7QUFBQTtBQUFBLFdBMkxBLElBQ0U7QUFBQSxPQXpNTjtBQUFBO0FBQUE7QUFBQTtBQUFBLFNBME1BO0FBRUo7QUFBQ2hCLEdBdk91QkQsaUJBQWU7QUFBQSxNQUFmQTtBQUFlLElBQUFGLElBQUF1RDtBQUFBLGFBQUF2RCxJQUFBO0FBQUEsYUFBQXVELEtBQUEiLCJuYW1lcyI6WyJSZWFjdCIsInVzZUVmZmVjdCIsInVzZVN0YXRlIiwidG9hc3QiLCJBZG1pblBhZ2VIZWFkZXIiLCJwb3J0YWxBcGkiLCJDYXJkIiwiQ2FyZENvbnRlbnQiLCJUYWJsZSIsIlRhYmxlQm9keSIsIlRhYmxlQ2VsbCIsIlRhYmxlSGVhZCIsIlRhYmxlSGVhZGVyIiwiVGFibGVSb3ciLCJoZWFsdGhUb25lIiwiaGVhbHRoeSIsIndhcm5pbmciLCJlcnJvciIsInVua25vd24iLCJkaXNhYmxlZCIsImF2YWlsYWJsZSIsIk1ldHJpY0NhcmQiLCJsYWJlbCIsInZhbHVlIiwiaGludCIsIl9jIiwicmVuZGVyU3RhdHVzIiwiQWRtaW5IZWFsdGhQYWdlIiwiX3MiLCJkYXRhIiwic2V0RGF0YSIsImxvYWRpbmciLCJzZXRMb2FkaW5nIiwiYWN0aXZlIiwiZ2V0QWRtaW5IZWFsdGgiLCJ0aGVuIiwicmVzcG9uc2UiLCJjYXRjaCIsIm1lc3NhZ2UiLCJmaW5hbGx5IiwiYWxlcnRzIiwib3BlbiIsInRvdGFsIiwiY2hlY2tzIiwibGVuZ3RoIiwicGFydG5lcnMiLCJieUhlYWx0aFN0YXR1cyIsInNjaGVkdWxlZEpvYnMiLCJmaWx0ZXIiLCJpdGVtIiwiZW5hYmxlZCIsImdlbmVyYXRlZEF0IiwiRGF0ZSIsInRvTG9jYWxlU3RyaW5nIiwiYXBpIiwic2VydmljZSIsImVudmlyb25tZW50IiwiZGF0YWJhc2VDb25maWd1cmVkIiwiaW50ZWdyYXRpb25zIiwianVyb3NCYWl4b3MiLCJzdGF0dXMiLCJ0aW1lb3V0TXMiLCJyZXRyeUNvdW50IiwibWlzc2luZyIsImpvaW4iLCJtYXAiLCJzZXZlcml0eSIsImJ5U2V2ZXJpdHkiLCJpdGVtcyIsInNsaWNlIiwiYWxlcnQiLCJrZXkiLCJpZCIsImNoZWNrIiwiaW50ZWdyYXRpb25LZXkiLCJyZXNwb25zZVRpbWVNcyIsImNoZWNrZWRBdCIsImpvYiIsImNyb24iLCJkZXNjcmlwdGlvbiIsIl9jMiJdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlcyI6WyJBZG1pbkhlYWx0aFBhZ2UuanN4Il0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBSZWFjdCwgeyB1c2VFZmZlY3QsIHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnO1xuaW1wb3J0IHsgdG9hc3QgfSBmcm9tICdzb25uZXInO1xuaW1wb3J0IEFkbWluUGFnZUhlYWRlciBmcm9tICdAL2FkbWluL0FkbWluUGFnZUhlYWRlci5qc3gnO1xuaW1wb3J0IHsgcG9ydGFsQXBpIH0gZnJvbSAnQC9wbGF0Zm9ybS9zZXJ2aWNlcy9wb3J0YWxBcGkuanMnO1xuaW1wb3J0IHsgQ2FyZCwgQ2FyZENvbnRlbnQgfSBmcm9tICdAL2NvbXBvbmVudHMvdWkvY2FyZCc7XG5pbXBvcnQgeyBUYWJsZSwgVGFibGVCb2R5LCBUYWJsZUNlbGwsIFRhYmxlSGVhZCwgVGFibGVIZWFkZXIsIFRhYmxlUm93IH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL3RhYmxlJztcblxuY29uc3QgaGVhbHRoVG9uZSA9IHtcbiAgaGVhbHRoeTogJ3RleHQtZW1lcmFsZC03MDAnLFxuICB3YXJuaW5nOiAndGV4dC1hbWJlci03MDAnLFxuICBlcnJvcjogJ3RleHQtcmVkLTcwMCcsXG4gIHVua25vd246ICd0ZXh0LXNsYXRlLTUwMCcsXG4gIGRpc2FibGVkOiAndGV4dC1zbGF0ZS01MDAnLFxuICBhdmFpbGFibGU6ICd0ZXh0LWVtZXJhbGQtNzAwJ1xufTtcblxuZnVuY3Rpb24gTWV0cmljQ2FyZCh7IGxhYmVsLCB2YWx1ZSwgaGludCB9KSB7XG4gIHJldHVybiAoXG4gICAgPGRpdiBjbGFzc05hbWU9XCJyb3VuZGVkLWxnIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIGJnLXdoaXRlIHAtNVwiPlxuICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC1zbSBmb250LXNlbWlib2xkIHRleHQtc2xhdGUtNTAwXCI+e2xhYmVsfTwvcD5cbiAgICAgIDxwIGNsYXNzTmFtZT1cIm10LTIgdGV4dC0zeGwgZm9udC1ib2xkIHRleHQtc2xhdGUtOTUwXCI+e3ZhbHVlfTwvcD5cbiAgICAgIHtoaW50ID8gPHAgY2xhc3NOYW1lPVwibXQtMiB0ZXh0LXNtIHRleHQtc2xhdGUtNjAwXCI+e2hpbnR9PC9wPiA6IG51bGx9XG4gICAgPC9kaXY+XG4gICk7XG59XG5cbmNvbnN0IHJlbmRlclN0YXR1cyA9ICh2YWx1ZSkgPT4gKFxuICA8c3BhbiBjbGFzc05hbWU9e2hlYWx0aFRvbmVbdmFsdWVdIHx8ICd0ZXh0LXNsYXRlLTYwMCd9PlxuICAgIHt2YWx1ZSB8fCAndW5rbm93bid9XG4gIDwvc3Bhbj5cbik7XG5cbmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIEFkbWluSGVhbHRoUGFnZSgpIHtcbiAgY29uc3QgW2RhdGEsIHNldERhdGFdID0gdXNlU3RhdGUobnVsbCk7XG4gIGNvbnN0IFtsb2FkaW5nLCBzZXRMb2FkaW5nXSA9IHVzZVN0YXRlKHRydWUpO1xuXG4gIHVzZUVmZmVjdCgoKSA9PiB7XG4gICAgbGV0IGFjdGl2ZSA9IHRydWU7XG5cbiAgICBwb3J0YWxBcGkuZ2V0QWRtaW5IZWFsdGgoKVxuICAgICAgLnRoZW4oKHJlc3BvbnNlKSA9PiB7XG4gICAgICAgIGlmICghYWN0aXZlKSByZXR1cm47XG4gICAgICAgIHNldERhdGEocmVzcG9uc2UpO1xuICAgICAgfSlcbiAgICAgIC5jYXRjaCgoZXJyb3IpID0+IHtcbiAgICAgICAgaWYgKCFhY3RpdmUpIHJldHVybjtcbiAgICAgICAgdG9hc3QuZXJyb3IoZXJyb3IubWVzc2FnZSB8fCAnTsOjbyBmb2kgcG9zc8OtdmVsIGNhcnJlZ2FyIGEgc2HDumRlIGRhIHBsYXRhZm9ybWEuJyk7XG4gICAgICB9KVxuICAgICAgLmZpbmFsbHkoKCkgPT4ge1xuICAgICAgICBpZiAoIWFjdGl2ZSkgcmV0dXJuO1xuICAgICAgICBzZXRMb2FkaW5nKGZhbHNlKTtcbiAgICAgIH0pO1xuXG4gICAgcmV0dXJuICgpID0+IHtcbiAgICAgIGFjdGl2ZSA9IGZhbHNlO1xuICAgIH07XG4gIH0sIFtdKTtcblxuICByZXR1cm4gKFxuICAgIDxkaXYgY2xhc3NOYW1lPVwic3BhY2UteS02XCI+XG4gICAgICA8QWRtaW5QYWdlSGVhZGVyXG4gICAgICAgIHRpdGxlPVwiU2HDumRlIG9wZXJhY2lvbmFsXCJcbiAgICAgICAgZGVzY3JpcHRpb249XCJBY29tcGFuaGUgaW50ZWdyYcOnw7VlcywgYWxlcnRhcywgY2hlY2tzIHJlY2VudGVzIGUgbyBlc3RhZG8gZG9zIGpvYnMgYWdlbmRhZG9zLlwiXG4gICAgICAvPlxuXG4gICAgICB7bG9hZGluZyA/IChcbiAgICAgICAgPENhcmQgY2xhc3NOYW1lPVwiYm9yZGVyLXNsYXRlLTIwMFwiPlxuICAgICAgICAgIDxDYXJkQ29udGVudCBjbGFzc05hbWU9XCJwdC02IHRleHQtc20gdGV4dC1zbGF0ZS02MDBcIj5DYXJyZWdhbmRvIHNhw7pkZSBvcGVyYWNpb25hbC4uLjwvQ2FyZENvbnRlbnQ+XG4gICAgICAgIDwvQ2FyZD5cbiAgICAgICkgOiBudWxsfVxuXG4gICAgICB7ZGF0YSA/IChcbiAgICAgICAgPD5cbiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImdyaWQgZ2FwLTQgc206Z3JpZC1jb2xzLTIgeGw6Z3JpZC1jb2xzLTRcIj5cbiAgICAgICAgICAgIDxNZXRyaWNDYXJkXG4gICAgICAgICAgICAgIGxhYmVsPVwiQWxlcnRhcyBhYmVydG9zXCJcbiAgICAgICAgICAgICAgdmFsdWU9e2RhdGEuYWxlcnRzPy5vcGVuIHx8IDB9XG4gICAgICAgICAgICAgIGhpbnQ9e2Ake2RhdGEuYWxlcnRzPy50b3RhbCB8fCAwfSBhbGVydGFzIHJlY2VudGVzIHJlZ2lzdHJhZG9zYH1cbiAgICAgICAgICAgIC8+XG4gICAgICAgICAgICA8TWV0cmljQ2FyZFxuICAgICAgICAgICAgICBsYWJlbD1cIkNoZWNrcyByZWNlbnRlc1wiXG4gICAgICAgICAgICAgIHZhbHVlPXsoZGF0YS5jaGVja3MgfHwgW10pLmxlbmd0aH1cbiAgICAgICAgICAgICAgaGludD1cIsOabHRpbWFzIHZlcmlmaWNhw6fDtWVzIGRlIGludGVncmHDp8OjbyBzYWx2YXMgbm8gYmFuY29cIlxuICAgICAgICAgICAgLz5cbiAgICAgICAgICAgIDxNZXRyaWNDYXJkXG4gICAgICAgICAgICAgIGxhYmVsPVwiUGFyY2Vpcm9zIHNhdWTDoXZlaXNcIlxuICAgICAgICAgICAgICB2YWx1ZT17ZGF0YS5wYXJ0bmVycz8uYnlIZWFsdGhTdGF0dXM/LmhlYWx0aHkgfHwgMH1cbiAgICAgICAgICAgICAgaGludD17YCR7ZGF0YS5wYXJ0bmVycz8uYnlIZWFsdGhTdGF0dXM/Lndhcm5pbmcgfHwgMH0gZW0gYXRlbsOnw6NvIMK3ICR7ZGF0YS5wYXJ0bmVycz8uYnlIZWFsdGhTdGF0dXM/LmVycm9yIHx8IDB9IGNvbSBlcnJvYH1cbiAgICAgICAgICAgIC8+XG4gICAgICAgICAgICA8TWV0cmljQ2FyZFxuICAgICAgICAgICAgICBsYWJlbD1cIkpvYnMgYXRpdm9zXCJcbiAgICAgICAgICAgICAgdmFsdWU9eyhkYXRhLnNjaGVkdWxlZEpvYnMgfHwgW10pLmZpbHRlcigoaXRlbSkgPT4gaXRlbS5lbmFibGVkKS5sZW5ndGh9XG4gICAgICAgICAgICAgIGhpbnQ9e2AkeyhkYXRhLnNjaGVkdWxlZEpvYnMgfHwgW10pLmxlbmd0aH0gcm90aW5hcyBhZ2VuZGFkYXMgbWFwZWFkYXNgfVxuICAgICAgICAgICAgLz5cbiAgICAgICAgICA8L2Rpdj5cblxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZ3JpZCBnYXAtNiB4bDpncmlkLWNvbHMtMlwiPlxuICAgICAgICAgICAgPENhcmQgY2xhc3NOYW1lPVwiYm9yZGVyLXNsYXRlLTIwMFwiPlxuICAgICAgICAgICAgICA8Q2FyZENvbnRlbnQgY2xhc3NOYW1lPVwic3BhY2UteS00IHB0LTZcIj5cbiAgICAgICAgICAgICAgICA8ZGl2PlxuICAgICAgICAgICAgICAgICAgPGgyIGNsYXNzTmFtZT1cInRleHQtYmFzZSBmb250LWJvbGQgdGV4dC1zbGF0ZS05NTBcIj5BUEkgZSBpbnRlZ3Jhw6fDtWVzPC9oMj5cbiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cIm10LTEgdGV4dC1zbSB0ZXh0LXNsYXRlLTUwMFwiPlxuICAgICAgICAgICAgICAgICAgICBTbmFwc2hvdCBnZXJhZG8gZW0ge2RhdGEuZ2VuZXJhdGVkQXQgPyBuZXcgRGF0ZShkYXRhLmdlbmVyYXRlZEF0KS50b0xvY2FsZVN0cmluZygncHQtQlInKSA6ICctJ30uXG4gICAgICAgICAgICAgICAgICA8L3A+XG4gICAgICAgICAgICAgICAgPC9kaXY+XG5cbiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInNwYWNlLXktMyB0ZXh0LXNtXCI+XG4gICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiByb3VuZGVkLWxnIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHB4LTMgcHktMlwiPlxuICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9XCJ0ZXh0LXNsYXRlLTYwMFwiPlNlcnZpw6dvPC9zcGFuPlxuICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9XCJmb250LW1lZGl1bSB0ZXh0LXNsYXRlLTk1MFwiPntkYXRhLmFwaT8uc2VydmljZSB8fCAnLSd9PC9zcGFuPlxuICAgICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlbiByb3VuZGVkLWxnIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHB4LTMgcHktMlwiPlxuICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9XCJ0ZXh0LXNsYXRlLTYwMFwiPkFtYmllbnRlPC9zcGFuPlxuICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9XCJmb250LW1lZGl1bSB0ZXh0LXNsYXRlLTk1MFwiPntkYXRhLmFwaT8uZW52aXJvbm1lbnQgfHwgJy0nfTwvc3Bhbj5cbiAgICAgICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWJldHdlZW4gcm91bmRlZC1sZyBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCBweC0zIHB5LTJcIj5cbiAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPVwidGV4dC1zbGF0ZS02MDBcIj5CYW5jbyBjb25maWd1cmFkbzwvc3Bhbj5cbiAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3NOYW1lPVwiZm9udC1tZWRpdW0gdGV4dC1zbGF0ZS05NTBcIj57ZGF0YS5hcGk/LmRhdGFiYXNlQ29uZmlndXJlZCA/ICdTaW0nIDogJ07Do28nfTwvc3Bhbj5cbiAgICAgICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJyb3VuZGVkLWxnIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHB4LTMgcHktM1wiPlxuICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktYmV0d2VlblwiPlxuICAgICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT1cInRleHQtc2xhdGUtNjAwXCI+SnVyb3MgQmFpeG9zPC9zcGFuPlxuICAgICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT1cImZvbnQtbWVkaXVtXCI+e3JlbmRlclN0YXR1cyhkYXRhLmludGVncmF0aW9ucz8uanVyb3NCYWl4b3M/LnN0YXR1cyl9PC9zcGFuPlxuICAgICAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwibXQtMiB0ZXh0LXhzIHRleHQtc2xhdGUtNTAwXCI+XG4gICAgICAgICAgICAgICAgICAgICAgVGltZW91dDoge2RhdGEuaW50ZWdyYXRpb25zPy5qdXJvc0JhaXhvcz8udGltZW91dE1zIHx8IDB9IG1zIMK3IFJldHJpZXM6IHtkYXRhLmludGVncmF0aW9ucz8uanVyb3NCYWl4b3M/LnJldHJ5Q291bnQgfHwgMH1cbiAgICAgICAgICAgICAgICAgICAgPC9wPlxuICAgICAgICAgICAgICAgICAgICB7KGRhdGEuaW50ZWdyYXRpb25zPy5qdXJvc0JhaXhvcz8ubWlzc2luZyB8fCBbXSkubGVuZ3RoID8gKFxuICAgICAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cIm10LTIgdGV4dC14cyB0ZXh0LWFtYmVyLTcwMFwiPlxuICAgICAgICAgICAgICAgICAgICAgICAgUGVuZMOqbmNpYXM6IHsoZGF0YS5pbnRlZ3JhdGlvbnMuanVyb3NCYWl4b3MubWlzc2luZyB8fCBbXSkuam9pbignLCAnKX1cbiAgICAgICAgICAgICAgICAgICAgICA8L3A+XG4gICAgICAgICAgICAgICAgICAgICkgOiBudWxsfVxuICAgICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIDwvQ2FyZENvbnRlbnQ+XG4gICAgICAgICAgICA8L0NhcmQ+XG5cbiAgICAgICAgICAgIDxDYXJkIGNsYXNzTmFtZT1cImJvcmRlci1zbGF0ZS0yMDBcIj5cbiAgICAgICAgICAgICAgPENhcmRDb250ZW50IGNsYXNzTmFtZT1cInNwYWNlLXktNCBwdC02XCI+XG4gICAgICAgICAgICAgICAgPGRpdj5cbiAgICAgICAgICAgICAgICAgIDxoMiBjbGFzc05hbWU9XCJ0ZXh0LWJhc2UgZm9udC1ib2xkIHRleHQtc2xhdGUtOTUwXCI+U2V2ZXJpZGFkZSBkb3MgYWxlcnRhczwvaDI+XG4gICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJtdC0xIHRleHQtc20gdGV4dC1zbGF0ZS01MDBcIj5cbiAgICAgICAgICAgICAgICAgICAgQWxlcnRhcyBvcGVyYWNpb25haXMgYWJlcnRvcyBwYXJhIGFjb21wYW5oYW1lbnRvIG1hbnVhbC5cbiAgICAgICAgICAgICAgICAgIDwvcD5cbiAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImdyaWQgZ2FwLTMgc206Z3JpZC1jb2xzLTNcIj5cbiAgICAgICAgICAgICAgICAgIHtbJ2NyaXRpY2FsJywgJ2hpZ2gnLCAnbWVkaXVtJywgJ2xvdyddLm1hcCgoc2V2ZXJpdHkpID0+IChcbiAgICAgICAgICAgICAgICAgICAgPGRpdiBrZXk9e3NldmVyaXR5fSBjbGFzc05hbWU9XCJyb3VuZGVkLWxnIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIHAtNFwiPlxuICAgICAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cInRleHQteHMgdXBwZXJjYXNlIHRyYWNraW5nLVswLjE0ZW1dIHRleHQtc2xhdGUtNTAwXCI+e3NldmVyaXR5fTwvcD5cbiAgICAgICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJtdC0yIHRleHQtMnhsIGZvbnQtYm9sZCB0ZXh0LXNsYXRlLTk1MFwiPntkYXRhLmFsZXJ0cz8uYnlTZXZlcml0eT8uW3NldmVyaXR5XSB8fCAwfTwvcD5cbiAgICAgICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgICAgICApKX1cbiAgICAgICAgICAgICAgICA8L2Rpdj5cblxuICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwicm91bmRlZC1sZyBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMFwiPlxuICAgICAgICAgICAgICAgICAgPFRhYmxlPlxuICAgICAgICAgICAgICAgICAgICA8VGFibGVIZWFkZXI+XG4gICAgICAgICAgICAgICAgICAgICAgPFRhYmxlUm93PlxuICAgICAgICAgICAgICAgICAgICAgICAgPFRhYmxlSGVhZD5BbGVydGE8L1RhYmxlSGVhZD5cbiAgICAgICAgICAgICAgICAgICAgICAgIDxUYWJsZUhlYWQ+U2V2ZXJpZGFkZTwvVGFibGVIZWFkPlxuICAgICAgICAgICAgICAgICAgICAgICAgPFRhYmxlSGVhZD5TdGF0dXM8L1RhYmxlSGVhZD5cbiAgICAgICAgICAgICAgICAgICAgICA8L1RhYmxlUm93PlxuICAgICAgICAgICAgICAgICAgICA8L1RhYmxlSGVhZGVyPlxuICAgICAgICAgICAgICAgICAgICA8VGFibGVCb2R5PlxuICAgICAgICAgICAgICAgICAgICAgIHsoZGF0YS5hbGVydHM/Lml0ZW1zIHx8IFtdKS5zbGljZSgwLCA1KS5tYXAoKGFsZXJ0KSA9PiAoXG4gICAgICAgICAgICAgICAgICAgICAgICA8VGFibGVSb3cga2V5PXthbGVydC5pZH0+XG4gICAgICAgICAgICAgICAgICAgICAgICAgIDxUYWJsZUNlbGw+XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwiZm9udC1tZWRpdW0gdGV4dC1zbGF0ZS05NTBcIj57YWxlcnQubWVzc2FnZX08L3A+XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC14cyB0ZXh0LXNsYXRlLTUwMFwiPnthbGVydC5rZXl9PC9wPlxuICAgICAgICAgICAgICAgICAgICAgICAgICA8L1RhYmxlQ2VsbD5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgPFRhYmxlQ2VsbD57YWxlcnQuc2V2ZXJpdHl9PC9UYWJsZUNlbGw+XG4gICAgICAgICAgICAgICAgICAgICAgICAgIDxUYWJsZUNlbGw+e2FsZXJ0LnN0YXR1c308L1RhYmxlQ2VsbD5cbiAgICAgICAgICAgICAgICAgICAgICAgIDwvVGFibGVSb3c+XG4gICAgICAgICAgICAgICAgICAgICAgKSl9XG4gICAgICAgICAgICAgICAgICAgICAgeyhkYXRhLmFsZXJ0cz8uaXRlbXMgfHwgW10pLmxlbmd0aCA9PT0gMCA/IChcbiAgICAgICAgICAgICAgICAgICAgICAgIDxUYWJsZVJvdz5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgPFRhYmxlQ2VsbCBjb2xTcGFuPXszfSBjbGFzc05hbWU9XCJ0ZXh0LXNsYXRlLTUwMFwiPlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIE5lbmh1bSBhbGVydGEgcmVjZW50ZSByZWdpc3RyYWRvLlxuICAgICAgICAgICAgICAgICAgICAgICAgICA8L1RhYmxlQ2VsbD5cbiAgICAgICAgICAgICAgICAgICAgICAgIDwvVGFibGVSb3c+XG4gICAgICAgICAgICAgICAgICAgICAgKSA6IG51bGx9XG4gICAgICAgICAgICAgICAgICAgIDwvVGFibGVCb2R5PlxuICAgICAgICAgICAgICAgICAgPC9UYWJsZT5cbiAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgPC9DYXJkQ29udGVudD5cbiAgICAgICAgICAgIDwvQ2FyZD5cbiAgICAgICAgICA8L2Rpdj5cblxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZ3JpZCBnYXAtNiB4bDpncmlkLWNvbHMtMlwiPlxuICAgICAgICAgICAgPENhcmQgY2xhc3NOYW1lPVwiYm9yZGVyLXNsYXRlLTIwMFwiPlxuICAgICAgICAgICAgICA8Q2FyZENvbnRlbnQgY2xhc3NOYW1lPVwicHQtNlwiPlxuICAgICAgICAgICAgICAgIDxoMiBjbGFzc05hbWU9XCJ0ZXh0LWJhc2UgZm9udC1ib2xkIHRleHQtc2xhdGUtOTUwXCI+Q2hlY2tzIGRlIGludGVncmHDp8OjbzwvaDI+XG4gICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtdC00IG92ZXJmbG93LXgtYXV0b1wiPlxuICAgICAgICAgICAgICAgICAgPFRhYmxlPlxuICAgICAgICAgICAgICAgICAgICA8VGFibGVIZWFkZXI+XG4gICAgICAgICAgICAgICAgICAgICAgPFRhYmxlUm93PlxuICAgICAgICAgICAgICAgICAgICAgICAgPFRhYmxlSGVhZD5JbnRlZ3Jhw6fDo288L1RhYmxlSGVhZD5cbiAgICAgICAgICAgICAgICAgICAgICAgIDxUYWJsZUhlYWQ+U3RhdHVzPC9UYWJsZUhlYWQ+XG4gICAgICAgICAgICAgICAgICAgICAgICA8VGFibGVIZWFkPlRlbXBvPC9UYWJsZUhlYWQ+XG4gICAgICAgICAgICAgICAgICAgICAgICA8VGFibGVIZWFkPlF1YW5kbzwvVGFibGVIZWFkPlxuICAgICAgICAgICAgICAgICAgICAgIDwvVGFibGVSb3c+XG4gICAgICAgICAgICAgICAgICAgIDwvVGFibGVIZWFkZXI+XG4gICAgICAgICAgICAgICAgICAgIDxUYWJsZUJvZHk+XG4gICAgICAgICAgICAgICAgICAgICAgeyhkYXRhLmNoZWNrcyB8fCBbXSkubWFwKChjaGVjaykgPT4gKFxuICAgICAgICAgICAgICAgICAgICAgICAgPFRhYmxlUm93IGtleT17Y2hlY2suaWR9PlxuICAgICAgICAgICAgICAgICAgICAgICAgICA8VGFibGVDZWxsIGNsYXNzTmFtZT1cImZvbnQtbWVkaXVtIHRleHQtc2xhdGUtOTUwXCI+e2NoZWNrLmludGVncmF0aW9uS2V5fTwvVGFibGVDZWxsPlxuICAgICAgICAgICAgICAgICAgICAgICAgICA8VGFibGVDZWxsPntyZW5kZXJTdGF0dXMoY2hlY2suc3RhdHVzKX08L1RhYmxlQ2VsbD5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgPFRhYmxlQ2VsbD57Y2hlY2sucmVzcG9uc2VUaW1lTXMgIT0gbnVsbCA/IGAke2NoZWNrLnJlc3BvbnNlVGltZU1zfSBtc2AgOiAnLSd9PC9UYWJsZUNlbGw+XG4gICAgICAgICAgICAgICAgICAgICAgICAgIDxUYWJsZUNlbGw+e2NoZWNrLmNoZWNrZWRBdCA/IG5ldyBEYXRlKGNoZWNrLmNoZWNrZWRBdCkudG9Mb2NhbGVTdHJpbmcoJ3B0LUJSJykgOiAnLSd9PC9UYWJsZUNlbGw+XG4gICAgICAgICAgICAgICAgICAgICAgICA8L1RhYmxlUm93PlxuICAgICAgICAgICAgICAgICAgICAgICkpfVxuICAgICAgICAgICAgICAgICAgICAgIHsoZGF0YS5jaGVja3MgfHwgW10pLmxlbmd0aCA9PT0gMCA/IChcbiAgICAgICAgICAgICAgICAgICAgICAgIDxUYWJsZVJvdz5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgPFRhYmxlQ2VsbCBjb2xTcGFuPXs0fSBjbGFzc05hbWU9XCJ0ZXh0LXNsYXRlLTUwMFwiPlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIEFpbmRhIG7Do28gaMOhIGNoZWNrcyBzYWx2b3MuIFJvZGUgdGVzdGVzIGRlIGludGVncmHDp8OjbyBvdSBvcGVyYcOnw7VlcyBkZSBwYXJjZWlybyBwYXJhIGFsaW1lbnRhciBlc3RhIHRyaWxoYS5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgPC9UYWJsZUNlbGw+XG4gICAgICAgICAgICAgICAgICAgICAgICA8L1RhYmxlUm93PlxuICAgICAgICAgICAgICAgICAgICAgICkgOiBudWxsfVxuICAgICAgICAgICAgICAgICAgICA8L1RhYmxlQm9keT5cbiAgICAgICAgICAgICAgICAgIDwvVGFibGU+XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIDwvQ2FyZENvbnRlbnQ+XG4gICAgICAgICAgICA8L0NhcmQ+XG5cbiAgICAgICAgICAgIDxDYXJkIGNsYXNzTmFtZT1cImJvcmRlci1zbGF0ZS0yMDBcIj5cbiAgICAgICAgICAgICAgPENhcmRDb250ZW50IGNsYXNzTmFtZT1cInB0LTZcIj5cbiAgICAgICAgICAgICAgICA8aDIgY2xhc3NOYW1lPVwidGV4dC1iYXNlIGZvbnQtYm9sZCB0ZXh0LXNsYXRlLTk1MFwiPkpvYnMgYWdlbmRhZG9zPC9oMj5cbiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cIm10LTQgb3ZlcmZsb3cteC1hdXRvXCI+XG4gICAgICAgICAgICAgICAgICA8VGFibGU+XG4gICAgICAgICAgICAgICAgICAgIDxUYWJsZUhlYWRlcj5cbiAgICAgICAgICAgICAgICAgICAgICA8VGFibGVSb3c+XG4gICAgICAgICAgICAgICAgICAgICAgICA8VGFibGVIZWFkPkpvYjwvVGFibGVIZWFkPlxuICAgICAgICAgICAgICAgICAgICAgICAgPFRhYmxlSGVhZD5Dcm9uPC9UYWJsZUhlYWQ+XG4gICAgICAgICAgICAgICAgICAgICAgICA8VGFibGVIZWFkPkF0aXZvPC9UYWJsZUhlYWQ+XG4gICAgICAgICAgICAgICAgICAgICAgICA8VGFibGVIZWFkPkRlc2NyacOnw6NvPC9UYWJsZUhlYWQ+XG4gICAgICAgICAgICAgICAgICAgICAgPC9UYWJsZVJvdz5cbiAgICAgICAgICAgICAgICAgICAgPC9UYWJsZUhlYWRlcj5cbiAgICAgICAgICAgICAgICAgICAgPFRhYmxlQm9keT5cbiAgICAgICAgICAgICAgICAgICAgICB7KGRhdGEuc2NoZWR1bGVkSm9icyB8fCBbXSkubWFwKChqb2IpID0+IChcbiAgICAgICAgICAgICAgICAgICAgICAgIDxUYWJsZVJvdyBrZXk9e2pvYi5rZXl9PlxuICAgICAgICAgICAgICAgICAgICAgICAgICA8VGFibGVDZWxsIGNsYXNzTmFtZT1cImZvbnQtbWVkaXVtIHRleHQtc2xhdGUtOTUwXCI+e2pvYi5rZXl9PC9UYWJsZUNlbGw+XG4gICAgICAgICAgICAgICAgICAgICAgICAgIDxUYWJsZUNlbGwgY2xhc3NOYW1lPVwiZm9udC1tb25vIHRleHQteHNcIj57am9iLmNyb259PC9UYWJsZUNlbGw+XG4gICAgICAgICAgICAgICAgICAgICAgICAgIDxUYWJsZUNlbGw+e2pvYi5lbmFibGVkID8gJ1NpbScgOiAnTsOjbyd9PC9UYWJsZUNlbGw+XG4gICAgICAgICAgICAgICAgICAgICAgICAgIDxUYWJsZUNlbGwgY2xhc3NOYW1lPVwidGV4dC1zbGF0ZS02MDBcIj57am9iLmRlc2NyaXB0aW9ufTwvVGFibGVDZWxsPlxuICAgICAgICAgICAgICAgICAgICAgICAgPC9UYWJsZVJvdz5cbiAgICAgICAgICAgICAgICAgICAgICApKX1cbiAgICAgICAgICAgICAgICAgICAgICB7KGRhdGEuc2NoZWR1bGVkSm9icyB8fCBbXSkubGVuZ3RoID09PSAwID8gKFxuICAgICAgICAgICAgICAgICAgICAgICAgPFRhYmxlUm93PlxuICAgICAgICAgICAgICAgICAgICAgICAgICA8VGFibGVDZWxsIGNvbFNwYW49ezR9IGNsYXNzTmFtZT1cInRleHQtc2xhdGUtNTAwXCI+XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgTmVuaHVtYSByb3RpbmEgb3BlcmFjaW9uYWwgbWFwZWFkYSBubyBhbWJpZW50ZSBhdHVhbC5cbiAgICAgICAgICAgICAgICAgICAgICAgICAgPC9UYWJsZUNlbGw+XG4gICAgICAgICAgICAgICAgICAgICAgICA8L1RhYmxlUm93PlxuICAgICAgICAgICAgICAgICAgICAgICkgOiBudWxsfVxuICAgICAgICAgICAgICAgICAgICA8L1RhYmxlQm9keT5cbiAgICAgICAgICAgICAgICAgIDwvVGFibGU+XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIDwvQ2FyZENvbnRlbnQ+XG4gICAgICAgICAgICA8L0NhcmQ+XG4gICAgICAgICAgPC9kaXY+XG4gICAgICAgIDwvPlxuICAgICAgKSA6IG51bGx9XG4gICAgPC9kaXY+XG4gICk7XG59XG4iXSwiZmlsZSI6IkM6L2Rldi9jb3RlLWp1cm9zLWhvc3Rpbmdlci1ob3Jpem9ucy9hcHBzL3dlYi9zcmMvcGFnZXMvYWRtaW4vQWRtaW5IZWFsdGhQYWdlLmpzeCJ9
