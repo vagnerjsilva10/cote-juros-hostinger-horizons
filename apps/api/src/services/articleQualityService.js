@@ -1,3 +1,9 @@
+import {
+  findPortugueseEncodingIssues,
+  repairPortugueseInObject,
+  repairPortugueseText
+} from './portugueseTextService.js';
+
 const MAX_HEADLINE_LENGTH = 70;
 const MIN_INTERNAL_LINKS = 3;
 const INTENT_RULES = [
@@ -33,7 +39,7 @@ export const stripHtmlArtifacts = (value = '') =>
     .replace(/\s+/g, ' ')
     .trim();
 
-export const compactText = (value = '') => stripHtmlArtifacts(value).replace(/\s+/g, ' ').trim();
+export const compactText = (value = '') => repairPortugueseText(stripHtmlArtifacts(value)).replace(/\s+/g, ' ').trim();
 
 const ensureSentence = (value = '') => {
   const text = compactText(value);
@@ -101,6 +107,15 @@ const buildQuestionHeadline = (keyword = '', fallbackTitle = '') => {
     return candidate.length <= MAX_HEADLINE_LENGTH
       ? candidate
       : lowerKeyword.slice(0, MAX_HEADLINE_LENGTH).replace(/\s+\S*$/g, '').trim();
+  }
+  if (/vale a pena/i.test(lowerKeyword)) {
+    const normalizedQuestion = lowerKeyword.replace(/\?+$/g, '');
+    const candidate = `${normalizedQuestion}? Veja custos e riscos`;
+    if (candidate.length <= MAX_HEADLINE_LENGTH) return candidate;
+    const question = `${normalizedQuestion}?`;
+    return question.length <= MAX_HEADLINE_LENGTH
+      ? question
+      : `${question.slice(0, MAX_HEADLINE_LENGTH - 1).replace(/\s+\S*$/g, '').trim()}?`;
   }
   if (/^(como|qual|quais|posso|fiz|o que|quando|por que)\b/i.test(lowerKeyword)) {
     const question = lowerKeyword.endsWith('?') ? lowerKeyword : `${lowerKeyword}?`;
@@ -258,21 +273,22 @@ const ensureFaq = ({ faq = [], keyword = '' } = {}) => {
 };
 
 export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', internalLinks = [] } = {}) => {
-  const keyword = compactText(primaryKeyword || article.clusterKeyword || article.tags?.[0] || article.title || '');
+  const cleanArticle = repairPortugueseInObject(article);
+  const keyword = compactText(primaryKeyword || cleanArticle.clusterKeyword || cleanArticle.tags?.[0] || cleanArticle.title || '');
   const editorialIntent = classifyArticleIntent({
-    title: article.title || article.h1,
+    title: cleanArticle.title || cleanArticle.h1,
     keyword,
-    slug: article.slug,
-    category: article.category
+    slug: cleanArticle.slug,
+    category: cleanArticle.category
   });
-  const title = buildQuestionHeadline(keyword, article.title || article.h1);
-  const intro = textArray(article.intro || [], 2);
+  const title = buildQuestionHeadline(keyword, cleanArticle.title || cleanArticle.h1);
+  const intro = textArray(cleanArticle.intro || [], 2);
   const fallbackIntro = [
     `${keyword} exige comparar custo total, parcela e risco antes de decidir. A melhor escolha é aquela que cabe na renda e deixa claro o que acontece se houver atraso.`,
     'Neste guia, você vê a resposta direta, um exemplo com números, alertas importantes, alternativas e próximos passos para decidir com mais segurança.'
   ];
 
-  let sections = (Array.isArray(article.sections) ? article.sections : []).map(normalizeSection).filter((section) => section.heading);
+  let sections = (Array.isArray(cleanArticle.sections) ? cleanArticle.sections : []).map(normalizeSection).filter((section) => section.heading);
   sections = appendSectionIfMissing(sections, /exemplo|simulacao|numeros/, {
     heading: `${keyword}: exemplo real com números`,
     subheading: 'Uma simulação simples ajuda a enxergar o custo além da parcela.',
@@ -315,7 +331,7 @@ export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', inte
 
   const standard = {
     featuredSnippet: trimToSentence(
-      article.featuredSnippet || `${keyword} deve ser analisado pelo custo total, pelo impacto da parcela na renda e pelo risco de endividamento antes da contratação.`,
+      cleanArticle.featuredSnippet || `${keyword} deve ser analisado pelo custo total, pelo impacto da parcela na renda e pelo risco de endividamento antes da contratação.`,
       180
     ),
     example: inferMoneyExample({ title, keyword }),
@@ -339,23 +355,23 @@ export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', inte
   };
 
   return {
-    ...article,
+    ...cleanArticle,
     clusterKeyword: keyword,
     editorialIntent,
     title,
     h1: title,
-    summary: trimToSentence(article.summary || `${keyword}: veja custos, riscos, exemplos e alternativas para decidir com mais clareza antes de contratar.`, 155),
+    summary: trimToSentence(cleanArticle.summary || `${keyword}: veja custos, riscos, exemplos e alternativas para decidir com mais clareza antes de contratar.`, 155),
     metaTitle: title,
-    metaDescription: trimToSentence(article.metaDescription || `Entenda ${keyword}, compare custos reais, veja riscos, alternativas e exemplos antes de contratar.`, 165),
+    metaDescription: trimToSentence(cleanArticle.metaDescription || `Entenda ${keyword}, compare custos reais, veja riscos, alternativas e exemplos antes de contratar.`, 165),
     intro: (intro.length >= 1 ? intro : fallbackIntro).map((paragraph, index) => (
       index === 0 && !includesKeyword(paragraph, keyword)
         ? `${keyword}: ${paragraph}`
         : paragraph
     )),
     sections,
-    faq: ensureFaq({ faq: article.faq, keyword }),
-    conclusion: textArray(article.conclusion || [], 2).length
-      ? textArray(article.conclusion || [], 2).map((paragraph, index) => (
+    faq: ensureFaq({ faq: cleanArticle.faq, keyword }),
+    conclusion: textArray(cleanArticle.conclusion || [], 2).length
+      ? textArray(cleanArticle.conclusion || [], 2).map((paragraph, index) => (
           index === 0 && !includesKeyword(paragraph, keyword)
             ? `${keyword}: ${paragraph}`
             : paragraph
@@ -364,13 +380,14 @@ export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', inte
           `${keyword} pode fazer sentido quando o custo total e a parcela cabem na renda sem criar dependência de novo crédito.`,
           'Antes de decidir, compare alternativas, revise o CET e avance apenas quando a proposta estiver clara para o seu orçamento.'
         ],
-    internalLinks: Array.isArray(internalLinks) && internalLinks.length ? internalLinks : article.internalLinks,
+    internalLinks: Array.isArray(internalLinks) && internalLinks.length ? internalLinks : cleanArticle.internalLinks,
     ...standard
   };
 };
 
 export const validateArticle = ({ article = {}, internalLinks = [], image = null, existingIssues = [] } = {}) => {
   const issues = [...existingIssues];
+  const portugueseIssues = findPortugueseEncodingIssues(article);
   const keyword = compactText(article.clusterKeyword || article.tags?.[0] || article.title || '');
   const title = compactText(article.title || article.h1 || '');
   const intro = Array.isArray(article.intro) ? article.intro : [];
@@ -417,6 +434,7 @@ export const validateArticle = ({ article = {}, internalLinks = [], image = null
   if (/<a\b|<\/a>|<[^>]+>/i.test(plain)) issues.push('HTML cru encontrado no texto do artigo');
   if (plain.split(/\s+/).some((word) => word.length > 42 && /[<>]/.test(word))) issues.push('Possivel artefato HTML em palavra longa');
   if (image && (!image.publicPath || !image.validationPassed || image.isFallback)) issues.push('Imagem editorial invalida');
+  if (portugueseIssues.length) issues.push(`Problemas de acentuação/encoding em: ${portugueseIssues.slice(0, 12).join(', ')}`);
 
   return {
     passed: issues.length === 0,
