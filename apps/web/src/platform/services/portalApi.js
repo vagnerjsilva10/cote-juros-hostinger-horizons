@@ -680,6 +680,47 @@ export const portalApi = {
     }
   },
 
+  async matchCreditPartners(profile = {}) {
+    const fallback = {
+      profile: {
+        negativado: profile.negativado ?? null,
+        renda: profile.renda ?? null,
+        valor: profile.valor ?? null,
+        urgencia: profile.urgencia ?? null
+      },
+      recommendations: [{
+        id: 'supersim',
+        slug: 'supersim',
+        name: 'SuperSim',
+        type: 'affiliate_link',
+        mode: 'tracking_link',
+        status: 'active',
+        destinationUrl: 'https://susim.co/XQLX5t8rSqYxaWnPd7CQaw==',
+        description: 'Opcao de emprestimo pessoal online para comparar condicoes conforme seu perfil.',
+        highlights: ['Perfil com restricao pode ser considerado', 'Fluxo online', 'Condicoes sujeitas ao parceiro'],
+        ctaText: 'Ver condicoes',
+        eventType: 'click_partner_supersim'
+      }]
+    };
+
+    if (!useRemote) {
+      await wait();
+      return fallback;
+    }
+
+    try {
+      return await request('/api/partners/match', {
+        method: 'POST',
+        body: JSON.stringify({
+          productType: 'loan',
+          profile: fallback.profile
+        })
+      });
+    } catch {
+      return fallback;
+    }
+  },
+
   async submitMockPartnerLead(payload) {
     if (!useRemote) {
       await wait();
@@ -721,8 +762,8 @@ export const portalApi = {
         method: 'POST',
         body: JSON.stringify({
           sourcePage: payload.sourcePage,
-          productContext: payload.productType,
-          simulationId: payload.simulationContext?.leadId
+          productContext: payload.productContext || payload.productType,
+          simulationId: payload.simulationId || payload.simulationContext?.leadId
         })
       });
     } catch {

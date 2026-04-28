@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { asyncHandler, pickUtm } from '../lib/http.js';
 import { SimulationService } from '../services/simulationService.js';
 import { PartnerService } from '../services/partnerService.js';
-import { QuickCreditRoutingService } from '../services/quickCreditRoutingService.js';
+import { PartnerMatcherService } from '../services/partnerMatcherService.js';
 
 const router = express.Router();
 
@@ -131,13 +131,23 @@ router.post(
       utm_campaign: utm.utmCampaign
     };
 
-    const profile = QuickCreditRoutingService.calculateProfile({
+    const profile = PartnerMatcherService.calculateProfile({
       income: payload.income,
       hasRestriction: payload.hasRestriction,
       employmentStatus: payload.employmentStatus
     });
-    const partner = QuickCreditRoutingService.resolvePartner(profile);
-    const initialStatus = partner.mode === 'mock_api' ? 'qualified' : 'sent';
+    const recommendations = await PartnerMatcherService.match({
+      productType: payload.productType,
+      lead: {
+        requestedAmount,
+        income: payload.income,
+        employmentStatus: payload.employmentStatus,
+        hasRestriction: payload.hasRestriction,
+        urgency: payload.originLabel
+      }
+    });
+    const partner = recommendations[0];
+    const initialStatus = 'matched';
 
     const lead = await SimulationService.createLead({
       productType: payload.productType,
@@ -172,7 +182,7 @@ router.post(
       });
       await SimulationService.updateLead(lead.id, {
         redirectUrl,
-        status: 'sent'
+        status: 'matched'
       });
     } else {
       deliveryRecord = await PartnerService.submitMockApiLead({
@@ -183,17 +193,24 @@ router.post(
         profile
       });
       await SimulationService.updateLead(lead.id, {
-        status: 'qualified'
+        status: 'matched'
       });
     }
 
     const updatedLead = await SimulationService.getById(lead.id);
+    await PartnerMatcherService.recordRoutingArtifacts({
+      lead: updatedLead,
+      profile,
+      recommendations,
+      sourcePage: originPage
+    });
 
     res.status(201).json({
       data: {
         lead: updatedLead,
         profile,
         partner,
+        recommendations,
         deliveryMode: partner.mode,
         status: updatedLead?.status || initialStatus,
         redirectUrl,

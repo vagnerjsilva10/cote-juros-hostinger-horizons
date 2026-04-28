@@ -1,9 +1,13 @@
 const PARTNER_CONFIG = {
   negativado: {
-    id: 'partner_negativado',
+    id: 'supersim',
     name: 'SuperSim',
     mode: 'tracking_link',
-    destinationUrl: 'https://ad.admitad.com/g/supersim-placeholder/'
+    destinationUrl: 'https://susim.co/XQLX5t8rSqYxaWnPd7CQaw==',
+    description: 'Opcao de emprestimo pessoal online para comparar condicoes conforme seu perfil.',
+    highlights: ['Perfil com restricao pode ser considerado', 'Fluxo online', 'Condicoes sujeitas ao parceiro'],
+    ctaText: 'Ver condicoes',
+    eventType: 'click_partner_supersim'
   },
   clt: {
     id: 'partner_clt',
@@ -37,3 +41,12 @@ export const calculateQuickCreditProfile = ({
 };
 
 export const resolveQuickCreditPartner = (profile = 'geral') => PARTNER_CONFIG[profile] || PARTNER_CONFIG.geral;
+
+export const resolveQuickCreditRecommendations = ({ profile = 'geral', amount = 0, hasRestriction = false } = {}) => {
+  const recommendations = [];
+  const shouldIncludeSupersim = hasRestriction || Number(amount || 0) <= 20000;
+  if (shouldIncludeSupersim) recommendations.push(PARTNER_CONFIG.negativado);
+  const primary = PARTNER_CONFIG[profile] || PARTNER_CONFIG.geral;
+  if (!recommendations.some((partner) => partner.id === primary.id)) recommendations.push(primary);
+  return recommendations.filter(Boolean).slice(0, 4);
+};

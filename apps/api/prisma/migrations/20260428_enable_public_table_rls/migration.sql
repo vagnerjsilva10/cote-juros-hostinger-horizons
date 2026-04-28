@@ -1,0 +1,87 @@
+-- Supabase security hardening:
+-- Enable Row Level Security on public tables so anon/authenticated clients cannot
+-- read or mutate data directly unless an explicit policy is added later.
+DO $$
+DECLARE
+  table_name text;
+BEGIN
+  FOREACH table_name IN ARRAY ARRAY[
+    '_prisma_migrations',
+    'admin_audit_logs',
+    'admin_login_attempts',
+    'admin_password_reset_tokens',
+    'admin_permissions',
+    'admin_role_permissions',
+    'admin_roles',
+    'admin_sessions',
+    'admin_user_roles',
+    'admin_users',
+    'affiliate_clicks',
+    'affiliate_networks',
+    'affiliate_offers',
+    'affiliate_programs',
+    'app_integration_events',
+    'articles',
+    'automation_jobs',
+    'banks',
+    'blog_used_images',
+    'categories',
+    'click_events',
+    'competitor_seo_opportunities',
+    'credit_conversions',
+    'credit_leads',
+    'credit_offer_clicks',
+    'credit_offer_snapshots',
+    'credit_provider_sessions',
+    'credit_simulations',
+    'cta_events',
+    'editorial_assets',
+    'editorial_briefs',
+    'editorial_job_runs',
+    'feature_flags',
+    'financial_products',
+    'integration_health_checks',
+    'lead_delivery_attempts',
+    'lead_merges',
+    'lead_notes',
+    'lead_owner_assignments',
+    'lead_routing_decisions',
+    'lead_score_snapshots',
+    'lead_suppressions',
+    'lead_tag_assignments',
+    'lead_tags',
+    'offers',
+    'partner_configs',
+    'partner_payout_rules',
+    'partner_redirects',
+    'payout_events',
+    'platform_alerts',
+    'reactivation_admin_audit_logs',
+    'reactivation_admin_config',
+    'reactivation_audit_events',
+    'reactivation_automation_job_runs',
+    'reactivation_email_campaigns',
+    'reactivation_email_message_events',
+    'reactivation_email_messages',
+    'reactivation_email_templates',
+    'reactivation_flow_definitions',
+    'reactivation_flow_edges',
+    'reactivation_flow_execution_steps',
+    'reactivation_flow_nodes',
+    'reactivation_flow_versions',
+    'reactivation_lead_flow_executions',
+    'reactivation_leads',
+    'reactivation_partner_deliveries',
+    'reactivation_suppressions',
+    'revenue_adjustments',
+    'revenue_events',
+    'seo_clusters',
+    'seo_search_console_metrics',
+    'simulation_leads'
+  ]
+  LOOP
+    IF to_regclass(format('public.%I', table_name)) IS NOT NULL THEN
+      EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', table_name);
+    END IF;
+  END LOOP;
+END $$;

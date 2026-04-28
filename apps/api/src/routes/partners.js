@@ -2,8 +2,56 @@ import express from 'express';
 import { z } from 'zod';
 import { asyncHandler } from '../lib/http.js';
 import { PartnerService } from '../services/partnerService.js';
+import { PartnerMatcherService } from '../services/partnerMatcherService.js';
 
 const router = express.Router();
+const fallbackProfile = {
+  negativado: null,
+  renda: null,
+  valor: null,
+  urgencia: null
+};
+
+router.post(
+  '/match',
+  asyncHandler(async (req, res) => {
+    const schema = z.object({
+      productType: z.enum(['loan', 'credit_card', 'financing']).default('loan'),
+      profile: z
+        .object({
+          negativado: z.boolean().nullable().optional(),
+          renda: z.number().nullable().optional(),
+          valor: z.number().nullable().optional(),
+          urgencia: z.string().nullable().optional()
+        })
+        .partial()
+        .optional()
+    });
+
+    const payload = schema.parse(req.body || {});
+    const profile = {
+      ...fallbackProfile,
+      ...(payload.profile || {})
+    };
+
+    const recommendations = await PartnerMatcherService.match({
+      productType: payload.productType,
+      lead: {
+        hasRestriction: profile.negativado,
+        income: profile.renda,
+        requestedAmount: profile.valor,
+        urgency: profile.urgencia
+      }
+    });
+
+    res.json({
+      data: {
+        profile,
+        recommendations
+      }
+    });
+  })
+);
 
 router.post(
   '/redirect',

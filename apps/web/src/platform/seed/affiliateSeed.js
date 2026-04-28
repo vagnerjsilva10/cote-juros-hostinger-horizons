@@ -12,7 +12,7 @@ export const affiliateOffersSeed = [
     audience: 'Para quem busca emprestimo pessoal com analise rapida e pode precisar de uma opcao mais acessivel.',
     imageUrl: 'https://static.s3.admitad.com/storage-offers-logos/3ea/44c/supersim-logo.png',
     destinationUrl: 'https://www.supersim.com.br/',
-    trackingUrl: 'https://ad.admitad.com/g/supersim-placeholder/',
+    trackingUrl: 'https://susim.co/XQLX5t8rSqYxaWnPd7CQaw==',
     payoutText: 'Condicoes sujeitas a analise do parceiro',
     ctaText: 'Simular emprestimo',
     disclosureText: 'Se voce avancar por este link, o Cote Juros pode receber comissao sem custo extra para voce.',

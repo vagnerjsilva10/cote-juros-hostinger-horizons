@@ -1,121 +1,599 @@
-﻿import React, { useState } from 'react';
-import { useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
-  BadgeCheck,
+  BookOpen,
+  BriefcaseBusiness,
+  Building2,
   CheckCircle2,
-  ChevronDown,
-  LockKeyhole,
+  ChevronLeft,
+  ClipboardCheck,
+  CreditCard,
+  FileQuestion,
+  Gauge,
+  HandCoins,
+  Landmark,
+  Layers3,
+  Mail,
+  Newspaper,
+  PiggyBank,
+  Search,
   ShieldCheck,
-  Sparkles,
-  TrendingUp
+  UserRound,
+  WalletCards
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import CreditHeroPreview from '@/components/CreditHeroPreview.jsx';
-import ExperienceRealVisual from '@/components/ExperienceRealVisual.jsx';
+import { toast } from 'sonner';
 import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import SeoHead from '@/components/SeoHead.jsx';
+import {
+  formatCurrencyValue,
+  formatPhoneValue,
+  parseCurrencyValue,
+  submitQuickCreditApplication
+} from '@/lib/quickCreditSubmission.js';
 import { trackingService } from '@/platform/services/trackingService.js';
-import { normalizeMojibake, normalizeMojibakeDeep } from '@/lib/textEncoding.js';
 import { brandPages, createOrganizationSchema, createWebSiteSchema } from '@/seo/brandSeo.js';
 
-const animationIn = {
-  initial: { opacity: 0, y: 18 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.16 },
-  transition: { duration: 0.46, ease: [0.4, 0, 0.2, 1] }
-};
+const CONSENT_TEXT =
+  'Autorizo a Cote Juros a usar meus dados para montar meu perfil e contato sobre opções de crédito. Sei que a Cote Juros não é banco, não garante aprovação e não cobra valor antecipado.';
 
-const marketBrands = ['Banco PAN', 'C6 Bank', 'Nubank', 'Banco Inter', 'Santander', 'SuperSim'];
-const editorialFeature = normalizeMojibakeDeep({
-  tag: 'Comparação real'
-});
-
-const featureCards = normalizeMojibakeDeep([
+const profileSteps = [
   {
-    title: 'Conte o básico',
-    description: 'Informe valor, renda e perfil para começar a comparação com mais clareza.',
-    metric: '01',
-    bars: [42, 64, 86]
+    id: 'amount',
+    label: 'Qual valor você procura?',
+    helper: 'Use uma estimativa. Ela ajuda a organizar caminhos possíveis.',
+    type: 'currency',
+    placeholder: 'R$ 10.000,00'
   },
   {
-    title: 'Compare com calma',
-    description: 'Veja caminhos possíveis antes de aceitar qualquer proposta.',
-    metric: '02',
-    bars: [78, 52, 68]
+    id: 'income',
+    label: 'Qual sua renda mensal?',
+    helper: 'A renda aproximada ajuda a avaliar o peso da parcela.',
+    type: 'currency',
+    placeholder: 'R$ 5.000,00'
   },
   {
-    title: 'Avance se fizer sentido',
-    description: 'Você só segue quando a escolha combinar com o seu momento.',
-    metric: '03',
-    bars: [38, 58, 92]
+    id: 'hasRestriction',
+    label: 'Seu nome está negativado?',
+    helper: 'Essa resposta muda a leitura inicial do perfil.',
+    options: [
+      { label: 'Não', value: false },
+      { label: 'Sim', value: true },
+      { label: 'Não sei', value: 'unknown' }
+    ]
+  },
+  {
+    id: 'employmentStatus',
+    label: 'Qual sua ocupação?',
+    helper: 'Perfis diferentes podem pedir caminhos diferentes.',
+    options: [
+      { label: 'CLT', value: 'CLT' },
+      { label: 'Autônomo', value: 'Autonomo' },
+      { label: 'MEI', value: 'Autonomo' },
+      { label: 'Aposentado/pensionista', value: 'Aposentado' },
+      { label: 'Empresário', value: 'Empresario' },
+      { label: 'Desempregado', value: 'Desempregado' }
+    ]
+  },
+  {
+    id: 'goal',
+    label: 'Qual é o objetivo?',
+    helper: 'O objetivo ajuda a separar urgência, organização e comparação.',
+    options: [
+      { label: 'Pagar dívidas', value: 'debt' },
+      { label: 'Organizar contas', value: 'organize' },
+      { label: 'Emergência', value: 'emergency' },
+      { label: 'Comprar algo', value: 'purchase' },
+      { label: 'Investir no negócio', value: 'business' },
+      { label: 'Outro', value: 'other' }
+    ]
   }
-]);
+];
 
-const profileCards = normalizeMojibakeDeep([
+const contactFields = [
+  { id: 'fullName', label: 'Nome', placeholder: 'Como podemos te chamar?', inputMode: 'text' },
+  { id: 'phone', label: 'WhatsApp', placeholder: '(11) 99999-9999', inputMode: 'tel' },
+  { id: 'email', label: 'E-mail', placeholder: 'voce@email.com', inputMode: 'email' }
+];
+
+const categoryCards = [
+  { title: 'Empréstimos', text: 'Pessoal, garantia e alternativas por perfil.', href: '/emprestimos', icon: Landmark },
+  { title: 'Cartões', text: 'Guias para limite, uso e comparação.', href: '/cartoes', icon: CreditCard },
+  { title: 'Financiamentos', text: 'Critérios para veículo, imóvel e prazo.', href: '/financiamentos', icon: WalletCards },
+  { title: 'Bancos', text: 'Contexto para comparar instituições.', href: '/ofertas', icon: Building2 },
+  { title: 'Score de crédito', text: 'Entenda impacto, histórico e cuidados.', href: '/blog/score-de-credito-como-funciona', icon: Gauge },
+  { title: 'Guias', text: 'Conteúdo para decidir sem pressa.', href: '/blog', icon: BookOpen }
+];
+
+const comparisonReasons = [
   {
-    title: 'Está com o nome negativado?',
-    description: 'Veja por onde pode valer a pena começar antes de fechar qualquer contrato.',
-    tag: 'Perfil'
+    title: 'Sem cobrança antecipada',
+    text: 'O comparador não pede taxa para tentar liberar crédito.',
+    icon: ShieldCheck
   },
   {
-    title: 'Tem renda fixa?',
-    description: 'Compare condições com mais clareza antes de assumir parcelas.',
-    tag: 'Renda'
+    title: 'Comparação com clareza',
+    text: 'A leitura separa valor, renda, objetivo e cuidados antes de seguir.',
+    icon: Search
   },
   {
-    title: 'Autônomo?',
-    description: 'Entenda caminhos possíveis para o seu perfil antes de tomar a decisão.',
-    tag: 'Autônomo'
+    title: 'Conteúdo para decidir',
+    text: 'Guias ajudam a entender custo, parcela e riscos comuns.',
+    icon: Newspaper
+  },
+  {
+    title: 'Encaminhamento quando fizer sentido',
+    text: 'O próximo passo depende do perfil, disponibilidade e análise.',
+    icon: HandCoins
   }
-]);
+];
 
-const credibilityBlocks = normalizeMojibakeDeep([
+const featuredProducts = [
   {
-    icon: ShieldCheck,
-    title: 'Compare opções com mais clareza',
-    description: 'A CoteJuros ajuda você a entender condições e custo antes de contratar.'
+    title: 'Empréstimo pessoal',
+    tag: 'Depende do perfil',
+    text: 'Pode fazer sentido para necessidades pontuais, sempre sujeito à análise e custo total.',
+    href: '/emprestimos',
+    icon: Landmark
   },
   {
-    icon: TrendingUp,
-    title: 'Decida no seu ritmo',
-    description: 'Você analisa com mais calma e avança só no que fizer sentido para o seu momento.'
+    title: 'Crédito com garantia',
+    tag: 'Para valores maiores',
+    text: 'Pode entrar na comparação quando prazo, risco e garantia forem avaliados com cuidado.',
+    href: '/emprestimos',
+    icon: Layers3
+  },
+  {
+    title: 'Cartão de crédito',
+    tag: 'Uso consciente',
+    text: 'Pode ajudar no dia a dia, mas limite e parcelamento precisam caber no orçamento.',
+    href: '/cartoes',
+    icon: CreditCard
+  },
+  {
+    title: 'Financiamento',
+    tag: 'Prazo e entrada',
+    text: 'Pode fazer sentido quando parcela, entrada e custo total são comparados com calma.',
+    href: '/financiamentos',
+    icon: WalletCards
+  },
+  {
+    title: 'Organização financeira',
+    tag: 'Antes de contratar',
+    text: 'Pode ser o primeiro passo quando a melhor decisão é reorganizar compromissos.',
+    href: '/diagnostico-financeiro',
+    icon: PiggyBank
   }
-]);
+];
 
-const faqItems = normalizeMojibakeDeep([
+const editorialRecommendations = [
   {
-    question: 'Preciso pagar algo para começar?',
-    answer: 'Não. Você pode começar sem compromisso e sem cobrança antecipada.'
+    title: 'Como comparar taxas antes de contratar',
+    text: 'Taxa, CET, prazo e parcela precisam ser vistos juntos.',
+    href: '/blog/como-comparar-taxas-de-juros'
   },
   {
-    question: 'Isso garante aprovação?',
-    answer: 'Não. A decisão final depende da instituição que analisa o seu perfil.'
+    title: 'Como saber se uma parcela cabe no bolso',
+    text: 'Compare o compromisso mensal com renda e margem para imprevistos.',
+    href: '/simulador-comprometimento-renda'
   },
   {
-    question: 'Preciso decidir na hora?',
-    answer: 'Não. Você compara com mais calma e decide depois.'
+    title: 'O que avaliar antes de pedir crédito',
+    text: 'Objetivo, urgência e custo total mudam a decisão.',
+    href: '/blog/como-saber-se-um-emprestimo-vale-a-pena'
   },
   {
-    question: 'A CoteJuros empresta dinheiro?',
-    answer: 'Não. A CoteJuros mostra caminhos possíveis para você comparar antes de contratar.'
+    title: 'Como evitar cobrança antecipada',
+    text: 'Promessa fácil e taxa para liberar crédito são sinais de alerta.',
+    href: '/blog/emprestimo-online-seguro'
   }
-]);
+];
 
-function FaqItem({ item, isOpen, onToggle }) {
+const suggestedContents = [
+  {
+    label: 'Guia',
+    title: 'Empréstimo para negativado: como avaliar',
+    text: 'Veja cuidados importantes antes de seguir.',
+    href: '/emprestimo-para-negativado'
+  },
+  {
+    label: 'Ferramenta',
+    title: 'Calculadora de CET',
+    text: 'Estime o custo efetivo total de uma proposta.',
+    href: '/calculadora-cet'
+  },
+  {
+    label: 'Artigo',
+    title: 'Como aumentar score de crédito',
+    text: 'Entenda fatores que podem influenciar seu histórico.',
+    href: '/blog/como-aumentar-score-de-credito'
+  },
+  {
+    label: 'Diagnóstico',
+    title: 'Organização financeira antes do crédito',
+    text: 'Faça uma leitura simples do seu momento.',
+    href: '/diagnostico-financeiro'
+  }
+];
+
+const faqItems = [
+  {
+    question: 'A Cote Juros é banco?',
+    answer: 'Não. A Cote Juros é um portal de comparação, conteúdo e encaminhamento. A análise formal e as condições finais dependem das instituições ou empresas responsáveis.'
+  },
+  {
+    question: 'A Cote Juros cobra antecipado?',
+    answer: 'Não cobramos valor antecipado para liberar crédito, aprovar proposta ou destravar qualquer oferta.'
+  },
+  {
+    question: 'A análise garante aprovação?',
+    answer: 'Não. O quiz organiza seu perfil para comparação. Aprovação, limite, taxa, prazo e disponibilidade sempre dependem dos critérios de terceiros.'
+  },
+  {
+    question: 'O que acontece depois do quiz?',
+    answer: 'Você vê uma leitura inicial do perfil e pode seguir para a próxima etapa quando fizer sentido. Os dados informados são reaproveitados para evitar repetição.'
+  },
+  {
+    question: 'Meus dados são usados como?',
+    answer: 'Os dados são usados para montar seu perfil, contato e continuidade do fluxo, conforme o consentimento registrado e a política de privacidade.'
+  }
+];
+
+function isValidEmail(email = '') {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim());
+}
+
+function getStepValueLabel(step, value) {
+  if (step.type === 'currency') return value ? formatCurrencyValue(value) : '';
+  return step.options?.find((option) => option.value === value)?.label || '';
+}
+
+function normalizeLeadData(profile, contact, consentAcceptedAt) {
+  return {
+    amount: parseCurrencyValue(profile.amount),
+    income: parseCurrencyValue(profile.income),
+    hasRestriction: profile.hasRestriction === true,
+    employmentStatus: profile.employmentStatus,
+    goal: profile.goal,
+    fullName: contact.fullName.trim(),
+    phone: contact.phone.replace(/\D/g, ''),
+    email: contact.email.trim(),
+    consentAccepted: true,
+    consentText: CONSENT_TEXT,
+    consentAcceptedAt
+  };
+}
+
+function buildResults(profile) {
+  const results = [];
+  const amount = parseCurrencyValue(profile.amount);
+  const income = parseCurrencyValue(profile.income);
+
+  if (profile.hasRestriction === true || profile.hasRestriction === 'unknown') {
+    results.push({
+      label: 'Cautela',
+      title: 'Análise mais cuidadosa',
+      text: 'Com restrição ou dúvida sobre o CPF, evite promessa de aprovação e cobrança antecipada.'
+    });
+  }
+
+  if (amount >= 15000) {
+    results.push({
+      label: 'Possível caminho',
+      title: 'Garantia pode entrar na comparação',
+      text: 'Para valores maiores, prazo, garantia e custo total precisam ser avaliados com calma.'
+    });
+  }
+
+  if (profile.goal === 'debt' || profile.goal === 'organize') {
+    results.push({
+      label: 'Organização',
+      title: 'Parcela realista vem antes da pressa',
+      text: 'O objetivo é evitar trocar uma dívida por outra com custo pior.'
+    });
+  }
+
+  if (income && amount / income > 4) {
+    results.push({
+      label: 'Atenção',
+      title: 'Valor alto em relação à renda',
+      text: 'A análise deve priorizar impacto mensal e margem para imprevistos.'
+    });
+  }
+
+  results.push({
+    label: 'Base',
+    title: 'Crédito pessoal pode ser avaliado',
+    text: 'A disponibilidade depende de análise, renda, histórico e critérios dos parceiros.'
+  });
+
+  return results.slice(0, 3);
+}
+
+function HomeQuiz({ onFallback }) {
+  const navigate = useNavigate();
+  const [stage, setStage] = useState('profile');
+  const [profileIndex, setProfileIndex] = useState(0);
+  const [profile, setProfile] = useState({
+    amount: '',
+    income: '',
+    hasRestriction: '',
+    employmentStatus: '',
+    goal: ''
+  });
+  const [contact, setContact] = useState({ fullName: '', phone: '', email: '' });
+  const [consentAccepted, setConsentAccepted] = useState(false);
+  const [consentAcceptedAt, setConsentAcceptedAt] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const step = profileSteps[profileIndex];
+  const results = useMemo(() => buildResults(profile), [profile]);
+  const stageOrder = ['profile', 'contact', 'consent', 'analyzing', 'result'];
+  const activeStageIndex = Math.max(0, stageOrder.indexOf(stage));
+  const progress =
+    stage === 'profile'
+      ? Math.round(((profileIndex + 1) / profileSteps.length) * 44)
+      : stage === 'contact'
+        ? 60
+        : stage === 'consent'
+          ? 76
+          : stage === 'analyzing'
+            ? 88
+            : 100;
+
+  useEffect(() => {
+    if (stage !== 'analyzing') return undefined;
+    const timeoutId = window.setTimeout(() => setStage('result'), 900);
+    return () => window.clearTimeout(timeoutId);
+  }, [stage]);
+
+  const currentLeadData = () => normalizeLeadData(profile, contact, consentAcceptedAt || new Date().toISOString());
+
+  const updateProfileValue = (value) => {
+    setProfile((current) => ({ ...current, [step.id]: value }));
+  };
+
+  const goNextProfile = () => {
+    if (step.type === 'currency' && parseCurrencyValue(profile[step.id]) < 1000) {
+      toast.error('Informe um valor de pelo menos R$ 1.000,00.');
+      return;
+    }
+    if (!step.type && profile[step.id] === '') {
+      toast.error('Escolha uma opção para continuar.');
+      return;
+    }
+    if (profileIndex < profileSteps.length - 1) {
+      setProfileIndex((current) => current + 1);
+      return;
+    }
+    setStage('contact');
+  };
+
+  const goBack = () => {
+    if (stage === 'profile') {
+      setProfileIndex((current) => Math.max(0, current - 1));
+      return;
+    }
+    if (stage === 'contact') {
+      setStage('profile');
+      setProfileIndex(profileSteps.length - 1);
+      return;
+    }
+    if (stage === 'consent') {
+      setStage('contact');
+      return;
+    }
+    if (stage === 'result') setStage('consent');
+  };
+
+  const submitContact = () => {
+    if (contact.fullName.trim().length < 3) {
+      toast.error('Informe seu nome para continuar.');
+      return;
+    }
+    if (contact.phone.replace(/\D/g, '').length < 10) {
+      toast.error('Informe um WhatsApp válido.');
+      return;
+    }
+    if (!isValidEmail(contact.email)) {
+      toast.error('Informe um e-mail válido.');
+      return;
+    }
+    setStage('consent');
+  };
+
+  const submitConsent = () => {
+    if (!consentAccepted) {
+      toast.error('Aceite o consentimento para continuar.');
+      return;
+    }
+    setConsentAcceptedAt(new Date().toISOString());
+    setStage('analyzing');
+  };
+
+  const continueAnalysis = async () => {
+    const leadData = currentLeadData();
+    try {
+      setIsSubmitting(true);
+      const leadResult = await submitQuickCreditApplication({
+        leadData,
+        sourcePage: '/',
+        originLabel: 'home_quiz',
+        ctaLabel: 'Continuar para comparar'
+      });
+      navigate('/resultado', { state: { leadResult } });
+    } catch (error) {
+      onFallback(leadData);
+      toast.error(error.message || 'Abrimos uma revisão rápida com seus dados preenchidos.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div className="faq-item">
-      <button type="button" onClick={onToggle} className="faq-trigger flex w-full items-center justify-between gap-4 text-left">
-        <span>{item.question}</span>
-        <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
-      </button>
-      <div className={`grid transition-[grid-template-rows,opacity] duration-300 ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
-        <div className="overflow-hidden">
-          <div className="faq-content">{item.answer}</div>
+    <div id="hero-credit-preview" className="cj-quiz-card">
+      <div className="cj-quiz-top">
+        <div>
+          <h2 className="cj-quiz-title">{stage === 'result' ? 'Caminhos iniciais' : 'Perfil rapido'}</h2>
+          <p className="cj-quiz-note">
+            {stage === 'result'
+              ? 'Use como ponto de partida. Você ainda decide se faz sentido seguir.'
+              : 'Perfil, contato e consentimento em um fluxo simples.'}
+          </p>
         </div>
+        <div className="cj-step-badge">{activeStageIndex + 1}/5</div>
       </div>
+
+      <div className="cj-progress" aria-hidden="true">
+        <span style={{ width: `${progress}%` }} />
+      </div>
+
+      {stage === 'profile' && (
+        <>
+          <div className="cj-field-label">{step.label}</div>
+          <p className="cj-quiz-note cj-step-helper">{step.helper}</p>
+
+          {step.type === 'currency' ? (
+            <input
+              className="cj-input-large"
+              value={profile[step.id]}
+              onChange={(event) => updateProfileValue(formatCurrencyValue(event.target.value))}
+              placeholder={step.placeholder}
+              inputMode="numeric"
+            />
+          ) : (
+            <div className="cj-options">
+              {step.options.map((option) => (
+                <button
+                  key={`${step.id}-${option.label}`}
+                  type="button"
+                  className={`cj-option ${profile[step.id] === option.value ? 'is-selected' : ''}`}
+                  onClick={() => updateProfileValue(option.value)}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="cj-quiz-footer">
+            <button type="button" className="cj-back" onClick={goBack} disabled={profileIndex === 0}>
+              <ChevronLeft className="h-4 w-4" />
+              Voltar
+            </button>
+            <button type="button" className="cj-btn cj-btn-primary" onClick={goNextProfile}>
+              {profileIndex === profileSteps.length - 1 ? 'Ir para contato' : 'Continuar'}
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+        </>
+      )}
+
+      {stage === 'contact' && (
+        <>
+          <div className="cj-field-label">Para onde enviamos o próximo passo?</div>
+          <p className="cj-quiz-note cj-step-helper">Os dados do perfil serão reaproveitados na continuidade.</p>
+
+          <div className="cj-contact-grid">
+            {contactFields.map((field) => (
+              <label key={field.id} className="cj-field">
+                <span>{field.label}</span>
+                <input
+                  value={contact[field.id]}
+                  onChange={(event) => {
+                    const value = field.id === 'phone' ? formatPhoneValue(event.target.value) : event.target.value;
+                    setContact((current) => ({ ...current, [field.id]: value }));
+                  }}
+                  placeholder={field.placeholder}
+                  inputMode={field.inputMode}
+                />
+              </label>
+            ))}
+          </div>
+
+          <div className="cj-quiz-footer">
+            <button type="button" className="cj-back" onClick={goBack}>
+              <ChevronLeft className="h-4 w-4" />
+              Voltar
+            </button>
+            <button type="button" className="cj-btn cj-btn-primary" onClick={submitContact}>
+              Continuar
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+        </>
+      )}
+
+      {stage === 'consent' && (
+        <>
+          <div className="cj-field-label">Confirme para seguir com a comparação</div>
+          <p className="cj-quiz-note cj-step-helper">A autorização registra o uso dos dados neste fluxo.</p>
+
+          <label className={`cj-consent-box ${consentAccepted ? 'is-checked' : ''}`}>
+            <input
+              type="checkbox"
+              checked={consentAccepted}
+              onChange={(event) => setConsentAccepted(event.target.checked)}
+            />
+            <span>{CONSENT_TEXT}</span>
+          </label>
+
+          <div className="cj-quiz-footer">
+            <button type="button" className="cj-back" onClick={goBack}>
+              <ChevronLeft className="h-4 w-4" />
+              Voltar
+            </button>
+            <button type="button" className="cj-btn cj-btn-primary" onClick={submitConsent}>
+              Comparar caminhos
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+        </>
+      )}
+
+      {stage === 'analyzing' && (
+        <div className="cj-analysis-state">
+          <ShieldCheck className="h-7 w-7" />
+          <strong>Organizando caminhos possíveis...</strong>
+          <span>Organizando valor, renda, perfil, objetivo e consentimento.</span>
+        </div>
+      )}
+
+      {stage === 'result' && (
+        <>
+          <div className="cj-answer-summary" aria-label="Resumo das respostas">
+            <span>{formatCurrencyValue(profile.amount)}</span>
+            <span>{formatCurrencyValue(profile.income)}</span>
+            <span>{getStepValueLabel(profileSteps[2], profile.hasRestriction)}</span>
+            <span>{getStepValueLabel(profileSteps[4], profile.goal)}</span>
+          </div>
+
+          <div className="cj-result-stack">
+            {results.map((item) => (
+              <div key={item.title} className="cj-result-card">
+                <span>{item.label}</span>
+                <strong>{item.title}</strong>
+                <p>{item.text}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="cj-quiz-disclaimer">
+            As opções variam conforme perfil e disponibilidade dos parceiros. A Cote Juros não é banco, não
+            garante aprovação e não cobra valor antecipado.
+          </p>
+
+          <div className="cj-quiz-footer">
+            <button type="button" className="cj-back" onClick={goBack}>
+              <ChevronLeft className="h-4 w-4" />
+              Revisar
+            </button>
+            <button type="button" className="cj-btn cj-btn-primary" disabled={isSubmitting} onClick={continueAnalysis}>
+              {isSubmitting ? 'Continuando...' : 'Continuar para comparar'}
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -123,9 +601,7 @@ function FaqItem({ item, isOpen, onToggle }) {
 function HomePage() {
   const location = useLocation();
   const [modalOpen, setModalOpen] = useState(false);
-  const [openFaq, setOpenFaq] = useState(0);
-  const [heroPreviewFocusSignal, setHeroPreviewFocusSignal] = useState(0);
-  const t = normalizeMojibake;
+  const [modalLeadData, setModalLeadData] = useState(null);
 
   useEffect(() => {
     if (!location.hash) return;
@@ -141,35 +617,39 @@ function HomePage() {
     return () => window.clearTimeout(timeoutId);
   }, [location.hash]);
 
-  const openPrimaryFlow = () => {
+  const focusQuiz = (ctaLabel = 'Comecar comparacao') => {
     trackingService.trackCtaClick({
       sourcePage: '/',
-      ctaId: 'home_primary_cta',
-      ctaLabel: t('Ver minhas opções agora'),
+      ctaId: 'home_focus_quiz_cta',
+      ctaLabel,
       productType: 'loan'
     });
-    setModalOpen(true);
+
+    document.getElementById('hero-credit-preview')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
-  const focusHeroPreview = () => {
+  const openGenericResults = (ctaLabel = 'Ver minhas opcoes') => {
     trackingService.trackCtaClick({
       sourcePage: '/',
-      ctaId: 'home_hero_focus_cta',
-      ctaLabel: t('Começar comparação'),
-      productType: 'loan'
+      ctaId: 'home_generic_results_cta',
+      ctaLabel,
+      productType: 'loan',
+      metadata: {
+        fallbackProfile: {
+          negativado: null,
+          renda: null,
+          valor: null,
+          urgencia: null
+        }
+      }
     });
 
-    const previewElement = document.getElementById('hero-credit-preview');
-    previewElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setHeroPreviewFocusSignal((value) => value + 1);
+    navigate('/resultado');
+  };
 
-    window.setTimeout(() => {
-      const firstInput = previewElement?.querySelector('input');
-      if (firstInput instanceof HTMLInputElement) {
-        firstInput.focus();
-        firstInput.select();
-      }
-    }, 220);
+  const openFallbackModal = (leadData) => {
+    setModalLeadData(leadData);
+    setModalOpen(true);
   };
 
   return (
@@ -183,380 +663,307 @@ function HomePage() {
         <meta name="verify-admitad" content="1ae3db0be4" />
       </SeoHead>
 
-      <QuickCreditFlowModal isOpen={modalOpen} onClose={() => setModalOpen(false)} sourcePage="/" originLabel="home" />
+      <QuickCreditFlowModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        sourcePage="/"
+        originLabel="home_quiz_fallback"
+        initialData={modalLeadData}
+      />
 
-      <section id="home-hero" className="hero-section">
-        <div className="hero-ambient-grid" aria-hidden="true" />
-        <div className="hero-ambient-orb hero-ambient-orb-one" aria-hidden="true" />
-        <div className="hero-ambient-orb hero-ambient-orb-two" aria-hidden="true" />
-
-        <div className="page-shell">
-          <div className="hero-grid">
-            <motion.div {...animationIn} className="hero-copy">
-              <span className="hero-eyebrow">
-                <Sparkles className="h-3.5 w-3.5" />
-                {t('Grátis para comparar. Sem cobrança antecipada.')}
-              </span>
-
-              <h1 className="hero-title hero-heading heading-hero">
-                {t('Compare ')}
-                <span className="highlight">{t('crédito')}</span>
-                {t(' com mais clareza antes de contratar')}
-              </h1>
-
-              <p className="hero-subtitle hero-subcopy">
-                {t('A CoteJuros ajuda você a comparar empréstimo, cartão e financiamento com mais segurança, praticidade e sem pressão para fechar.')}
-              </p>
-
-              <div className="hero-data-rail" aria-hidden="true">
-                <span>perfil</span>
-                <i />
-                <span>{t('condições')}</span>
-                <i />
-                <span>{t('decisão')}</span>
-              </div>
-
-              <div className="hero-actions">
-                <a href="#hero-credit-preview" className="hero-primary-btn" onClick={focusHeroPreview}>
-                  {t('Começar comparação')}
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-                <Link to="/como-funciona" className="hero-secondary-btn">
-                  Entender como funciona
-                </Link>
-              </div>
-
-              <div className="hero-trust">
-                {normalizeMojibakeDeep(['Sem compromisso para começar', 'Sem cobrança antecipada', 'Você decide no seu ritmo']).map((item) => (
-                  <div key={item} className="flex items-center gap-2">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-[var(--brand-2)]" />
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div {...animationIn} className="hero-product-wrap">
-              <div className="hero-product-lens" aria-hidden="true" />
-              <div className="hero-floating-widget hero-floating-widget-one" aria-hidden="true">Perfil analisado</div>
-              <div className="hero-floating-widget hero-floating-widget-two" aria-hidden="true">{t('Sem pressão')}</div>
-              <CreditHeroPreview focusSignal={heroPreviewFocusSignal} onContinue={openPrimaryFlow} />
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      <section className="signal-strip-section">
-        <div className="page-shell">
-          <motion.div {...animationIn} className="signal-strip">
-            <span>{t('Comparação no radar')}</span>
-            <div className="signal-strip-track">
-              {marketBrands.map((brand) => (
-                <div key={brand} className="signal-pill">
-                  <span className="signal-dot" />
-                  {brand}
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      <section id="como-funciona" className="section section--compact art-section art-section-white">
-        <div className="page-shell">
-          <motion.div {...animationIn} className="section-heading-left">
-            <h2 className="section-title">{t('Primeiro você compara. Depois decide se vale seguir.')}</h2>
-            <p className="section-subtitle">
-              {t('A CoteJuros organiza valor, perfil e custo para você entender por onde vale a pena começar.')}
-            </p>
-          </motion.div>
-
-          <div className="steps-grid">
-            {featureCards.map((item, index) => (
-              <motion.div key={item.title} {...animationIn}>
-                <Card className={`card art-card art-card-${index + 1}`}>
-                  <CardContent className="p-0">
-                    <div className="art-card-topline">
-                      <span>{item.metric}</span>
-                      <BadgeCheck className="h-4 w-4" />
-                    </div>
-                    <div className="art-card-visual" aria-hidden="true">
-                      {item.bars.map((bar) => (
-                        <span key={bar} style={{ height: `${bar}%` }} />
-                      ))}
-                    </div>
-                    <h3 className="card-title">{item.title}</h3>
-                    <p className="card-text">{item.description}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="experiencia-real" className="editorial-people-section">
-        <div className="section-connector section-connector-top" aria-hidden="true" />
-        <div className="page-shell">
-          <motion.div {...animationIn} className="editorial-split editorial-people-grid">
-            <div className="editorial-copy editorial-people-copy">
-              <span className="eyebrow">{t('Experiência real')}</span>
-              <h2>{t('Crédito não é só taxa. É contexto, momento e escolha.')}</h2>
+      <main className="cj-home">
+        <section id="home-hero" className="cj-hero">
+          <div className="cj-wrap cj-hero-grid">
+            <div>
+              <span className="cj-eyebrow">Comparador de crédito</span>
+              <h1>Veja caminhos de crédito para o seu perfil</h1>
               <p>
-                {t('A CoteJuros ajuda você a comparar com mais clareza para entender o que faz sentido hoje, no seu perfil e no seu orçamento.')}
-              </p>
-            </div>
-
-            <div className="editorial-media experience-hero-media" aria-label="Cliente feliz com cartão aprovado">
-              <ExperienceRealVisual />
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      <section className="section section--compact art-section art-section-soft">
-        <div className="page-shell">
-          <motion.div {...animationIn} className="section-heading-left">
-            <h2 className="section-title">{t('Escolha um ponto de partida para comparar com mais precisão')}</h2>
-            <p className="section-subtitle">
-              {t('Cada perfil pede uma leitura diferente. O importante é entender seu ponto de partida antes de contratar.')}
-            </p>
-          </motion.div>
-
-          <div className="feature-grid">
-            {profileCards.map((item, index) => (
-              <motion.div key={item.title} {...animationIn}>
-                <Card className="card profile-card">
-                  <CardContent className="p-0">
-                    <div className="profile-card-tag">{item.tag}</div>
-                    <div className="profile-card-glow" aria-hidden="true" />
-                    <h3 className="card-title">{item.title}</h3>
-                    <p className="card-text">{item.description}</p>
-                    <div className="profile-card-meter" aria-hidden="true">
-                      <span style={{ width: `${52 + index * 14}%` }} />
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="insight-section">
-        <div className="section-connector section-connector-soft" aria-hidden="true" />
-        <div className="page-shell">
-          <motion.div {...animationIn} className="visual-reading-section">
-            <div className="main-copy-card">
-              <span className="eyebrow">{t('Mais clareza')}</span>
-              <h2 className="block-title">{t('Compare crédito com uma leitura mais simples')}</h2>
-              <p>
-                {t('A proposta não é empurrar contrato. É organizar valor, renda, perfil e próximos passos para você enxergar melhor antes de decidir.')}
-              </p>
-            </div>
-
-            <div className="widget-card conditions-widget" aria-hidden="true">
-              <div className="conditions-widget-header">
-                <span>{t('Condições')}</span>
-                <span>{t('Simulação')}</span>
-              </div>
-              <div className="conditions-visual">
-                <div className="conditions-axis" />
-                <div className="conditions-curve" />
-                <div className="mini-bars">
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                </div>
-              </div>
-              <div className="conditions-widget-score">
-                <strong>R$ 12.000</strong>
-                <span>valor desejado</span>
-              </div>
-            </div>
-
-            <div className="mini-side-stack">
-              <div className="card">
-                <LockKeyhole className="h-5 w-5 text-[var(--brand-primary)]" />
-                <strong>{t('Sem cobrança antecipada')}</strong>
-                <span>{t('Você compara antes de avançar.')}</span>
-              </div>
-
-              <div className="card card-dark custo-real-card">
-                <TrendingUp className="h-5 w-5 text-[var(--brand-3)]" />
-                <strong>{t('Custo real em foco')}</strong>
-                <span>{t('Menos impulso, mais contexto.')}</span>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      <section id="dark-section-proof" className="dark-panel-section">
-        <div className="section-connector section-connector-dark" aria-hidden="true" />
-        <div className="page-shell">
-          <motion.div {...animationIn} className="dark-panel">
-            <div className="dark-panel-copy">
-              <h2>
-                {t('Entender o crédito antes')}
-                <br />
-                {t('de contratar muda a decisão')}
-              </h2>
-              <p>
-                {t('Quando você compara com calma, fica mais fácil separar o que realmente vale a pena do que só parece bom.')}
+                Responda um quiz rápido, registre seu consentimento e compare opções com base no seu perfil. Sem cobrança
+                antecipada e sem promessa de aprovação.
               </p>
 
-              <div className="dark-checklist">
-                {[
-                  'Compare antes de decidir',
-                  'Entenda o custo real',
-                  'Evite decisões no impulso',
-                  'Escolha com mais segurança'
-                ].map((item) => (
-                  <div key={item} className="item">
+              <div className="cj-bullets" aria-label="Pontos de transparência">
+                {['Não somos banco', 'Sem cobrança antecipada', 'Sem promessa falsa'].map((item) => (
+                  <span key={item} className="cj-pill">
+                    <CheckCircle2 className="h-4 w-4" />
                     {item}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="dark-chart-card">
-              <div className="mb-4 flex items-end justify-between gap-3">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/[0.58]">{t('Visão de comparação')}</p>
-                  <h3 className="mt-2 text-[16px] font-medium text-white">{t('Do impulso à decisão')}</h3>
-                </div>
-                <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] text-white/70">
-                  Em poucos minutos
-                </div>
-              </div>
-
-              <div className="grid grid-cols-4 gap-3">
-                {[32, 54, 76, 96].map((height, index) => (
-                  <div key={height} className="space-y-2">
-                    <div className="dark-chart-bar-shell">
-                      <div className="dark-chart-bar" style={{ height: `${height}%`, animationDelay: `${index * 120}ms` }} />
-                    </div>
-                    <div className="text-center text-[11px] text-white/[0.58]">{normalizeMojibakeDeep(['Início','Leitura','Comparação','Decisão'])[index]}</div>
-                  </div>
+                  </span>
                 ))}
               </div>
 
-              <div className="mt-4 rounded-[18px] border border-white/[0.08] bg-white/[0.04] p-4">
-                <svg viewBox="0 0 320 120" className="w-full overflow-visible">
-                  <defs>
-                    <linearGradient id="homeDarkLine" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#5B6CFF" />
-                      <stop offset="100%" stopColor="#9AA8FF" />
-                    </linearGradient>
-                  </defs>
-                  <path
-                    d="M10 94 C 68 86, 94 72, 128 64 S 204 32, 240 36 S 292 20, 310 20"
-                    fill="none"
-                    stroke="url(#homeDarkLine)"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    className="chart-draw"
-                  />
-                  <circle cx="310" cy="20" r="5" fill="#9AA8FF" className="chart-pulse" />
-                </svg>
+              <div className="cj-actions">
+                <button type="button" className="cj-btn cj-btn-primary" onClick={() => openGenericResults('Ver minhas opcoes hero')}>
+                  Ver minhas opções
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+                <a className="cj-btn cj-btn-secondary" href="#como-funciona">
+                  Entender como funciona
+                </a>
               </div>
             </div>
-          </motion.div>
-        </div>
-      </section>
 
-      <section className="section section--compact art-section art-section-white">
-        <div className="page-shell">
-          <motion.div {...animationIn} className="section-heading-center">
-            <h2 className="section-title">{t('Comparar crédito fica mais fácil quando a proposta é direta')}</h2>
-            <p className="section-subtitle">
-              {t('A CoteJuros mostra condições com mais clareza para você entender antes de fechar contrato.')}
-            </p>
-          </motion.div>
-
-          <div className="credit-grid credit-grid-rich">
-            {credibilityBlocks.map((item) => {
-              const Icon = item.icon;
-              return (
-                <motion.div key={item.title} {...animationIn}>
-                  <Card className="card rich-card">
-                    <CardContent className="p-0">
-                      <div className="rich-card-icon">
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <h3 className="card-title">{item.title}</h3>
-                      <p className="card-text">{item.description}</p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
+            <HomeQuiz onFallback={openFallbackModal} />
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="papel-cotejuros" className="section section--compact brand-note-section role-section">
-        <div className="page-shell">
-          <div className="role-card">
-            <div className="role-content">
-              <div className="role-copy">
-                <span className="role-eyebrow">PAPEL DA COTEJUROS</span>
-                <h2 className="role-title">{t('Compare empréstimos antes de contratar')}</h2>
-                <p className="role-text">
-                  {t('Veja opções de crédito com clareza, entenda o custo real e escolha com mais segurança.')}
+        <section className="cj-category-band" aria-label="Categorias para comparar">
+          <div className="cj-wrap">
+            <div className="cj-category-grid">
+              {categoryCards.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link key={item.title} to={item.href} className="cj-category-card">
+                    <span className="cj-icon-chip">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <strong>{item.title}</strong>
+                    <small>{item.text}</small>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        <section id="como-funciona" className="cj-section cj-section-white">
+          <div className="cj-wrap">
+            <div className="cj-how-grid">
+              <div>
+                <span className="cj-eyebrow">Como funciona</span>
+                <h2>Um perfil inicial que vira comparação, não só formulário.</h2>
+                <p>
+                  O quiz coleta o essencial, registra consentimento e organiza uma leitura para você entender caminhos
+                  possíveis antes de avançar. Sem cobrança antecipada e sem promessa de aprovação.
+                </p>
+                <div className="cj-how-list">
+                  {[
+                    ['Perfil', 'Valor, renda, restrição, ocupação e objetivo entram primeiro.', UserRound],
+                    ['Contato', 'Nome, WhatsApp e e-mail ajudam a seguir sem repetir dados.', Mail],
+                    ['Consentimento', 'Você autoriza o uso dos dados e entende os limites da análise.', ShieldCheck]
+                  ].map(([title, text, Icon]) => (
+                    <article key={title} className="cj-how-step">
+                      <Icon className="h-5 w-5" />
+                      <div>
+                        <strong>{title}</strong>
+                        <span>{text}</span>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+
+              <div className="cj-how-panel" aria-label="Painel visual da comparação">
+                <div className="cj-panel-header">
+                  <span>Análise inicial</span>
+                  <strong>3 etapas</strong>
+                </div>
+                <div className="cj-flow-line">
+                  <span>Perfil</span>
+                  <span>Critérios</span>
+                  <span>Caminhos</span>
+                </div>
+                <div className="cj-score-card">
+                  <ClipboardCheck className="h-6 w-6" />
+                  <div>
+                    <strong>Leitura organizada</strong>
+                    <p>O resultado depende de perfil, análise e disponibilidade.</p>
+                  </div>
+                </div>
+                <div className="cj-panel-metrics">
+                  <div>
+                    <small>Reaproveitamento</small>
+                    <strong>Dados do quiz</strong>
+                  </div>
+                  <div>
+                    <small>Segurança</small>
+                    <strong>Sem taxa antecipada</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="cj-section cj-section-muted">
+          <div className="cj-wrap">
+            <div className="cj-section-head">
+              <span className="cj-eyebrow">Por que comparar na Cote Juros</span>
+              <h2>Um hub para decidir com mais contexto</h2>
+              <p>Comparar não é só clicar em uma oferta. É entender perfil, custo, objetivo e próximo passo.</p>
+            </div>
+
+            <div className="cj-reason-grid">
+              {comparisonReasons.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <article key={item.title} className="cj-reason-card">
+                    <Icon className="h-6 w-6" />
+                    <strong>{item.title}</strong>
+                    <p>{item.text}</p>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        <section className="cj-section cj-section-white">
+          <div className="cj-wrap">
+            <div className="cj-split cj-compare-split">
+              <div>
+                <span className="cj-eyebrow">Por que isso é diferente</span>
+                <h2>Menos promessa. Mais clareza para decidir.</h2>
+                <p>
+                  A Cote Juros não tenta parecer banco nem vender aprovação garantida. A experiência começa por uma
+                  leitura simples do seu perfil e só avança quando há consentimento claro.
                 </p>
               </div>
 
-              <div className="role-media">
-                <img
-                  src="/images/role-woman-purple.png"
-                  alt="Mulher com fones roxos segurando celular com interface de comparação"
-                  className="role-photo"
-                />
+              <div className="cj-panel-list">
+                {[
+                  ['Você não preenche tudo de novo', 'Os dados do quiz são reaproveitados na próxima etapa.'],
+                  ['A análise começa pelo seu perfil', 'Valor, renda e objetivo vêm antes de qualquer oferta.'],
+                  ['Sem cobrança antecipada', 'Você não paga taxa para tentar liberar crédito.'],
+                  ['Você decide com calma', 'A leitura inicial não obriga contratação.']
+                ].map(([title, text]) => (
+                  <div key={title} className="cj-panel-item">
+                    <strong>{title}</strong>
+                    <span>{text}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="faq-section faq-premium-section">
-        <div className="page-shell">
-          <motion.div {...animationIn} className="section-heading-center">
-            <h2 className="section-title">{t('O que você precisa saber antes de ver suas opções')}</h2>
-          </motion.div>
+        <section className="cj-section cj-section-muted">
+          <div className="cj-wrap">
+            <div className="cj-section-head">
+              <span className="cj-eyebrow">Produtos e caminhos em destaque</span>
+              <h2>O próximo passo depende do seu perfil</h2>
+              <p>As opções abaixo são caminhos possíveis de comparação. Nenhuma delas representa aprovação garantida.</p>
+            </div>
 
-          <div className="faq-list">
-            {faqItems.map((item, index) => (
-              <motion.div key={item.question} {...animationIn}>
-                <FaqItem item={item} isOpen={openFaq === index} onToggle={() => setOpenFaq(openFaq === index ? -1 : index)} />
-              </motion.div>
-            ))}
+            <div className="cj-featured-grid">
+              {featuredProducts.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link key={item.title} to={item.href} className="cj-featured-card">
+                    <div className="cj-featured-top">
+                      <Icon className="h-6 w-6" />
+                      <span>{item.tag}</span>
+                    </div>
+                    <strong>{item.title}</strong>
+                    <p>{item.text}</p>
+                    <small>
+                      Comparar caminho
+                      <ArrowRight className="h-4 w-4" />
+                    </small>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="final-cta" className="final-cta-section">
-        <div className="page-shell">
-          <motion.div {...animationIn} className="final-cta-card">
-            <div className="final-cta-grid" aria-hidden="true" />
-            <span className="final-cta-badge">{t('Comece com calma')}</span>
-            <h2>
-              {t('Compare opções de crédito antes')}
-              <br />
-              {t('de fechar qualquer contrato')}
-            </h2>
-            <p>
-              {t('Veja caminhos possíveis sem pressão e avance só no que fizer sentido para você.')}
-            </p>
-            <a href="#hero-credit-preview" className="hero-primary-btn" onClick={focusHeroPreview}>
-              {t('Ver minhas opções agora')}
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          </motion.div>
-        </div>
-      </section>
+        <section className="cj-mid-cta">
+          <div className="cj-wrap">
+            <div className="cj-mid-cta-box">
+              <div>
+                <span className="cj-eyebrow">Comece pelo quiz</span>
+                <h2>Use o quiz como porta de entrada do comparador.</h2>
+                <p>Você informa o básico uma vez e continua apenas se fizer sentido.</p>
+              </div>
+              <button type="button" className="cj-btn cj-btn-primary" onClick={() => openGenericResults('Ver minhas opcoes intermediario')}>
+                Ver minhas opções
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section className="cj-section cj-section-white">
+          <div className="cj-wrap">
+            <div className="cj-section-head">
+              <span className="cj-eyebrow">Nossos guias recomendam</span>
+              <h2>Conteúdo para comparar antes de contratar</h2>
+              <p>Guias diretos para entender custo, parcela e sinais de alerta.</p>
+            </div>
+
+            <div className="cj-editorial-grid">
+              {editorialRecommendations.map((item, index) => (
+                <Link key={item.title} to={item.href} className={`cj-editorial-card cj-editorial-card-${index + 1}`}>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <strong>{item.title}</strong>
+                  <p>{item.text}</p>
+                  <small>
+                    Ler guia
+                    <ArrowRight className="h-4 w-4" />
+                  </small>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="cj-section cj-section-muted">
+          <div className="cj-wrap">
+            <div className="cj-section-head">
+              <span className="cj-eyebrow">Conteúdos sugeridos</span>
+              <h2>Continue explorando o hub Cote Juros</h2>
+              <p>Artigos e ferramentas para apoiar sua decisão sem inventar taxa ou promessa.</p>
+            </div>
+
+            <div className="cj-content-grid">
+              {suggestedContents.map((item) => (
+                <Link key={item.title} to={item.href} className="cj-content-card">
+                  <span>{item.label}</span>
+                  <strong>{item.title}</strong>
+                  <p>{item.text}</p>
+                  <small>Ver conteúdo</small>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="cj-section cj-section-white">
+          <div className="cj-wrap">
+            <div className="cj-faq-layout">
+              <div>
+                <span className="cj-eyebrow">Perguntas frequentes</span>
+                <h2>Dúvidas comuns antes de seguir</h2>
+                <p>Respostas diretas para manter a comparação transparente.</p>
+              </div>
+              <div className="cj-faq-list">
+                {faqItems.map((item) => (
+                  <details key={item.question} className="cj-faq-item">
+                    <summary>
+                      {item.question}
+                      <FileQuestion className="h-5 w-5" />
+                    </summary>
+                    <p>{item.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="final-cta" className="cj-final">
+          <div className="cj-wrap">
+            <div className="cj-final-box">
+              <BriefcaseBusiness className="mx-auto h-7 w-7 text-[var(--cj-primary)]" />
+              <h2>Comece por uma comparação simples</h2>
+              <p>Informe seu perfil, registre o consentimento e siga apenas se fizer sentido para você.</p>
+              <button type="button" className="cj-btn cj-btn-primary" onClick={() => openGenericResults('Ver minhas opcoes final')}>
+                Ver minhas opções
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
     </>
   );
 }

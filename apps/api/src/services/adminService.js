@@ -3,7 +3,7 @@ import { getPrisma } from '../lib/prisma.js';
 import { hashPassword, hashValue, recordAdminAudit } from '../lib/adminAuth.js';
 import { getJurosBaixosHealth } from '../integrations/jurosBaixos/config.js';
 import { getCreditasHealth } from '../integrations/creditas/config.js';
-import { QuickCreditRoutingService } from './quickCreditRoutingService.js';
+import { PartnerMatcherService } from './partnerMatcherService.js';
 
 const leadDetailInclude = {
   tagAssignments: {
@@ -1434,12 +1434,21 @@ export class AdminService {
     const lead = await prisma.simulationLead.findUnique({ where: { id: leadId } });
     if (!lead) return null;
 
-    const profile = QuickCreditRoutingService.calculateProfile({
+    const profile = PartnerMatcherService.calculateProfile({
       income: lead.income != null ? Number(lead.income) : 0,
       hasRestriction: Boolean(lead.hasRestriction),
       employmentStatus: lead.employmentStatus || ''
     });
-    const partner = QuickCreditRoutingService.resolvePartner(profile);
+    const recommendations = await PartnerMatcherService.match({
+      productType: lead.productType,
+      lead: {
+        requestedAmount: lead.requestedAmount != null ? Number(lead.requestedAmount) : 0,
+        income: lead.income != null ? Number(lead.income) : 0,
+        hasRestriction: Boolean(lead.hasRestriction),
+        employmentStatus: lead.employmentStatus || ''
+      }
+    });
+    const partner = recommendations[0];
     const scoreValue = Math.max(0, Math.min(100, Math.round(
       (lead.income != null ? Number(lead.income) / 100 : 0)
       + (lead.hasRestriction ? 15 : 35)
@@ -1496,7 +1505,8 @@ export class AdminService {
             profile
           },
           responsePayload: {
-            destinationUrl: partner.destinationUrl || null
+            destinationUrl: partner.destinationUrl || null,
+            recommendations: recommendations.map((item) => item.id)
           }
         }
       }),
@@ -1535,6 +1545,7 @@ export class AdminService {
     return {
       profile,
       partner,
+      recommendations,
       routingDecision,
       scoreSnapshot,
       deliveryAttempt,

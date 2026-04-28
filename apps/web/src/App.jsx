@@ -163,6 +163,7 @@ function App() {
         <Route path="/termos-de-uso" element={<AppLayout><TermosUsoPage /></AppLayout>} />
         <Route path="/cote-finance-ai" element={<AppLayout><CoteFinanceAIPage /></AppLayout>} />
         <Route path="/motion-hero" element={<AppLayout><MotionHeroPage /></AppLayout>} />
+        <Route path="/resultado" element={<AppLayout><LeadNextStepPage /></AppLayout>} />
         <Route path="/proxima-etapa" element={<AppLayout><LeadNextStepPage /></AppLayout>} />
         <Route path="/r/:token" element={<AppLayout><ReactivationLandingPage /></AppLayout>} />
         <Route
