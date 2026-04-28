@@ -2,6 +2,69 @@ import 'dotenv/config.js';
 import { google } from 'googleapis';
 import { GoogleAuth } from 'google-auth-library';
 
+const decodeBase64IfNeeded = (value) => {
+  const compact = String(value || '').trim();
+  if (!compact || compact.startsWith('{') || compact.startsWith('"') || compact.startsWith("'")) {
+    return compact;
+  }
+
+  try {
+    const decoded = Buffer.from(compact, 'base64').toString('utf8').trim();
+    return decoded.startsWith('{') ? decoded : compact;
+  } catch {
+    return compact;
+  }
+};
+
+const stripWrappingQuotes = (value) => {
+  let current = String(value || '').trim();
+  for (let index = 0; index < 2; index += 1) {
+    const first = current[0];
+    const last = current[current.length - 1];
+    if ((first === '"' && last === '"') || (first === "'" && last === "'")) {
+      current = current.slice(1, -1).trim();
+      continue;
+    }
+    break;
+  }
+  return current;
+};
+
+const parseSingleQuotedJson = (value) => {
+  const normalized = value
+    .replace(/([{,]\s*)'([^'\\]+?)'\s*:/g, '$1"$2":')
+    .replace(/:\s*'([^'\\]*(?:\\.[^'\\]*)*)'/g, (_, content) => `: "${content.replace(/"/g, '\\"')}"`);
+
+  return JSON.parse(normalized);
+};
+
+const parseGoogleCredentials = (rawValue) => {
+  const candidates = [];
+  const decoded = decodeBase64IfNeeded(rawValue);
+  candidates.push(decoded);
+  candidates.push(stripWrappingQuotes(decoded));
+
+  let lastError = null;
+  for (const candidate of [...new Set(candidates)]) {
+    if (!candidate) continue;
+    try {
+      return JSON.parse(candidate);
+    } catch (error) {
+      lastError = error;
+    }
+
+    if (candidate.trim().startsWith("{'")) {
+      try {
+        return parseSingleQuotedJson(candidate);
+      } catch (error) {
+        lastError = error;
+      }
+    }
+  }
+
+  throw lastError || new Error('Invalid Google credentials JSON');
+};
+
 class GoogleSheetsClient {
   constructor() {
     this.sheets = null;
@@ -21,7 +84,7 @@ class GoogleSheetsClient {
     }
 
     try {
-      const credentialsJson = JSON.parse(process.env.GOOGLE_SHEETS_CREDENTIALS_JSON);
+      const credentialsJson = parseGoogleCredentials(process.env.GOOGLE_SHEETS_CREDENTIALS_JSON);
       const authClient = new GoogleAuth({
         credentials: credentialsJson,
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
