@@ -22,7 +22,10 @@ router.post(
           negativado: z.boolean().nullable().optional(),
           renda: z.number().nullable().optional(),
           valor: z.number().nullable().optional(),
-          urgencia: z.string().nullable().optional()
+          urgencia: z.string().nullable().optional(),
+          tipoCredito: z.string().nullable().optional(),
+          tipoCliente: z.string().nullable().optional(),
+          employmentStatus: z.string().nullable().optional()
         })
         .partial()
         .optional()
@@ -40,7 +43,8 @@ router.post(
         hasRestriction: profile.negativado,
         income: profile.renda,
         requestedAmount: profile.valor,
-        urgency: profile.urgencia
+        urgency: profile.urgencia,
+        employmentStatus: profile.employmentStatus || profile.tipoCliente || ''
       }
     });
 

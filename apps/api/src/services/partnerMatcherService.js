@@ -8,9 +8,9 @@ export const SUPERSIM_PARTNER = {
   mode: 'tracking_link',
   status: 'active',
   destinationUrl: 'https://susim.co/XQLX5t8rSqYxaWnPd7CQaw==',
-  description: 'Opcao de emprestimo pessoal online para comparar condicoes conforme seu perfil.',
-  highlights: ['Perfil com restricao pode ser considerado', 'Fluxo online', 'Condicoes sujeitas ao parceiro'],
-  ctaText: 'Ver condicoes',
+  description: 'Opção de crédito pessoal online com análise conforme o perfil informado.',
+  highlights: ['Processo online', 'Pode ser alternativa para quem busca crédito rápido', 'Condições sujeitas à análise do parceiro'],
+  ctaText: 'Ver condições',
   eventType: 'click_partner_supersim',
   priority: 100
 };
@@ -48,7 +48,7 @@ export class PartnerMatcherService {
     const urgent = ['alta', 'urgente', 'high'].includes(normalizeText(urgency));
     const hasNoProfileData = hasRestriction == null && requestedAmount == null && !normalizeText(urgency);
     if (hasNoProfileData) return true;
-    return Boolean(hasRestriction) || urgent || (amount > 0 && amount <= 20000);
+    return Boolean(hasRestriction) || urgent || (amount > 0 && amount <= 25000);
   }
 
   static scoreLead({ income = 0, hasRestriction = false, employmentStatus = '', requestedAmount = 0 } = {}) {
@@ -91,7 +91,7 @@ export class PartnerMatcherService {
     const configured = await this.listConfiguredPartners(productType);
     const normalizedConfigured = configured.map((partner) =>
       partner.slug === 'supersim'
-        ? { ...SUPERSIM_PARTNER, ...partner, destinationUrl: partner.destinationUrl || SUPERSIM_PARTNER.destinationUrl }
+        ? { ...partner, ...SUPERSIM_PARTNER, configId: partner.configId, destinationUrl: partner.destinationUrl || SUPERSIM_PARTNER.destinationUrl }
         : partner
     );
 

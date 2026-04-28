@@ -1,144 +1,224 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
-import { ChevronRight, Clock, Filter, LayoutGrid, List, ShieldCheck, Sparkles, Star } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ArrowUpRight, CheckCircle2, Filter, RotateCcw, ShieldCheck, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import PageHero from '@/components/PageHero.jsx';
 import SeoHead from '@/components/SeoHead.jsx';
+import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
 import { portalApi } from '@/platform/services/portalApi.js';
-import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import { brandPages, homeBreadcrumb } from '@/seo/brandSeo.js';
 
-const bankAccentById = {
-  itau: '#EC7000',
-  nubank: '#8A05BE',
-  santander: '#EC0000',
-  c6: '#101010',
-  caixa: '#005CA9',
-  bb: '#F8D117',
-  inter: '#FF7A00',
-  bradesco: '#CC092F'
+const situationOptions = [
+  { value: 'unknown', label: 'Não sei informar', negativado: null },
+  { value: 'restricted', label: 'Para negativado', negativado: true },
+  { value: 'clear', label: 'Sem restrição', negativado: false }
+];
+
+const amountOptions = [
+  { value: 'unknown', label: 'Não informar', amount: null },
+  { value: 'up-to-2000', label: 'Até R$ 2.000', amount: 2000 },
+  { value: '2001-5000', label: 'R$ 2.001 a R$ 5.000', amount: 5000 },
+  { value: '5001-10000', label: 'R$ 5.001 a R$ 10.000', amount: 10000 },
+  { value: '10001-25000', label: 'R$ 10.001 a R$ 25.000', amount: 25000 },
+  { value: 'above-25000', label: 'Acima de R$ 25.000', amount: 30000 }
+];
+
+const creditTypeOptions = [
+  { value: 'any', label: 'Outros' },
+  { value: 'personal', label: 'Empréstimo pessoal' },
+  { value: 'payroll', label: 'Consignado' },
+  { value: 'vehicle-secured', label: 'Com garantia de veículo' },
+  { value: 'home-secured', label: 'Com garantia de imóvel' },
+  { value: 'fgts', label: 'FGTS' }
+];
+
+const clientTypeOptions = [
+  { value: 'unknown', label: 'Outro', employmentStatus: '' },
+  { value: 'clt', label: 'CLT / assalariado', employmentStatus: 'clt' },
+  { value: 'self-employed', label: 'Autônomo', employmentStatus: 'autonomo' },
+  { value: 'mei', label: 'MEI', employmentStatus: 'mei' },
+  { value: 'retired', label: 'Aposentado / pensionista', employmentStatus: 'aposentado' },
+  { value: 'public-servant', label: 'Servidor público', employmentStatus: 'servidor_publico' },
+  { value: 'unemployed', label: 'Desempregado', employmentStatus: 'desempregado' }
+];
+
+const fallbackPartner = {
+  id: 'supersim',
+  slug: 'supersim',
+  name: 'SuperSim',
+  type: 'affiliate_link',
+  mode: 'tracking_link',
+  status: 'active',
+  destinationUrl: 'https://susim.co/XQLX5t8rSqYxaWnPd7CQaw==',
+  description: 'Opção de crédito pessoal online com análise conforme o perfil informado.',
+  highlights: [
+    'Processo online',
+    'Pode ser alternativa para quem busca crédito rápido',
+    'Condições sujeitas à análise do parceiro'
+  ],
+  ctaText: 'Ver condições',
+  eventType: 'click_partner_supersim'
 };
 
-const resolveOfferLink = (offer = {}) => {
-  const rawLink = offer.partnerTrackingUrl || offer.redirectUrl || '';
-  if (!rawLink) return '';
-  if (rawLink.startsWith('/') || /^https?:\/\//i.test(rawLink)) return rawLink;
-  return `https://${rawLink}`;
-};
+const normalizePartner = (partner = {}) => ({
+  ...fallbackPartner,
+  ...partner,
+  id: partner.id || partner.slug || fallbackPartner.id,
+  slug: partner.slug || partner.id || fallbackPartner.slug,
+  destinationUrl: partner.destinationUrl || partner.url || fallbackPartner.destinationUrl,
+  description:
+    partner.id === 'supersim' || partner.slug === 'supersim'
+      ? fallbackPartner.description
+      : partner.description || 'Opção parceira para comparar condições de crédito antes de contratar.',
+  highlights:
+    partner.id === 'supersim' || partner.slug === 'supersim'
+      ? fallbackPartner.highlights
+      : Array.isArray(partner.highlights) && partner.highlights.length
+        ? partner.highlights
+        : ['Compare as condições', 'Confira custos e prazo', 'Sujeito à análise do parceiro'],
+  ctaText: partner.ctaText || 'Ver condições',
+  eventType: partner.eventType || `click_partner_${partner.slug || partner.id || 'partner'}`
+});
+
+const getOption = (items, value) => items.find((item) => item.value === value) || items[0];
 
 function EmprestimosPage() {
   const location = useLocation();
-  const [banksData, setBanksData] = useState([]);
-  const [loansData, setLoansData] = useState([]);
-  const [creditJourney, setCreditJourney] = useState(location.state?.creditJourney || null);
-  const [creditJourneyLoading, setCreditJourneyLoading] = useState(false);
-  const [quickModalOpen, setQuickModalOpen] = useState(false);
-  const [amount, setAmount] = useState([10000]);
-  const [type, setType] = useState('Todos');
-  const [score, setScore] = useState('Todos');
-  const [term, setTerm] = useState([24]);
-  const [sort, setSort] = useState('taxa-baixa');
-  const [viewMode, setViewMode] = useState('list');
   const quickLeadContext = location.state?.quickLeadContext || null;
+  const [filters, setFilters] = useState({
+    situation: 'unknown',
+    amount: quickLeadContext?.amount ? 'custom' : 'unknown',
+    creditType: 'personal',
+    clientType: 'unknown',
+    partner: 'all'
+  });
+  const [customAmount] = useState(quickLeadContext?.amount || null);
+  const [recommendations, setRecommendations] = useState([fallbackPartner]);
+  const [loading, setLoading] = useState(false);
+  const [clickingPartnerId, setClickingPartnerId] = useState(null);
+
+  const profile = useMemo(() => {
+    const situation = getOption(situationOptions, filters.situation);
+    const amount = filters.amount === 'custom'
+      ? Number(customAmount || 0) || null
+      : getOption(amountOptions, filters.amount).amount;
+    const clientType = getOption(clientTypeOptions, filters.clientType);
+
+    return {
+      negativado: situation.negativado,
+      renda: null,
+      valor: amount,
+      urgencia: amount && amount <= 5000 ? 'alta' : null,
+      tipoCredito: filters.creditType,
+      tipoCliente: filters.clientType,
+      employmentStatus: clientType.employmentStatus
+    };
+  }, [customAmount, filters.amount, filters.clientType, filters.creditType, filters.situation]);
 
   useEffect(() => {
-    Promise.all([portalApi.getBanks(), portalApi.getOffers({ productType: 'loan' })]).then(([banks, offers]) => {
-      setBanksData(Array.isArray(banks) ? banks : []);
-      setLoansData(Array.isArray(offers) ? offers : []);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!quickLeadContext?.amount) return;
-    setAmount([quickLeadContext.amount]);
-  }, [quickLeadContext?.amount]);
-
-  useEffect(() => {
-    const simulationId = new URLSearchParams(location.search).get('credit_simulation_id');
-    if (!simulationId || creditJourney?.simulation?.id === simulationId) return;
-
     let ignore = false;
-    setCreditJourneyLoading(true);
+    setLoading(true);
 
     portalApi
-      .getCreditSimulation(simulationId)
-      .then((result) => {
-        if (!ignore) setCreditJourney(result);
+      .matchCreditPartners(profile)
+      .then((data) => {
+        if (ignore) return;
+        const items = Array.isArray(data?.recommendations) && data.recommendations.length
+          ? data.recommendations
+          : [fallbackPartner];
+        setRecommendations(items.map(normalizePartner));
       })
       .catch(() => {
-        if (!ignore) toast.error('Não foi possível carregar sua leitura personalizada agora.');
+        if (!ignore) setRecommendations([fallbackPartner]);
       })
       .finally(() => {
-        if (!ignore) setCreditJourneyLoading(false);
+        if (!ignore) setLoading(false);
       });
 
     return () => {
       ignore = true;
     };
-  }, [creditJourney?.simulation?.id, location.search]);
+  }, [profile]);
 
-  const filteredLoans = useMemo(() => {
-    let result = loansData.filter((loan) => {
-      const matchValue = amount[0] >= loan.minValue && amount[0] <= loan.maxValue;
-      const matchType = type === 'Todos' || loan.category === type;
-      const matchScore =
-        score === 'Todos' ||
-        loan.minScore === score ||
-        (score === 'Alto' && (loan.minScore === 'Medio' || loan.minScore === 'Baixo')) ||
-        (score === 'Medio' && loan.minScore === 'Baixo');
-      const matchTerm = term[0] >= loan.minTerm && term[0] <= loan.maxTerm;
-
-      return matchValue && matchType && matchScore && matchTerm;
+  const partnerOptions = useMemo(() => {
+    const map = new Map();
+    recommendations.forEach((partner) => {
+      map.set(partner.id, partner.name);
     });
+    if (!map.has('supersim')) map.set('supersim', 'SuperSim');
+    return Array.from(map.entries()).map(([value, label]) => ({ value, label }));
+  }, [recommendations]);
 
-    if (sort === 'taxa-baixa') result = [...result].sort((a, b) => a.monthlyRate - b.monthlyRate);
-    if (sort === 'valor-maximo') result = [...result].sort((a, b) => b.maxValue - a.maxValue);
-    if (sort === 'prazo-maior') result = [...result].sort((a, b) => b.maxTerm - a.maxTerm);
+  const visiblePartners = useMemo(() => {
+    if (filters.partner === 'all') return recommendations;
+    return recommendations.filter((partner) => partner.id === filters.partner || partner.slug === filters.partner);
+  }, [filters.partner, recommendations]);
 
-    return result;
-  }, [amount, loansData, score, sort, term, type]);
+  const activeFilterLabels = useMemo(() => {
+    const labels = [
+      getOption(situationOptions, filters.situation).label,
+      filters.amount === 'custom' && customAmount
+        ? `R$ ${Number(customAmount).toLocaleString('pt-BR')}`
+        : getOption(amountOptions, filters.amount).label,
+      getOption(creditTypeOptions, filters.creditType).label,
+      getOption(clientTypeOptions, filters.clientType).label
+    ];
+    if (filters.partner !== 'all') {
+      labels.push(partnerOptions.find((item) => item.value === filters.partner)?.label || 'Parceiro');
+    }
+    return labels.filter(Boolean);
+  }, [customAmount, filters, partnerOptions]);
 
-  const bestRate = useMemo(() => {
-    if (!filteredLoans.length) return null;
-    const minRate = Math.min(...filteredLoans.map((item) => item.monthlyRate));
-    return Number.isFinite(minRate) ? minRate.toFixed(2) : null;
-  }, [filteredLoans]);
-
-  const getBadge = (loanType, rate) => {
-    if (rate < 2) return { icon: Star, text: 'Menor custo' };
-    if (loanType === 'Negativado') return { icon: ShieldCheck, text: 'Mais sensível ao momento' };
-    return { icon: Sparkles, text: 'Vale olhar com calma' };
+  const updateFilter = (key, value) => {
+    setFilters((current) => ({
+      ...current,
+      [key]: value
+    }));
   };
 
   const resetFilters = () => {
-    setAmount([10000]);
-    setType('Todos');
-    setScore('Todos');
-    setTerm([24]);
-    setSort('taxa-baixa');
+    setFilters({
+      situation: 'unknown',
+      amount: customAmount ? 'custom' : 'unknown',
+      creditType: 'personal',
+      clientType: 'unknown',
+      partner: 'all'
+    });
   };
 
-  const openInternalFlow = () => {
-    setQuickModalOpen(true);
-  };
+  const handlePartnerClick = async (partner) => {
+    if (!partner.destinationUrl) return;
 
-  const getViewToggleStyle = (mode) =>
-    viewMode === mode
-      ? {
-          backgroundColor: '#6D5EF3',
-          color: '#FFFFFF'
+    setClickingPartnerId(partner.id);
+    try {
+      await portalApi.trackIntegration({
+        sourcePage: '/emprestimos',
+        productContext: partner.eventType || `click_partner_${partner.id}`,
+        simulationId: null
+      });
+
+      const redirect = await partnerRedirectService.create({
+        partnerId: partner.id,
+        destinationUrl: partner.destinationUrl,
+        sourcePage: '/emprestimos',
+        productType: 'loan',
+        metadata: {
+          eventType: partner.eventType || `click_partner_${partner.id}`,
+          filters: profile
         }
-      : {
-          backgroundColor: 'transparent',
-          color: '#64748B'
-        };
+      });
+
+      window.location.href = redirect?.resolvedUrl || partner.destinationUrl;
+    } catch {
+      toast.error('Não foi possível registrar o clique agora, mas você ainda pode seguir.');
+      window.location.href = partner.destinationUrl;
+    }
+  };
 
   return (
     <>
@@ -149,448 +229,203 @@ function EmprestimosPage() {
         breadcrumbs={[homeBreadcrumb, { name: 'Empréstimos', path: brandPages.emprestimos.path }]}
       />
 
-      <QuickCreditFlowModal
-        isOpen={quickModalOpen}
-        onClose={() => setQuickModalOpen(false)}
-        sourcePage="/emprestimos"
-        originLabel="emprestimos"
-      />
-
       <PageHero
         className="loans-page-hero"
         breadcrumbs={[homeBreadcrumb, { name: 'Empréstimos', path: brandPages.emprestimos.path }]}
-        eyebrow="Empréstimos"
-        title="Veja opções de empréstimo com mais clareza antes de decidir."
-        subtitle="Compare valor, prazo e custo para entender por onde vale a pena começar."
+        eyebrow="Comparador de crédito"
+        title="Compare opções de empréstimo para o seu perfil"
+        subtitle="Filtre por valor, perfil e tipo de crédito para encontrar opções que podem fazer sentido antes de contratar."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
-          <a href="#resultados-emprestimos">
-            <Button size="lg" variant="outline" className="hero-secondary-btn">Ver comparação</Button>
+          <a href="#comparador-emprestimos">
+            <Button size="lg">
+              Comparar opções
+              <SlidersHorizontal className="h-4 w-4" />
+            </Button>
+          </a>
+          <a href="#opcoes-emprestimos">
+            <Button size="lg" variant="outline" className="hero-secondary-btn">Ver parceiros</Button>
           </a>
         </div>
       </PageHero>
 
-      {quickLeadContext ? (
-        <section className="border-b border-border bg-white py-6">
-          <div className="page-shell">
-            <div className="rounded-[20px] border border-primary/15 bg-primary/[0.04] px-5 py-4 shadow-[0_8px_18px_rgba(91,108,255,0.04)]">
-              <p className="text-sm font-semibold text-foreground">
-                {quickLeadContext.fullName ? `${quickLeadContext.fullName}, estas opções` : 'Estas opções'} podem ser um bom ponto de partida para você.
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Primeiro compare com calma. Depois decida se vale seguir.
+      <section className="border-b border-border bg-white py-5">
+        <div className="page-shell">
+          <div className="flex flex-col gap-3 rounded-[18px] border border-slate-200 bg-slate-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex gap-3">
+              <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+              <p className="text-sm leading-6 text-slate-700">
+                A Cote Juros não é instituição financeira, não concede crédito diretamente e não garante aprovação. As condições são definidas pelos parceiros.
               </p>
             </div>
-          </div>
-        </section>
-      ) : null}
-
-      <section className="loans-summary-section border-b border-border bg-background-secondary py-10">
-        <div className="loans-summary-grid page-shell grid gap-4 md:grid-cols-4">
-          <div className="interactive-card px-5 py-5">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Valor escolhido</p>
-            <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">R$ {amount[0].toLocaleString('pt-BR')}</p>
-          </div>
-          <div className="interactive-card px-5 py-5">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Prazo escolhido</p>
-            <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">{term[0]} meses</p>
-          </div>
-          <div className="interactive-card px-5 py-5">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Menor custo no momento</p>
-            <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-primary">{bestRate ? `${bestRate}% a.m.` : '--'}</p>
-          </div>
-          <div className="interactive-card px-5 py-5">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">Opções visíveis</p>
-            <p className="mt-2 text-xl font-medium tracking-[-0.03em] text-foreground">{filteredLoans.length}</p>
           </div>
         </div>
       </section>
 
-      <div className="loans-results-shell page-shell py-14" id="resultados-emprestimos">
-        {creditJourneyLoading ? (
-          <div className="mb-10 rounded-[22px] border border-border bg-white px-8 py-10 shadow-[var(--shadow-sm)]">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">Leitura personalizada</p>
-            <h2 className="mt-3 text-2xl font-medium tracking-[-0.02em] text-[#191F28]">Carregando o seu cenário...</h2>
-          </div>
-        ) : null}
-
-        {creditJourney?.offers?.length ? (
-          <section className="mb-12 rounded-[28px] border border-primary/15 bg-white p-8 shadow-[var(--shadow-md)] sm:p-10">
-            <div className="flex flex-col gap-4 border-b border-border pb-7 md:flex-row md:items-end md:justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Com base no seu momento...</p>
-                <h2 className="mt-2 text-3xl font-medium tracking-[-0.028em] text-[#191F28]">Caminhos que merecem sua atenção agora</h2>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-                  Aqui você compara valor, prazo e custo com mais clareza antes de decidir o próximo passo.
-                </p>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-[16px] border border-border bg-background-secondary px-4 py-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor pedido</p>
-                  <p className="mt-1 text-sm font-semibold text-foreground">
-                    {creditJourney.simulation?.requestedAmount ? `R$ ${Number(creditJourney.simulation.requestedAmount).toLocaleString('pt-BR')}` : '--'}
-                  </p>
-                </div>
-                <div className="rounded-[16px] border border-border bg-background-secondary px-4 py-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Parcelas previstas</p>
-                  <p className="mt-1 text-sm font-semibold text-foreground">{creditJourney.simulation?.installments || '--'}x</p>
-                </div>
-                <div className="rounded-[16px] border border-border bg-background-secondary px-4 py-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Caminhos</p>
-                  <p className="mt-1 text-sm font-semibold text-foreground">{creditJourney.offers.length}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-7 rounded-[20px] border border-slate-200 bg-slate-50 p-5">
-              <p className="text-sm font-semibold text-slate-900">A decisão começa aqui dentro.</p>
-              <p className="mt-2 text-sm text-slate-600">
-                Use esta área para entender melhor o cenário antes de avançar no seu ritmo.
-              </p>
-            </div>
-
-            <div className="mt-9 grid gap-6 md:grid-cols-2">
-              {creditJourney.offers.map((offer, index) => (
-                <Card key={offer.id} className="surface-card h-full border-border bg-white">
-                  <CardContent className="flex h-full flex-col gap-6 p-8">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                          {offer.provider === 'catalog_fallback' ? 'Comparação' : 'Opção'}
-                        </p>
-                        <p className="mt-2 text-lg font-semibold text-foreground">{offer.bankName}</p>
-                        <p className="text-sm text-muted-foreground">{offer.productName}</p>
-                      </div>
-                      <Badge
-                        variant={index === 0 ? 'default' : 'outline'}
-                        className={index === 0 ? 'border-0' : 'border-primary/25 bg-primary/10 text-primary'}
-                      >
-                        {offer.matchLabel}
-                      </Badge>
+      <section className="bg-background-secondary py-12" id="comparador-emprestimos">
+        <div className="page-shell">
+          <div className="grid gap-8 lg:grid-cols-[340px_1fr]">
+            <aside className="lg:sticky lg:top-24 lg:h-fit">
+              <Card className="border-border bg-white shadow-[var(--shadow-sm)]">
+                <CardContent className="space-y-6 p-7">
+                  <div className="flex items-center justify-between border-b border-border pb-4">
+                    <div className="flex items-center gap-2">
+                      <Filter className="h-4 w-4 text-primary" />
+                      <h2 className="text-lg font-medium text-foreground">Filtros</h2>
                     </div>
-
-                    <div className="grid gap-5 sm:grid-cols-2">
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Taxa mensal</p>
-                        <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-primary">
-                          {offer.monthlyRate != null ? `${offer.monthlyRate}%` : '--'}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Custo total</p>
-                        <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-foreground">
-                          {offer.cet != null ? `${offer.cet}%` : '--'}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="rounded-[16px] border border-border bg-background-secondary p-4">
-                      <div className="grid gap-4 sm:grid-cols-3">
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor possível</p>
-                          <p className="mt-1 text-sm font-semibold text-foreground">
-                            {offer.approvedAmount != null ? `R$ ${offer.approvedAmount.toLocaleString('pt-BR')}` : '--'}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Parcela</p>
-                          <p className="mt-1 text-sm font-semibold text-foreground">
-                            {offer.installmentAmount != null ? `R$ ${offer.installmentAmount.toLocaleString('pt-BR')}` : '--'}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Prazo</p>
-                          <p className="mt-1 text-sm font-semibold text-foreground">{offer.termMonths ? `${offer.termMonths} meses` : '--'}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <Button className="mt-auto w-full" onClick={openInternalFlow}>
-                      Quero entender melhor
-                      <ChevronRight className="h-4 w-4" />
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
-        ) : null}
-
-        <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
-          <aside className="loans-filter-sidebar lg:sticky lg:top-24 lg:h-fit">
-            <Card className="loans-filter-card border-border bg-white shadow-[var(--shadow-sm)]">
-              <CardContent className="space-y-8 p-8">
-                <div className="flex items-center justify-between border-b border-border pb-4">
-                  <div className="flex items-center gap-2">
-                    <Filter className="h-4 w-4 text-primary" />
-                    <h3 className="text-lg">Refine sua busca</h3>
+                    <button type="button" onClick={resetFilters} className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary-hover">
+                      <RotateCcw className="h-3.5 w-3.5" />
+                      Limpar
+                    </button>
                   </div>
-                  <button type="button" onClick={resetFilters} className="text-sm font-medium text-primary hover:text-primary-hover">
-                    Limpar
-                  </button>
-                </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-end justify-between">
+                  <div className="space-y-3">
+                    <Label>Situação</Label>
+                    <Select value={filters.situation} onValueChange={(value) => updateFilter('situation', value)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {situationOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-3">
                     <Label>Valor desejado</Label>
-                    <span className="text-sm font-semibold text-foreground">R$ {amount[0].toLocaleString('pt-BR')}</span>
+                    <Select value={filters.amount} onValueChange={(value) => updateFilter('amount', value)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {customAmount ? (
+                          <SelectItem value="custom">R$ {Number(customAmount).toLocaleString('pt-BR')}</SelectItem>
+                        ) : null}
+                        {amountOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <Slider value={amount} onValueChange={setAmount} max={500000} min={1000} step={1000} />
-                </div>
 
-                <div className="space-y-3">
-                  <Label>Tipo de empréstimo</Label>
-                  <Select value={type} onValueChange={setType}>
-                    <SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Todos">Todos os tipos</SelectItem>
-                      <SelectItem value="Pessoal">Pessoal</SelectItem>
-                      <SelectItem value="Consignado">Consignado</SelectItem>
-                      <SelectItem value="Garantia">Com garantia</SelectItem>
-                      <SelectItem value="Negativado">Para negativado</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-end justify-between">
-                    <Label>Prazo</Label>
-                    <span className="text-sm font-semibold text-foreground">{term[0]} meses</span>
+                  <div className="space-y-3">
+                    <Label>Tipo de crédito</Label>
+                    <Select value={filters.creditType} onValueChange={(value) => updateFilter('creditType', value)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {creditTypeOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <Slider value={term} onValueChange={setTerm} max={84} min={6} step={1} />
+
+                  <div className="space-y-3">
+                    <Label>Tipo de cliente</Label>
+                    <Select value={filters.clientType} onValueChange={(value) => updateFilter('clientType', value)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {clientTypeOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label>Parceiro</Label>
+                    <Select value={filters.partner} onValueChange={(value) => updateFilter('partner', value)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Todos ativos</SelectItem>
+                        {partnerOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardContent>
+              </Card>
+            </aside>
+
+            <div id="opcoes-emprestimos" className="space-y-7">
+              <div className="rounded-[24px] border border-border bg-white p-6 shadow-[var(--shadow-sm)]">
+                <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Com base no seu perfil</p>
+                    <h2 className="mt-2 text-2xl font-medium tracking-[-0.025em] text-[#191F28]">Opções que podem fazer sentido</h2>
+                    <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
+                      Revise os filtros, compare as condições no parceiro e avance somente se fizer sentido para o seu momento.
+                    </p>
+                  </div>
+                  <div className="rounded-[16px] border border-slate-200 bg-slate-50 px-4 py-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Parceiros exibidos</p>
+                    <p className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-slate-950">{visiblePartners.length}</p>
+                  </div>
                 </div>
 
-                <div className="space-y-3">
-                  <Label>Como está seu histórico financeiro?</Label>
-                  <RadioGroup value={score} onValueChange={setScore} className="space-y-3">
-                    {['Todos', 'Alto', 'Medio', 'Baixo'].map((item) => (
-                      <label key={item} className="flex items-center gap-3 rounded-[12px] border border-border px-4 py-3 hover:bg-background-secondary">
-                        <RadioGroupItem value={item} />
-                        <span className="text-sm text-foreground">
-                          {item === 'Todos' ? 'Não sei' : item === 'Medio' ? 'Médio' : item}
-                        </span>
-                      </label>
-                    ))}
-                  </RadioGroup>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {activeFilterLabels.map((label) => (
+                    <Badge key={label} variant="outline" className="border-primary/20 bg-primary/5 text-primary">{label}</Badge>
+                  ))}
                 </div>
-              </CardContent>
-            </Card>
-          </aside>
-
-          <section>
-            <div className="loans-results-toolbar mb-7 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <p className="text-sm text-muted-foreground">{filteredLoans.length} opções organizadas para facilitar sua decisão.</p>
-              <div className="loans-results-controls flex flex-wrap items-center gap-3">
-                <div className="catalog-view-toggle" role="tablist" aria-label="Modo de visualização dos empréstimos">
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    className={`catalog-view-toggle-option ${viewMode === 'grid' ? 'is-active' : ''}`}
-                    onClick={() => setViewMode('grid')}
-                    style={getViewToggleStyle('grid')}
-                  >
-                    <LayoutGrid className="h-3.5 w-3.5" />
-                    Em cards
-                  </Button>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    className={`catalog-view-toggle-option ${viewMode === 'list' ? 'is-active' : ''}`}
-                    onClick={() => setViewMode('list')}
-                    style={getViewToggleStyle('list')}
-                  >
-                    <List className="h-3.5 w-3.5" />
-                    Em lista
-                  </Button>
-                </div>
-                <Label className="whitespace-nowrap">Ordenar</Label>
-                <Select value={sort} onValueChange={setSort}>
-                  <SelectTrigger className="loans-sort-trigger w-[220px]"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="taxa-baixa">Menor taxa</SelectItem>
-                    <SelectItem value="valor-maximo">Maior valor</SelectItem>
-                    <SelectItem value="prazo-maior">Maior prazo</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Button variant="outline" onClick={openInternalFlow}>Refazer busca rápida</Button>
               </div>
-            </div>
 
-            {viewMode === 'grid' ? (
-              <div className="grid gap-6 md:grid-cols-2">
-                {filteredLoans.map((loan) => {
-                  const bank = banksData.find((item) => item.id === loan.bankId);
-                  const badge = getBadge(loan.category, loan.monthlyRate);
-                  const BadgeIcon = badge.icon;
-                  const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#5B6CFF';
-                  const offerLink = resolveOfferLink(loan);
+              {loading ? (
+                <div className="rounded-[22px] border border-border bg-white px-6 py-12 text-center shadow-[var(--shadow-sm)]">
+                  <Sparkles className="mx-auto h-6 w-6 text-primary" />
+                  <p className="mt-3 text-sm font-medium text-foreground">Atualizando recomendações...</p>
+                </div>
+              ) : null}
 
-                  return (
-                    <Card key={loan.id} className="catalog-grid-card surface-card h-full border-border bg-white">
-                      <CardContent className="catalog-grid-card__content flex h-full flex-col gap-6 p-8">
-                        <div className="catalog-grid-card__header flex items-start justify-between gap-4">
-                          <div className="space-y-2">
-                            <div
-                              className="flex h-11 w-11 items-center justify-center rounded-xl border text-sm font-semibold"
-                              style={{ borderColor: `${bankAccent}40`, backgroundColor: `${bankAccent}1A`, color: bankAccent }}
-                            >
-                              {bank?.name?.charAt(0) || 'B'}
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-foreground">{bank?.name || loan.bankName}</p>
-                              <p className="text-sm text-muted-foreground">{loan.category}</p>
-                            </div>
+              {!loading && visiblePartners.length ? (
+                <div className="grid gap-5 xl:grid-cols-2">
+                  {visiblePartners.map((partner, index) => (
+                    <Card key={partner.id} className="surface-card h-full border-border bg-white">
+                      <CardContent className="flex h-full flex-col gap-6 p-7">
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Parceiro</p>
+                            <h3 className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-foreground">{partner.name}</h3>
                           </div>
-                          <Badge variant="outline" className="gap-1 border-primary/25 bg-primary/10 text-primary">
-                            <BadgeIcon className="h-3 w-3" />
-                            {badge.text}
+                          <Badge className={index === 0 ? 'border-0' : 'border-primary/25 bg-primary/10 text-primary'} variant={index === 0 ? 'default' : 'outline'}>
+                            {index === 0 ? 'Opção padrão' : 'Ativo'}
                           </Badge>
                         </div>
 
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Taxa mensal</p>
-                          <p className="mt-2 text-4xl font-medium tracking-[-0.05em] text-primary">{loan.monthlyRate}%</p>
+                        <p className="text-sm leading-7 text-muted-foreground">{partner.description}</p>
+
+                        <div className="grid gap-3">
+                          {partner.highlights.map((highlight) => (
+                            <div key={highlight} className="flex items-start gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-4 py-3">
+                              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                              <span className="text-sm leading-6 text-slate-700">{highlight}</span>
+                            </div>
+                          ))}
                         </div>
 
-                        <div className="rounded-[14px] border border-border bg-background-secondary p-4">
-                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Resumo rápido</p>
-                          <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                            {loan.monthlyRate < 2
-                              ? 'Uma das melhores condições dentro do cenário que você escolheu.'
-                              : 'Boa escolha para comparar custo, prazo e parcela com mais calma.'}
-                          </p>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4 border-t border-border pt-4">
-                          <div>
-                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor máximo</p>
-                            <p className="mt-2 text-sm font-medium text-foreground">R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
-                          </div>
-                          <div>
-                            <p className="flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                              <Clock className="h-3 w-3" />
-                              Prazo
-                            </p>
-                            <p className="mt-2 text-sm font-medium text-foreground">{loan.maxTerm} meses</p>
-                          </div>
-                        </div>
-
-                        {offerLink ? (
-                          <Button asChild className="catalog-card-cta mt-auto w-full">
-                            <a href={offerLink} target="_blank" rel="noreferrer sponsored">
-                              Ver oferta
-                              <ChevronRight className="h-4 w-4" />
-                            </a>
-                          </Button>
-                        ) : (
-                          <Button className="catalog-card-cta mt-auto w-full" onClick={openInternalFlow}>
-                            Ver oferta
-                            <ChevronRight className="h-4 w-4" />
-                          </Button>
-                        )}
+                        <Button
+                          className="mt-auto w-full"
+                          onClick={() => handlePartnerClick(partner)}
+                          disabled={clickingPartnerId === partner.id}
+                        >
+                          {clickingPartnerId === partner.id ? 'Abrindo...' : partner.ctaText}
+                          <ArrowUpRight className="h-4 w-4" />
+                        </Button>
                       </CardContent>
                     </Card>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {filteredLoans.map((loan) => {
-                  const bank = banksData.find((item) => item.id === loan.bankId);
-                  const badge = getBadge(loan.category, loan.monthlyRate);
-                  const BadgeIcon = badge.icon;
-                  const bankAccent = bank?.color || bankAccentById[loan.bankId] || '#5B6CFF';
-                  const offerLink = resolveOfferLink(loan);
-
-                  return (
-                    <Card key={loan.id} className="catalog-list-card border-border bg-white shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
-                      <CardContent className="catalog-list-card__content p-7">
-                        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.5fr)_180px_220px]">
-                          <div className="catalog-list-card__main flex items-start gap-4">
-                            <div
-                              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-sm font-semibold"
-                              style={{ borderColor: `${bankAccent}40`, backgroundColor: `${bankAccent}1A`, color: bankAccent }}
-                            >
-                              {bank?.name?.charAt(0) || 'B'}
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-foreground">{bank?.name || loan.bankName}</p>
-                              <p className="text-sm text-muted-foreground">{loan.category}</p>
-                              <Badge variant="outline" className="mt-2 gap-1 border-primary/25 bg-primary/10 text-primary">
-                                <BadgeIcon className="h-3 w-3" />
-                                {badge.text}
-                              </Badge>
-                            </div>
-                          </div>
-
-                          <div className="catalog-list-card__stat">
-                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Taxa mensal</p>
-                            <p className="mt-1 text-2xl font-medium tracking-[-0.04em] text-primary">{loan.monthlyRate}%</p>
-                          </div>
-
-                          <div className="catalog-list-card__actions loans-list-side flex flex-col gap-4">
-                            <div className="catalog-list-card__meta loans-list-side__meta grid gap-3">
-                              <div>
-                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Valor máximo</p>
-                                <p className="mt-1 text-sm font-medium text-foreground">R$ {(loan.maxValue / 1000).toFixed(0)}k</p>
-                              </div>
-                              <div>
-                                <p className="flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                                  <Clock className="h-3 w-3" />
-                                  Prazo
-                                </p>
-                                <p className="mt-1 text-sm font-medium text-foreground">{loan.maxTerm} meses</p>
-                              </div>
-                            </div>
-
-                            {offerLink ? (
-                              <Button asChild className="catalog-card-cta w-full">
-                                <a href={offerLink} target="_blank" rel="noreferrer sponsored">
-                                  Ver oferta
-                                  <ChevronRight className="h-4 w-4" />
-                                </a>
-                              </Button>
-                            ) : (
-                              <Button className="catalog-card-cta w-full" onClick={openInternalFlow}>
-                                Ver oferta
-                                <ChevronRight className="h-4 w-4" />
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            )}
-
-            {filteredLoans.length === 0 ? (
-              <div className="rounded-[18px] border border-dashed border-border bg-background-secondary px-6 py-16 text-center">
-                <h3 className="text-2xl">Nenhuma opção encontrada.</h3>
-                <p className="mt-3 text-muted-foreground">Ajuste valor, prazo ou histórico financeiro para ampliar a comparação.</p>
-                <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                  <Button variant="outline" onClick={resetFilters}>Limpar filtros</Button>
-                  <Button onClick={openInternalFlow}>Refazer busca rápida</Button>
+                  ))}
                 </div>
-              </div>
-            ) : null}
-          </section>
-        </div>
-      </div>
+              ) : null}
 
-      <section className="border-t border-border bg-background-secondary py-[4.5rem]">
-        <div className="page-shell">
-          <div className="mx-auto max-w-4xl rounded-[24px] border border-primary/20 bg-white px-8 py-11 text-center shadow-[var(--shadow-sm)]">
-            <h2 className="mb-3">Quer recomeçar com mais clareza?</h2>
-            <p className="mx-auto mb-7 max-w-2xl text-muted-foreground">
-              Recomece com alguns dados básicos e veja caminhos que podem combinar melhor com o seu momento.
-            </p>
-            <Button size="lg" onClick={openInternalFlow}>Ver minhas opções agora</Button>
+              {!loading && !visiblePartners.length ? (
+                <div className="rounded-[22px] border border-dashed border-border bg-white px-6 py-14 text-center">
+                  <h3 className="text-2xl font-medium tracking-[-0.025em] text-foreground">Nenhuma opção encontrada.</h3>
+                  <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-muted-foreground">
+                    Ajuste os filtros ou limpe a seleção de parceiro para ampliar a comparação.
+                  </p>
+                  <Button className="mt-6" variant="outline" onClick={resetFilters}>Limpar filtros</Button>
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
       </section>
@@ -599,4 +434,3 @@ function EmprestimosPage() {
 }
 
 export default EmprestimosPage;
-

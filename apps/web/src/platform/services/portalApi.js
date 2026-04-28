@@ -686,7 +686,10 @@ export const portalApi = {
         negativado: profile.negativado ?? null,
         renda: profile.renda ?? null,
         valor: profile.valor ?? null,
-        urgencia: profile.urgencia ?? null
+        urgencia: profile.urgencia ?? null,
+        tipoCredito: profile.tipoCredito ?? null,
+        tipoCliente: profile.tipoCliente ?? null,
+        employmentStatus: profile.employmentStatus ?? null
       },
       recommendations: [{
         id: 'supersim',
@@ -696,9 +699,9 @@ export const portalApi = {
         mode: 'tracking_link',
         status: 'active',
         destinationUrl: 'https://susim.co/XQLX5t8rSqYxaWnPd7CQaw==',
-        description: 'Opcao de emprestimo pessoal online para comparar condicoes conforme seu perfil.',
-        highlights: ['Perfil com restricao pode ser considerado', 'Fluxo online', 'Condicoes sujeitas ao parceiro'],
-        ctaText: 'Ver condicoes',
+        description: 'Opção de crédito pessoal online com análise conforme o perfil informado.',
+        highlights: ['Processo online', 'Pode ser alternativa para quem busca crédito rápido', 'Condições sujeitas à análise do parceiro'],
+        ctaText: 'Ver condições',
         eventType: 'click_partner_supersim'
       }]
     };
