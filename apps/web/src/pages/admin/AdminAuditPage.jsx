@@ -22,6 +22,11 @@ const commonResources = [
   'admin_session',
   'admin_user',
   'lead',
+  'site_setting',
+  'navigation_item',
+  'legal_disclaimer',
+  'seo_meta',
+  'partner',
   'dashboard',
   'audit'
 ];

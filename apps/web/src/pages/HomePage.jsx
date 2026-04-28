@@ -33,9 +33,14 @@ import {
 } from '@/lib/quickCreditSubmission.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { brandPages, createOrganizationSchema, createWebSiteSchema } from '@/seo/brandSeo.js';
+import { useSiteDisclaimers, disclaimerText } from '@/hooks/useSiteDisclaimers.js';
+import { usePageContent } from '@/hooks/useSiteSettings.js';
 
 const CONSENT_TEXT =
   'Autorizo a Cote Juros a usar meus dados para montar meu perfil e contato sobre opções de crédito. Sei que a Cote Juros não é banco, não garante aprovação e não cobra valor antecipado.';
+
+const NOT_BANK_TEXT =
+  'As opÃ§Ãµes variam conforme perfil e disponibilidade dos parceiros. A Cote Juros nÃ£o Ã© banco, nÃ£o garante aprovaÃ§Ã£o e nÃ£o cobra valor antecipado.';
 
 const profileSteps = [
   {
@@ -239,6 +244,116 @@ const faqItems = [
   }
 ];
 
+const homeIconMap = {
+  book: BookOpen,
+  briefcase: BriefcaseBusiness,
+  building: Building2,
+  card: CreditCard,
+  creditCard: CreditCard,
+  gauge: Gauge,
+  handCoins: HandCoins,
+  landmark: Landmark,
+  layers: Layers3,
+  mail: Mail,
+  piggyBank: PiggyBank,
+  search: Search,
+  shield: ShieldCheck,
+  user: UserRound,
+  wallet: WalletCards,
+  newspaper: Newspaper
+};
+
+const resolveHomeIcon = (icon, fallback = Landmark) => {
+  if (typeof icon === 'function') return icon;
+  return homeIconMap[String(icon || '').trim()] || fallback;
+};
+
+const DEFAULT_HOME_CONTENT = {
+  hero: {
+    eyebrow: 'Comparador de credito',
+    title: 'Veja caminhos de credito para o seu perfil',
+    subtitle: 'Responda um quiz rapido, registre seu consentimento e compare opcoes com base no seu perfil. Sem cobranca antecipada e sem promessa de aprovacao.',
+    bullets: ['Nao somos banco', 'Sem cobranca antecipada', 'Sem promessa falsa'],
+    primaryCta: { label: 'Ver minhas opcoes', trackingLabel: 'Ver minhas opcoes hero' },
+    secondaryCta: { label: 'Entender como funciona', href: '#como-funciona' }
+  },
+  categories: categoryCards,
+  howItWorks: {
+    eyebrow: 'Como funciona',
+    title: 'Um perfil inicial que vira comparacao, nao so formulario.',
+    subtitle: 'O quiz coleta o essencial, registra consentimento e organiza uma leitura para voce entender caminhos possiveis antes de avancar. Sem cobranca antecipada e sem promessa de aprovacao.',
+    steps: [
+      { title: 'Perfil', text: 'Valor, renda, restricao, ocupacao e objetivo entram primeiro.', icon: 'user' },
+      { title: 'Contato', text: 'Nome, WhatsApp e e-mail ajudam a seguir sem repetir dados.', icon: 'mail' },
+      { title: 'Consentimento', text: 'Voce autoriza o uso dos dados e entende os limites da analise.', icon: 'shield' }
+    ],
+    panelTitle: 'Analise inicial',
+    panelMeta: '3 etapas',
+    flow: ['Perfil', 'Criterios', 'Caminhos'],
+    scoreTitle: 'Leitura organizada',
+    scoreText: 'O resultado depende de perfil, analise e disponibilidade.',
+    metrics: [
+      { label: 'Reaproveitamento', value: 'Dados do quiz' },
+      { label: 'Seguranca', value: 'Sem taxa antecipada' }
+    ]
+  },
+  reasons: {
+    eyebrow: 'Por que comparar na Cote Juros',
+    title: 'Um hub para decidir com mais contexto',
+    subtitle: 'Comparar nao e so clicar em uma oferta. E entender perfil, custo, objetivo e proximo passo.',
+    items: comparisonReasons
+  },
+  difference: {
+    eyebrow: 'Por que isso e diferente',
+    title: 'Menos promessa. Mais clareza para decidir.',
+    subtitle: 'A Cote Juros nao tenta parecer banco nem vender aprovacao garantida. A experiencia comeca por uma leitura simples do seu perfil e so avanca quando ha consentimento claro.',
+    items: [
+      { title: 'Voce nao preenche tudo de novo', text: 'Os dados do quiz sao reaproveitados na proxima etapa.' },
+      { title: 'A analise comeca pelo seu perfil', text: 'Valor, renda e objetivo vem antes de qualquer oferta.' },
+      { title: 'Sem cobranca antecipada', text: 'Voce nao paga taxa para tentar liberar credito.' },
+      { title: 'Voce decide com calma', text: 'A leitura inicial nao obriga contratacao.' }
+    ]
+  },
+  featured: {
+    eyebrow: 'Produtos e caminhos em destaque',
+    title: 'O proximo passo depende do seu perfil',
+    subtitle: 'As opcoes abaixo sao caminhos possiveis de comparacao. Nenhuma delas representa aprovacao garantida.',
+    items: featuredProducts,
+    linkLabel: 'Comparar caminho'
+  },
+  midCta: {
+    eyebrow: 'Comece pelo quiz',
+    title: 'Use o quiz como porta de entrada do comparador.',
+    subtitle: 'Voce informa o basico uma vez e continua apenas se fizer sentido.',
+    cta: { label: 'Ver minhas opcoes', trackingLabel: 'Ver minhas opcoes intermediario' }
+  },
+  editorial: {
+    eyebrow: 'Nossos guias recomendam',
+    title: 'Conteudo para comparar antes de contratar',
+    subtitle: 'Guias diretos para entender custo, parcela e sinais de alerta.',
+    items: editorialRecommendations,
+    linkLabel: 'Ler guia'
+  },
+  suggested: {
+    eyebrow: 'Conteudos sugeridos',
+    title: 'Continue explorando o hub Cote Juros',
+    subtitle: 'Artigos e ferramentas para apoiar sua decisao sem inventar taxa ou promessa.',
+    items: suggestedContents,
+    linkLabel: 'Ver conteudo'
+  },
+  faq: {
+    eyebrow: 'Perguntas frequentes',
+    title: 'Duvidas comuns antes de seguir',
+    subtitle: 'Respostas diretas para manter a comparacao transparente.',
+    items: faqItems
+  },
+  finalCta: {
+    title: 'Comece por uma comparacao simples',
+    subtitle: 'Informe seu perfil, registre o consentimento e siga apenas se fizer sentido para voce.',
+    cta: { label: 'Ver minhas opcoes', trackingLabel: 'Ver minhas opcoes final' }
+  }
+};
+
 function isValidEmail(email = '') {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim());
 }
@@ -248,7 +363,7 @@ function getStepValueLabel(step, value) {
   return step.options?.find((option) => option.value === value)?.label || '';
 }
 
-function normalizeLeadData(profile, contact, consentAcceptedAt) {
+function normalizeLeadData(profile, contact, consentAcceptedAt, consentText = CONSENT_TEXT) {
   return {
     amount: parseCurrencyValue(profile.amount),
     income: parseCurrencyValue(profile.income),
@@ -259,7 +374,7 @@ function normalizeLeadData(profile, contact, consentAcceptedAt) {
     phone: contact.phone.replace(/\D/g, ''),
     email: contact.email.trim(),
     consentAccepted: true,
-    consentText: CONSENT_TEXT,
+    consentText,
     consentAcceptedAt
   };
 }
@@ -312,6 +427,12 @@ function buildResults(profile) {
 
 function HomeQuiz({ onFallback }) {
   const navigate = useNavigate();
+  const homeDisclaimers = useSiteDisclaimers('home', [
+    { key: 'lgpd_consent', content: CONSENT_TEXT },
+    { key: 'not_bank', content: NOT_BANK_TEXT }
+  ]);
+  const consentText = disclaimerText(homeDisclaimers, 'lgpd_consent', CONSENT_TEXT);
+  const notBankText = disclaimerText(homeDisclaimers, 'not_bank', NOT_BANK_TEXT);
   const [stage, setStage] = useState('profile');
   const [profileIndex, setProfileIndex] = useState(0);
   const [profile, setProfile] = useState({
@@ -346,7 +467,7 @@ function HomeQuiz({ onFallback }) {
     return () => window.clearTimeout(timeoutId);
   }, [stage]);
 
-  const currentLeadData = () => normalizeLeadData(profile, contact, consentAcceptedAt || new Date().toISOString());
+  const currentLeadData = () => normalizeLeadData(profile, contact, consentAcceptedAt || new Date().toISOString(), consentText);
 
   const updateProfileValue = (value) => {
     setProfile((current) => ({ ...current, [step.id]: value }));
@@ -534,7 +655,7 @@ function HomeQuiz({ onFallback }) {
               checked={consentAccepted}
               onChange={(event) => setConsentAccepted(event.target.checked)}
             />
-            <span>{CONSENT_TEXT}</span>
+            <span>{consentText}</span>
           </label>
 
           <div className="cj-quiz-footer">
@@ -577,10 +698,7 @@ function HomeQuiz({ onFallback }) {
             ))}
           </div>
 
-          <p className="cj-quiz-disclaimer">
-            As opções variam conforme perfil e disponibilidade dos parceiros. A Cote Juros não é banco, não
-            garante aprovação e não cobra valor antecipado.
-          </p>
+          <p className="cj-quiz-disclaimer">{notBankText}</p>
 
           <div className="cj-quiz-footer">
             <button type="button" className="cj-back" onClick={goBack}>
@@ -600,6 +718,8 @@ function HomeQuiz({ onFallback }) {
 
 function HomePage() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const content = usePageContent('home', DEFAULT_HOME_CONTENT);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalLeadData, setModalLeadData] = useState(null);
 
@@ -675,15 +795,12 @@ function HomePage() {
         <section id="home-hero" className="cj-hero">
           <div className="cj-wrap cj-hero-grid">
             <div>
-              <span className="cj-eyebrow">Comparador de crédito</span>
-              <h1>Veja caminhos de crédito para o seu perfil</h1>
-              <p>
-                Responda um quiz rápido, registre seu consentimento e compare opções com base no seu perfil. Sem cobrança
-                antecipada e sem promessa de aprovação.
-              </p>
+              <span className="cj-eyebrow">{content.hero.eyebrow}</span>
+              <h1>{content.hero.title}</h1>
+              <p>{content.hero.subtitle}</p>
 
-              <div className="cj-bullets" aria-label="Pontos de transparência">
-                {['Não somos banco', 'Sem cobrança antecipada', 'Sem promessa falsa'].map((item) => (
+              <div className="cj-bullets" aria-label="Pontos de transparencia">
+                {(content.hero.bullets || []).map((item) => (
                   <span key={item} className="cj-pill">
                     <CheckCircle2 className="h-4 w-4" />
                     {item}
@@ -692,16 +809,15 @@ function HomePage() {
               </div>
 
               <div className="cj-actions">
-                <button type="button" className="cj-btn cj-btn-primary" onClick={() => openGenericResults('Ver minhas opcoes hero')}>
-                  Ver minhas opções
+                <button type="button" className="cj-btn cj-btn-primary" onClick={() => openGenericResults(content.hero.primaryCta?.trackingLabel || content.hero.primaryCta?.label)}>
+                  {content.hero.primaryCta?.label}
                   <ArrowRight className="h-4 w-4" />
                 </button>
-                <a className="cj-btn cj-btn-secondary" href="#como-funciona">
-                  Entender como funciona
+                <a className="cj-btn cj-btn-secondary" href={content.hero.secondaryCta?.href || '#como-funciona'}>
+                  {content.hero.secondaryCta?.label}
                 </a>
               </div>
             </div>
-
             <HomeQuiz onFallback={openFallbackModal} />
           </div>
         </section>
@@ -709,8 +825,8 @@ function HomePage() {
         <section className="cj-category-band" aria-label="Categorias para comparar">
           <div className="cj-wrap">
             <div className="cj-category-grid">
-              {categoryCards.map((item) => {
-                const Icon = item.icon;
+              {(content.categories || []).map((item) => {
+                const Icon = resolveHomeIcon(item.icon, Landmark);
                 return (
                   <Link key={item.title} to={item.href} className="cj-category-card">
                     <span className="cj-icon-chip">
@@ -787,14 +903,14 @@ function HomePage() {
         <section className="cj-section cj-section-muted">
           <div className="cj-wrap">
             <div className="cj-section-head">
-              <span className="cj-eyebrow">Por que comparar na Cote Juros</span>
-              <h2>Um hub para decidir com mais contexto</h2>
-              <p>Comparar não é só clicar em uma oferta. É entender perfil, custo, objetivo e próximo passo.</p>
+              <span className="cj-eyebrow">{content.reasons.eyebrow}</span>
+              <h2>{content.reasons.title}</h2>
+              <p>{content.reasons.subtitle}</p>
             </div>
 
             <div className="cj-reason-grid">
-              {comparisonReasons.map((item) => {
-                const Icon = item.icon;
+              {(content.reasons.items || []).map((item) => {
+                const Icon = resolveHomeIcon(item.icon, ShieldCheck);
                 return (
                   <article key={item.title} className="cj-reason-card">
                     <Icon className="h-6 w-6" />
@@ -839,14 +955,14 @@ function HomePage() {
         <section className="cj-section cj-section-muted">
           <div className="cj-wrap">
             <div className="cj-section-head">
-              <span className="cj-eyebrow">Produtos e caminhos em destaque</span>
-              <h2>O próximo passo depende do seu perfil</h2>
-              <p>As opções abaixo são caminhos possíveis de comparação. Nenhuma delas representa aprovação garantida.</p>
+              <span className="cj-eyebrow">{content.featured.eyebrow}</span>
+              <h2>{content.featured.title}</h2>
+              <p>{content.featured.subtitle}</p>
             </div>
 
             <div className="cj-featured-grid">
-              {featuredProducts.map((item) => {
-                const Icon = item.icon;
+              {(content.featured.items || []).map((item) => {
+                const Icon = resolveHomeIcon(item.icon, Landmark);
                 return (
                   <Link key={item.title} to={item.href} className="cj-featured-card">
                     <div className="cj-featured-top">
@@ -856,7 +972,7 @@ function HomePage() {
                     <strong>{item.title}</strong>
                     <p>{item.text}</p>
                     <small>
-                      Comparar caminho
+                      {content.featured.linkLabel}
                       <ArrowRight className="h-4 w-4" />
                     </small>
                   </Link>
@@ -931,12 +1047,12 @@ function HomePage() {
           <div className="cj-wrap">
             <div className="cj-faq-layout">
               <div>
-                <span className="cj-eyebrow">Perguntas frequentes</span>
-                <h2>Dúvidas comuns antes de seguir</h2>
-                <p>Respostas diretas para manter a comparação transparente.</p>
+                <span className="cj-eyebrow">{content.faq.eyebrow}</span>
+                <h2>{content.faq.title}</h2>
+                <p>{content.faq.subtitle}</p>
               </div>
               <div className="cj-faq-list">
-                {faqItems.map((item) => (
+                {(content.faq.items || []).map((item) => (
                   <details key={item.question} className="cj-faq-item">
                     <summary>
                       {item.question}
@@ -954,10 +1070,10 @@ function HomePage() {
           <div className="cj-wrap">
             <div className="cj-final-box">
               <BriefcaseBusiness className="mx-auto h-7 w-7 text-[var(--cj-primary)]" />
-              <h2>Comece por uma comparação simples</h2>
-              <p>Informe seu perfil, registre o consentimento e siga apenas se fizer sentido para você.</p>
-              <button type="button" className="cj-btn cj-btn-primary" onClick={() => openGenericResults('Ver minhas opcoes final')}>
-                Ver minhas opções
+              <h2>{content.finalCta.title}</h2>
+              <p>{content.finalCta.subtitle}</p>
+              <button type="button" className="cj-btn cj-btn-primary" onClick={() => openGenericResults(content.finalCta.cta?.trackingLabel || content.finalCta.cta?.label)}>
+                {content.finalCta.cta?.label}
                 <ArrowRight className="h-4 w-4" />
               </button>
             </div>

@@ -3,11 +3,11 @@ import { getPrisma } from '../lib/prisma.js';
 export const SUPERSIM_PARTNER = {
   id: 'supersim',
   slug: 'supersim',
-  name: 'SuperSim',
+  name: '',
   type: 'affiliate_link',
   mode: 'tracking_link',
   status: 'active',
-  destinationUrl: 'https://susim.co/XQLX5t8rSqYxaWnPd7CQaw==',
+  destinationUrl: '',
   description: 'Opção de crédito pessoal online com análise conforme o perfil informado.',
   highlights: ['Processo online', 'Pode ser alternativa para quem busca crédito rápido', 'Condições sujeitas à análise do parceiro'],
   ctaText: 'Ver condições',
@@ -87,16 +87,44 @@ export class PartnerMatcherService {
     }
   }
 
+  static async getSuperSimConfigStatus() {
+    try {
+      const partner = await getPrisma().partnerConfig.findUnique({
+        where: { slug: SUPERSIM_PARTNER.slug },
+        select: { status: true }
+      });
+      return {
+        exists: Boolean(partner),
+        inactive: partner?.status === 'inactive' || partner?.status === 'archived'
+      };
+    } catch {
+      return { exists: false, inactive: false };
+    }
+  }
+
   static async match({ lead = {}, productType = 'loan' } = {}) {
-    const configured = await this.listConfiguredPartners(productType);
+    const [configured, superSimConfig] = await Promise.all([
+      this.listConfiguredPartners(productType),
+      this.getSuperSimConfigStatus()
+    ]);
     const normalizedConfigured = configured.map((partner) =>
       partner.slug === 'supersim'
-        ? { ...partner, ...SUPERSIM_PARTNER, configId: partner.configId, destinationUrl: partner.destinationUrl || SUPERSIM_PARTNER.destinationUrl }
+        ? {
+          ...SUPERSIM_PARTNER,
+          ...partner,
+          configId: partner.configId,
+          destinationUrl: partner.destinationUrl || SUPERSIM_PARTNER.destinationUrl,
+          description: partner.description || SUPERSIM_PARTNER.description,
+          highlights: Array.isArray(partner.highlights) && partner.highlights.length ? partner.highlights : SUPERSIM_PARTNER.highlights,
+          ctaText: partner.ctaText || SUPERSIM_PARTNER.ctaText,
+          eventType: partner.eventType || SUPERSIM_PARTNER.eventType,
+          priority: Number(partner.priority ?? SUPERSIM_PARTNER.priority)
+        }
         : partner
     );
 
     const byId = new Map(normalizedConfigured.map((partner) => [partner.id, partner]));
-    const includeSuperSim = this.shouldIncludeSuperSim(lead) || normalizedConfigured.length === 0;
+    const includeSuperSim = false;
     if (includeSuperSim && !byId.has(SUPERSIM_PARTNER.id)) {
       byId.set(SUPERSIM_PARTNER.id, SUPERSIM_PARTNER);
     }
@@ -106,7 +134,6 @@ export class PartnerMatcherService {
       .sort((a, b) => Number(b.priority || 0) - Number(a.priority || 0))
       .slice(0, 4);
 
-    if (!recommendations.length) return [SUPERSIM_PARTNER];
     return recommendations;
   }
 

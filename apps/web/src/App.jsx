@@ -49,6 +49,8 @@ import AdminTestimonialsPage from '@/pages/admin/AdminTestimonialsPage.jsx';
 import AdminAuditPage from '@/pages/admin/AdminAuditPage.jsx';
 import AdminHealthPage from '@/pages/admin/AdminHealthPage.jsx';
 import AdminSettingsPage from '@/pages/admin/AdminSettingsPage.jsx';
+import AdminNavigationPage from '@/pages/admin/AdminNavigationPage.jsx';
+import AdminDisclaimersPage from '@/pages/admin/AdminDisclaimersPage.jsx';
 
 import { seoFallbackPaths as seedFallbackPaths, seoPages as seedSeoPages } from '@/platform/seed/portalSeed.js';
 import { portalApi } from '@/platform/services/portalApi.js';
@@ -302,6 +304,8 @@ function App() {
         <Route path="/admin/users" element={<AdminRoute title="Equipe e permissões"><AdminUsersPage /></AdminRoute>} />
         <Route path="/admin/articles" element={<AdminRoute title="Gestão de artigos"><AdminArticlesPage /></AdminRoute>} />
         <Route path="/admin/seo-pages" element={<AdminRoute title="Gestão de páginas SEO"><AdminSeoPagesPage /></AdminRoute>} />
+        <Route path="/admin/navigation" element={<AdminRoute title="Navegação"><AdminNavigationPage /></AdminRoute>} />
+        <Route path="/admin/disclaimers" element={<AdminRoute title="Disclaimers"><AdminDisclaimersPage /></AdminRoute>} />
         <Route path="/admin/leads" element={<AdminRoute title="Gestão de leads"><AdminLeadsPage /></AdminRoute>} />
         <Route path="/admin/reactivation" element={<AdminRoute title="Reativação de leads"><AdminReactivationPage /></AdminRoute>} />
         <Route path="/admin/email-ops" element={<AdminRoute title="Email Ops"><AdminEmailOpsPage /></AdminRoute>} />

@@ -12,14 +12,16 @@ const navItems = [
   { to: '/admin/partners', label: 'Parceiros' },
   { to: '/admin/users', label: 'Equipe' },
   { to: '/admin/articles', label: 'Artigos' },
-  { to: '/admin/seo-pages', label: 'Páginas SEO' },
+  { to: '/admin/seo-pages', label: 'SEO' },
+  { to: '/admin/navigation', label: 'Navegacao' },
+  { to: '/admin/disclaimers', label: 'Disclaimers' },
   { to: '/admin/leads', label: 'Leads' },
-  { to: '/admin/reactivation', label: 'Reativação' },
+  { to: '/admin/reactivation', label: 'Reativacao' },
   { to: '/admin/email-ops', label: 'Email Ops' },
   { to: '/admin/testimonials', label: 'Depoimentos' },
   { to: '/admin/audit', label: 'Auditoria' },
-  { to: '/admin/health', label: 'Saúde' },
-  { to: '/admin/settings', label: 'Configurações' }
+  { to: '/admin/health', label: 'Saude' },
+  { to: '/admin/settings', label: 'Configuracoes' }
 ];
 
 export default function AdminLayout({ title, children }) {
@@ -79,14 +81,14 @@ export default function AdminLayout({ title, children }) {
           <header className="sticky top-0 z-10 border-b border-border bg-white/90 backdrop-blur-xl">
             <div className="flex h-[72px] items-center justify-between px-6 lg:px-10">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Administração</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Administracao</p>
                 <h1 className="text-2xl font-semibold tracking-[-0.03em] text-foreground">{title}</h1>
               </div>
               <div className="flex items-center gap-3">
                 {session ? (
                   <div className="hidden text-right sm:block">
                     <p className="text-sm font-medium text-foreground">{session.fullName || session.email}</p>
-                    <p className="text-xs text-muted-foreground">{(session.roles || []).join(' · ') || 'admin'}</p>
+                    <p className="text-xs text-muted-foreground">{(session.roles || []).join(' - ') || 'admin'}</p>
                   </div>
                 ) : null}
                 <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">Ver portal</Link>

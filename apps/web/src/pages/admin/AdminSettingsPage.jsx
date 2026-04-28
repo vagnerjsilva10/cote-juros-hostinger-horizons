@@ -4,93 +4,154 @@ import AdminPageHeader from '@/admin/AdminPageHeader.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Textarea } from '@/components/ui/textarea';
 
-const emptySettings = {
-  defaultCtaDestination: '',
-  coteFinanceAiBaseUrl: '',
-  coteFinanceAiDashboardUrl: '',
-  supportEmail: '',
-  socialLinks: { linkedin: '', instagram: '', twitter: '', facebook: '' },
-  defaultSeo: { titleSuffix: '', defaultDescription: '' },
-  analytics: { ga4Key: '', metaPixelKey: '' },
-  sourceTagging: { enabled: true, sourceParamName: 'utm_source', mediumParamName: 'utm_medium', campaignParamName: 'utm_campaign' }
+const emptyForm = {
+  id: '',
+  key: '',
+  group: 'brand',
+  valueText: '{}',
+  description: '',
+  isPublic: true
 };
 
 export default function AdminSettingsPage() {
-  const [settings, setSettings] = useState(emptySettings);
+  const [items, setItems] = useState([]);
+  const [editing, setEditing] = useState(emptyForm);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  const loadData = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await portalApi.getAdminSettings();
+      setItems(Array.isArray(data) ? data : []);
+    } catch (loadError) {
+      setError(loadError.message || 'Nao foi possivel carregar configuracoes.');
+      toast.error(loadError.message || 'Nao foi possivel carregar configuracoes.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    portalApi.getAdminSettings().then((data) => setSettings({ ...emptySettings, ...data }));
+    loadData();
   }, []);
 
-  const update = (path, value) => {
-    setSettings((prev) => {
-      const next = { ...prev };
-      const keys = path.split('.');
-      let pointer = next;
-      for (let i = 0; i < keys.length - 1; i += 1) {
-        pointer[keys[i]] = { ...pointer[keys[i]] };
-        pointer = pointer[keys[i]];
-      }
-      pointer[keys[keys.length - 1]] = value;
-      return next;
+  const editItem = (item) => {
+    setEditing({
+      id: item.id,
+      key: item.key,
+      group: item.group,
+      valueText: JSON.stringify(item.value ?? {}, null, 2),
+      description: item.description || '',
+      isPublic: Boolean(item.isPublic)
     });
   };
 
   const handleSave = async (event) => {
     event.preventDefault();
-    const updated = await portalApi.updateAdminSettings(settings);
-    setSettings(updated);
-    toast.success('Configuracoes atualizadas.');
+    setSaving(true);
+    try {
+      const value = JSON.parse(editing.valueText || 'null');
+      await portalApi.saveAdminSetting({
+        id: editing.id || undefined,
+        key: editing.key,
+        group: editing.group,
+        value,
+        description: editing.description || null,
+        isPublic: Boolean(editing.isPublic)
+      });
+      toast.success('Configuracao salva no banco.');
+      setEditing(emptyForm);
+      await loadData();
+    } catch (saveError) {
+      toast.error(saveError instanceof SyntaxError ? 'Value precisa ser JSON valido.' : saveError.message || 'Nao foi possivel salvar.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (item) => {
+    if (!window.confirm(`Excluir a configuracao ${item.key}?`)) return;
+    try {
+      await portalApi.deleteAdminSetting(item.id);
+      toast.success('Configuracao excluida.');
+      await loadData();
+    } catch (deleteError) {
+      toast.error(deleteError.message || 'Nao foi possivel excluir.');
+    }
   };
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Configuracoes da plataforma" description="Configuracoes globais de destino, SEO e integracoes." />
+      <AdminPageHeader
+        title="Configuracoes do site"
+        description="Fonte operacional para marca, dominio, SEO padrao, logos, scripts, cores e configuracoes publicas."
+        actionLabel="Nova configuracao"
+        onAction={() => setEditing(emptyForm)}
+      />
 
-      <Card className="border-slate-200">
-        <CardContent className="pt-6">
-          <form className="space-y-6" onSubmit={handleSave}>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div><Label>Destino padrao do CTA</Label><Input value={settings.defaultCtaDestination} onChange={(e) => update('defaultCtaDestination', e.target.value)} /></div>
-              <div><Label>E-mail de suporte</Label><Input value={settings.supportEmail} onChange={(e) => update('supportEmail', e.target.value)} /></div>
-              <div><Label>URL base do Cote Finance AI</Label><Input value={settings.coteFinanceAiBaseUrl} onChange={(e) => update('coteFinanceAiBaseUrl', e.target.value)} /></div>
-              <div><Label>URL do painel do Cote Finance AI</Label><Input value={settings.coteFinanceAiDashboardUrl} onChange={(e) => update('coteFinanceAiDashboardUrl', e.target.value)} /></div>
-            </div>
+      {error ? <p className="rounded-lg bg-red-50 p-4 text-sm font-semibold text-red-700">{error}</p> : null}
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <div><Label>LinkedIn</Label><Input value={settings.socialLinks.linkedin} onChange={(e) => update('socialLinks.linkedin', e.target.value)} /></div>
-              <div><Label>Instagram</Label><Input value={settings.socialLinks.instagram} onChange={(e) => update('socialLinks.instagram', e.target.value)} /></div>
-              <div><Label>Twitter</Label><Input value={settings.socialLinks.twitter} onChange={(e) => update('socialLinks.twitter', e.target.value)} /></div>
-              <div><Label>Facebook</Label><Input value={settings.socialLinks.facebook} onChange={(e) => update('socialLinks.facebook', e.target.value)} /></div>
-            </div>
+      <div className="grid gap-6 xl:grid-cols-[1.35fr_1fr]">
+        <Card className="border-slate-200">
+          <CardContent className="pt-6">
+            {loading ? <p className="text-sm text-slate-600">Carregando configuracoes...</p> : null}
+            {!loading && !items.length ? <p className="text-sm text-slate-500">Nenhuma configuracao criada ainda.</p> : null}
+            {items.length ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Key</TableHead>
+                    <TableHead>Grupo</TableHead>
+                    <TableHead>Publica</TableHead>
+                    <TableHead>Acoes</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {items.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell className="font-mono text-xs">{item.key}</TableCell>
+                      <TableCell>{item.group}</TableCell>
+                      <TableCell>{item.isPublic ? 'Sim' : 'Nao'}</TableCell>
+                      <TableCell className="space-x-2">
+                        <Button size="sm" variant="outline" onClick={() => editItem(item)}>Editar</Button>
+                        <Button size="sm" variant="outline" onClick={() => handleDelete(item)}>Excluir</Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : null}
+          </CardContent>
+        </Card>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <div><Label>Sufixo do titulo SEO</Label><Input value={settings.defaultSeo.titleSuffix} onChange={(e) => update('defaultSeo.titleSuffix', e.target.value)} /></div>
-              <div><Label>Descricao SEO padrao</Label><Input value={settings.defaultSeo.defaultDescription} onChange={(e) => update('defaultSeo.defaultDescription', e.target.value)} /></div>
-              <div><Label>Chave do GA4 (placeholder)</Label><Input value={settings.analytics.ga4Key} onChange={(e) => update('analytics.ga4Key', e.target.value)} /></div>
-              <div><Label>Chave do Meta Pixel (placeholder)</Label><Input value={settings.analytics.metaPixelKey} onChange={(e) => update('analytics.metaPixelKey', e.target.value)} /></div>
-            </div>
-
-            <div className="space-y-3 rounded-md border border-slate-200 p-4">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="source-tagging-enabled">Rastreamento de origem habilitado</Label>
-                <Switch id="source-tagging-enabled" checked={Boolean(settings.sourceTagging.enabled)} onCheckedChange={(value) => update('sourceTagging.enabled', value)} />
+        <Card className="border-slate-200">
+          <CardContent className="pt-6">
+            <form className="space-y-4" onSubmit={handleSave}>
+              <div><Label>Key</Label><Input value={editing.key} onChange={(e) => setEditing((prev) => ({ ...prev, key: e.target.value }))} placeholder="brand.name" required /></div>
+              <div><Label>Grupo</Label><Input value={editing.group} onChange={(e) => setEditing((prev) => ({ ...prev, group: e.target.value }))} required /></div>
+              <div><Label>Descricao</Label><Input value={editing.description} onChange={(e) => setEditing((prev) => ({ ...prev, description: e.target.value }))} /></div>
+              <div>
+                <Label>Value JSON</Label>
+                <Textarea rows={10} value={editing.valueText} onChange={(e) => setEditing((prev) => ({ ...prev, valueText: e.target.value }))} required />
               </div>
-              <div className="grid gap-4 md:grid-cols-3">
-                <div><Label>Parametro de origem</Label><Input value={settings.sourceTagging.sourceParamName} onChange={(e) => update('sourceTagging.sourceParamName', e.target.value)} /></div>
-                <div><Label>Parametro de midia</Label><Input value={settings.sourceTagging.mediumParamName} onChange={(e) => update('sourceTagging.mediumParamName', e.target.value)} /></div>
-                <div><Label>Parametro de campanha</Label><Input value={settings.sourceTagging.campaignParamName} onChange={(e) => update('sourceTagging.campaignParamName', e.target.value)} /></div>
-              </div>
-            </div>
-
-            <Button type="submit">Salvar configuracoes</Button>
-          </form>
-        </CardContent>
-      </Card>
+              <label className="flex items-center gap-2 text-sm text-slate-700">
+                <Checkbox checked={editing.isPublic} onCheckedChange={(value) => setEditing((prev) => ({ ...prev, isPublic: Boolean(value) }))} />
+                Disponivel para o site publico
+              </label>
+              <Button type="submit" className="w-full" disabled={saving}>{saving ? 'Salvando...' : 'Salvar configuracao'}</Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

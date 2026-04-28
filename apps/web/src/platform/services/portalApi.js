@@ -569,6 +569,7 @@ export const portalApi = {
 
   async getSeoPages() {
     await wait();
+    // Legacy landing-page fallback only. The SuperAdmin SEO source of truth is /api/site/seo.
     return portalRepository.listSeoPages();
   },
 
@@ -580,6 +581,52 @@ export const portalApi = {
   async getTestimonials() {
     await wait();
     return portalRepository.listTestimonials();
+  },
+
+  async getSiteSettings() {
+    if (!useRemote) return { items: [], byKey: {} };
+
+    try {
+      return await request('/api/site/settings');
+    } catch (error) {
+      warnPublicFallback('site-settings', { error: error?.message || String(error) });
+      return { items: [], byKey: {} };
+    }
+  },
+
+  async getSiteNavigation() {
+    if (!useRemote) return { items: [], byLocation: {}, treeByLocation: {} };
+
+    try {
+      return await request('/api/site/navigation');
+    } catch (error) {
+      warnPublicFallback('site-navigation', { error: error?.message || String(error) });
+      return { items: [], byLocation: {}, treeByLocation: {} };
+    }
+  },
+
+  async getSiteDisclaimers(filters = {}) {
+    if (!useRemote) return [];
+
+    try {
+      const qs = toQueryString(filters);
+      const data = await request(`/api/site/disclaimers${qs ? `?${qs}` : ''}`);
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      warnPublicFallback(`site-disclaimers:${filters?.placement || 'all'}`, { error: error?.message || String(error) });
+      return [];
+    }
+  },
+
+  async getSeoMeta(path = '/') {
+    if (!useRemote) return null;
+
+    try {
+      return await request(`/api/site/seo?${toQueryString({ path })}`);
+    } catch (error) {
+      warnPublicFallback(`seo-meta:${path}`, { error: error?.message || String(error) });
+      return null;
+    }
   },
 
   async getAppIntegrationSources() {
@@ -680,7 +727,7 @@ export const portalApi = {
     }
   },
 
-  async matchCreditPartners(profile = {}) {
+  async matchCreditPartners(profile = {}, options = {}) {
     const fallback = {
       profile: {
         negativado: profile.negativado ?? null,
@@ -691,19 +738,7 @@ export const portalApi = {
         tipoCliente: profile.tipoCliente ?? null,
         employmentStatus: profile.employmentStatus ?? null
       },
-      recommendations: [{
-        id: 'supersim',
-        slug: 'supersim',
-        name: 'SuperSim',
-        type: 'affiliate_link',
-        mode: 'tracking_link',
-        status: 'active',
-        destinationUrl: 'https://susim.co/XQLX5t8rSqYxaWnPd7CQaw==',
-        description: 'Opção de crédito pessoal online com análise conforme o perfil informado.',
-        highlights: ['Processo online', 'Pode ser alternativa para quem busca crédito rápido', 'Condições sujeitas à análise do parceiro'],
-        ctaText: 'Ver condições',
-        eventType: 'click_partner_supersim'
-      }]
+      recommendations: []
     };
 
     if (!useRemote) {
@@ -712,14 +747,19 @@ export const portalApi = {
     }
 
     try {
-      return await request('/api/partners/match', {
+      const data = await request('/api/partners/match', {
         method: 'POST',
         body: JSON.stringify({
           productType: 'loan',
           profile: fallback.profile
         })
       });
-    } catch {
+      return {
+        ...data,
+        recommendations: Array.isArray(data?.recommendations) ? data.recommendations : []
+      };
+    } catch (error) {
+      if (options.throwOnError) throw error;
       return fallback;
     }
   },
@@ -861,12 +901,8 @@ export const portalApi = {
       return portalRepository.listAdminPartners(filters);
     }
 
-    try {
-      const qs = toQueryString(filters);
-      return await request(`/api/admin/partners${qs ? `?${qs}` : ''}`);
-    } catch {
-      return portalRepository.listAdminPartners(filters);
-    }
+    const qs = toQueryString(filters);
+    return request(`/api/admin/partners${qs ? `?${qs}` : ''}`);
   },
 
   async saveAdminPartner(payload) {
@@ -875,14 +911,10 @@ export const portalApi = {
       return portalRepository.saveAdminPartner(payload);
     }
 
-    try {
-      return await request('/api/admin/partners', {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      });
-    } catch {
-      return portalRepository.saveAdminPartner(payload);
-    }
+    return request('/api/admin/partners', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
   },
 
   async toggleAdminPartnerStatus(id) {
@@ -891,14 +923,10 @@ export const portalApi = {
       return portalRepository.togglePartnerStatus(id);
     }
 
-    try {
-      return await request(`/api/admin/partners/${id}/status`, {
-        method: 'POST',
-        body: JSON.stringify({})
-      });
-    } catch {
-      return portalRepository.togglePartnerStatus(id);
-    }
+    return request(`/api/admin/partners/${id}/status`, {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
   },
 
   async testAdminPartner(id) {
@@ -955,18 +983,36 @@ export const portalApi = {
   },
 
   async getAdminSeoPages(filters) {
-    await wait();
-    return portalRepository.listAdminSeoPages(filters);
+    if (!useRemote) return [];
+    const qs = toQueryString({
+      path: filters?.search || filters?.path,
+      active: filters?.status === 'active' ? 'true' : filters?.status === 'inactive' ? 'false' : filters?.active
+    });
+    return request(`/api/admin/site/seo${qs ? `?${qs}` : ''}`);
   },
 
   async saveAdminSeoPage(payload) {
-    await wait();
-    return portalRepository.saveAdminSeoPage(payload);
+    if (!useRemote) throw new Error('API remota obrigatória para salvar SEO no SuperAdmin.');
+    return request('/api/admin/site/seo', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
   },
 
-  async toggleAdminSeoPublish(id) {
-    await wait();
-    return portalRepository.toggleSeoPagePublish(id);
+  async toggleAdminSeoPublish(item) {
+    if (!useRemote) throw new Error('API remota obrigatória para alterar SEO no SuperAdmin.');
+    return request(`/api/admin/site/seo/${item.id || item}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        ...item,
+        isActive: !(item.isActive ?? item.status === 'active')
+      })
+    });
+  },
+
+  async deleteAdminSeoMeta(id) {
+    if (!useRemote) throw new Error('API remota obrigatória para excluir SEO no SuperAdmin.');
+    return request(`/api/admin/site/seo/${id}`, { method: 'DELETE' });
   },
 
   async getAdminLeads(filters) {
@@ -1255,13 +1301,63 @@ export const portalApi = {
   },
 
   async getAdminSettings() {
-    await wait();
-    return portalRepository.getSettings();
+    if (!useRemote) return [];
+    return request('/api/admin/site/settings');
+  },
+
+  async saveAdminSetting(payload) {
+    if (!useRemote) throw new Error('API remota obrigatória para salvar configurações do site.');
+    return request('/api/admin/site/settings', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async deleteAdminSetting(id) {
+    if (!useRemote) throw new Error('API remota obrigatória para excluir configurações do site.');
+    return request(`/api/admin/site/settings/${id}`, { method: 'DELETE' });
   },
 
   async updateAdminSettings(payload) {
-    await wait();
-    return portalRepository.updateSettings(payload);
+    return this.saveAdminSetting(payload);
+  },
+
+  async getAdminNavigation(filters = {}) {
+    if (!useRemote) return [];
+    const qs = toQueryString(filters);
+    return request(`/api/admin/site/navigation${qs ? `?${qs}` : ''}`);
+  },
+
+  async saveAdminNavigation(payload) {
+    if (!useRemote) throw new Error('API remota obrigatória para salvar navegação.');
+    return request('/api/admin/site/navigation', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async deleteAdminNavigation(id) {
+    if (!useRemote) throw new Error('API remota obrigatória para excluir navegação.');
+    return request(`/api/admin/site/navigation/${id}`, { method: 'DELETE' });
+  },
+
+  async getAdminDisclaimers(filters = {}) {
+    if (!useRemote) return [];
+    const qs = toQueryString(filters);
+    return request(`/api/admin/site/disclaimers${qs ? `?${qs}` : ''}`);
+  },
+
+  async saveAdminDisclaimer(payload) {
+    if (!useRemote) throw new Error('API remota obrigatória para salvar disclaimers.');
+    return request('/api/admin/site/disclaimers', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+  },
+
+  async deleteAdminDisclaimer(id) {
+    if (!useRemote) throw new Error('API remota obrigatória para excluir disclaimers.');
+    return request(`/api/admin/site/disclaimers/${id}`, { method: 'DELETE' });
   },
 
   async getAdminAnalyticsOverview() {

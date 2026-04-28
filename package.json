@@ -17,6 +17,7 @@
 		"prisma:generate": "npm exec --yes --package=prisma@6.19.3 -- prisma generate --schema=apps/api/prisma/schema.prisma",
 		"prisma:migrate": "npm run prisma:migrate --prefix apps/api",
 		"prisma:deploy": "npm run prisma:deploy --prefix apps/api",
+		"seed:partners": "npm run seed:partners --prefix apps/api",
 		"lint": "npm run lint --prefix apps/web"
 	},
 	"dependencies": {

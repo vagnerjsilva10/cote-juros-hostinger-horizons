@@ -12,6 +12,7 @@ import affiliatesRoutes from './routes/affiliates.js';
 import reactivationRoutes from './routes/reactivation.js';
 import reactivationAdminRoutes from './routes/reactivationAdmin.js';
 import adminRoutes from './routes/admin.js';
+import siteRoutes from './routes/site.js';
 import internalRoutes from './routes/internal.js';
 import cronArticlesRoutes from './routes/cronArticles.js';
 import distributionPublicRoutes from './routes/distributionPublic.js';
@@ -110,6 +111,7 @@ export const createApp = () => {
   app.use('/api/reactivation', reactivationRoutes);
   app.use('/api/reactivation-admin', reactivationAdminRoutes);
   app.use('/api/admin', adminRoutes);
+  app.use('/api/site', siteRoutes);
   app.use('/api/internal', internalRoutes);
   app.use('/api/cron/articles', cronArticlesRoutes);
   app.use('/', distributionPublicRoutes);

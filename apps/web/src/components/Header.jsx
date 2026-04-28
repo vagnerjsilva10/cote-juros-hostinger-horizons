@@ -5,11 +5,29 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { CoteJurosLogo } from './CoteJurosLogo.jsx';
 import { primaryNavItems } from '@/navigation/seoNavigation.js';
+import { portalApi } from '@/platform/services/portalApi.js';
+import { settingValue, useSiteSettings } from '@/hooks/useSiteSettings.js';
+
+const normalizeNavTree = (items = []) =>
+  items
+    .filter((item) => item?.label && item?.href)
+    .map((item) => ({
+      label: item.label,
+      path: item.href,
+      links: Array.isArray(item.links)
+        ? item.links.filter((link) => link?.label && link?.href).map((link) => ({
+          label: link.label,
+          path: link.href
+        }))
+        : []
+    }));
 
 function Header() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [remoteNavItems, setRemoteNavItems] = useState(null);
+  const settings = useSiteSettings();
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 10);
@@ -18,7 +36,25 @@ function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navItems = primaryNavItems;
+  useEffect(() => {
+    let active = true;
+    portalApi.getSiteNavigation()
+      .then((data) => {
+        if (!active) return;
+        const headerItems = normalizeNavTree(data?.treeByLocation?.header || []);
+        setRemoteNavItems(headerItems.length ? headerItems : null);
+      })
+      .catch(() => {
+        if (active) setRemoteNavItems(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const navItems = remoteNavItems || primaryNavItems;
+  const ctaLabel = settingValue(settings, 'header.cta.label', 'Ver minhas opcoes');
+  const ctaHref = settingValue(settings, 'header.cta.href', '/emprestimos');
 
   const isActive = (path) => location.pathname.startsWith(path);
 
@@ -75,9 +111,9 @@ function Header() {
           </nav>
 
           <div className="hidden items-center gap-3 lg:flex">
-            <Link to="/emprestimos">
+            <Link to={ctaHref}>
               <Button className="cta-button h-auto rounded-[10px] border-0 bg-[#6D5EF3] px-5 py-3 text-[15px] font-semibold text-white shadow-[0_10px_24px_rgba(109,94,243,0.22)] transition-colors duration-200 hover:bg-[#5B4FE0]">
-                {'Ver minhas op\u00E7\u00F5es'}
+                {ctaLabel}
               </Button>
             </Link>
           </div>
@@ -128,9 +164,9 @@ function Header() {
                       </div>
                     ))}
                     <div className="mt-3 border-t border-white/10 pt-4">
-                      <Link to="/emprestimos" onClick={() => setMobileOpen(false)}>
+                      <Link to={ctaHref} onClick={() => setMobileOpen(false)}>
                         <Button className="mobile-nav-cta h-10 w-full rounded-[10px] border-0 bg-[#6D5EF3] text-[13px] font-semibold text-white shadow-[0_10px_24px_rgba(109,94,243,0.22)] transition-colors duration-200 hover:bg-[#5B4FE0]">
-                          {'Ver minhas op\u00E7\u00F5es'}
+                          {ctaLabel}
                         </Button>
                       </Link>
                     </div>

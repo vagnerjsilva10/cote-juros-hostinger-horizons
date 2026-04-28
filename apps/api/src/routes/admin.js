@@ -22,6 +22,7 @@ import {
   verifyPassword
 } from '../lib/adminAuth.js';
 import { AdminService } from '../services/adminService.js';
+import { SiteFoundationService } from '../services/siteFoundationService.js';
 import { getPrisma } from '../lib/prisma.js';
 
 const router = express.Router();
@@ -199,6 +200,67 @@ const articleSaveSchema = z.object({
   author: z.string().optional().nullable(),
   publishedAt: z.string().optional().nullable(),
   content: z.string().optional()
+});
+
+const siteSettingQuerySchema = z.object({
+  group: z.string().optional(),
+  search: z.string().optional()
+});
+
+const siteSettingSaveSchema = z.object({
+  id: z.string().optional(),
+  key: z.string().min(2).max(120),
+  value: z.any(),
+  group: z.string().min(2).max(80),
+  description: z.string().max(500).optional().nullable(),
+  isPublic: z.boolean().optional()
+});
+
+const navigationQuerySchema = z.object({
+  location: z.string().optional(),
+  active: z.enum(['true', 'false']).optional()
+});
+
+const navigationSaveSchema = z.object({
+  id: z.string().optional(),
+  location: z.enum(['header', 'footer', 'mobile', 'legal']),
+  label: z.string().min(1).max(120),
+  href: z.string().min(1).max(500),
+  order: z.coerce.number().int().optional(),
+  isActive: z.boolean().optional(),
+  parentId: z.string().optional().nullable()
+});
+
+const disclaimerQuerySchema = z.object({
+  placement: z.string().optional(),
+  active: z.enum(['true', 'false']).optional()
+});
+
+const disclaimerSaveSchema = z.object({
+  id: z.string().optional(),
+  key: z.string().min(2).max(120),
+  title: z.string().min(2).max(180),
+  content: z.string().min(3).max(8000),
+  placement: z.string().min(2).max(80),
+  isActive: z.boolean().optional()
+});
+
+const seoMetaQuerySchema = z.object({
+  path: z.string().optional(),
+  active: z.enum(['true', 'false']).optional()
+});
+
+const seoMetaSaveSchema = z.object({
+  id: z.string().optional(),
+  path: z.string().min(1).max(500),
+  title: z.string().min(2).max(220),
+  description: z.string().min(2).max(500),
+  canonical: z.string().optional().nullable(),
+  robots: z.string().optional().nullable(),
+  ogTitle: z.string().optional().nullable(),
+  ogDescription: z.string().optional().nullable(),
+  ogImage: z.string().optional().nullable(),
+  isActive: z.boolean().optional()
 });
 
 router.use('/email-ops', requireEmailOpsPermission, reactivationAdminRoutes);
@@ -500,6 +562,90 @@ router.post('/articles/:articleId/publish', requirePermission('articles', 'publi
   const article = await AdminService.toggleArticlePublish(req.params.articleId, req, req.adminUser);
   if (!article) return res.status(404).json({ error: 'Article not found' });
   res.json({ data: article });
+}));
+
+router.get('/site/settings', requirePermission('settings', 'view'), asyncHandler(async (req, res) => {
+  const filters = siteSettingQuerySchema.parse(req.query || {});
+  res.json({ data: await SiteFoundationService.listAdminSettings(filters) });
+}));
+
+router.post('/site/settings', requirePermission('settings', 'edit'), asyncHandler(async (req, res) => {
+  const payload = siteSettingSaveSchema.parse(req.body || {});
+  res.status(payload.id ? 200 : 201).json({ data: await SiteFoundationService.saveSetting(payload, req, req.adminUser) });
+}));
+
+router.patch('/site/settings/:id', requirePermission('settings', 'edit'), asyncHandler(async (req, res) => {
+  const payload = siteSettingSaveSchema.extend({ id: z.string() }).parse({ ...(req.body || {}), id: req.params.id });
+  res.json({ data: await SiteFoundationService.saveSetting(payload, req, req.adminUser) });
+}));
+
+router.delete('/site/settings/:id', requirePermission('settings', 'edit'), asyncHandler(async (req, res) => {
+  const item = await SiteFoundationService.deleteSetting(req.params.id, req, req.adminUser);
+  if (!item) return res.status(404).json({ error: 'Site setting not found' });
+  res.json({ data: item });
+}));
+
+router.get('/site/navigation', requirePermission('settings', 'view'), asyncHandler(async (req, res) => {
+  const filters = navigationQuerySchema.parse(req.query || {});
+  res.json({ data: await SiteFoundationService.listAdminNavigation(filters) });
+}));
+
+router.post('/site/navigation', requirePermission('settings', 'edit'), asyncHandler(async (req, res) => {
+  const payload = navigationSaveSchema.parse(req.body || {});
+  res.status(payload.id ? 200 : 201).json({ data: await SiteFoundationService.saveNavigation(payload, req, req.adminUser) });
+}));
+
+router.patch('/site/navigation/:id', requirePermission('settings', 'edit'), asyncHandler(async (req, res) => {
+  const payload = navigationSaveSchema.extend({ id: z.string() }).parse({ ...(req.body || {}), id: req.params.id });
+  res.json({ data: await SiteFoundationService.saveNavigation(payload, req, req.adminUser) });
+}));
+
+router.delete('/site/navigation/:id', requirePermission('settings', 'edit'), asyncHandler(async (req, res) => {
+  const item = await SiteFoundationService.deleteNavigation(req.params.id, req, req.adminUser);
+  if (!item) return res.status(404).json({ error: 'Navigation item not found' });
+  res.json({ data: item });
+}));
+
+router.get('/site/disclaimers', requirePermission('settings', 'view'), asyncHandler(async (req, res) => {
+  const filters = disclaimerQuerySchema.parse(req.query || {});
+  res.json({ data: await SiteFoundationService.listAdminDisclaimers(filters) });
+}));
+
+router.post('/site/disclaimers', requirePermission('settings', 'edit'), asyncHandler(async (req, res) => {
+  const payload = disclaimerSaveSchema.parse(req.body || {});
+  res.status(payload.id ? 200 : 201).json({ data: await SiteFoundationService.saveDisclaimer(payload, req, req.adminUser) });
+}));
+
+router.patch('/site/disclaimers/:id', requirePermission('settings', 'edit'), asyncHandler(async (req, res) => {
+  const payload = disclaimerSaveSchema.extend({ id: z.string() }).parse({ ...(req.body || {}), id: req.params.id });
+  res.json({ data: await SiteFoundationService.saveDisclaimer(payload, req, req.adminUser) });
+}));
+
+router.delete('/site/disclaimers/:id', requirePermission('settings', 'edit'), asyncHandler(async (req, res) => {
+  const item = await SiteFoundationService.deleteDisclaimer(req.params.id, req, req.adminUser);
+  if (!item) return res.status(404).json({ error: 'Legal disclaimer not found' });
+  res.json({ data: item });
+}));
+
+router.get('/site/seo', requirePermission('seo_pages', 'view'), asyncHandler(async (req, res) => {
+  const filters = seoMetaQuerySchema.parse(req.query || {});
+  res.json({ data: await SiteFoundationService.listAdminSeoMeta(filters) });
+}));
+
+router.post('/site/seo', requirePermission('seo_pages', 'edit'), asyncHandler(async (req, res) => {
+  const payload = seoMetaSaveSchema.parse(req.body || {});
+  res.status(payload.id ? 200 : 201).json({ data: await SiteFoundationService.saveSeoMeta(payload, req, req.adminUser) });
+}));
+
+router.patch('/site/seo/:id', requirePermission('seo_pages', 'edit'), asyncHandler(async (req, res) => {
+  const payload = seoMetaSaveSchema.extend({ id: z.string() }).parse({ ...(req.body || {}), id: req.params.id });
+  res.json({ data: await SiteFoundationService.saveSeoMeta(payload, req, req.adminUser) });
+}));
+
+router.delete('/site/seo/:id', requirePermission('seo_pages', 'edit'), asyncHandler(async (req, res) => {
+  const item = await SiteFoundationService.deleteSeoMeta(req.params.id, req, req.adminUser);
+  if (!item) return res.status(404).json({ error: 'SEO meta not found' });
+  res.json({ data: item });
 }));
 
 router.get('/users', requirePermission('users', 'view'), asyncHandler(async (req, res) => {

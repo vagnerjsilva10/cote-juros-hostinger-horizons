@@ -1579,6 +1579,72 @@ model FeatureFlag {
   @@map("feature_flags")
 }
 
+model SiteSetting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       Json
+  group       String   @map("setting_group")
+  description String?
+  isPublic    Boolean  @default(false) @map("is_public")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([group, isPublic])
+  @@map("site_settings")
+}
+
+model NavigationItem {
+  id        String   @id @default(cuid())
+  location  String
+  label     String
+  href      String
+  order     Int      @default(0) @map("sort_order")
+  isActive  Boolean  @default(true) @map("is_active")
+  parentId  String?  @map("parent_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  parent   NavigationItem?  @relation("NavigationHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children NavigationItem[] @relation("NavigationHierarchy")
+
+  @@index([location, isActive, order])
+  @@index([parentId])
+  @@map("navigation_items")
+}
+
+model LegalDisclaimer {
+  id        String   @id @default(cuid())
+  key       String
+  title     String
+  content   String
+  placement String
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([key, placement])
+  @@index([placement, isActive])
+  @@map("legal_disclaimers")
+}
+
+model SeoMeta {
+  id            String   @id @default(cuid())
+  path          String   @unique
+  title         String
+  description   String
+  canonical     String?
+  robots        String?
+  ogTitle       String?  @map("og_title")
+  ogDescription String?  @map("og_description")
+  ogImage       String?  @map("og_image")
+  isActive      Boolean  @default(true) @map("is_active")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive, path])
+  @@map("seo_meta")
+}
+
 model LeadTag {
   id          String              @id @default(cuid())
   key         String              @unique
