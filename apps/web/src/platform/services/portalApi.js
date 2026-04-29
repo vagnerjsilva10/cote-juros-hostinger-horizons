@@ -800,13 +800,15 @@ export const portalApi = {
       return portalRepository.createIntegrationEvent(payload);
     }
 
+    const simulationId = payload.simulationId || payload.simulationContext?.leadId || undefined;
+
     try {
       return await request('/api/tracking/integrations', {
         method: 'POST',
         body: JSON.stringify({
           sourcePage: payload.sourcePage,
           productContext: payload.productContext || payload.productType,
-          simulationId: payload.simulationId || payload.simulationContext?.leadId
+          ...(simulationId ? { simulationId } : {})
         })
       });
     } catch {
