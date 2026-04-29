@@ -354,6 +354,86 @@ const DEFAULT_HOME_CONTENT = {
   }
 };
 
+const asObject = (value, fallback = {}) =>
+  value && typeof value === 'object' && !Array.isArray(value) ? value : fallback;
+
+const asArray = (value, fallback = []) =>
+  Array.isArray(value) && value.length ? value : fallback;
+
+const normalizeHomeContent = (content) => {
+  const safe = asObject(content, DEFAULT_HOME_CONTENT);
+  const hero = asObject(safe.hero, DEFAULT_HOME_CONTENT.hero);
+  const howItWorks = asObject(safe.howItWorks, DEFAULT_HOME_CONTENT.howItWorks);
+  const reasons = asObject(safe.reasons, DEFAULT_HOME_CONTENT.reasons);
+  const difference = asObject(safe.difference, DEFAULT_HOME_CONTENT.difference);
+  const featured = asObject(safe.featured, DEFAULT_HOME_CONTENT.featured);
+  const midCta = asObject(safe.midCta, DEFAULT_HOME_CONTENT.midCta);
+  const editorial = asObject(safe.editorial, DEFAULT_HOME_CONTENT.editorial);
+  const suggested = asObject(safe.suggested, DEFAULT_HOME_CONTENT.suggested);
+  const faq = asObject(safe.faq, DEFAULT_HOME_CONTENT.faq);
+  const finalCta = asObject(safe.finalCta, DEFAULT_HOME_CONTENT.finalCta);
+
+  return {
+    ...DEFAULT_HOME_CONTENT,
+    ...safe,
+    hero: {
+      ...DEFAULT_HOME_CONTENT.hero,
+      ...hero,
+      bullets: asArray(hero.bullets, DEFAULT_HOME_CONTENT.hero.bullets),
+      primaryCta: asObject(hero.primaryCta, DEFAULT_HOME_CONTENT.hero.primaryCta),
+      secondaryCta: asObject(hero.secondaryCta, DEFAULT_HOME_CONTENT.hero.secondaryCta)
+    },
+    categories: asArray(safe.categories, DEFAULT_HOME_CONTENT.categories),
+    howItWorks: {
+      ...DEFAULT_HOME_CONTENT.howItWorks,
+      ...howItWorks,
+      steps: asArray(howItWorks.steps, DEFAULT_HOME_CONTENT.howItWorks.steps),
+      flow: asArray(howItWorks.flow, DEFAULT_HOME_CONTENT.howItWorks.flow),
+      metrics: asArray(howItWorks.metrics, DEFAULT_HOME_CONTENT.howItWorks.metrics)
+    },
+    reasons: {
+      ...DEFAULT_HOME_CONTENT.reasons,
+      ...reasons,
+      items: asArray(reasons.items, DEFAULT_HOME_CONTENT.reasons.items)
+    },
+    difference: {
+      ...DEFAULT_HOME_CONTENT.difference,
+      ...difference,
+      items: asArray(difference.items, DEFAULT_HOME_CONTENT.difference.items)
+    },
+    featured: {
+      ...DEFAULT_HOME_CONTENT.featured,
+      ...featured,
+      items: asArray(featured.items, DEFAULT_HOME_CONTENT.featured.items)
+    },
+    midCta: {
+      ...DEFAULT_HOME_CONTENT.midCta,
+      ...midCta,
+      cta: asObject(midCta.cta, DEFAULT_HOME_CONTENT.midCta.cta)
+    },
+    editorial: {
+      ...DEFAULT_HOME_CONTENT.editorial,
+      ...editorial,
+      items: asArray(editorial.items, DEFAULT_HOME_CONTENT.editorial.items)
+    },
+    suggested: {
+      ...DEFAULT_HOME_CONTENT.suggested,
+      ...suggested,
+      items: asArray(suggested.items, DEFAULT_HOME_CONTENT.suggested.items)
+    },
+    faq: {
+      ...DEFAULT_HOME_CONTENT.faq,
+      ...faq,
+      items: asArray(faq.items, DEFAULT_HOME_CONTENT.faq.items)
+    },
+    finalCta: {
+      ...DEFAULT_HOME_CONTENT.finalCta,
+      ...finalCta,
+      cta: asObject(finalCta.cta, DEFAULT_HOME_CONTENT.finalCta.cta)
+    }
+  };
+};
+
 function isValidEmail(email = '') {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim());
 }
@@ -719,7 +799,8 @@ function HomeQuiz({ onFallback }) {
 function HomePage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const content = usePageContent('home', DEFAULT_HOME_CONTENT);
+  const pageContent = usePageContent('home', DEFAULT_HOME_CONTENT);
+  const content = useMemo(() => normalizeHomeContent(pageContent), [pageContent]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalLeadData, setModalLeadData] = useState(null);
 
@@ -990,7 +1071,7 @@ function HomePage() {
                 <h2>Use o quiz como porta de entrada do comparador.</h2>
                 <p>Você informa o básico uma vez e continua apenas se fizer sentido.</p>
               </div>
-              <button type="button" className="cj-btn cj-btn-primary" onClick={() => openGenericResults('Ver minhas opcoes intermediario')}>
+              <button type="button" className="cj-btn cj-btn-primary" onClick={() => openGenericResults(content.midCta.cta?.trackingLabel || content.midCta.cta?.label)}>
                 Ver minhas opções
                 <ArrowRight className="h-4 w-4" />
               </button>
@@ -1007,13 +1088,13 @@ function HomePage() {
             </div>
 
             <div className="cj-editorial-grid">
-              {editorialRecommendations.map((item, index) => (
+              {content.editorial.items.map((item, index) => (
                 <Link key={item.title} to={item.href} className={`cj-editorial-card cj-editorial-card-${index + 1}`}>
                   <span>{String(index + 1).padStart(2, '0')}</span>
                   <strong>{item.title}</strong>
                   <p>{item.text}</p>
                   <small>
-                    Ler guia
+                    {content.editorial.linkLabel}
                     <ArrowRight className="h-4 w-4" />
                   </small>
                 </Link>
@@ -1031,7 +1112,7 @@ function HomePage() {
             </div>
 
             <div className="cj-content-grid">
-              {suggestedContents.map((item) => (
+              {content.suggested.items.map((item) => (
                 <Link key={item.title} to={item.href} className="cj-content-card">
                   <span>{item.label}</span>
                   <strong>{item.title}</strong>
