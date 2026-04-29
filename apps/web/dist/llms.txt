@@ -7,8 +7,8 @@
 - [Motion Hero - Cote Juros](/motionhero): No description available
 - [Ofertas externas selecionadas | Cote Juros](/ofertas): Veja saídas externas em uma área separada, com leitura clara, aviso de saída e mais contexto antes do clique.
 - [Política de privacidade - Cote Juros](/politicaprivacidade): Veja como a Cote Juros usa dados para mostrar caminhos de crédito, registrar solicitações e conectar você com a próxima etapa quando fizer sentido.
-- [Proxima etapa | Cote Juros](/leadnextstep): Veja a proxima etapa da sua jornada de credito com mais clareza.
 - [Termos de uso - Cote Juros](/termosuso): Entenda os termos de uso da Cote Juros e o papel do site na comparação e encaminhamento de caminhos de crédito.
 - [Untitled Page](/creditprofilelanding): No description available
+- [Untitled Page](/leadnextstep): No description available
 - [Untitled Page](/seolanding): No description available
 - [Untitled Page](/seoprogrammatic): No description available

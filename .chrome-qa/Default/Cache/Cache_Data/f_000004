@@ -1,0 +1,1184 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/App.jsx");import __vite__cjsImport0_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=f3f27a3e"; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+var _s = $RefreshSig$(), _s2 = $RefreshSig$(), _s3 = $RefreshSig$();
+import __vite__cjsImport1_react from "/node_modules/.vite/deps/react.js?v=f3f27a3e"; const React = __vite__cjsImport1_react.__esModule ? __vite__cjsImport1_react.default : __vite__cjsImport1_react; const useEffect = __vite__cjsImport1_react["useEffect"]; const useMemo = __vite__cjsImport1_react["useMemo"]; const useState = __vite__cjsImport1_react["useState"];
+import { BrowserRouter as Router, Route, Routes, useLocation } from "/node_modules/.vite/deps/react-router-dom.js?v=f3f27a3e";
+import ScrollToTop from "/src/components/ScrollToTop.jsx";
+import Header from "/src/components/Header.jsx";
+import Footer from "/src/components/Footer.jsx";
+import AdSenseScript from "/src/components/AdSenseScript.tsx";
+import CookieConsent from "/src/components/CookieConsent.jsx";
+import HomePage from "/src/pages/HomePage.jsx";
+import EmprestimosPage from "/src/pages/EmprestimosPage.jsx";
+import CartoesPage from "/src/pages/CartoesPage.jsx";
+import FinanciamentoPage from "/src/pages/FinanciamentoPage.jsx";
+import OfertasPage from "/src/pages/OfertasPage.jsx";
+import FerramentasPage from "/src/pages/FerramentasPage.jsx";
+import CalculadoraCetPage from "/src/pages/CalculadoraCetPage.jsx";
+import SimuladorComprometimentoRendaPage from "/src/pages/SimuladorComprometimentoRendaPage.jsx";
+import EstudoCreditoNegativadoPage from "/src/pages/EstudoCreditoNegativadoPage.jsx";
+import DiagnosticoPage from "/src/pages/DiagnosticoPage.jsx";
+import BlogPage from "/src/pages/BlogPage.jsx";
+import BlogArticlePage from "/src/pages/BlogArticlePage.jsx";
+import BlogRouteBoundary from "/src/components/blog/BlogRouteBoundary.jsx";
+import ComoFuncionaPage from "/src/pages/ComoFuncionaPage.jsx";
+import SobreNosPage from "/src/pages/SobreNosPage.jsx";
+import ContatoPage from "/src/pages/ContatoPage.jsx";
+import FaqPage from "/src/pages/FaqPage.jsx";
+import PoliticaPrivacidadePage from "/src/pages/PoliticaPrivacidadePage.jsx";
+import TermosUsoPage from "/src/pages/TermosUsoPage.jsx";
+import SeoLandingPage from "/src/pages/SeoLandingPage.jsx";
+import CoteFinanceAIPage from "/src/pages/CoteFinanceAIPage.jsx";
+import MotionHeroPage from "/src/pages/MotionHeroPage.jsx";
+import SeoProgrammaticPage from "/src/pages/SeoProgrammaticPage.jsx";
+import CreditProfileLandingPage from "/src/pages/CreditProfileLandingPage.jsx";
+import LeadNextStepPage from "/src/pages/LeadNextStepPage.jsx";
+import ReactivationLandingPage from "/src/pages/ReactivationLandingPage.jsx";
+import AdminAuthGuard from "/src/admin/AdminAuthGuard.jsx";
+import AdminLayout from "/src/admin/AdminLayout.jsx";
+import AdminDashboardPage from "/src/pages/admin/AdminDashboardPage.jsx";
+import AdminOffersPage from "/src/pages/admin/AdminOffersPage.jsx";
+import AdminBanksPage from "/src/pages/admin/AdminBanksPage.jsx";
+import AdminPartnersPage from "/src/pages/admin/AdminPartnersPage.jsx";
+import AdminUsersPage from "/src/pages/admin/AdminUsersPage.jsx";
+import AdminArticlesPage from "/src/pages/admin/AdminArticlesPage.jsx";
+import AdminSeoPagesPage from "/src/pages/admin/AdminSeoPagesPage.jsx";
+import AdminLeadsPage from "/src/pages/admin/AdminLeadsPage.jsx";
+import AdminReactivationPage from "/src/pages/admin/AdminReactivationPage.jsx";
+import AdminEmailOpsPage from "/src/pages/admin/AdminEmailOpsPage.jsx";
+import AdminTestimonialsPage from "/src/pages/admin/AdminTestimonialsPage.jsx";
+import AdminAuditPage from "/src/pages/admin/AdminAuditPage.jsx";
+import AdminHealthPage from "/src/pages/admin/AdminHealthPage.jsx";
+import AdminSettingsPage from "/src/pages/admin/AdminSettingsPage.jsx";
+import { seoFallbackPaths as seedFallbackPaths, seoPages as seedSeoPages } from "/src/platform/seed/portalSeed.js";
+import { portalApi } from "/src/platform/services/portalApi.js";
+import { Toaster } from "/src/components/ui/sonner.jsx";
+import { corePillarPaths, reservedSeoStaticPaths } from "/src/seo/seoCatalog.js";
+import { wordpressMigratedArticles, wordpressMigratedArticlePaths } from "/src/data/wordpressMigratedArticles.js";
+function AppLayout({ children }) {
+  _s();
+  const location = useLocation();
+  const routeClass = location.pathname === "/" ? "is-home" : "is-domain-page";
+  return /* @__PURE__ */ jsxDEV("div", { className: `public-site-shell ${routeClass} min-h-screen overflow-x-hidden flex flex-col bg-background selection:bg-primary/10`, children: [
+    /* @__PURE__ */ jsxDEV(Header, {}, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+      lineNumber: 65,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV("main", { className: "min-w-0", children }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+      lineNumber: 66,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV(Footer, {}, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+      lineNumber: 67,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV(CookieConsent, {}, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+      lineNumber: 68,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+    lineNumber: 64,
+    columnNumber: 5
+  }, this);
+}
+_s(AppLayout, "pkHmaVRPskBaU4tMJuJJpV42k1I=", false, function() {
+  return [useLocation];
+});
+_c = AppLayout;
+function AdminRoute({ title, children }) {
+  return /* @__PURE__ */ jsxDEV(AdminAuthGuard, { children: /* @__PURE__ */ jsxDEV(AdminLayout, { title, children }, void 0, false, {
+    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+    lineNumber: 76,
+    columnNumber: 7
+  }, this) }, void 0, false, {
+    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+    lineNumber: 75,
+    columnNumber: 5
+  }, this);
+}
+_c2 = AdminRoute;
+function BlogBoundary({ children }) {
+  _s2();
+  const location = useLocation();
+  return /* @__PURE__ */ jsxDEV(BlogRouteBoundary, { resetKey: location.pathname, children }, void 0, false, {
+    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+    lineNumber: 84,
+    columnNumber: 10
+  }, this);
+}
+_s2(BlogBoundary, "pkHmaVRPskBaU4tMJuJJpV42k1I=", false, function() {
+  return [useLocation];
+});
+_c3 = BlogBoundary;
+function App() {
+  _s3();
+  const [seoPages, setSeoPages] = useState(seedSeoPages);
+  const [seoFallbackPaths, setSeoFallbackPaths] = useState(seedFallbackPaths);
+  const blockedSeedSeoPaths = useMemo(() => {
+    const blocked = /* @__PURE__ */ new Set([...reservedSeoStaticPaths, ...corePillarPaths]);
+    wordpressMigratedArticlePaths.forEach((path) => blocked.add(path));
+    blocked.add("/cartoes-de-credito");
+    blocked.add("/financiamento");
+    blocked.add("/diagnostico-financeiro");
+    blocked.add("/cote-finance-ai");
+    blocked.add("/como-funciona");
+    blocked.add("/sobre-nos");
+    blocked.add("/contato");
+    blocked.add("/perguntas-frequentes");
+    blocked.add("/faq");
+    blocked.add("/politica-de-privacidade");
+    blocked.add("/termos-de-uso");
+    return blocked;
+  }, []);
+  const shouldSkipSeedSeoPage = (path = "") => {
+    if (!path) return true;
+    if (blockedSeedSeoPaths.has(path)) return true;
+    if (path.startsWith("/comparar/")) return true;
+    if (path.startsWith("/banco/")) return true;
+    if (path.startsWith("/cartao/")) return true;
+    if (path.startsWith("/blog/")) return true;
+    return false;
+  };
+  useEffect(() => {
+    Promise.all([portalApi.getSeoPages(), portalApi.getSeoFallbackPaths()]).then(([pages, fallbackPaths]) => {
+      if (Array.isArray(pages) && pages.length) setSeoPages(pages);
+      if (Array.isArray(fallbackPaths) && fallbackPaths.length) setSeoFallbackPaths(fallbackPaths);
+    }).catch(() => {
+    });
+  }, []);
+  return /* @__PURE__ */ jsxDEV(Router, { children: [
+    /* @__PURE__ */ jsxDEV(AdSenseScript, {}, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+      lineNumber: 131,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV(ScrollToTop, {}, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+      lineNumber: 132,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV(Routes, { children: [
+      /* @__PURE__ */ jsxDEV(Route, { path: "/", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(HomePage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 134,
+        columnNumber: 45
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 134,
+        columnNumber: 34
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 134,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/emprestimos", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(EmprestimosPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 135,
+        columnNumber: 56
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 135,
+        columnNumber: 45
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 135,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/cartoes", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(CartoesPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 136,
+        columnNumber: 52
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 136,
+        columnNumber: 41
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 136,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/cartoes-de-credito", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(CartoesPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 137,
+        columnNumber: 63
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 137,
+        columnNumber: 52
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 137,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/financiamentos", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(FinanciamentoPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 138,
+        columnNumber: 59
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 138,
+        columnNumber: 48
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 138,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/financiamento", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(FinanciamentoPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 139,
+        columnNumber: 58
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 139,
+        columnNumber: 47
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 139,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/ofertas", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(OfertasPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 140,
+        columnNumber: 52
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 140,
+        columnNumber: 41
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 140,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/parceiros", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(OfertasPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 141,
+        columnNumber: 54
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 141,
+        columnNumber: 43
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 141,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/ferramentas", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(FerramentasPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 142,
+        columnNumber: 56
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 142,
+        columnNumber: 45
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 142,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/calculadora-cet", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(CalculadoraCetPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 143,
+        columnNumber: 60
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 143,
+        columnNumber: 49
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 143,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/simulador-comprometimento-renda", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(SimuladorComprometimentoRendaPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 144,
+        columnNumber: 76
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 144,
+        columnNumber: 65
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 144,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/estudos/custo-emprestimo-negativado-2026", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(EstudoCreditoNegativadoPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 145,
+        columnNumber: 85
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 145,
+        columnNumber: 74
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 145,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/diagnostico-financeiro", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(DiagnosticoPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 146,
+        columnNumber: 67
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 146,
+        columnNumber: 56
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 146,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(
+        Route,
+        {
+          path: "/blog",
+          element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(BlogBoundary, { children: /* @__PURE__ */ jsxDEV(BlogPage, {}, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 152,
+            columnNumber: 17
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 151,
+            columnNumber: 15
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 150,
+            columnNumber: 11
+          }, this)
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+          lineNumber: 147,
+          columnNumber: 9
+        },
+        this
+      ),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/como-funciona", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(ComoFuncionaPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 157,
+        columnNumber: 58
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 157,
+        columnNumber: 47
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 157,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/sobre-nos", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(SobreNosPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 158,
+        columnNumber: 54
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 158,
+        columnNumber: 43
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 158,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/contato", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(ContatoPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 159,
+        columnNumber: 52
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 159,
+        columnNumber: 41
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 159,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/perguntas-frequentes", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(FaqPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 160,
+        columnNumber: 65
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 160,
+        columnNumber: 54
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 160,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/faq", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(FaqPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 161,
+        columnNumber: 48
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 161,
+        columnNumber: 37
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 161,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/politica-de-privacidade", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(PoliticaPrivacidadePage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 162,
+        columnNumber: 68
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 162,
+        columnNumber: 57
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 162,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/termos-de-uso", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(TermosUsoPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 163,
+        columnNumber: 58
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 163,
+        columnNumber: 47
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 163,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/cote-finance-ai", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(CoteFinanceAIPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 164,
+        columnNumber: 60
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 164,
+        columnNumber: 49
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 164,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/motion-hero", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(MotionHeroPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 165,
+        columnNumber: 56
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 165,
+        columnNumber: 45
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 165,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/resultado", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(LeadNextStepPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 166,
+        columnNumber: 54
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 166,
+        columnNumber: 43
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 166,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/proxima-etapa", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(LeadNextStepPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 167,
+        columnNumber: 58
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 167,
+        columnNumber: 47
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 167,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/r/:token", element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(ReactivationLandingPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 168,
+        columnNumber: 53
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 168,
+        columnNumber: 42
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 168,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(
+        Route,
+        {
+          path: "/emprestimo-para-negativado",
+          element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(
+            CreditProfileLandingPage,
+            {
+              canonicalPath: "/emprestimo-para-negativado",
+              title: "Empréstimo para negativado | Veja caminhos possíveis | Cote Juros",
+              description: "Se você está com o nome negativado, veja caminhos possíveis antes de decidir. Sem compromisso e sem cobrança antecipada.",
+              badge: "Para quem está negativado",
+              heroTitle: "Mesmo com o nome negativado, ainda pode haver caminhos possíveis",
+              heroDescription: "Responda o básico e veja opções para comparar antes de contratar, sem criar expectativa errada.",
+              trustLine: "Sem compromisso e sem promessa falsa"
+            },
+            void 0,
+            false,
+            {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+              lineNumber: 173,
+              columnNumber: 15
+            },
+            this
+          ) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 172,
+            columnNumber: 11
+          }, this)
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+          lineNumber: 169,
+          columnNumber: 9
+        },
+        this
+      ),
+      /* @__PURE__ */ jsxDEV(
+        Route,
+        {
+          path: "/emprestimo-para-clt",
+          element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(
+            CreditProfileLandingPage,
+            {
+              canonicalPath: "/emprestimo-para-clt",
+              title: "Empréstimo para CLT | Veja opções para o seu perfil | Cote Juros",
+              description: "Se você trabalha com carteira assinada, veja opções de crédito que podem combinar com sua renda e seu perfil.",
+              badge: "Para quem trabalha com carteira",
+              heroTitle: "Se você é CLT, veja opções que podem combinar com sua renda",
+              heroDescription: "Compare com mais clareza e veja caminhos possíveis antes de seguir para a próxima etapa.",
+              trustLine: "Você pode ver as opções e decidir com calma"
+            },
+            void 0,
+            false,
+            {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+              lineNumber: 189,
+              columnNumber: 15
+            },
+            this
+          ) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 188,
+            columnNumber: 11
+          }, this)
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+          lineNumber: 185,
+          columnNumber: 9
+        },
+        this
+      ),
+      /* @__PURE__ */ jsxDEV(
+        Route,
+        {
+          path: "/emprestimo-para-autonomo",
+          element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(
+            CreditProfileLandingPage,
+            {
+              canonicalPath: "/emprestimo-para-autonomo",
+              title: "Empréstimo para autônomo | Veja caminhos possíveis | Cote Juros",
+              description: "Se você é autônomo, veja opções de crédito que podem fazer sentido para o seu momento, sem perder tempo com formulários longos.",
+              badge: "Para autônomos",
+              heroTitle: "Se você é autônomo, veja caminhos de crédito que podem fazer sentido",
+              heroDescription: "Entenda possibilidades antes de decidir, com mais clareza e menos enrolação.",
+              trustLine: "Sem cobrança antecipada e sem pressão para fechar"
+            },
+            void 0,
+            false,
+            {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+              lineNumber: 205,
+              columnNumber: 15
+            },
+            this
+          ) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 204,
+            columnNumber: 11
+          }, this)
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+          lineNumber: 201,
+          columnNumber: 9
+        },
+        this
+      ),
+      /* @__PURE__ */ jsxDEV(
+        Route,
+        {
+          path: "/comparar",
+          element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(SeoProgrammaticPage, { mode: "static", pagePath: "/comparar" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 222,
+            columnNumber: 15
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 221,
+            columnNumber: 11
+          }, this)
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+          lineNumber: 218,
+          columnNumber: 9
+        },
+        this
+      ),
+      /* @__PURE__ */ jsxDEV(
+        Route,
+        {
+          path: "/bancos",
+          element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(SeoProgrammaticPage, { mode: "static", pagePath: "/bancos" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 230,
+            columnNumber: 15
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 229,
+            columnNumber: 11
+          }, this)
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+          lineNumber: 226,
+          columnNumber: 9
+        },
+        this
+      ),
+      reservedSeoStaticPaths.filter((path) => !["/comparar", "/bancos", "/emprestimo-para-negativado"].includes(path)).map(
+        (path) => /* @__PURE__ */ jsxDEV(
+          Route,
+          {
+            path,
+            element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(SeoProgrammaticPage, { mode: "static", pagePath: path }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+              lineNumber: 243,
+              columnNumber: 19
+            }, this) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+              lineNumber: 242,
+              columnNumber: 11
+            }, this)
+          },
+          `seo-static-${path}`,
+          false,
+          {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 238,
+            columnNumber: 9
+          },
+          this
+        )
+      ),
+      /* @__PURE__ */ jsxDEV(
+        Route,
+        {
+          path: "/comparar/:comparisonSlug",
+          element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(SeoProgrammaticPage, { mode: "compare" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 253,
+            columnNumber: 15
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 252,
+            columnNumber: 11
+          }, this)
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+          lineNumber: 249,
+          columnNumber: 9
+        },
+        this
+      ),
+      /* @__PURE__ */ jsxDEV(
+        Route,
+        {
+          path: "/banco/:bankSlug",
+          element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(SeoProgrammaticPage, { mode: "bank" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 261,
+            columnNumber: 15
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 260,
+            columnNumber: 11
+          }, this)
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+          lineNumber: 257,
+          columnNumber: 9
+        },
+        this
+      ),
+      /* @__PURE__ */ jsxDEV(
+        Route,
+        {
+          path: "/cartao/:cardSlug",
+          element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(SeoProgrammaticPage, { mode: "card" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 269,
+            columnNumber: 15
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 268,
+            columnNumber: 11
+          }, this)
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+          lineNumber: 265,
+          columnNumber: 9
+        },
+        this
+      ),
+      /* @__PURE__ */ jsxDEV(
+        Route,
+        {
+          path: "/blog/:articleSlug",
+          element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(BlogBoundary, { children: /* @__PURE__ */ jsxDEV(BlogArticlePage, {}, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 278,
+            columnNumber: 17
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 277,
+            columnNumber: 15
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 276,
+            columnNumber: 11
+          }, this)
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+          lineNumber: 273,
+          columnNumber: 9
+        },
+        this
+      ),
+      wordpressMigratedArticles.map(
+        (article) => /* @__PURE__ */ jsxDEV(
+          Route,
+          {
+            path: article.routePath,
+            element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(BlogBoundary, { children: /* @__PURE__ */ jsxDEV(BlogArticlePage, { articleSlugOverride: article.slug }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+              lineNumber: 290,
+              columnNumber: 19
+            }, this) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+              lineNumber: 289,
+              columnNumber: 17
+            }, this) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+              lineNumber: 288,
+              columnNumber: 11
+            }, this)
+          },
+          `wp-article-${article.slug}`,
+          false,
+          {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 284,
+            columnNumber: 9
+          },
+          this
+        )
+      ),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin/login", element: /* @__PURE__ */ jsxDEV(AdminAuthGuard, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 297,
+        columnNumber: 45
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 297,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin", element: /* @__PURE__ */ jsxDEV(AdminRoute, { title: "Painel", children: /* @__PURE__ */ jsxDEV(AdminDashboardPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 298,
+        columnNumber: 66
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 298,
+        columnNumber: 39
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 298,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin/offers", element: /* @__PURE__ */ jsxDEV(AdminRoute, { title: "Gestão de ofertas", children: /* @__PURE__ */ jsxDEV(AdminOffersPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 299,
+        columnNumber: 84
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 299,
+        columnNumber: 46
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 299,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin/banks", element: /* @__PURE__ */ jsxDEV(AdminRoute, { title: "Gestão de bancos", children: /* @__PURE__ */ jsxDEV(AdminBanksPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 300,
+        columnNumber: 82
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 300,
+        columnNumber: 45
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 300,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin/partners", element: /* @__PURE__ */ jsxDEV(AdminRoute, { title: "Gestão de parceiros", children: /* @__PURE__ */ jsxDEV(AdminPartnersPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 301,
+        columnNumber: 88
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 301,
+        columnNumber: 48
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 301,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin/users", element: /* @__PURE__ */ jsxDEV(AdminRoute, { title: "Equipe e permissões", children: /* @__PURE__ */ jsxDEV(AdminUsersPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 302,
+        columnNumber: 85
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 302,
+        columnNumber: 45
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 302,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin/articles", element: /* @__PURE__ */ jsxDEV(AdminRoute, { title: "Gestão de artigos", children: /* @__PURE__ */ jsxDEV(AdminArticlesPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 303,
+        columnNumber: 86
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 303,
+        columnNumber: 48
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 303,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin/seo-pages", element: /* @__PURE__ */ jsxDEV(AdminRoute, { title: "Gestão de páginas SEO", children: /* @__PURE__ */ jsxDEV(AdminSeoPagesPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 304,
+        columnNumber: 91
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 304,
+        columnNumber: 49
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 304,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin/leads", element: /* @__PURE__ */ jsxDEV(AdminRoute, { title: "Gestão de leads", children: /* @__PURE__ */ jsxDEV(AdminLeadsPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 305,
+        columnNumber: 81
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 305,
+        columnNumber: 45
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 305,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin/reactivation", element: /* @__PURE__ */ jsxDEV(AdminRoute, { title: "Reativação de leads", children: /* @__PURE__ */ jsxDEV(AdminReactivationPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 306,
+        columnNumber: 92
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 306,
+        columnNumber: 52
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 306,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin/email-ops", element: /* @__PURE__ */ jsxDEV(AdminRoute, { title: "Email Ops", children: /* @__PURE__ */ jsxDEV(AdminEmailOpsPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 307,
+        columnNumber: 79
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 307,
+        columnNumber: 49
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 307,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin/testimonials", element: /* @__PURE__ */ jsxDEV(AdminRoute, { title: "Depoimentos", children: /* @__PURE__ */ jsxDEV(AdminTestimonialsPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 308,
+        columnNumber: 84
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 308,
+        columnNumber: 52
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 308,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin/audit", element: /* @__PURE__ */ jsxDEV(AdminRoute, { title: "Auditoria", children: /* @__PURE__ */ jsxDEV(AdminAuditPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 309,
+        columnNumber: 75
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 309,
+        columnNumber: 45
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 309,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin/health", element: /* @__PURE__ */ jsxDEV(AdminRoute, { title: "Saúde operacional", children: /* @__PURE__ */ jsxDEV(AdminHealthPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 310,
+        columnNumber: 84
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 310,
+        columnNumber: 46
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 310,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(Route, { path: "/admin/settings", element: /* @__PURE__ */ jsxDEV(AdminRoute, { title: "Configurações", children: /* @__PURE__ */ jsxDEV(AdminSettingsPage, {}, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 311,
+        columnNumber: 82
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 311,
+        columnNumber: 48
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+        lineNumber: 311,
+        columnNumber: 9
+      }, this),
+      seoPages.filter((page) => !shouldSkipSeedSeoPage(page.path)).map(
+        (page) => /* @__PURE__ */ jsxDEV(
+          Route,
+          {
+            path: page.path,
+            element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(
+              SeoLandingPage,
+              {
+                title: page.title,
+                description: page.description,
+                heading: page.heroCopy || page.heading,
+                content: Array.isArray(page.content) ? page.content : [page.description].filter(Boolean),
+                type: page.type
+              },
+              void 0,
+              false,
+              {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+                lineNumber: 319,
+                columnNumber: 17
+              },
+              this
+            ) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+              lineNumber: 318,
+              columnNumber: 11
+            }, this)
+          },
+          page.path,
+          false,
+          {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 314,
+            columnNumber: 9
+          },
+          this
+        )
+      ),
+      seoFallbackPaths.map(
+        (path) => /* @__PURE__ */ jsxDEV(
+          Route,
+          {
+            path,
+            element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV(
+              SeoLandingPage,
+              {
+                title: "Conteúdo especializado - Cote Juros",
+                description: "Encontre a melhor oferta financeira para o seu perfil. Compare taxas e economize.",
+                heading: "Descubra a melhor opção para você",
+                content: [
+                  "A Cote Juros analisa dezenas de instituições financeiras para entregar a melhor oferta para o seu bolso.",
+                  "Comparamos taxas, prazos e condições para que você tome a melhor decisão de forma gratuita."
+                ],
+                type: "all"
+              },
+              void 0,
+              false,
+              {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+                lineNumber: 337,
+                columnNumber: 17
+              },
+              this
+            ) }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+              lineNumber: 336,
+              columnNumber: 11
+            }, this)
+          },
+          path,
+          false,
+          {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 332,
+            columnNumber: 9
+          },
+          this
+        )
+      ),
+      /* @__PURE__ */ jsxDEV(
+        Route,
+        {
+          path: "*",
+          element: /* @__PURE__ */ jsxDEV(AppLayout, { children: /* @__PURE__ */ jsxDEV("div", { className: "flex min-h-[60vh] flex-col items-center justify-center px-4 text-center", children: [
+            /* @__PURE__ */ jsxDEV("h1", { className: "mb-4 text-foreground", children: "Página não encontrada" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+              lineNumber: 357,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV("p", { className: "mb-8 max-w-xl text-lg text-muted-foreground", children: "A página que você está procurando não existe ou foi movida." }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+              lineNumber: 358,
+              columnNumber: 17
+            }, this),
+            /* @__PURE__ */ jsxDEV("a", { href: "/", className: "font-semibold text-foreground hover:underline", children: "Voltar para o início" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+              lineNumber: 361,
+              columnNumber: 17
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 356,
+            columnNumber: 15
+          }, this) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+            lineNumber: 355,
+            columnNumber: 11
+          }, this)
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+          lineNumber: 352,
+          columnNumber: 9
+        },
+        this
+      )
+    ] }, void 0, true, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+      lineNumber: 133,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV(Toaster, { position: "top-right" }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+      lineNumber: 369,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx",
+    lineNumber: 130,
+    columnNumber: 5
+  }, this);
+}
+_s3(App, "kzRBj+DUrkDoWMe7DaMTyWKvbTw=");
+_c4 = App;
+export default App;
+var _c, _c2, _c3, _c4;
+$RefreshReg$(_c, "AppLayout");
+$RefreshReg$(_c2, "AdminRoute");
+$RefreshReg$(_c3, "BlogBoundary");
+$RefreshReg$(_c4, "App");
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+  RefreshRuntime.__hmr_import(import.meta.url).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+function $RefreshReg$(type, id) {
+  return RefreshRuntime.register(type, "C:/dev/cote-juros-hostinger-horizons/apps/web/src/App.jsx " + id);
+}
+function $RefreshSig$() {
+  return RefreshRuntime.createSignatureFunctionForTransform();
+}
+
+//# sourceMappingURL=data:application/json;base64,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QUE7QUFBQSxtQkFXQTtBQUFBO0FBQUEsVUFkR0E7QUFBQUEsVUFEUDtBQUFBO0FBQUE7QUFBQTtBQUFBO0FBQUE7QUFBQTtBQUFBLFFBZ0JHO0FBQUEsTUFFSjtBQUFBLE1BRUQ7QUFBQSxRQUFDO0FBQUE7QUFBQSxVQUNDLE1BQUs7QUFBQSxVQUNMLFNBQ0UsdUJBQUMsYUFDQyxpQ0FBQyxTQUFJLFdBQVUsMkVBQ2I7QUFBQSxtQ0FBQyxRQUFHLFdBQVUsd0JBQXVCLHFDQUFyQztBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUEwRDtBQUFBLFlBQzFELHVCQUFDLE9BQUUsV0FBVSwrQ0FBOEMsMkVBQTNEO0FBQUE7QUFBQTtBQUFBO0FBQUEsbUJBRUE7QUFBQSxZQUNBLHVCQUFDLE9BQUUsTUFBSyxLQUFJLFdBQVUsaURBQWdELG9DQUF0RTtBQUFBO0FBQUE7QUFBQTtBQUFBLG1CQUVBO0FBQUEsZUFQRjtBQUFBO0FBQUE7QUFBQTtBQUFBLGlCQVFBLEtBVEY7QUFBQTtBQUFBO0FBQUE7QUFBQSxpQkFVQTtBQUFBO0FBQUEsUUFiSjtBQUFBO0FBQUE7QUFBQTtBQUFBO0FBQUE7QUFBQTtBQUFBO0FBQUEsTUFjRztBQUFBLFNBek9MO0FBQUE7QUFBQTtBQUFBO0FBQUEsV0EyT0E7QUFBQSxJQUNBLHVCQUFDLFdBQVEsVUFBUyxlQUFsQjtBQUFBO0FBQUE7QUFBQTtBQUFBLFdBQTZCO0FBQUEsT0EvTy9CO0FBQUE7QUFBQTtBQUFBO0FBQUEsU0FnUEE7QUFFSjtBQUFDUCxJQTdSUUQsS0FBRztBQUFBLE1BQUhBO0FBK1JULGVBQWVBO0FBQUksSUFBQXFDLElBQUF4QyxLQUFBeUMsS0FBQUM7QUFBQSxhQUFBRixJQUFBO0FBQUEsYUFBQXhDLEtBQUE7QUFBQSxhQUFBeUMsS0FBQTtBQUFBLGFBQUFDLEtBQUEiLCJuYW1lcyI6WyJSZWFjdCIsInVzZUVmZmVjdCIsInVzZU1lbW8iLCJ1c2VTdGF0ZSIsIkJyb3dzZXJSb3V0ZXIiLCJSb3V0ZXIiLCJSb3V0ZSIsIlJvdXRlcyIsInVzZUxvY2F0aW9uIiwiU2Nyb2xsVG9Ub3AiLCJIZWFkZXIiLCJGb290ZXIiLCJBZFNlbnNlU2NyaXB0IiwiQ29va2llQ29uc2VudCIsIkhvbWVQYWdlIiwiRW1wcmVzdGltb3NQYWdlIiwiQ2FydG9lc1BhZ2UiLCJGaW5hbmNpYW1lbnRvUGFnZSIsIk9mZXJ0YXNQYWdlIiwiRmVycmFtZW50YXNQYWdlIiwiQ2FsY3VsYWRvcmFDZXRQYWdlIiwiU2ltdWxhZG9yQ29tcHJvbWV0aW1lbnRvUmVuZGFQYWdlIiwiRXN0dWRvQ3JlZGl0b05lZ2F0aXZhZG9QYWdlIiwiRGlhZ25vc3RpY29QYWdlIiwiQmxvZ1BhZ2UiLCJCbG9nQXJ0aWNsZVBhZ2UiLCJCbG9nUm91dGVCb3VuZGFyeSIsIkNvbW9GdW5jaW9uYVBhZ2UiLCJTb2JyZU5vc1BhZ2UiLCJDb250YXRvUGFnZSIsIkZhcVBhZ2UiLCJQb2xpdGljYVByaXZhY2lkYWRlUGFnZSIsIlRlcm1vc1Vzb1BhZ2UiLCJTZW9MYW5kaW5nUGFnZSIsIkNvdGVGaW5hbmNlQUlQYWdlIiwiTW90aW9uSGVyb1BhZ2UiLCJTZW9Qcm9ncmFtbWF0aWNQYWdlIiwiQ3JlZGl0UHJvZmlsZUxhbmRpbmdQYWdlIiwiTGVhZE5leHRTdGVwUGFnZSIsIlJlYWN0aXZhdGlvbkxhbmRpbmdQYWdlIiwiQWRtaW5BdXRoR3VhcmQiLCJBZG1pbkxheW91dCIsIkFkbWluRGFzaGJvYXJkUGFnZSIsIkFkbWluT2ZmZXJzUGFnZSIsIkFkbWluQmFua3NQYWdlIiwiQWRtaW5QYXJ0bmVyc1BhZ2UiLCJBZG1pblVzZXJzUGFnZSIsIkFkbWluQXJ0aWNsZXNQYWdlIiwiQWRtaW5TZW9QYWdlc1BhZ2UiLCJBZG1pbkxlYWRzUGFnZSIsIkFkbWluUmVhY3RpdmF0aW9uUGFnZSIsIkFkbWluRW1haWxPcHNQYWdlIiwiQWRtaW5UZXN0aW1vbmlhbHNQYWdlIiwiQWRtaW5BdWRpdFBhZ2UiLCJBZG1pbkhlYWx0aFBhZ2UiLCJBZG1pblNldHRpbmdzUGFnZSIsInNlb0ZhbGxiYWNrUGF0aHMiLCJzZWVkRmFsbGJhY2tQYXRocyIsInNlb1BhZ2VzIiwic2VlZFNlb1BhZ2VzIiwicG9ydGFsQXBpIiwiVG9hc3RlciIsImNvcmVQaWxsYXJQYXRocyIsInJlc2VydmVkU2VvU3RhdGljUGF0aHMiLCJ3b3JkcHJlc3NNaWdyYXRlZEFydGljbGVzIiwid29yZHByZXNzTWlncmF0ZWRBcnRpY2xlUGF0aHMiLCJBcHBMYXlvdXQiLCJjaGlsZHJlbiIsIl9zIiwibG9jYXRpb24iLCJyb3V0ZUNsYXNzIiwicGF0aG5hbWUiLCJBZG1pblJvdXRlIiwidGl0bGUiLCJfYzIiLCJCbG9nQm91bmRhcnkiLCJfczIiLCJBcHAiLCJfczMiLCJzZXRTZW9QYWdlcyIsInNldFNlb0ZhbGxiYWNrUGF0aHMiLCJibG9ja2VkU2VlZFNlb1BhdGhzIiwiYmxvY2tlZCIsIlNldCIsImZvckVhY2giLCJwYXRoIiwiYWRkIiwic2hvdWxkU2tpcFNlZWRTZW9QYWdlIiwiaGFzIiwic3RhcnRzV2l0aCIsIlByb21pc2UiLCJhbGwiLCJnZXRTZW9QYWdlcyIsImdldFNlb0ZhbGxiYWNrUGF0aHMiLCJ0aGVuIiwicGFnZXMiLCJmYWxsYmFja1BhdGhzIiwiQXJyYXkiLCJpc0FycmF5IiwibGVuZ3RoIiwiY2F0Y2giLCJmaWx0ZXIiLCJpbmNsdWRlcyIsIm1hcCIsImFydGljbGUiLCJyb3V0ZVBhdGgiLCJzbHVnIiwicGFnZSIsImRlc2NyaXB0aW9uIiwiaGVyb0NvcHkiLCJoZWFkaW5nIiwiY29udGVudCIsIkJvb2xlYW4iLCJ0eXBlIiwiX2MiLCJfYzMiLCJfYzQiXSwiaWdub3JlTGlzdCI6W10sInNvdXJjZXMiOlsiQXBwLmpzeCJdLCJzb3VyY2VzQ29udGVudCI6WyLvu79pbXBvcnQgUmVhY3QsIHsgdXNlRWZmZWN0LCB1c2VNZW1vLCB1c2VTdGF0ZSB9IGZyb20gJ3JlYWN0JztcclxuaW1wb3J0IHsgQnJvd3NlclJvdXRlciBhcyBSb3V0ZXIsIFJvdXRlLCBSb3V0ZXMsIHVzZUxvY2F0aW9uIH0gZnJvbSAncmVhY3Qtcm91dGVyLWRvbSc7XHJcbmltcG9ydCBTY3JvbGxUb1RvcCBmcm9tICdAL2NvbXBvbmVudHMvU2Nyb2xsVG9Ub3AuanN4JztcclxuaW1wb3J0IEhlYWRlciBmcm9tICdAL2NvbXBvbmVudHMvSGVhZGVyLmpzeCc7XHJcbmltcG9ydCBGb290ZXIgZnJvbSAnQC9jb21wb25lbnRzL0Zvb3Rlci5qc3gnO1xyXG5pbXBvcnQgQWRTZW5zZVNjcmlwdCBmcm9tICdAL2NvbXBvbmVudHMvQWRTZW5zZVNjcmlwdC50c3gnO1xyXG5pbXBvcnQgQ29va2llQ29uc2VudCBmcm9tICdAL2NvbXBvbmVudHMvQ29va2llQ29uc2VudC5qc3gnO1xyXG5cclxuaW1wb3J0IEhvbWVQYWdlIGZyb20gJ0AvcGFnZXMvSG9tZVBhZ2UuanN4JztcclxuaW1wb3J0IEVtcHJlc3RpbW9zUGFnZSBmcm9tICdAL3BhZ2VzL0VtcHJlc3RpbW9zUGFnZS5qc3gnO1xyXG5pbXBvcnQgQ2FydG9lc1BhZ2UgZnJvbSAnQC9wYWdlcy9DYXJ0b2VzUGFnZS5qc3gnO1xyXG5pbXBvcnQgRmluYW5jaWFtZW50b1BhZ2UgZnJvbSAnQC9wYWdlcy9GaW5hbmNpYW1lbnRvUGFnZS5qc3gnO1xyXG5pbXBvcnQgT2ZlcnRhc1BhZ2UgZnJvbSAnQC9wYWdlcy9PZmVydGFzUGFnZS5qc3gnO1xyXG5pbXBvcnQgRmVycmFtZW50YXNQYWdlIGZyb20gJ0AvcGFnZXMvRmVycmFtZW50YXNQYWdlLmpzeCc7XHJcbmltcG9ydCBDYWxjdWxhZG9yYUNldFBhZ2UgZnJvbSAnQC9wYWdlcy9DYWxjdWxhZG9yYUNldFBhZ2UuanN4JztcclxuaW1wb3J0IFNpbXVsYWRvckNvbXByb21ldGltZW50b1JlbmRhUGFnZSBmcm9tICdAL3BhZ2VzL1NpbXVsYWRvckNvbXByb21ldGltZW50b1JlbmRhUGFnZS5qc3gnO1xyXG5pbXBvcnQgRXN0dWRvQ3JlZGl0b05lZ2F0aXZhZG9QYWdlIGZyb20gJ0AvcGFnZXMvRXN0dWRvQ3JlZGl0b05lZ2F0aXZhZG9QYWdlLmpzeCc7XHJcbmltcG9ydCBEaWFnbm9zdGljb1BhZ2UgZnJvbSAnQC9wYWdlcy9EaWFnbm9zdGljb1BhZ2UuanN4JztcclxuaW1wb3J0IEJsb2dQYWdlIGZyb20gJ0AvcGFnZXMvQmxvZ1BhZ2UuanN4JztcclxuaW1wb3J0IEJsb2dBcnRpY2xlUGFnZSBmcm9tICdAL3BhZ2VzL0Jsb2dBcnRpY2xlUGFnZS5qc3gnO1xyXG5pbXBvcnQgQmxvZ1JvdXRlQm91bmRhcnkgZnJvbSAnQC9jb21wb25lbnRzL2Jsb2cvQmxvZ1JvdXRlQm91bmRhcnkuanN4JztcclxuaW1wb3J0IENvbW9GdW5jaW9uYVBhZ2UgZnJvbSAnQC9wYWdlcy9Db21vRnVuY2lvbmFQYWdlLmpzeCc7XHJcbmltcG9ydCBTb2JyZU5vc1BhZ2UgZnJvbSAnQC9wYWdlcy9Tb2JyZU5vc1BhZ2UuanN4JztcclxuaW1wb3J0IENvbnRhdG9QYWdlIGZyb20gJ0AvcGFnZXMvQ29udGF0b1BhZ2UuanN4JztcclxuaW1wb3J0IEZhcVBhZ2UgZnJvbSAnQC9wYWdlcy9GYXFQYWdlLmpzeCc7XHJcbmltcG9ydCBQb2xpdGljYVByaXZhY2lkYWRlUGFnZSBmcm9tICdAL3BhZ2VzL1BvbGl0aWNhUHJpdmFjaWRhZGVQYWdlLmpzeCc7XHJcbmltcG9ydCBUZXJtb3NVc29QYWdlIGZyb20gJ0AvcGFnZXMvVGVybW9zVXNvUGFnZS5qc3gnO1xyXG5pbXBvcnQgU2VvTGFuZGluZ1BhZ2UgZnJvbSAnQC9wYWdlcy9TZW9MYW5kaW5nUGFnZS5qc3gnO1xyXG5pbXBvcnQgQ290ZUZpbmFuY2VBSVBhZ2UgZnJvbSAnQC9wYWdlcy9Db3RlRmluYW5jZUFJUGFnZS5qc3gnO1xyXG5pbXBvcnQgTW90aW9uSGVyb1BhZ2UgZnJvbSAnQC9wYWdlcy9Nb3Rpb25IZXJvUGFnZS5qc3gnO1xyXG5pbXBvcnQgU2VvUHJvZ3JhbW1hdGljUGFnZSBmcm9tICdAL3BhZ2VzL1Nlb1Byb2dyYW1tYXRpY1BhZ2UuanN4JztcclxuaW1wb3J0IENyZWRpdFByb2ZpbGVMYW5kaW5nUGFnZSBmcm9tICdAL3BhZ2VzL0NyZWRpdFByb2ZpbGVMYW5kaW5nUGFnZS5qc3gnO1xyXG5pbXBvcnQgTGVhZE5leHRTdGVwUGFnZSBmcm9tICdAL3BhZ2VzL0xlYWROZXh0U3RlcFBhZ2UuanN4JztcclxuaW1wb3J0IFJlYWN0aXZhdGlvbkxhbmRpbmdQYWdlIGZyb20gJ0AvcGFnZXMvUmVhY3RpdmF0aW9uTGFuZGluZ1BhZ2UuanN4JztcclxuXHJcbmltcG9ydCBBZG1pbkF1dGhHdWFyZCBmcm9tICdAL2FkbWluL0FkbWluQXV0aEd1YXJkLmpzeCc7XHJcbmltcG9ydCBBZG1pbkxheW91dCBmcm9tICdAL2FkbWluL0FkbWluTGF5b3V0LmpzeCc7XHJcbmltcG9ydCBBZG1pbkRhc2hib2FyZFBhZ2UgZnJvbSAnQC9wYWdlcy9hZG1pbi9BZG1pbkRhc2hib2FyZFBhZ2UuanN4JztcclxuaW1wb3J0IEFkbWluT2ZmZXJzUGFnZSBmcm9tICdAL3BhZ2VzL2FkbWluL0FkbWluT2ZmZXJzUGFnZS5qc3gnO1xyXG5pbXBvcnQgQWRtaW5CYW5rc1BhZ2UgZnJvbSAnQC9wYWdlcy9hZG1pbi9BZG1pbkJhbmtzUGFnZS5qc3gnO1xyXG5pbXBvcnQgQWRtaW5QYXJ0bmVyc1BhZ2UgZnJvbSAnQC9wYWdlcy9hZG1pbi9BZG1pblBhcnRuZXJzUGFnZS5qc3gnO1xyXG5pbXBvcnQgQWRtaW5Vc2Vyc1BhZ2UgZnJvbSAnQC9wYWdlcy9hZG1pbi9BZG1pblVzZXJzUGFnZS5qc3gnO1xyXG5pbXBvcnQgQWRtaW5BcnRpY2xlc1BhZ2UgZnJvbSAnQC9wYWdlcy9hZG1pbi9BZG1pbkFydGljbGVzUGFnZS5qc3gnO1xyXG5pbXBvcnQgQWRtaW5TZW9QYWdlc1BhZ2UgZnJvbSAnQC9wYWdlcy9hZG1pbi9BZG1pblNlb1BhZ2VzUGFnZS5qc3gnO1xyXG5pbXBvcnQgQWRtaW5MZWFkc1BhZ2UgZnJvbSAnQC9wYWdlcy9hZG1pbi9BZG1pbkxlYWRzUGFnZS5qc3gnO1xyXG5pbXBvcnQgQWRtaW5SZWFjdGl2YXRpb25QYWdlIGZyb20gJ0AvcGFnZXMvYWRtaW4vQWRtaW5SZWFjdGl2YXRpb25QYWdlLmpzeCc7XHJcbmltcG9ydCBBZG1pbkVtYWlsT3BzUGFnZSBmcm9tICdAL3BhZ2VzL2FkbWluL0FkbWluRW1haWxPcHNQYWdlLmpzeCc7XHJcbmltcG9ydCBBZG1pblRlc3RpbW9uaWFsc1BhZ2UgZnJvbSAnQC9wYWdlcy9hZG1pbi9BZG1pblRlc3RpbW9uaWFsc1BhZ2UuanN4JztcclxuaW1wb3J0IEFkbWluQXVkaXRQYWdlIGZyb20gJ0AvcGFnZXMvYWRtaW4vQWRtaW5BdWRpdFBhZ2UuanN4JztcclxuaW1wb3J0IEFkbWluSGVhbHRoUGFnZSBmcm9tICdAL3BhZ2VzL2FkbWluL0FkbWluSGVhbHRoUGFnZS5qc3gnO1xyXG5pbXBvcnQgQWRtaW5TZXR0aW5nc1BhZ2UgZnJvbSAnQC9wYWdlcy9hZG1pbi9BZG1pblNldHRpbmdzUGFnZS5qc3gnO1xyXG5cclxuaW1wb3J0IHsgc2VvRmFsbGJhY2tQYXRocyBhcyBzZWVkRmFsbGJhY2tQYXRocywgc2VvUGFnZXMgYXMgc2VlZFNlb1BhZ2VzIH0gZnJvbSAnQC9wbGF0Zm9ybS9zZWVkL3BvcnRhbFNlZWQuanMnO1xyXG5pbXBvcnQgeyBwb3J0YWxBcGkgfSBmcm9tICdAL3BsYXRmb3JtL3NlcnZpY2VzL3BvcnRhbEFwaS5qcyc7XHJcbmltcG9ydCB7IFRvYXN0ZXIgfSBmcm9tICdAL2NvbXBvbmVudHMvdWkvc29ubmVyJztcclxuaW1wb3J0IHsgY29yZVBpbGxhclBhdGhzLCByZXNlcnZlZFNlb1N0YXRpY1BhdGhzIH0gZnJvbSAnQC9zZW8vc2VvQ2F0YWxvZy5qcyc7XHJcbmltcG9ydCB7IHdvcmRwcmVzc01pZ3JhdGVkQXJ0aWNsZXMsIHdvcmRwcmVzc01pZ3JhdGVkQXJ0aWNsZVBhdGhzIH0gZnJvbSAnQC9kYXRhL3dvcmRwcmVzc01pZ3JhdGVkQXJ0aWNsZXMuanMnO1xyXG5cclxuZnVuY3Rpb24gQXBwTGF5b3V0KHsgY2hpbGRyZW4gfSkge1xyXG4gIGNvbnN0IGxvY2F0aW9uID0gdXNlTG9jYXRpb24oKTtcclxuICBjb25zdCByb3V0ZUNsYXNzID0gbG9jYXRpb24ucGF0aG5hbWUgPT09ICcvJyA/ICdpcy1ob21lJyA6ICdpcy1kb21haW4tcGFnZSc7XHJcblxyXG4gIHJldHVybiAoXHJcbiAgICA8ZGl2IGNsYXNzTmFtZT17YHB1YmxpYy1zaXRlLXNoZWxsICR7cm91dGVDbGFzc30gbWluLWgtc2NyZWVuIG92ZXJmbG93LXgtaGlkZGVuIGZsZXggZmxleC1jb2wgYmctYmFja2dyb3VuZCBzZWxlY3Rpb246YmctcHJpbWFyeS8xMGB9PlxyXG4gICAgICA8SGVhZGVyIC8+XHJcbiAgICAgIDxtYWluIGNsYXNzTmFtZT1cIm1pbi13LTBcIj57Y2hpbGRyZW59PC9tYWluPlxyXG4gICAgICA8Rm9vdGVyIC8+XHJcbiAgICAgIDxDb29raWVDb25zZW50IC8+XHJcbiAgICA8L2Rpdj5cclxuICApO1xyXG59XHJcblxyXG5mdW5jdGlvbiBBZG1pblJvdXRlKHsgdGl0bGUsIGNoaWxkcmVuIH0pIHtcclxuICByZXR1cm4gKFxyXG4gICAgPEFkbWluQXV0aEd1YXJkPlxyXG4gICAgICA8QWRtaW5MYXlvdXQgdGl0bGU9e3RpdGxlfT57Y2hpbGRyZW59PC9BZG1pbkxheW91dD5cclxuICAgIDwvQWRtaW5BdXRoR3VhcmQ+XHJcbiAgKTtcclxufVxyXG5cclxuZnVuY3Rpb24gQmxvZ0JvdW5kYXJ5KHsgY2hpbGRyZW4gfSkge1xyXG4gIGNvbnN0IGxvY2F0aW9uID0gdXNlTG9jYXRpb24oKTtcclxuXHJcbiAgcmV0dXJuIDxCbG9nUm91dGVCb3VuZGFyeSByZXNldEtleT17bG9jYXRpb24ucGF0aG5hbWV9PntjaGlsZHJlbn08L0Jsb2dSb3V0ZUJvdW5kYXJ5PjtcclxufVxyXG5cclxuZnVuY3Rpb24gQXBwKCkge1xyXG4gIGNvbnN0IFtzZW9QYWdlcywgc2V0U2VvUGFnZXNdID0gdXNlU3RhdGUoc2VlZFNlb1BhZ2VzKTtcclxuICBjb25zdCBbc2VvRmFsbGJhY2tQYXRocywgc2V0U2VvRmFsbGJhY2tQYXRoc10gPSB1c2VTdGF0ZShzZWVkRmFsbGJhY2tQYXRocyk7XHJcblxyXG4gIGNvbnN0IGJsb2NrZWRTZWVkU2VvUGF0aHMgPSB1c2VNZW1vKCgpID0+IHtcclxuICAgIGNvbnN0IGJsb2NrZWQgPSBuZXcgU2V0KFsuLi5yZXNlcnZlZFNlb1N0YXRpY1BhdGhzLCAuLi5jb3JlUGlsbGFyUGF0aHNdKTtcclxuICAgIHdvcmRwcmVzc01pZ3JhdGVkQXJ0aWNsZVBhdGhzLmZvckVhY2goKHBhdGgpID0+IGJsb2NrZWQuYWRkKHBhdGgpKTtcclxuICAgIGJsb2NrZWQuYWRkKCcvY2FydG9lcy1kZS1jcmVkaXRvJyk7XHJcbiAgICBibG9ja2VkLmFkZCgnL2ZpbmFuY2lhbWVudG8nKTtcclxuICAgIGJsb2NrZWQuYWRkKCcvZGlhZ25vc3RpY28tZmluYW5jZWlybycpO1xyXG4gICAgYmxvY2tlZC5hZGQoJy9jb3RlLWZpbmFuY2UtYWknKTtcclxuICAgIGJsb2NrZWQuYWRkKCcvY29tby1mdW5jaW9uYScpO1xyXG4gICAgYmxvY2tlZC5hZGQoJy9zb2JyZS1ub3MnKTtcclxuICAgIGJsb2NrZWQuYWRkKCcvY29udGF0bycpO1xyXG4gICAgYmxvY2tlZC5hZGQoJy9wZXJndW50YXMtZnJlcXVlbnRlcycpO1xyXG4gICAgYmxvY2tlZC5hZGQoJy9mYXEnKTtcclxuICAgIGJsb2NrZWQuYWRkKCcvcG9saXRpY2EtZGUtcHJpdmFjaWRhZGUnKTtcclxuICAgIGJsb2NrZWQuYWRkKCcvdGVybW9zLWRlLXVzbycpO1xyXG4gICAgcmV0dXJuIGJsb2NrZWQ7XHJcbiAgfSwgW10pO1xyXG5cclxuICBjb25zdCBzaG91bGRTa2lwU2VlZFNlb1BhZ2UgPSAocGF0aCA9ICcnKSA9PiB7XHJcbiAgICBpZiAoIXBhdGgpIHJldHVybiB0cnVlO1xyXG4gICAgaWYgKGJsb2NrZWRTZWVkU2VvUGF0aHMuaGFzKHBhdGgpKSByZXR1cm4gdHJ1ZTtcclxuICAgIGlmIChwYXRoLnN0YXJ0c1dpdGgoJy9jb21wYXJhci8nKSkgcmV0dXJuIHRydWU7XHJcbiAgICBpZiAocGF0aC5zdGFydHNXaXRoKCcvYmFuY28vJykpIHJldHVybiB0cnVlO1xyXG4gICAgaWYgKHBhdGguc3RhcnRzV2l0aCgnL2NhcnRhby8nKSkgcmV0dXJuIHRydWU7XHJcbiAgICBpZiAocGF0aC5zdGFydHNXaXRoKCcvYmxvZy8nKSkgcmV0dXJuIHRydWU7XHJcbiAgICByZXR1cm4gZmFsc2U7XHJcbiAgfTtcclxuXHJcbiAgdXNlRWZmZWN0KCgpID0+IHtcclxuICAgIFByb21pc2UuYWxsKFtwb3J0YWxBcGkuZ2V0U2VvUGFnZXMoKSwgcG9ydGFsQXBpLmdldFNlb0ZhbGxiYWNrUGF0aHMoKV0pXHJcbiAgICAgIC50aGVuKChbcGFnZXMsIGZhbGxiYWNrUGF0aHNdKSA9PiB7XHJcbiAgICAgICAgaWYgKEFycmF5LmlzQXJyYXkocGFnZXMpICYmIHBhZ2VzLmxlbmd0aCkgc2V0U2VvUGFnZXMocGFnZXMpO1xyXG4gICAgICAgIGlmIChBcnJheS5pc0FycmF5KGZhbGxiYWNrUGF0aHMpICYmIGZhbGxiYWNrUGF0aHMubGVuZ3RoKSBzZXRTZW9GYWxsYmFja1BhdGhzKGZhbGxiYWNrUGF0aHMpO1xyXG4gICAgICB9KVxyXG4gICAgICAuY2F0Y2goKCkgPT4ge1xyXG4gICAgICAgIC8vIGtlZXAgc2VlZCBmYWxsYmFja1xyXG4gICAgICB9KTtcclxuICB9LCBbXSk7XHJcblxyXG4gIHJldHVybiAoXHJcbiAgICA8Um91dGVyPlxyXG4gICAgICA8QWRTZW5zZVNjcmlwdCAvPlxyXG4gICAgICA8U2Nyb2xsVG9Ub3AgLz5cclxuICAgICAgPFJvdXRlcz5cclxuICAgICAgICA8Um91dGUgcGF0aD1cIi9cIiBlbGVtZW50PXs8QXBwTGF5b3V0PjxIb21lUGFnZSAvPjwvQXBwTGF5b3V0Pn0gLz5cclxuICAgICAgICA8Um91dGUgcGF0aD1cIi9lbXByZXN0aW1vc1wiIGVsZW1lbnQ9ezxBcHBMYXlvdXQ+PEVtcHJlc3RpbW9zUGFnZSAvPjwvQXBwTGF5b3V0Pn0gLz5cclxuICAgICAgICA8Um91dGUgcGF0aD1cIi9jYXJ0b2VzXCIgZWxlbWVudD17PEFwcExheW91dD48Q2FydG9lc1BhZ2UgLz48L0FwcExheW91dD59IC8+XHJcbiAgICAgICAgPFJvdXRlIHBhdGg9XCIvY2FydG9lcy1kZS1jcmVkaXRvXCIgZWxlbWVudD17PEFwcExheW91dD48Q2FydG9lc1BhZ2UgLz48L0FwcExheW91dD59IC8+XHJcbiAgICAgICAgPFJvdXRlIHBhdGg9XCIvZmluYW5jaWFtZW50b3NcIiBlbGVtZW50PXs8QXBwTGF5b3V0PjxGaW5hbmNpYW1lbnRvUGFnZSAvPjwvQXBwTGF5b3V0Pn0gLz5cclxuICAgICAgICA8Um91dGUgcGF0aD1cIi9maW5hbmNpYW1lbnRvXCIgZWxlbWVudD17PEFwcExheW91dD48RmluYW5jaWFtZW50b1BhZ2UgLz48L0FwcExheW91dD59IC8+XHJcbiAgICAgICAgPFJvdXRlIHBhdGg9XCIvb2ZlcnRhc1wiIGVsZW1lbnQ9ezxBcHBMYXlvdXQ+PE9mZXJ0YXNQYWdlIC8+PC9BcHBMYXlvdXQ+fSAvPlxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL3BhcmNlaXJvc1wiIGVsZW1lbnQ9ezxBcHBMYXlvdXQ+PE9mZXJ0YXNQYWdlIC8+PC9BcHBMYXlvdXQ+fSAvPlxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL2ZlcnJhbWVudGFzXCIgZWxlbWVudD17PEFwcExheW91dD48RmVycmFtZW50YXNQYWdlIC8+PC9BcHBMYXlvdXQ+fSAvPlxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL2NhbGN1bGFkb3JhLWNldFwiIGVsZW1lbnQ9ezxBcHBMYXlvdXQ+PENhbGN1bGFkb3JhQ2V0UGFnZSAvPjwvQXBwTGF5b3V0Pn0gLz5cclxuICAgICAgICA8Um91dGUgcGF0aD1cIi9zaW11bGFkb3ItY29tcHJvbWV0aW1lbnRvLXJlbmRhXCIgZWxlbWVudD17PEFwcExheW91dD48U2ltdWxhZG9yQ29tcHJvbWV0aW1lbnRvUmVuZGFQYWdlIC8+PC9BcHBMYXlvdXQ+fSAvPlxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL2VzdHVkb3MvY3VzdG8tZW1wcmVzdGltby1uZWdhdGl2YWRvLTIwMjZcIiBlbGVtZW50PXs8QXBwTGF5b3V0PjxFc3R1ZG9DcmVkaXRvTmVnYXRpdmFkb1BhZ2UgLz48L0FwcExheW91dD59IC8+XHJcbiAgICAgICAgPFJvdXRlIHBhdGg9XCIvZGlhZ25vc3RpY28tZmluYW5jZWlyb1wiIGVsZW1lbnQ9ezxBcHBMYXlvdXQ+PERpYWdub3N0aWNvUGFnZSAvPjwvQXBwTGF5b3V0Pn0gLz5cclxuICAgICAgICA8Um91dGVcclxuICAgICAgICAgIHBhdGg9XCIvYmxvZ1wiXHJcbiAgICAgICAgICBlbGVtZW50PXtcclxuICAgICAgICAgICAgPEFwcExheW91dD5cclxuICAgICAgICAgICAgICA8QmxvZ0JvdW5kYXJ5PlxyXG4gICAgICAgICAgICAgICAgPEJsb2dQYWdlIC8+XHJcbiAgICAgICAgICAgICAgPC9CbG9nQm91bmRhcnk+XHJcbiAgICAgICAgICAgIDwvQXBwTGF5b3V0PlxyXG4gICAgICAgICAgfVxyXG4gICAgICAgIC8+XHJcbiAgICAgICAgPFJvdXRlIHBhdGg9XCIvY29tby1mdW5jaW9uYVwiIGVsZW1lbnQ9ezxBcHBMYXlvdXQ+PENvbW9GdW5jaW9uYVBhZ2UgLz48L0FwcExheW91dD59IC8+XHJcbiAgICAgICAgPFJvdXRlIHBhdGg9XCIvc29icmUtbm9zXCIgZWxlbWVudD17PEFwcExheW91dD48U29icmVOb3NQYWdlIC8+PC9BcHBMYXlvdXQ+fSAvPlxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL2NvbnRhdG9cIiBlbGVtZW50PXs8QXBwTGF5b3V0PjxDb250YXRvUGFnZSAvPjwvQXBwTGF5b3V0Pn0gLz5cclxuICAgICAgICA8Um91dGUgcGF0aD1cIi9wZXJndW50YXMtZnJlcXVlbnRlc1wiIGVsZW1lbnQ9ezxBcHBMYXlvdXQ+PEZhcVBhZ2UgLz48L0FwcExheW91dD59IC8+XHJcbiAgICAgICAgPFJvdXRlIHBhdGg9XCIvZmFxXCIgZWxlbWVudD17PEFwcExheW91dD48RmFxUGFnZSAvPjwvQXBwTGF5b3V0Pn0gLz5cclxuICAgICAgICA8Um91dGUgcGF0aD1cIi9wb2xpdGljYS1kZS1wcml2YWNpZGFkZVwiIGVsZW1lbnQ9ezxBcHBMYXlvdXQ+PFBvbGl0aWNhUHJpdmFjaWRhZGVQYWdlIC8+PC9BcHBMYXlvdXQ+fSAvPlxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL3Rlcm1vcy1kZS11c29cIiBlbGVtZW50PXs8QXBwTGF5b3V0PjxUZXJtb3NVc29QYWdlIC8+PC9BcHBMYXlvdXQ+fSAvPlxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL2NvdGUtZmluYW5jZS1haVwiIGVsZW1lbnQ9ezxBcHBMYXlvdXQ+PENvdGVGaW5hbmNlQUlQYWdlIC8+PC9BcHBMYXlvdXQ+fSAvPlxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL21vdGlvbi1oZXJvXCIgZWxlbWVudD17PEFwcExheW91dD48TW90aW9uSGVyb1BhZ2UgLz48L0FwcExheW91dD59IC8+XHJcbiAgICAgICAgPFJvdXRlIHBhdGg9XCIvcmVzdWx0YWRvXCIgZWxlbWVudD17PEFwcExheW91dD48TGVhZE5leHRTdGVwUGFnZSAvPjwvQXBwTGF5b3V0Pn0gLz5cclxuICAgICAgICA8Um91dGUgcGF0aD1cIi9wcm94aW1hLWV0YXBhXCIgZWxlbWVudD17PEFwcExheW91dD48TGVhZE5leHRTdGVwUGFnZSAvPjwvQXBwTGF5b3V0Pn0gLz5cclxuICAgICAgICA8Um91dGUgcGF0aD1cIi9yLzp0b2tlblwiIGVsZW1lbnQ9ezxBcHBMYXlvdXQ+PFJlYWN0aXZhdGlvbkxhbmRpbmdQYWdlIC8+PC9BcHBMYXlvdXQ+fSAvPlxyXG4gICAgICAgIDxSb3V0ZVxyXG4gICAgICAgICAgcGF0aD1cIi9lbXByZXN0aW1vLXBhcmEtbmVnYXRpdmFkb1wiXHJcbiAgICAgICAgICBlbGVtZW50PXtcclxuICAgICAgICAgICAgPEFwcExheW91dD5cclxuICAgICAgICAgICAgICA8Q3JlZGl0UHJvZmlsZUxhbmRpbmdQYWdlXHJcbiAgICAgICAgICAgICAgICBjYW5vbmljYWxQYXRoPVwiL2VtcHJlc3RpbW8tcGFyYS1uZWdhdGl2YWRvXCJcclxuICAgICAgICAgICAgICAgIHRpdGxlPVwiRW1wcsOpc3RpbW8gcGFyYSBuZWdhdGl2YWRvIHwgVmVqYSBjYW1pbmhvcyBwb3Nzw612ZWlzIHwgQ290ZSBKdXJvc1wiXHJcbiAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbj1cIlNlIHZvY8OqIGVzdMOhIGNvbSBvIG5vbWUgbmVnYXRpdmFkbywgdmVqYSBjYW1pbmhvcyBwb3Nzw612ZWlzIGFudGVzIGRlIGRlY2lkaXIuIFNlbSBjb21wcm9taXNzbyBlIHNlbSBjb2JyYW7Dp2EgYW50ZWNpcGFkYS5cIlxyXG4gICAgICAgICAgICAgICAgYmFkZ2U9XCJQYXJhIHF1ZW0gZXN0w6EgbmVnYXRpdmFkb1wiXHJcbiAgICAgICAgICAgICAgICBoZXJvVGl0bGU9XCJNZXNtbyBjb20gbyBub21lIG5lZ2F0aXZhZG8sIGFpbmRhIHBvZGUgaGF2ZXIgY2FtaW5ob3MgcG9zc8OtdmVpc1wiXHJcbiAgICAgICAgICAgICAgICBoZXJvRGVzY3JpcHRpb249XCJSZXNwb25kYSBvIGLDoXNpY28gZSB2ZWphIG9ww6fDtWVzIHBhcmEgY29tcGFyYXIgYW50ZXMgZGUgY29udHJhdGFyLCBzZW0gY3JpYXIgZXhwZWN0YXRpdmEgZXJyYWRhLlwiXHJcbiAgICAgICAgICAgICAgICB0cnVzdExpbmU9XCJTZW0gY29tcHJvbWlzc28gZSBzZW0gcHJvbWVzc2EgZmFsc2FcIlxyXG4gICAgICAgICAgICAgIC8+XHJcbiAgICAgICAgICAgIDwvQXBwTGF5b3V0PlxyXG4gICAgICAgICAgfVxyXG4gICAgICAgIC8+XHJcbiAgICAgICAgPFJvdXRlXHJcbiAgICAgICAgICBwYXRoPVwiL2VtcHJlc3RpbW8tcGFyYS1jbHRcIlxyXG4gICAgICAgICAgZWxlbWVudD17XHJcbiAgICAgICAgICAgIDxBcHBMYXlvdXQ+XHJcbiAgICAgICAgICAgICAgPENyZWRpdFByb2ZpbGVMYW5kaW5nUGFnZVxyXG4gICAgICAgICAgICAgICAgY2Fub25pY2FsUGF0aD1cIi9lbXByZXN0aW1vLXBhcmEtY2x0XCJcclxuICAgICAgICAgICAgICAgIHRpdGxlPVwiRW1wcsOpc3RpbW8gcGFyYSBDTFQgfCBWZWphIG9ww6fDtWVzIHBhcmEgbyBzZXUgcGVyZmlsIHwgQ290ZSBKdXJvc1wiXHJcbiAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbj1cIlNlIHZvY8OqIHRyYWJhbGhhIGNvbSBjYXJ0ZWlyYSBhc3NpbmFkYSwgdmVqYSBvcMOnw7VlcyBkZSBjcsOpZGl0byBxdWUgcG9kZW0gY29tYmluYXIgY29tIHN1YSByZW5kYSBlIHNldSBwZXJmaWwuXCJcclxuICAgICAgICAgICAgICAgIGJhZGdlPVwiUGFyYSBxdWVtIHRyYWJhbGhhIGNvbSBjYXJ0ZWlyYVwiXHJcbiAgICAgICAgICAgICAgICBoZXJvVGl0bGU9XCJTZSB2b2PDqiDDqSBDTFQsIHZlamEgb3DDp8O1ZXMgcXVlIHBvZGVtIGNvbWJpbmFyIGNvbSBzdWEgcmVuZGFcIlxyXG4gICAgICAgICAgICAgICAgaGVyb0Rlc2NyaXB0aW9uPVwiQ29tcGFyZSBjb20gbWFpcyBjbGFyZXphIGUgdmVqYSBjYW1pbmhvcyBwb3Nzw612ZWlzIGFudGVzIGRlIHNlZ3VpciBwYXJhIGEgcHLDs3hpbWEgZXRhcGEuXCJcclxuICAgICAgICAgICAgICAgIHRydXN0TGluZT1cIlZvY8OqIHBvZGUgdmVyIGFzIG9ww6fDtWVzIGUgZGVjaWRpciBjb20gY2FsbWFcIlxyXG4gICAgICAgICAgICAgIC8+XHJcbiAgICAgICAgICAgIDwvQXBwTGF5b3V0PlxyXG4gICAgICAgICAgfVxyXG4gICAgICAgIC8+XHJcbiAgICAgICAgPFJvdXRlXHJcbiAgICAgICAgICBwYXRoPVwiL2VtcHJlc3RpbW8tcGFyYS1hdXRvbm9tb1wiXHJcbiAgICAgICAgICBlbGVtZW50PXtcclxuICAgICAgICAgICAgPEFwcExheW91dD5cclxuICAgICAgICAgICAgICA8Q3JlZGl0UHJvZmlsZUxhbmRpbmdQYWdlXHJcbiAgICAgICAgICAgICAgICBjYW5vbmljYWxQYXRoPVwiL2VtcHJlc3RpbW8tcGFyYS1hdXRvbm9tb1wiXHJcbiAgICAgICAgICAgICAgICB0aXRsZT1cIkVtcHLDqXN0aW1vIHBhcmEgYXV0w7Rub21vIHwgVmVqYSBjYW1pbmhvcyBwb3Nzw612ZWlzIHwgQ290ZSBKdXJvc1wiXHJcbiAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbj1cIlNlIHZvY8OqIMOpIGF1dMO0bm9tbywgdmVqYSBvcMOnw7VlcyBkZSBjcsOpZGl0byBxdWUgcG9kZW0gZmF6ZXIgc2VudGlkbyBwYXJhIG8gc2V1IG1vbWVudG8sIHNlbSBwZXJkZXIgdGVtcG8gY29tIGZvcm11bMOhcmlvcyBsb25nb3MuXCJcclxuICAgICAgICAgICAgICAgIGJhZGdlPVwiUGFyYSBhdXTDtG5vbW9zXCJcclxuICAgICAgICAgICAgICAgIGhlcm9UaXRsZT1cIlNlIHZvY8OqIMOpIGF1dMO0bm9tbywgdmVqYSBjYW1pbmhvcyBkZSBjcsOpZGl0byBxdWUgcG9kZW0gZmF6ZXIgc2VudGlkb1wiXHJcbiAgICAgICAgICAgICAgICBoZXJvRGVzY3JpcHRpb249XCJFbnRlbmRhIHBvc3NpYmlsaWRhZGVzIGFudGVzIGRlIGRlY2lkaXIsIGNvbSBtYWlzIGNsYXJlemEgZSBtZW5vcyBlbnJvbGHDp8Ojby5cIlxyXG4gICAgICAgICAgICAgICAgdHJ1c3RMaW5lPVwiU2VtIGNvYnJhbsOnYSBhbnRlY2lwYWRhIGUgc2VtIHByZXNzw6NvIHBhcmEgZmVjaGFyXCJcclxuICAgICAgICAgICAgICAvPlxyXG4gICAgICAgICAgICA8L0FwcExheW91dD5cclxuICAgICAgICAgIH1cclxuICAgICAgICAvPlxyXG5cclxuICAgICAgICA8Um91dGVcclxuICAgICAgICAgIHBhdGg9XCIvY29tcGFyYXJcIlxyXG4gICAgICAgICAgZWxlbWVudD17XHJcbiAgICAgICAgICAgIDxBcHBMYXlvdXQ+XHJcbiAgICAgICAgICAgICAgPFNlb1Byb2dyYW1tYXRpY1BhZ2UgbW9kZT1cInN0YXRpY1wiIHBhZ2VQYXRoPVwiL2NvbXBhcmFyXCIgLz5cclxuICAgICAgICAgICAgPC9BcHBMYXlvdXQ+XHJcbiAgICAgICAgICB9XHJcbiAgICAgICAgLz5cclxuICAgICAgICA8Um91dGVcclxuICAgICAgICAgIHBhdGg9XCIvYmFuY29zXCJcclxuICAgICAgICAgIGVsZW1lbnQ9e1xyXG4gICAgICAgICAgICA8QXBwTGF5b3V0PlxyXG4gICAgICAgICAgICAgIDxTZW9Qcm9ncmFtbWF0aWNQYWdlIG1vZGU9XCJzdGF0aWNcIiBwYWdlUGF0aD1cIi9iYW5jb3NcIiAvPlxyXG4gICAgICAgICAgICA8L0FwcExheW91dD5cclxuICAgICAgICAgIH1cclxuICAgICAgICAvPlxyXG5cclxuICAgICAgICB7cmVzZXJ2ZWRTZW9TdGF0aWNQYXRoc1xyXG4gICAgICAgICAgLmZpbHRlcigocGF0aCkgPT4gIVsnL2NvbXBhcmFyJywgJy9iYW5jb3MnLCAnL2VtcHJlc3RpbW8tcGFyYS1uZWdhdGl2YWRvJ10uaW5jbHVkZXMocGF0aCkpXHJcbiAgICAgICAgICAubWFwKChwYXRoKSA9PiAoXHJcbiAgICAgICAgICAgIDxSb3V0ZVxyXG4gICAgICAgICAgICAgIGtleT17YHNlby1zdGF0aWMtJHtwYXRofWB9XHJcbiAgICAgICAgICAgICAgcGF0aD17cGF0aH1cclxuICAgICAgICAgICAgICBlbGVtZW50PXtcclxuICAgICAgICAgICAgICAgIDxBcHBMYXlvdXQ+XHJcbiAgICAgICAgICAgICAgICAgIDxTZW9Qcm9ncmFtbWF0aWNQYWdlIG1vZGU9XCJzdGF0aWNcIiBwYWdlUGF0aD17cGF0aH0gLz5cclxuICAgICAgICAgICAgICAgIDwvQXBwTGF5b3V0PlxyXG4gICAgICAgICAgICAgIH1cclxuICAgICAgICAgICAgLz5cclxuICAgICAgICAgICkpfVxyXG5cclxuICAgICAgICA8Um91dGVcclxuICAgICAgICAgIHBhdGg9XCIvY29tcGFyYXIvOmNvbXBhcmlzb25TbHVnXCJcclxuICAgICAgICAgIGVsZW1lbnQ9e1xyXG4gICAgICAgICAgICA8QXBwTGF5b3V0PlxyXG4gICAgICAgICAgICAgIDxTZW9Qcm9ncmFtbWF0aWNQYWdlIG1vZGU9XCJjb21wYXJlXCIgLz5cclxuICAgICAgICAgICAgPC9BcHBMYXlvdXQ+XHJcbiAgICAgICAgICB9XHJcbiAgICAgICAgLz5cclxuICAgICAgICA8Um91dGVcclxuICAgICAgICAgIHBhdGg9XCIvYmFuY28vOmJhbmtTbHVnXCJcclxuICAgICAgICAgIGVsZW1lbnQ9e1xyXG4gICAgICAgICAgICA8QXBwTGF5b3V0PlxyXG4gICAgICAgICAgICAgIDxTZW9Qcm9ncmFtbWF0aWNQYWdlIG1vZGU9XCJiYW5rXCIgLz5cclxuICAgICAgICAgICAgPC9BcHBMYXlvdXQ+XHJcbiAgICAgICAgICB9XHJcbiAgICAgICAgLz5cclxuICAgICAgICA8Um91dGVcclxuICAgICAgICAgIHBhdGg9XCIvY2FydGFvLzpjYXJkU2x1Z1wiXHJcbiAgICAgICAgICBlbGVtZW50PXtcclxuICAgICAgICAgICAgPEFwcExheW91dD5cclxuICAgICAgICAgICAgICA8U2VvUHJvZ3JhbW1hdGljUGFnZSBtb2RlPVwiY2FyZFwiIC8+XHJcbiAgICAgICAgICAgIDwvQXBwTGF5b3V0PlxyXG4gICAgICAgICAgfVxyXG4gICAgICAgIC8+XHJcbiAgICAgICAgPFJvdXRlXHJcbiAgICAgICAgICBwYXRoPVwiL2Jsb2cvOmFydGljbGVTbHVnXCJcclxuICAgICAgICAgIGVsZW1lbnQ9e1xyXG4gICAgICAgICAgICA8QXBwTGF5b3V0PlxyXG4gICAgICAgICAgICAgIDxCbG9nQm91bmRhcnk+XHJcbiAgICAgICAgICAgICAgICA8QmxvZ0FydGljbGVQYWdlIC8+XHJcbiAgICAgICAgICAgICAgPC9CbG9nQm91bmRhcnk+XHJcbiAgICAgICAgICAgIDwvQXBwTGF5b3V0PlxyXG4gICAgICAgICAgfVxyXG4gICAgICAgIC8+XHJcbiAgICAgICAge3dvcmRwcmVzc01pZ3JhdGVkQXJ0aWNsZXMubWFwKChhcnRpY2xlKSA9PiAoXHJcbiAgICAgICAgICA8Um91dGVcclxuICAgICAgICAgICAga2V5PXtgd3AtYXJ0aWNsZS0ke2FydGljbGUuc2x1Z31gfVxyXG4gICAgICAgICAgICBwYXRoPXthcnRpY2xlLnJvdXRlUGF0aH1cclxuICAgICAgICAgICAgZWxlbWVudD17XHJcbiAgICAgICAgICAgICAgPEFwcExheW91dD5cclxuICAgICAgICAgICAgICAgIDxCbG9nQm91bmRhcnk+XHJcbiAgICAgICAgICAgICAgICAgIDxCbG9nQXJ0aWNsZVBhZ2UgYXJ0aWNsZVNsdWdPdmVycmlkZT17YXJ0aWNsZS5zbHVnfSAvPlxyXG4gICAgICAgICAgICAgICAgPC9CbG9nQm91bmRhcnk+XHJcbiAgICAgICAgICAgICAgPC9BcHBMYXlvdXQ+XHJcbiAgICAgICAgICAgIH1cclxuICAgICAgICAgIC8+XHJcbiAgICAgICAgKSl9XHJcblxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL2FkbWluL2xvZ2luXCIgZWxlbWVudD17PEFkbWluQXV0aEd1YXJkIC8+fSAvPlxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL2FkbWluXCIgZWxlbWVudD17PEFkbWluUm91dGUgdGl0bGU9XCJQYWluZWxcIj48QWRtaW5EYXNoYm9hcmRQYWdlIC8+PC9BZG1pblJvdXRlPn0gLz5cclxuICAgICAgICA8Um91dGUgcGF0aD1cIi9hZG1pbi9vZmZlcnNcIiBlbGVtZW50PXs8QWRtaW5Sb3V0ZSB0aXRsZT1cIkdlc3TDo28gZGUgb2ZlcnRhc1wiPjxBZG1pbk9mZmVyc1BhZ2UgLz48L0FkbWluUm91dGU+fSAvPlxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL2FkbWluL2JhbmtzXCIgZWxlbWVudD17PEFkbWluUm91dGUgdGl0bGU9XCJHZXN0w6NvIGRlIGJhbmNvc1wiPjxBZG1pbkJhbmtzUGFnZSAvPjwvQWRtaW5Sb3V0ZT59IC8+XHJcbiAgICAgICAgPFJvdXRlIHBhdGg9XCIvYWRtaW4vcGFydG5lcnNcIiBlbGVtZW50PXs8QWRtaW5Sb3V0ZSB0aXRsZT1cIkdlc3TDo28gZGUgcGFyY2Vpcm9zXCI+PEFkbWluUGFydG5lcnNQYWdlIC8+PC9BZG1pblJvdXRlPn0gLz5cclxuICAgICAgICA8Um91dGUgcGF0aD1cIi9hZG1pbi91c2Vyc1wiIGVsZW1lbnQ9ezxBZG1pblJvdXRlIHRpdGxlPVwiRXF1aXBlIGUgcGVybWlzc8O1ZXNcIj48QWRtaW5Vc2Vyc1BhZ2UgLz48L0FkbWluUm91dGU+fSAvPlxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL2FkbWluL2FydGljbGVzXCIgZWxlbWVudD17PEFkbWluUm91dGUgdGl0bGU9XCJHZXN0w6NvIGRlIGFydGlnb3NcIj48QWRtaW5BcnRpY2xlc1BhZ2UgLz48L0FkbWluUm91dGU+fSAvPlxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL2FkbWluL3Nlby1wYWdlc1wiIGVsZW1lbnQ9ezxBZG1pblJvdXRlIHRpdGxlPVwiR2VzdMOjbyBkZSBww6FnaW5hcyBTRU9cIj48QWRtaW5TZW9QYWdlc1BhZ2UgLz48L0FkbWluUm91dGU+fSAvPlxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL2FkbWluL2xlYWRzXCIgZWxlbWVudD17PEFkbWluUm91dGUgdGl0bGU9XCJHZXN0w6NvIGRlIGxlYWRzXCI+PEFkbWluTGVhZHNQYWdlIC8+PC9BZG1pblJvdXRlPn0gLz5cclxuICAgICAgICA8Um91dGUgcGF0aD1cIi9hZG1pbi9yZWFjdGl2YXRpb25cIiBlbGVtZW50PXs8QWRtaW5Sb3V0ZSB0aXRsZT1cIlJlYXRpdmHDp8OjbyBkZSBsZWFkc1wiPjxBZG1pblJlYWN0aXZhdGlvblBhZ2UgLz48L0FkbWluUm91dGU+fSAvPlxyXG4gICAgICAgIDxSb3V0ZSBwYXRoPVwiL2FkbWluL2VtYWlsLW9wc1wiIGVsZW1lbnQ9ezxBZG1pblJvdXRlIHRpdGxlPVwiRW1haWwgT3BzXCI+PEFkbWluRW1haWxPcHNQYWdlIC8+PC9BZG1pblJvdXRlPn0gLz5cclxuICAgICAgICA8Um91dGUgcGF0aD1cIi9hZG1pbi90ZXN0aW1vbmlhbHNcIiBlbGVtZW50PXs8QWRtaW5Sb3V0ZSB0aXRsZT1cIkRlcG9pbWVudG9zXCI+PEFkbWluVGVzdGltb25pYWxzUGFnZSAvPjwvQWRtaW5Sb3V0ZT59IC8+XHJcbiAgICAgICAgPFJvdXRlIHBhdGg9XCIvYWRtaW4vYXVkaXRcIiBlbGVtZW50PXs8QWRtaW5Sb3V0ZSB0aXRsZT1cIkF1ZGl0b3JpYVwiPjxBZG1pbkF1ZGl0UGFnZSAvPjwvQWRtaW5Sb3V0ZT59IC8+XHJcbiAgICAgICAgPFJvdXRlIHBhdGg9XCIvYWRtaW4vaGVhbHRoXCIgZWxlbWVudD17PEFkbWluUm91dGUgdGl0bGU9XCJTYcO6ZGUgb3BlcmFjaW9uYWxcIj48QWRtaW5IZWFsdGhQYWdlIC8+PC9BZG1pblJvdXRlPn0gLz5cclxuICAgICAgICA8Um91dGUgcGF0aD1cIi9hZG1pbi9zZXR0aW5nc1wiIGVsZW1lbnQ9ezxBZG1pblJvdXRlIHRpdGxlPVwiQ29uZmlndXJhw6fDtWVzXCI+PEFkbWluU2V0dGluZ3NQYWdlIC8+PC9BZG1pblJvdXRlPn0gLz5cclxuXHJcbiAgICAgICAge3Nlb1BhZ2VzLmZpbHRlcigocGFnZSkgPT4gIXNob3VsZFNraXBTZWVkU2VvUGFnZShwYWdlLnBhdGgpKS5tYXAoKHBhZ2UpID0+IChcclxuICAgICAgICAgIDxSb3V0ZVxyXG4gICAgICAgICAgICBrZXk9e3BhZ2UucGF0aH1cclxuICAgICAgICAgICAgcGF0aD17cGFnZS5wYXRofVxyXG4gICAgICAgICAgICBlbGVtZW50PXtcclxuICAgICAgICAgICAgICA8QXBwTGF5b3V0PlxyXG4gICAgICAgICAgICAgICAgPFNlb0xhbmRpbmdQYWdlXHJcbiAgICAgICAgICAgICAgICAgIHRpdGxlPXtwYWdlLnRpdGxlfVxyXG4gICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbj17cGFnZS5kZXNjcmlwdGlvbn1cclxuICAgICAgICAgICAgICAgICAgaGVhZGluZz17cGFnZS5oZXJvQ29weSB8fCBwYWdlLmhlYWRpbmd9XHJcbiAgICAgICAgICAgICAgICAgIGNvbnRlbnQ9e0FycmF5LmlzQXJyYXkocGFnZS5jb250ZW50KSA/IHBhZ2UuY29udGVudCA6IFtwYWdlLmRlc2NyaXB0aW9uXS5maWx0ZXIoQm9vbGVhbil9XHJcbiAgICAgICAgICAgICAgICAgIHR5cGU9e3BhZ2UudHlwZX1cclxuICAgICAgICAgICAgICAgIC8+XHJcbiAgICAgICAgICAgICAgPC9BcHBMYXlvdXQ+XHJcbiAgICAgICAgICAgIH1cclxuICAgICAgICAgIC8+XHJcbiAgICAgICAgKSl9XHJcblxyXG4gICAgICAgIHtzZW9GYWxsYmFja1BhdGhzLm1hcCgocGF0aCkgPT4gKFxyXG4gICAgICAgICAgPFJvdXRlXHJcbiAgICAgICAgICAgIGtleT17cGF0aH1cclxuICAgICAgICAgICAgcGF0aD17cGF0aH1cclxuICAgICAgICAgICAgZWxlbWVudD17XHJcbiAgICAgICAgICAgICAgPEFwcExheW91dD5cclxuICAgICAgICAgICAgICAgIDxTZW9MYW5kaW5nUGFnZVxyXG4gICAgICAgICAgICAgICAgICB0aXRsZT1cIkNvbnRlw7pkbyBlc3BlY2lhbGl6YWRvIC0gQ290ZSBKdXJvc1wiXHJcbiAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uPVwiRW5jb250cmUgYSBtZWxob3Igb2ZlcnRhIGZpbmFuY2VpcmEgcGFyYSBvIHNldSBwZXJmaWwuIENvbXBhcmUgdGF4YXMgZSBlY29ub21pemUuXCJcclxuICAgICAgICAgICAgICAgICAgaGVhZGluZz1cIkRlc2N1YnJhIGEgbWVsaG9yIG9ww6fDo28gcGFyYSB2b2PDqlwiXHJcbiAgICAgICAgICAgICAgICAgIGNvbnRlbnQ9e1tcclxuICAgICAgICAgICAgICAgICAgICAnQSBDb3RlIEp1cm9zIGFuYWxpc2EgZGV6ZW5hcyBkZSBpbnN0aXR1acOnw7VlcyBmaW5hbmNlaXJhcyBwYXJhIGVudHJlZ2FyIGEgbWVsaG9yIG9mZXJ0YSBwYXJhIG8gc2V1IGJvbHNvLicsXHJcbiAgICAgICAgICAgICAgICAgICAgJ0NvbXBhcmFtb3MgdGF4YXMsIHByYXpvcyBlIGNvbmRpw6fDtWVzIHBhcmEgcXVlIHZvY8OqIHRvbWUgYSBtZWxob3IgZGVjaXPDo28gZGUgZm9ybWEgZ3JhdHVpdGEuJ1xyXG4gICAgICAgICAgICAgICAgICBdfVxyXG4gICAgICAgICAgICAgICAgICB0eXBlPVwiYWxsXCJcclxuICAgICAgICAgICAgICAgIC8+XHJcbiAgICAgICAgICAgICAgPC9BcHBMYXlvdXQ+XHJcbiAgICAgICAgICAgIH1cclxuICAgICAgICAgIC8+XHJcbiAgICAgICAgKSl9XHJcblxyXG4gICAgICAgIDxSb3V0ZVxyXG4gICAgICAgICAgcGF0aD1cIipcIlxyXG4gICAgICAgICAgZWxlbWVudD17XHJcbiAgICAgICAgICAgIDxBcHBMYXlvdXQ+XHJcbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4IG1pbi1oLVs2MHZoXSBmbGV4LWNvbCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgcHgtNCB0ZXh0LWNlbnRlclwiPlxyXG4gICAgICAgICAgICAgICAgPGgxIGNsYXNzTmFtZT1cIm1iLTQgdGV4dC1mb3JlZ3JvdW5kXCI+UMOhZ2luYSBuw6NvIGVuY29udHJhZGE8L2gxPlxyXG4gICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwibWItOCBtYXgtdy14bCB0ZXh0LWxnIHRleHQtbXV0ZWQtZm9yZWdyb3VuZFwiPlxyXG4gICAgICAgICAgICAgICAgICBBIHDDoWdpbmEgcXVlIHZvY8OqIGVzdMOhIHByb2N1cmFuZG8gbsOjbyBleGlzdGUgb3UgZm9pIG1vdmlkYS5cclxuICAgICAgICAgICAgICAgIDwvcD5cclxuICAgICAgICAgICAgICAgIDxhIGhyZWY9XCIvXCIgY2xhc3NOYW1lPVwiZm9udC1zZW1pYm9sZCB0ZXh0LWZvcmVncm91bmQgaG92ZXI6dW5kZXJsaW5lXCI+XHJcbiAgICAgICAgICAgICAgICAgIFZvbHRhciBwYXJhIG8gaW7DrWNpb1xyXG4gICAgICAgICAgICAgICAgPC9hPlxyXG4gICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICA8L0FwcExheW91dD5cclxuICAgICAgICAgIH1cclxuICAgICAgICAvPlxyXG4gICAgICA8L1JvdXRlcz5cclxuICAgICAgPFRvYXN0ZXIgcG9zaXRpb249XCJ0b3AtcmlnaHRcIiAvPlxyXG4gICAgPC9Sb3V0ZXI+XHJcbiAgKTtcclxufVxyXG5cclxuZXhwb3J0IGRlZmF1bHQgQXBwO1xyXG5cclxuIl0sImZpbGUiOiJDOi9kZXYvY290ZS1qdXJvcy1ob3N0aW5nZXItaG9yaXpvbnMvYXBwcy93ZWIvc3JjL0FwcC5qc3gifQ==

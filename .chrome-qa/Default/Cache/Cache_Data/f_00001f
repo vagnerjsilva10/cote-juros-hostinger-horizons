@@ -1,0 +1,367 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/pages/LeadNextStepPage.jsx");import __vite__cjsImport0_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=f3f27a3e"; const Fragment = __vite__cjsImport0_react_jsxDevRuntime["Fragment"]; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+var _s = $RefreshSig$();
+import __vite__cjsImport1_react from "/node_modules/.vite/deps/react.js?v=f3f27a3e"; const React = __vite__cjsImport1_react.__esModule ? __vite__cjsImport1_react.default : __vite__cjsImport1_react; const useEffect = __vite__cjsImport1_react["useEffect"]; const useMemo = __vite__cjsImport1_react["useMemo"]; const useState = __vite__cjsImport1_react["useState"];
+import { Helmet } from "/node_modules/.vite/deps/react-helmet.js?v=f3f27a3e";
+import { Link, useLocation } from "/node_modules/.vite/deps/react-router-dom.js?v=f3f27a3e";
+import { ArrowRight, CheckCircle2, ShieldCheck } from "/node_modules/.vite/deps/lucide-react.js?v=f3f27a3e";
+import { toast } from "/node_modules/.vite/deps/sonner.js?v=f3f27a3e";
+import { getLeadProfileLabel } from "/src/admin/adminLabels.js";
+import { Button } from "/src/components/ui/button.jsx";
+import { Card, CardContent } from "/src/components/ui/card.jsx";
+import { partnerRedirectService } from "/src/platform/services/partnerRedirectService.js";
+import { portalApi } from "/src/platform/services/portalApi.js";
+const buildLegacyRecommendation = (leadResult) => {
+  if (!leadResult?.partnerName || !leadResult?.redirectUrl) return [];
+  return [{
+    id: leadResult.partnerId || "legacy_partner",
+    name: leadResult.partnerName,
+    mode: leadResult.deliveryMode || "tracking_link",
+    type: "affiliate_link",
+    destinationUrl: leadResult.redirectUrl,
+    description: "Opcao parceira para comparar condicoes de credito com base no seu perfil.",
+    highlights: ["Compare custo total", "Confira prazo e condicoes", "Sujeito a criterios do parceiro"],
+    ctaText: "Ver condicoes",
+    eventType: `click_partner_${leadResult.partnerId || "legacy"}`
+  }];
+};
+function LeadNextStepPage() {
+  _s();
+  const location = useLocation();
+  const [clickingPartnerId, setClickingPartnerId] = useState(null);
+  const [genericMatch, setGenericMatch] = useState(null);
+  const leadResult = location.state?.leadResult || null;
+  const hasProfile = Boolean(leadResult?.profile || leadResult?.leadId);
+  useEffect(() => {
+    if (leadResult) return;
+    let ignore = false;
+    const fallbackProfile = {
+      negativado: null,
+      renda: null,
+      valor: null,
+      urgencia: null
+    };
+    portalApi.matchCreditPartners(fallbackProfile).then((data) => {
+      if (!ignore) setGenericMatch(data);
+    });
+    return () => {
+      ignore = true;
+    };
+  }, [leadResult]);
+  const recommendations = useMemo(() => {
+    const items = Array.isArray(leadResult?.recommendations) && leadResult.recommendations.length ? leadResult.recommendations : Array.isArray(genericMatch?.recommendations) && genericMatch.recommendations.length ? genericMatch.recommendations : buildLegacyRecommendation(leadResult);
+    return items.map((item) => ({
+      ...item,
+      destinationUrl: item.destinationUrl || item.url || (item.id === leadResult?.partnerId ? leadResult?.redirectUrl : "")
+    }));
+  }, [genericMatch?.recommendations, leadResult]);
+  const handlePartnerClick = async (partner) => {
+    const destinationUrl = partner.destinationUrl || leadResult?.redirectUrl;
+    if (!destinationUrl) return;
+    setClickingPartnerId(partner.id);
+    try {
+      await portalApi.trackIntegration({
+        sourcePage: "/resultado",
+        productContext: partner.eventType || `click_partner_${partner.id}`,
+        simulationId: leadResult?.leadId || null
+      });
+      const redirect = await partnerRedirectService.create({
+        partnerId: partner.id,
+        destinationUrl,
+        sourcePage: "/resultado",
+        productType: "loan",
+        metadata: {
+          eventType: partner.eventType || `click_partner_${partner.id}`,
+          leadId: leadResult?.leadId || null
+        }
+      });
+      window.location.href = redirect?.resolvedUrl || destinationUrl;
+    } catch (error) {
+      toast.error("Nao foi possivel registrar o clique agora, mas voce ainda pode seguir.");
+      window.location.href = destinationUrl;
+    }
+  };
+  return /* @__PURE__ */ jsxDEV(Fragment, { children: [
+    /* @__PURE__ */ jsxDEV(Helmet, { children: [
+      /* @__PURE__ */ jsxDEV("title", { children: "Resultado | Cote Juros" }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+        lineNumber: 100,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV(
+        "meta",
+        {
+          name: "description",
+          content: "Compare opcoes de credito com base no seu perfil antes de contratar."
+        },
+        void 0,
+        false,
+        {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+          lineNumber: 101,
+          columnNumber: 9
+        },
+        this
+      )
+    ] }, void 0, true, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+      lineNumber: 99,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV("section", { className: "min-h-[72vh] bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_48%,#f7f9fc_100%)] py-16", children: /* @__PURE__ */ jsxDEV("div", { className: "page-shell", children: /* @__PURE__ */ jsxDEV("div", { className: "mx-auto max-w-5xl", children: [
+      /* @__PURE__ */ jsxDEV("div", { className: "text-center", children: [
+        /* @__PURE__ */ jsxDEV("div", { className: "mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-white", children: /* @__PURE__ */ jsxDEV(CheckCircle2, { className: "h-7 w-7 text-emerald-600" }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+          lineNumber: 112,
+          columnNumber: 17
+        }, this) }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+          lineNumber: 111,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ jsxDEV("h1", { className: "mt-5 text-[clamp(2rem,4vw,3rem)] font-medium tracking-[-0.035em] text-[#191F28]", children: hasProfile ? "Opcoes que podem fazer sentido para voce" : "Veja algumas opcoes de credito" }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+          lineNumber: 114,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ jsxDEV("p", { className: "mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600", children: hasProfile ? "Com base nas informacoes fornecidas, estas sao algumas possibilidades. Avalie as condicoes antes de contratar." : "Estas sao algumas possibilidades que podem fazer sentido para diferentes perfis. Avalie as condicoes antes de contratar." }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+          lineNumber: 117,
+          columnNumber: 15
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+        lineNumber: 110,
+        columnNumber: 13
+      }, this),
+      leadResult ? /* @__PURE__ */ jsxDEV("div", { className: "mx-auto mt-8 grid max-w-3xl gap-3 rounded-[18px] border border-slate-200 bg-white px-5 py-4 text-left sm:grid-cols-3", children: [
+        /* @__PURE__ */ jsxDEV("div", { children: [
+          /* @__PURE__ */ jsxDEV("p", { className: "text-xs font-semibold uppercase tracking-[0.14em] text-slate-500", children: "Perfil" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+            lineNumber: 127,
+            columnNumber: 19
+          }, this),
+          /* @__PURE__ */ jsxDEV("p", { className: "mt-1 text-sm font-semibold text-slate-900", children: getLeadProfileLabel(leadResult.profile) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+            lineNumber: 128,
+            columnNumber: 19
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+          lineNumber: 126,
+          columnNumber: 17
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { children: [
+          /* @__PURE__ */ jsxDEV("p", { className: "text-xs font-semibold uppercase tracking-[0.14em] text-slate-500", children: "Base" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+            lineNumber: 131,
+            columnNumber: 19
+          }, this),
+          /* @__PURE__ */ jsxDEV("p", { className: "mt-1 text-sm font-semibold text-slate-900", children: "Com base no seu perfil" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+            lineNumber: 132,
+            columnNumber: 19
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+          lineNumber: 130,
+          columnNumber: 17
+        }, this),
+        /* @__PURE__ */ jsxDEV("div", { children: [
+          /* @__PURE__ */ jsxDEV("p", { className: "text-xs font-semibold uppercase tracking-[0.14em] text-slate-500", children: "Opcoes" }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+            lineNumber: 135,
+            columnNumber: 19
+          }, this),
+          /* @__PURE__ */ jsxDEV("p", { className: "mt-1 text-sm font-semibold text-slate-900", children: recommendations.length || 0 }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+            lineNumber: 136,
+            columnNumber: 19
+          }, this)
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+          lineNumber: 134,
+          columnNumber: 17
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+        lineNumber: 125,
+        columnNumber: 13
+      }, this) : null,
+      recommendations.length ? /* @__PURE__ */ jsxDEV("div", { className: "mt-10 grid gap-5 md:grid-cols-2", children: recommendations.map(
+        (partner) => /* @__PURE__ */ jsxDEV(Card, { className: "h-full border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.06)]", children: /* @__PURE__ */ jsxDEV(CardContent, { className: "flex h-full flex-col p-7", children: [
+          /* @__PURE__ */ jsxDEV("div", { className: "flex items-start justify-between gap-4", children: [
+            /* @__PURE__ */ jsxDEV("div", { children: [
+              /* @__PURE__ */ jsxDEV("p", { className: "text-xs font-semibold uppercase tracking-[0.14em] text-slate-500", children: "Parceiro" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+                lineNumber: 148,
+                columnNumber: 27
+              }, this),
+              /* @__PURE__ */ jsxDEV("h2", { className: "mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-950", children: partner.name }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+                lineNumber: 149,
+                columnNumber: 27
+              }, this)
+            ] }, void 0, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+              lineNumber: 147,
+              columnNumber: 25
+            }, this),
+            /* @__PURE__ */ jsxDEV("div", { className: "rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700", children: "Ativo" }, void 0, false, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+              lineNumber: 151,
+              columnNumber: 25
+            }, this)
+          ] }, void 0, true, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+            lineNumber: 146,
+            columnNumber: 23
+          }, this),
+          /* @__PURE__ */ jsxDEV("p", { className: "mt-4 text-sm leading-7 text-slate-600", children: partner.description || "Opcao parceira para comparar condicoes de credito antes de contratar." }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+            lineNumber: 156,
+            columnNumber: 23
+          }, this),
+          /* @__PURE__ */ jsxDEV("div", { className: "mt-5 grid gap-3", children: (partner.highlights || []).slice(0, 4).map(
+            (item) => /* @__PURE__ */ jsxDEV("div", { className: "flex items-start gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-4 py-3", children: [
+              /* @__PURE__ */ jsxDEV(ShieldCheck, { className: "mt-0.5 h-4 w-4 shrink-0 text-emerald-600" }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+                lineNumber: 163,
+                columnNumber: 29
+              }, this),
+              /* @__PURE__ */ jsxDEV("p", { className: "text-sm leading-6 text-slate-700", children: item }, void 0, false, {
+                fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+                lineNumber: 164,
+                columnNumber: 29
+              }, this)
+            ] }, item, true, {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+              lineNumber: 162,
+              columnNumber: 21
+            }, this)
+          ) }, void 0, false, {
+            fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+            lineNumber: 160,
+            columnNumber: 23
+          }, this),
+          /* @__PURE__ */ jsxDEV(
+            Button,
+            {
+              className: "mt-6 h-12 w-full rounded-[14px] bg-slate-950 px-7 text-sm font-semibold text-white hover:bg-slate-800",
+              disabled: clickingPartnerId === partner.id,
+              onClick: () => handlePartnerClick(partner),
+              children: [
+                clickingPartnerId === partner.id ? "Abrindo..." : partner.ctaText || "Ver condicoes",
+                /* @__PURE__ */ jsxDEV(ArrowRight, { className: "h-4 w-4" }, void 0, false, {
+                  fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+                  lineNumber: 175,
+                  columnNumber: 25
+                }, this)
+              ]
+            },
+            void 0,
+            true,
+            {
+              fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+              lineNumber: 169,
+              columnNumber: 23
+            },
+            this
+          )
+        ] }, void 0, true, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+          lineNumber: 145,
+          columnNumber: 21
+        }, this) }, partner.id, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+          lineNumber: 144,
+          columnNumber: 15
+        }, this)
+      ) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+        lineNumber: 142,
+        columnNumber: 13
+      }, this) : /* @__PURE__ */ jsxDEV(Card, { className: "mx-auto mt-10 max-w-3xl rounded-[24px] border-slate-200 bg-white", children: /* @__PURE__ */ jsxDEV(CardContent, { className: "px-7 py-10 text-center", children: [
+        /* @__PURE__ */ jsxDEV("h2", { className: "text-2xl font-semibold tracking-[-0.03em] text-slate-950", children: "Nao encontramos opcoes nesta sessao." }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+          lineNumber: 184,
+          columnNumber: 19
+        }, this),
+        /* @__PURE__ */ jsxDEV("p", { className: "mx-auto mt-3 max-w-xl text-sm leading-7 text-slate-600", children: "Voce pode voltar para o comparador e refazer o perfil para ver opcoes disponiveis." }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+          lineNumber: 185,
+          columnNumber: 19
+        }, this),
+        /* @__PURE__ */ jsxDEV(Link, { to: "/emprestimos", className: "mt-6 inline-flex", children: /* @__PURE__ */ jsxDEV(Button, { children: "Ver opcoes" }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+          lineNumber: 189,
+          columnNumber: 21
+        }, this) }, void 0, false, {
+          fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+          lineNumber: 188,
+          columnNumber: 19
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+        lineNumber: 183,
+        columnNumber: 17
+      }, this) }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+        lineNumber: 182,
+        columnNumber: 13
+      }, this),
+      /* @__PURE__ */ jsxDEV("p", { className: "mx-auto mt-8 max-w-3xl text-center text-xs leading-6 text-slate-500", children: "A Cote Juros nao e instituicao financeira e nao garante aprovacao de credito." }, void 0, false, {
+        fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+        lineNumber: 195,
+        columnNumber: 13
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+      lineNumber: 109,
+      columnNumber: 11
+    }, this) }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+      lineNumber: 108,
+      columnNumber: 9
+    }, this) }, void 0, false, {
+      fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+      lineNumber: 107,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx",
+    lineNumber: 98,
+    columnNumber: 5
+  }, this);
+}
+_s(LeadNextStepPage, "CvSGn4Dy4VLBG9H1SI/7vM7QgjU=", false, function() {
+  return [useLocation];
+});
+_c = LeadNextStepPage;
+export default LeadNextStepPage;
+var _c;
+$RefreshReg$(_c, "LeadNextStepPage");
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+  RefreshRuntime.__hmr_import(import.meta.url).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+function $RefreshReg$(type, id) {
+  return RefreshRuntime.register(type, "C:/dev/cote-juros-hostinger-horizons/apps/web/src/pages/LeadNextStepPage.jsx " + id);
+}
+function $RefreshSig$() {
+  return RefreshRuntime.createSignatureFunctionForTransform();
+}
+
+//# sourceMappingURL=data:application/json;base64,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UUQsa0JBQWdCO0FBQUEsVUFDTjFCLFdBQVc7QUFBQTtBQUFBLEtBRHJCMEI7QUFrTFQsZUFBZUE7QUFBaUIsSUFBQTRDO0FBQUEsYUFBQUEsSUFBQSIsIm5hbWVzIjpbIlJlYWN0IiwidXNlRWZmZWN0IiwidXNlTWVtbyIsInVzZVN0YXRlIiwiSGVsbWV0IiwiTGluayIsInVzZUxvY2F0aW9uIiwiQXJyb3dSaWdodCIsIkNoZWNrQ2lyY2xlMiIsIlNoaWVsZENoZWNrIiwidG9hc3QiLCJnZXRMZWFkUHJvZmlsZUxhYmVsIiwiQnV0dG9uIiwiQ2FyZCIsIkNhcmRDb250ZW50IiwicGFydG5lclJlZGlyZWN0U2VydmljZSIsInBvcnRhbEFwaSIsImJ1aWxkTGVnYWN5UmVjb21tZW5kYXRpb24iLCJsZWFkUmVzdWx0IiwicGFydG5lck5hbWUiLCJyZWRpcmVjdFVybCIsImlkIiwicGFydG5lcklkIiwibmFtZSIsIm1vZGUiLCJkZWxpdmVyeU1vZGUiLCJ0eXBlIiwiZGVzdGluYXRpb25VcmwiLCJkZXNjcmlwdGlvbiIsImhpZ2hsaWdodHMiLCJjdGFUZXh0IiwiZXZlbnRUeXBlIiwiTGVhZE5leHRTdGVwUGFnZSIsIl9zIiwibG9jYXRpb24iLCJjbGlja2luZ1BhcnRuZXJJZCIsInNldENsaWNraW5nUGFydG5lcklkIiwiZ2VuZXJpY01hdGNoIiwic2V0R2VuZXJpY01hdGNoIiwic3RhdGUiLCJoYXNQcm9maWxlIiwiQm9vbGVhbiIsInByb2ZpbGUiLCJsZWFkSWQiLCJpZ25vcmUiLCJmYWxsYmFja1Byb2ZpbGUiLCJuZWdhdGl2YWRvIiwicmVuZGEiLCJ2YWxvciIsInVyZ2VuY2lhIiwibWF0Y2hDcmVkaXRQYXJ0bmVycyIsInRoZW4iLCJkYXRhIiwicmVjb21tZW5kYXRpb25zIiwiaXRlbXMiLCJBcnJheSIsImlzQXJyYXkiLCJsZW5ndGgiLCJtYXAiLCJpdGVtIiwidXJsIiwiaGFuZGxlUGFydG5lckNsaWNrIiwicGFydG5lciIsInRyYWNrSW50ZWdyYXRpb24iLCJzb3VyY2VQYWdlIiwicHJvZHVjdENvbnRleHQiLCJzaW11bGF0aW9uSWQiLCJyZWRpcmVjdCIsImNyZWF0ZSIsInByb2R1Y3RUeXBlIiwibWV0YWRhdGEiLCJ3aW5kb3ciLCJocmVmIiwicmVzb2x2ZWRVcmwiLCJlcnJvciIsInNsaWNlIiwiX2MiXSwiaWdub3JlTGlzdCI6W10sInNvdXJjZXMiOlsiTGVhZE5leHRTdGVwUGFnZS5qc3giXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IFJlYWN0LCB7IHVzZUVmZmVjdCwgdXNlTWVtbywgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7XHJcbmltcG9ydCB7IEhlbG1ldCB9IGZyb20gJ3JlYWN0LWhlbG1ldCc7XHJcbmltcG9ydCB7IExpbmssIHVzZUxvY2F0aW9uIH0gZnJvbSAncmVhY3Qtcm91dGVyLWRvbSc7XHJcbmltcG9ydCB7IEFycm93UmlnaHQsIENoZWNrQ2lyY2xlMiwgU2hpZWxkQ2hlY2sgfSBmcm9tICdsdWNpZGUtcmVhY3QnO1xyXG5pbXBvcnQgeyB0b2FzdCB9IGZyb20gJ3Nvbm5lcic7XHJcbmltcG9ydCB7IGdldExlYWRQcm9maWxlTGFiZWwgfSBmcm9tICdAL2FkbWluL2FkbWluTGFiZWxzLmpzJztcclxuaW1wb3J0IHsgQnV0dG9uIH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL2J1dHRvbic7XHJcbmltcG9ydCB7IENhcmQsIENhcmRDb250ZW50IH0gZnJvbSAnQC9jb21wb25lbnRzL3VpL2NhcmQnO1xyXG5pbXBvcnQgeyBwYXJ0bmVyUmVkaXJlY3RTZXJ2aWNlIH0gZnJvbSAnQC9wbGF0Zm9ybS9zZXJ2aWNlcy9wYXJ0bmVyUmVkaXJlY3RTZXJ2aWNlLmpzJztcclxuaW1wb3J0IHsgcG9ydGFsQXBpIH0gZnJvbSAnQC9wbGF0Zm9ybS9zZXJ2aWNlcy9wb3J0YWxBcGkuanMnO1xyXG5cclxuY29uc3QgYnVpbGRMZWdhY3lSZWNvbW1lbmRhdGlvbiA9IChsZWFkUmVzdWx0KSA9PiB7XHJcbiAgaWYgKCFsZWFkUmVzdWx0Py5wYXJ0bmVyTmFtZSB8fCAhbGVhZFJlc3VsdD8ucmVkaXJlY3RVcmwpIHJldHVybiBbXTtcclxuICByZXR1cm4gW3tcclxuICAgIGlkOiBsZWFkUmVzdWx0LnBhcnRuZXJJZCB8fCAnbGVnYWN5X3BhcnRuZXInLFxyXG4gICAgbmFtZTogbGVhZFJlc3VsdC5wYXJ0bmVyTmFtZSxcclxuICAgIG1vZGU6IGxlYWRSZXN1bHQuZGVsaXZlcnlNb2RlIHx8ICd0cmFja2luZ19saW5rJyxcclxuICAgIHR5cGU6ICdhZmZpbGlhdGVfbGluaycsXHJcbiAgICBkZXN0aW5hdGlvblVybDogbGVhZFJlc3VsdC5yZWRpcmVjdFVybCxcclxuICAgIGRlc2NyaXB0aW9uOiAnT3BjYW8gcGFyY2VpcmEgcGFyYSBjb21wYXJhciBjb25kaWNvZXMgZGUgY3JlZGl0byBjb20gYmFzZSBubyBzZXUgcGVyZmlsLicsXHJcbiAgICBoaWdobGlnaHRzOiBbJ0NvbXBhcmUgY3VzdG8gdG90YWwnLCAnQ29uZmlyYSBwcmF6byBlIGNvbmRpY29lcycsICdTdWplaXRvIGEgY3JpdGVyaW9zIGRvIHBhcmNlaXJvJ10sXHJcbiAgICBjdGFUZXh0OiAnVmVyIGNvbmRpY29lcycsXHJcbiAgICBldmVudFR5cGU6IGBjbGlja19wYXJ0bmVyXyR7bGVhZFJlc3VsdC5wYXJ0bmVySWQgfHwgJ2xlZ2FjeSd9YFxyXG4gIH1dO1xyXG59O1xyXG5cclxuZnVuY3Rpb24gTGVhZE5leHRTdGVwUGFnZSgpIHtcclxuICBjb25zdCBsb2NhdGlvbiA9IHVzZUxvY2F0aW9uKCk7XHJcbiAgY29uc3QgW2NsaWNraW5nUGFydG5lcklkLCBzZXRDbGlja2luZ1BhcnRuZXJJZF0gPSB1c2VTdGF0ZShudWxsKTtcclxuICBjb25zdCBbZ2VuZXJpY01hdGNoLCBzZXRHZW5lcmljTWF0Y2hdID0gdXNlU3RhdGUobnVsbCk7XHJcbiAgY29uc3QgbGVhZFJlc3VsdCA9IGxvY2F0aW9uLnN0YXRlPy5sZWFkUmVzdWx0IHx8IG51bGw7XHJcbiAgY29uc3QgaGFzUHJvZmlsZSA9IEJvb2xlYW4obGVhZFJlc3VsdD8ucHJvZmlsZSB8fCBsZWFkUmVzdWx0Py5sZWFkSWQpO1xyXG5cclxuICB1c2VFZmZlY3QoKCkgPT4ge1xyXG4gICAgaWYgKGxlYWRSZXN1bHQpIHJldHVybjtcclxuXHJcbiAgICBsZXQgaWdub3JlID0gZmFsc2U7XHJcbiAgICBjb25zdCBmYWxsYmFja1Byb2ZpbGUgPSB7XHJcbiAgICAgIG5lZ2F0aXZhZG86IG51bGwsXHJcbiAgICAgIHJlbmRhOiBudWxsLFxyXG4gICAgICB2YWxvcjogbnVsbCxcclxuICAgICAgdXJnZW5jaWE6IG51bGxcclxuICAgIH07XHJcblxyXG4gICAgcG9ydGFsQXBpLm1hdGNoQ3JlZGl0UGFydG5lcnMoZmFsbGJhY2tQcm9maWxlKS50aGVuKChkYXRhKSA9PiB7XHJcbiAgICAgIGlmICghaWdub3JlKSBzZXRHZW5lcmljTWF0Y2goZGF0YSk7XHJcbiAgICB9KTtcclxuXHJcbiAgICByZXR1cm4gKCkgPT4ge1xyXG4gICAgICBpZ25vcmUgPSB0cnVlO1xyXG4gICAgfTtcclxuICB9LCBbbGVhZFJlc3VsdF0pO1xyXG5cclxuICBjb25zdCByZWNvbW1lbmRhdGlvbnMgPSB1c2VNZW1vKCgpID0+IHtcclxuICAgIGNvbnN0IGl0ZW1zID0gQXJyYXkuaXNBcnJheShsZWFkUmVzdWx0Py5yZWNvbW1lbmRhdGlvbnMpICYmIGxlYWRSZXN1bHQucmVjb21tZW5kYXRpb25zLmxlbmd0aFxyXG4gICAgICA/IGxlYWRSZXN1bHQucmVjb21tZW5kYXRpb25zXHJcbiAgICAgIDogQXJyYXkuaXNBcnJheShnZW5lcmljTWF0Y2g/LnJlY29tbWVuZGF0aW9ucykgJiYgZ2VuZXJpY01hdGNoLnJlY29tbWVuZGF0aW9ucy5sZW5ndGhcclxuICAgICAgICA/IGdlbmVyaWNNYXRjaC5yZWNvbW1lbmRhdGlvbnNcclxuICAgICAgOiBidWlsZExlZ2FjeVJlY29tbWVuZGF0aW9uKGxlYWRSZXN1bHQpO1xyXG5cclxuICAgIHJldHVybiBpdGVtcy5tYXAoKGl0ZW0pID0+ICh7XHJcbiAgICAgIC4uLml0ZW0sXHJcbiAgICAgIGRlc3RpbmF0aW9uVXJsOiBpdGVtLmRlc3RpbmF0aW9uVXJsIHx8IGl0ZW0udXJsIHx8IChpdGVtLmlkID09PSBsZWFkUmVzdWx0Py5wYXJ0bmVySWQgPyBsZWFkUmVzdWx0Py5yZWRpcmVjdFVybCA6ICcnKVxyXG4gICAgfSkpO1xyXG4gIH0sIFtnZW5lcmljTWF0Y2g/LnJlY29tbWVuZGF0aW9ucywgbGVhZFJlc3VsdF0pO1xyXG5cclxuICBjb25zdCBoYW5kbGVQYXJ0bmVyQ2xpY2sgPSBhc3luYyAocGFydG5lcikgPT4ge1xyXG4gICAgY29uc3QgZGVzdGluYXRpb25VcmwgPSBwYXJ0bmVyLmRlc3RpbmF0aW9uVXJsIHx8IGxlYWRSZXN1bHQ/LnJlZGlyZWN0VXJsO1xyXG4gICAgaWYgKCFkZXN0aW5hdGlvblVybCkgcmV0dXJuO1xyXG5cclxuICAgIHNldENsaWNraW5nUGFydG5lcklkKHBhcnRuZXIuaWQpO1xyXG4gICAgdHJ5IHtcclxuICAgICAgYXdhaXQgcG9ydGFsQXBpLnRyYWNrSW50ZWdyYXRpb24oe1xyXG4gICAgICAgIHNvdXJjZVBhZ2U6ICcvcmVzdWx0YWRvJyxcclxuICAgICAgICBwcm9kdWN0Q29udGV4dDogcGFydG5lci5ldmVudFR5cGUgfHwgYGNsaWNrX3BhcnRuZXJfJHtwYXJ0bmVyLmlkfWAsXHJcbiAgICAgICAgc2ltdWxhdGlvbklkOiBsZWFkUmVzdWx0Py5sZWFkSWQgfHwgbnVsbFxyXG4gICAgICB9KTtcclxuXHJcbiAgICAgIGNvbnN0IHJlZGlyZWN0ID0gYXdhaXQgcGFydG5lclJlZGlyZWN0U2VydmljZS5jcmVhdGUoe1xyXG4gICAgICAgIHBhcnRuZXJJZDogcGFydG5lci5pZCxcclxuICAgICAgICBkZXN0aW5hdGlvblVybCxcclxuICAgICAgICBzb3VyY2VQYWdlOiAnL3Jlc3VsdGFkbycsXHJcbiAgICAgICAgcHJvZHVjdFR5cGU6ICdsb2FuJyxcclxuICAgICAgICBtZXRhZGF0YToge1xyXG4gICAgICAgICAgZXZlbnRUeXBlOiBwYXJ0bmVyLmV2ZW50VHlwZSB8fCBgY2xpY2tfcGFydG5lcl8ke3BhcnRuZXIuaWR9YCxcclxuICAgICAgICAgIGxlYWRJZDogbGVhZFJlc3VsdD8ubGVhZElkIHx8IG51bGxcclxuICAgICAgICB9XHJcbiAgICAgIH0pO1xyXG5cclxuICAgICAgd2luZG93LmxvY2F0aW9uLmhyZWYgPSByZWRpcmVjdD8ucmVzb2x2ZWRVcmwgfHwgZGVzdGluYXRpb25Vcmw7XHJcbiAgICB9IGNhdGNoIChlcnJvcikge1xyXG4gICAgICB0b2FzdC5lcnJvcignTmFvIGZvaSBwb3NzaXZlbCByZWdpc3RyYXIgbyBjbGlxdWUgYWdvcmEsIG1hcyB2b2NlIGFpbmRhIHBvZGUgc2VndWlyLicpO1xyXG4gICAgICB3aW5kb3cubG9jYXRpb24uaHJlZiA9IGRlc3RpbmF0aW9uVXJsO1xyXG4gICAgfVxyXG4gIH07XHJcblxyXG4gIHJldHVybiAoXHJcbiAgICA8PlxyXG4gICAgICA8SGVsbWV0PlxyXG4gICAgICAgIDx0aXRsZT5SZXN1bHRhZG8gfCBDb3RlIEp1cm9zPC90aXRsZT5cclxuICAgICAgICA8bWV0YVxyXG4gICAgICAgICAgbmFtZT1cImRlc2NyaXB0aW9uXCJcclxuICAgICAgICAgIGNvbnRlbnQ9XCJDb21wYXJlIG9wY29lcyBkZSBjcmVkaXRvIGNvbSBiYXNlIG5vIHNldSBwZXJmaWwgYW50ZXMgZGUgY29udHJhdGFyLlwiXHJcbiAgICAgICAgLz5cclxuICAgICAgPC9IZWxtZXQ+XHJcblxyXG4gICAgICA8c2VjdGlvbiBjbGFzc05hbWU9XCJtaW4taC1bNzJ2aF0gYmctW2xpbmVhci1ncmFkaWVudCgxODBkZWcsI2Y4ZmJmZl8wJSwjZmZmZmZmXzQ4JSwjZjdmOWZjXzEwMCUpXSBweS0xNlwiPlxyXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwicGFnZS1zaGVsbFwiPlxyXG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJteC1hdXRvIG1heC13LTV4bFwiPlxyXG4gICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInRleHQtY2VudGVyXCI+XHJcbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJteC1hdXRvIGZsZXggaC0xNCB3LTE0IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciByb3VuZGVkLTJ4bCBib3JkZXIgYm9yZGVyLXNsYXRlLTIwMCBiZy13aGl0ZVwiPlxyXG4gICAgICAgICAgICAgICAgPENoZWNrQ2lyY2xlMiBjbGFzc05hbWU9XCJoLTcgdy03IHRleHQtZW1lcmFsZC02MDBcIiAvPlxyXG4gICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICAgIDxoMSBjbGFzc05hbWU9XCJtdC01IHRleHQtW2NsYW1wKDJyZW0sNHZ3LDNyZW0pXSBmb250LW1lZGl1bSB0cmFja2luZy1bLTAuMDM1ZW1dIHRleHQtWyMxOTFGMjhdXCI+XHJcbiAgICAgICAgICAgICAgICB7aGFzUHJvZmlsZSA/ICdPcGNvZXMgcXVlIHBvZGVtIGZhemVyIHNlbnRpZG8gcGFyYSB2b2NlJyA6ICdWZWphIGFsZ3VtYXMgb3Bjb2VzIGRlIGNyZWRpdG8nfVxyXG4gICAgICAgICAgICAgIDwvaDE+XHJcbiAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwibXgtYXV0byBtdC00IG1heC13LTJ4bCB0ZXh0LWJhc2UgbGVhZGluZy04IHRleHQtc2xhdGUtNjAwXCI+XHJcbiAgICAgICAgICAgICAgICB7aGFzUHJvZmlsZVxyXG4gICAgICAgICAgICAgICAgICA/ICdDb20gYmFzZSBuYXMgaW5mb3JtYWNvZXMgZm9ybmVjaWRhcywgZXN0YXMgc2FvIGFsZ3VtYXMgcG9zc2liaWxpZGFkZXMuIEF2YWxpZSBhcyBjb25kaWNvZXMgYW50ZXMgZGUgY29udHJhdGFyLidcclxuICAgICAgICAgICAgICAgICAgOiAnRXN0YXMgc2FvIGFsZ3VtYXMgcG9zc2liaWxpZGFkZXMgcXVlIHBvZGVtIGZhemVyIHNlbnRpZG8gcGFyYSBkaWZlcmVudGVzIHBlcmZpcy4gQXZhbGllIGFzIGNvbmRpY29lcyBhbnRlcyBkZSBjb250cmF0YXIuJ31cclxuICAgICAgICAgICAgICA8L3A+XHJcbiAgICAgICAgICAgIDwvZGl2PlxyXG5cclxuICAgICAgICAgICAge2xlYWRSZXN1bHQgPyAoXHJcbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJteC1hdXRvIG10LTggZ3JpZCBtYXgtdy0zeGwgZ2FwLTMgcm91bmRlZC1bMThweF0gYm9yZGVyIGJvcmRlci1zbGF0ZS0yMDAgYmctd2hpdGUgcHgtNSBweS00IHRleHQtbGVmdCBzbTpncmlkLWNvbHMtM1wiPlxyXG4gICAgICAgICAgICAgICAgPGRpdj5cclxuICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC14cyBmb250LXNlbWlib2xkIHVwcGVyY2FzZSB0cmFja2luZy1bMC4xNGVtXSB0ZXh0LXNsYXRlLTUwMFwiPlBlcmZpbDwvcD5cclxuICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwibXQtMSB0ZXh0LXNtIGZvbnQtc2VtaWJvbGQgdGV4dC1zbGF0ZS05MDBcIj57Z2V0TGVhZFByb2ZpbGVMYWJlbChsZWFkUmVzdWx0LnByb2ZpbGUpfTwvcD5cclxuICAgICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICAgICAgPGRpdj5cclxuICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC14cyBmb250LXNlbWlib2xkIHVwcGVyY2FzZSB0cmFja2luZy1bMC4xNGVtXSB0ZXh0LXNsYXRlLTUwMFwiPkJhc2U8L3A+XHJcbiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cIm10LTEgdGV4dC1zbSBmb250LXNlbWlib2xkIHRleHQtc2xhdGUtOTAwXCI+Q29tIGJhc2Ugbm8gc2V1IHBlcmZpbDwvcD5cclxuICAgICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICAgICAgPGRpdj5cclxuICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC14cyBmb250LXNlbWlib2xkIHVwcGVyY2FzZSB0cmFja2luZy1bMC4xNGVtXSB0ZXh0LXNsYXRlLTUwMFwiPk9wY29lczwvcD5cclxuICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwibXQtMSB0ZXh0LXNtIGZvbnQtc2VtaWJvbGQgdGV4dC1zbGF0ZS05MDBcIj57cmVjb21tZW5kYXRpb25zLmxlbmd0aCB8fCAwfTwvcD5cclxuICAgICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICApIDogbnVsbH1cclxuXHJcbiAgICAgICAgICAgIHtyZWNvbW1lbmRhdGlvbnMubGVuZ3RoID8gKFxyXG4gICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwibXQtMTAgZ3JpZCBnYXAtNSBtZDpncmlkLWNvbHMtMlwiPlxyXG4gICAgICAgICAgICAgICAge3JlY29tbWVuZGF0aW9ucy5tYXAoKHBhcnRuZXIpID0+IChcclxuICAgICAgICAgICAgICAgICAgPENhcmQga2V5PXtwYXJ0bmVyLmlkfSBjbGFzc05hbWU9XCJoLWZ1bGwgYm9yZGVyLXNsYXRlLTIwMCBiZy13aGl0ZSBzaGFkb3ctWzBfMTRweF80MHB4X3JnYmEoMTUsMjMsNDIsMC4wNildXCI+XHJcbiAgICAgICAgICAgICAgICAgICAgPENhcmRDb250ZW50IGNsYXNzTmFtZT1cImZsZXggaC1mdWxsIGZsZXgtY29sIHAtN1wiPlxyXG4gICAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4IGl0ZW1zLXN0YXJ0IGp1c3RpZnktYmV0d2VlbiBnYXAtNFwiPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICA8ZGl2PlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cInRleHQteHMgZm9udC1zZW1pYm9sZCB1cHBlcmNhc2UgdHJhY2tpbmctWzAuMTRlbV0gdGV4dC1zbGF0ZS01MDBcIj5QYXJjZWlybzwvcD5cclxuICAgICAgICAgICAgICAgICAgICAgICAgICA8aDIgY2xhc3NOYW1lPVwibXQtMiB0ZXh0LTJ4bCBmb250LXNlbWlib2xkIHRyYWNraW5nLVstMC4wM2VtXSB0ZXh0LXNsYXRlLTk1MFwiPntwYXJ0bmVyLm5hbWV9PC9oMj5cclxuICAgICAgICAgICAgICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwicm91bmRlZC1mdWxsIGJvcmRlciBib3JkZXItZW1lcmFsZC0yMDAgYmctZW1lcmFsZC01MCBweC0zIHB5LTEgdGV4dC14cyBmb250LXNlbWlib2xkIHRleHQtZW1lcmFsZC03MDBcIj5cclxuICAgICAgICAgICAgICAgICAgICAgICAgICBBdGl2b1xyXG4gICAgICAgICAgICAgICAgICAgICAgICA8L2Rpdj5cclxuICAgICAgICAgICAgICAgICAgICAgIDwvZGl2PlxyXG5cclxuICAgICAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cIm10LTQgdGV4dC1zbSBsZWFkaW5nLTcgdGV4dC1zbGF0ZS02MDBcIj5cclxuICAgICAgICAgICAgICAgICAgICAgICAge3BhcnRuZXIuZGVzY3JpcHRpb24gfHwgJ09wY2FvIHBhcmNlaXJhIHBhcmEgY29tcGFyYXIgY29uZGljb2VzIGRlIGNyZWRpdG8gYW50ZXMgZGUgY29udHJhdGFyLid9XHJcbiAgICAgICAgICAgICAgICAgICAgICA8L3A+XHJcblxyXG4gICAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtdC01IGdyaWQgZ2FwLTNcIj5cclxuICAgICAgICAgICAgICAgICAgICAgICAgeyhwYXJ0bmVyLmhpZ2hsaWdodHMgfHwgW10pLnNsaWNlKDAsIDQpLm1hcCgoaXRlbSkgPT4gKFxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYga2V5PXtpdGVtfSBjbGFzc05hbWU9XCJmbGV4IGl0ZW1zLXN0YXJ0IGdhcC0zIHJvdW5kZWQtWzE0cHhdIGJvcmRlciBib3JkZXItc2xhdGUtMjAwIGJnLXNsYXRlLTUwIHB4LTQgcHktM1wiPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgPFNoaWVsZENoZWNrIGNsYXNzTmFtZT1cIm10LTAuNSBoLTQgdy00IHNocmluay0wIHRleHQtZW1lcmFsZC02MDBcIiAvPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC1zbSBsZWFkaW5nLTYgdGV4dC1zbGF0ZS03MDBcIj57aXRlbX08L3A+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICkpfVxyXG4gICAgICAgICAgICAgICAgICAgICAgPC9kaXY+XHJcblxyXG4gICAgICAgICAgICAgICAgICAgICAgPEJ1dHRvblxyXG4gICAgICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9XCJtdC02IGgtMTIgdy1mdWxsIHJvdW5kZWQtWzE0cHhdIGJnLXNsYXRlLTk1MCBweC03IHRleHQtc20gZm9udC1zZW1pYm9sZCB0ZXh0LXdoaXRlIGhvdmVyOmJnLXNsYXRlLTgwMFwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgIGRpc2FibGVkPXtjbGlja2luZ1BhcnRuZXJJZCA9PT0gcGFydG5lci5pZH1cclxuICAgICAgICAgICAgICAgICAgICAgICAgb25DbGljaz17KCkgPT4gaGFuZGxlUGFydG5lckNsaWNrKHBhcnRuZXIpfVxyXG4gICAgICAgICAgICAgICAgICAgICAgPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICB7Y2xpY2tpbmdQYXJ0bmVySWQgPT09IHBhcnRuZXIuaWQgPyAnQWJyaW5kby4uLicgOiBwYXJ0bmVyLmN0YVRleHQgfHwgJ1ZlciBjb25kaWNvZXMnfVxyXG4gICAgICAgICAgICAgICAgICAgICAgICA8QXJyb3dSaWdodCBjbGFzc05hbWU9XCJoLTQgdy00XCIgLz5cclxuICAgICAgICAgICAgICAgICAgICAgIDwvQnV0dG9uPlxyXG4gICAgICAgICAgICAgICAgICAgIDwvQ2FyZENvbnRlbnQ+XHJcbiAgICAgICAgICAgICAgICAgIDwvQ2FyZD5cclxuICAgICAgICAgICAgICAgICkpfVxyXG4gICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICApIDogKFxyXG4gICAgICAgICAgICAgIDxDYXJkIGNsYXNzTmFtZT1cIm14LWF1dG8gbXQtMTAgbWF4LXctM3hsIHJvdW5kZWQtWzI0cHhdIGJvcmRlci1zbGF0ZS0yMDAgYmctd2hpdGVcIj5cclxuICAgICAgICAgICAgICAgIDxDYXJkQ29udGVudCBjbGFzc05hbWU9XCJweC03IHB5LTEwIHRleHQtY2VudGVyXCI+XHJcbiAgICAgICAgICAgICAgICAgIDxoMiBjbGFzc05hbWU9XCJ0ZXh0LTJ4bCBmb250LXNlbWlib2xkIHRyYWNraW5nLVstMC4wM2VtXSB0ZXh0LXNsYXRlLTk1MFwiPk5hbyBlbmNvbnRyYW1vcyBvcGNvZXMgbmVzdGEgc2Vzc2FvLjwvaDI+XHJcbiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cIm14LWF1dG8gbXQtMyBtYXgtdy14bCB0ZXh0LXNtIGxlYWRpbmctNyB0ZXh0LXNsYXRlLTYwMFwiPlxyXG4gICAgICAgICAgICAgICAgICAgIFZvY2UgcG9kZSB2b2x0YXIgcGFyYSBvIGNvbXBhcmFkb3IgZSByZWZhemVyIG8gcGVyZmlsIHBhcmEgdmVyIG9wY29lcyBkaXNwb25pdmVpcy5cclxuICAgICAgICAgICAgICAgICAgPC9wPlxyXG4gICAgICAgICAgICAgICAgICA8TGluayB0bz1cIi9lbXByZXN0aW1vc1wiIGNsYXNzTmFtZT1cIm10LTYgaW5saW5lLWZsZXhcIj5cclxuICAgICAgICAgICAgICAgICAgICA8QnV0dG9uPlZlciBvcGNvZXM8L0J1dHRvbj5cclxuICAgICAgICAgICAgICAgICAgPC9MaW5rPlxyXG4gICAgICAgICAgICAgICAgPC9DYXJkQ29udGVudD5cclxuICAgICAgICAgICAgICA8L0NhcmQ+XHJcbiAgICAgICAgICAgICl9XHJcblxyXG4gICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJteC1hdXRvIG10LTggbWF4LXctM3hsIHRleHQtY2VudGVyIHRleHQteHMgbGVhZGluZy02IHRleHQtc2xhdGUtNTAwXCI+XHJcbiAgICAgICAgICAgICAgQSBDb3RlIEp1cm9zIG5hbyBlIGluc3RpdHVpY2FvIGZpbmFuY2VpcmEgZSBuYW8gZ2FyYW50ZSBhcHJvdmFjYW8gZGUgY3JlZGl0by5cclxuICAgICAgICAgICAgPC9wPlxyXG4gICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgPC9kaXY+XHJcbiAgICAgIDwvc2VjdGlvbj5cclxuICAgIDwvPlxyXG4gICk7XHJcbn1cclxuXHJcbmV4cG9ydCBkZWZhdWx0IExlYWROZXh0U3RlcFBhZ2U7XHJcbiJdLCJmaWxlIjoiQzovZGV2L2NvdGUtanVyb3MtaG9zdGluZ2VyLWhvcml6b25zL2FwcHMvd2ViL3NyYy9wYWdlcy9MZWFkTmV4dFN0ZXBQYWdlLmpzeCJ9
