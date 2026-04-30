@@ -239,7 +239,7 @@ function PremiumAd({ position = 'article' }) {
       format={isSidebar ? 'auto' : 'fluid'}
       layout={isSidebar ? undefined : 'in-article'}
       minHeight={isSidebar ? 118 : 96}
-      theme="dark"
+      theme="light"
     />
   );
 }
