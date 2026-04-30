@@ -34,7 +34,7 @@ const buildConfig = () => {
   const consumerKey = readString('CREDITAS_CONSUMER_KEY');
   const consumerSecret = readString('CREDITAS_CONSUMER_SECRET');
   const authUrl = (readString('CREDITAS_AUTH_URL') || defaults.authUrl).replace(/\s+$/, '');
-  const apiBaseUrl = (readString('CREDITAS_API_BASE_URL') || defaults.apiBaseUrl).replace(/\/$/, '');
+  const apiBaseUrl = (readString('CREDITAS_API_BASE_URL') || readString('CREDITAS_BASE_URL') || defaults.apiBaseUrl).replace(/\/$/, '');
   const configured = Boolean(consumerKey && consumerSecret && authUrl && apiBaseUrl);
   const missing = [];
 
@@ -91,4 +91,3 @@ export const getCreditasHealth = () => {
     retryCount: config.retryCount
   };
 };
-
