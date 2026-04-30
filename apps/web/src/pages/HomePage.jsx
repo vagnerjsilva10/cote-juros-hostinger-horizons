@@ -17,6 +17,7 @@ import CreditHeroPreview from '@/components/CreditHeroPreview.jsx';
 import ExperienceRealVisual from '@/components/ExperienceRealVisual.jsx';
 import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
 import SeoHead from '@/components/SeoHead.jsx';
+import SmartQuiz from '@/components/smart-quiz/SmartQuiz.jsx';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { normalizeMojibake, normalizeMojibakeDeep } from '@/lib/textEncoding.js';
 import { brandPages, createOrganizationSchema, createWebSiteSchema } from '@/seo/brandSeo.js';
@@ -292,6 +293,21 @@ function HomePage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section id="smart-quiz" className="bg-[#0A0A0F] px-4 py-14 md:px-8 md:py-20">
+        <div className="mx-auto max-w-6xl">
+          <motion.div {...animationIn} className="mb-8 max-w-3xl text-white">
+            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9C8FFF]">Radar inteligente</span>
+            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] md:text-5xl">
+              Descubra qual caminho combina melhor com seu momento financeiro
+            </h2>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-white/64">
+              Responda algumas perguntas e veja opções que podem fazer sentido para o seu perfil.
+            </p>
+          </motion.div>
+          <SmartQuiz />
         </div>
       </section>
 

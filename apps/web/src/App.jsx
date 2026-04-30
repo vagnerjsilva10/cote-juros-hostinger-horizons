@@ -19,13 +19,19 @@ import DiagnosticoPage from '@/pages/DiagnosticoPage.jsx';
 import BlogPage from '@/pages/BlogPage.jsx';
 import BlogArticlePage from '@/pages/BlogArticlePage.jsx';
 import BlogRouteBoundary from '@/components/blog/BlogRouteBoundary.jsx';
+import ComparePage from '@/pages/ComparePage.jsx';
 import ComoFuncionaPage from '@/pages/ComoFuncionaPage.jsx';
 import SobreNosPage from '@/pages/SobreNosPage.jsx';
 import ContatoPage from '@/pages/ContatoPage.jsx';
 import FaqPage from '@/pages/FaqPage.jsx';
+import CreditRadarPage from '@/pages/CreditRadarPage.jsx';
+import CustomerDashboardPage from '@/pages/CustomerDashboardPage.jsx';
+import CustomerLoginPage from '@/pages/CustomerLoginPage.jsx';
+import InsurancePage from '@/pages/InsurancePage.jsx';
 import PoliticaPrivacidadePage from '@/pages/PoliticaPrivacidadePage.jsx';
 import TermosUsoPage from '@/pages/TermosUsoPage.jsx';
 import SeoLandingPage from '@/pages/SeoLandingPage.jsx';
+import SmartQuizPage from '@/pages/SmartQuizPage.jsx';
 import CoteFinanceAIPage from '@/pages/CoteFinanceAIPage.jsx';
 import MotionHeroPage from '@/pages/MotionHeroPage.jsx';
 import SeoProgrammaticPage from '@/pages/SeoProgrammaticPage.jsx';
@@ -144,6 +150,16 @@ function App() {
         <Route path="/simulador-comprometimento-renda" element={<AppLayout><SimuladorComprometimentoRendaPage /></AppLayout>} />
         <Route path="/estudos/custo-emprestimo-negativado-2026" element={<AppLayout><EstudoCreditoNegativadoPage /></AppLayout>} />
         <Route path="/diagnostico-financeiro" element={<AppLayout><DiagnosticoPage /></AppLayout>} />
+        <Route path="/radar" element={<AppLayout><CreditRadarPage /></AppLayout>} />
+        <Route path="/quiz" element={<AppLayout><SmartQuizPage /></AppLayout>} />
+        <Route path="/seguros" element={<AppLayout><InsurancePage /></AppLayout>} />
+        <Route path="/seguro-auto" element={<AppLayout><InsurancePage type="auto" /></AppLayout>} />
+        <Route path="/seguro-moto" element={<AppLayout><InsurancePage type="moto" /></AppLayout>} />
+        <Route path="/seguro-viagem" element={<AppLayout><InsurancePage type="viagem" /></AppLayout>} />
+        <Route path="/seguro-vida" element={<AppLayout><InsurancePage type="vida" /></AppLayout>} />
+        <Route path="/login" element={<AppLayout><CustomerLoginPage /></AppLayout>} />
+        <Route path="/criar-conta" element={<AppLayout><CustomerLoginPage signup /></AppLayout>} />
+        <Route path="/dashboard" element={<AppLayout><CustomerDashboardPage /></AppLayout>} />
         <Route
           path="/blog"
           element={
@@ -218,7 +234,7 @@ function App() {
           path="/comparar"
           element={
             <AppLayout>
-              <SeoProgrammaticPage mode="static" pagePath="/comparar" />
+              <ComparePage />
             </AppLayout>
           }
         />
