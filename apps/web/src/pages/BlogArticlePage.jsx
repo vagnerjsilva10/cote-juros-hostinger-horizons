@@ -13,10 +13,10 @@ import {
   getArticleParagraphs,
   getArticleSummary,
   getEditorialTitle,
+  hasRenderableArticleContent,
   normalizeArticleData,
   resolveArticleBySlug
 } from '@/lib/content/articles.js';
-import { articlesData } from '@/data/articlesData.js';
 import { normalizeMojibakeDeep } from '@/lib/textEncoding.js';
 
 const BLOG_BASE_URL = 'https://www.cotejuros.com.br/blog';
@@ -85,24 +85,7 @@ const getVisualPalette = (article = {}) => {
 
 const buildArticleFaq = (article) => {
   if (Array.isArray(article?.faq) && article.faq.length) return article.faq;
-
-  const title = getEditorialTitle(article) || article?.title || 'este tema';
-  const category = article?.category || 'finanças pessoais';
-
-  return [
-    {
-      question: `${title} vale para qualquer perfil financeiro?`,
-      answer: 'Depende da renda, das dívidas atuais, do objetivo e do momento. Use o guia como ponto de partida e compare opções antes de contratar.'
-    },
-    {
-      question: `O que comparar primeiro em ${category.toLowerCase()}?`,
-      answer: 'Comece pelo custo total, prazo, impacto da parcela no orçamento e reputação da instituição. Evite decidir apenas pela menor parcela.'
-    },
-    {
-      question: 'A Cote Juros cobra para mostrar opções?',
-      answer: 'Não há cobrança antecipada para consultar conteúdos e caminhos de comparação. A decisão final deve ser tomada com calma e sem compromisso.'
-    }
-  ];
+  return [];
 };
 
 const toFaqSchema = (article) => {
@@ -258,29 +241,31 @@ function PremiumAd({ position = 'article' }) {
 }
 
 function RelatedArticleCard({ item, reserveImage }) {
-  const readTime = item.article?.readingTime || item.article?.readTime || 6;
+  const readTime = item.article?.readingTime || item.article?.readTime || null;
+  const metadata = [item.article?.publishedAt ? formatDate(item.article.publishedAt) : '', readTime ? `${readTime} min` : ''].filter(Boolean).join(' - ');
 
   return (
     <Link to={item.path} className="cj-article-related-card">
       <ArticleVisual article={item.article} title={item.title} reserveImage={reserveImage} className="cj-article-related-media" />
       <div>
-        <span>{item.article?.category || 'Guia'}</span>
+        {item.article?.category ? <span>{item.article.category}</span> : null}
         <h3>{item.title}</h3>
         <p>{item.summary}</p>
-        <small>{formatDate(item.article?.publishedAt || new Date())} · {readTime} min</small>
+        {metadata ? <small>{metadata}</small> : null}
       </div>
     </Link>
   );
 }
 
 function SidebarLink({ item, reserveImage }) {
-  const readTime = item.article?.readingTime || item.article?.readTime || 6;
+  const readTime = item.article?.readingTime || item.article?.readTime || null;
+  const metadata = [item.article?.category, readTime ? `${readTime} min` : ''].filter(Boolean).join(' - ');
 
   return (
     <Link to={item.path} className="cj-article-sidebar-link">
       <ArticleVisual article={item.article} title={item.title} reserveImage={reserveImage} className="cj-article-sidebar-media" />
       <div>
-        <small>{item.article?.category || 'Guia'} · {readTime} min</small>
+        {metadata ? <small>{metadata}</small> : null}
         <span>{item.title}</span>
         <p>{item.summary}</p>
       </div>
@@ -291,47 +276,54 @@ function SidebarLink({ item, reserveImage }) {
 function BlogArticlePage({ articleSlugOverride = '' }) {
   const { articleSlug } = useParams();
   const resolvedSlug = articleSlugOverride || articleSlug;
-  const localArticles = useMemo(() => articlesData.map((item) => normalizeArticleData(item)), []);
-  const localArticle = useMemo(
-    () => resolveArticleBySlug({ slug: resolvedSlug, articles: localArticles }),
-    [resolvedSlug, localArticles]
-  );
-  const [articles, setArticles] = useState(localArticles);
-  const [article, setArticle] = useState(localArticle);
+  const [articles, setArticles] = useState([]);
+  const [article, setArticle] = useState(null);
   const [loadError, setLoadError] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let active = true;
     setLoadError('');
-    setArticles(localArticles);
-    setArticle(localArticle);
+    setIsLoading(true);
+    setArticles([]);
+    setArticle(null);
 
-    Promise.all([portalApi.getArticles({ sort: 'recent' }), portalApi.getArticleBySlug(resolvedSlug)])
-      .then(([items, articleData]) => {
+    Promise.allSettled([portalApi.getArticleBySlug(resolvedSlug), portalApi.getArticles({ sort: 'recent' })])
+      .then(([articleResult, listResult]) => {
         if (!active) return;
 
-        const articleList = Array.isArray(items) ? items.map((item) => normalizeArticleData(item)) : [];
+        const articleList = listResult.status === 'fulfilled' && Array.isArray(listResult.value)
+          ? listResult.value.map((item) => normalizeArticleData(item)).filter(hasRenderableArticleContent)
+          : [];
+        const articleData = articleResult.status === 'fulfilled' ? articleResult.value : null;
         const safeArticle = resolveArticleBySlug({
           slug: resolvedSlug,
           directArticle: articleData,
           articles: articleList
         });
 
-        setArticles(articleList.length ? articleList : localArticles);
-        setArticle(safeArticle || localArticle || null);
+        setArticles(articleList);
+        setIsLoading(false);
+        if (safeArticle) {
+          setArticle(safeArticle);
+          return;
+        }
+        setArticle(null);
+        setLoadError(articleResult.status === 'rejected' ? 'Nao foi possivel carregar este artigo agora.' : 'Esse conteudo pode ter sido movido, renomeado ou removido.');
       })
       .catch((error) => {
         console.error('[blog-article-page] erro ao carregar artigo', error);
         if (!active) return;
-        setLoadError('Não foi possível carregar este artigo agora.');
-        setArticles(localArticles);
-        setArticle(localArticle || null);
+        setIsLoading(false);
+        setLoadError('Nao foi possivel carregar este artigo agora.');
+        setArticles([]);
+        setArticle(null);
       });
 
     return () => {
       active = false;
     };
-  }, [resolvedSlug, localArticle, localArticles]);
+  }, [resolvedSlug]);
 
   const safeArticle = useMemo(() => (article ? normalizeMojibakeDeep(normalizeArticleData(article)) : null), [article]);
   const categoryRoute = useMemo(
@@ -340,9 +332,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
   );
   const tocItems = useMemo(() => {
     if (!safeArticle) return [];
-    const items = buildArticleToc(safeArticle);
-    if (!items.some((item) => item.id === 'faq')) return [...items, { id: 'faq', label: 'Perguntas frequentes' }];
-    return items;
+    return buildArticleToc(safeArticle);
   }, [safeArticle]);
 
   const relatedArticles = useMemo(
@@ -354,6 +344,21 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
     () => (safeArticle ? getSemanticArticleLinks(safeArticle, articles, 4).slice(0, 3) : []),
     [safeArticle, articles]
   );
+
+  if (isLoading && !safeArticle) {
+    return (
+      <main className="cj-article-page">
+        <section className="cj-article-not-found">
+          <p>Blog Cote Juros</p>
+          <h1>Carregando artigo</h1>
+          <span>Buscando o conteudo publicado na API.</span>
+          <Link to="/blog" className="btn-primary">
+            Voltar para o blog
+          </Link>
+        </section>
+      </main>
+    );
+  }
 
   if (!safeArticle) {
     return (
@@ -472,21 +477,23 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
               <ArticleVisual article={safeArticle} title={editorialTitle} className="cj-article-hero-image" priority />
               <div className="cj-article-hero-shade" />
               <div className="cj-article-hero-copy">
-                <Link to={categoryRoute.path} className="cj-article-category">
-                  {safeArticle.category || 'Educação financeira'}
-                </Link>
+                {safeArticle.category ? (<Link to={categoryRoute.path} className="cj-article-category">{safeArticle.category}</Link>) : null}
                 <h1>{safeArticle.h1 || editorialTitle}</h1>
-                <p>{getArticleSummary(safeArticle)}</p>
+                {getArticleSummary(safeArticle) ? <p>{getArticleSummary(safeArticle)}</p> : null}
                 <div className="cj-article-meta">
-                  <span>
-                    <CalendarDays className="h-4 w-4" />
-                    Atualizado em {formatDate(safeArticle.updatedAt || safeArticle.publishedAt)}
-                  </span>
-                  <span>{safeArticle.author}</span>
-                  <span>
-                    <Clock className="h-4 w-4" />
-                    {safeArticle.readingTime || safeArticle.readTime || 6} min
-                  </span>
+                  {safeArticle.updatedAt || safeArticle.publishedAt ? (
+                    <span>
+                      <CalendarDays className="h-4 w-4" />
+                      Atualizado em {formatDate(safeArticle.updatedAt || safeArticle.publishedAt)}
+                    </span>
+                  ) : null}
+                  {safeArticle.author ? <span>{safeArticle.author}</span> : null}
+                  {safeArticle.readingTime || safeArticle.readTime ? (
+                    <span>
+                      <Clock className="h-4 w-4" />
+                      {safeArticle.readingTime || safeArticle.readTime} min
+                    </span>
+                  ) : null}
                 </div>
                 <div className="cj-article-hero-trust">
                   <span>

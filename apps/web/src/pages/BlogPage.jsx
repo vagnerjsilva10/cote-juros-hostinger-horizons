@@ -9,9 +9,9 @@ import {
   getArticleSummary,
   getBlogEditorialPriority,
   getEditorialTitle,
+  hasRenderableArticleContent,
   normalizeArticleData
 } from '@/lib/content/articles.js';
-import { articlesData as localArticlesData } from '@/data/articlesData.js';
 import { normalizeMojibake } from '@/lib/textEncoding.js';
 import { brandPages, canonicalUrl, homeBreadcrumb } from '@/seo/brandSeo.js';
 
@@ -62,7 +62,8 @@ const isArticleInFilter = (article, filter) => {
 function BlogCard({ article }) {
   const title = getEditorialTitle(article);
   const summary = getArticleSummary(article);
-  const category = normalizeMojibake(article.category || 'Crédito');
+  const category = normalizeMojibake(article.category || '');
+  const readTime = article.readingTime || article.readTime || null;
   const gradient = CATEGORY_GRADIENTS[getCategoryKey(article)] || CATEGORY_GRADIENTS.default;
 
   return (
@@ -72,43 +73,62 @@ function BlogCard({ article }) {
       </div>
       <div className="blog-content">
         <div className="blog-meta">
-          <span>{article.readingTime || article.readTime || 6} min</span>
-          <span>&bull;</span>
-          <span>{category}</span>
+          {readTime ? <span>{readTime} min</span> : null}
+          {readTime && category ? <span>&bull;</span> : null}
+          {category ? <span>{category}</span> : null}
         </div>
         <div className="blog-title">{title}</div>
-        <div className="blog-excerpt">{summary}</div>
+        {summary ? <div className="blog-excerpt">{summary}</div> : null}
       </div>
     </Link>
   );
 }
 
 function BlogPage() {
-  const localArticles = useMemo(() => localArticlesData.map((item) => normalizeArticleData(item)), []);
-  const [articlesData, setArticlesData] = useState(localArticles);
+  const [articlesData, setArticlesData] = useState([]);
   const [activeFilter, setActiveFilter] = useState('Todos');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [loadState, setLoadState] = useState({ loading: true, error: '', source: 'api' });
 
   useEffect(() => {
     let active = true;
-    setArticlesData(localArticles);
+    setLoadState({ loading: true, error: '', source: 'api' });
+    setArticlesData([]);
 
     portalApi
       .getArticles({ sort: 'recent' })
       .then((items) => {
         if (!active) return;
-        const remoteArticles = Array.isArray(items) ? items.map((item) => normalizeArticleData(item)) : [];
-        setArticlesData(remoteArticles.length ? remoteArticles : localArticles);
+        const remoteArticles = Array.isArray(items)
+          ? items.map((item) => normalizeArticleData(item)).filter(hasRenderableArticleContent)
+          : [];
+        if (remoteArticles.length) {
+          setArticlesData(remoteArticles);
+          setLoadState({ loading: false, error: '', source: 'api' });
+          return;
+        }
+        setArticlesData([]);
+        setLoadState({
+          loading: false,
+          error: 'Nao foi possivel carregar os artigos agora.',
+          source: 'api-empty'
+        });
       })
       .catch((error) => {
         console.error('[blog-page] erro ao carregar artigos', error);
-        if (active) setArticlesData(localArticles);
+        if (!active) return;
+        setArticlesData([]);
+        setLoadState({
+          loading: false,
+          error: 'Nao foi possivel carregar os artigos agora.',
+          source: 'api-error'
+        });
       });
 
     return () => {
       active = false;
     };
-  }, [localArticles]);
+  }, []);
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
@@ -180,6 +200,13 @@ function BlogPage() {
         <div className="container">
           <AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.blogTop} minHeight={120} />
 
+          {loadState.error ? (
+            <div className="dashboard-api-card" style={{ textAlign: 'center', marginBottom: 28 }}>
+              <div className="dash-panel-title">Artigos indisponiveis</div>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.7, margin: 0 }}>{loadState.error}</p>
+            </div>
+          ) : null}
+
           <div className="filter-tabs" style={{ marginBottom: 28, marginTop: 0 }}>
             {FILTERS.map((filter) => (
               <button
@@ -193,11 +220,19 @@ function BlogPage() {
             ))}
           </div>
 
-          <div className="blog-grid">
-            {visibleArticles.map((article) => (
-              <BlogCard key={article.slug} article={article} />
-            ))}
-          </div>
+          {loadState.loading && !visibleArticles.length ? (
+            <div className="dashboard-api-card" style={{ textAlign: 'center', marginBottom: 28 }}>
+              <div className="dash-panel-title">Carregando artigos</div>
+            </div>
+          ) : null}
+
+          {visibleArticles.length ? (
+            <div className="blog-grid">
+              {visibleArticles.map((article) => (
+                <BlogCard key={article.slug} article={article} />
+              ))}
+            </div>
+          ) : null}
 
           <AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.blogBottom} minHeight={120} className="mt-adsense" />
 

@@ -1,11 +1,8 @@
 import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { articlesData } from '../src/data/articlesData.js';
 import { creditCardsData } from '../src/data/creditCardsData.js';
-import { wordpressMigratedArticlePaths } from '../src/data/wordpressMigratedArticles.js';
 import {
-  blogEditorialDefinitions,
   comparePageDefinitions,
   corePillarPaths,
   requiredBankRoutes,
@@ -20,6 +17,7 @@ const robotsPath = resolve(publicDir, 'robots.txt');
 
 const siteUrl = (process.env.SITE_URL || process.env.VITE_SITE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
 const apiBaseUrl = (process.env.VITE_API_BASE_URL || process.env.API_BASE_URL || 'https://api.cotejuros.com.br').replace(/\/$/, '');
+const allowLocalArticleFallback = process.env.SITEMAP_ALLOW_LOCAL_ARTICLE_FALLBACK === 'true';
 const now = new Date().toISOString();
 
 const fixedRoutes = [
@@ -66,13 +64,6 @@ const isPublicSitemapRoute = (path = '') => {
 const comparisonRoutes = comparePageDefinitions.map((item) => `/comparar/${item.slug}`);
 const bankRoutes = requiredBankRoutes.map((bank) => `/banco/${bank.slug}`);
 const cardRoutes = creditCardsData.map((card) => `/cartao/${slugify(card.name || '')}`);
-const blogRoutes = [
-  ...blogEditorialDefinitions.map((article) => article.path),
-  ...articlesData
-    .filter((article) => article?.sourceType !== 'wordpress')
-    .map((article) => `/blog/${slugify(article.slug || article.title || '')}`)
-];
-const importedWordpressRoutes = wordpressMigratedArticlePaths;
 const storiesDir = resolve(publicDir, 'stories');
 const storyRoutes = existsSync(storiesDir)
   ? readdirSync(storiesDir, { withFileTypes: true })
@@ -81,7 +72,12 @@ const storyRoutes = existsSync(storiesDir)
   : [];
 
 const fetchPublishedArticleRoutes = async () => {
-  if (process.env.SITEMAP_FETCH_API === 'false') return [];
+  if (process.env.SITEMAP_FETCH_API === 'false') {
+    if (!allowLocalArticleFallback) {
+      throw new Error('SITEMAP_FETCH_API=false sem SITEMAP_ALLOW_LOCAL_ARTICLE_FALLBACK=true. A API e a fonte principal do sitemap.');
+    }
+    return [];
+  }
 
   try {
     const response = await fetch(`${apiBaseUrl}/api/articles?limit=5000`);
@@ -93,11 +89,33 @@ const fetchPublishedArticleRoutes = async () => {
       .filter(Boolean);
   } catch (error) {
     console.warn(`[sitemap] Nao foi possivel buscar artigos publicados da API: ${error.message}`);
+    if (!allowLocalArticleFallback) {
+      throw error;
+    }
     return [];
   }
 };
 
 const apiArticleRoutes = await fetchPublishedArticleRoutes();
+const fetchLocalArticleRoutes = async () => {
+  if (!allowLocalArticleFallback) return [];
+
+  const [{ articlesData }, { wordpressMigratedArticlePaths }, { blogEditorialDefinitions }] = await Promise.all([
+    import('../src/data/articlesData.js'),
+    import('../src/data/wordpressMigratedArticles.js'),
+    import('../src/seo/seoCatalog.js')
+  ]);
+
+  return [
+    ...blogEditorialDefinitions.map((article) => article.path),
+    ...articlesData
+      .filter((article) => article?.sourceType !== 'wordpress')
+      .map((article) => `/blog/${slugify(article.slug || article.title || '')}`),
+    ...wordpressMigratedArticlePaths
+  ];
+};
+
+const localArticleRoutes = await fetchLocalArticleRoutes();
 
 const allRoutes = Array.from(
   new Set([
@@ -106,9 +124,8 @@ const allRoutes = Array.from(
     ...comparisonRoutes,
     ...bankRoutes,
     ...cardRoutes,
-    ...blogRoutes,
     ...apiArticleRoutes,
-    ...importedWordpressRoutes,
+    ...localArticleRoutes,
     ...storyRoutes
   ])
 ).filter(isPublicSitemapRoute);

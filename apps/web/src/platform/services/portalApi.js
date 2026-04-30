@@ -1,6 +1,6 @@
 import { portalRepository } from '@/platform/repositories/portalRepository.js';
 import { normalizeMojibake, normalizeMojibakeDeep } from '@/lib/textEncoding.js';
-import { findArticleBySlug, normalizeArticleData } from '@/lib/content/articles.js';
+import { normalizeArticleData } from '@/lib/content/articles.js';
 
 const wait = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const resolveApiBase = () => {
@@ -16,12 +16,22 @@ const resolveApiBase = () => {
 };
 
 const API_BASE = resolveApiBase();
+const ARTICLE_API_BASE = API_BASE || 'https://api.cotejuros.com.br';
 const useRemote = Boolean(API_BASE);
 const publicFallbackWarnings = new Set();
 
 const isCoteJurosHost = () =>
   typeof window !== 'undefined'
   && /(^|\.)cotejuros\.(com\.br|br)$/i.test(window.location.hostname);
+
+const isProductionRuntime = () => Boolean(import.meta.env.PROD || isCoteJurosHost());
+
+const shouldBlockCriticalFallback = () => useRemote && isProductionRuntime();
+
+const buildCriticalFallbackError = (key, error) => {
+  const message = error?.message || String(error || 'Resposta remota vazia');
+  return new Error(`[portalApi] Fallback bloqueado em producao para ${key}: ${message}`);
+};
 
 const resolveRequestBase = (path) => {
   if (path.startsWith('/api/admin') && isCoteJurosHost()) return '';
@@ -84,7 +94,7 @@ const buildApiErrorMessage = ({ status, path, apiBase, payload, fallbackMessage 
 const request = async (path, options = {}) => {
   const isAdminPath = path.startsWith('/api/reactivation-admin') || path.startsWith('/api/admin');
   const requestBase = resolveRequestBase(path);
-  const { timeoutMs: requestedTimeoutMs, signal, ...fetchOptions } = options;
+  const { timeoutMs: requestedTimeoutMs, signal, baseUrl, ...fetchOptions } = options;
   const timeoutMs = requestedTimeoutMs ?? (isAdminPath ? 25000 : 15000);
   const controller = new AbortController();
   const timeoutId = globalThis.setTimeout(() => controller.abort(), timeoutMs);
@@ -95,7 +105,7 @@ const request = async (path, options = {}) => {
 
   let response;
   try {
-    response = await fetch(`${requestBase}${path}`, {
+    response = await fetch(`${baseUrl ?? requestBase}${path}`, {
       headers,
       ...fetchOptions,
       credentials: isAdminPath ? 'include' : fetchOptions.credentials,
@@ -143,7 +153,7 @@ const warnPublicFallback = (key, details = {}) => {
   console.warn(`[portalApi] Catalogo remoto indisponivel ou vazio; usando fallback local para ${key}.`, details);
 };
 
-const withControlledPublicFallback = ({ key, remoteItems, localItems, details }) => {
+const withControlledPublicFallback = ({ key, remoteItems, localItems, details, critical = false }) => {
   if (Array.isArray(remoteItems) && remoteItems.length > 0) return remoteItems;
   const fallbackItems = Array.isArray(localItems) ? localItems : [];
   if (fallbackItems.length > 0) {
@@ -152,6 +162,9 @@ const withControlledPublicFallback = ({ key, remoteItems, localItems, details })
       remoteCount: Array.isArray(remoteItems) ? remoteItems.length : null,
       fallbackCount: fallbackItems.length
     });
+    if (critical && shouldBlockCriticalFallback()) {
+      throw buildCriticalFallbackError(key, details?.error || 'Resposta remota vazia');
+    }
     return fallbackItems;
   }
   return Array.isArray(remoteItems) ? remoteItems : [];
@@ -226,43 +239,12 @@ const normalizeArticleRecord = (article = {}) =>
       anchor: normalizeMojibake(item.anchor || '')
     }))
     : undefined,
-  publishDate: article.publishDate || article.publishedAt || article.createdAt || new Date().toISOString(),
-  readTime: article.readTime || 6,
+  publishDate: article.publishDate || article.publishedAt || article.createdAt || '',
+  readTime: article.readTime || null,
   image: article.image || article.coverImage || '',
-  category: normalizeMojibake(article.category || article.categoryName || article.category?.name || 'Finanças Pessoais')
+  category: normalizeMojibake(article.category || article.categoryName || article.category?.name || '')
 });
 
-const fetchLocalArticleBySlug = async (slug) => {
-  try {
-    const directResponse = await fetch(`/content/seo/articles/${slug}.json`);
-    if (directResponse.ok) {
-      const payload = await directResponse.json();
-      return normalizeArticleRecord(payload);
-    }
-  } catch {
-    // ignore and fallback below
-  }
-
-  try {
-    const indexResponse = await fetch('/content/seo/articles/index.json');
-    if (indexResponse.ok) {
-      const indexPayload = await indexResponse.json();
-      const list = Array.isArray(indexPayload) ? indexPayload.map(normalizeArticleRecord) : [];
-      const matched = findArticleBySlug(list, slug);
-      if (matched?.slug) {
-        const aliasResponse = await fetch(`/content/seo/articles/${matched.slug}.json`);
-        if (aliasResponse.ok) {
-          const payload = await aliasResponse.json();
-          return normalizeArticleRecord(payload);
-        }
-      }
-    }
-  } catch {
-    // ignore and fallback below
-  }
-
-  return portalRepository.getArticleBySlug(slug);
-};
 const normalizeCreditOfferRecord = (offer = {}) => ({
   id: offer.id,
   externalOfferId: offer.externalOfferId || offer.id,
@@ -453,33 +435,23 @@ export const portalApi = {
         key: `offers:${filters?.productType || 'all'}`,
         remoteItems: Array.isArray(data) ? data.map(normalizeOfferRecord) : [],
         localItems,
-        details: { filters }
+        details: { filters },
+        critical: true
       });
     } catch (error) {
+      if (shouldBlockCriticalFallback()) throw buildCriticalFallbackError(`offers:${filters?.productType || 'all'}`, error);
       warnPublicFallback(`offers:${filters?.productType || 'all'}`, { filters, error: error?.message || String(error) });
       return localItems;
     }
   },
 
   async getArticles(filters) {
-    if (!useRemote) {
-      await wait();
-      return portalRepository.listArticles(filters);
-    }
-
-    const localItems = portalRepository.listArticles(filters);
     try {
       const qs = toQueryString(filters);
-      const data = await request(`/api/articles${qs ? `?${qs}` : ''}`);
-      return withControlledPublicFallback({
-        key: 'articles',
-        remoteItems: Array.isArray(data) ? data.map(normalizeArticleRecord) : [],
-        localItems,
-        details: { filters }
-      });
+      const data = await request(`/api/articles${qs ? `?${qs}` : ''}`, { baseUrl: ARTICLE_API_BASE });
+      return Array.isArray(data) ? data.map(normalizeArticleRecord) : [];
     } catch (error) {
-      warnPublicFallback('articles', { filters, error: error?.message || String(error) });
-      return localItems;
+      throw buildCriticalFallbackError('articles', error);
     }
   },
 
@@ -552,16 +524,11 @@ export const portalApi = {
   async getArticleBySlug(slug) {
     if (!slug) return null;
 
-    if (!useRemote) {
-      await wait();
-      return fetchLocalArticleBySlug(slug);
-    }
-
     try {
-      const data = await request(`/api/articles/slug/${slug}`);
+      const data = await request(`/api/articles/slug/${slug}`, { baseUrl: ARTICLE_API_BASE });
       return data ? normalizeArticleRecord(data) : null;
-    } catch {
-      return fetchLocalArticleBySlug(slug);
+    } catch (error) {
+      throw buildCriticalFallbackError(`article:${slug}`, error);
     }
   },
 
@@ -656,7 +623,8 @@ export const portalApi = {
           utm_campaign: payload.utm?.utm_campaign
         })
       });
-    } catch {
+    } catch (error) {
+      if (shouldBlockCriticalFallback()) throw buildCriticalFallbackError('simulation-lead:capture', error);
       return portalRepository.createSimulationLead(payload);
     }
   },
@@ -678,7 +646,8 @@ export const portalApi = {
           utm_campaign: payload.utm?.utm_campaign
         })
       });
-    } catch {
+    } catch (error) {
+      if (shouldBlockCriticalFallback()) throw buildCriticalFallbackError('offer-click:track', error);
       return portalRepository.trackClickEvent(payload);
     }
   },
@@ -698,7 +667,8 @@ export const portalApi = {
           destination: payload.destination || null
         })
       });
-    } catch {
+    } catch (error) {
+      if (shouldBlockCriticalFallback()) throw buildCriticalFallbackError('lead-cta:track', error);
       return portalRepository.trackCtaEvent(payload);
     }
   },
@@ -720,7 +690,8 @@ export const portalApi = {
           utm: payload.utm
         })
       });
-    } catch {
+    } catch (error) {
+      if (shouldBlockCriticalFallback()) throw buildCriticalFallbackError('partner-redirect:create', error);
       return portalRepository.createPartnerRedirect(payload);
     }
   },
@@ -1246,7 +1217,8 @@ export const portalApi = {
         body: JSON.stringify(serializeSimulationLeadPatch(payload))
       });
       return normalizeSimulationLeadRecord(data);
-    } catch {
+    } catch (error) {
+      if (shouldBlockCriticalFallback()) throw buildCriticalFallbackError('quick-credit-lead:update', error);
       return portalRepository.updateSimulationLead(id, payload);
     }
   },
@@ -1280,7 +1252,8 @@ export const portalApi = {
         ...data,
         lead: data?.lead ? normalizeSimulationLeadRecord(data.lead) : null
       };
-    } catch {
+    } catch (error) {
+      if (shouldBlockCriticalFallback()) throw buildCriticalFallbackError('quick-credit-journey', error);
       return null;
     }
   },
@@ -1374,7 +1347,8 @@ export const portalApi = {
           ? data.recentSimulationActivity.map(normalizeSimulationLeadRecord)
           : []
       };
-    } catch {
+    } catch (error) {
+      if (shouldBlockCriticalFallback()) throw buildCriticalFallbackError('admin-analytics-overview', error);
       return portalRepository.getAnalyticsOverview();
     }
   },
@@ -1532,7 +1506,8 @@ export const portalApi = {
           position
         })
       });
-    } catch {
+    } catch (error) {
+      if (shouldBlockCriticalFallback()) throw buildCriticalFallbackError(`affiliate-offer-click:${offerSlug}`, error);
       return portalRepository.trackAffiliateClick({
         offerSlug,
         pageSlug,
