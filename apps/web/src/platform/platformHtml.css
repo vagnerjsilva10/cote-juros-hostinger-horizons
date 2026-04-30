@@ -1054,27 +1054,46 @@
   border-color: transparent;
 }
 
-/* AdSense placeholder */
-.cj-platform .adsense-placeholder {
+/* AdSense */
+.cj-platform .adsense-block {
   background: var(--light-surface);
   border: 1px dashed var(--light-border);
   border-radius: 8px;
   padding: 16px;
-  text-align: center;
   font-size: 11px;
   color: var(--light-muted);
   margin: 28px 0;
+  min-width: 0;
+  overflow: hidden;
 }
 
-.cj-platform .adsense-placeholder-dark {
+.cj-platform .adsense-block-dark {
   background: var(--bg-card);
   border: 1px dashed var(--border);
-  border-radius: 8px;
-  padding: 16px;
-  text-align: center;
-  font-size: 11px;
   color: var(--text-muted);
-  margin: 28px 0;
+}
+
+.cj-platform .adsense-block-label {
+  display: block;
+  margin-bottom: 10px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.cj-platform .adsense-block .adsbygoogle {
+  max-width: 100%;
+}
+
+.cj-platform .mt-adsense {
+  margin-top: 28px;
+}
+
+.cj-platform .mb-adsense {
+  margin-top: 0;
+  margin-bottom: 20px;
 }
 
 /* ============================================================

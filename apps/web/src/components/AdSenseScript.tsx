@@ -8,6 +8,7 @@ export function AdSenseScript() {
   useEffect(() => {
     if (typeof document === 'undefined') return;
     if (document.getElementById(ADSENSE_SCRIPT_ID)) return;
+    if (document.querySelector(`script[src="${ADSENSE_SRC}"]`)) return;
 
     const script = document.createElement('script');
     script.id = ADSENSE_SCRIPT_ID;
