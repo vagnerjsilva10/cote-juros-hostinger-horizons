@@ -1,18 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" role="img" aria-label="Cote Juros">
   <defs>
-    <linearGradient id="cjFavV3Bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#111A29"/>
-      <stop offset="1" stop-color="#070B12"/>
+    <linearGradient id="cjFavBg" x1="8" y1="5" x2="56" y2="59" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17151F"/>
+      <stop offset="0.52" stop-color="#0A0A0F"/>
+      <stop offset="1" stop-color="#10131D"/>
     </linearGradient>
-    <linearGradient id="cjFavV3Accent" x1="18" y1="42" x2="48" y2="20" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#4C8DFF"/>
-      <stop offset="1" stop-color="#78AEFF"/>
+    <linearGradient id="cjFavAccent" x1="18" y1="45" x2="48" y2="17" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C6EF7"/>
+      <stop offset="0.58" stop-color="#9C8FFF"/>
+      <stop offset="1" stop-color="#22D3A0"/>
     </linearGradient>
+    <radialGradient id="cjFavGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(43 20) rotate(132) scale(36)">
+      <stop stop-color="#9C8FFF" stop-opacity="0.46"/>
+      <stop offset="1" stop-color="#7C6EF7" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#cjFavV3Bg)"/>
-  <rect x="4.75" y="4.75" width="54.5" height="54.5" rx="15.25" stroke="white" stroke-opacity="0.1" stroke-width="1.5"/>
-  <path d="M41.5 19.2C38.8 16.9 35.4 15.5 31.6 15.5C23.1 15.5 16.2 22.4 16.2 30.9C16.2 39.4 23.1 46.3 31.6 46.3C35.6 46.3 39.2 44.8 41.9 42.3" stroke="#E8EEF5" stroke-width="5.1" stroke-linecap="round"/>
-  <path d="M20.8 38.7L28.1 31.5L34.2 34.1L46.3 22.1" stroke="url(#cjFavV3Accent)" stroke-width="4.7" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M40.3 22.1H46.3V28.1" stroke="#78AEFF" stroke-width="3.7" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="46.3" cy="22.1" r="3.2" fill="#78AEFF"/>
+  <rect x="4" y="4" width="56" height="56" rx="17" fill="url(#cjFavBg)"/>
+  <rect x="4" y="4" width="56" height="56" rx="17" fill="url(#cjFavGlow)"/>
+  <rect x="5" y="5" width="54" height="54" rx="16" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1.4"/>
+  <path d="M38.5 17.8C35.9 15.7 32.5 14.5 28.9 14.7C20.3 15.2 13.9 22.4 14.4 31C14.9 39.5 22.1 45.9 30.7 45.4C33.9 45.2 36.8 44 39.1 42.1" stroke="#F4F4F8" stroke-width="4.6" stroke-linecap="round"/>
+  <path d="M20.5 38.2L28.1 30.8L34.4 34.2L47.8 20.6" stroke="url(#cjFavAccent)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M41.5 20.6H47.8V26.9" stroke="#9C8FFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="47.8" cy="20.6" r="3.1" fill="#9C8FFF"/>
+  <circle cx="20.5" cy="38.2" r="2.2" fill="#7C6EF7"/>
 </svg>
