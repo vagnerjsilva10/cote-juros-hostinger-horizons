@@ -516,8 +516,8 @@ function ManualActionsPanel({ templates }) {
       return result;
     } catch (err) {
       const raw = err.message || 'Acao falhou.';
-      const text = raw.includes('SENDGRID_API_KEY')
-        ? 'Provider de envio ainda nao configurado. Configure SENDGRID_API_KEY na API antes de enviar.'
+      const text = raw.includes('EMAIL_PROVIDER_NOT_CONFIGURED')
+        ? 'Provider de envio ainda nao configurado. Configure o provedor de email na API antes de enviar.'
         : raw;
       setMessage({ tone: 'danger', text });
       return null;
