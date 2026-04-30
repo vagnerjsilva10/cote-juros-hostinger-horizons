@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, CalendarDays, CheckCircle2, Clock, Home, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, CalendarDays, CheckCircle2, Clock, Home, ShieldCheck } from 'lucide-react';
 import AdSenseBlock, { ADSENSE_PLATFORM_SLOTS } from '@/components/AdSenseBlock.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import {
@@ -121,6 +121,19 @@ const toFaqSchema = (article) => {
       }
     }))
   };
+};
+
+const buildArticleTakeaways = (article) => {
+  const sectionHeadings = (Array.isArray(article?.sections) ? article.sections : [])
+    .map((section) => section?.heading)
+    .filter(Boolean)
+    .slice(0, 3)
+    .map((heading) => `Compare ${heading.toLowerCase()} antes de decidir.`);
+
+  return [
+    article?.featuredSnippet || getArticleSummary(article),
+    ...sectionHeadings
+  ].filter(Boolean).slice(0, 4);
 };
 
 const getSemanticArticleLinks = (article, articles, count = 6) => {
@@ -245,6 +258,8 @@ function PremiumAd({ position = 'article' }) {
 }
 
 function RelatedArticleCard({ item, reserveImage }) {
+  const readTime = item.article?.readingTime || item.article?.readTime || 6;
+
   return (
     <Link to={item.path} className="cj-article-related-card">
       <ArticleVisual article={item.article} title={item.title} reserveImage={reserveImage} className="cj-article-related-media" />
@@ -252,16 +267,20 @@ function RelatedArticleCard({ item, reserveImage }) {
         <span>{item.article?.category || 'Guia'}</span>
         <h3>{item.title}</h3>
         <p>{item.summary}</p>
+        <small>{formatDate(item.article?.publishedAt || new Date())} · {readTime} min</small>
       </div>
     </Link>
   );
 }
 
 function SidebarLink({ item, reserveImage }) {
+  const readTime = item.article?.readingTime || item.article?.readTime || 6;
+
   return (
     <Link to={item.path} className="cj-article-sidebar-link">
       <ArticleVisual article={item.article} title={item.title} reserveImage={reserveImage} className="cj-article-sidebar-media" />
       <div>
+        <small>{item.article?.category || 'Guia'} · {readTime} min</small>
         <span>{item.title}</span>
         <p>{item.summary}</p>
       </div>
@@ -358,6 +377,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
   const faqSchema = toFaqSchema(safeArticle);
   const introParagraphs = getArticleParagraphs(safeArticle).slice(0, 3);
   const sections = Array.isArray(safeArticle.sections) ? safeArticle.sections : [];
+  const takeaways = buildArticleTakeaways(safeArticle);
   const midSectionIndex = sections.length > 1 ? Math.floor(sections.length / 2) : 0;
   const usedInternalLinkKeywords = new Set();
   const usedRelatedImages = new Set([socialImage].filter(Boolean));
@@ -468,6 +488,16 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     {safeArticle.readingTime || safeArticle.readTime || 6} min
                   </span>
                 </div>
+                <div className="cj-article-hero-trust">
+                  <span>
+                    <ShieldCheck className="h-4 w-4" />
+                    Conteúdo editorial
+                  </span>
+                  <span>
+                    <BookOpen className="h-4 w-4" />
+                    Guia de comparação
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -497,10 +527,20 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   </React.Fragment>
                 ))}
 
-                {safeArticle.featuredSnippet ? (
-                  <section className="cj-article-note">
-                    <span>Resposta rápida</span>
-                    <p>{safeArticle.featuredSnippet}</p>
+                {takeaways.length ? (
+                  <section className="cj-article-keypoints" aria-label="Resumo do artigo">
+                    <div>
+                      <span>Resumo prático</span>
+                      <h2>O que observar antes de comparar</h2>
+                    </div>
+                    <ul>
+                      {takeaways.map((item, index) => (
+                        <li key={`takeaway-${index}`}>
+                          <CheckCircle2 className="h-4 w-4" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </section>
                 ) : null}
 
@@ -579,6 +619,9 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     Ver minhas opções agora
                     <ArrowRight className="h-4 w-4" />
                   </Link>
+                  <Link to="/blog" className="cj-article-secondary-cta">
+                    Continuar lendo guias
+                  </Link>
                 </section>
               </div>
             </article>
@@ -589,6 +632,16 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                 <span>Crédito com clareza</span>
                 <h2>Veja opções de crédito para seu perfil</h2>
                 <p>Compare alternativas sem cobrança antecipada e avance só quando fizer sentido.</p>
+                <ul>
+                  <li>
+                    <CheckCircle2 className="h-4 w-4" />
+                    Sem cobrança para consultar
+                  </li>
+                  <li>
+                    <CheckCircle2 className="h-4 w-4" />
+                    Decisão sempre no seu ritmo
+                  </li>
+                </ul>
                 <Link to="/emprestimos" className="btn-primary cj-article-sidebar-button">
                   Ver opções
                   <ArrowRight className="h-4 w-4" />
