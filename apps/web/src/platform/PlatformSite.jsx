@@ -4,7 +4,8 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import AdSenseBlock, { ADSENSE_PLATFORM_SLOTS } from '@/components/AdSenseBlock.jsx';
 import SmartQuiz from '@/components/smart-quiz/SmartQuiz.jsx';
 import { getBlogArticleBySlug, getBlogArticles } from '@/platform/services/blogAdapter.js';
-import { getCardOffers, getCreditOffers, getFinancingOffers, getInsuranceOffers } from '@/platform/services/offerAdapter.js';
+import { buildCreditasOffer, getCardOffers, getCreditOffers, getFinancingOffers, getInsuranceOffers } from '@/platform/services/offerAdapter.js';
+import { getCreditasStatus } from '@/platform/services/creditasAdapter.js';
 import { getCurrentCustomer, loginCustomer, logoutCustomer } from '@/platform/services/authAdapter.js';
 import { getLeadFromLocalStorage } from '@/platform/services/leadAdapter.js';
 import { recommendProducts } from '@/platform/services/recommendationAdapter.js';
@@ -12,6 +13,7 @@ import { trackEvent } from '@/platform/services/trackingAdapter.js';
 import '@/platform/platformHtml.css';
 
 const productRows = [
+  ['Creditas', 'Crédito com garantia', 'Sob', 'análise', ['Imóvel ou veículo', 'Simulação com garantia', 'Condições da parceira'], 'CRE', 'Garantia', 'badge-loan', 'guarantee'],
   ['Banco Itaú', 'Empréstimo Pessoal', '1,79%', 'ao mês', ['Até R$ 50.000', 'Até 60 parcelas', 'Análise do parceiro'], 'ITA', 'Empréstimo', 'badge-loan', 'loan'],
   ['Nubank', 'Cartão Roxinho', 'Sem', 'anuidade', ['Cashback em compras', 'App completo', 'Limite personalizável'], 'NUB', 'Cartão', 'badge-card', 'card'],
   ['Caixa Econômica', 'Financiamento Imóvel', '9,5%', 'ao ano', ['FGTS como entrada', 'Até 35 anos', 'Minha Casa Minha Vida'], 'CEF', 'Financiamento', 'badge-finance', 'financing'],
@@ -325,13 +327,19 @@ function CompareHome() {
 }
 
 function ProductCard({ row }) {
-  const [bank, product, rate, unit, tags, , badge, badgeClass] = row;
+  const [bank, product, rate, unit, tags, , badge, badgeClass, type] = row;
+  const isCreditas = type === 'guarantee' || bank === 'Creditas';
+  const handleClick = () => {
+    if (isCreditas) {
+      trackEvent('creditas_cta_clicked', { sourcePage: 'marketplace_home', partnerRoute: 'creditas' });
+    }
+  };
   return (
     <div className="product-card">
       <div className={`card-badge ${badgeClass}`}>{badge}</div><div className="card-bank-name">{bank}</div><div className="card-product-name">{product}</div>
       <div className="card-rate-row"><span className="rate-value">{rate}</span><span className="rate-unit">{unit}</span></div>
       <div className="card-features">{tags.map((tag) => <div className="card-feat" key={tag}><div className="feat-dot" />{tag}</div>)}</div>
-      <button className="card-cta">Ver condições <ArrowIcon /></button>
+      <button className="card-cta" onClick={handleClick}>Ver condições <ArrowIcon /></button>
     </div>
   );
 }
@@ -371,7 +379,8 @@ function InnerHero({ badge, title, desc, action }) {
 export function PlatformComparePage() {
   const [offers, setOffers] = useState([]);
   useEffect(() => { Promise.all([getCreditOffers({ rank: true }), getCardOffers({ rank: true }), getFinancingOffers({ rank: true })]).then((groups) => setOffers(groups.flat().filter(Boolean))); }, []);
-  const rows = offers.length ? offers.slice(0, 4).map((offer) => [offer.bankName || 'Parceiro', offer.title || offer.productName || 'Produto financeiro', offer.monthlyRate ? `${offer.monthlyRate}%` : offer.annualFee === 0 ? 'R$0' : 'Sob análise', offer.annualFee === 0 ? 'anuidade' : 'ao mês', ['Online', 'Parceiro verificado'], offer.bankName || 'CJ']) : productRows.map(([bank, product, rate, unit, tags, logo]) => [bank, product, rate, unit, tags, logo]);
+  const compareOffers = [buildCreditasOffer(), ...offers].filter(Boolean);
+  const rows = compareOffers.length ? compareOffers.slice(0, 5).map((offer) => [offer.bankName || 'Parceiro', offer.title || offer.productName || 'Produto financeiro', offer.monthlyRate ? `${offer.monthlyRate}%` : offer.annualFee === 0 ? 'R$0' : offer.rate || 'Sob análise', offer.annualFee === 0 ? 'anuidade' : 'ao mês', offer.tags || ['Online', 'Parceiro verificado'], offer.bankName || 'CJ']) : productRows.map(([bank, product, rate, unit, tags, logo]) => [bank, product, rate, unit, tags, logo]);
   return <PlatformShell title="Comparar produtos | Cote Juros"><div className="page active" id="page-compare"><InnerHero badge="Marketplace" title={<>Compare produtos<br /><span className="text-accent">financeiros</span></>} desc="Taxas, condições e coberturas lado a lado. Você decide quando e se avançar." action={<div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 24 }}><Link className="btn-primary" to="/radar">Acessar Radar de Crédito</Link><button className="btn-outline">Ver mais filtros</button></div>} /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container"><div className="compare-layout"><FilterSidebar /><div><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.compareResults} minHeight={120} theme="dark" className="mb-adsense" /><div className="compare-results">{rows.map(([bank, title, rate, unit, tags, logo]) => <CompareResult key={`${bank}-${title}`} title={`${bank} - ${title}`} subtitle="Parceiro verificado" rate={rate} desc={unit} tags={tags} logo={logo} />)}</div><div className="api-ready-note">As condições exibidas são ilustrativas e podem variar conforme perfil e disponibilidade dos parceiros. A Cote Juros não é banco e não concede crédito diretamente.</div></div></div></div></section></div></PlatformShell>;
 }
 
@@ -695,6 +704,7 @@ const DASHBOARD_OFFERS_KEY = 'cote_dashboard_offers';
 const DASHBOARD_SETTINGS_KEY = 'cote_dashboard_settings';
 
 const dashboardMockOffers = [
+  { id: 'mock_creditas', title: 'Creditas - Crédito com garantia', type: 'Empréstimo com garantia', rate: 'Sob análise', description: 'Refinanciamento de imóvel ou veículo pode fazer sentido.' },
   { id: 'mock_ita', title: 'Itaú - Empréstimo Pessoal', type: 'Empréstimo', rate: '1,79%/mês', description: 'Até R$ 50.000 com análise do parceiro.' },
   { id: 'mock_nub', title: 'Nubank - Cartão Roxinho', type: 'Cartão', rate: 'Sem anuidade', description: 'Limite personalizável e app completo.' },
   { id: 'mock_por', title: 'Porto Seguro - Auto Completo', type: 'Seguro', rate: 'R$ 89/mês', description: 'Assistência 24h e carro reserva conforme plano.' },
@@ -738,6 +748,7 @@ function useDashboardData(sourcePage = '/dashboard') {
   const [lead, setLead] = useState(null);
   const [analysis, setAnalysis] = useState(null);
   const [customer, setCustomer] = useState(null);
+  const [creditasStatus, setCreditasStatus] = useState(null);
   const [offers, setOffers] = useState(() => readLocalJson(DASHBOARD_OFFERS_KEY, dashboardMockOffers));
   const [history, setHistory] = useState([]);
 
@@ -746,6 +757,7 @@ function useDashboardData(sourcePage = '/dashboard') {
     const localAnalysis = readLocalJson('cote_last_analysis') || readLocalJson('cote_quiz_result');
     const session = getCurrentCustomer();
     const events = readLocalJson('cote_tracking_events', []);
+    const storedCreditasStatus = getCreditasStatus();
     const creditFunnel = readLocalJson('cj.credit-funnel.v2');
     const simulationLeads = readLocalJson('cj.simulationLeads', []);
     const storedOffers = readLocalJson(DASHBOARD_OFFERS_KEY, []);
@@ -754,7 +766,9 @@ function useDashboardData(sourcePage = '/dashboard') {
     setLead(localLead);
     setAnalysis(normalizedAnalysis);
     setCustomer(session?.customer || null);
+    setCreditasStatus(storedCreditasStatus);
     setHistory([
+      ...(storedCreditasStatus ? [{ id: 'creditas_status', title: 'Creditas', type: 'Parceira', createdAt: storedCreditasStatus.updatedAt, description: storedCreditasStatus.message || storedCreditasStatus.status || storedCreditasStatus.mode }] : []),
       ...(normalizedAnalysis ? [{ id: 'last_analysis', title: 'Análise mais recente', type: 'Radar', createdAt: normalizedAnalysis.createdAt || localLead?.updatedAt, description: normalizedAnalysis.recommendation?.mainProduct || normalizedAnalysis.recommendation?.profile }] : []),
       ...(localLead ? [{ id: 'lead', title: 'Lead salvo localmente', type: 'Perfil', createdAt: localLead.updatedAt || localLead.createdAt, description: localLead.recommendation?.mainProduct || 'Dados do quiz salvos' }] : []),
       ...(creditFunnel ? [{ id: 'credit_funnel', title: 'Simulação de crédito', type: 'Simulação', createdAt: creditFunnel.updatedAt || creditFunnel.createdAt, description: creditFunnel.step ? `Etapa ${creditFunnel.step}` : 'Funil de crédito salvo' }] : []),
@@ -771,7 +785,7 @@ function useDashboardData(sourcePage = '/dashboard') {
       getInsuranceOffers()
     ]).then((results) => {
       const apiOffers = results.flatMap((result) => (result.status === 'fulfilled' && Array.isArray(result.value) ? result.value : []));
-      const normalized = apiOffers.length ? apiOffers.map(normalizeOffer) : dashboardMockOffers;
+      const normalized = apiOffers.length ? [buildCreditasOffer(), ...apiOffers].map(normalizeOffer) : dashboardMockOffers;
       setOffers(normalized);
       writeLocalJson(DASHBOARD_OFFERS_KEY, normalized);
     });
@@ -782,7 +796,7 @@ function useDashboardData(sourcePage = '/dashboard') {
   const recommendation = analysis?.recommendation || lead?.recommendation || recommendProducts(lead?.quizAnswers || {});
   const score = recommendation?.score || analysis?.score || lead?.score || 740;
 
-  return { lead, analysis, customer, offers, history, recommendation, score };
+  return { lead, analysis, customer, offers, history, recommendation, score, creditasStatus };
 }
 
 function DashboardLayout({ children, title = 'Dashboard | Cote Juros' }) {
@@ -855,7 +869,7 @@ function DashboardOfferRows({ offers = [], compact = false }) {
 
 export function DashboardHomePage() {
   const data = useDashboardData('/dashboard');
-  const { recommendation, score, offers, history } = data;
+  const { recommendation, score, offers, history, creditasStatus } = data;
 
   return (
     <DashboardLayout>
@@ -870,6 +884,7 @@ export function DashboardHomePage() {
         <div className="dash-panel"><div className="dash-panel-title">Resumo da análise</div><p style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>{recommendation?.explanation || 'Ainda não há análise completa. Faça o quiz para gerar uma recomendação personalizada.'}</p><div className="api-ready-note" style={{ marginTop: 18 }}>{recommendation?.mainProduct || 'Recomendação pendente'}</div></div>
         <div className="dash-panel"><div className="dash-panel-title">Radar de Crédito</div>{[['Empréstimo pessoal', '85%', 'var(--accent)'], ['Cartão de crédito', '70%', '#22D3A0'], ['Financiamento', '55%', '#F59E0B'], ['Seguros', '93%', '#F43F5E']].map(([label, pct, color]) => <div className="dash-radar-row" key={label}><div><span>{label}</span><span style={{ color }}>{pct}</span></div><div><i style={{ width: pct, background: color }} /></div></div>)}<Link className="btn-outline" style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} to="/dashboard/analise">Ver análise completa</Link></div>
       </div>
+      {creditasStatus ? <div className="dashboard-api-card" style={{ marginTop: 22 }}><div className="dash-panel-title">Status Creditas</div><p style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>{creditasStatus.message || 'Dados complementares pendentes'}</p><div className="api-ready-note" style={{ marginTop: 14 }}>{creditasStatus.status || creditasStatus.mode}</div></div> : null}
       <div className="dashboard-api-card" style={{ marginTop: 22 }}><div className="dash-panel-title">Ofertas para seu perfil</div><DashboardOfferRows offers={offers.slice(0, 4)} /><div className="partner-cta-row" style={{ marginTop: 18 }}><Link className="btn-primary" to="/dashboard/ofertas">Ver todas as ofertas</Link><Link className="btn-outline" to="/quiz">Refazer análise</Link></div></div>
     </DashboardLayout>
   );

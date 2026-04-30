@@ -6,7 +6,6 @@ import { CreditSimulationService } from '../services/creditSimulationService.js'
 import { CreditTrackingService } from '../services/creditTrackingService.js';
 import { getJurosBaixosConfig, getJurosBaixosHealth } from '../integrations/jurosBaixos/config.js';
 import {
-  checkCreditasEligibility,
   createCreditasAutoEquityOffer,
   createCreditasAutoEquityProposal,
   createCreditasHomeEquityProposal,
@@ -21,6 +20,10 @@ import {
   sendCreditasProposalDocument,
   verifyCreditasWebhookSignature
 } from '../integrations/creditas/index.js';
+import {
+  checkCreditasEligibility as checkPublicCreditasEligibility,
+  submitCreditasLead
+} from '../services/creditasClient.js';
 
 const router = express.Router();
 
@@ -43,7 +46,7 @@ const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const startSchema = z.object({
   fullName: z.string().min(3),
   cpf: z.string().min(11),
-  email: z.string().email().optional(),
+  email: z.string().optional(),
   phone: z.string().min(10).optional(),
   birthDate: dateSchema.optional(),
   mothersName: z.string().min(3).optional(),
@@ -129,12 +132,26 @@ const clickSchema = z.object({
 
 const webhookSchema = z.object({}).passthrough();
 
-const creditasEligibilitySchema = z.object({
-  cpf: z.string().min(11),
-  email: z.string().email(),
-  productType: z.enum(['AUTO_REFINANCING', 'HOME_REFINANCING']).optional(),
-  scope: z.enum(['PRE_APPROVAL']).optional()
-});
+const creditasPublicPayloadSchema = z.object({
+  fullName: z.string().optional(),
+  name: z.string().optional(),
+  phone: z.string().optional(),
+  whatsapp: z.string().optional(),
+  email: z.string().email().optional(),
+  cpf: z.string().optional(),
+  income: z.union([z.number(), z.string()]).optional(),
+  requestedAmount: z.union([z.number(), z.string()]).optional(),
+  amount: z.union([z.number(), z.string()]).optional(),
+  productType: z.string().optional(),
+  guaranteeType: z.string().optional(),
+  assetValue: z.union([z.number(), z.string()]).optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  consent: z.boolean().optional(),
+  sourcePage: z.string().optional(),
+  quizAnswers: z.record(z.any()).optional(),
+  recommendation: z.record(z.any()).optional()
+}).passthrough();
 
 router.get(
   '/health',
@@ -183,9 +200,18 @@ router.post(
 router.post(
   '/creditas/eligibility',
   asyncHandler(async (req, res) => {
-    const payload = creditasEligibilitySchema.parse(req.body || {});
-    const data = await checkCreditasEligibility(payload);
+    const payload = creditasPublicPayloadSchema.parse(req.body || {});
+    const data = await checkPublicCreditasEligibility(payload);
     res.json({ data });
+  })
+);
+
+router.post(
+  '/creditas/lead',
+  asyncHandler(async (req, res) => {
+    const payload = creditasPublicPayloadSchema.parse(req.body || {});
+    const data = await submitCreditasLead(payload);
+    res.status(data.ok ? 201 : 200).json({ data });
   })
 );
 

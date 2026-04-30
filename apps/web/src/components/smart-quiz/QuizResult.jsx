@@ -2,15 +2,34 @@ import React, { useState } from 'react';
 import { ArrowRight, MessageCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { routeLeadToPartner, trackPartnerClick } from '@/platform/services/partnerAdapter.js';
+import { isCreditasEligibleRecommendation, saveCreditasStatus } from '@/platform/services/creditasAdapter.js';
 import { trackEvent } from '@/platform/services/trackingAdapter.js';
 import { openWhatsApp } from '@/platform/utils/whatsapp.js';
+import CreditasExtraForm from '@/components/smart-quiz/CreditasExtraForm.jsx';
 import LeadCaptureForm from '@/components/smart-quiz/LeadCaptureForm.jsx';
 
 export default function QuizResult({ quizAnswers, recommendation, onRestart }) {
   const [lead, setLead] = useState(null);
   const [partnerStatus, setPartnerStatus] = useState('');
+  const [showCreditasForm, setShowCreditasForm] = useState(false);
+  const showCreditas = isCreditasEligibleRecommendation(recommendation, quizAnswers);
 
   const handlePartner = async () => {
+    if (showCreditas) {
+      setShowCreditasForm(true);
+      setPartnerStatus(lead ? 'Dados complementares pendentes.' : 'Preencha seus dados de contato e complete a simulação com garantia.');
+      saveCreditasStatus({
+        ok: false,
+        mode: 'extra_data_pending',
+        provider: 'creditas',
+        status: 'Dados complementares pendentes',
+        message: 'Dados complementares pendentes para simulação com garantia.'
+      });
+      await trackEvent('creditas_cta_clicked', { sourcePage: 'smart_quiz', score: recommendation.score });
+      await trackEvent('creditas_extra_form_opened', { sourcePage: 'smart_quiz' });
+      return;
+    }
+
     setPartnerStatus('Roteando...');
     await trackPartnerClick({
       sourcePage: 'smart_quiz',
@@ -77,7 +96,7 @@ export default function QuizResult({ quizAnswers, recommendation, onRestart }) {
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <Button onClick={handlePartner} className="h-12 rounded-full bg-[#7C6EF7] px-6 text-white hover:bg-[#6254D4]">
-            Ver oferta com parceiro
+            {showCreditas ? 'Simular com Creditas' : 'Ver oferta com parceiro'}
             <ArrowRight className="h-4 w-4" />
           </Button>
           <Button onClick={handleWhatsApp} variant="outline" className="h-12 rounded-full border-white/15 bg-white/[0.04] px-6 text-white hover:bg-white/10">
@@ -90,6 +109,11 @@ export default function QuizResult({ quizAnswers, recommendation, onRestart }) {
         </div>
 
         {partnerStatus ? <p className="mt-3 text-sm text-white/60">{partnerStatus}</p> : null}
+        {showCreditasForm ? (
+          <div className="mt-5">
+            <CreditasExtraForm lead={lead} quizAnswers={quizAnswers} recommendation={recommendation} onStatus={(status) => setPartnerStatus(status?.message || status?.status || status?.mode)} />
+          </div>
+        ) : null}
       </div>
 
       <LeadCaptureForm quizAnswers={quizAnswers} recommendation={recommendation} onCaptured={setLead} />
