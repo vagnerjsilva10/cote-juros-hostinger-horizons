@@ -6,7 +6,6 @@ import Footer from '@/components/Footer.jsx';
 import AdSenseScript from '@/components/AdSenseScript.tsx';
 import CookieConsent from '@/components/CookieConsent.jsx';
 
-import HomePage from '@/pages/HomePage.jsx';
 import EmprestimosPage from '@/pages/EmprestimosPage.jsx';
 import CartoesPage from '@/pages/CartoesPage.jsx';
 import FinanciamentoPage from '@/pages/FinanciamentoPage.jsx';
@@ -16,28 +15,32 @@ import CalculadoraCetPage from '@/pages/CalculadoraCetPage.jsx';
 import SimuladorComprometimentoRendaPage from '@/pages/SimuladorComprometimentoRendaPage.jsx';
 import EstudoCreditoNegativadoPage from '@/pages/EstudoCreditoNegativadoPage.jsx';
 import DiagnosticoPage from '@/pages/DiagnosticoPage.jsx';
-import BlogPage from '@/pages/BlogPage.jsx';
 import BlogArticlePage from '@/pages/BlogArticlePage.jsx';
 import BlogRouteBoundary from '@/components/blog/BlogRouteBoundary.jsx';
-import ComparePage from '@/pages/ComparePage.jsx';
 import ComoFuncionaPage from '@/pages/ComoFuncionaPage.jsx';
-import SobreNosPage from '@/pages/SobreNosPage.jsx';
-import ContatoPage from '@/pages/ContatoPage.jsx';
-import FaqPage from '@/pages/FaqPage.jsx';
-import CreditRadarPage from '@/pages/CreditRadarPage.jsx';
-import CustomerDashboardPage from '@/pages/CustomerDashboardPage.jsx';
-import CustomerLoginPage from '@/pages/CustomerLoginPage.jsx';
-import InsurancePage from '@/pages/InsurancePage.jsx';
 import PoliticaPrivacidadePage from '@/pages/PoliticaPrivacidadePage.jsx';
 import TermosUsoPage from '@/pages/TermosUsoPage.jsx';
 import SeoLandingPage from '@/pages/SeoLandingPage.jsx';
-import SmartQuizPage from '@/pages/SmartQuizPage.jsx';
 import CoteFinanceAIPage from '@/pages/CoteFinanceAIPage.jsx';
 import MotionHeroPage from '@/pages/MotionHeroPage.jsx';
 import SeoProgrammaticPage from '@/pages/SeoProgrammaticPage.jsx';
 import CreditProfileLandingPage from '@/pages/CreditProfileLandingPage.jsx';
 import LeadNextStepPage from '@/pages/LeadNextStepPage.jsx';
 import ReactivationLandingPage from '@/pages/ReactivationLandingPage.jsx';
+import {
+  PlatformAboutPage,
+  PlatformBlogArticlePage,
+  PlatformBlogPage,
+  PlatformComparePage,
+  PlatformContactPage,
+  PlatformDashboardPage,
+  PlatformFaqPage,
+  PlatformHomePage,
+  PlatformInsurancePage,
+  PlatformLoginPage,
+  PlatformQuizPage,
+  PlatformRadarPage
+} from '@/platform/PlatformSite.jsx';
 
 import AdminAuthGuard from '@/admin/AdminAuthGuard.jsx';
 import AdminLayout from '@/admin/AdminLayout.jsx';
@@ -137,7 +140,7 @@ function App() {
       <AdSenseScript />
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={<AppLayout><HomePage /></AppLayout>} />
+        <Route path="/" element={<PlatformHomePage />} />
         <Route path="/emprestimos" element={<AppLayout><EmprestimosPage /></AppLayout>} />
         <Route path="/cartoes" element={<AppLayout><CartoesPage /></AppLayout>} />
         <Route path="/cartoes-de-credito" element={<AppLayout><CartoesPage /></AppLayout>} />
@@ -150,31 +153,28 @@ function App() {
         <Route path="/simulador-comprometimento-renda" element={<AppLayout><SimuladorComprometimentoRendaPage /></AppLayout>} />
         <Route path="/estudos/custo-emprestimo-negativado-2026" element={<AppLayout><EstudoCreditoNegativadoPage /></AppLayout>} />
         <Route path="/diagnostico-financeiro" element={<AppLayout><DiagnosticoPage /></AppLayout>} />
-        <Route path="/radar" element={<AppLayout><CreditRadarPage /></AppLayout>} />
-        <Route path="/quiz" element={<AppLayout><SmartQuizPage /></AppLayout>} />
-        <Route path="/seguros" element={<AppLayout><InsurancePage /></AppLayout>} />
-        <Route path="/seguro-auto" element={<AppLayout><InsurancePage type="auto" /></AppLayout>} />
-        <Route path="/seguro-moto" element={<AppLayout><InsurancePage type="moto" /></AppLayout>} />
-        <Route path="/seguro-viagem" element={<AppLayout><InsurancePage type="viagem" /></AppLayout>} />
-        <Route path="/seguro-vida" element={<AppLayout><InsurancePage type="vida" /></AppLayout>} />
-        <Route path="/login" element={<AppLayout><CustomerLoginPage /></AppLayout>} />
-        <Route path="/criar-conta" element={<AppLayout><CustomerLoginPage signup /></AppLayout>} />
-        <Route path="/dashboard" element={<AppLayout><CustomerDashboardPage /></AppLayout>} />
+        <Route path="/radar" element={<PlatformRadarPage />} />
+        <Route path="/quiz" element={<PlatformQuizPage />} />
+        <Route path="/seguros" element={<PlatformInsurancePage />} />
+        <Route path="/seguro-auto" element={<PlatformInsurancePage type="auto" />} />
+        <Route path="/seguro-moto" element={<PlatformInsurancePage type="moto" />} />
+        <Route path="/seguro-viagem" element={<PlatformInsurancePage type="viagem" />} />
+        <Route path="/seguro-vida" element={<PlatformInsurancePage type="vida" />} />
+        <Route path="/login" element={<PlatformLoginPage />} />
+        <Route path="/criar-conta" element={<PlatformLoginPage signup />} />
+        <Route path="/dashboard" element={<PlatformDashboardPage />} />
         <Route
           path="/blog"
           element={
-            <AppLayout>
-              <BlogBoundary>
-                <BlogPage />
-              </BlogBoundary>
-            </AppLayout>
+            <PlatformBlogPage />
           }
         />
         <Route path="/como-funciona" element={<AppLayout><ComoFuncionaPage /></AppLayout>} />
-        <Route path="/sobre-nos" element={<AppLayout><SobreNosPage /></AppLayout>} />
-        <Route path="/contato" element={<AppLayout><ContatoPage /></AppLayout>} />
-        <Route path="/perguntas-frequentes" element={<AppLayout><FaqPage /></AppLayout>} />
-        <Route path="/faq" element={<AppLayout><FaqPage /></AppLayout>} />
+        <Route path="/sobre-nos" element={<PlatformAboutPage />} />
+        <Route path="/sobre" element={<PlatformAboutPage />} />
+        <Route path="/contato" element={<PlatformContactPage />} />
+        <Route path="/perguntas-frequentes" element={<PlatformFaqPage />} />
+        <Route path="/faq" element={<PlatformFaqPage />} />
         <Route path="/politica-de-privacidade" element={<AppLayout><PoliticaPrivacidadePage /></AppLayout>} />
         <Route path="/termos-de-uso" element={<AppLayout><TermosUsoPage /></AppLayout>} />
         <Route path="/cote-finance-ai" element={<AppLayout><CoteFinanceAIPage /></AppLayout>} />
@@ -233,9 +233,7 @@ function App() {
         <Route
           path="/comparar"
           element={
-            <AppLayout>
-              <ComparePage />
-            </AppLayout>
+            <PlatformComparePage />
           }
         />
         <Route
@@ -288,11 +286,7 @@ function App() {
         <Route
           path="/blog/:articleSlug"
           element={
-            <AppLayout>
-              <BlogBoundary>
-                <BlogArticlePage />
-              </BlogBoundary>
-            </AppLayout>
+            <PlatformBlogArticlePage />
           }
         />
         {wordpressMigratedArticles.map((article) => (
