@@ -4,6 +4,7 @@ import { checkWordpressHealth } from './blogImage/wordpressPublisher.js';
 
 const TIMEZONE = 'America/Sao_Paulo';
 const DAILY_LIMIT = Number(process.env.ARTICLE_AUTOMATION_DAILY_LIMIT || 3);
+const isPublishingApproved = () => process.env.ARTICLE_AUTOMATION_ALLOW_PUBLISH === 'true';
 const SITE_BASE_URL = (process.env.SITE_BASE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
 const SCHEDULE_SLOTS = Object.freeze([
   { name: 'morning', hour: 8, minute: 30 },
@@ -163,12 +164,14 @@ export class ArticleCronAutomationService {
   }
 
   static async runNow({ triggerSource = 'manual-run-now', limit = 1, force = true } = {}) {
+    const publishApproved = isPublishingApproved();
     const job = await this.createJob({
       jobName: 'article-publication-run-now',
       payload: {
         triggerSource,
         limit,
         force,
+        publishApproved,
         timezone: TIMEZONE
       }
     });
@@ -178,7 +181,8 @@ export class ArticleCronAutomationService {
         limit,
         triggerSource,
         ignoreSchedule: force,
-        ignoreRecentClusterCooldown: force
+        ignoreRecentClusterCooldown: force,
+        publishApproved
       });
 
       if (!result.length) {
@@ -205,11 +209,12 @@ export class ArticleCronAutomationService {
         distributionError: item.distributionError || null,
         finalValidation: validatePublishedArticle(item)
       }));
-      const failed = items.filter((item) => !item.finalValidation.passed || item.article?.status !== 'published');
+      const failed = items.filter((item) => !item.finalValidation.passed);
       const firstArticle = items.find((item) => item.article?.id)?.article || null;
       const payload = {
         ok: failed.length === 0,
-        status: failed.length ? 'failed' : 'success',
+        status: failed.length ? 'failed' : (publishApproved ? 'success' : 'draft_saved'),
+        publishApproved,
         target: 'cotejuros.com.br',
         items,
         article_id: firstArticle?.id || null,
@@ -219,7 +224,7 @@ export class ArticleCronAutomationService {
 
       await this.finishJob({
         job,
-        status: failed.length ? 'failed' : 'success',
+        status: failed.length ? 'failed' : (publishApproved ? 'success' : 'draft_saved'),
         result: payload,
         error: failed.length ? new Error(failed.map((item) => item.finalValidation.issues.join(', ')).join(' | ')) : null,
         articleId: firstArticle?.id || null
@@ -240,6 +245,7 @@ export class ArticleCronAutomationService {
   static async runDue({ triggerSource = 'vercel-cron' } = {}) {
     const prisma = getPrisma();
     const now = new Date();
+    const publishApproved = isPublishingApproved();
     const daily = await getPublishedTodayCount(prisma, now);
     const dueSlots = getDueSlots(now);
     const expectedByNow = Math.min(DAILY_LIMIT, dueSlots.length);
@@ -255,11 +261,24 @@ export class ArticleCronAutomationService {
         publishedToday: daily.count,
         expectedByNow,
         missing,
-        dailyLimit: DAILY_LIMIT
+        dailyLimit: DAILY_LIMIT,
+        publishApproved
       }
     });
 
     try {
+      if (!publishApproved) {
+        const payload = {
+          ok: true,
+          status: 'skipped',
+          reason: 'publication_requires_approval',
+          publishApproved,
+          message: 'ARTICLE_AUTOMATION_ALLOW_PUBLISH precisa estar true para o cron publicar automaticamente.'
+        };
+        await this.finishJob({ job, status: 'skipped', result: payload });
+        return payload;
+      }
+
       if (daily.count >= DAILY_LIMIT) {
         const payload = {
           ok: true,

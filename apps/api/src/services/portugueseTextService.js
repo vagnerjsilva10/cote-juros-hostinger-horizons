@@ -105,6 +105,7 @@ const SKIP_TEXT_KEYS = new Set([
   'slug',
   'path',
   'routePath',
+  'to',
   'canonicalUrl',
   'url',
   'sourceUrl',
@@ -121,7 +122,8 @@ const SKIP_TEXT_KEYS = new Set([
   'provider',
   'mediaId',
   'wordpressPostId',
-  'usedImageRecordId'
+  'usedImageRecordId',
+  'factoryIdempotencyKey'
 ]);
 
 const matchCase = (source, target) => {

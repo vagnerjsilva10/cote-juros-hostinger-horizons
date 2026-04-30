@@ -840,7 +840,7 @@ const serializeArticleRecord = (record) => {
     metaDescription: record.seoDescription || structured.metaDescription || record.excerpt || '',
     coverImage: record.coverImage || structured.coverImage || '',
     ogImage: record.ogImage || structured.ogImage || '',
-    readTime: record.readTime || structured.readTime || 6,
+    readTime: record.readTime || structured.readTime || 0,
     wordCount: record.wordCount || structured.wordCount || 0,
     status: record.status,
     publishedAt: record.publishedAt,
@@ -944,7 +944,8 @@ export class EditorialService {
     limit = 1,
     triggerSource = 'manual',
     ignoreSchedule = false,
-    ignoreRecentClusterCooldown = false
+    ignoreRecentClusterCooldown = false,
+    publishApproved = false
   } = {}) {
     await this.ensureClusterCalendar();
     const prisma = getPrisma();
@@ -1062,14 +1063,15 @@ export class EditorialService {
       results.push(await this.processBrief({
         brief: item.brief,
         triggerSource,
-        opportunity: item.opportunity
+        opportunity: item.opportunity,
+        publishApproved
       }));
     }
 
     return results;
   }
 
-  static async processBrief({ brief, triggerSource = 'manual', opportunity = null }) {
+  static async processBrief({ brief, triggerSource = 'manual', opportunity = null, publishApproved = false }) {
     const prisma = getPrisma();
     const jobRun = await prisma.editorialJobRun.create({
       data: {
@@ -1078,13 +1080,14 @@ export class EditorialService {
         clusterId: brief.clusterId,
         briefId: brief.id,
         status: 'running',
-        metadata: {
-          slug: brief.slug,
-          title: brief.title,
-          opportunity
+          metadata: {
+            slug: brief.slug,
+            title: brief.title,
+            opportunity,
+            publishApproved
+          }
         }
-      }
-    });
+      });
 
     try {
       await prisma.editorialBrief.update({
@@ -1201,6 +1204,7 @@ export class EditorialService {
 
       articlePayload.wordCount = validation.wordCount;
       articlePayload.readTime = validation.readTime;
+      const shouldPublish = Boolean(publishApproved && validation.passed);
 
       const category = await ensureBlogCategory(prisma, generated.category || brief.cluster.name);
       const articleRecord = await prisma.article.upsert({
@@ -1221,8 +1225,8 @@ export class EditorialService {
           wordCount: validation.wordCount,
           isPillar: brief.stage === 'pillar',
           structuredContent: articlePayload,
-          publishedAt: validation.passed ? new Date() : null,
-          status: validation.passed ? 'published' : 'draft'
+          publishedAt: shouldPublish ? new Date() : null,
+          status: shouldPublish ? 'published' : 'draft'
         },
         create: {
           slug: brief.slug,
@@ -1241,8 +1245,8 @@ export class EditorialService {
           wordCount: validation.wordCount,
           isPillar: brief.stage === 'pillar',
           structuredContent: articlePayload,
-          publishedAt: validation.passed ? new Date() : null,
-          status: validation.passed ? 'published' : 'draft'
+          publishedAt: shouldPublish ? new Date() : null,
+          status: shouldPublish ? 'published' : 'draft'
         },
         include: {
           category: true,
@@ -1264,7 +1268,7 @@ export class EditorialService {
 
       let distribution = null;
       let distributionError = null;
-      if (validation.passed) {
+      if (shouldPublish) {
         try {
           distribution = await ContentDistributionService.distributePublishedArticle({
             articleRecord,
@@ -1293,7 +1297,7 @@ export class EditorialService {
       await prisma.editorialBrief.update({
         where: { id: brief.id },
         data: {
-          status: validation.passed ? 'published' : 'draft'
+          status: shouldPublish ? 'published' : 'draft'
         }
       });
 
@@ -1301,12 +1305,13 @@ export class EditorialService {
         where: { id: jobRun.id },
         data: {
           articleId: articleRecord.id,
-          status: validation.passed ? 'succeeded' : 'draft_saved',
+          status: shouldPublish ? 'succeeded' : 'draft_saved',
           finishedAt: new Date(),
           durationMs: Date.now() - new Date(jobRun.startedAt).getTime(),
           metadata: {
             slug: brief.slug,
             opportunity,
+            publishApproved,
             validation,
             image: {
               provider: image.provider,
@@ -1326,7 +1331,7 @@ export class EditorialService {
       await logger.info('editorial_brief_processed', {
         briefId: brief.id,
         slug: brief.slug,
-        status: validation.passed ? 'published' : 'draft',
+        status: shouldPublish ? 'published' : 'draft',
         wordCount: validation.wordCount
       });
 

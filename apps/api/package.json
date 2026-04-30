@@ -27,6 +27,8 @@
     "jobs:start": "node src/jobs/scheduler.js",
     "editorial:ensure": "node src/jobs/runEditorialPipeline.js --ensure=true",
     "editorial:run": "node src/jobs/runEditorialPipeline.js --limit=1 --trigger=manual",
+    "article-factory:dry-run": "node src/jobs/runArticleFactory.js --dry-run=true",
+    "article-factory:run": "node src/jobs/runArticleFactory.js --dry-run=false --persist=true",
     "editorial:jobs:start": "node src/jobs/editorialScheduler.js",
     "distribution:run": "node src/jobs/runContentDistribution.js --limit=5 --trigger=manual",
     "web-stories:backfill": "node src/jobs/backfillWebStories.js --limit=25",
