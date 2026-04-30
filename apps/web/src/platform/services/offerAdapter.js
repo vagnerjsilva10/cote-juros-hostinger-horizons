@@ -18,6 +18,20 @@ const getOffersByType = (productType, filters = {}) => {
   );
 };
 
+export const buildCreditasOffer = () => ({
+  id: 'creditas_home_auto_equity',
+  provider: 'creditas',
+  bankName: 'Creditas',
+  title: 'Creditas - Crédito com garantia',
+  productName: 'Crédito com garantia Creditas',
+  type: 'Empréstimo com garantia',
+  productType: 'loan',
+  rate: 'Sob análise',
+  description: 'Refinanciamento de imóvel ou veículo pode fazer sentido, sujeito à análise da parceira.',
+  cta: 'Ver condições',
+  tags: ['Garantia', 'Imóvel ou veículo', 'Sujeito à análise']
+});
+
 export const getCreditOffers = (filters = {}) => getOffersByType('loan', filters);
 
 export const getCardOffers = (filters = {}) => getOffersByType('credit_card', filters);
@@ -55,5 +69,6 @@ export const offerAdapter = {
   getCreditOffers,
   getCardOffers,
   getFinancingOffers,
-  getInsuranceOffers
+  getInsuranceOffers,
+  buildCreditasOffer
 };
