@@ -16,5 +16,8 @@ apps/*/node_modules
 !apps/web/src/assets/**/*.png
 
 .edge-*/
+.chrome-*/
+.tmp/
+temp/
 apps/web/dist/
 coverage/

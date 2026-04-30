@@ -17,3 +17,10 @@ credentials*.json
 cote-finance-ai-*.json
 tmp/generated-images/
 apps/api/tmp/generated-images/
+apps/web/dist/
+apps/web/public/sitemap.xml
+apps/web/public/llms.txt
+.vscode/
+temp/
+.chrome-*/
+*.log

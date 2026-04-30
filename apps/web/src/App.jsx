@@ -1,12 +1,11 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import ScrollToTop from '@/components/ScrollToTop.jsx';
 import Header from '@/components/Header.jsx';
 import Footer from '@/components/Footer.jsx';
 import AdSenseScript from '@/components/AdSenseScript.tsx';
 import CookieConsent from '@/components/CookieConsent.jsx';
 
-import HomePage from '@/pages/HomePage.jsx';
 import EmprestimosPage from '@/pages/EmprestimosPage.jsx';
 import CartoesPage from '@/pages/CartoesPage.jsx';
 import FinanciamentoPage from '@/pages/FinanciamentoPage.jsx';
@@ -16,15 +15,7 @@ import CalculadoraCetPage from '@/pages/CalculadoraCetPage.jsx';
 import SimuladorComprometimentoRendaPage from '@/pages/SimuladorComprometimentoRendaPage.jsx';
 import EstudoCreditoNegativadoPage from '@/pages/EstudoCreditoNegativadoPage.jsx';
 import DiagnosticoPage from '@/pages/DiagnosticoPage.jsx';
-import BlogPage from '@/pages/BlogPage.jsx';
-import BlogArticlePage from '@/pages/BlogArticlePage.jsx';
-import BlogRouteBoundary from '@/components/blog/BlogRouteBoundary.jsx';
 import ComoFuncionaPage from '@/pages/ComoFuncionaPage.jsx';
-import SobreNosPage from '@/pages/SobreNosPage.jsx';
-import ContatoPage from '@/pages/ContatoPage.jsx';
-import FaqPage from '@/pages/FaqPage.jsx';
-import PoliticaPrivacidadePage from '@/pages/PoliticaPrivacidadePage.jsx';
-import TermosUsoPage from '@/pages/TermosUsoPage.jsx';
 import SeoLandingPage from '@/pages/SeoLandingPage.jsx';
 import CoteFinanceAIPage from '@/pages/CoteFinanceAIPage.jsx';
 import MotionHeroPage from '@/pages/MotionHeroPage.jsx';
@@ -32,6 +23,27 @@ import SeoProgrammaticPage from '@/pages/SeoProgrammaticPage.jsx';
 import CreditProfileLandingPage from '@/pages/CreditProfileLandingPage.jsx';
 import LeadNextStepPage from '@/pages/LeadNextStepPage.jsx';
 import ReactivationLandingPage from '@/pages/ReactivationLandingPage.jsx';
+import {
+  PlatformAboutPage,
+  PlatformBlogArticlePage,
+  PlatformBlogPage,
+  PlatformComparePage,
+  PlatformContactPage,
+  PlatformDashboardPage,
+  PlatformFaqPage,
+  PlatformHomePage,
+  PlatformInsurancePage,
+  PlatformLoginPage,
+  PlatformPrivacyPage,
+  PlatformQuizPage,
+  PlatformRadarPage,
+  PlatformTermsPage,
+  DashboardAnalysisPage,
+  DashboardHistoryPage,
+  DashboardOffersPage,
+  DashboardProfilePage,
+  DashboardSettingsPage
+} from '@/platform/PlatformSite.jsx';
 
 import AdminAuthGuard from '@/admin/AdminAuthGuard.jsx';
 import AdminLayout from '@/admin/AdminLayout.jsx';
@@ -80,12 +92,6 @@ function AdminRoute({ title, children }) {
   );
 }
 
-function BlogBoundary({ children }) {
-  const location = useLocation();
-
-  return <BlogRouteBoundary resetKey={location.pathname}>{children}</BlogRouteBoundary>;
-}
-
 function App() {
   const [seoPages, setSeoPages] = useState(seedSeoPages);
   const [seoFallbackPaths, setSeoFallbackPaths] = useState(seedFallbackPaths);
@@ -104,6 +110,11 @@ function App() {
     blocked.add('/faq');
     blocked.add('/politica-de-privacidade');
     blocked.add('/termos-de-uso');
+    blocked.add('/dashboard/analise');
+    blocked.add('/dashboard/ofertas');
+    blocked.add('/dashboard/historico');
+    blocked.add('/dashboard/perfil');
+    blocked.add('/dashboard/configuracoes');
     return blocked;
   }, []);
 
@@ -133,7 +144,7 @@ function App() {
       <AdSenseScript />
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={<AppLayout><HomePage /></AppLayout>} />
+        <Route path="/" element={<PlatformHomePage />} />
         <Route path="/emprestimos" element={<AppLayout><EmprestimosPage /></AppLayout>} />
         <Route path="/cartoes" element={<AppLayout><CartoesPage /></AppLayout>} />
         <Route path="/cartoes-de-credito" element={<AppLayout><CartoesPage /></AppLayout>} />
@@ -146,23 +157,35 @@ function App() {
         <Route path="/simulador-comprometimento-renda" element={<AppLayout><SimuladorComprometimentoRendaPage /></AppLayout>} />
         <Route path="/estudos/custo-emprestimo-negativado-2026" element={<AppLayout><EstudoCreditoNegativadoPage /></AppLayout>} />
         <Route path="/diagnostico-financeiro" element={<AppLayout><DiagnosticoPage /></AppLayout>} />
+        <Route path="/radar" element={<PlatformRadarPage />} />
+        <Route path="/quiz" element={<PlatformQuizPage />} />
+        <Route path="/seguros" element={<PlatformInsurancePage />} />
+        <Route path="/seguro-auto" element={<PlatformInsurancePage type="auto" />} />
+        <Route path="/seguro-moto" element={<PlatformInsurancePage type="moto" />} />
+        <Route path="/seguro-viagem" element={<PlatformInsurancePage type="viagem" />} />
+        <Route path="/seguro-vida" element={<PlatformInsurancePage type="vida" />} />
+        <Route path="/login" element={<PlatformLoginPage />} />
+        <Route path="/criar-conta" element={<PlatformLoginPage signup />} />
+        <Route path="/dashboard" element={<PlatformDashboardPage />} />
+        <Route path="/dashboard/analise" element={<DashboardAnalysisPage />} />
+        <Route path="/dashboard/ofertas" element={<DashboardOffersPage />} />
+        <Route path="/dashboard/historico" element={<DashboardHistoryPage />} />
+        <Route path="/dashboard/perfil" element={<DashboardProfilePage />} />
+        <Route path="/dashboard/configuracoes" element={<DashboardSettingsPage />} />
         <Route
           path="/blog"
           element={
-            <AppLayout>
-              <BlogBoundary>
-                <BlogPage />
-              </BlogBoundary>
-            </AppLayout>
+            <PlatformBlogPage />
           }
         />
         <Route path="/como-funciona" element={<AppLayout><ComoFuncionaPage /></AppLayout>} />
-        <Route path="/sobre-nos" element={<AppLayout><SobreNosPage /></AppLayout>} />
-        <Route path="/contato" element={<AppLayout><ContatoPage /></AppLayout>} />
-        <Route path="/perguntas-frequentes" element={<AppLayout><FaqPage /></AppLayout>} />
-        <Route path="/faq" element={<AppLayout><FaqPage /></AppLayout>} />
-        <Route path="/politica-de-privacidade" element={<AppLayout><PoliticaPrivacidadePage /></AppLayout>} />
-        <Route path="/termos-de-uso" element={<AppLayout><TermosUsoPage /></AppLayout>} />
+        <Route path="/sobre-nos" element={<PlatformAboutPage />} />
+        <Route path="/sobre" element={<PlatformAboutPage />} />
+        <Route path="/contato" element={<PlatformContactPage />} />
+        <Route path="/perguntas-frequentes" element={<PlatformFaqPage />} />
+        <Route path="/faq" element={<PlatformFaqPage />} />
+        <Route path="/politica-de-privacidade" element={<PlatformPrivacyPage />} />
+        <Route path="/termos-de-uso" element={<PlatformTermsPage />} />
         <Route path="/cote-finance-ai" element={<AppLayout><CoteFinanceAIPage /></AppLayout>} />
         <Route path="/motion-hero" element={<AppLayout><MotionHeroPage /></AppLayout>} />
         <Route path="/resultado" element={<AppLayout><LeadNextStepPage /></AppLayout>} />
@@ -220,9 +243,7 @@ function App() {
         <Route
           path="/comparar"
           element={
-            <AppLayout>
-              <SeoProgrammaticPage mode="static" pagePath="/comparar" />
-            </AppLayout>
+            <PlatformComparePage />
           }
         />
         <Route
@@ -275,11 +296,7 @@ function App() {
         <Route
           path="/blog/:articleSlug"
           element={
-            <AppLayout>
-              <BlogBoundary>
-                <BlogArticlePage />
-              </BlogBoundary>
-            </AppLayout>
+            <PlatformBlogArticlePage />
           }
         />
         {wordpressMigratedArticles.map((article) => (
@@ -287,11 +304,7 @@ function App() {
             key={`wp-article-${article.slug}`}
             path={article.routePath}
             element={
-              <AppLayout>
-                <BlogBoundary>
-                  <BlogArticlePage articleSlugOverride={article.slug} />
-                </BlogBoundary>
-              </AppLayout>
+              <Navigate to={`/blog/${article.slug}`} replace />
             }
           />
         ))}
