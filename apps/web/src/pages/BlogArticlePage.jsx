@@ -1,17 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, CalendarDays, Clock, Home } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, ArrowRight, CalendarDays, CheckCircle2, Clock, Home, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import BlogArticleCard from '@/components/BlogArticleCard.jsx';
 import ArticleComments from '@/components/blog/ArticleComments.jsx';
-import ArticleCoverImage from '@/components/blog/ArticleCoverImage.jsx';
-import BlogArticleSkeleton from '@/components/blog/BlogArticleSkeleton.jsx';
 import { AdSlotHorizontal, AdSlotInline, AdSlotResponsive } from '@/components/blog/AdSlot.jsx';
 import SuperSimInlineCTA from '@/components/affiliates/SuperSimInlineCTA.jsx';
-import SuperSimSidebarCard from '@/components/affiliates/SuperSimSidebarCard.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { affiliateRedirectService } from '@/platform/services/affiliateRedirectService.js';
 import { useAffiliatePlacements } from '@/hooks/useAffiliatePlacements.js';
@@ -19,6 +15,7 @@ import {
   buildArticleToc,
   getArticleCategoryKey,
   getArticleImage,
+  getArticleImageCandidates,
   getArticlePath,
   getArticleParagraphs,
   getArticleSummary,
@@ -26,11 +23,13 @@ import {
   normalizeArticleData,
   resolveArticleBySlug
 } from '@/lib/content/articles.js';
+import { articlesData } from '@/data/articlesData.js';
 import { getSupersimOffer, SUPERSIM_TARGET_ARTICLE_PATHS } from '@/lib/supersim.js';
 import { normalizeMojibake, normalizeMojibakeDeep } from '@/lib/textEncoding.js';
 
 const BLOG_BASE_URL = 'https://www.cotejuros.com.br/blog';
 const SITE_LOGO_URL = 'https://www.cotejuros.com.br/brand/cote-juros-logo.svg';
+const BLOG_HERO_FALLBACK_IMAGE = '/assets/editorial/editorial-credit-life.png';
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString('pt-BR', {
@@ -39,13 +38,36 @@ const formatDate = (date) =>
     year: 'numeric'
   });
 
+const buildArticleFaq = (article) => {
+  if (Array.isArray(article?.faq) && article.faq.length) return article.faq;
+
+  const title = getEditorialTitle(article) || article?.title || 'este tema';
+  const category = article?.category || 'finanças pessoais';
+
+  return [
+    {
+      question: `${title} vale para qualquer perfil financeiro?`,
+      answer: `Depende do momento, da renda, das dívidas atuais e do objetivo. Use o guia como ponto de partida e compare as opções antes de contratar qualquer produto financeiro.`
+    },
+    {
+      question: `O que comparar primeiro em ${category.toLowerCase()}?`,
+      answer: 'Comece pelo custo total, prazo, impacto da parcela no orçamento e reputação da instituição. Evite decisões baseadas apenas na menor parcela.'
+    },
+    {
+      question: 'A Cote Juros cobra para mostrar opções?',
+      answer: 'Não há cobrança antecipada para consultar conteúdos e caminhos de comparação. A decisão final deve ser tomada com calma e sem compromisso.'
+    }
+  ];
+};
+
 const toFaqSchema = (article) => {
-  if (!Array.isArray(article?.faq) || !article.faq.length) return null;
+  const faq = buildArticleFaq(article);
+  if (!faq.length) return null;
 
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: article.faq.map((item) => ({
+    mainEntity: faq.map((item) => ({
       '@type': 'Question',
       name: item.question,
       acceptedAnswer: {
@@ -101,6 +123,18 @@ const BLOG_SIDEBAR_READING = normalizeMojibakeDeep([
     title: 'Reserva de emergência',
     description: 'Veja por que manter folga financeira é essencial antes de financiar.'
   }
+]);
+
+const INTERNAL_LINK_KEYWORDS = normalizeMojibakeDeep([
+  { keyword: 'empréstimo pessoal', path: '/emprestimos', label: 'empréstimo pessoal' },
+  { keyword: 'empréstimo', path: '/emprestimos', label: 'empréstimo' },
+  { keyword: 'crédito', path: '/emprestimos', label: 'crédito' },
+  { keyword: 'cartão de crédito', path: '/cartoes', label: 'cartão de crédito' },
+  { keyword: 'cartão', path: '/cartoes', label: 'cartão' },
+  { keyword: 'score', path: '/blog/score-de-credito-como-funciona', label: 'score' },
+  { keyword: 'financiamento', path: '/financiamentos', label: 'financiamento' },
+  { keyword: 'dívidas', path: '/blog/como-sair-das-dividas', label: 'dívidas' },
+  { keyword: 'juros', path: '/blog/como-comparar-taxas-de-juros', label: 'juros' }
 ]);
 
 const COMMERCIAL_LINK_LIBRARY = [
@@ -348,19 +382,91 @@ const buildInlineLinkMoments = ({ internalLinks = [], externalLinks = [] }) => {
   };
 };
 
+export const injectInternalLinks = (content, usedKeywords = new Set()) => {
+  const text = String(content || '');
+  if (!text) return text;
+
+  const normalizedText = normalizeIntentText(text);
+  const match = INTERNAL_LINK_KEYWORDS.find((item) => {
+    const normalizedKeyword = normalizeIntentText(item.keyword);
+    return !usedKeywords.has(normalizedKeyword) && normalizedText.includes(normalizedKeyword);
+  });
+
+  if (!match) return text;
+
+  const normalizedKeyword = normalizeIntentText(match.keyword);
+  const pattern = new RegExp(`(${match.keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'i');
+  const parts = text.split(pattern);
+  if (parts.length < 3) return text;
+
+  usedKeywords.add(normalizedKeyword);
+
+  return parts.map((part, index) => {
+    if (index === 1) {
+      return (
+        <Link key={`${match.path}-${normalizedKeyword}`} to={match.path} className="blog-inline-link font-medium hover:underline">
+          {part}
+        </Link>
+      );
+    }
+
+    return part;
+  });
+};
+
+const InContentAd = ({ position, className = '' }) => {
+  if (position === 'after-second-paragraph') {
+    return <AdSlotResponsive className={className} />;
+  }
+
+  if (position === 'mid-article') {
+    return <AdSlotInline className={className} />;
+  }
+
+  return <AdSlotHorizontal className={className} />;
+};
+
+const BlogHeroImage = ({ article, title }) => {
+  const imageSet = useMemo(() => getArticleImageCandidates(article), [article]);
+  const [srcIndex, setSrcIndex] = useState(0);
+  const sources = useMemo(() => [imageSet.primary, ...imageSet.fallbacks, BLOG_HERO_FALLBACK_IMAGE].filter(Boolean), [imageSet]);
+  const currentSrc = sources[srcIndex] || BLOG_HERO_FALLBACK_IMAGE;
+
+  useEffect(() => {
+    setSrcIndex(0);
+  }, [imageSet.primary]);
+
+  return (
+    <img
+      src={currentSrc}
+      alt={article?.coverImageAlt || article?.imageAlt || title}
+      loading="lazy"
+      decoding="async"
+      width="1200"
+      height="630"
+      onError={() => setSrcIndex((current) => Math.min(current + 1, sources.length - 1))}
+    />
+  );
+};
+
 function BlogArticlePage({ articleSlugOverride = '' }) {
   const t = normalizeMojibake;
   const { articleSlug } = useParams();
   const resolvedSlug = articleSlugOverride || articleSlug;
-  const [articles, setArticles] = useState([]);
-  const [article, setArticle] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const localArticles = useMemo(() => articlesData.map((item) => normalizeArticleData(item)), []);
+  const localArticle = useMemo(
+    () => resolveArticleBySlug({ slug: resolvedSlug, articles: localArticles }),
+    [resolvedSlug, localArticles]
+  );
+  const [articles, setArticles] = useState(localArticles);
+  const [article, setArticle] = useState(localArticle);
   const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
     setLoadError('');
+    setArticles(localArticles);
+    setArticle(localArticle);
 
     Promise.all([portalApi.getArticles({ sort: 'recent' }), portalApi.getArticleBySlug(resolvedSlug)])
       .then(([items, articleData]) => {
@@ -374,23 +480,20 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         });
 
         setArticles(articleList);
-        setArticle(safeArticle || null);
+        setArticle(safeArticle || localArticle || null);
       })
       .catch((error) => {
         console.error('[blog-article-page] erro ao carregar artigo', error);
         if (!active) return;
         setLoadError(normalizeMojibake('Não foi possível carregar este artigo agora.'));
-        setArticles([]);
-        setArticle(null);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
+        setArticles(localArticles);
+        setArticle(localArticle || null);
       });
 
     return () => {
       active = false;
     };
-  }, [resolvedSlug]);
+  }, [resolvedSlug, localArticle, localArticles]);
 
   const safeArticle = useMemo(() => (article ? normalizeMojibakeDeep(normalizeArticleData(article)) : null), [article]);
   const affiliatePlacements = useAffiliatePlacements({
@@ -401,7 +504,6 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
   const introSupersimOffer = shouldShowSupersimCtas ? getSupersimOffer(affiliatePlacements.below_hero || []) : null;
   const midSupersimOffer = shouldShowSupersimCtas ? getSupersimOffer(affiliatePlacements.mid_content || []) : null;
   const faqSupersimOffer = shouldShowSupersimCtas ? getSupersimOffer(affiliatePlacements.before_faq || []) : null;
-  const sidebarSupersimOffer = shouldShowSupersimCtas ? getSupersimOffer(affiliatePlacements.sidebar || []) : null;
   const categoryRoute = useMemo(
     () => (safeArticle ? getCategoryRoute(safeArticle) : { path: '/blog', label: 'Blog' }),
     [safeArticle]
@@ -410,7 +512,21 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
     () => (safeArticle ? getArticleConversionCta(safeArticle, categoryRoute) : null),
     [safeArticle, categoryRoute]
   );
-  const tocItems = useMemo(() => (safeArticle ? buildArticleToc(safeArticle) : []), [safeArticle]);
+  const tocItems = useMemo(() => {
+    if (!safeArticle) return [];
+
+    const items = buildArticleToc(safeArticle);
+    if (!items.some((item) => item.id === 'faq') && buildArticleFaq(safeArticle).length) {
+      const conclusionIndex = items.findIndex((item) => item.id === 'conclusao');
+      const faqItem = { id: 'faq', label: 'Perguntas frequentes' };
+      if (conclusionIndex >= 0) {
+        return [...items.slice(0, conclusionIndex), faqItem, ...items.slice(conclusionIndex)];
+      }
+      return [...items, faqItem];
+    }
+
+    return items;
+  }, [safeArticle]);
 
   const relatedArticles = useMemo(() => {
     if (!safeArticle) return [];
@@ -521,10 +637,6 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
     }
   };
 
-  if (loading) {
-    return <BlogArticleSkeleton />;
-  }
-
   if (!safeArticle) {
     return (
       <section className="page-shell py-20">
@@ -548,12 +660,15 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
   const faqSchema = toFaqSchema(safeArticle);
   const introParagraphs = getArticleParagraphs(safeArticle);
   const sections = Array.isArray(safeArticle.sections) ? safeArticle.sections : [];
+  const faqItems = buildArticleFaq(safeArticle);
+  const usedInternalLinkKeywords = new Set();
+  const renderLinkedText = (paragraph) => injectInternalLinks(paragraph, usedInternalLinkKeywords);
   const articleCtas = Array.isArray(safeArticle.ctas) ? safeArticle.ctas : [];
   const introCta = articleCtas.find((item) => item.position === 'after_intro') || articleCtas[0];
   const middleCta = articleCtas.find((item) => item.position === 'middle') || articleCtas[1];
   const closingCta = articleCtas.find((item) => item.position === 'before_conclusion') || articleCtas[2];
   const midSectionIndex = sections.length > 2 ? Math.ceil(sections.length / 2) - 1 : -1;
-  const showPreConclusionAd = Boolean((Array.isArray(safeArticle.faq) && safeArticle.faq.length) || (Array.isArray(safeArticle.conclusion) && safeArticle.conclusion.length));
+  const showPreConclusionAd = Boolean(faqItems.length || (Array.isArray(safeArticle.conclusion) && safeArticle.conclusion.length));
   const webStory = safeArticle.distribution?.webStory;
   const webStoryUrl = webStory?.url || (webStory?.path ? `https://api.cotejuros.com.br${webStory.path}` : '');
 
@@ -621,8 +736,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
         {faqSchema ? <script type="application/ld+json">{JSON.stringify(faqSchema)}</script> : null}
       </Helmet>
 
-      <section className="blog-article-hero border-b border-border bg-background py-6 md:py-10">
-        <div className="page-shell min-w-0 space-y-5 md:space-y-6">
+      <section className="blog-article-hero border-b border-border bg-background py-5 md:py-6">
+        <div className="page-shell min-w-0 space-y-5">
           <nav aria-label="Breadcrumb" className="blog-article-breadcrumb flex min-w-0 flex-wrap items-center gap-2 text-xs text-muted-foreground sm:text-sm">
             <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground">
               <Home className="h-4 w-4" />
@@ -641,83 +756,40 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
             Voltar para o blog
           </Link>
 
-          <div className="blog-article-header space-y-4 md:space-y-5">
-            <Badge variant="outline" className="w-fit">{safeArticle.category}</Badge>
-            <div className="blog-article-headline space-y-3">
-              <h1 className="blog-article-title max-w-4xl text-3xl leading-tight text-foreground sm:text-4xl lg:text-5xl">{safeArticle.h1 || editorialTitle}</h1>
-              <p className="blog-article-summary max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">{getArticleSummary(safeArticle)}</p>
+          <div className="blog-hero">
+            <BlogHeroImage article={safeArticle} title={safeArticle.h1 || editorialTitle} />
+            <div className="blog-hero-overlay" />
+            <div className="blog-hero-content">
+              <span className="blog-hero-category">{safeArticle.category || 'Educação Financeira'}</span>
+              <h1 className="blog-article-title">{safeArticle.h1 || editorialTitle}</h1>
+              <p className="blog-article-summary">{getArticleSummary(safeArticle)}</p>
+              <p className="blog-hero-meta">
+                <span className="inline-flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4" />
+                  Atualizado em {formatDate(safeArticle.updatedAt || safeArticle.publishedAt)}
+                </span>
+                <span>{safeArticle.author}</span>
+                <span className="inline-flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  {safeArticle.readingTime || safeArticle.readTime || 6} min de leitura
+                </span>
+              </p>
             </div>
           </div>
 
-          <div className="blog-article-meta flex flex-wrap gap-x-5 gap-y-3 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-2">
-              <CalendarDays className="blog-meta-icon h-4 w-4" />
-              {formatDate(safeArticle.publishedAt)}
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <Clock className="blog-meta-icon h-4 w-4" />
-              {safeArticle.readingTime || safeArticle.readTime || 6} min de leitura
-            </span>
-            <span>{safeArticle.author}</span>
-            <Link to={categoryRoute.path} className="blog-inline-link inline-flex items-center gap-2 hover:underline">
-              Mais em {categoryRoute.label}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            {webStoryUrl ? (
-              <a href={webStoryUrl} className="blog-inline-link inline-flex items-center gap-2 hover:underline">
-                Ver Web Story
-                <ArrowRight className="h-4 w-4" />
+          {safeArticle.imageAttribution?.label ? (
+            <p className="text-sm leading-6 text-muted-foreground">
+              {safeArticle.imageAttribution.label}{' '}
+              <a
+                href={safeArticle.imageAttribution.url || 'https://www.freepik.com'}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="blog-inline-link font-medium hover:underline"
+              >
+                {safeArticle.imageAttribution.sourceName || 'Freepik'}
               </a>
-            ) : null}
-          </div>
-
-          <div className="blog-article-cover-grid grid min-w-0 gap-5 pt-2 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
-            <div className="space-y-3">
-              <ArticleCoverImage
-                article={safeArticle}
-                className="blog-article-cover min-w-0 w-full max-h-[430px] rounded-[18px] border border-border md:rounded-[20px]"
-                aspectRatio="16 / 9"
-              />
-              {safeArticle.imageAttribution?.label ? (
-                <p className="text-sm leading-6 text-muted-foreground">
-                  {safeArticle.imageAttribution.label}{' '}
-                  <a
-                    href={safeArticle.imageAttribution.url || 'https://www.freepik.com'}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                    className="blog-inline-link font-medium hover:underline"
-                  >
-                    {safeArticle.imageAttribution.sourceName || 'Freepik'}
-                  </a>
-                </p>
-              ) : null}
-            </div>
-
-            <aside className="blog-article-hero-aside min-w-0 rounded-[18px] border border-border bg-white p-5 md:p-6">
-              <h2 className="text-xl text-foreground">Continue a leitura</h2>
-              <div className="mt-4 space-y-3">
-                {webStoryUrl ? (
-                  <a
-                    href={webStoryUrl}
-                    className="blog-article-jump-link block min-w-0 rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors"
-                  >
-                    <h3 className="block break-words font-semibold text-foreground">Resumo em Web Story</h3>
-                    <span className="mt-1 block leading-6 text-muted-foreground">Veja os principais pontos em formato visual.</span>
-                  </a>
-                ) : null}
-                {sidebarReading.map((item) => (
-                  <Link
-                    key={`hero-reading-${item.title}`}
-                    to={item.path}
-                    className="blog-article-jump-link block min-w-0 rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors"
-                  >
-                    <h3 className="block break-words font-semibold text-foreground">{item.title}</h3>
-                    <span className="mt-1 block leading-6 text-muted-foreground">{item.description}</span>
-                  </Link>
-                ))}
-              </div>
-            </aside>
-          </div>
+            </p>
+          ) : null}
         </div>
       </section>
 
@@ -728,7 +800,10 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
               <article className="blog-article-body-card min-w-0 rounded-[18px] border border-border bg-white p-4 sm:p-6 md:rounded-[20px] md:p-10">
                 <div className="blog-article-richtext space-y-7 md:space-y-8">
                   {introParagraphs.map((paragraph, index) => (
-                    <p key={`intro-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{paragraph}</p>
+                    <React.Fragment key={`intro-${index}`}>
+                      <p className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{renderLinkedText(paragraph)}</p>
+                      {index === 1 ? <InContentAd position="after-second-paragraph" /> : null}
+                    </React.Fragment>
                   ))}
 
                   {safeArticle.featuredSnippet ? (
@@ -793,8 +868,6 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     />
                   ) : null}
 
-                  <AdSlotResponsive />
-
                   {tocItems.length ? (
                     <section className="blog-article-toc min-w-0 rounded-[18px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
                       <p className="blog-kicker text-sm font-semibold uppercase tracking-[0.18em]">{t('Neste artigo você vai encontrar')}</p>
@@ -823,7 +896,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                         ) : null}
                         {section.paragraphs?.map((paragraph, paragraphIndex) => (
                           <p key={`section-${index}-p-${paragraphIndex}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">
-                            {paragraph}
+                            {renderLinkedText(paragraph)}
                           </p>
                         ))}
                         {section.bullets?.length ? (
@@ -835,7 +908,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                         ) : null}
                       </section>
 
-                      {index === midSectionIndex ? <AdSlotInline /> : null}
+                      {index === midSectionIndex ? <InContentAd position="mid-article" /> : null}
                       {index === midSectionIndex && safeArticle.example ? (
                         <section className="blog-article-example min-w-0 rounded-[16px] border border-border bg-background-secondary p-4 sm:p-5">
                           <h2 className="text-xl text-foreground sm:text-2xl">Exemplo com números</h2>
@@ -959,8 +1032,6 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     </p>
                   ) : null}
 
-                  {showPreConclusionAd ? <AdSlotHorizontal /> : null}
-
                   {safeArticle.financialImpact?.length ? (
                     <section className="blog-article-impact min-w-0 scroll-mt-28 space-y-4">
                       <h2 className="text-xl text-foreground sm:text-2xl">Impacto financeiro</h2>
@@ -993,11 +1064,11 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     />
                   ) : null}
 
-                  {Array.isArray(safeArticle.faq) && safeArticle.faq.length ? (
+                  {faqItems.length ? (
                     <section id="faq" className="blog-article-faq min-w-0 scroll-mt-28 space-y-4 rounded-[16px] border border-border bg-background-secondary p-4 sm:p-5 md:p-6">
                       <h2 className="text-xl text-foreground sm:text-2xl">Perguntas frequentes</h2>
                       <div className="space-y-5">
-                        {safeArticle.faq.map((item, index) => (
+                        {faqItems.map((item, index) => (
                           <div key={`faq-${index}`} className="space-y-2">
                             <h3 className="text-lg text-foreground">{item.question}</h3>
                             <p className="text-base leading-7 text-muted-foreground">{item.answer}</p>
@@ -1011,7 +1082,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     <section id="conclusao" className="blog-article-conclusion scroll-mt-28 space-y-4">
                       <h2 className="text-xl text-foreground sm:text-2xl">{t('Conclusão')}</h2>
                       {safeArticle.conclusion.map((paragraph, index) => (
-                        <p key={`conclusion-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{paragraph}</p>
+                        <p key={`conclusion-${index}`} className="text-base leading-7 text-muted-foreground sm:leading-8 md:text-lg">{renderLinkedText(paragraph)}</p>
                       ))}
                     </section>
                   ) : null}
@@ -1033,19 +1104,31 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                       </div>
                     </section>
                   ) : null}
+
+                  {showPreConclusionAd ? <InContentAd position="article-end" /> : null}
                 </div>
               </article>
 
               <section className="blog-article-conversion min-w-0 rounded-[22px] p-5 sm:p-6 md:p-8">
                 <p className="blog-kicker text-sm font-semibold uppercase tracking-[0.2em]">{conversionCta?.eyebrow || t('Próximo passo')}</p>
-                <h2 className="mt-3 text-xl text-foreground sm:text-2xl">{conversionCta?.title || t('Quer dar o próximo passo com mais clareza?')}</h2>
+                <h2 className="mt-3 text-xl text-foreground sm:text-2xl">Veja opções de crédito que fazem sentido para você</h2>
                 <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
-                  {conversionCta?.description}
+                  {conversionCta?.description || 'Compare alternativas com clareza antes de tomar qualquer decisão.'}
                 </p>
+                <div className="mt-4 grid gap-2 text-sm font-medium text-foreground sm:grid-cols-2">
+                  <span className="inline-flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                    Sem cobrança antecipada
+                  </span>
+                  <span className="inline-flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                    Sem compromisso
+                  </span>
+                </div>
                 <div className="blog-article-conversion-actions mt-4 flex flex-col gap-3 border-t border-[#E5E7EB] pt-6 sm:flex-row sm:flex-wrap">
                   <Link to={conversionCta?.primary.to || '/emprestimos'} className="inline-flex w-full sm:w-auto">
                     <Button className="w-full sm:w-auto">
-                      {conversionCta?.primary.label || t('Ver minhas opções agora')}
+                      VER MINHAS OPÇÕES AGORA
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
@@ -1085,12 +1168,58 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
             </div>
 
             <aside className="blog-article-sidebar min-w-0 space-y-6 lg:sticky lg:top-24 lg:h-fit">
-              {sidebarSupersimOffer ? (
-                <SuperSimSidebarCard
-                  offer={sidebarSupersimOffer}
-                  onSelect={(offer) => handleAffiliateClick(offer, 'sidebar')}
-                />
-              ) : null}
+              <section className="blog-article-sidebar-card blog-article-sidebar-card--primary min-w-0 rounded-[18px] border border-border bg-white p-5 md:p-6">
+                <p className="blog-kicker text-xs font-semibold uppercase tracking-[0.18em]">Crédito com clareza</p>
+                <h2 className="mt-2 text-xl text-foreground">Veja opções de crédito para seu perfil</h2>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                  Compare caminhos possíveis sem cobrança antecipada e avance só quando fizer sentido.
+                </p>
+                <Link to="/emprestimos" className="mt-5 inline-flex w-full">
+                  <Button className="w-full">
+                    Ver minhas opções
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </section>
+
+              <section className="blog-article-sidebar-card min-w-0 rounded-[18px] border border-border bg-white p-5 md:p-6">
+                <h2 className="text-xl text-foreground">Artigos populares</h2>
+                <div className="mt-4 space-y-3">
+                  {(semanticArticleLinks.length ? semanticArticleLinks.slice(0, 3) : sidebarReading).map((item) => (
+                    <Link
+                      key={`sidebar-reading-${item.path || item.title}`}
+                      to={item.path}
+                      className="blog-article-jump-link block min-w-0 rounded-[14px] border border-border bg-background-secondary px-4 py-4 text-sm transition-colors"
+                    >
+                      <span className="block break-words font-semibold text-foreground">{item.title}</span>
+                      <span className="mt-1 block leading-6 text-muted-foreground">{item.anchor || item.description}</span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+
+              <section className="blog-article-sidebar-card min-w-0 rounded-[18px] border border-border bg-white p-5 md:p-6">
+                <div className="flex items-start gap-3">
+                  <span className="blog-sidebar-mail-icon inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
+                    <Mail className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <h2 className="text-xl text-foreground">Receba dicas financeiras</h2>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">Um resumo prático para comparar melhor crédito, cartões e organização financeira.</p>
+                  </div>
+                </div>
+                <form className="mt-5 space-y-3">
+                  <label className="sr-only" htmlFor="blog-sidebar-email">Email</label>
+                  <input
+                    id="blog-sidebar-email"
+                    type="email"
+                    placeholder="seu@email.com"
+                    className="blog-sidebar-input w-full rounded-[10px] border border-border bg-background px-4 py-3 text-sm outline-none"
+                  />
+                  <Button type="button" variant="outline" className="w-full">Quero receber</Button>
+                </form>
+              </section>
+
               <AdSlotResponsive />
             </aside>
           </div>

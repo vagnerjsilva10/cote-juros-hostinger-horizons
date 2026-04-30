@@ -9,7 +9,6 @@ import SeoHead from '@/components/SeoHead.jsx';
 import BlogArticleCard from '@/components/BlogArticleCard.jsx';
 import ArticleCoverImage from '@/components/blog/ArticleCoverImage.jsx';
 import { AdSlotHorizontal, AdSlotInline, AdSlotResponsive } from '@/components/blog/AdSlot.jsx';
-import BlogGridSkeleton from '@/components/blog/BlogGridSkeleton.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import {
   getArticleImage,
@@ -19,6 +18,7 @@ import {
   getEditorialTitle,
   normalizeArticleData
 } from '@/lib/content/articles.js';
+import { articlesData as localArticlesData } from '@/data/articlesData.js';
 import { normalizeMojibake } from '@/lib/textEncoding.js';
 import { brandPages, canonicalUrl, homeBreadcrumb } from '@/seo/brandSeo.js';
 
@@ -27,14 +27,15 @@ const BLOG_URL = canonicalUrl('/blog');
 
 function BlogPage() {
   const t = normalizeMojibake;
-  const [articlesData, setArticlesData] = useState([]);
+  const localArticles = useMemo(() => localArticlesData.map((item) => normalizeArticleData(item)), []);
+  const [articlesData, setArticlesData] = useState(localArticles);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('Todas');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let active = true;
+    setArticlesData(localArticles);
 
     portalApi
       .getArticles({ sort: 'recent' })
@@ -44,16 +45,13 @@ function BlogPage() {
       })
       .catch((error) => {
         console.error('[blog-page] erro ao carregar artigos', error);
-        if (active) setArticlesData([]);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
+        if (active) setArticlesData(localArticles);
       });
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [localArticles]);
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
@@ -199,15 +197,6 @@ function BlogPage() {
             ))}
           </div>
         </section>
-
-        {loading ? (
-          <>
-            <section className="blog-status-panel px-6 py-14 text-center">
-              <p className="text-muted-foreground">Carregando conteúdos do blog...</p>
-            </section>
-            <BlogGridSkeleton items={6} />
-          </>
-        ) : null}
 
         {featured ? (
           <section className="blog-page-section space-y-5">
