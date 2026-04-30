@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import AdSenseBlock, { ADSENSE_PLATFORM_SLOTS } from '@/components/AdSenseBlock.jsx';
 import SmartQuiz from '@/components/smart-quiz/SmartQuiz.jsx';
+import BlogPage from '@/pages/BlogPage.jsx';
+import BlogArticlePage from '@/pages/BlogArticlePage.jsx';
 import { getBlogArticleBySlug, getBlogArticles } from '@/platform/services/blogAdapter.js';
 import { buildCreditasOffer, getCardOffers, getCreditOffers, getFinancingOffers, getInsuranceOffers } from '@/platform/services/offerAdapter.js';
 import { getCreditasStatus } from '@/platform/services/creditasAdapter.js';
@@ -517,72 +519,25 @@ function LegacyPlatformBlogArticlePage() {
 }
 
 export function PlatformBlogPage() {
-  const [articles, setArticles] = useState([]);
-  const [activeCategory, setActiveCategory] = useState('Todos');
-
-  useEffect(() => {
-    let active = true;
-    getBlogArticles({ sort: 'recent' })
-      .then((items) => {
-        if (active) setArticles(items);
-      })
-      .catch(() => {
-        if (active) setArticles([]);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  const categories = useMemo(() => ['Todos', ...Array.from(new Set(articles.map((article) => article.category).filter(Boolean))).slice(0, 5)], [articles]);
-  const visibleArticles = useMemo(() => articles.filter((article) => activeCategory === 'Todos' || article.category === activeCategory).slice(0, 12), [activeCategory, articles]);
-
-  return <PlatformShell title="Blog | Cote Juros"><div className="page active" id="page-blog"><InnerHero badge="Conteúdo" title={<>Educação <span className="text-accent">financeira</span></>} desc="Artigos, guias e análises para você tomar decisões com mais consciência e menos pressa." /><section className="section-pad" style={{ background: 'var(--light-bg)' }}><div className="container"><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.blogTop} minHeight={120} /><div className="filter-tabs" style={{ marginBottom: 28, marginTop: 0 }}>{categories.map((item) => <button type="button" key={item} className={`filter-tab ${activeCategory === item ? 'active' : ''}`} onClick={() => setActiveCategory(item)}>{item}</button>)}</div>{visibleArticles.length ? <div className="blog-grid">{visibleArticles.map((article) => <Link className="blog-card" key={article.slug} to={`/blog/${article.slug}`}><div className="blog-img" style={{ backgroundImage: article.coverImage ? `url(${article.coverImage})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}><div className="blog-cat">{article.category}</div></div><div className="blog-content"><div className="blog-title">{article.title}</div><div className="blog-excerpt">{article.summary}</div><div className="blog-meta"><span>{article.readTime || article.readingTime} min</span><span>{new Date(article.publishedAt).toLocaleDateString('pt-BR')}</span></div></div></Link>)}</div> : <BlogGrid count={6} />}<AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.blogBottom} minHeight={120} className="mt-adsense" /></div></section></div></PlatformShell>;
+  return (
+    <PlatformShell title="Blog | Cote Juros">
+      <div className="page active" id="page-blog">
+        <BlogPage />
+      </div>
+    </PlatformShell>
+  );
 }
-
 export function PlatformBlogArticlePage() {
   const { articleSlug } = useParams();
-  const [article, setArticle] = useState(null);
-  const [related, setRelated] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let active = true;
-    setLoading(true);
-    Promise.all([getBlogArticleBySlug(articleSlug), getBlogArticles({ sort: 'recent' })])
-      .then(([item, items]) => {
-        if (!active) return;
-        setArticle(item);
-        setRelated((items || []).filter((candidate) => candidate.slug !== item?.slug).slice(0, 3));
-      })
-      .catch(() => {
-        if (!active) return;
-        setArticle(null);
-        setRelated([]);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, [articleSlug]);
-
-  if (loading) {
-    return <PlatformShell title="Artigo | Cote Juros"><div className="page active" id="page-blog-detalhe"><section className="section-pad" style={{ background: 'var(--bg-primary)', paddingTop: 110 }}><div className="container"><div className="dashboard-api-card">Carregando artigo...</div></div></section></div></PlatformShell>;
-  }
-
-  if (!article) {
-    return <PlatformShell title="Artigo não encontrado | Cote Juros"><div className="page active" id="page-blog-detalhe"><section className="section-pad" style={{ background: 'var(--bg-primary)', paddingTop: 110 }}><div className="container"><div className="dashboard-api-card"><div className="dash-panel-title">Artigo não encontrado</div><p style={{ color: 'var(--text-secondary)', marginBottom: 18 }}>Não encontramos este conteúdo no acervo atual.</p><Link className="btn-primary" to="/blog">Voltar ao blog</Link></div></div></section></div></PlatformShell>;
-  }
-
-  const title = article.seoTitle || article.metaTitle || `${article.title} | Blog Cote Juros`;
-  const description = article.metaDescription || article.description || article.summary;
-  const canonical = article.canonicalUrl || `https://www.cotejuros.com.br/blog/${article.slug}`;
-
-  return <PlatformShell title={title}><Helmet><meta name="description" content={description} /><link rel="canonical" href={canonical} /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:type" content="article" /><meta property="og:url" content={canonical} />{article.coverImage ? <meta property="og:image" content={article.coverImage} /> : null}<meta name="twitter:card" content="summary_large_image" /></Helmet><div className="page active" id="page-blog-detalhe"><section className="section-pad" style={{ background: 'var(--bg-primary)', paddingTop: 110 }}><div className="container"><div className="article-layout"><article><div className="article-header"><div className="article-cat">{article.category}</div><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.articleTop} minHeight={120} theme="dark" className="mb-adsense" format="fluid" layout="in-article" responsive={false} /><h1 className="article-title">{article.h1 || article.title}</h1><div className="article-meta"><span>{article.readTime || article.readingTime} min de leitura</span><span>•</span><span>Atualizado em {new Date(article.updatedAt || article.publishedAt).toLocaleDateString('pt-BR')}</span><span>•</span><span>{article.author}</span></div></div><div className="article-body">{article.intro?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{article.sections?.map((section, index) => <React.Fragment key={`${section.heading}-${index}`}>{index === 1 ? <><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.articleInline} minHeight={120} theme="dark" format="fluid" layoutKey="-fb+5w+4e-db+86" responsive={false} /></> : null}{section.heading ? <h3>{section.heading}</h3> : null}{section.paragraphs?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{section.bullets?.length ? <ul>{section.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul> : null}</React.Fragment>)}{article.conclusion?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{article.faq?.length ? <><h3>Perguntas frequentes</h3>{article.faq.map((item) => <p key={item.question}><strong>{item.question}</strong><br />{item.answer}</p>)}</> : null}</div><div style={{ marginTop: 36 }}><Link className="btn-primary" to="/comparar">Comparar opções agora</Link></div></article><aside className="article-sidebar"><div className="sidebar-widget"><div className="sidebar-widget-title">Comparar agora</div><p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 14, lineHeight: 1.6 }}>Veja opções disponíveis para o seu perfil.</p><Link className="btn-primary" style={{ width: '100%', justifyContent: 'center' }} to="/comparar">Ver opções disponíveis</Link></div><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.articleSidebar} minHeight={160} theme="dark" format="fluid" layout="in-article" responsive={false} /><div className="sidebar-widget"><div className="sidebar-widget-title">Artigos relacionados</div><div className="related-links">{related.map((item) => <Link key={item.slug} to={`/blog/${item.slug}`}>{item.title}</Link>)}</div></div></aside></div></div></section></div></PlatformShell>;
+  return (
+    <PlatformShell title="Artigo | Cote Juros">
+      <div className="page active" id="page-blog-detalhe">
+        <BlogArticlePage articleSlugOverride={articleSlug} />
+      </div>
+    </PlatformShell>
+  );
 }
-
 export function PlatformFaqPage() {
   return <PlatformShell title="FAQ | Cote Juros"><div className="page active" id="page-faq"><InnerHero badge="Dúvidas" title={<>Perguntas <span className="text-accent">frequentes</span></>} desc="Tudo que você precisa saber sobre como a Cote Juros funciona." /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container" style={{ maxWidth: 760 }}><div className="faq-list">{faqItems.map(([q, answer], index) => <FaqItem key={q} question={q} answer={answer} initiallyOpen={index === 0} />)}</div></div></section></div></PlatformShell>;
 }
