@@ -8,15 +8,15 @@ export default function CookieConsent() {
 
   useEffect(() => {
     try {
-      setIsVisible(window.localStorage.getItem(STORAGE_KEY) !== 'accepted');
+      setIsVisible(!window.localStorage.getItem(STORAGE_KEY));
     } catch {
       setIsVisible(true);
     }
   }, []);
 
-  const acceptCookies = () => {
+  const closeConsent = (value) => {
     try {
-      window.localStorage.setItem(STORAGE_KEY, 'accepted');
+      window.localStorage.setItem(STORAGE_KEY, value);
     } catch {
       // Consent still closes if storage is unavailable.
     }
@@ -26,20 +26,25 @@ export default function CookieConsent() {
   if (!isVisible) return null;
 
   return (
-    <div className="cookie-consent" role="dialog" aria-live="polite" aria-label="Aviso de cookies">
+    <div className="cookie-consent" role="dialog" aria-live="polite" aria-label="Política de cookies">
       <div className="cookie-consent-icon" aria-hidden="true">
         <span />
       </div>
       <div className="cookie-consent-copy">
-        <strong>Usamos cookies</strong>
+        <strong>Política de cookies</strong>
         <p>
-          Utilizamos cookies para melhorar sua experiência, analisar navegação e manter o site funcionando com segurança.
-          Veja nossa <Link to="/politica-de-privacidade">Política de Privacidade</Link>.
+          Usamos cookies essenciais para manter o site seguro e, com seu consentimento, cookies de análise para melhorar sua experiência.
+          Veja a <Link to="/politica-de-privacidade">Política de Privacidade</Link> e os <Link to="/termos-de-uso">Termos de Uso</Link>.
         </p>
       </div>
-      <button type="button" className="cookie-consent-button" onClick={acceptCookies}>
-        Aceitar cookies
-      </button>
+      <div className="cookie-consent-actions">
+        <button type="button" className="cookie-consent-button secondary" onClick={() => closeConsent('rejected')}>
+          Recusar
+        </button>
+        <button type="button" className="cookie-consent-button" onClick={() => closeConsent('accepted')}>
+          Aceitar cookies
+        </button>
+      </div>
     </div>
   );
 }

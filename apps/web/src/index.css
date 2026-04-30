@@ -2867,6 +2867,13 @@
   text-decoration: underline;
 }
 
+.cookie-consent-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .cookie-consent-button {
   min-height: 38px;
   border: 0;
@@ -2881,9 +2888,20 @@
   box-shadow: 0 10px 22px rgba(91, 108, 255, 0.22);
 }
 
+.cookie-consent-button.secondary {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #ffffff;
+  color: #334155;
+  box-shadow: none;
+}
+
 .cookie-consent-button:hover {
   transform: translateY(-1px);
   box-shadow: 0 14px 28px rgba(91, 108, 255, 0.26);
+}
+
+.cookie-consent-button.secondary:hover {
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
 }
 
 .cookie-consent-button:focus-visible {
@@ -7320,20 +7338,22 @@ body {
   }
 
   .cookie-consent-copy p {
-    display: -webkit-box;
-    max-height: 32px;
+    max-height: 48px;
     overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
     color: #6b7280;
     font-size: 11.5px;
     line-height: 1.35;
   }
 
-  .cookie-consent-button {
+  .cookie-consent-actions {
     grid-column: 3;
     grid-row: 1 / span 2;
+    flex-direction: column-reverse;
+    gap: 6px;
     align-self: center;
+  }
+
+  .cookie-consent-button {
     min-height: 34px;
     width: auto;
     white-space: nowrap;
@@ -7347,6 +7367,16 @@ body {
     content: 'Aceitar';
     font-size: 11.5px;
     line-height: 1;
+  }
+
+  .cookie-consent-button.secondary {
+    min-height: 28px;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+
+  .cookie-consent-button.secondary::after {
+    content: none;
   }
 }
 
