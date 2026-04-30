@@ -24,6 +24,13 @@ const now = new Date().toISOString();
 
 const fixedRoutes = [
   ...corePillarPaths,
+  '/quiz',
+  '/radar',
+  '/seguros',
+  '/seguro-auto',
+  '/seguro-moto',
+  '/seguro-viagem',
+  '/seguro-vida',
   '/cartoes-de-credito',
   '/financiamento',
   '/ferramentas',
@@ -39,6 +46,22 @@ const fixedRoutes = [
   '/politica-de-privacidade',
   '/termos-de-uso'
 ];
+
+const excludedRoutePrefixes = [
+  '/admin',
+  '/dashboard',
+  '/login',
+  '/criar-conta',
+  '/r/',
+  '/resultado',
+  '/proxima-etapa',
+  '/motion-hero'
+];
+
+const isPublicSitemapRoute = (path = '') => {
+  if (!path.startsWith('/')) return false;
+  return !excludedRoutePrefixes.some((prefix) => path === prefix || path.startsWith(prefix));
+};
 
 const comparisonRoutes = comparePageDefinitions.map((item) => `/comparar/${item.slug}`);
 const bankRoutes = requiredBankRoutes.map((bank) => `/banco/${bank.slug}`);
@@ -88,7 +111,7 @@ const allRoutes = Array.from(
     ...importedWordpressRoutes,
     ...storyRoutes
   ])
-).filter(Boolean);
+).filter(isPublicSitemapRoute);
 
 const toUrlNode = (path) => {
   const loc = `${siteUrl}${path === '/' ? '' : path}`;
