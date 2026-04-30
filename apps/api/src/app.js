@@ -56,8 +56,11 @@ export const createApp = () => {
     }
   };
 
-  const configuredOrigins = String(process.env.CORS_ORIGIN || defaultPublicOrigins.join(','))
-    .split(',')
+  const configuredOrigins = [
+    ...defaultPublicOrigins,
+    ...String(process.env.CORS_ORIGIN || '')
+      .split(',')
+  ]
     .map((origin) => origin.trim())
     .filter(Boolean);
   const allowedOrigins = Array.from(new Set(configuredOrigins.flatMap((origin) => (
