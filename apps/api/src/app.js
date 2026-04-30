@@ -27,6 +27,12 @@ import { SeoGrowthService } from './services/seoGrowthService.js';
 
 export const createApp = () => {
   const app = express();
+  const defaultPublicOrigins = [
+    'https://cotejuros.com.br',
+    'https://www.cotejuros.com.br',
+    'https://cotejuros.br',
+    'https://www.cotejuros.br'
+  ];
   const domainOriginAliases = (origin) => {
     try {
       const url = new URL(origin);
@@ -50,19 +56,39 @@ export const createApp = () => {
     }
   };
 
-  const configuredOrigins = String(process.env.CORS_ORIGIN || '*')
+  const configuredOrigins = String(process.env.CORS_ORIGIN || defaultPublicOrigins.join(','))
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
   const allowedOrigins = Array.from(new Set(configuredOrigins.flatMap((origin) => (
     origin === '*' ? ['*'] : domainOriginAliases(origin)
   ))));
+  const isAllowedOrigin = (origin) =>
+    !origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin);
+
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    res.vary('Origin');
+
+    if (origin && isAllowedOrigin(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,PUT,DELETE,OPTIONS');
+      res.setHeader(
+        'Access-Control-Allow-Headers',
+        req.headers['access-control-request-headers'] || 'Content-Type, Authorization'
+      );
+    }
+
+    if (req.method === 'OPTIONS') return res.sendStatus(204);
+    return next();
+  });
 
   app.use(
     cors({
       credentials: true,
       origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+        if (isAllowedOrigin(origin)) {
           return callback(null, true);
         }
         console.warn('[cors] blocked origin', { origin });
