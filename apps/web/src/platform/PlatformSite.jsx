@@ -214,7 +214,7 @@ export function PlatformHomePage() {
                 <h1 className="hero-title">Compare crédito, cartões e seguros <span className="gradient-text">com clareza</span></h1>
                 <p className="hero-desc">Responda algumas perguntas e veja caminhos que podem fazer sentido para o seu perfil — sem cobrança antecipada e sem promessa de aprovação.</p>
                 <div className="hero-actions">
-                  <Link className="btn-hero" to="/comparar">Ver caminhos para meu perfil <ArrowIcon size={16} /></Link>
+                  <Link className="btn-hero" to="/comparar">Ver minhas opções agora <ArrowIcon size={16} /></Link>
                   <Link className="btn-hero-outline" to="/radar">Radar de Crédito</Link>
                 </div>
                 <div className="hero-trust">
@@ -369,7 +369,7 @@ function Compliance() {
 }
 
 function FinalCta() {
-  return <section id="cta-final" className="section-pad"><div className="container"><div className="cta-wrap"><div className="cta-glow" /><div className="section-label" style={{ justifyContent: 'center' }}>Comece agora</div><h2 className="cta-title">Pronto para <span className="text-accent">comparar</span><br />com mais clareza?</h2><p className="cta-desc">Sem compromisso. Sem cobrança. Em minutos você vê caminhos possíveis para o seu perfil.</p><div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}><Link className="btn-hero" to="/comparar">Ver caminhos para meu perfil <ArrowIcon size={16} /></Link><Link className="btn-hero-outline" to="/criar-conta">Criar conta grátis</Link></div></div></div></section>;
+  return <section id="cta-final" className="section-pad"><div className="container"><div className="cta-wrap"><div className="cta-glow" /><div className="section-label" style={{ justifyContent: 'center' }}>Comece agora</div><h2 className="cta-title">Pronto para <span className="text-accent">comparar</span><br />com mais clareza?</h2><p className="cta-desc">Sem compromisso. Sem cobrança. Em minutos você vê caminhos possíveis para o seu perfil.</p><div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}><Link className="btn-hero" to="/comparar">Ver minhas opções agora <ArrowIcon size={16} /></Link><Link className="btn-hero-outline" to="/criar-conta">Criar conta grátis</Link></div></div></div></section>;
 }
 
 function InnerHero({ badge, title, desc, action }) {
