@@ -9,6 +9,8 @@ export const selectPartnerRoute = ({ score = 0 } = {}) => {
       partnerId: 'creditas_or_premium_partner',
       partnerName: 'Parceiro garantia/premium',
       routeType: 'creditas',
+      deliveryMode: 'creditas',
+      destinationUrl: DEFAULT_PARTNER_DESTINATION,
       products: ['credito_com_garantia', 'cartao_premium', 'financiamento']
     };
   }
@@ -18,6 +20,8 @@ export const selectPartnerRoute = ({ score = 0 } = {}) => {
       partnerId: 'standard_credit_partner',
       partnerName: 'Parceiro crédito padrão',
       routeType: 'standard_credit',
+      deliveryMode: 'redirect',
+      destinationUrl: DEFAULT_PARTNER_DESTINATION,
       products: ['emprestimo_pessoal', 'cartao_comum', 'seguros']
     };
   }
@@ -26,6 +30,8 @@ export const selectPartnerRoute = ({ score = 0 } = {}) => {
     partnerId: 'restricted_credit_partner',
     partnerName: 'Parceiro perfil restrição',
     routeType: 'restricted_credit',
+    deliveryMode: 'mock_api',
+    destinationUrl: DEFAULT_PARTNER_DESTINATION,
     products: ['negativado', 'seguro_protecao', 'cartao_basico']
   };
 };
@@ -40,7 +46,7 @@ export const trackPartnerClick = async (payload = {}) =>
 
 export const routeLeadToPartner = async ({ lead, recommendation } = {}) => {
   const route = selectPartnerRoute({ score: recommendation?.score || lead?.score || 0 });
-  const destinationUrl = recommendation?.redirectUrl || DEFAULT_PARTNER_DESTINATION;
+  const destinationUrl = recommendation?.redirectUrl || route.destinationUrl || DEFAULT_PARTNER_DESTINATION;
 
   await trackEvent('partner_routed', {
     sourcePage: lead?.source || 'smart_quiz',
@@ -51,6 +57,25 @@ export const routeLeadToPartner = async ({ lead, recommendation } = {}) => {
 
   if (route.routeType === 'creditas') {
     return routeToCreditas({ lead, recommendation, route });
+  }
+
+  if (route.deliveryMode === 'mock_api') {
+    return withMockFallback(
+      () => apiPost(API_CONFIG.endpoints.partnerMockApi, {
+        partnerId: route.partnerId,
+        leadId: lead?.backendLeadId || lead?.id,
+        sourcePage: lead?.source || 'smart_quiz',
+        productType: lead?.productType || 'loan',
+        profile: recommendation?.profile || lead?.profile
+      }),
+      {
+        ok: true,
+        mode: 'fallback',
+        ...route,
+        status: 'accepted'
+      },
+      'partner:mock-api'
+    );
   }
 
   return withMockFallback(
@@ -66,7 +91,7 @@ export const routeLeadToPartner = async ({ lead, recommendation } = {}) => {
       ...route,
       resolvedUrl: destinationUrl
     },
-    'partner:route'
+    'partner:redirect'
   );
 };
 
