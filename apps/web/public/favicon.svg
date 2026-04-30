@@ -1,10 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect x="4" y="4" width="56" height="56" rx="14" fill="#F8FAFC" stroke="#E2E8F0" />
-  <path
-    d="M18 41L27 32.6L34 36.9L45 25.8M45 25.8V31.8M45 25.8H39"
-    stroke="#2563EB"
-    stroke-width="4"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" role="img" aria-label="Cote Juros">
+  <defs>
+    <linearGradient id="cjFavBg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F1620"/>
+      <stop offset="1" stop-color="#090F1A"/>
+    </linearGradient>
+    <linearGradient id="cjFavAccent" x1="14" y1="45" x2="50" y2="18" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4C8DFF"/>
+      <stop offset="1" stop-color="#78AEFF"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="15" fill="url(#cjFavBg)"/>
+  <rect x="4.75" y="4.75" width="54.5" height="54.5" rx="14.25" stroke="white" stroke-opacity="0.1" stroke-width="1.5"/>
+  <path d="M15 43L26 32.5L35 36.4L49 22" stroke="url(#cjFavAccent)" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M42.6 22H49V28.4" stroke="#78AEFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="15" cy="43" r="3.1" fill="#4C8DFF"/>
+  <circle cx="49" cy="22" r="3.5" fill="#78AEFF"/>
 </svg>
