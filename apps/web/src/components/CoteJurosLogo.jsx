@@ -2,13 +2,13 @@ import React from 'react';
 import { cn } from '@/lib/utils.js';
 
 const LOGO_MAP = {
-  original: '/brand/cote-favicon.svg',
-  'original-light': '/brand/cote-favicon.svg',
-  horizontal: '/brand/cote-favicon.svg',
-  symbol: '/brand/cote-favicon.svg',
-  symbolLight: '/brand/cote-favicon.svg',
-  icon: '/brand/cote-favicon.svg',
-  square: '/brand/cote-favicon.svg',
+  original: '/brand/cote-favicon-v3.svg',
+  'original-light': '/brand/cote-favicon-v3.svg',
+  horizontal: '/brand/cote-favicon-v3.svg',
+  symbol: '/brand/cote-favicon-v3.svg',
+  symbolLight: '/brand/cote-favicon-v3.svg',
+  icon: '/brand/cote-favicon-v3.svg',
+  square: '/brand/cote-favicon-v3.svg',
   monochrome: '/assets/logo/logo-monochrome.svg'
 };
 
