@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import SmartQuiz from '@/components/smart-quiz/SmartQuiz.jsx';
+import { getBlogArticleBySlug, getBlogArticles } from '@/platform/services/blogAdapter.js';
 import { getCardOffers, getCreditOffers, getFinancingOffers, getInsuranceOffers } from '@/platform/services/offerAdapter.js';
 import { getCurrentCustomer, loginCustomer, logoutCustomer } from '@/platform/services/authAdapter.js';
 import { getLeadFromLocalStorage } from '@/platform/services/leadAdapter.js';
@@ -497,12 +498,79 @@ export function PlatformInsurancePage({ type = 'seguros' }) {
   return <PlatformShell title={`${badge} | Cote Juros`}><div className="page active" id={`page-${type}`}><InnerHero badge={badge} title={title} desc={desc} action={type !== 'seguros' ? <button className="btn-primary" style={{ marginTop: 24 }}>Cotar {badge.toLowerCase()}</button> : null} /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container">{type === 'seguros' ? <div className="seguros-grid">{gridOffers.map(([name, description, href, cta]) => <Link className="seguro-card" key={name} to={href}><div className="seg-icon"><CheckIcon color="currentColor" size={20} /></div><div className="seg-name">{name}</div><div className="seg-desc">{description}</div><div className="seg-link">{cta} <ArrowIcon size={12} /></div></Link>)}</div> : <div className="coverage-grid">{detailCards.map(([name, description]) => <div className="coverage-card" key={name}><div className="coverage-title">{name}</div><div className="coverage-desc">{description}</div></div>)}</div>}<div className="api-ready-note" style={{ marginTop: 24 }}>As condições variam por seguradora. Consulte o parceiro escolhido para cobertura exata.</div></div></section></div></PlatformShell>;
 }
 
-export function PlatformBlogPage() {
+function LegacyPlatformBlogPage() {
   return <PlatformShell title="Blog | Cote Juros"><div className="page active" id="page-blog"><InnerHero badge="Conteúdo" title={<>Educação <span className="text-accent">financeira</span></>} desc="Artigos, guias e análises para você tomar decisões com mais consciência e menos pressa." /><section className="section-pad" style={{ background: 'var(--light-bg)' }}><div className="container"><div className="adsense-placeholder"><span>Publicidade</span></div><div className="filter-tabs" style={{ marginBottom: 28, marginTop: 0 }}>{['Todos', 'Crédito', 'Cartões', 'Seguros', 'Planejamento', 'Financiamento'].map((item, index) => <button key={item} className={`filter-tab ${index === 0 ? 'active' : ''}`}>{item}</button>)}</div><BlogGrid count={6} /><div className="adsense-placeholder" style={{ marginTop: 32 }}><span>Publicidade</span></div></div></section></div></PlatformShell>;
 }
 
-export function PlatformBlogArticlePage() {
+function LegacyPlatformBlogArticlePage() {
   return <PlatformShell title="Artigo | Cote Juros"><div className="page active" id="page-blog-detalhe"><section className="section-pad" style={{ background: 'var(--bg-primary)', paddingTop: 110 }}><div className="container"><div className="article-layout"><article><div className="article-header"><div className="article-cat">Crédito</div><div className="adsense-placeholder-dark" style={{ marginBottom: 16 }}><span>Publicidade</span></div><h1 className="article-title">Como escolher um empréstimo pessoal sem cair em armadilhas</h1><div className="article-meta"><span>15 min de leitura</span><span>•</span><span>Atualizado em jan 2025</span><span>•</span><span>Equipe Cote Juros</span></div></div><div className="article-body"><p>Contratar um empréstimo pessoal pode parecer simples, mas envolve variáveis que, se ignoradas, podem custar muito mais do que o esperado. Antes de assinar qualquer contrato, é fundamental entender o que está sendo contratado.</p><h3>O que é o CET e por que é o número mais importante</h3><p>O Custo Efetivo Total concentra todos os custos do crédito: taxa de juros, seguros obrigatórios, tarifas administrativas e IOF. É o número que permite uma comparação justa entre diferentes ofertas.</p><div className="adsense-placeholder-dark"><span>Publicidade</span></div><h3>Parcela menor não significa crédito mais barato</h3><p>Prazo mais longo resulta em parcelas menores, mas o valor total pago ao final pode ser significativamente maior. Sempre simule o total a ser pago.</p><h3>Cuidado com cobranças antecipadas</h3><p>Nenhuma instituição financeira séria exige pagamento antecipado para liberar crédito. A Cote Juros nunca cobra valores antecipados.</p><div className="adsense-placeholder-dark"><span>Publicidade</span></div><p className="article-callout">Compare sempre pelo CET, não pela taxa nominal. E nunca pague antecipado para ter crédito liberado.</p></div><div style={{ marginTop: 36 }}><Link className="btn-primary" to="/comparar">Comparar empréstimos agora</Link></div></article><aside className="article-sidebar"><div className="sidebar-widget"><div className="sidebar-widget-title">Comparar agora</div><p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 14, lineHeight: 1.6 }}>Veja opções disponíveis para o seu perfil.</p><Link className="btn-primary" style={{ width: '100%', justifyContent: 'center' }} to="/comparar">Ver opções disponíveis</Link></div><div className="adsense-placeholder-dark"><span>Publicidade</span></div><div className="sidebar-widget"><div className="sidebar-widget-title">Artigos relacionados</div><div className="related-links"><Link to="/blog/score-de-credito">Score de crédito: mitos e verdades</Link><Link to="/blog/sair-do-vermelho">5 formas de sair do vermelho</Link></div></div></aside></div></div></section></div></PlatformShell>;
+}
+
+export function PlatformBlogPage() {
+  const [articles, setArticles] = useState([]);
+  const [activeCategory, setActiveCategory] = useState('Todos');
+
+  useEffect(() => {
+    let active = true;
+    getBlogArticles({ sort: 'recent' })
+      .then((items) => {
+        if (active) setArticles(items);
+      })
+      .catch(() => {
+        if (active) setArticles([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const categories = useMemo(() => ['Todos', ...Array.from(new Set(articles.map((article) => article.category).filter(Boolean))).slice(0, 5)], [articles]);
+  const visibleArticles = useMemo(() => articles.filter((article) => activeCategory === 'Todos' || article.category === activeCategory).slice(0, 12), [activeCategory, articles]);
+
+  return <PlatformShell title="Blog | Cote Juros"><div className="page active" id="page-blog"><InnerHero badge="Conteúdo" title={<>Educação <span className="text-accent">financeira</span></>} desc="Artigos, guias e análises para você tomar decisões com mais consciência e menos pressa." /><section className="section-pad" style={{ background: 'var(--light-bg)' }}><div className="container">{/* ADSENSE SLOT FUTURO */}<div className="adsense-placeholder"><span>Publicidade</span></div><div className="filter-tabs" style={{ marginBottom: 28, marginTop: 0 }}>{categories.map((item) => <button type="button" key={item} className={`filter-tab ${activeCategory === item ? 'active' : ''}`} onClick={() => setActiveCategory(item)}>{item}</button>)}</div>{visibleArticles.length ? <div className="blog-grid">{visibleArticles.map((article) => <Link className="blog-card" key={article.slug} to={`/blog/${article.slug}`}><div className="blog-img" style={{ backgroundImage: article.coverImage ? `url(${article.coverImage})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}><div className="blog-cat">{article.category}</div></div><div className="blog-content"><div className="blog-title">{article.title}</div><div className="blog-excerpt">{article.summary}</div><div className="blog-meta"><span>{article.readTime || article.readingTime} min</span><span>{new Date(article.publishedAt).toLocaleDateString('pt-BR')}</span></div></div></Link>)}</div> : <BlogGrid count={6} />}{/* ADSENSE SLOT FUTURO */}<div className="adsense-placeholder" style={{ marginTop: 32 }}><span>Publicidade</span></div></div></section></div></PlatformShell>;
+}
+
+export function PlatformBlogArticlePage() {
+  const { articleSlug } = useParams();
+  const [article, setArticle] = useState(null);
+  const [related, setRelated] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    Promise.all([getBlogArticleBySlug(articleSlug), getBlogArticles({ sort: 'recent' })])
+      .then(([item, items]) => {
+        if (!active) return;
+        setArticle(item);
+        setRelated((items || []).filter((candidate) => candidate.slug !== item?.slug).slice(0, 3));
+      })
+      .catch(() => {
+        if (!active) return;
+        setArticle(null);
+        setRelated([]);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [articleSlug]);
+
+  if (loading) {
+    return <PlatformShell title="Artigo | Cote Juros"><div className="page active" id="page-blog-detalhe"><section className="section-pad" style={{ background: 'var(--bg-primary)', paddingTop: 110 }}><div className="container"><div className="dashboard-api-card">Carregando artigo...</div></div></section></div></PlatformShell>;
+  }
+
+  if (!article) {
+    return <PlatformShell title="Artigo não encontrado | Cote Juros"><div className="page active" id="page-blog-detalhe"><section className="section-pad" style={{ background: 'var(--bg-primary)', paddingTop: 110 }}><div className="container"><div className="dashboard-api-card"><div className="dash-panel-title">Artigo não encontrado</div><p style={{ color: 'var(--text-secondary)', marginBottom: 18 }}>Não encontramos este conteúdo no acervo atual.</p><Link className="btn-primary" to="/blog">Voltar ao blog</Link></div></div></section></div></PlatformShell>;
+  }
+
+  const title = article.seoTitle || article.metaTitle || `${article.title} | Blog Cote Juros`;
+  const description = article.metaDescription || article.description || article.summary;
+  const canonical = article.canonicalUrl || `https://www.cotejuros.com.br/blog/${article.slug}`;
+
+  return <PlatformShell title={title}><Helmet><meta name="description" content={description} /><link rel="canonical" href={canonical} /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:type" content="article" /><meta property="og:url" content={canonical} />{article.coverImage ? <meta property="og:image" content={article.coverImage} /> : null}<meta name="twitter:card" content="summary_large_image" /></Helmet><div className="page active" id="page-blog-detalhe"><section className="section-pad" style={{ background: 'var(--bg-primary)', paddingTop: 110 }}><div className="container"><div className="article-layout"><article><div className="article-header"><div className="article-cat">{article.category}</div>{/* ADSENSE SLOT FUTURO */}<div className="adsense-placeholder-dark" style={{ marginBottom: 16 }}><span>Publicidade</span></div><h1 className="article-title">{article.h1 || article.title}</h1><div className="article-meta"><span>{article.readTime || article.readingTime} min de leitura</span><span>•</span><span>Atualizado em {new Date(article.updatedAt || article.publishedAt).toLocaleDateString('pt-BR')}</span><span>•</span><span>{article.author}</span></div></div><div className="article-body">{article.intro?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{article.sections?.map((section, index) => <React.Fragment key={`${section.heading}-${index}`}>{index === 1 ? <>{/* ADSENSE SLOT FUTURO */}<div className="adsense-placeholder-dark"><span>Publicidade</span></div></> : null}{section.heading ? <h3>{section.heading}</h3> : null}{section.paragraphs?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{section.bullets?.length ? <ul>{section.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul> : null}</React.Fragment>)}{article.conclusion?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{article.faq?.length ? <><h3>Perguntas frequentes</h3>{article.faq.map((item) => <p key={item.question}><strong>{item.question}</strong><br />{item.answer}</p>)}</> : null}</div><div style={{ marginTop: 36 }}><Link className="btn-primary" to="/comparar">Comparar opções agora</Link></div></article><aside className="article-sidebar"><div className="sidebar-widget"><div className="sidebar-widget-title">Comparar agora</div><p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 14, lineHeight: 1.6 }}>Veja opções disponíveis para o seu perfil.</p><Link className="btn-primary" style={{ width: '100%', justifyContent: 'center' }} to="/comparar">Ver opções disponíveis</Link></div>{/* ADSENSE SLOT FUTURO */}<div className="adsense-placeholder-dark"><span>Publicidade</span></div><div className="sidebar-widget"><div className="sidebar-widget-title">Artigos relacionados</div><div className="related-links">{related.map((item) => <Link key={item.slug} to={`/blog/${item.slug}`}>{item.title}</Link>)}</div></div></aside></div></div></section></div></PlatformShell>;
 }
 
 export function PlatformFaqPage() {

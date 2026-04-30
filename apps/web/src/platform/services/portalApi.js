@@ -16,7 +16,6 @@ const resolveApiBase = () => {
 };
 
 const API_BASE = resolveApiBase();
-const ADMIN_API_TOKEN = import.meta.env.VITE_ADMIN_API_TOKEN || '';
 const useRemote = Boolean(API_BASE);
 const publicFallbackWarnings = new Set();
 
@@ -52,7 +51,7 @@ const buildApiErrorMessage = ({ status, path, apiBase, payload, fallbackMessage 
     return 'Banco do admin não migrado. Aplique as migrations de admin/RBAC no Supabase e redeploye a API.';
   }
   if (code === 'ADMIN_BOOTSTRAP_NOT_CONFIGURED') {
-    return 'Admin não provisionado. Configure ADMIN_BOOTSTRAP_PASSWORD na API do Vercel e faça redeploy.';
+    return 'Admin nao provisionado. Configure a senha inicial na API do Vercel e faca redeploy.';
   }
   if (code === 'EMAIL_PROVIDER_NOT_CONFIGURED') {
     return 'Provider de envio ainda nao configurado.';
@@ -91,7 +90,6 @@ const request = async (path, options = {}) => {
   const timeoutId = globalThis.setTimeout(() => controller.abort(), timeoutMs);
   const headers = {
     'Content-Type': 'application/json',
-    ...(path.startsWith('/api/reactivation-admin') && ADMIN_API_TOKEN ? { Authorization: `Bearer ${ADMIN_API_TOKEN}` } : {}),
     ...(options.headers || {})
   };
 
@@ -1073,7 +1071,7 @@ export const portalApi = {
             configured: false,
             available: false,
             status: 'disabled',
-            missing: ['JUROS_BAIXOS_BASE_URL', 'JUROS_BAIXOS_CLIENT_ID + JUROS_BAIXOS_CLIENT_SECRET']
+            missing: ['baseUrl', 'clientCredentials']
           }
         },
         alerts: {

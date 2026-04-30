@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import ScrollToTop from '@/components/ScrollToTop.jsx';
 import Header from '@/components/Header.jsx';
 import Footer from '@/components/Footer.jsx';
@@ -15,8 +15,6 @@ import CalculadoraCetPage from '@/pages/CalculadoraCetPage.jsx';
 import SimuladorComprometimentoRendaPage from '@/pages/SimuladorComprometimentoRendaPage.jsx';
 import EstudoCreditoNegativadoPage from '@/pages/EstudoCreditoNegativadoPage.jsx';
 import DiagnosticoPage from '@/pages/DiagnosticoPage.jsx';
-import BlogArticlePage from '@/pages/BlogArticlePage.jsx';
-import BlogRouteBoundary from '@/components/blog/BlogRouteBoundary.jsx';
 import ComoFuncionaPage from '@/pages/ComoFuncionaPage.jsx';
 import SeoLandingPage from '@/pages/SeoLandingPage.jsx';
 import CoteFinanceAIPage from '@/pages/CoteFinanceAIPage.jsx';
@@ -90,12 +88,6 @@ function AdminRoute({ title, children }) {
       <AdminLayout title={title}>{children}</AdminLayout>
     </AdminAuthGuard>
   );
-}
-
-function BlogBoundary({ children }) {
-  const location = useLocation();
-
-  return <BlogRouteBoundary resetKey={location.pathname}>{children}</BlogRouteBoundary>;
 }
 
 function App() {
@@ -309,11 +301,7 @@ function App() {
             key={`wp-article-${article.slug}`}
             path={article.routePath}
             element={
-              <AppLayout>
-                <BlogBoundary>
-                  <BlogArticlePage articleSlugOverride={article.slug} />
-                </BlogBoundary>
-              </AppLayout>
+              <Navigate to={`/blog/${article.slug}`} replace />
             }
           />
         ))}
