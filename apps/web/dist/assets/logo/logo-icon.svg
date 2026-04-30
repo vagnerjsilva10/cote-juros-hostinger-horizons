@@ -1,8 +1,0 @@
-﻿<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ícone Cote Juros">
-  <rect x="4" y="4" width="56" height="56" rx="16" fill="#0F172A"/>
-  <path d="M41.5 18.8C39 16.6 35.8 15.3 32.2 15.3C24.8 15.3 18.8 21.3 18.8 28.7C18.8 36.1 24.8 42.1 32.2 42.1C35.8 42.1 39 40.8 41.5 38.6" stroke="#E2E8F0" stroke-width="3.2" stroke-linecap="round"/>
-  <path d="M20.8 34L27.3 28.9L32.2 31.2L39.2 24.8" stroke="#3B82F6" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="39.2" cy="24.8" r="2.2" fill="#14B8A6"/>
-  <path d="M19 21.5H25.5" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/>
-  <path d="M19 25.4H23.4" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/>
-</svg>
