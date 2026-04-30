@@ -304,6 +304,10 @@
 .cj-platform .text-accent { color: var(--accent-light); }
 .cj-platform .text-muted { color: var(--text-muted); }
 
+.cj-platform :is(#hero, #radar, #seguros, #seguros-home, #compliance, #cta-final, .section-dark, .section-surface) :is(h1, h2, h3) {
+  color: #FFFFFF;
+}
+
 /* ============================================================
    HERO
    ============================================================ */
@@ -887,7 +891,8 @@
 /* ============================================================
    PRODUCT COMPARISON — LIGHT
    ============================================================ */
-.cj-platform #compare { background: var(--light-bg); }
+.cj-platform #compare,
+.cj-platform #compare-home { background: var(--light-bg); }
 
 .cj-platform .filter-tabs {
   display: flex;
@@ -920,6 +925,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+  align-items: stretch;
 }
 
 .cj-platform .product-card {
@@ -930,6 +936,7 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  min-width: 0;
 }
 
 .cj-platform .product-card::before {
@@ -1018,6 +1025,7 @@
 
 .cj-platform .card-cta {
   width: 100%;
+  min-height: 42px;
   font-family: var(--font-body);
   font-size: 13px;
   font-weight: 500;
@@ -1028,6 +1036,16 @@
   color: var(--accent-dark);
   cursor: pointer;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  line-height: 1;
+  letter-spacing: normal;
+  font-synthesis: none;
+  text-align: center;
+  text-rendering: geometricPrecision;
 }
 
 .cj-platform .card-cta:hover {
@@ -1121,7 +1139,8 @@
 /* ============================================================
    SEGUROS — DARK
    ============================================================ */
-.cj-platform #seguros { background: var(--bg-surface); position: relative; overflow: hidden; }
+.cj-platform #seguros,
+.cj-platform #seguros-home { background: var(--bg-surface); position: relative; overflow: hidden; }
 
 .cj-platform .seguros-inner {
   text-align: center;
@@ -1186,7 +1205,8 @@
 /* ============================================================
    BLOG — LIGHT
    ============================================================ */
-.cj-platform #blog { background: var(--light-bg); }
+.cj-platform #blog,
+.cj-platform #blog-home { background: var(--light-bg); }
 
 .cj-platform .blog-grid {
   display: grid;
@@ -1596,16 +1616,23 @@
 }
 
 .cj-platform .dash-menu { list-style: none; padding: 0 12px; }
+.cj-platform .dash-menu li { margin: 0; }
 
 .cj-platform .dash-menu-item {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
   padding: 10px 12px;
+  border: 0;
   border-radius: 10px;
+  background: transparent;
   font-size: 14px;
+  font-family: inherit;
   color: var(--text-secondary);
   cursor: pointer;
+  text-align: left;
+  text-decoration: none;
   transition: all 0.2s ease;
   margin-bottom: 2px;
 }

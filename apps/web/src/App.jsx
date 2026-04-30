@@ -18,8 +18,6 @@ import DiagnosticoPage from '@/pages/DiagnosticoPage.jsx';
 import BlogArticlePage from '@/pages/BlogArticlePage.jsx';
 import BlogRouteBoundary from '@/components/blog/BlogRouteBoundary.jsx';
 import ComoFuncionaPage from '@/pages/ComoFuncionaPage.jsx';
-import PoliticaPrivacidadePage from '@/pages/PoliticaPrivacidadePage.jsx';
-import TermosUsoPage from '@/pages/TermosUsoPage.jsx';
 import SeoLandingPage from '@/pages/SeoLandingPage.jsx';
 import CoteFinanceAIPage from '@/pages/CoteFinanceAIPage.jsx';
 import MotionHeroPage from '@/pages/MotionHeroPage.jsx';
@@ -38,8 +36,15 @@ import {
   PlatformHomePage,
   PlatformInsurancePage,
   PlatformLoginPage,
+  PlatformPrivacyPage,
   PlatformQuizPage,
-  PlatformRadarPage
+  PlatformRadarPage,
+  PlatformTermsPage,
+  DashboardAnalysisPage,
+  DashboardHistoryPage,
+  DashboardOffersPage,
+  DashboardProfilePage,
+  DashboardSettingsPage
 } from '@/platform/PlatformSite.jsx';
 
 import AdminAuthGuard from '@/admin/AdminAuthGuard.jsx';
@@ -111,6 +116,11 @@ function App() {
     blocked.add('/faq');
     blocked.add('/politica-de-privacidade');
     blocked.add('/termos-de-uso');
+    blocked.add('/dashboard/analise');
+    blocked.add('/dashboard/ofertas');
+    blocked.add('/dashboard/historico');
+    blocked.add('/dashboard/perfil');
+    blocked.add('/dashboard/configuracoes');
     return blocked;
   }, []);
 
@@ -163,6 +173,11 @@ function App() {
         <Route path="/login" element={<PlatformLoginPage />} />
         <Route path="/criar-conta" element={<PlatformLoginPage signup />} />
         <Route path="/dashboard" element={<PlatformDashboardPage />} />
+        <Route path="/dashboard/analise" element={<DashboardAnalysisPage />} />
+        <Route path="/dashboard/ofertas" element={<DashboardOffersPage />} />
+        <Route path="/dashboard/historico" element={<DashboardHistoryPage />} />
+        <Route path="/dashboard/perfil" element={<DashboardProfilePage />} />
+        <Route path="/dashboard/configuracoes" element={<DashboardSettingsPage />} />
         <Route
           path="/blog"
           element={
@@ -175,8 +190,8 @@ function App() {
         <Route path="/contato" element={<PlatformContactPage />} />
         <Route path="/perguntas-frequentes" element={<PlatformFaqPage />} />
         <Route path="/faq" element={<PlatformFaqPage />} />
-        <Route path="/politica-de-privacidade" element={<AppLayout><PoliticaPrivacidadePage /></AppLayout>} />
-        <Route path="/termos-de-uso" element={<AppLayout><TermosUsoPage /></AppLayout>} />
+        <Route path="/politica-de-privacidade" element={<PlatformPrivacyPage />} />
+        <Route path="/termos-de-uso" element={<PlatformTermsPage />} />
         <Route path="/cote-finance-ai" element={<AppLayout><CoteFinanceAIPage /></AppLayout>} />
         <Route path="/motion-hero" element={<AppLayout><MotionHeroPage /></AppLayout>} />
         <Route path="/proxima-etapa" element={<AppLayout><LeadNextStepPage /></AppLayout>} />
