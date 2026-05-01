@@ -5651,6 +5651,15 @@
 }
 
 @media (max-width: 768px) {
+  .cj-platform .cj-article-main,
+  .cj-platform .cj-article-prose {
+    border: 0;
+    border-right: none;
+    border-left: none;
+    box-shadow: none;
+    outline: none;
+  }
+
   .cj-platform .cj-article-hero-card {
     box-sizing: border-box;
     width: 100%;
