@@ -4450,11 +4450,11 @@
 
 /* Home icon premium finish: unified fintech treatment for existing icons. */
 .cj-platform #page-home {
-  --home-icon-bg: linear-gradient(145deg, rgba(124, 92, 255, 0.15), rgba(255, 255, 255, 0.035));
-  --home-icon-border: rgba(156, 143, 255, 0.24);
-  --home-icon-color: #AFA5FF;
-  --home-icon-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 20px rgba(20, 15, 55, 0.16);
-  --home-icon-hover-shadow: inset 0 1px 0 rgba(255,255,255,0.09), 0 12px 28px rgba(124, 92, 255, 0.16);
+  --home-icon-bg: rgba(124, 110, 247, 0.10);
+  --home-icon-border: rgba(124, 110, 247, 0.18);
+  --home-icon-color: #9C8FFF;
+  --home-icon-shadow: none;
+  --home-icon-hover-shadow: 0 8px 18px rgba(124, 110, 247, 0.10);
 }
 
 .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) {
@@ -4470,14 +4470,7 @@
 }
 
 .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span)::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  background:
-    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18), transparent 34%),
-    radial-gradient(circle at 70% 85%, rgba(124,92,255,0.16), transparent 42%);
-  opacity: 0.58;
-  pointer-events: none;
+  content: none;
 }
 
 .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) svg,
@@ -4489,7 +4482,7 @@
   color: var(--home-icon-color) !important;
   stroke: currentColor;
   stroke-width: 1.85;
-  filter: drop-shadow(0 0 7px rgba(156, 143, 255, 0.2));
+  filter: none;
 }
 
 .cj-platform #page-home #hero .hero-trust {
@@ -4497,31 +4490,26 @@
 }
 
 .cj-platform #page-home #hero .hero-trust-item {
-  gap: 10px;
-  padding: 8px 10px 8px 8px;
-  border: 1px solid rgba(156, 143, 255, 0.14);
-  border-radius: 14px;
-  background: rgba(255,255,255,0.025);
+  gap: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: rgba(231, 229, 255, 0.76);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  box-shadow: none;
 }
 
 .cj-platform #page-home #hero .hero-trust-item svg {
-  width: 20px;
-  height: 20px;
-  padding: 4px;
+  width: 14px;
+  height: 14px;
+  padding: 0;
   flex: 0 0 auto;
-  border-radius: 10px;
-  color: var(--home-icon-color) !important;
-  background: var(--home-icon-bg);
-  border: 1px solid var(--home-icon-border);
-  box-shadow: var(--home-icon-shadow);
-  stroke-width: 1.85;
-}
-
-.cj-platform #page-home #trust-strip {
-  background:
-    linear-gradient(180deg, rgba(15,14,31,0.96), rgba(13,12,25,0.98));
+  border-radius: 0;
+  color: currentColor !important;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  stroke-width: 2;
 }
 
 .cj-platform #page-home .trust-item {
@@ -4563,14 +4551,14 @@
   }
 
   .cj-platform #page-home #hero .hero-trust-item {
-    padding: 7px 9px 7px 7px;
+    padding: 0;
   }
 
   .cj-platform #page-home #hero .hero-trust-item svg {
-    width: 18px;
-    height: 18px;
-    padding: 4px;
-    border-radius: 8px;
+    width: 14px;
+    height: 14px;
+    padding: 0;
+    border-radius: 0;
   }
 
   .cj-platform #page-home .trust-item {
@@ -5364,8 +5352,8 @@
     text-wrap: normal;
   }
 
-  .cj-platform #radar h2 br {
-    display: none;
+  .cj-platform #radar h2 .text-accent {
+    margin-left: 0.18em;
   }
 
   .cj-platform :is(.hero-subtitle, .inner-hero-desc, .section-desc, .section-subtitle) {
