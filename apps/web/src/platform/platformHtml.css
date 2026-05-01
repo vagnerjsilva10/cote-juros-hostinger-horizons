@@ -486,14 +486,44 @@
 }
 
 /* Blog visual hotfix: restrained article typography, lists, sidebar and light logo. */
-.cj-platform.cj-platform--blog-light .logo-primary,
+.cj-platform.cj-platform--blog-light header .logo-primary {
+  color: #ffffff;
+}
+
+.cj-platform.cj-platform--blog-light header .logo-accent {
+  color: #9c8fff;
+}
+
 .cj-platform.cj-platform--blog-light footer .logo-primary {
   color: #111827;
 }
 
-.cj-platform.cj-platform--blog-light .logo-accent,
 .cj-platform.cj-platform--blog-light footer .logo-accent {
   color: #5b4fe0;
+}
+
+.cj-platform.cj-platform--blog-light .cj-article-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.cj-platform.cj-platform--blog-light .cj-article-breadcrumb a,
+.cj-platform.cj-platform--blog-light .cj-article-breadcrumb span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+
+.cj-platform.cj-platform--blog-light .cj-article-breadcrumb a {
+  gap: 6px;
+}
+
+.cj-platform.cj-platform--blog-light .cj-article-breadcrumb svg {
+  display: block;
+  flex: 0 0 auto;
 }
 
 .cj-platform.cj-platform--blog-light .cj-article-hero-copy h1 {
