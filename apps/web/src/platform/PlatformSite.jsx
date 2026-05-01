@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { BadgeCheck, Clock3, DollarSign, Eye, ShieldCheck } from 'lucide-react';
 import AdSenseBlock, { ADSENSE_PLATFORM_SLOTS } from '@/components/AdSenseBlock.jsx';
 import SmartQuiz from '@/components/smart-quiz/SmartQuiz.jsx';
 import BlogPage from '@/pages/BlogPage.jsx';
@@ -59,6 +60,19 @@ const faqItems = [
   ['Como meus dados são protegidos?', 'Seguimos as diretrizes da LGPD. Seus dados são usados apenas para melhorar a comparação e nunca são vendidos a terceiros sem consentimento.'],
   ['Posso confiar nas taxas exibidas?', 'As informações são fornecidas pelos parceiros e atualizadas regularmente, mas podem variar conforme perfil, disponibilidade e condições de mercado. Sempre confirme com o parceiro antes de contratar.'],
   ['O Radar de Crédito é uma análise oficial?', 'O Radar é uma ferramenta indicativa baseada nas informações fornecidas. Não substitui uma análise oficial de crédito por uma instituição financeira.']
+];
+
+const heroTrustItems = [
+  { label: 'Sem cobranças antecipadas', Icon: DollarSign },
+  { label: 'Dados protegidos (LGPD)', Icon: ShieldCheck },
+  { label: 'Transparência total', Icon: Eye }
+];
+
+const trustStripItems = [
+  { label: 'Dados protegidos pela LGPD', Icon: ShieldCheck },
+  { label: 'Resultado em minutos', Icon: Clock3 },
+  { label: 'Sem custo para comparar', Icon: DollarSign },
+  { label: 'Parceiros verificados', Icon: BadgeCheck }
 ];
 
 function ArrowIcon({ size = 14 }) {
@@ -279,7 +293,9 @@ export function PlatformHomePage() {
                   <Link className="btn-hero-outline" to="/radar">Radar de Crédito</Link>
                 </div>
                 <div className="hero-trust">
-                  {['Sem cobranças antecipadas', 'Dados protegidos (LGPD)', 'Transparência total'].map((item) => <div className="hero-trust-item" key={item}><CheckIcon /> {item}</div>)}
+                  {heroTrustItems.map(({ label, Icon }) => (
+                    <div className="hero-trust-item" key={label}><Icon size={14} strokeWidth={2.3} /> {label}</div>
+                  ))}
                 </div>
               </div>
               <HeroDashboard />
@@ -304,8 +320,8 @@ function TrustStrip() {
   return (
     <section id="trust-strip">
       <div className="container"><div className="trust-inner">
-        {['Dados protegidos pela LGPD', 'Resultado em minutos', 'Sem custo para comparar', 'Parceiros verificados'].map((item) => (
-          <div className="trust-item" key={item}><div className="trust-icon-wrap"><CheckIcon color="#9C8FFF" size={16} /></div>{item}</div>
+        {trustStripItems.map(({ label, Icon }) => (
+          <div className="trust-item" key={label}><div className="trust-icon-wrap"><Icon color="#9C8FFF" size={16} strokeWidth={2.3} /></div>{label}</div>
         ))}
       </div></div>
     </section>
