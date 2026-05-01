@@ -6,9 +6,9 @@ import {
   BadgeCheck,
   Banknote,
   BarChart3,
+  Bike,
   BookOpenText,
   Car,
-  CheckCircle2,
   CreditCard,
   FileCheck2,
   Gauge,
@@ -17,8 +17,10 @@ import {
   Landmark,
   LockKeyhole,
   PieChart,
+  Plane,
   ShieldCheck,
   Sparkles,
+  Timer,
   TrendingUp,
   WalletCards
 } from 'lucide-react';
@@ -34,7 +36,24 @@ const reveal = {
   transition: { duration: 0.42, ease: [0.4, 0, 0.2, 1] }
 };
 
-const trustItems = ['Sem cobrança antecipada', 'Comparação gratuita', 'Você decide no seu ritmo'];
+const trustItems = [
+  { label: 'Sem cobrança antecipada', icon: Banknote },
+  { label: 'Comparação gratuita', icon: BadgeCheck },
+  { label: 'Você decide no seu ritmo', icon: Timer }
+];
+
+const homeTrustStripItems = [
+  { title: 'Sem promessa falsa', text: 'A aprovação depende dos parceiros.', icon: FileCheck2 },
+  { title: 'Sem taxa antecipada', text: 'Comece a comparação gratuitamente.', icon: Banknote },
+  { title: 'Dados com finalidade clara', text: 'Usados para organizar sua análise.', icon: LockKeyhole }
+];
+
+const insuranceStackItems = [
+  { label: 'Seguro auto', icon: Car },
+  { label: 'Seguro moto', icon: Bike },
+  { label: 'Seguro vida', icon: HeartPulse },
+  { label: 'Seguro viagem', icon: Plane }
+];
 
 const steps = [
   {
@@ -192,10 +211,10 @@ function HomePage() {
                 </Link>
               </div>
               <div className="cj-home-hero-meta">
-                {trustItems.map((item) => (
-                  <span key={item}>
-                    <CheckCircle2 className="h-4 w-4" />
-                    {item}
+                {trustItems.map(({ label, icon: Icon }) => (
+                  <span key={label}>
+                    <Icon className="h-4 w-4" />
+                    {label}
                   </span>
                 ))}
               </div>
@@ -219,13 +238,9 @@ function HomePage() {
 
         <section className="cj-home-trust-strip">
           <div className="cj-home-shell">
-            {[
-              ['Sem promessa falsa', 'A aprovação depende dos parceiros.'],
-              ['Sem taxa antecipada', 'Comece a comparação gratuitamente.'],
-              ['Dados com finalidade clara', 'Usados para organizar sua análise.']
-            ].map(([title, text]) => (
+            {homeTrustStripItems.map(({ title, text, icon: Icon }) => (
               <div key={title}>
-                <BadgeCheck className="h-5 w-5" />
+                <Icon className="h-5 w-5" />
                 <strong>{title}</strong>
                 <span>{text}</span>
               </div>
@@ -350,10 +365,10 @@ function HomePage() {
               </Link>
             </motion.div>
             <motion.div {...reveal} className="cj-home-insurance-stack">
-              {['Seguro auto', 'Seguro moto', 'Seguro vida', 'Seguro viagem'].map((item) => (
-                <div key={item}>
-                  <ShieldCheck className="h-5 w-5" />
-                  <span>{item}</span>
+              {insuranceStackItems.map(({ label, icon: Icon }) => (
+                <div key={label}>
+                  <Icon className="h-5 w-5" />
+                  <span>{label}</span>
                 </div>
               ))}
             </motion.div>

@@ -1,7 +1,30 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { BadgeCheck, Clock3, DollarSign, Eye, ShieldCheck } from 'lucide-react';
+import {
+  BadgeCheck,
+  BookOpenText,
+  Car,
+  Clock3,
+  CreditCard,
+  DollarSign,
+  Eye,
+  FileCheck2,
+  Handshake,
+  HeartPulse,
+  Home,
+  Landmark,
+  Mail,
+  MapPin,
+  Percent,
+  Plane,
+  Radar,
+  Scale,
+  SearchCheck,
+  ShieldCheck,
+  Smartphone,
+  UserRound
+} from 'lucide-react';
 import AdSenseBlock, { ADSENSE_PLATFORM_SLOTS } from '@/components/AdSenseBlock.jsx';
 import SmartQuiz from '@/components/smart-quiz/SmartQuiz.jsx';
 import BlogPage from '@/pages/BlogPage.jsx';
@@ -75,18 +98,67 @@ const trustStripItems = [
   { label: 'Parceiros verificados', Icon: BadgeCheck }
 ];
 
+const radarFeatureItems = [
+  { label: 'Análise do perfil financeiro', Icon: UserRound },
+  { label: 'Indicadores de elegibilidade por produto', Icon: SearchCheck },
+  { label: 'Caminhos possíveis sem compromisso', Icon: Scale },
+  { label: 'Resultado em minutos', Icon: Clock3 }
+];
+
+const complianceItems = [
+  { text: 'Não somos uma instituição financeira. Apenas comparamos e conectamos.', Icon: Landmark },
+  { text: 'Não cobramos nenhum valor antecipado para análise de crédito.', Icon: DollarSign },
+  { text: 'A aprovação depende da análise individual de cada parceiro.', Icon: SearchCheck },
+  { text: 'Seus dados são protegidos em conformidade com a LGPD.', Icon: ShieldCheck }
+];
+
+const categoryIconByTitle = {
+  Empréstimos: Landmark,
+  'Cartões de Crédito': CreditCard,
+  Financiamentos: Home,
+  Seguros: ShieldCheck,
+  'Radar de Crédito': Radar,
+  'Educação Financeira': BookOpenText
+};
+
+const insuranceIconByName = {
+  'Seguro Auto': Car,
+  'Seguro Viagem': Plane,
+  'Seguro de Vida': HeartPulse,
+  'Seguro Residencial': Home,
+  'Seguro Celular': Smartphone,
+  'Proteção Financeira': ShieldCheck
+};
+
+const eligibilityIconByLabel = {
+  'Empréstimo pessoal': Landmark,
+  'Cartão de crédito': CreditCard,
+  Financiamento: Home,
+  Seguros: ShieldCheck
+};
+
+const missionIconByLabel = {
+  Transparência: Eye,
+  'Sem pressão': Handshake,
+  'Custo zero': DollarSign
+};
+
+const valueIconByTitle = {
+  Segurança: ShieldCheck,
+  Educação: BookOpenText,
+  Clareza: Eye
+};
+
+const contactIconByLabel = {
+  'E-mail': Mail,
+  Atendimento: Clock3,
+  Localização: MapPin
+};
+
 function ArrowIcon({ size = 14 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <path d="M5 12h14M12 5l7 7-7 7" />
-    </svg>
-  );
-}
-
-function CheckIcon({ color = '#22D3A0', size = 14 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round">
-      <polyline points="20 6 9 17 4 12" />
     </svg>
   );
 }
@@ -266,8 +338,8 @@ function HeroDashboard() {
           </div>
         </div>
         <div className="dash-cards-row">
-          <div className="mini-card"><div className="mini-card-label">Melhor taxa</div><div className="mini-card-value">1,79%</div><div className="mini-card-change"><CheckIcon size={10} /> ao mês</div></div>
-          <div className="mini-card"><div className="mini-card-label">Opções</div><div className="mini-card-value">12</div><div className="mini-card-change"><CheckIcon size={10} /> parceiros</div></div>
+          <div className="mini-card"><div className="mini-card-label">Melhor taxa</div><div className="mini-card-value">1,79%</div><div className="mini-card-change"><Percent size={10} /> ao mês</div></div>
+          <div className="mini-card"><div className="mini-card-label">Opções</div><div className="mini-card-value">12</div><div className="mini-card-change"><BadgeCheck size={10} /> parceiros</div></div>
         </div>
       </div>
       <div className="float-chip float-chip-1"><div className="float-dot" style={{ background: '#22D3A0' }} /> Empréstimo aprovado</div>
@@ -330,16 +402,16 @@ function TrustStrip() {
 
 function HowItWorks() {
   const steps = [
-    ['01', 'Você informa seu perfil', 'Renda, finalidade e situação do nome. Rápido, sem burocracia.'],
-    ['02', 'Organizamos as possibilidades', 'Nosso Radar cruza seu perfil com os parceiros disponíveis.'],
-    ['03', 'Você compara antes de decidir', 'Taxas, condições e coberturas lado a lado. Sem letra miúda.'],
-    ['04', 'Segue para o parceiro quando fizer sentido', 'Você escolhe. A Cote Juros nunca força uma decisão.']
+    ['01', 'Você informa seu perfil', 'Renda, finalidade e situação do nome. Rápido, sem burocracia.', FileCheck2],
+    ['02', 'Organizamos as possibilidades', 'Nosso Radar cruza seu perfil com os parceiros disponíveis.', Radar],
+    ['03', 'Você compara antes de decidir', 'Taxas, condições e coberturas lado a lado. Sem letra miúda.', Scale],
+    ['04', 'Segue para o parceiro quando fizer sentido', 'Você escolhe. A Cote Juros nunca força uma decisão.', Handshake]
   ];
   return (
     <section id="how-it-works" className="section-pad">
       <div className="container">
         <div style={{ textAlign: 'center', maxWidth: 520, margin: '0 auto' }}><div className="section-label" style={{ justifyContent: 'center' }}>Como funciona</div><h2 style={{ color: 'var(--light-text)', marginBottom: 14 }}>Da busca à decisão, em 4 passos</h2><p className="section-desc" style={{ margin: '0 auto', textAlign: 'center' }}>Processo simples, transparente e sem compromisso. Você compara com informação, não com promessa.</p></div>
-        <div className="steps-grid">{steps.map(([num, title, desc], index) => <div className="step-card reveal" style={{ transitionDelay: `${index / 10}s` }} key={num}><div className="step-num">{num}</div><div className="step-icon-wrap"><CheckIcon color="currentColor" size={22} /></div><div className="step-title">{title}</div><div className="step-desc">{desc}</div></div>)}</div>
+        <div className="steps-grid">{steps.map(([num, title, desc, Icon], index) => <div className="step-card reveal" style={{ transitionDelay: `${index / 10}s` }} key={num}><div className="step-num">{num}</div><div className="step-icon-wrap"><Icon color="currentColor" size={22} strokeWidth={2.2} /></div><div className="step-title">{title}</div><div className="step-desc">{desc}</div></div>)}</div>
       </div>
     </section>
   );
@@ -354,7 +426,7 @@ function RadarHome() {
           <h2 style={{ marginBottom: 16 }}>Entenda suas possibilidades<br /><span className="text-accent">antes de pedir</span></h2>
           <p className="section-desc" style={{ marginBottom: 28 }}>O Radar organiza caminhos possíveis com base no seu perfil. Você vê oportunidades, não promessas.</p>
           <ul className="platform-check-list">
-            {['Análise do perfil financeiro', 'Indicadores de elegibilidade por produto', 'Caminhos possíveis sem compromisso', 'Resultado em minutos'].map((item) => <li key={item}><span><CheckIcon color="#9C8FFF" size={10} /></span>{item}</li>)}
+            {radarFeatureItems.map(({ label, Icon }) => <li key={label}><span><Icon color="#9C8FFF" size={12} strokeWidth={2.2} /></span>{label}</li>)}
           </ul>
           <Link className="btn-primary" to="/radar">Acessar Radar de Crédito <ArrowIcon /></Link>
         </div>
@@ -375,7 +447,8 @@ function RadarCard() {
 }
 
 function EligibilityRow({ label, pct, color }) {
-  return <div className="elig-row"><div className="elig-icon-w"><CheckIcon color={color} /></div><span className="elig-label">{label}</span><div className="elig-bar-sm"><div className="elig-bar-sm-fill" style={{ width: pct, background: color }} /></div><span className="elig-pct-val" style={{ color }}>{pct}</span></div>;
+  const Icon = eligibilityIconByLabel[label] || BadgeCheck;
+  return <div className="elig-row"><div className="elig-icon-w"><Icon color={color} size={14} strokeWidth={2.2} /></div><span className="elig-label">{label}</span><div className="elig-bar-sm"><div className="elig-bar-sm-fill" style={{ width: pct, background: color }} /></div><span className="elig-pct-val" style={{ color }}>{pct}</span></div>;
 }
 
 function CompareHome() {
@@ -422,7 +495,7 @@ function ProductCard({ row }) {
 }
 
 function CategoriesHome() {
-  return <section id="categories" className="section-pad"><div className="container"><div style={{ textAlign: 'center', maxWidth: 520, margin: '0 auto' }}><div className="section-label" style={{ justifyContent: 'center', color: 'var(--accent-dark)' }}>O que você precisa</div><h2 style={{ color: 'var(--light-text)', marginBottom: 12 }}>Encontre o produto<br />certo para você</h2></div><div className="categories-grid">{categoryCards.map(([title, desc, label, href, color], index) => <Link className="category-card reveal" style={{ transitionDelay: `${(index % 3) / 10}s` }} key={title} to={href}><div className="cat-icon" style={{ background: color === 'var(--accent)' ? 'rgba(124,110,247,0.1)' : `${color}1A` }}><CheckIcon color={color} size={22} /></div><div><div className="cat-title">{title}</div><div className="cat-desc">{desc}</div></div><div className="cat-link" style={{ color }}>{label}<ArrowIcon /></div></Link>)}</div></div></section>;
+  return <section id="categories" className="section-pad"><div className="container"><div style={{ textAlign: 'center', maxWidth: 520, margin: '0 auto' }}><div className="section-label" style={{ justifyContent: 'center', color: 'var(--accent-dark)' }}>O que você precisa</div><h2 style={{ color: 'var(--light-text)', marginBottom: 12 }}>Encontre o produto<br />certo para você</h2></div><div className="categories-grid">{categoryCards.map(([title, desc, label, href, color], index) => { const Icon = categoryIconByTitle[title] || BadgeCheck; return <Link className="category-card reveal" style={{ transitionDelay: `${(index % 3) / 10}s` }} key={title} to={href}><div className="cat-icon" style={{ background: color === 'var(--accent)' ? 'rgba(124,110,247,0.1)' : `${color}1A` }}><Icon color={color} size={22} strokeWidth={2.2} /></div><div><div className="cat-title">{title}</div><div className="cat-desc">{desc}</div></div><div className="cat-link" style={{ color }}>{label}<ArrowIcon /></div></Link>; })}</div></div></section>;
 }
 
 function InsuranceHome() {
@@ -430,7 +503,7 @@ function InsuranceHome() {
 }
 
 function InsuranceGrid() {
-  return <div className="seguros-grid">{insuranceCards.map(([name, desc, href, cta]) => <Link className="seguro-card" key={name} to={href}><div className="seg-icon"><CheckIcon color="currentColor" size={20} /></div><div className="seg-name">{name}</div><div className="seg-desc">{desc}</div><div className="seg-link">{cta} <ArrowIcon size={12} /></div></Link>)}</div>;
+  return <div className="seguros-grid">{insuranceCards.map(([name, desc, href, cta]) => { const Icon = insuranceIconByName[name] || ShieldCheck; return <Link className="seguro-card" key={name} to={href}><div className="seg-icon"><Icon color="currentColor" size={20} strokeWidth={2.2} /></div><div className="seg-name">{name}</div><div className="seg-desc">{desc}</div><div className="seg-link">{cta} <ArrowIcon size={12} /></div></Link>; })}</div>;
 }
 
 function BlogHome() {
@@ -526,7 +599,7 @@ function HomeBlogCard({ article }) {
 }
 
 function Compliance() {
-  return <section id="compliance" className="section-pad-sm"><div className="container"><div className="compliance-grid">{['Não somos uma instituição financeira. Apenas comparamos e conectamos.', 'Não cobramos nenhum valor antecipado para análise de crédito.', 'A aprovação depende da análise individual de cada parceiro.', 'Seus dados são protegidos em conformidade com a LGPD.'].map((text) => <div className="comp-item" key={text}><div className="comp-ico"><CheckIcon color="currentColor" size={16} /></div><div className="comp-text">{text}</div></div>)}</div></div></section>;
+  return <section id="compliance" className="section-pad-sm"><div className="container"><div className="compliance-grid">{complianceItems.map(({ text, Icon }) => <div className="comp-item" key={text}><div className="comp-ico"><Icon color="currentColor" size={16} strokeWidth={2.2} /></div><div className="comp-text">{text}</div></div>)}</div></div></section>;
 }
 
 function FinalCta() {
@@ -680,7 +753,7 @@ export function PlatformInsurancePage({ type = 'seguros' }) {
     ? [['Cobertura Completa', 'Colisão, roubo, furto, incêndio e fenômenos naturais.'], ['Cobertura Terceiros', 'Danos que você causa a outros veículos ou pessoas.'], ['Assistência 24h', 'Guincho, troca de pneu, chaveiro e emergências.'], ['Carro Reserva', 'Veículo substituto enquanto o seu está em conserto.']]
     : [['Emergência e suporte', 'Coberturas variam conforme seguradora e plano.'], ['Proteção financeira', 'Compare limites, franquias e exclusões antes de contratar.'], ['Assistência', 'Entenda o que está incluso no atendimento.']];
   const gridOffers = offers.length ? offers.map((offer) => [offer.title, offer.description, '#', offer.cta || 'Cotar']) : insuranceCards;
-  return <PlatformShell title={`${badge} | Cote Juros`}><div className="page active" id={`page-${type}`}><InnerHero badge={badge} title={title} desc={desc} action={type !== 'seguros' ? <button className="btn-primary" style={{ marginTop: 24 }}>Cotar {badge.toLowerCase()}</button> : null} /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container">{type === 'seguros' ? <div className="seguros-grid">{gridOffers.map(([name, description, href, cta]) => <Link className="seguro-card" key={name} to={href}><div className="seg-icon"><CheckIcon color="currentColor" size={20} /></div><div className="seg-name">{name}</div><div className="seg-desc">{description}</div><div className="seg-link">{cta} <ArrowIcon size={12} /></div></Link>)}</div> : <div className="coverage-grid">{detailCards.map(([name, description]) => <div className="coverage-card" key={name}><div className="coverage-title">{name}</div><div className="coverage-desc">{description}</div></div>)}</div>}<div className="api-ready-note" style={{ marginTop: 24 }}>As condições variam por seguradora. Consulte o parceiro escolhido para cobertura exata.</div></div></section></div></PlatformShell>;
+  return <PlatformShell title={`${badge} | Cote Juros`}><div className="page active" id={`page-${type}`}><InnerHero badge={badge} title={title} desc={desc} action={type !== 'seguros' ? <button className="btn-primary" style={{ marginTop: 24 }}>Cotar {badge.toLowerCase()}</button> : null} /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container">{type === 'seguros' ? <div className="seguros-grid">{gridOffers.map(([name, description, href, cta]) => { const Icon = insuranceIconByName[name] || ShieldCheck; return <Link className="seguro-card" key={name} to={href}><div className="seg-icon"><Icon color="currentColor" size={20} strokeWidth={2.2} /></div><div className="seg-name">{name}</div><div className="seg-desc">{description}</div><div className="seg-link">{cta} <ArrowIcon size={12} /></div></Link>; })}</div> : <div className="coverage-grid">{detailCards.map(([name, description]) => <div className="coverage-card" key={name}><div className="coverage-title">{name}</div><div className="coverage-desc">{description}</div></div>)}</div>}<div className="api-ready-note" style={{ marginTop: 24 }}>As condições variam por seguradora. Consulte o parceiro escolhido para cobertura exata.</div></div></section></div></PlatformShell>;
 }
 
 export function PlatformBlogPage() {
@@ -803,11 +876,11 @@ export function PlatformTermsPage() {
 
 export function PlatformAboutPage() {
   const values = [['Segurança', 'Dados protegidos. Parceiros verificados. Processo transparente.'], ['Educação', 'Conteúdo financeiro de qualidade para decisões mais conscientes.'], ['Clareza', 'Informação objetiva, sem jargões desnecessários ou promessas vagas.']];
-  return <PlatformShell title="Sobre | Cote Juros"><div className="page active" id="page-sobre"><InnerHero badge="Quem somos" title={<>Nossa <span className="text-accent">missão</span></>} desc="Acreditamos que decisões financeiras melhores começam com informação mais clara." /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container"><div className="about-mission"><div><div className="section-label">Propósito</div><h2 style={{ marginBottom: 16 }}>Comparação como ferramenta de <span className="text-accent">liberdade</span></h2><p style={{ color: 'var(--text-secondary)', fontSize: 15, lineHeight: 1.8, marginBottom: 20 }}>A Cote Juros nasceu da percepção de que muita gente contrata crédito, seguro ou financiamento sem entender bem as condições - e paga caro por isso.</p><p style={{ color: 'var(--text-secondary)', fontSize: 15, lineHeight: 1.8 }}>Não somos banco, não concedemos crédito e não temos interesse em empurrar nenhum produto específico. Nosso papel é organizar informação.</p></div><div className="mission-card">{['Transparência', 'Sem pressão', 'Custo zero'].map((item) => <div className="mission-row" key={item}><div className="mission-icon"><CheckIcon color="var(--accent-light)" size={16} /></div><div><strong>{item}</strong><span>Mostramos o que sabemos, sem prometer o que não podemos garantir.</span></div></div>)}</div></div><div className="values-grid">{values.map(([title, desc]) => <div className="value-card" key={title}><div className="value-icon"><CheckIcon color="var(--accent-light)" size={20} /></div><div className="value-title">{title}</div><div className="value-desc">{desc}</div></div>)}</div></div></section></div></PlatformShell>;
+  return <PlatformShell title="Sobre | Cote Juros"><div className="page active" id="page-sobre"><InnerHero badge="Quem somos" title={<>Nossa <span className="text-accent">missão</span></>} desc="Acreditamos que decisões financeiras melhores começam com informação mais clara." /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container"><div className="about-mission"><div><div className="section-label">Propósito</div><h2 style={{ marginBottom: 16 }}>Comparação como ferramenta de <span className="text-accent">liberdade</span></h2><p style={{ color: 'var(--text-secondary)', fontSize: 15, lineHeight: 1.8, marginBottom: 20 }}>A Cote Juros nasceu da percepção de que muita gente contrata crédito, seguro ou financiamento sem entender bem as condições - e paga caro por isso.</p><p style={{ color: 'var(--text-secondary)', fontSize: 15, lineHeight: 1.8 }}>Não somos banco, não concedemos crédito e não temos interesse em empurrar nenhum produto específico. Nosso papel é organizar informação.</p></div><div className="mission-card">{['Transparência', 'Sem pressão', 'Custo zero'].map((item) => { const Icon = missionIconByLabel[item] || BadgeCheck; return <div className="mission-row" key={item}><div className="mission-icon"><Icon color="var(--accent-light)" size={16} strokeWidth={2.2} /></div><div><strong>{item}</strong><span>Mostramos o que sabemos, sem prometer o que não podemos garantir.</span></div></div>; })}</div></div><div className="values-grid">{values.map(([title, desc]) => { const Icon = valueIconByTitle[title] || BadgeCheck; return <div className="value-card" key={title}><div className="value-icon"><Icon color="var(--accent-light)" size={20} strokeWidth={2.2} /></div><div className="value-title">{title}</div><div className="value-desc">{desc}</div></div>; })}</div></div></section></div></PlatformShell>;
 }
 
 export function PlatformContactPage() {
-  return <PlatformShell title="Contato | Cote Juros"><div className="page active" id="page-contato"><InnerHero badge="Fale conosco" title={<>Entre em <span className="text-accent">contato</span></>} desc="Dúvidas, parcerias ou sugestões. Estamos aqui." /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container"><div className="contact-layout"><div><h3 style={{ marginBottom: 20 }}>Canais disponíveis</h3>{[['E-mail', 'contato@cotejuros.com.br'], ['Atendimento', 'Segunda a sexta, 9h às 18h'], ['Localização', 'Brasil - atendimento digital']].map(([label, item]) => <div className="contact-card" key={item}><div className="contact-ico"><CheckIcon color="var(--accent-light)" size={18} /></div><div><div className="contact-val-label">{label}</div><div className="contact-val">{item}</div></div></div>)}</div><form className="contact-form"><h3 style={{ marginBottom: 20 }}>Envie uma mensagem</h3><div className="form-row"><div className="form-group"><label className="form-label">Nome</label><input className="form-input" placeholder="Seu nome" /></div><div className="form-group"><label className="form-label">E-mail</label><input className="form-input" type="email" placeholder="seu@email.com" /></div></div><div className="form-group"><label className="form-label">Assunto</label><select className="form-input"><option>Dúvida geral</option><option>Parceria comercial</option><option>Sugestão</option><option>Reclamação</option></select></div><div className="form-group"><label className="form-label">Mensagem</label><textarea className="form-input" placeholder="Escreva sua mensagem aqui..." /></div><button className="btn-primary" style={{ width: '100%', justifyContent: 'center', padding: 13 }} type="button">Enviar mensagem</button></form></div></div></section></div></PlatformShell>;
+  return <PlatformShell title="Contato | Cote Juros"><div className="page active" id="page-contato"><InnerHero badge="Fale conosco" title={<>Entre em <span className="text-accent">contato</span></>} desc="Dúvidas, parcerias ou sugestões. Estamos aqui." /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container"><div className="contact-layout"><div><h3 style={{ marginBottom: 20 }}>Canais disponíveis</h3>{[['E-mail', 'contato@cotejuros.com.br'], ['Atendimento', 'Segunda a sexta, 9h às 18h'], ['Localização', 'Brasil - atendimento digital']].map(([label, item]) => { const Icon = contactIconByLabel[label] || BadgeCheck; return <div className="contact-card" key={item}><div className="contact-ico"><Icon color="var(--accent-light)" size={18} strokeWidth={2.2} /></div><div><div className="contact-val-label">{label}</div><div className="contact-val">{item}</div></div></div>; })}</div><form className="contact-form"><h3 style={{ marginBottom: 20 }}>Envie uma mensagem</h3><div className="form-row"><div className="form-group"><label className="form-label">Nome</label><input className="form-input" placeholder="Seu nome" /></div><div className="form-group"><label className="form-label">E-mail</label><input className="form-input" type="email" placeholder="seu@email.com" /></div></div><div className="form-group"><label className="form-label">Assunto</label><select className="form-input"><option>Dúvida geral</option><option>Parceria comercial</option><option>Sugestão</option><option>Reclamação</option></select></div><div className="form-group"><label className="form-label">Mensagem</label><textarea className="form-input" placeholder="Escreva sua mensagem aqui..." /></div><button className="btn-primary" style={{ width: '100%', justifyContent: 'center', padding: 13 }} type="button">Enviar mensagem</button></form></div></div></section></div></PlatformShell>;
 }
 
 export function PlatformLoginPage({ signup = false }) {
