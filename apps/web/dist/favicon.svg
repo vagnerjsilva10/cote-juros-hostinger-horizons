@@ -1,10 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect x="4" y="4" width="56" height="56" rx="14" fill="#F8FAFC" stroke="#E2E8F0" />
-  <path
-    d="M18 41L27 32.6L34 36.9L45 25.8M45 25.8V31.8M45 25.8H39"
-    stroke="#2563EB"
-    stroke-width="4"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" role="img" aria-label="Cote Juros">
+  <defs>
+    <linearGradient id="cjFavBg" x1="8" y1="5" x2="56" y2="59" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17151F"/>
+      <stop offset="0.52" stop-color="#0A0A0F"/>
+      <stop offset="1" stop-color="#10131D"/>
+    </linearGradient>
+    <linearGradient id="cjFavAccent" x1="18" y1="45" x2="48" y2="17" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C6EF7"/>
+      <stop offset="0.58" stop-color="#9C8FFF"/>
+      <stop offset="1" stop-color="#22D3A0"/>
+    </linearGradient>
+    <radialGradient id="cjFavGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(43 20) rotate(132) scale(36)">
+      <stop stop-color="#9C8FFF" stop-opacity="0.46"/>
+      <stop offset="1" stop-color="#7C6EF7" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="17" fill="url(#cjFavBg)"/>
+  <rect x="4" y="4" width="56" height="56" rx="17" fill="url(#cjFavGlow)"/>
+  <rect x="5" y="5" width="54" height="54" rx="16" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1.4"/>
+  <path d="M38.5 17.8C35.9 15.7 32.5 14.5 28.9 14.7C20.3 15.2 13.9 22.4 14.4 31C14.9 39.5 22.1 45.9 30.7 45.4C33.9 45.2 36.8 44 39.1 42.1" stroke="#F4F4F8" stroke-width="4.6" stroke-linecap="round"/>
+  <path d="M20.5 38.2L28.1 30.8L34.4 34.2L47.8 20.6" stroke="url(#cjFavAccent)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M41.5 20.6H47.8V26.9" stroke="#9C8FFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="47.8" cy="20.6" r="3.1" fill="#9C8FFF"/>
+  <circle cx="20.5" cy="38.2" r="2.2" fill="#7C6EF7"/>
 </svg>

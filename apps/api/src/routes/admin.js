@@ -197,6 +197,11 @@ const articleSaveSchema = z.object({
   seoDescription: z.string().optional().nullable(),
   metaDescription: z.string().optional().nullable(),
   image: z.string().optional().nullable(),
+  coverImage: z.string().optional().nullable(),
+  ogImage: z.string().optional().nullable(),
+  coverImageAlt: z.string().optional().nullable(),
+  imageAlt: z.string().optional().nullable(),
+  altText: z.string().optional().nullable(),
   author: z.string().optional().nullable(),
   publishedAt: z.string().optional().nullable(),
   content: z.string().optional()

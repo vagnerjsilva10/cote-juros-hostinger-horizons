@@ -1,15 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" role="img" aria-label="Cote Juros">
   <defs>
-    <linearGradient id="favBlueDark" x1="13" y1="47" x2="46" y2="17" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#4C8DFF"/>
-      <stop offset="1" stop-color="#78AEFF"/>
+    <linearGradient id="cjFavBg" x1="8" y1="5" x2="56" y2="59" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17151F"/>
+      <stop offset="0.52" stop-color="#0A0A0F"/>
+      <stop offset="1" stop-color="#10131D"/>
     </linearGradient>
+    <linearGradient id="cjFavAccent" x1="18" y1="45" x2="48" y2="17" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C6EF7"/>
+      <stop offset="0.58" stop-color="#9C8FFF"/>
+      <stop offset="1" stop-color="#22D3A0"/>
+    </linearGradient>
+    <radialGradient id="cjFavGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(43 20) rotate(132) scale(36)">
+      <stop stop-color="#9C8FFF" stop-opacity="0.46"/>
+      <stop offset="1" stop-color="#7C6EF7" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <rect x="2" y="2" width="60" height="60" rx="16" fill="#0F1620" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
-  <path d="M11.5 45.5L24.5 34L34.5 38L51 20.5" stroke="url(#favBlueDark)" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="11.5" cy="45.5" r="2.9" fill="#4C8DFF"/>
-  <circle cx="24.5" cy="34" r="2.9" fill="#4C8DFF" opacity="0.94"/>
-  <circle cx="34.5" cy="38" r="2.9" fill="#5D99FF" opacity="0.94"/>
-  <circle cx="51" cy="20.5" r="3.5" fill="#78AEFF"/>
-  <path d="M44.5 20.5H51V27" stroke="#78AEFF" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="4" y="4" width="56" height="56" rx="17" fill="url(#cjFavBg)"/>
+  <rect x="4" y="4" width="56" height="56" rx="17" fill="url(#cjFavGlow)"/>
+  <rect x="5" y="5" width="54" height="54" rx="16" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1.4"/>
+  <path d="M38.5 17.8C35.9 15.7 32.5 14.5 28.9 14.7C20.3 15.2 13.9 22.4 14.4 31C14.9 39.5 22.1 45.9 30.7 45.4C33.9 45.2 36.8 44 39.1 42.1" stroke="#F4F4F8" stroke-width="4.6" stroke-linecap="round"/>
+  <path d="M20.5 38.2L28.1 30.8L34.4 34.2L47.8 20.6" stroke="url(#cjFavAccent)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M41.5 20.6H47.8V26.9" stroke="#9C8FFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="47.8" cy="20.6" r="3.1" fill="#9C8FFF"/>
+  <circle cx="20.5" cy="38.2" r="2.2" fill="#7C6EF7"/>
 </svg>

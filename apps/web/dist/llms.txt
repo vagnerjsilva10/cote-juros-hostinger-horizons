@@ -1,14 +1,19 @@
 ## Pages
-- [| Blog Cote Juros`}](/blogarticle): No description available
+- [| Cote Juros](/customerlogin): No description available
 - [Análise de mercado - Cote Juros](/analisedemarket): Acompanhe tendências e médias do mercado de crédito em uma leitura mais limpa.
+- [Comparar opções | Cote Juros](/compare): Compare opções de crédito, cartões e financiamentos com clareza antes de decidir.
 - [Cote Finance AI - Clareza para o seu dinheiro](/cotefinanceai): Entenda para onde seu dinheiro está indo, encontre excessos e tome decisões melhores ao longo do mês.
+- [Dashboard do cliente | Cote Juros](/customerdashboard): No description available
 - [Diagnóstico financeiro - Cote Juros](/diagnostico): No description available
 - [Guias Financeiros - Cote Juros](/guias): Guias completos sobre finanças pessoais, crédito, investimentos e muito mais.
 - [Motion Hero - Cote Juros](/motionhero): No description available
 - [Ofertas externas selecionadas | Cote Juros](/ofertas): Veja saídas externas em uma área separada, com leitura clara, aviso de saída e mais contexto antes do clique.
 - [Política de privacidade - Cote Juros](/politicaprivacidade): Veja como a Cote Juros usa dados para mostrar caminhos de crédito, registrar solicitações e conectar você com a próxima etapa quando fizer sentido.
-- [Proxima etapa | Cote Juros](/leadnextstep): Veja a proxima etapa da sua jornada de credito com mais clareza.
+- [Quiz inteligente | Cote Juros](/smartquiz): Responda algumas perguntas e veja caminhos financeiros que podem fazer sentido para o seu perfil.
+- [Radar de crédito | Cote Juros](/creditradar): No description available
+- [Seguros | Cote Juros](/insurance): Compare opções de seguros e entenda coberturas possíveis antes de decidir.
 - [Termos de uso - Cote Juros](/termosuso): Entenda os termos de uso da Cote Juros e o papel do site na comparação e encaminhamento de caminhos de crédito.
 - [Untitled Page](/creditprofilelanding): No description available
+- [Untitled Page](/leadnextstep): No description available
 - [Untitled Page](/seolanding): No description available
 - [Untitled Page](/seoprogrammatic): No description available

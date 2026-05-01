@@ -1,4 +1,5 @@
 import { API_CONFIG, apiPost, withMockFallback } from '@/platform/services/apiClient.js';
+import { buildCreditasPayload, checkCreditasEligibility } from '@/platform/services/creditasAdapter.js';
 import { trackEvent } from '@/platform/services/trackingAdapter.js';
 
 const DEFAULT_PARTNER_DESTINATION = 'https://www.cotejuros.com.br/ofertas';
@@ -103,34 +104,27 @@ export const routeToCreditas = async (payload = {}) => {
     score: payload.recommendation?.score || lead.score
   });
 
-  if (!lead.cpf || !lead.email) {
+  const creditasPayload = buildCreditasPayload({
+    lead,
+    quizAnswers: lead.quizAnswers,
+    recommendation: payload.recommendation,
+    extraFields: lead.creditasExtraFields || {}
+  });
+
+  if (!creditasPayload.cpf || !creditasPayload.email) {
     console.warn('[partner:creditas] dados mínimos ausentes; usando fallback sem enviar dados fictícios para a API.');
     return {
-      ok: true,
-      mode: 'fallback',
+      ok: false,
+      mode: 'missing_required_data',
       partnerId: 'creditas_or_premium_partner',
       partnerName: 'Creditas/parceiro garantia',
       routeType: 'creditas',
+      requiredFields: ['cpf', 'city', 'state', 'guaranteeType'],
       reason: 'missing_required_customer_data'
     };
   }
 
-  return withMockFallback(
-    () => apiPost(API_CONFIG.endpoints.creditasEligibility, {
-      cpf: lead.cpf,
-      email: lead.email,
-      productType: 'AUTO_REFINANCING',
-      scope: 'PRE_APPROVAL'
-    }),
-    {
-      ok: true,
-      mode: 'fallback',
-      partnerId: 'creditas_or_premium_partner',
-      partnerName: 'Creditas/parceiro garantia',
-      routeType: 'creditas'
-    },
-    'partner:creditas'
-  );
+  return checkCreditasEligibility(creditasPayload);
 };
 
 export const routeToInsurancePartner = async (payload = {}) => {

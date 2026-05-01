@@ -22,6 +22,9 @@ const emptyForm = {
   seoTitle: '',
   seoDescription: '',
   image: '',
+  coverImage: '',
+  ogImage: '',
+  coverImageAlt: '',
   content: ''
 };
 
@@ -41,7 +44,11 @@ export default function AdminArticlesPage() {
 
   const handleSave = async (event) => {
     event.preventDefault();
-    await portalApi.saveAdminArticle(editing);
+    await portalApi.saveAdminArticle({
+      ...editing,
+      coverImage: editing.coverImage || editing.image,
+      image: editing.coverImage || editing.image
+    });
     toast.success('Artigo salvo.');
     setEditing(emptyForm);
     loadData();
@@ -123,7 +130,9 @@ export default function AdminArticlesPage() {
               <div><Label>Resumo</Label><Textarea rows={3} value={editing.summary} onChange={(e) => setEditing((prev) => ({ ...prev, summary: e.target.value, excerpt: e.target.value }))} /></div>
               <div><Label>Titulo SEO</Label><Input value={editing.seoTitle} onChange={(e) => setEditing((prev) => ({ ...prev, seoTitle: e.target.value }))} /></div>
               <div><Label>Descricao SEO</Label><Textarea rows={2} value={editing.seoDescription} onChange={(e) => setEditing((prev) => ({ ...prev, seoDescription: e.target.value }))} /></div>
-              <div><Label>URL da imagem destacada</Label><Input value={editing.image} onChange={(e) => setEditing((prev) => ({ ...prev, image: e.target.value }))} /></div>
+              <div><Label>URL da imagem destacada</Label><Input value={editing.coverImage || editing.image} onChange={(e) => setEditing((prev) => ({ ...prev, coverImage: e.target.value, image: e.target.value }))} /></div>
+              <div><Label>URL da imagem social (OG)</Label><Input value={editing.ogImage} onChange={(e) => setEditing((prev) => ({ ...prev, ogImage: e.target.value }))} /></div>
+              <div><Label>Texto alternativo da imagem</Label><Input value={editing.coverImageAlt} onChange={(e) => setEditing((prev) => ({ ...prev, coverImageAlt: e.target.value }))} /></div>
               <div><Label>Conteudo do artigo</Label><Textarea rows={8} value={editing.content} onChange={(e) => setEditing((prev) => ({ ...prev, content: e.target.value }))} /></div>
               <Button type="submit" className="w-full">Salvar artigo</Button>
             </form>

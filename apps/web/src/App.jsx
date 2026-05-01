@@ -92,6 +92,11 @@ function AdminRoute({ title, children }) {
   );
 }
 
+function RouteAwareAdSenseScript() {
+  const location = useLocation();
+  return location.pathname === '/' ? null : <AdSenseScript />;
+}
+
 function App() {
   const [seoPages, setSeoPages] = useState(seedSeoPages);
   const [seoFallbackPaths, setSeoFallbackPaths] = useState(seedFallbackPaths);
@@ -141,7 +146,7 @@ function App() {
 
   return (
     <Router>
-      <AdSenseScript />
+      <RouteAwareAdSenseScript />
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<PlatformHomePage />} />
