@@ -5650,6 +5650,30 @@
   }
 }
 
+@media (max-width: 768px) {
+  .cj-platform .cj-article-hero-card {
+    box-sizing: border-box;
+    width: 100%;
+    padding-right: 22px;
+    padding-bottom: 22px;
+    padding-left: 22px;
+  }
+
+  .cj-platform .cj-article-hero-copy {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .cj-platform .cj-article-hero-copy h1 {
+    max-width: 100%;
+    word-break: normal;
+    overflow-wrap: break-word;
+  }
+}
+
 @media (max-width: 430px) {
   .cj-platform .container,
   .cj-platform .cj-article-shell {
