@@ -170,6 +170,7 @@ function App() {
         <Route path="/seguro-viagem" element={<PlatformInsurancePage type="viagem" />} />
         <Route path="/seguro-vida" element={<PlatformInsurancePage type="vida" />} />
         <Route path="/login" element={<PlatformLoginPage />} />
+        <Route path="/entrar" element={<PlatformLoginPage />} />
         <Route path="/criar-conta" element={<PlatformLoginPage signup />} />
         <Route path="/dashboard" element={<PlatformDashboardPage />} />
         <Route path="/dashboard/analise" element={<DashboardAnalysisPage />} />
