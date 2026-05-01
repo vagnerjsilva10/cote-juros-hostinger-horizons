@@ -4459,9 +4459,9 @@
 
 .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) {
   position: relative;
-  width: 48px;
-  height: 48px;
-  border-radius: 16px;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
   background: var(--home-icon-bg) !important;
   border: 1px solid var(--home-icon-border);
   box-shadow: var(--home-icon-shadow);
@@ -4484,8 +4484,8 @@
 .cj-platform #page-home .mini-card-change svg {
   position: relative;
   z-index: 1;
-  width: 21px;
-  height: 21px;
+  width: 18px;
+  height: 18px;
   color: var(--home-icon-color) !important;
   stroke: currentColor;
   stroke-width: 1.85;
@@ -4507,9 +4507,9 @@
 }
 
 .cj-platform #page-home #hero .hero-trust-item svg {
-  width: 28px;
-  height: 28px;
-  padding: 7px;
+  width: 24px;
+  height: 24px;
+  padding: 5px;
   flex: 0 0 auto;
   border-radius: 10px;
   color: var(--home-icon-color) !important;
@@ -4552,14 +4552,14 @@
   }
 
   .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) {
-    width: 42px;
-    height: 42px;
-    border-radius: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
   }
 
   .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) svg {
-    width: 19px;
-    height: 19px;
+    width: 16px;
+    height: 16px;
   }
 
   .cj-platform #page-home #hero .hero-trust-item {
@@ -4567,9 +4567,9 @@
   }
 
   .cj-platform #page-home #hero .hero-trust-item svg {
-    width: 26px;
-    height: 26px;
-    padding: 6px;
+    width: 22px;
+    height: 22px;
+    padding: 5px;
     border-radius: 9px;
   }
 
@@ -5354,6 +5354,18 @@
   .cj-platform #radar .radar-section-inner > div:first-child {
     width: 100%;
     max-width: none;
+  }
+
+  .cj-platform #radar h2 {
+    max-width: 100%;
+    font-size: clamp(30px, 7.8vw, 34px);
+    line-height: 1.12;
+    letter-spacing: -0.045em;
+    text-wrap: normal;
+  }
+
+  .cj-platform #radar h2 br {
+    display: none;
   }
 
   .cj-platform :is(.hero-subtitle, .inner-hero-desc, .section-desc, .section-subtitle) {
