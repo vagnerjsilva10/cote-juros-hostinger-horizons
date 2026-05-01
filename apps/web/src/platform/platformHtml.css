@@ -669,14 +669,13 @@
   height: 68px;
   display: flex;
   align-items: center;
-  background: rgba(10,10,15,0.85);
-  backdrop-filter: blur(20px);
+  background: rgb(10,10,15);
   border-bottom: 1px solid var(--border-soft);
   transition: all 0.3s ease;
 }
 
 .cj-platform header.scrolled {
-  background: rgba(10,10,15,0.97);
+  background: rgb(10,10,15);
   border-bottom-color: var(--border);
 }
 
