@@ -5066,17 +5066,33 @@
   }
 }
 
-/* Mobile experience audit final cascade: route-level safeguards without changing desktop layout. */
+/* Mobile responsive system: platform routes, authenticated flows and article pages. */
 @media (max-width: 1024px) {
+  .cj-platform main,
+  .cj-platform section,
+  .cj-platform .container,
+  .cj-platform .page {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   .cj-platform .cj-article-grid,
   .cj-platform .compare-layout,
   .cj-platform .radar-section-inner,
-  .cj-platform .dashboard-api-grid {
+  .cj-platform .dashboard-api-grid,
+  .cj-platform .quiz-shell,
+  .cj-platform .result-paths,
+  .cj-platform .coverage-grid,
+  .cj-platform .contact-layout {
     grid-template-columns: 1fr;
   }
 
   .cj-platform .cj-article-sidebar {
     position: static;
+  }
+
+  .cj-platform :is(.product-card, .compare-card, .blog-card, .cj-blog-card, .coverage-card, .seguro-card, .contact-card, .auth-card, .creditas-card) {
+    min-width: 0;
   }
 }
 
@@ -5088,12 +5104,36 @@
     overflow-x: hidden;
   }
 
+  .cj-platform *,
+  .cj-platform *::before,
+  .cj-platform *::after {
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .cj-platform :is(img, video, canvas, iframe, svg) {
+    max-width: 100%;
+  }
+
+  .cj-platform :is(table, pre) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .cj-platform .container,
   .cj-platform .cj-article-shell {
+    box-sizing: border-box;
     width: 100%;
     max-width: 100%;
     padding-left: 20px;
     padding-right: 20px;
+  }
+
+  .cj-platform :is(.container, .page, .hero-content, .inner-hero, .auth-card, .contact-form, .cj-article-shell, .cj-article-prose) {
+    box-sizing: border-box;
+    max-width: 100%;
   }
 
   .cj-platform header {
@@ -5126,6 +5166,16 @@
     line-height: 1.12;
   }
 
+  .cj-platform :is(.hero-subtitle, .inner-hero-desc, .section-desc, .section-subtitle) {
+    width: 100%;
+    max-width: 100%;
+    font-size: 1rem;
+    line-height: 1.68;
+    overflow-wrap: anywhere;
+    text-wrap: wrap;
+    white-space: normal;
+  }
+
   .cj-platform .hero-orb-1,
   .cj-platform .hero-orb-2,
   .cj-platform .cta-glow,
@@ -5136,20 +5186,35 @@
   .cj-platform .hero-actions,
   .cj-platform .partner-cta-row,
   .cj-platform .cta-actions {
+    width: 100%;
+    flex-direction: column;
     align-items: stretch;
   }
 
   .cj-platform :is(.btn-hero, .btn-hero-outline, .btn-primary, .btn-outline, .btn-auth) {
+    width: 100%;
     min-height: 44px;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
   }
 
   .cj-platform .blog-grid,
-  .cj-platform .cj-blog-grid {
+  .cj-platform .cj-blog-grid,
+  .cj-platform .product-grid,
+  .cj-platform .category-grid,
+  .cj-platform .coverage-grid,
+  .cj-platform .seguros-grid,
+  .cj-platform .values-grid,
+  .cj-platform .result-paths,
+  .cj-platform .dashboard-api-grid,
+  .cj-platform .form-row {
     grid-template-columns: 1fr;
   }
 
   .cj-platform .cj-blog-tabs,
-  .cj-platform .filter-tabs {
+  .cj-platform .filter-tabs,
+  .cj-platform [role='tablist'] {
     display: flex;
     justify-content: flex-start;
     overflow-x: auto;
@@ -5158,15 +5223,23 @@
   }
 
   .cj-platform .cj-blog-tabs::-webkit-scrollbar,
-  .cj-platform .filter-tabs::-webkit-scrollbar {
+  .cj-platform .filter-tabs::-webkit-scrollbar,
+  .cj-platform [role='tablist']::-webkit-scrollbar {
     display: none;
   }
 
   .cj-platform .blog-card,
   .cj-platform .cj-blog-card,
   .cj-platform .compare-card,
-  .cj-platform .product-card {
+  .cj-platform .product-card,
+  .cj-platform .coverage-card,
+  .cj-platform .seguro-card,
+  .cj-platform .value-card,
+  .cj-platform .mission-card,
+  .cj-platform .contact-form,
+  .cj-platform .creditas-card {
     min-width: 0;
+    border-radius: 12px;
   }
 
   .cj-platform .blog-img,
@@ -5269,15 +5342,29 @@
     justify-content: center;
   }
 
+  .cj-platform :is(input, select, textarea, button, [role='combobox']) {
+    max-width: 100%;
+  }
+
+  .cj-platform :is(input, select, textarea, .form-input) {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
   .cj-platform .auth-page {
     min-height: auto;
     padding: 92px 20px 44px;
   }
 
   .cj-platform .auth-card {
-    width: 100%;
-    max-width: 100%;
+    width: min(100%, calc(100vw - 40px));
+    max-width: calc(100vw - 40px);
+    overflow: hidden;
     padding: 24px 20px;
+  }
+
+  .cj-platform .auth-card * {
+    max-width: 100%;
   }
 
   .cj-platform .auth-bg-orb {

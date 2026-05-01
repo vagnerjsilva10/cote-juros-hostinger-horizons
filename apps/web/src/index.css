@@ -12206,7 +12206,7 @@ body {
   }
 }
 
-/* Mobile experience audit: public routes and article safeguards only. */
+/* Mobile responsive system: public routes, catalog pages and article safeguards. */
 @media (max-width: 1024px) {
   .public-site-shell main,
   .public-site-shell section,
@@ -12215,8 +12215,21 @@ body {
     overflow-x: hidden;
   }
 
-  .public-site-shell :is(.surface-card, .interactive-card, .cards-filter-card, .cards-page-cta, article, form, fieldset) {
+  .public-site-shell :is(.surface-card, .interactive-card, .cards-filter-card, .cards-page-cta, article, form, fieldset, .catalog-grid-card, .catalog-list-card) {
     min-width: 0;
+  }
+
+  .public-site-shell :is(.hero-grid, .hero-grid-soft, .blog-article-layout, .blog-article-cover-grid, .cards-page-shell > .grid, #resultados-emprestimos > .grid, #resultados-financiamento > .grid) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .public-site-shell :is(.blog-article-sidebar, .cards-filters, .catalog-list-card__main) {
+    min-width: 0;
+    max-width: none !important;
+  }
+
+  .public-site-shell .blog-article-sidebar {
+    position: static !important;
   }
 }
 
@@ -12228,12 +12241,36 @@ body {
     overflow-x: hidden;
   }
 
+  .public-site-shell *,
+  .public-site-shell *::before,
+  .public-site-shell *::after {
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .public-site-shell :is(img, video, canvas, iframe, svg) {
+    max-width: 100%;
+  }
+
+  .public-site-shell :is(table, pre) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .public-site-shell .page-shell,
   .cj-article-shell {
+    box-sizing: border-box;
     width: 100%;
     max-width: 100%;
     padding-left: 20px;
     padding-right: 20px;
+  }
+
+  .public-site-shell :is(.container, .page-shell, .cj-home-shell, .cj-home-hero-copy, .page-hero-copy, .hero-copy, .blog-page-shell, .blog-article-page, .cards-page-shell) {
+    box-sizing: border-box;
+    max-width: 100%;
   }
 
   .public-site-shell.is-domain-page .hero-section,
@@ -12250,8 +12287,13 @@ body {
     display: none;
   }
 
+  .public-site-shell :is(.hero-grid, .hero-grid-soft, .blog-featured-card, .blog-intro-panel, .blog-article-layout, .blog-article-cover-grid, .cards-page-shell > .grid, #resultados-emprestimos > .grid, #resultados-financiamento > .grid, .catalog-list-card__content > div, .cards-offer-list-card .catalog-list-card__content > div) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
   .page-hero .page-hero-copy,
-  .public-site-shell.is-domain-page .page-hero-copy {
+  .public-site-shell.is-domain-page .page-hero-copy,
+  .public-site-shell :is(.hero-copy, .hero-product-wrap, .blog-article-sidebar, .catalog-list-card__main) {
     max-width: 100% !important;
   }
 
@@ -12275,10 +12317,22 @@ body {
   .page-hero .hero-subtitle,
   .public-site-shell.is-domain-page .hero-subtitle,
   .public-site-shell .blog-article-summary {
+    width: 100%;
     max-width: 100% !important;
     font-size: 1rem !important;
     line-height: 1.68 !important;
+    overflow-wrap: anywhere;
     text-align: left;
+    text-wrap: wrap !important;
+    white-space: normal !important;
+  }
+
+  .public-site-shell :is(.hero-subtitle, .page-hero-subtitle, .blog-article-summary),
+  .cj-home-hero-copy > p {
+    max-width: calc(100vw - 40px) !important;
+    overflow-wrap: anywhere;
+    text-wrap: wrap !important;
+    white-space: normal !important;
   }
 
   .public-site-shell .page-hero-breadcrumbs {
@@ -12289,13 +12343,16 @@ body {
 
   .public-site-shell .page-hero .mt-8,
   .public-site-shell .page-hero .sm\:mt-9,
-  .public-site-shell .hero-actions {
+  .public-site-shell .hero-actions,
+  .public-site-shell :is(.blog-page-cta-actions, .blog-article-conversion-actions) {
     width: 100%;
   }
 
   .public-site-shell .page-hero .mt-8 :is(a, button),
   .public-site-shell .page-hero .sm\:mt-9 :is(a, button),
   .public-site-shell .hero-actions :is(a, button),
+  .public-site-shell :is(.blog-page-cta-actions, .blog-article-conversion-actions) > *,
+  .catalog-card-cta,
   .cards-page-primary-btn,
   .cards-page-secondary-btn {
     width: 100%;
@@ -12315,13 +12372,17 @@ body {
     font-size: 16px;
   }
 
-  .public-site-shell :is(.surface-card, .interactive-card, .cards-filter-card, .cards-page-cta, article) {
+  .public-site-shell :is(.surface-card, .interactive-card, .cards-filter-card, .cards-page-cta, article, .catalog-grid-card, .catalog-list-card, .blog-article-body-card, .blog-article-toc, .blog-article-link-grid, .blog-article-faq, .blog-article-conversion) {
     border-radius: 12px !important;
   }
 
   .public-site-shell :is(.surface-card, .interactive-card, .cards-filter-card) {
     padding-left: 18px;
     padding-right: 18px;
+  }
+
+  .public-site-shell :is(.catalog-grid-card__content, .catalog-list-card__content, .blog-article-card-content) {
+    padding: 18px !important;
   }
 
   .cards-filter-header,
@@ -12343,6 +12404,31 @@ body {
   .blog-page-shell .flex::-webkit-scrollbar,
   .public-site-shell [role='tablist']::-webkit-scrollbar {
     display: none;
+  }
+
+  .catalog-view-toggle {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .catalog-view-toggle-option {
+    justify-content: center;
+    min-height: 42px;
+    white-space: normal;
+  }
+
+  .cards-offer-visual,
+  .catalog-list-card__visual,
+  .cards-offer-list-card .catalog-list-card__visual {
+    min-height: 150px !important;
+    height: auto !important;
+    aspect-ratio: 16 / 10;
+  }
+
+  .cards-card-media,
+  .cards-offer-list-card .cards-card-media {
+    width: min(100%, 220px);
   }
 
   .cj-article-page {
