@@ -29,23 +29,17 @@ const isRenderableImage = (value) => {
 };
 
 export const BLOG_CATEGORY_FALLBACKS = {
-  emprestimos: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1200&q=80',
-  cartoes: 'https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1200&q=80',
-  financiamento: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1200&q=80',
-  score: 'https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=1200&q=80',
-  dividas: 'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=1200&q=80',
-  educacao: 'https://images.unsplash.com/photo-1573497491208-6b1acb260507?auto=format&fit=crop&w=1200&q=80',
-  default: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80'
+  emprestimos: '/assets/editorial/editorial-man-contract.png',
+  cartoes: '/assets/editorial/editorial-credit-life.png',
+  financiamento: '/assets/editorial/editorial-couple-phone.png',
+  score: '/assets/editorial/editorial-glass-dashboard.png',
+  dividas: '/assets/editorial/editorial-woman-desk.png',
+  educacao: '/assets/editorial/editorial-woman-phone.png',
+  default: '/assets/editorial/editorial-analyst-cutout.png'
 };
 
 const BLOG_CATEGORY_PHOTOS = {
-  emprestimos: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1200&q=80',
-  cartoes: 'https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1200&q=80',
-  financiamento: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1200&q=80',
-  score: 'https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=1200&q=80',
-  dividas: 'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=1200&q=80',
-  educacao: 'https://images.unsplash.com/photo-1573497491208-6b1acb260507?auto=format&fit=crop&w=1200&q=80',
-  default: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80'
+  ...BLOG_CATEGORY_FALLBACKS
 };
 
 export const BLOG_ARTICLE_IMAGE_MANIFEST = {
@@ -77,23 +71,34 @@ export const resolveArticleImageSources = (article = {}) => {
   const slug = slugify(article.slug || article.title || article.id || 'artigo');
   const isPriorityArticle = Boolean(BLOG_PRIORITY_IMAGE_LIBRARY[slug]);
   const manifestImage = BLOG_ARTICLE_IMAGE_MANIFEST[slug];
-  const explicitImageCandidates = [article.coverImage, article.image, article.imageUrl, article.featuredImage]
+  const structuredContent = article.structuredContent || {};
+  const explicitImageCandidates = [
+    article.coverImage,
+    article.ogImage,
+    article.image,
+    article.thumbnail,
+    structuredContent.coverImage,
+    structuredContent.heroImage,
+    article.imageUrl,
+    article.featuredImage
+  ]
     .filter(isRenderableImage)
     .filter(Boolean);
   const stockImage = buildStockProviderImage(article);
   const categoryFallback = getBlogCategoryImage(article.category || article.clusterLabel);
   const globalFallback = BLOG_CATEGORY_FALLBACKS.default;
 
+  const safeExplicitImages = explicitImageCandidates.filter((image) => !String(image).startsWith('data:image/'));
   const ordered = isPriorityArticle
     ? [
+        ...safeExplicitImages,
         manifestImage,
-        ...explicitImageCandidates.filter((image) => !String(image).startsWith('data:image/')),
         categoryFallback,
         globalFallback
       ].filter(Boolean)
     : [
+        ...safeExplicitImages,
         manifestImage,
-        ...explicitImageCandidates.filter((image) => !String(image).startsWith('data:image/')),
         stockImage,
         categoryFallback,
         globalFallback
