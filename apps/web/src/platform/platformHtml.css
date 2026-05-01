@@ -4448,6 +4448,137 @@
   left: -24px;
 }
 
+/* Home icon premium finish: unified fintech treatment for existing icons. */
+.cj-platform #page-home {
+  --home-icon-bg: linear-gradient(145deg, rgba(124, 92, 255, 0.15), rgba(255, 255, 255, 0.035));
+  --home-icon-border: rgba(156, 143, 255, 0.24);
+  --home-icon-color: #AFA5FF;
+  --home-icon-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 14px 34px rgba(20, 15, 55, 0.22);
+  --home-icon-hover-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 18px 42px rgba(124, 92, 255, 0.22);
+}
+
+.cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: var(--home-icon-bg) !important;
+  border: 1px solid var(--home-icon-border);
+  box-shadow: var(--home-icon-shadow);
+  overflow: hidden;
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
+}
+
+.cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span)::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.24), transparent 34%),
+    radial-gradient(circle at 70% 85%, rgba(124,92,255,0.22), transparent 42%);
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) svg,
+.cj-platform #page-home .mini-card-change svg {
+  position: relative;
+  z-index: 1;
+  width: 21px;
+  height: 21px;
+  color: var(--home-icon-color) !important;
+  stroke: currentColor;
+  stroke-width: 1.85;
+  filter: drop-shadow(0 0 10px rgba(156, 143, 255, 0.28));
+}
+
+.cj-platform #page-home #hero .hero-trust {
+  gap: 10px;
+}
+
+.cj-platform #page-home #hero .hero-trust-item {
+  gap: 10px;
+  padding: 8px 10px 8px 8px;
+  border: 1px solid rgba(156, 143, 255, 0.14);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.025);
+  color: rgba(231, 229, 255, 0.76);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.cj-platform #page-home #hero .hero-trust-item svg {
+  width: 28px;
+  height: 28px;
+  padding: 7px;
+  flex: 0 0 auto;
+  border-radius: 10px;
+  color: var(--home-icon-color) !important;
+  background: var(--home-icon-bg);
+  border: 1px solid var(--home-icon-border);
+  box-shadow: var(--home-icon-shadow);
+  stroke-width: 1.85;
+}
+
+.cj-platform #page-home #trust-strip {
+  background:
+    linear-gradient(180deg, rgba(15,14,31,0.96), rgba(13,12,25,0.98));
+}
+
+.cj-platform #page-home .trust-item {
+  color: rgba(231, 229, 255, 0.78);
+}
+
+.cj-platform #page-home :is(.step-card, .category-card, .seguro-card, .comp-item, .elig-row, .trust-item) {
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cj-platform #page-home :is(.step-card, .category-card, .seguro-card, .comp-item, .elig-row, .trust-item):hover :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico) {
+    transform: translateY(-2px);
+    border-color: rgba(184, 174, 255, 0.42);
+    box-shadow: var(--home-icon-hover-shadow);
+  }
+
+  .cj-platform #page-home #hero .hero-trust-item:hover {
+    transform: translateY(-2px);
+    border-color: rgba(184, 174, 255, 0.28);
+    background: rgba(255,255,255,0.045);
+  }
+}
+
+@media (max-width: 760px) {
+  .cj-platform #page-home {
+    --home-icon-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 10px 24px rgba(20, 15, 55, 0.18);
+  }
+
+  .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+  }
+
+  .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .cj-platform #page-home #hero .hero-trust-item {
+    padding: 7px 9px 7px 7px;
+  }
+
+  .cj-platform #page-home #hero .hero-trust-item svg {
+    width: 26px;
+    height: 26px;
+    padding: 6px;
+    border-radius: 9px;
+  }
+
+  .cj-platform #page-home .trust-item {
+    align-items: center;
+    gap: 12px;
+  }
+}
+
 
 .cj-platform .page { display: block; }
 .cj-platform .reveal { opacity: 1; transform: none; }
