@@ -426,7 +426,7 @@ function RadarHome() {
           <h2 style={{ marginBottom: 16 }}>Entenda suas possibilidades<br /><span className="text-accent">antes de pedir</span></h2>
           <p className="section-desc" style={{ marginBottom: 28 }}>O Radar organiza caminhos possíveis com base no seu perfil. Você vê oportunidades, não promessas.</p>
           <ul className="platform-check-list">
-            {radarFeatureItems.map(({ label, Icon }) => <li key={label}><span><Icon color="#9C8FFF" size={12} strokeWidth={2.2} /></span>{label}</li>)}
+            {radarFeatureItems.map(({ label }) => <li key={label}><span><RadarCheckIcon /></span>{label}</li>)}
           </ul>
           <Link className="btn-primary" to="/radar">Acessar Radar de Crédito <ArrowIcon /></Link>
         </div>
@@ -434,6 +434,10 @@ function RadarHome() {
       </div></div>
     </section>
   );
+}
+
+function RadarCheckIcon() {
+  return <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9C8FFF" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12" /></svg>;
 }
 
 function RadarCard() {
@@ -447,8 +451,22 @@ function RadarCard() {
 }
 
 function EligibilityRow({ label, pct, color }) {
-  const Icon = eligibilityIconByLabel[label] || BadgeCheck;
-  return <div className="elig-row"><div className="elig-icon-w"><Icon color={color} size={14} strokeWidth={2.2} /></div><span className="elig-label">{label}</span><div className="elig-bar-sm"><div className="elig-bar-sm-fill" style={{ width: pct, background: color }} /></div><span className="elig-pct-val" style={{ color }}>{pct}</span></div>;
+  const accentColor = label === 'Empréstimo pessoal' ? '#9C8FFF' : color;
+  const pctColor = label === 'Empréstimo pessoal' ? 'var(--accent-light)' : color;
+  const bg = {
+    'Empréstimo pessoal': 'rgba(124,110,247,0.15)',
+    'Cartão de crédito': 'rgba(34,211,160,0.12)',
+    Financiamento: 'rgba(245,158,11,0.12)',
+    Seguros: 'rgba(244,63,94,0.12)'
+  }[label];
+  return <div className="elig-row"><div className="elig-icon-w" style={{ background: bg }}><EligibilitySvg label={label} color={accentColor} /></div><span className="elig-label">{label}</span><div className="elig-bar-sm"><div className="elig-bar-sm-fill" style={{ width: pct, background: color }} /></div><span className="elig-pct-val" style={{ color: pctColor }}>{pct}</span></div>;
+}
+
+function EligibilitySvg({ label, color }) {
+  if (label === 'Empréstimo pessoal') return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>;
+  if (label === 'Cartão de crédito') return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round"><rect x="1" y="4" width="22" height="16" rx="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg>;
+  if (label === 'Financiamento') return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>;
+  return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>;
 }
 
 function CompareHome() {

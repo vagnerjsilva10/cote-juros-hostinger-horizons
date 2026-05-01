@@ -4457,7 +4457,7 @@
   --home-icon-hover-shadow: 0 8px 18px rgba(124, 110, 247, 0.10);
 }
 
-.cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) {
+.cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .cat-icon, .seg-icon, .comp-ico) {
   position: relative;
   width: 36px;
   height: 36px;
@@ -4469,11 +4469,11 @@
   transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
 }
 
-.cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span)::before {
+.cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .cat-icon, .seg-icon, .comp-ico)::before {
   content: none;
 }
 
-.cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) svg,
+.cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .cat-icon, .seg-icon, .comp-ico) svg,
 .cj-platform #page-home .mini-card-change svg {
   position: relative;
   z-index: 1;
@@ -4521,7 +4521,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .cj-platform #page-home :is(.step-card, .category-card, .seguro-card, .comp-item, .elig-row, .trust-item):hover :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico) {
+  .cj-platform #page-home :is(.step-card, .category-card, .seguro-card, .comp-item, .trust-item):hover :is(.trust-icon-wrap, .step-icon-wrap, .cat-icon, .seg-icon, .comp-ico) {
     transform: translateY(-2px);
     border-color: rgba(184, 174, 255, 0.42);
     box-shadow: var(--home-icon-hover-shadow);
@@ -4539,13 +4539,13 @@
     --home-icon-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 16px rgba(20, 15, 55, 0.14);
   }
 
-  .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) {
+  .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .cat-icon, .seg-icon, .comp-ico) {
     width: 32px;
     height: 32px;
     border-radius: 10px;
   }
 
-  .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) svg {
+  .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .cat-icon, .seg-icon, .comp-ico) svg {
     width: 14px;
     height: 14px;
   }
