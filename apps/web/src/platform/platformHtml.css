@@ -4453,15 +4453,15 @@
   --home-icon-bg: linear-gradient(145deg, rgba(124, 92, 255, 0.15), rgba(255, 255, 255, 0.035));
   --home-icon-border: rgba(156, 143, 255, 0.24);
   --home-icon-color: #AFA5FF;
-  --home-icon-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 14px 34px rgba(20, 15, 55, 0.22);
-  --home-icon-hover-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 18px 42px rgba(124, 92, 255, 0.22);
+  --home-icon-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 20px rgba(20, 15, 55, 0.16);
+  --home-icon-hover-shadow: inset 0 1px 0 rgba(255,255,255,0.09), 0 12px 28px rgba(124, 92, 255, 0.16);
 }
 
 .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) {
   position: relative;
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
   background: var(--home-icon-bg) !important;
   border: 1px solid var(--home-icon-border);
   box-shadow: var(--home-icon-shadow);
@@ -4474,9 +4474,9 @@
   position: absolute;
   inset: -1px;
   background:
-    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.24), transparent 34%),
-    radial-gradient(circle at 70% 85%, rgba(124,92,255,0.22), transparent 42%);
-  opacity: 0.72;
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18), transparent 34%),
+    radial-gradient(circle at 70% 85%, rgba(124,92,255,0.16), transparent 42%);
+  opacity: 0.58;
   pointer-events: none;
 }
 
@@ -4484,12 +4484,12 @@
 .cj-platform #page-home .mini-card-change svg {
   position: relative;
   z-index: 1;
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
   color: var(--home-icon-color) !important;
   stroke: currentColor;
   stroke-width: 1.85;
-  filter: drop-shadow(0 0 10px rgba(156, 143, 255, 0.28));
+  filter: drop-shadow(0 0 7px rgba(156, 143, 255, 0.2));
 }
 
 .cj-platform #page-home #hero .hero-trust {
@@ -4507,9 +4507,9 @@
 }
 
 .cj-platform #page-home #hero .hero-trust-item svg {
-  width: 24px;
-  height: 24px;
-  padding: 5px;
+  width: 20px;
+  height: 20px;
+  padding: 4px;
   flex: 0 0 auto;
   border-radius: 10px;
   color: var(--home-icon-color) !important;
@@ -4548,18 +4548,18 @@
 
 @media (max-width: 760px) {
   .cj-platform #page-home {
-    --home-icon-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 10px 24px rgba(20, 15, 55, 0.18);
+    --home-icon-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 16px rgba(20, 15, 55, 0.14);
   }
 
   .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
   }
 
   .cj-platform #page-home :is(.trust-icon-wrap, .step-icon-wrap, .elig-icon-w, .cat-icon, .seg-icon, .comp-ico, .platform-check-list span) svg {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
   }
 
   .cj-platform #page-home #hero .hero-trust-item {
@@ -4567,10 +4567,10 @@
   }
 
   .cj-platform #page-home #hero .hero-trust-item svg {
-    width: 22px;
-    height: 22px;
-    padding: 5px;
-    border-radius: 9px;
+    width: 18px;
+    height: 18px;
+    padding: 4px;
+    border-radius: 8px;
   }
 
   .cj-platform #page-home .trust-item {
