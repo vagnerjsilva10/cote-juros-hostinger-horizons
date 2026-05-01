@@ -241,7 +241,11 @@ const normalizeArticleRecord = (article = {}) =>
     : undefined,
   publishDate: article.publishDate || article.publishedAt || article.createdAt || '',
   readTime: article.readTime || null,
-  image: article.image || article.coverImage || '',
+  coverImage: article.coverImage || article.image || article.imageUrl || article.featuredImage || '',
+  coverImageAlt: article.coverImageAlt || article.imageAlt || article.altText || article.alt || '',
+  ogImage: article.ogImage || article.coverImage || article.image || '',
+  image: article.coverImage || article.image || article.imageUrl || article.featuredImage || '',
+  imageAlt: article.coverImageAlt || article.imageAlt || article.altText || article.alt || '',
   category: normalizeMojibake(article.category || article.categoryName || article.category?.name || '')
 });
 

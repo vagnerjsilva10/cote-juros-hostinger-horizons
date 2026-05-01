@@ -62,7 +62,11 @@ const isArticleInFilter = (article, filter) => {
 };
 
 function BlogCardImage({ article, title, category, gradient }) {
-  const candidates = getArticleImageCandidates(article);
+  const imageSet = getArticleImageCandidates(article);
+  const candidates = useMemo(
+    () => [imageSet.primary, ...(imageSet.fallbacks || [])].filter(Boolean),
+    [imageSet.primary, imageSet.fallbacks]
+  );
   const [imageIndex, setImageIndex] = useState(0);
   const currentImage = candidates[imageIndex] || '';
 
