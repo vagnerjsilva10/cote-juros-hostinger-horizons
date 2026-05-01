@@ -1,5 +1,17 @@
 const DEFAULT_API_BASE_URL = 'https://api.cotejuros.com.br';
 
+const getCustomerBearerToken = async () => {
+  try {
+    const { getCustomerAccessToken } = await import('@/platform/services/authAdapter.js');
+    return await getCustomerAccessToken();
+  } catch (error) {
+    console.warn('[apiClient] token de cliente indisponivel', {
+      message: error?.message || String(error)
+    });
+    return null;
+  }
+};
+
 export const API_CONFIG = {
   baseUrl: (import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL).replace(/\/$/, ''),
   endpoints: {
@@ -12,6 +24,7 @@ export const API_CONFIG = {
     partnerRedirect: '/api/partners/redirect',
     partnerMockApi: '/api/partners/mock-api',
     creditasEligibility: '/api/credit/creditas/eligibility',
+    creditasLead: '/api/credit/creditas/lead',
     creditasOffers: '/api/credit/creditas/offers',
     creditasProposals: '/api/credit/creditas/proposals',
     trackingCta: '/api/tracking/cta',
@@ -44,15 +57,24 @@ export const normalizeApiError = (error) => {
   };
 };
 
-const request = async (path, { method = 'GET', payload, headers, signal, timeoutMs = 15000 } = {}) => {
+const request = async (path, { method = 'GET', payload, headers, signal, timeoutMs = 15000, requireAuth = false } = {}) => {
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+  const accessToken = await getCustomerBearerToken();
 
   try {
+    if (requireAuth && !accessToken) {
+      const error = new Error('Sessao de cliente indisponivel.');
+      error.code = 'CUSTOMER_AUTH_REQUIRED';
+      error.status = 401;
+      throw error;
+    }
+
     const response = await fetch(buildUrl(path), {
       method,
       headers: {
         'Content-Type': 'application/json',
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
         ...(headers || {})
       },
       credentials: 'include',
@@ -85,10 +107,22 @@ export const apiPost = (path, payload, options) => request(path, { ...options, m
 
 export const apiPatch = (path, payload, options) => request(path, { ...options, method: 'PATCH', payload });
 
+const isProductionRuntime = () =>
+  Boolean(import.meta.env.PROD || (typeof window !== 'undefined' && /(^|\.)cotejuros\.(com\.br|br)$/i.test(window.location.hostname)));
+
+const isCriticalFallbackContext = (context = '') =>
+  /^(offers?|lead|quick-credit|credit|affiliate|partner)/i.test(String(context));
+
 export const withMockFallback = async (realCall, fallbackData, context = 'api') => {
   try {
     return await realCall();
   } catch (error) {
+    if (isProductionRuntime() && isCriticalFallbackContext(context)) {
+      console.error(`[${context}] fallback bloqueado em producao`, {
+        error: error?.message || String(error)
+      });
+      throw error;
+    }
     const fallback = typeof fallbackData === 'function' ? fallbackData(error) : fallbackData;
     console.warn(`[${context}] usando fallback controlado`, {
       error: error?.message || String(error),

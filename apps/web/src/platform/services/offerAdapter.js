@@ -1,5 +1,8 @@
 import { API_CONFIG, apiGet, withMockFallback } from '@/platform/services/apiClient.js';
 
+const isProductionRuntime = () =>
+  Boolean(import.meta.env.PROD || (typeof window !== 'undefined' && /(^|\.)cotejuros\.(com\.br|br)$/i.test(window.location.hostname)));
+
 const toQueryString = (filters = {}) => {
   const params = new URLSearchParams();
   Object.entries(filters).forEach(([key, value]) => {
@@ -39,26 +42,28 @@ export const getCardOffers = (filters = {}) => getOffersByType('credit_card', fi
 export const getFinancingOffers = (filters = {}) => getOffersByType('financing', filters);
 
 export const getInsuranceOffers = async () => {
-  // TODO: criar ProductType insurance / InsuranceQuote no backend antes de persistir seguros.
+  if (isProductionRuntime()) return [];
+
+  // DEV fallback: criar ProductType insurance / InsuranceQuote no backend antes de persistir seguros.
   return [
     {
-      id: 'mock_insurance_auto',
+      id: 'dev_mock_insurance_auto',
       type: 'insurance',
-      title: 'Seguro auto',
+      title: '[DEV] Seguro auto',
       description: 'Compare coberturas, franquia e assistências antes de decidir.',
       cta: 'Comparar opções'
     },
     {
-      id: 'mock_insurance_home',
+      id: 'dev_mock_insurance_home',
       type: 'insurance',
-      title: 'Seguro residencial',
+      title: '[DEV] Seguro residencial',
       description: 'Alternativas para proteger imóvel, bens e assistência emergencial.',
       cta: 'Ver alternativas'
     },
     {
-      id: 'mock_insurance_life',
+      id: 'dev_mock_insurance_life',
       type: 'insurance',
-      title: 'Seguro vida',
+      title: '[DEV] Seguro vida',
       description: 'Caminhos possíveis para proteção familiar e financeira.',
       cta: 'Entender coberturas'
     }

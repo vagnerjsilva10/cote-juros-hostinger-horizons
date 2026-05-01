@@ -2,6 +2,8 @@ import { API_CONFIG, apiPatch, apiPost, withMockFallback } from '@/platform/serv
 import { trackEvent } from '@/platform/services/trackingAdapter.js';
 
 const LEAD_STORAGE_KEY = 'cote_lead';
+const isProductionRuntime = () =>
+  Boolean(import.meta.env.PROD || (typeof window !== 'undefined' && /(^|\.)cotejuros\.(com\.br|br)$/i.test(window.location.hostname)));
 
 const parseMoney = (value) => {
   if (typeof value === 'number') return value;
@@ -114,6 +116,9 @@ export const captureLead = async (payload = {}) => {
 
 export const updateLeadStatus = async (id, status) => {
   if (!id || String(id).startsWith('local_')) {
+    if (isProductionRuntime()) {
+      throw new Error('Atualizacao de lead local bloqueada em producao.');
+    }
     const local = getLeadFromLocalStorage() || {};
     return saveLeadLocally({ ...local, status, mode: 'fallback' });
   }

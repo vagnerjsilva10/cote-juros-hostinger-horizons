@@ -5,6 +5,8 @@ import SeoHead from '@/components/SeoHead.jsx';
 import { portalApi } from '@/platform/services/portalApi.js';
 import {
   getArticleImage,
+  getArticleImageAlt,
+  getArticleImageCandidates,
   getArticlePath,
   getArticleSummary,
   getBlogEditorialPriority,
@@ -59,6 +61,35 @@ const isArticleInFilter = (article, filter) => {
   return true;
 };
 
+function BlogCardImage({ article, title, category, gradient }) {
+  const candidates = getArticleImageCandidates(article);
+  const [imageIndex, setImageIndex] = useState(0);
+  const currentImage = candidates[imageIndex] || '';
+
+  useEffect(() => {
+    setImageIndex(0);
+  }, [article?.slug]);
+
+  return (
+    <div className={`blog-img ${currentImage ? 'has-image' : 'has-placeholder'}`}>
+      {currentImage ? (
+        <img
+          src={currentImage}
+          alt={getArticleImageAlt(article) || title}
+          loading="lazy"
+          decoding="async"
+          onError={() => setImageIndex((index) => index + 1)}
+        />
+      ) : (
+        <div className="blog-img-placeholder" style={{ background: gradient }}>
+          <span>{category || 'Cote Juros'}</span>
+        </div>
+      )}
+      {category ? <div className="blog-cat-badge">{category}</div> : null}
+    </div>
+  );
+}
+
 function BlogCard({ article }) {
   const title = getEditorialTitle(article);
   const summary = getArticleSummary(article);
@@ -68,9 +99,7 @@ function BlogCard({ article }) {
 
   return (
     <Link className="blog-card" to={getArticlePath(article)}>
-      <div className="blog-img" style={{ background: gradient }}>
-        <div className="blog-cat-badge">{category}</div>
-      </div>
+      <BlogCardImage article={article} title={title} category={category} gradient={gradient} />
       <div className="blog-content">
         <div className="blog-meta">
           {readTime ? <span>{readTime} min</span> : null}
@@ -81,6 +110,24 @@ function BlogCard({ article }) {
         {summary ? <div className="blog-excerpt">{summary}</div> : null}
       </div>
     </Link>
+  );
+}
+
+function BlogSkeletonGrid() {
+  return (
+    <div className="blog-grid blog-grid--skeleton" aria-hidden="true">
+      {Array.from({ length: 6 }).map((_, index) => (
+        <article className="blog-card blog-card--skeleton" key={`blog-skeleton-${index}`}>
+          <div className="blog-skeleton-media" />
+          <div className="blog-content">
+            <div className="blog-skeleton-line blog-skeleton-line--meta" />
+            <div className="blog-skeleton-line blog-skeleton-line--title" />
+            <div className="blog-skeleton-line" />
+            <div className="blog-skeleton-line blog-skeleton-line--short" />
+          </div>
+        </article>
+      ))}
+    </div>
   );
 }
 
@@ -201,9 +248,10 @@ function BlogPage() {
           <AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.blogTop} minHeight={120} />
 
           {loadState.error ? (
-            <div className="dashboard-api-card" style={{ textAlign: 'center', marginBottom: 28 }}>
-              <div className="dash-panel-title">Artigos indisponiveis</div>
-              <p style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.7, margin: 0 }}>{loadState.error}</p>
+            <div className="blog-empty-state" role="status">
+              <span>Blog Cote Juros</span>
+              <h2>Artigos indisponiveis no momento</h2>
+              <p>{loadState.error}</p>
             </div>
           ) : null}
 
@@ -221,9 +269,7 @@ function BlogPage() {
           </div>
 
           {loadState.loading && !visibleArticles.length ? (
-            <div className="dashboard-api-card" style={{ textAlign: 'center', marginBottom: 28 }}>
-              <div className="dash-panel-title">Carregando artigos</div>
-            </div>
+            <BlogSkeletonGrid />
           ) : null}
 
           {visibleArticles.length ? (

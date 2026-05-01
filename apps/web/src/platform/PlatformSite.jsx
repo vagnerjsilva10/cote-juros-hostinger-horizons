@@ -5,12 +5,12 @@ import AdSenseBlock, { ADSENSE_PLATFORM_SLOTS } from '@/components/AdSenseBlock.
 import SmartQuiz from '@/components/smart-quiz/SmartQuiz.jsx';
 import BlogPage from '@/pages/BlogPage.jsx';
 import BlogArticlePage from '@/pages/BlogArticlePage.jsx';
-import { getBlogArticleBySlug, getBlogArticles } from '@/platform/services/blogAdapter.js';
 import { buildCreditasOffer, getCardOffers, getCreditOffers, getFinancingOffers, getInsuranceOffers } from '@/platform/services/offerAdapter.js';
 import { getCreditasStatus } from '@/platform/services/creditasAdapter.js';
-import { getCurrentCustomer, loginCustomer, logoutCustomer } from '@/platform/services/authAdapter.js';
+import { getCurrentCustomer, loginCustomer, logoutCustomer, registerCustomer } from '@/platform/services/authAdapter.js';
 import { getLeadFromLocalStorage } from '@/platform/services/leadAdapter.js';
 import { recommendProducts } from '@/platform/services/recommendationAdapter.js';
+import { portalApi } from '@/platform/services/portalApi.js';
 import { trackEvent } from '@/platform/services/trackingAdapter.js';
 import '@/platform/platformHtml.css';
 
@@ -84,15 +84,75 @@ function CheckIcon({ color = '#22D3A0', size = 14 }) {
   );
 }
 
+const fallbackPlatformHeaderNav = [
+  ['In\u00edcio', '/'],
+  ['Comparar', '/comparar'],
+  ['Radar de Cr\u00e9dito', '/radar'],
+  ['Blog', '/blog']
+];
+
+const fallbackPlatformFooterSections = [
+  { title: 'Cote Juros', links: [['Sobre n\u00f3s', '/sobre'], ['Contato', '/contato'], ['FAQ', '/faq'], ['Blog', '/blog']] },
+  { title: 'Comparar', links: [['Empr\u00e9stimos', '/comparar'], ['Cart\u00f5es', '/comparar'], ['Financiamentos', '/comparar'], ['Seguros', '/seguros']] },
+  { title: 'Seguros', links: [['Seguro Auto', '/seguro-auto'], ['Seguro Viagem', '/seguro-viagem'], ['Seguro de Vida', '/seguro-vida'], ['Seguro Residencial', '/seguros']] },
+  { title: '\u00c1rea do cliente', links: [['Entrar', '/login'], ['Criar conta', '/criar-conta'], ['Minha conta', '/dashboard'], ['Pol\u00edtica de privacidade', '/politica-de-privacidade']] }
+];
+
+const fallbackPlatformLegalLinks = [['Termos de uso', '/termos-de-uso'], ['Privacidade', '/politica-de-privacidade']];
+const fallbackPlatformFooterDisclaimer = '2025 Cote Juros. A Cote Juros n\u00e3o \u00e9 banco, n\u00e3o concede cr\u00e9dito e n\u00e3o garante aprova\u00e7\u00e3o. Sujeito \u00e0 an\u00e1lise dos parceiros. Informa\u00e7\u00f5es sujeitas a altera\u00e7\u00e3o.';
+const isProductionRuntime = () =>
+  Boolean(import.meta.env.PROD || (typeof window !== 'undefined' && /(^|\.)cotejuros\.(com\.br|br)$/i.test(window.location.hostname)));
+
+const normalizePlatformLinks = (items = []) =>
+  items
+    .filter((item) => item?.label && item?.href)
+    .sort((a, b) => Number(a.order || 0) - Number(b.order || 0))
+    .map((item) => [item.label, item.href]);
+
+const normalizeFooterSections = (tree = []) => {
+  const sections = tree
+    .filter((item) => item?.label)
+    .map((item) => ({ title: item.label, links: normalizePlatformLinks(item.links || []) }))
+    .filter((section) => section.links.length > 0);
+
+  return sections.length ? sections : fallbackPlatformFooterSections;
+};
+
+function usePlatformSiteFoundation() {
+  const [siteFoundation, setSiteFoundation] = useState({ navigation: null, disclaimers: [] });
+
+  useEffect(() => {
+    let mounted = true;
+
+    Promise.allSettled([
+      portalApi.getSiteNavigation(),
+      portalApi.getSiteDisclaimers({ placement: 'footer' })
+    ]).then(([navigationResult, disclaimersResult]) => {
+      if (!mounted) return;
+      setSiteFoundation({
+        navigation: navigationResult.status === 'fulfilled' ? navigationResult.value : null,
+        disclaimers: disclaimersResult.status === 'fulfilled' && Array.isArray(disclaimersResult.value) ? disclaimersResult.value : []
+      });
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  return siteFoundation;
+}
+
 function PlatformHeader() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  const nav = [
-    ['Início', '/'],
-    ['Comparar', '/comparar'],
-    ['Radar de Crédito', '/radar'],
-    ['Blog', '/blog']
-  ];
+  const nav = fallbackPlatformHeaderNav;
+
+  const { navigation } = usePlatformSiteFoundation();
+  const apiNav = normalizePlatformLinks(navigation?.byLocation?.header || []);
+  const apiMobileNav = normalizePlatformLinks(navigation?.byLocation?.mobile || []);
+  const visibleNav = apiNav.length ? apiNav : nav;
+  const visibleMobileNav = apiMobileNav.length ? apiMobileNav : visibleNav;
 
   return (
     <>
@@ -102,7 +162,7 @@ function PlatformHeader() {
             <span className="logo-text"><span className="logo-primary">Cote</span><span className="logo-accent">Juros</span></span>
           </Link>
           <nav>
-            {nav.map(([label, href]) => (
+            {visibleNav.map(([label, href]) => (
               <Link key={href} className={`nav-link ${location.pathname === href ? 'active' : ''}`} to={href}>{label}</Link>
             ))}
           </nav>
@@ -114,13 +174,18 @@ function PlatformHeader() {
         </div>
       </header>
       <div className={`mobile-nav ${open ? 'open' : ''}`} id="mobile-nav">
-        {nav.map(([label, href]) => <Link key={href} className="nav-link" to={href} onClick={() => setOpen(false)}>{label}</Link>)}
+        {visibleMobileNav.map(([label, href]) => <Link key={href} className="nav-link" to={href} onClick={() => setOpen(false)}>{label}</Link>)}
       </div>
     </>
   );
 }
 
 function PlatformFooter() {
+  const { navigation, disclaimers } = usePlatformSiteFoundation();
+  const footerSections = normalizeFooterSections(navigation?.treeByLocation?.footer || []);
+  const legalLinks = normalizePlatformLinks(navigation?.byLocation?.legal || []);
+  const footerDisclaimer = disclaimers.find((item) => item?.content)?.content || fallbackPlatformFooterDisclaimer;
+
   return (
     <footer>
       <div className="container">
@@ -130,16 +195,14 @@ function PlatformFooter() {
             <div className="footer-tagline">Plataforma brasileira de comparação de crédito, cartões, financiamentos e seguros.</div>
             <div className="api-ready-note">A Cote Juros não é uma instituição financeira e não concede crédito diretamente. Não cobramos valores antecipados.</div>
           </div>
-          <FooterCol title="Cote Juros" links={[['Sobre nós', '/sobre'], ['Contato', '/contato'], ['FAQ', '/faq'], ['Blog', '/blog']]} />
-          <FooterCol title="Comparar" links={[['Empréstimos', '/comparar'], ['Cartões', '/comparar'], ['Financiamentos', '/comparar'], ['Seguros', '/seguros']]} />
-          <FooterCol title="Seguros" links={[['Seguro Auto', '/seguro-auto'], ['Seguro Viagem', '/seguro-viagem'], ['Seguro de Vida', '/seguro-vida'], ['Seguro Residencial', '/seguros']]} />
-          <FooterCol title="Área do cliente" links={[['Entrar', '/login'], ['Criar conta', '/criar-conta'], ['Minha conta', '/dashboard'], ['Política de privacidade', '/politica-de-privacidade']]} />
+          {footerSections.map((section) => <FooterCol key={section.title} title={section.title} links={section.links} />)}
         </div>
         <div className="footer-bottom">
-          <div className="footer-legal">2025 Cote Juros. A Cote Juros não é banco, não concede crédito e não garante aprovação. Sujeito à análise dos parceiros. Informações sujeitas a alteração.</div>
+          <div className="footer-legal">{footerDisclaimer}</div>
           <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-            <Link style={{ fontSize: 12, color: 'var(--text-muted)' }} to="/termos-de-uso">Termos de uso</Link>
-            <Link style={{ fontSize: 12, color: 'var(--text-muted)' }} to="/politica-de-privacidade">Privacidade</Link>
+            {(legalLinks.length ? legalLinks : fallbackPlatformLegalLinks).map(([label, href]) => (
+              <Link key={href} style={{ fontSize: 12, color: 'var(--text-muted)' }} to={href}>{label}</Link>
+            ))}
           </div>
         </div>
       </div>
@@ -159,8 +222,11 @@ function FooterCol({ title, links }) {
 }
 
 export function PlatformShell({ children, title = 'Cote Juros', bare = false }) {
+  const location = useLocation();
+  const isBlogRoute = location.pathname === '/blog' || location.pathname.startsWith('/blog/');
+
   return (
-    <div className="cj-platform">
+    <div className={`cj-platform${isBlogRoute ? ' cj-platform--blog-light' : ''}`}>
       <Helmet><title>{title}</title></Helmet>
       {bare ? null : <PlatformHeader />}
       {children}
@@ -379,9 +445,23 @@ function InnerHero({ badge, title, desc, action }) {
 }
 
 export function PlatformComparePage() {
+  const isProduction = isProductionRuntime();
   const [offers, setOffers] = useState([]);
-  useEffect(() => { Promise.all([getCreditOffers({ rank: true }), getCardOffers({ rank: true }), getFinancingOffers({ rank: true })]).then((groups) => setOffers(groups.flat().filter(Boolean))); }, []);
-  const compareOffers = [buildCreditasOffer(), ...offers].filter(Boolean);
+  useEffect(() => {
+    let mounted = true;
+    Promise.allSettled([getCreditOffers({ rank: true }), getCardOffers({ rank: true }), getFinancingOffers({ rank: true })])
+      .then((results) => {
+        if (!mounted) return;
+        setOffers(results.flatMap((result) => (result.status === 'fulfilled' && Array.isArray(result.value) ? result.value : [])));
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+  const compareOffers = [...(!isProduction ? [buildCreditasOffer()] : []), ...offers].filter(Boolean);
+  if (isProduction && !compareOffers.length) {
+    return <PlatformShell title="Comparar produtos | Cote Juros"><div className="page active" id="page-compare"><InnerHero badge="Marketplace" title={<>Compare produtos<br /><span className="text-accent">financeiros</span></>} desc="Taxas, condicoes e coberturas lado a lado. Voce decide quando e se avancar." action={<div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 24 }}><Link className="btn-primary" to="/radar">Acessar Radar de Credito</Link><button className="btn-outline">Ver mais filtros</button></div>} /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container"><div className="compare-layout"><FilterSidebar /><div><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.compareResults} minHeight={120} theme="dark" className="mb-adsense" /><div className="api-ready-note">Nenhuma oferta disponivel agora.</div><div className="api-ready-note">As condicoes exibidas podem variar conforme perfil e disponibilidade dos parceiros. A Cote Juros nao e banco e nao concede credito diretamente.</div></div></div></div></section></div></PlatformShell>;
+  }
   const rows = compareOffers.length ? compareOffers.slice(0, 5).map((offer) => [offer.bankName || 'Parceiro', offer.title || offer.productName || 'Produto financeiro', offer.monthlyRate ? `${offer.monthlyRate}%` : offer.annualFee === 0 ? 'R$0' : offer.rate || 'Sob análise', offer.annualFee === 0 ? 'anuidade' : 'ao mês', offer.tags || ['Online', 'Parceiro verificado'], offer.bankName || 'CJ']) : productRows.map(([bank, product, rate, unit, tags, logo]) => [bank, product, rate, unit, tags, logo]);
   return <PlatformShell title="Comparar produtos | Cote Juros"><div className="page active" id="page-compare"><InnerHero badge="Marketplace" title={<>Compare produtos<br /><span className="text-accent">financeiros</span></>} desc="Taxas, condições e coberturas lado a lado. Você decide quando e se avançar." action={<div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 24 }}><Link className="btn-primary" to="/radar">Acessar Radar de Crédito</Link><button className="btn-outline">Ver mais filtros</button></div>} /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container"><div className="compare-layout"><FilterSidebar /><div><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.compareResults} minHeight={120} theme="dark" className="mb-adsense" /><div className="compare-results">{rows.map(([bank, title, rate, unit, tags, logo]) => <CompareResult key={`${bank}-${title}`} title={`${bank} - ${title}`} subtitle="Parceiro verificado" rate={rate} desc={unit} tags={tags} logo={logo} />)}</div><div className="api-ready-note">As condições exibidas são ilustrativas e podem variar conforme perfil e disponibilidade dos parceiros. A Cote Juros não é banco e não concede crédito diretamente.</div></div></div></div></section></div></PlatformShell>;
 }
@@ -510,14 +590,6 @@ export function PlatformInsurancePage({ type = 'seguros' }) {
   return <PlatformShell title={`${badge} | Cote Juros`}><div className="page active" id={`page-${type}`}><InnerHero badge={badge} title={title} desc={desc} action={type !== 'seguros' ? <button className="btn-primary" style={{ marginTop: 24 }}>Cotar {badge.toLowerCase()}</button> : null} /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container">{type === 'seguros' ? <div className="seguros-grid">{gridOffers.map(([name, description, href, cta]) => <Link className="seguro-card" key={name} to={href}><div className="seg-icon"><CheckIcon color="currentColor" size={20} /></div><div className="seg-name">{name}</div><div className="seg-desc">{description}</div><div className="seg-link">{cta} <ArrowIcon size={12} /></div></Link>)}</div> : <div className="coverage-grid">{detailCards.map(([name, description]) => <div className="coverage-card" key={name}><div className="coverage-title">{name}</div><div className="coverage-desc">{description}</div></div>)}</div>}<div className="api-ready-note" style={{ marginTop: 24 }}>As condições variam por seguradora. Consulte o parceiro escolhido para cobertura exata.</div></div></section></div></PlatformShell>;
 }
 
-function LegacyPlatformBlogPage() {
-  return <PlatformShell title="Blog | Cote Juros"><div className="page active" id="page-blog"><InnerHero badge="Conteúdo" title={<>Educação <span className="text-accent">financeira</span></>} desc="Artigos, guias e análises para você tomar decisões com mais consciência e menos pressa." /><section className="section-pad" style={{ background: 'var(--light-bg)' }}><div className="container"><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.blogTop} minHeight={120} /><div className="filter-tabs" style={{ marginBottom: 28, marginTop: 0 }}>{['Todos', 'Crédito', 'Cartões', 'Seguros', 'Planejamento', 'Financiamento'].map((item, index) => <button key={item} className={`filter-tab ${index === 0 ? 'active' : ''}`}>{item}</button>)}</div><BlogGrid count={6} /><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.blogBottom} minHeight={120} className="mt-adsense" /></div></section></div></PlatformShell>;
-}
-
-function LegacyPlatformBlogArticlePage() {
-  return <PlatformShell title="Artigo | Cote Juros"><div className="page active" id="page-blog-detalhe"><section className="section-pad" style={{ background: 'var(--bg-primary)', paddingTop: 110 }}><div className="container"><div className="article-layout"><article><div className="article-header"><div className="article-cat">Crédito</div><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.articleTop} minHeight={120} theme="dark" className="mb-adsense" format="fluid" layout="in-article" responsive={false} /><h1 className="article-title">Como escolher um empréstimo pessoal sem cair em armadilhas</h1><div className="article-meta"><span>15 min de leitura</span><span>•</span><span>Atualizado em jan 2025</span><span>•</span><span>Equipe Cote Juros</span></div></div><div className="article-body"><p>Contratar um empréstimo pessoal pode parecer simples, mas envolve variáveis que, se ignoradas, podem custar muito mais do que o esperado. Antes de assinar qualquer contrato, é fundamental entender o que está sendo contratado.</p><h3>O que é o CET e por que é o número mais importante</h3><p>O Custo Efetivo Total concentra todos os custos do crédito: taxa de juros, seguros obrigatórios, tarifas administrativas e IOF. É o número que permite uma comparação justa entre diferentes ofertas.</p><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.articleInline} minHeight={120} theme="dark" format="fluid" layoutKey="-fb+5w+4e-db+86" responsive={false} /><h3>Parcela menor não significa crédito mais barato</h3><p>Prazo mais longo resulta em parcelas menores, mas o valor total pago ao final pode ser significativamente maior. Sempre simule o total a ser pago.</p><h3>Cuidado com cobranças antecipadas</h3><p>Nenhuma instituição financeira séria exige pagamento antecipado para liberar crédito. A Cote Juros nunca cobra valores antecipados.</p><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.articleInline} minHeight={120} theme="dark" format="fluid" layoutKey="-fb+5w+4e-db+86" responsive={false} /><p className="article-callout">Compare sempre pelo CET, não pela taxa nominal. E nunca pague antecipado para ter crédito liberado.</p></div><div style={{ marginTop: 36 }}><Link className="btn-primary" to="/comparar">Comparar empréstimos agora</Link></div></article><aside className="article-sidebar"><div className="sidebar-widget"><div className="sidebar-widget-title">Comparar agora</div><p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 14, lineHeight: 1.6 }}>Veja opções disponíveis para o seu perfil.</p><Link className="btn-primary" style={{ width: '100%', justifyContent: 'center' }} to="/comparar">Ver opções disponíveis</Link></div><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.articleInline} minHeight={120} theme="dark" format="fluid" layoutKey="-fb+5w+4e-db+86" responsive={false} /><div className="sidebar-widget"><div className="sidebar-widget-title">Artigos relacionados</div><div className="related-links"><Link to="/blog/score-de-credito">Score de crédito: mitos e verdades</Link><Link to="/blog/sair-do-vermelho">5 formas de sair do vermelho</Link></div></div></aside></div></div></section></div></PlatformShell>;
-}
-
 export function PlatformBlogPage() {
   return (
     <PlatformShell title="Blog | Cote Juros">
@@ -527,6 +599,7 @@ export function PlatformBlogPage() {
     </PlatformShell>
   );
 }
+
 export function PlatformBlogArticlePage() {
   const { articleSlug } = useParams();
 
@@ -538,6 +611,7 @@ export function PlatformBlogArticlePage() {
     </PlatformShell>
   );
 }
+
 export function PlatformFaqPage() {
   return <PlatformShell title="FAQ | Cote Juros"><div className="page active" id="page-faq"><InnerHero badge="Dúvidas" title={<>Perguntas <span className="text-accent">frequentes</span></>} desc="Tudo que você precisa saber sobre como a Cote Juros funciona." /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container" style={{ maxWidth: 760 }}><div className="faq-list">{faqItems.map(([q, answer], index) => <FaqItem key={q} question={q} answer={answer} initiallyOpen={index === 0} />)}</div></div></section></div></PlatformShell>;
 }
@@ -646,13 +720,27 @@ export function PlatformContactPage() {
 export function PlatformLoginPage({ signup = false }) {
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', lastName: '', cpf: '', email: '', password: '' });
+  const [authState, setAuthState] = useState({ loading: false, error: '', pendingConfirmation: false });
   const submit = async (event) => {
     event.preventDefault();
-    await trackEvent('login_attempt', { sourcePage: signup ? '/criar-conta' : '/login' });
-    await loginCustomer(form);
-    navigate('/dashboard');
+    setAuthState({ loading: true, error: '', pendingConfirmation: false });
+    try {
+      await trackEvent('login_attempt', { sourcePage: signup ? '/criar-conta' : '/login' });
+      const session = signup ? await registerCustomer(form) : await loginCustomer(form);
+      if (signup && session?.pendingConfirmation) {
+        setAuthState({ loading: false, error: '', pendingConfirmation: true });
+        return;
+      }
+      if (session?.authenticated || session?.customer) {
+        navigate('/dashboard');
+        return;
+      }
+      setAuthState({ loading: false, error: 'Nao foi possivel confirmar a sessao agora.', pendingConfirmation: false });
+    } catch (error) {
+      setAuthState({ loading: false, error: error?.message || 'Nao foi possivel autenticar agora.', pendingConfirmation: false });
+    }
   };
-  return <PlatformShell title={`${signup ? 'Criar conta' : 'Login'} | Cote Juros`} bare><div className="page active" id={signup ? 'page-criar-conta' : 'page-login'}><div className="auth-page"><div className="auth-bg-orb" /><form className="auth-card" style={signup ? { maxWidth: 480 } : undefined} onSubmit={submit}><div className="auth-logo"><span className="logo-text"><span className="logo-primary">Cote</span><span className="logo-accent">Juros</span></span></div><div className="auth-title">{signup ? 'Criar conta grátis' : 'Acessar minha conta'}</div><div className="auth-sub">{signup ? 'Compare produtos financeiros e salve suas análises.' : 'Entre para ver suas comparações e ofertas salvas.'}</div>{signup ? <div className="form-row"><div className="form-group"><label className="form-label">Nome</label><input className="form-input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Seu nome" /></div><div className="form-group"><label className="form-label">Sobrenome</label><input className="form-input" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} placeholder="Sobrenome" /></div></div> : null}<div className="form-group"><label className="form-label">E-mail</label><input className="form-input" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="seu@email.com" /></div><div className="form-group"><label className="form-label">Senha</label><input className="form-input" type="password" required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder={signup ? 'Mínimo 8 caracteres' : '********'} /></div>{signup ? <div className="form-group"><label className="form-label">CPF</label><input className="form-input" value={form.cpf} onChange={(e) => setForm({ ...form, cpf: e.target.value })} placeholder="000.000.000-00" /></div> : <Link className="forgot-link" to="/login">Esqueci minha senha</Link>}<button className="btn-auth">{signup ? 'Criar conta' : 'Entrar'}</button><div className="auth-divider">{signup ? 'já tenho conta' : 'ou'}</div><div className="auth-signup-link">{signup ? <Link to="/login">Fazer login</Link> : <>Não tem conta? <Link to="/criar-conta">Criar conta grátis</Link></>}</div><div className="auth-disclaimer">{signup ? 'Ao criar sua conta você concorda com os Termos de Uso e Política de Privacidade.' : 'Acesso destinado a clientes e parceiros da Cote Juros.'}<br />A Cote Juros não é banco e não solicita senhas por e-mail ou WhatsApp.</div></form></div></div></PlatformShell>;
+  return <PlatformShell title={`${signup ? 'Criar conta' : 'Login'} | Cote Juros`} bare><div className="page active" id={signup ? 'page-criar-conta' : 'page-login'}><div className="auth-page"><div className="auth-bg-orb" /><form className="auth-card" style={signup ? { maxWidth: 480 } : undefined} onSubmit={submit}><div className="auth-logo"><span className="logo-text"><span className="logo-primary">Cote</span><span className="logo-accent">Juros</span></span></div><div className="auth-title">{signup ? 'Criar conta grátis' : 'Acessar minha conta'}</div><div className="auth-sub">{signup ? 'Compare produtos financeiros e salve suas análises.' : 'Entre para ver suas comparações e ofertas salvas.'}</div>{authState.error ? <div className="api-ready-note" style={{ marginBottom: 14 }}>{authState.error}</div> : null}{authState.pendingConfirmation ? <div className="api-ready-note" style={{ marginBottom: 14 }}>Cadastro recebido. Confirme seu e-mail antes de acessar o painel.</div> : null}{signup ? <div className="form-row"><div className="form-group"><label className="form-label">Nome</label><input className="form-input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Seu nome" disabled={authState.loading} /></div><div className="form-group"><label className="form-label">Sobrenome</label><input className="form-input" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} placeholder="Sobrenome" disabled={authState.loading} /></div></div> : null}<div className="form-group"><label className="form-label">E-mail</label><input className="form-input" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="seu@email.com" disabled={authState.loading} /></div><div className="form-group"><label className="form-label">Senha</label><input className="form-input" type="password" required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder={signup ? 'Mínimo 8 caracteres' : '********'} disabled={authState.loading} /></div>{signup ? <div className="form-group"><label className="form-label">CPF</label><input className="form-input" value={form.cpf} onChange={(e) => setForm({ ...form, cpf: e.target.value })} placeholder="000.000.000-00" disabled={authState.loading} /></div> : <Link className="forgot-link" to="/login">Esqueci minha senha</Link>}<button className="btn-auth" disabled={authState.loading}>{authState.loading ? 'Aguarde...' : signup ? 'Criar conta' : 'Entrar'}</button><div className="auth-divider">{signup ? 'já tenho conta' : 'ou'}</div><div className="auth-signup-link">{signup ? <Link to="/login">Fazer login</Link> : <>Não tem conta? <Link to="/criar-conta">Criar conta grátis</Link></>}</div><div className="auth-disclaimer">{signup ? 'Ao criar sua conta você concorda com os Termos de Uso e Política de Privacidade.' : 'Acesso destinado a clientes e parceiros da Cote Juros.'}<br />A Cote Juros não é banco e não solicita senhas por e-mail ou WhatsApp.</div></form></div></div></PlatformShell>;
 }
 
 const DASHBOARD_OFFERS_KEY = 'cote_dashboard_offers';
@@ -700,27 +788,33 @@ const normalizeOffer = (offer, index = 0) => ({
 });
 
 function useDashboardData(sourcePage = '/dashboard') {
+  const isProduction = isProductionRuntime();
   const [lead, setLead] = useState(null);
   const [analysis, setAnalysis] = useState(null);
   const [customer, setCustomer] = useState(null);
+  const [customerLoading, setCustomerLoading] = useState(true);
+  const [customerError, setCustomerError] = useState('');
   const [creditasStatus, setCreditasStatus] = useState(null);
-  const [offers, setOffers] = useState(() => readLocalJson(DASHBOARD_OFFERS_KEY, dashboardMockOffers));
+  const [offers, setOffers] = useState(() => (isProduction ? [] : readLocalJson(DASHBOARD_OFFERS_KEY, dashboardMockOffers).map((offer) => ({ ...offer, title: `[DEV] ${offer.title}` }))));
+  const [offersLoading, setOffersLoading] = useState(true);
+  const [offersError, setOffersError] = useState('');
   const [history, setHistory] = useState([]);
 
   useEffect(() => {
+    let mounted = true;
     const localLead = getLeadFromLocalStorage();
     const localAnalysis = readLocalJson('cote_last_analysis') || readLocalJson('cote_quiz_result');
-    const session = getCurrentCustomer();
     const events = readLocalJson('cote_tracking_events', []);
     const storedCreditasStatus = getCreditasStatus();
     const creditFunnel = readLocalJson('cj.credit-funnel.v2');
     const simulationLeads = readLocalJson('cj.simulationLeads', []);
-    const storedOffers = readLocalJson(DASHBOARD_OFFERS_KEY, []);
+    const storedOffers = isProduction ? [] : readLocalJson(DASHBOARD_OFFERS_KEY, []);
     const normalizedAnalysis = localAnalysis || (localLead?.quizAnswers ? { quizAnswers: localLead.quizAnswers, recommendation: recommendProducts(localLead.quizAnswers) } : null);
 
+    setCustomerLoading(true);
+    setCustomerError('');
     setLead(localLead);
     setAnalysis(normalizedAnalysis);
-    setCustomer(session?.customer || null);
     setCreditasStatus(storedCreditasStatus);
     setHistory([
       ...(storedCreditasStatus ? [{ id: 'creditas_status', title: 'Creditas', type: 'Parceira', createdAt: storedCreditasStatus.updatedAt, description: storedCreditasStatus.message || storedCreditasStatus.status || storedCreditasStatus.mode }] : []),
@@ -731,27 +825,51 @@ function useDashboardData(sourcePage = '/dashboard') {
       ...events.slice(-5).reverse().map((event, index) => ({ id: `event_${index}`, title: event.name || 'Evento', type: 'Atividade', createdAt: event.createdAt, description: event.data?.sourcePage || event.mode || 'Registro local' }))
     ]);
 
-    if (storedOffers?.length) setOffers(storedOffers.map(normalizeOffer));
+    if (storedOffers?.length) setOffers(storedOffers.map((offer, index) => normalizeOffer({ ...offer, title: `[DEV] ${offer.title || offer.name || `Oferta ${index + 1}`}` }, index)));
 
+    getCurrentCustomer()
+      .then((session) => {
+        if (!mounted) return;
+        setCustomerLoading(false);
+        setCustomer(session?.customer || null);
+      })
+      .catch((error) => {
+        if (!mounted) return;
+        setCustomerLoading(false);
+        setCustomerError(error?.message || 'Nao foi possivel carregar a sessao.');
+        setCustomer(null);
+      });
+
+    setOffersLoading(true);
+    setOffersError('');
     Promise.allSettled([
       getCreditOffers({ sourcePage }),
       getCardOffers({ sourcePage }),
       getFinancingOffers({ sourcePage }),
       getInsuranceOffers()
     ]).then((results) => {
+      if (!mounted) return;
       const apiOffers = results.flatMap((result) => (result.status === 'fulfilled' && Array.isArray(result.value) ? result.value : []));
-      const normalized = apiOffers.length ? [buildCreditasOffer(), ...apiOffers].map(normalizeOffer) : dashboardMockOffers;
+      const failed = results.some((result) => result.status === 'rejected');
+      const normalized = apiOffers.length
+        ? [...(!isProduction ? [buildCreditasOffer()] : []), ...apiOffers].filter(Boolean).map(normalizeOffer)
+        : (isProduction ? [] : dashboardMockOffers.map((offer) => ({ ...offer, title: `[DEV] ${offer.title}` })).map(normalizeOffer));
       setOffers(normalized);
-      writeLocalJson(DASHBOARD_OFFERS_KEY, normalized);
+      setOffersLoading(false);
+      setOffersError(failed && isProduction ? 'Nao foi possivel carregar ofertas agora.' : '');
+      if (!isProduction) writeLocalJson(DASHBOARD_OFFERS_KEY, normalized);
     });
 
     trackEvent('dashboard_opened', { sourcePage, leadId: localLead?.backendLeadId });
-  }, [sourcePage]);
+    return () => {
+      mounted = false;
+    };
+  }, [isProduction, sourcePage]);
 
   const recommendation = analysis?.recommendation || lead?.recommendation || recommendProducts(lead?.quizAnswers || {});
   const score = recommendation?.score || analysis?.score || lead?.score || 740;
 
-  return { lead, analysis, customer, offers, history, recommendation, score, creditasStatus };
+  return { lead, analysis, customer, customerLoading, customerError, offers, offersLoading, offersError, history, recommendation, score, creditasStatus, isProduction };
 }
 
 function DashboardLayout({ children, title = 'Dashboard | Cote Juros' }) {
@@ -824,7 +942,7 @@ function DashboardOfferRows({ offers = [], compact = false }) {
 
 export function DashboardHomePage() {
   const data = useDashboardData('/dashboard');
-  const { recommendation, score, offers, history, creditasStatus } = data;
+  const { recommendation, score, offers, history, creditasStatus, offersLoading, offersError } = data;
 
   return (
     <DashboardLayout>
@@ -832,7 +950,7 @@ export function DashboardHomePage() {
       <div className="dash-stats-row">
         <Stat label="Score estimado" value={score} color="var(--accent-light)" />
         <Stat label="Opções ativas" value={offers.length} />
-        <Stat label="Melhor taxa" value={offers[0]?.rate || '1,79%'} color="var(--success)" />
+        <Stat label="Melhor taxa" value={offers[0]?.rate || '—'} color="var(--success)" />
         <Stat label="Histórico" value={history.length} />
       </div>
       <div className="dash-panels">
@@ -840,7 +958,7 @@ export function DashboardHomePage() {
         <div className="dash-panel"><div className="dash-panel-title">Radar de Crédito</div>{[['Empréstimo pessoal', '85%', 'var(--accent)'], ['Cartão de crédito', '70%', '#22D3A0'], ['Financiamento', '55%', '#F59E0B'], ['Seguros', '93%', '#F43F5E']].map(([label, pct, color]) => <div className="dash-radar-row" key={label}><div><span>{label}</span><span style={{ color }}>{pct}</span></div><div><i style={{ width: pct, background: color }} /></div></div>)}<Link className="btn-outline" style={{ width: '100%', justifyContent: 'center', marginTop: 20 }} to="/dashboard/analise">Ver análise completa</Link></div>
       </div>
       {creditasStatus ? <div className="dashboard-api-card" style={{ marginTop: 22 }}><div className="dash-panel-title">Status Creditas</div><p style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>{creditasStatus.message || 'Dados complementares pendentes'}</p><div className="api-ready-note" style={{ marginTop: 14 }}>{creditasStatus.status || creditasStatus.mode}</div></div> : null}
-      <div className="dashboard-api-card" style={{ marginTop: 22 }}><div className="dash-panel-title">Ofertas para seu perfil</div><DashboardOfferRows offers={offers.slice(0, 4)} /><div className="partner-cta-row" style={{ marginTop: 18 }}><Link className="btn-primary" to="/dashboard/ofertas">Ver todas as ofertas</Link><Link className="btn-outline" to="/quiz">Refazer análise</Link></div></div>
+      <div className="dashboard-api-card" style={{ marginTop: 22 }}><div className="dash-panel-title">Ofertas para seu perfil</div>{offersLoading ? <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>Carregando ofertas...</p> : offers.length ? <DashboardOfferRows offers={offers.slice(0, 4)} /> : <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>{offersError || 'Nenhuma oferta disponível agora.'}</p>}<div className="partner-cta-row" style={{ marginTop: 18 }}><Link className="btn-primary" to="/dashboard/ofertas">Ver todas as ofertas</Link><Link className="btn-outline" to="/quiz">Refazer análise</Link></div></div>
     </DashboardLayout>
   );
 }
@@ -861,11 +979,11 @@ export function DashboardAnalysisPage() {
 }
 
 export function DashboardOffersPage() {
-  const { offers } = useDashboardData('/dashboard/ofertas');
+  const { offers, offersLoading, offersError, isProduction } = useDashboardData('/dashboard/ofertas');
   return (
     <DashboardLayout title="Ofertas | Cote Juros">
-      <DashboardHeader title="Ofertas para seu perfil" subtitle="Produtos carregados via offerAdapter com fallback local." />
-      {offers.length ? <div className="dashboard-api-card"><div className="dash-panel-title">Opções disponíveis</div><DashboardOfferRows offers={offers} /></div> : <EmptyDashboardState title="Nenhuma oferta disponível" copy="Ainda não encontramos ofertas salvas para seu perfil. Refazer a análise pode atualizar as opções." />}
+      <DashboardHeader title="Ofertas para seu perfil" subtitle={isProduction ? 'Produtos carregados pela API.' : 'DEV: produtos podem usar fallback local sinalizado.'} />
+      {offersLoading ? <div className="dashboard-api-card"><div className="dash-panel-title">Carregando ofertas</div></div> : offers.length ? <div className="dashboard-api-card"><div className="dash-panel-title">Opções disponíveis</div><DashboardOfferRows offers={offers} /></div> : <EmptyDashboardState title="Nenhuma oferta disponível" copy={offersError || 'Ainda não encontramos ofertas disponíveis para seu perfil.'} />}
     </DashboardLayout>
   );
 }
@@ -881,12 +999,12 @@ export function DashboardHistoryPage() {
 }
 
 export function DashboardProfilePage() {
-  const { customer, lead } = useDashboardData('/dashboard/perfil');
-  const profile = customer || { name: lead?.name || lead?.fullName || 'Cliente Cote Juros', email: lead?.email || 'cliente@cotejuros.com.br' };
+  const { customer, customerLoading, customerError, lead, isProduction } = useDashboardData('/dashboard/perfil');
+  const profile = customer || (!isProduction ? { name: lead?.name || lead?.fullName || 'Cliente Cote Juros', email: lead?.email || 'cliente@cotejuros.com.br' } : null);
   return (
     <DashboardLayout title="Perfil | Cote Juros">
-      <DashboardHeader title="Meu perfil" subtitle="Dados de usuário via authAdapter com fallback local." />
-      <div className="dashboard-api-card"><div className="dash-panel-title">Dados cadastrais</div><div className="dashboard-api-grid" style={{ gridTemplateColumns: 'repeat(2,minmax(0,1fr))' }}><div className="dashboard-api-item"><strong>Nome</strong><span>{profile.name}</span></div><div className="dashboard-api-item"><strong>E-mail</strong><span>{profile.email}</span></div><div className="dashboard-api-item"><strong>Telefone</strong><span>{lead?.phone || lead?.whatsapp || 'Não informado'}</span></div><div className="dashboard-api-item"><strong>Status</strong><span>{lead?.status || 'mock ativo'}</span></div></div><div className="partner-cta-row" style={{ marginTop: 18 }}><Link className="btn-primary" to="/quiz">Atualizar perfil financeiro</Link></div></div>
+      <DashboardHeader title="Meu perfil" subtitle={isProduction ? 'Dados de usuario via authAdapter.' : 'DEV: dados podem usar perfil local sinalizado.'} />
+      <div className="dashboard-api-card"><div className="dash-panel-title">Dados cadastrais</div>{customerLoading ? <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>Carregando sessão...</p> : customerError ? <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>{customerError}</p> : profile ? <div className="dashboard-api-grid" style={{ gridTemplateColumns: 'repeat(2,minmax(0,1fr))' }}><div className="dashboard-api-item"><strong>Nome</strong><span>{profile.name}</span></div><div className="dashboard-api-item"><strong>E-mail</strong><span>{profile.email}</span></div><div className="dashboard-api-item"><strong>Telefone</strong><span>{lead?.phone || lead?.whatsapp || 'Não informado'}</span></div><div className="dashboard-api-item"><strong>Status</strong><span>{customer ? 'sessão ativa' : 'perfil local DEV'}</span></div></div> : <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>Sessão de cliente não encontrada.</p>}<div className="partner-cta-row" style={{ marginTop: 18 }}><Link className="btn-primary" to="/quiz">Atualizar perfil financeiro</Link></div></div>
     </DashboardLayout>
   );
 }

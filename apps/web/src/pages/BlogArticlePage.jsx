@@ -273,6 +273,41 @@ function SidebarLink({ item, reserveImage }) {
   );
 }
 
+function ArticleLoadingSkeleton() {
+  return (
+    <main className="cj-article-page">
+      <section className="cj-article-hero">
+        <div className="cj-article-shell">
+          <div className="cj-article-loading-hero" aria-hidden="true">
+            <div className="cj-article-loading-pill" />
+            <div className="cj-article-loading-title" />
+            <div className="cj-article-loading-title cj-article-loading-title--short" />
+            <div className="cj-article-loading-text" />
+            <div className="cj-article-loading-meta" />
+          </div>
+        </div>
+      </section>
+      <section className="cj-article-content-band">
+        <div className="cj-article-shell cj-article-grid">
+          <article className="cj-article-main">
+            <div className="cj-article-loading-card" aria-hidden="true">
+              <div className="cj-article-loading-line" />
+              <div className="cj-article-loading-line" />
+              <div className="cj-article-loading-line cj-article-loading-line--wide" />
+              <div className="cj-article-loading-block" />
+              <div className="cj-article-loading-line" />
+              <div className="cj-article-loading-line cj-article-loading-line--wide" />
+            </div>
+          </article>
+          <aside className="cj-article-sidebar">
+            <div className="cj-article-loading-side" aria-hidden="true" />
+          </aside>
+        </div>
+      </section>
+    </main>
+  );
+}
+
 function BlogArticlePage({ articleSlugOverride = '' }) {
   const { articleSlug } = useParams();
   const resolvedSlug = articleSlugOverride || articleSlug;
@@ -346,18 +381,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
   );
 
   if (isLoading && !safeArticle) {
-    return (
-      <main className="cj-article-page">
-        <section className="cj-article-not-found">
-          <p>Blog Cote Juros</p>
-          <h1>Carregando artigo</h1>
-          <span>Buscando o conteudo publicado na API.</span>
-          <Link to="/blog" className="btn-primary">
-            Voltar para o blog
-          </Link>
-        </section>
-      </main>
-    );
+    return <ArticleLoadingSkeleton />;
   }
 
   if (!safeArticle) {

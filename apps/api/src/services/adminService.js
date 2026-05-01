@@ -207,10 +207,27 @@ const serializeArticle = (article) => ({
   image: article.coverImage || '',
   coverImage: article.coverImage || '',
   ogImage: article.ogImage || '',
+  coverImageAlt: article.structuredContent?.coverImageAlt || article.structuredContent?.imageAlt || '',
+  imageAlt: article.structuredContent?.imageAlt || article.structuredContent?.coverImageAlt || '',
   readTime: article.readTime || 0,
   wordCount: article.wordCount || 0,
   publishDate: article.publishedAt || article.createdAt
 });
+
+const parseArticleStructuredContent = (article) => {
+  if (article?.structuredContent && typeof article.structuredContent === 'object' && !Array.isArray(article.structuredContent)) {
+    return article.structuredContent;
+  }
+
+  try {
+    const parsed = JSON.parse(article?.content || '{}');
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+};
+
+const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object || {}, key);
 
 const ensureProductForOffer = async (prisma, payload) => {
   const productType = payload.productType || 'loan';
@@ -776,8 +793,27 @@ export class AdminService {
 
   static async saveArticle(payload, req, actorUser) {
     const prisma = getPrisma();
+    const current = payload.id ? await prisma.article.findUnique({ where: { id: payload.id } }) : null;
     const category = await ensureArticleCategory(prisma, payload.category);
     const status = payload.status || 'draft';
+    const coverImage = payload.coverImage || payload.image || null;
+    const ogImage = hasOwn(payload, 'ogImage') ? (payload.ogImage || null) : (payload.image || coverImage);
+    const imageAlt = payload.coverImageAlt || payload.imageAlt || payload.altText || null;
+    const structuredContent = {
+      ...parseArticleStructuredContent(current || payload)
+    };
+    if (coverImage) structuredContent.coverImage = coverImage;
+    if (ogImage) structuredContent.ogImage = ogImage;
+    if (imageAlt) {
+      structuredContent.coverImageAlt = imageAlt;
+      structuredContent.imageAlt = imageAlt;
+    }
+    if ((hasOwn(payload, 'coverImage') || hasOwn(payload, 'image')) && !coverImage) delete structuredContent.coverImage;
+    if ((hasOwn(payload, 'ogImage') || hasOwn(payload, 'image')) && !ogImage) delete structuredContent.ogImage;
+    if ((hasOwn(payload, 'coverImageAlt') || hasOwn(payload, 'imageAlt') || hasOwn(payload, 'altText')) && !imageAlt) {
+      delete structuredContent.coverImageAlt;
+      delete structuredContent.imageAlt;
+    }
     const data = {
       title: payload.title,
       slug: payload.slug || slugify(payload.title),
@@ -787,6 +823,9 @@ export class AdminService {
       author: payload.author || null,
       seoTitle: payload.seoTitle || null,
       seoDescription: payload.seoDescription || payload.metaDescription || null,
+      coverImage,
+      ogImage,
+      structuredContent,
       publishedAt: status === 'published' ? (payload.publishedAt ? new Date(payload.publishedAt) : new Date()) : null,
       status
     };
