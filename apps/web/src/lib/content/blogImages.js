@@ -67,6 +67,21 @@ export const buildGeneratedArticleImage = (article = {}) => {
   return buildStockProviderImage(article);
 };
 
+export const resolveBlogImage = (article = {}) => {
+  const structuredContent = article.structuredContent || {};
+  const explicitImage = [
+    article.coverImage,
+    article.ogImage,
+    article.image,
+    article.thumbnail,
+    article.heroImage,
+    structuredContent.coverImage,
+    structuredContent.heroImage
+  ].find(isRenderableImage);
+
+  return explicitImage || getBlogCategoryImage(article.category || article.clusterLabel);
+};
+
 export const resolveArticleImageSources = (article = {}) => {
   const slug = slugify(article.slug || article.title || article.id || 'artigo');
   const isPriorityArticle = Boolean(BLOG_PRIORITY_IMAGE_LIBRARY[slug]);

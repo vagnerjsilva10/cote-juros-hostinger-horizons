@@ -5,6 +5,8 @@ import AdSenseBlock, { ADSENSE_PLATFORM_SLOTS } from '@/components/AdSenseBlock.
 import SmartQuiz from '@/components/smart-quiz/SmartQuiz.jsx';
 import BlogPage from '@/pages/BlogPage.jsx';
 import BlogArticlePage from '@/pages/BlogArticlePage.jsx';
+import { resolveArticleImageAlt, resolveBlogImage } from '@/lib/content/blogImages.js';
+import { getArticlePath, getArticleSummary, getEditorialTitle, hasRenderableArticleContent, normalizeArticleData } from '@/lib/content/articles.js';
 import { buildCreditasOffer, getCardOffers, getCreditOffers, getFinancingOffers, getInsuranceOffers } from '@/platform/services/offerAdapter.js';
 import { getCreditasStatus } from '@/platform/services/creditasAdapter.js';
 import { getCurrentCustomer, loginCustomer, logoutCustomer, registerCustomer } from '@/platform/services/authAdapter.js';
@@ -30,15 +32,6 @@ const compareFilters = [
   ['card', 'Cartões'],
   ['financing', 'Financiamentos'],
   ['insurance', 'Seguros']
-];
-
-const blogCards = [
-  ['Empréstimos', 'Como escolher um empréstimo pessoal sem cair em armadilhas', 'Entenda o que avaliar antes de assinar: CET, prazo, parcela e reputação do parceiro.', '15 min de leitura', 'Crédito', 'linear-gradient(135deg,#1a0533,#2d1065)'],
-  ['Cartões', 'Cartão com cashback ou milhas: qual vale mais para o seu perfil?', 'A resposta depende dos seus hábitos de consumo. Veja como calcular o retorno real.', '8 min de leitura', 'Cartões', 'linear-gradient(135deg,#052918,#0a4d2e)'],
-  ['Seguros', 'Seguro de vida: quando contratar e o que realmente cobre', 'Morte acidental, invalidez permanente e outros pontos essenciais que muita gente ignora.', '10 min', 'Seguros', 'linear-gradient(135deg,#1a0a05,#4d2210)'],
-  ['Planejamento', '5 formas de sair do vermelho sem comprometer o salário inteiro', 'Estratégias reais para reorganizar as finanças sem cortar tudo de uma vez.', '12 min', 'Planejamento', 'linear-gradient(135deg,#0a1a33,#103055)'],
-  ['Financiamento', 'Financiamento imobiliário: o que ninguém te conta antes de assinar', 'CET, IPCA atrelado, prazo real e custos cartoriais. O que realmente importa.', '9 min', 'Financiamento', 'linear-gradient(135deg,#1a1a05,#3d3d0a)'],
-  ['Crédito', 'Score de crédito: mitos, verdades e como melhorar o seu', 'O que realmente afeta sua pontuação e ações práticas para melhorá-la com consistência.', '7 min', 'Crédito', 'linear-gradient(135deg,#1a0533,#330a4d)']
 ];
 
 const insuranceCards = [
@@ -429,7 +422,91 @@ function BlogHome() {
 }
 
 function BlogGrid({ count = 3 }) {
-  return <div className="blog-grid">{blogCards.slice(0, count).map(([cat, title, excerpt, time, topic, bg]) => <Link className="blog-card" key={title} to="/blog/como-escolher-emprestimo-pessoal"><div className="blog-img" style={{ background: bg }}><div className="blog-cat-badge">{cat}</div></div><div className="blog-content"><div className="blog-meta"><span>{time}</span><span>•</span><span>{topic}</span></div><div className="blog-title">{title}</div><div className="blog-excerpt">{excerpt}</div></div></Link>)}</div>;
+  const [articles, setArticles] = useState([]);
+  const [loadState, setLoadState] = useState('loading');
+
+  useEffect(() => {
+    let active = true;
+    setLoadState('loading');
+    setArticles([]);
+
+    portalApi
+      .getArticles({ sort: 'recent', limit: count })
+      .then((items) => {
+        if (!active) return;
+        const remoteArticles = Array.isArray(items)
+          ? items.map((item) => normalizeArticleData(item)).filter(hasRenderableArticleContent).slice(0, count)
+          : [];
+        setArticles(remoteArticles);
+        setLoadState(remoteArticles.length ? 'ready' : 'empty');
+      })
+      .catch((error) => {
+        console.error('[home-blog] erro ao carregar artigos', error);
+        if (!active) return;
+        setArticles([]);
+        setLoadState('error');
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [count]);
+
+  if (loadState === 'loading') return <BlogGridSkeleton count={count} />;
+  if (!articles.length) return <div className="blog-empty-state"><span>Artigos indisponíveis</span></div>;
+
+  return <div className="blog-grid">{articles.map((article) => <HomeBlogCard article={article} key={article.slug || article.id || article.title} />)}</div>;
+}
+
+function BlogGridSkeleton({ count = 3 }) {
+  return (
+    <div className="blog-grid blog-grid--skeleton">
+      {Array.from({ length: count }).map((_, index) => (
+        <div className="blog-card blog-card--skeleton" key={index}>
+          <div className="blog-skeleton-media" />
+          <div className="blog-content">
+            <div className="blog-skeleton-line blog-skeleton-line--meta" />
+            <div className="blog-skeleton-line blog-skeleton-line--title" />
+            <div className="blog-skeleton-line" />
+            <div className="blog-skeleton-line blog-skeleton-line--short" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function HomeBlogCard({ article }) {
+  const image = resolveBlogImage(article);
+  const category = article.category || article.clusterLabel || 'Educação financeira';
+  const readTime = article.readTime || article.readingTime || 6;
+  const handleImageError = (event) => {
+    const fallback = resolveBlogImage({
+      category,
+      clusterLabel: article.clusterLabel,
+      coverImage: '',
+      ogImage: '',
+      image: '',
+      thumbnail: '',
+      heroImage: '',
+      structuredContent: {}
+    });
+    if (event.currentTarget.getAttribute('src') !== fallback) event.currentTarget.src = fallback;
+  };
+
+  return (
+    <Link className="blog-card" to={getArticlePath(article)}>
+      <div className="blog-img">
+        <img src={image} alt={resolveArticleImageAlt(article)} loading="lazy" decoding="async" onError={handleImageError} />
+        <div className="blog-cat-badge">{category}</div>
+      </div>
+      <div className="blog-content">
+        <div className="blog-meta"><span>{readTime} min de leitura</span><span>•</span><span>{category}</span></div>
+        <div className="blog-title">{getEditorialTitle(article)}</div>
+        <div className="blog-excerpt">{getArticleSummary(article)}</div>
+      </div>
+    </Link>
+  );
 }
 
 function Compliance() {
