@@ -5160,13 +5160,19 @@
     padding: 78px 0 34px;
   }
 
+  .cj-platform #hero > .container {
+    padding-left: clamp(28px, 7vw, 36px);
+    padding-right: clamp(28px, 7vw, 36px);
+  }
+
   .cj-platform #hero .hero-inner {
     padding: 18px 0 0;
   }
 
   .cj-platform #hero .hero-left {
+    width: 100%;
     max-width: 100%;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .cj-platform #hero .hero-badge {
@@ -5177,19 +5183,46 @@
   }
 
   .cj-platform #hero .hero-title {
-    max-width: 8.8ch;
+    width: 100%;
+    max-width: none;
     margin-bottom: 18px;
-    font-size: clamp(42px, 11vw, 48px);
-    line-height: 1.02;
-    letter-spacing: 0;
+    font-size: clamp(38px, 9.8vw, 46px);
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
   }
 
   .cj-platform #hero .hero-desc {
     max-width: 100%;
     margin-bottom: 26px;
     color: rgba(231, 229, 255, 0.74);
-    font-size: clamp(20px, 5.25vw, 23px);
-    line-height: 1.48;
+    font-size: clamp(18px, 4.7vw, 22px);
+    line-height: 1.45;
+  }
+
+  .cj-platform :is(#how-it-works, #radar, #compare-home, #categories, #seguros-home, #blog-home, #cta-final) h2 {
+    width: 100%;
+    max-width: none;
+    font-size: clamp(34px, 8.7vw, 40px);
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  .cj-platform :is(#how-it-works, #radar, #compare-home, #categories, #seguros-home, #blog-home, #cta-final) .section-desc {
+    max-width: 100%;
+    font-size: clamp(16px, 4.2vw, 18px);
+    line-height: 1.55;
+  }
+
+  .cj-platform :is(#how-it-works, #radar, #compare-home, #categories, #seguros-home, #blog-home, #cta-final) > .container {
+    padding-left: clamp(28px, 7vw, 36px);
+    padding-right: clamp(28px, 7vw, 36px);
+  }
+
+  .cj-platform #radar .radar-section-inner > div:first-child {
+    width: 100%;
+    max-width: none;
   }
 
   .cj-platform :is(.hero-subtitle, .inner-hero-desc, .section-desc, .section-subtitle) {
