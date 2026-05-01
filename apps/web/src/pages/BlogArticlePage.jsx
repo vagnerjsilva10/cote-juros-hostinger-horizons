@@ -186,8 +186,11 @@ function ArticleVisual({ article, title, className = '', imageClassName = '', re
   const imageSet = useMemo(() => getArticleImageCandidates(article), [article]);
   const [srcIndex, setSrcIndex] = useState(0);
   const sources = useMemo(() => [imageSet.primary, ...imageSet.fallbacks].filter(Boolean), [imageSet]);
-  const currentSrc = sources[srcIndex];
-  const shouldUseImage = Boolean(currentSrc && (!reserveImage || !reserveImage(currentSrc)));
+  const currentSrc = useMemo(() => {
+    if (!reserveImage) return sources[srcIndex];
+    return sources.slice(srcIndex).find((src) => !reserveImage(src));
+  }, [reserveImage, sources, srcIndex]);
+  const shouldUseImage = Boolean(currentSrc);
   const palette = getVisualPalette(article);
 
   useEffect(() => {
@@ -684,7 +687,7 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                   <h2>Artigos populares</h2>
                   <div>
                     {sidebarArticles.map((item) => (
-                      <SidebarLink key={`sidebar-${item.path}`} item={item} reserveImage={reserveRelatedImage} />
+                      <SidebarLink key={`sidebar-${item.path}`} item={item} />
                     ))}
                   </div>
                 </section>
