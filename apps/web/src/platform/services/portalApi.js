@@ -680,7 +680,18 @@ export const portalApi = {
   async createPartnerRedirect(payload) {
     if (!useRemote) {
       await wait();
-      return portalRepository.createPartnerRedirect(payload);
+      const clickId = `cj_local_${Date.now()}`;
+      return portalRepository.createPartnerRedirect({
+        partnerId: payload.partnerId,
+        partnerSlug: payload.partnerSlug,
+        partnerName: payload.partnerName,
+        productType: payload.productType,
+        sourcePage: payload.sourcePage,
+        utm: payload.utm,
+        ok: true,
+        clickId,
+        mode: 'local_no_affiliate_url'
+      });
     }
 
     try {
@@ -688,9 +699,11 @@ export const portalApi = {
         method: 'POST',
         body: JSON.stringify({
           partnerId: payload.partnerId,
+          partnerSlug: payload.partnerSlug,
+          simulationId: payload.simulationId,
+          leadId: payload.leadId,
           offerId: payload.offerId,
           sourcePage: payload.sourcePage,
-          destinationUrl: payload.destinationUrl,
           utm: payload.utm
         })
       });
@@ -921,6 +934,15 @@ export const portalApi = {
       method: 'POST',
       body: JSON.stringify({})
     });
+  },
+
+  async getAdminPartnerPerformance() {
+    if (!useRemote) {
+      await wait();
+      return [];
+    }
+
+    return request('/api/admin/partners/performance');
   },
 
   async getAdminArticles(filters) {

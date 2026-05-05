@@ -22,10 +22,18 @@ import {
 } from '../integrations/creditas/index.js';
 import {
   checkCreditasEligibility as checkPublicCreditasEligibility,
-  submitCreditasLead
+  submitCreditasEligibilityProxy
 } from '../services/creditasClient.js';
 
 const router = express.Router();
+
+const assertCreditasRealSubmissionEnabled = () => {
+  if (process.env.CREDITAS_ENABLE_REAL_SUBMISSION === 'true') return;
+  const error = new Error('Envio real Creditas desabilitado. Use apenas eligibility enquanto CREDITAS_ENABLE_REAL_SUBMISSION nao estiver true.');
+  error.status = 503;
+  error.code = 'CREDITAS_REAL_SUBMISSION_DISABLED';
+  throw error;
+};
 
 const stateEnum = z.enum(['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT', 'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO']);
 const genderEnum = z.enum(['MALE', 'FEMALE', 'OTHER']);
@@ -172,12 +180,30 @@ router.get(
 router.get(
   '/creditas/health',
   asyncHandler(async (_req, res) => {
-    res.json({
-      data: {
-        ok: true,
-        ...getCreditasHealth(),
-        timestamp: new Date().toISOString()
+    const health = getCreditasHealth();
+    let tokenGenerated = false;
+    let error = null;
+
+    if (health.authConfigured && health.authUrlConfigured) {
+      try {
+        await getCreditasAccessToken({ forceRefresh: true });
+        tokenGenerated = true;
+      } catch (err) {
+        error = err?.message || 'Creditas token generation failed.';
       }
+    } else {
+      error = 'Creditas auth environment variables are not fully configured.';
+    }
+
+    res.json({
+      ok: tokenGenerated,
+      authConfigured: health.authConfigured,
+      tokenGenerated,
+      environment: health.environment,
+      authUrlConfigured: health.authUrlConfigured,
+      apiBaseConfigured: health.apiBaseConfigured,
+      error,
+      timestamp: new Date().toISOString()
     });
   })
 );
@@ -206,18 +232,20 @@ router.post(
   })
 );
 
+// Backward-compatible route name: this only runs eligibility and does not submit a Creditas lead/proposal.
 router.post(
   '/creditas/lead',
   asyncHandler(async (req, res) => {
     const payload = creditasPublicPayloadSchema.parse(req.body || {});
-    const data = await submitCreditasLead(payload);
-    res.status(data.ok ? 201 : 200).json({ data });
+    const data = await submitCreditasEligibilityProxy(payload);
+    res.status(200).json({ data });
   })
 );
 
 router.post(
   '/creditas/offers',
   asyncHandler(async (req, res) => {
+    assertCreditasRealSubmissionEnabled();
     const data = await createCreditasAutoEquityOffer(req.body || {});
     res.status(201).json({ data });
   })
@@ -226,6 +254,7 @@ router.post(
 router.get(
   '/creditas/offers/:id',
   asyncHandler(async (req, res) => {
+    assertCreditasRealSubmissionEnabled();
     const data = await getCreditasAutoEquityOffer(req.params.id);
     res.json({ data });
   })
@@ -234,6 +263,7 @@ router.get(
 router.post(
   '/creditas/proposals',
   asyncHandler(async (req, res) => {
+    assertCreditasRealSubmissionEnabled();
     const { product, payload } = creditasProposalRequestSchema.parse(req.body || {});
     const data = product === 'home_equity'
       ? await createCreditasHomeEquityProposal(payload)
@@ -245,6 +275,7 @@ router.post(
 router.get(
   '/creditas/proposals/:id/status',
   asyncHandler(async (req, res) => {
+    assertCreditasRealSubmissionEnabled();
     const query = creditasProposalStatusQuerySchema.parse(req.query || {});
     const data = await getCreditasProposalStatus({
       proposalId: req.params.id,
@@ -257,6 +288,7 @@ router.get(
 router.get(
   '/creditas/proposals/:id/documents',
   asyncHandler(async (req, res) => {
+    assertCreditasRealSubmissionEnabled();
     const data = await listCreditasProposalDocuments(req.params.id);
     res.json({ data });
   })
@@ -265,6 +297,7 @@ router.get(
 router.post(
   '/creditas/proposals/:id/documents',
   asyncHandler(async (req, res) => {
+    assertCreditasRealSubmissionEnabled();
     const payload = creditasDocumentPayloadSchema.parse(req.body || {});
     const data = await sendCreditasProposalDocument({
       proposalId: req.params.id,

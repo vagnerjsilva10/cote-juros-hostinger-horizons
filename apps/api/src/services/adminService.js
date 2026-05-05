@@ -4,6 +4,7 @@ import { hashPassword, hashValue, recordAdminAudit } from '../lib/adminAuth.js';
 import { getJurosBaixosHealth } from '../integrations/jurosBaixos/config.js';
 import { getCreditasHealth } from '../integrations/creditas/config.js';
 import { PartnerMatcherService } from './partnerMatcherService.js';
+import { PartnerService } from './partnerService.js';
 
 const leadDetailInclude = {
   tagAssignments: {
@@ -153,7 +154,8 @@ const serializeAdminUser = (user) => ({
 const serializePartner = (partner) => ({
   ...partner,
   bankName: partner.bank?.name || null,
-  fallbackPartnerName: partner.fallbackPartner?.name || null
+  fallbackPartnerName: partner.fallbackPartner?.name || null,
+  affiliateUrl: partner.affiliateUrl || partner.trackingLink || partner.metadata?.affiliateUrl || ''
 });
 
 const toNullableNumber = (value) => {
@@ -1061,6 +1063,10 @@ export class AdminService {
       bankId: payload.bankId || null,
       integrationType: payload.integrationType,
       trackingLink: payload.trackingLink || null,
+      productType: payload.productType || null,
+      actionType: payload.actionType || null,
+      affiliateUrl: payload.affiliateUrl || payload.trackingLink || null,
+      isActive: payload.isActive ?? payload.status !== 'inactive',
       webhookUrl: payload.webhookUrl || null,
       apiBaseUrl: payload.apiBaseUrl || null,
       productTypes: payload.productTypes || [],
@@ -1107,11 +1113,15 @@ export class AdminService {
         slug: partner.slug,
         integrationType: partner.integrationType,
         status: partner.status,
-        healthStatus: partner.healthStatus
+      healthStatus: partner.healthStatus
       }
     });
 
     return serializePartner(partner);
+  }
+
+  static async getPartnerPerformance() {
+    return PartnerService.getPerformance();
   }
 
   static async togglePartnerStatus(id, req, actorUser) {
@@ -1123,7 +1133,8 @@ export class AdminService {
     const partner = await prisma.partnerConfig.update({
       where: { id },
       data: {
-        status: nextStatus
+        status: nextStatus,
+        isActive: nextStatus === 'active'
       },
       include: {
         bank: true,
@@ -1158,7 +1169,7 @@ export class AdminService {
     let healthStatus = 'healthy';
     let message = 'Configuracao pronta para operacao.';
 
-    if (partner.integrationType === 'tracking_link' && !partner.trackingLink) {
+    if (partner.integrationType === 'tracking_link' && !partner.trackingLink && !partner.affiliateUrl) {
       healthStatus = 'warning';
       message = 'Parceiro sem tracking link configurado.';
     }

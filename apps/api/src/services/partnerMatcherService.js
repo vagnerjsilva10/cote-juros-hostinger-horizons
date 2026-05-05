@@ -25,7 +25,10 @@ const serializePartnerConfig = (partner) => ({
   type: partner.integrationType === 'tracking_link' ? 'affiliate_link' : partner.integrationType,
   mode: partner.integrationType,
   status: partner.status,
-  destinationUrl: partner.trackingLink || partner.webhookUrl || partner.apiBaseUrl || '',
+  destinationUrl: partner.affiliateUrl || partner.trackingLink || partner.webhookUrl || partner.apiBaseUrl || partner.metadata?.affiliateUrl || '',
+  affiliateUrl: partner.affiliateUrl || partner.trackingLink || partner.metadata?.affiliateUrl || '',
+  productType: partner.productType || partner.productTypes?.[0] || null,
+  actionType: partner.actionType || partner.metadata?.actionType || null,
   description: partner.metadata?.description || 'Opcao parceira para comparar condicoes de credito.',
   highlights: Array.isArray(partner.metadata?.highlights)
     ? partner.metadata.highlights
@@ -71,9 +74,11 @@ export class PartnerMatcherService {
       const partners = await getPrisma().partnerConfig.findMany({
         where: {
           status: 'active',
+          isActive: true,
           OR: [
             { productTypes: { isEmpty: true } },
-            { productTypes: { has: productType } }
+            { productTypes: { has: productType } },
+            { productType }
           ]
         },
         orderBy: [{ priority: 'desc' }, { updatedAt: 'desc' }]
@@ -129,12 +134,92 @@ export class PartnerMatcherService {
       byId.set(SUPERSIM_PARTNER.id, SUPERSIM_PARTNER);
     }
 
-    const recommendations = Array.from(byId.values())
+    const configuredRecommendations = Array.from(byId.values())
       .filter((partner) => partner.status === 'active')
       .sort((a, b) => Number(b.priority || 0) - Number(a.priority || 0))
       .slice(0, 4);
 
-    return recommendations;
+    const score = this.scoreLead({
+      income: lead.income != null ? Number(lead.income) : 0,
+      hasRestriction: Boolean(lead.hasRestriction),
+      employmentStatus: lead.employmentStatus || '',
+      requestedAmount: lead.requestedAmount != null ? Number(lead.requestedAmount) : 0
+    });
+    const hasGuarantee = Boolean(lead.hasVehicle || lead.hasProperty || ['vehicle-secured', 'home-secured'].includes(normalizeText(lead.creditType || lead.tipoCredito)));
+    const missingRequired = [
+      !lead.fullName && 'contactName',
+      !lead.phone && !lead.whatsapp && 'whatsapp',
+      !lead.email && 'email'
+    ].filter(Boolean);
+    const actionFallback = missingRequired.length ? 'complete_data' : 'redirect';
+
+    const decisionMatches = [];
+
+    if (hasGuarantee) {
+      decisionMatches.push({
+        id: 'creditas',
+        slug: 'creditas',
+        name: 'Creditas',
+        type: 'eligibility',
+        mode: 'eligibility',
+        status: 'active',
+        destinationUrl: '',
+        description: 'Elegibilidade para crédito com garantia, sem chamada de oferta ou proposta neste lote.',
+        highlights: ['Garantia informada', 'Consulta de elegibilidade', 'Sem promessa de aprovação'],
+        ctaText: missingRequired.length ? 'Completar dados' : 'Consultar elegibilidade',
+        partnerId: 'creditas',
+        partnerName: 'Creditas',
+        productType: lead.hasProperty ? 'home_equity_eligibility' : 'vehicle_equity_eligibility',
+        matchScore: Math.min(100, score.value + 8),
+        chanceLabel: lead.hasRestriction ? 'média' : score.value >= 70 ? 'alta' : 'média',
+        reason: 'Garantia declarada abre caminho para consulta de elegibilidade de crédito com garantia.',
+        requiredFields: missingRequired,
+        actionType: missingRequired.length ? 'complete_data' : 'eligibility',
+        ctaLabel: missingRequired.length ? 'Completar dados' : 'Consultar elegibilidade'
+      });
+    }
+
+    decisionMatches.push({
+      id: lead.hasRestriction ? 'restriction-friendly-credit' : 'standard-credit-hub',
+      slug: lead.hasRestriction ? 'restriction-friendly-credit' : 'standard-credit-hub',
+      name: lead.hasRestriction ? 'Parceiro permissivo' : 'Hub de crédito pessoal',
+      type: 'decision_match',
+      mode: 'redirect',
+      status: 'active',
+      destinationUrl: '',
+      description: lead.hasRestriction
+        ? 'Parceiros mais permissivos podem analisar perfis com restrição, sem garantia de aprovação.'
+        : 'Caminho de crédito pessoal para comparar antes de decidir.',
+      highlights: ['Análise do parceiro', 'Sem taxa antecipada', 'Condições podem variar'],
+      ctaText: missingRequired.length ? 'Completar dados' : 'Ver opção',
+      partnerId: lead.hasRestriction ? 'restriction-friendly-credit' : 'standard-credit-hub',
+      partnerName: lead.hasRestriction ? 'Parceiro permissivo' : 'Hub de crédito pessoal',
+      productType,
+      matchScore: score.value,
+      chanceLabel: lead.hasRestriction ? 'baixa' : score.value >= 70 ? 'alta' : score.value >= 45 ? 'média' : 'baixa',
+      reason: lead.hasRestriction
+        ? 'Nome negativado prioriza rotas mais permissivas e evita classificar chance como alta sem justificativa.'
+        : 'Perfil compatível com comparação inicial de crédito pessoal.',
+      requiredFields: missingRequired,
+      actionType: actionFallback,
+      ctaLabel: missingRequired.length ? 'Completar dados' : 'Ver opção'
+    });
+
+    return configuredRecommendations.length
+      ? configuredRecommendations.map((partner, index) => ({
+        ...decisionMatches[index % decisionMatches.length],
+        ...partner,
+        partnerId: partner.id,
+        partnerName: partner.name,
+        productType,
+        matchScore: Math.max(30, score.value - index * 5),
+        chanceLabel: lead.hasRestriction ? 'baixa' : score.value >= 70 ? 'alta' : score.value >= 45 ? 'média' : 'baixa',
+        reason: partner.description || 'Parceiro ativo compatível com os dados informados.',
+        requiredFields: missingRequired,
+        actionType: missingRequired.length ? 'complete_data' : 'redirect',
+        ctaLabel: missingRequired.length ? 'Completar dados' : partner.ctaText || 'Ver opção'
+      }))
+      : decisionMatches;
   }
 
   static async recordRoutingArtifacts({ lead, profile, recommendations, sourcePage }) {

@@ -122,6 +122,10 @@ const partnerSaveSchema = z.object({
   bankId: z.string().optional().nullable(),
   integrationType: z.enum(['tracking_link', 'webhook', 'api', 'manual']),
   trackingLink: z.string().optional().nullable(),
+  productType: z.string().optional().nullable(),
+  actionType: z.string().optional().nullable(),
+  affiliateUrl: z.string().optional().nullable(),
+  isActive: z.boolean().optional(),
   webhookUrl: z.string().optional().nullable(),
   apiBaseUrl: z.string().optional().nullable(),
   productTypes: z.array(z.enum(['loan', 'credit_card', 'financing'])).default([]),
@@ -502,6 +506,10 @@ router.get('/users/owners', requirePermission('leads', 'view'), asyncHandler(asy
 router.get('/partners', requirePermission('partners', 'view'), asyncHandler(async (req, res) => {
   const filters = partnerListQuerySchema.parse(req.query || {});
   res.json({ data: await AdminService.listPartners(filters) });
+}));
+
+router.get('/partners/performance', requirePermission('partners', 'view'), asyncHandler(async (_req, res) => {
+  res.json({ data: await AdminService.getPartnerPerformance() });
 }));
 
 router.post('/partners', requirePermission('partners', 'create'), asyncHandler(async (req, res) => {

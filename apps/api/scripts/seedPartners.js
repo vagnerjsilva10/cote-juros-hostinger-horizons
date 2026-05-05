@@ -15,7 +15,24 @@ const DEFAULT_PARTNERS = [
     ],
     priority: 100,
     productTypes: ['loan'],
+    productType: 'loan',
+    actionType: 'redirect',
     ctaText: 'Ver condicoes'
+  },
+  {
+    slug: 'upp',
+    name: 'Up.p',
+    affiliateUrl: 'https://upp.com.br/?m=la567e',
+    shortDescription: 'Opcao de FGTS e credito rapido com analise do parceiro, inclusive para perfis que precisam de alternativas permissivas.',
+    highlights: [
+      'Pode aparecer para negativado ou credito rapido',
+      'Redirect rastreado pela Cote Juros antes do parceiro'
+    ],
+    priority: 20,
+    productTypes: [],
+    productType: 'fgts',
+    actionType: 'redirect',
+    ctaText: 'Ver opcao de FGTS'
   }
 ];
 
@@ -43,6 +60,10 @@ const buildCreateData = (partner) => ({
   slug: partner.slug,
   integrationType: 'tracking_link',
   trackingLink: partner.affiliateUrl,
+  affiliateUrl: partner.affiliateUrl,
+  productType: partner.productType || null,
+  actionType: partner.actionType || 'redirect',
+  isActive: true,
   productTypes: partner.productTypes,
   status: 'active',
   healthStatus: 'unknown',
@@ -57,6 +78,10 @@ const buildUpdateData = (current, partner) => {
 
   if (isBlank(current.name)) data.name = partner.name;
   if (isBlank(current.trackingLink)) data.trackingLink = partner.affiliateUrl;
+  if (isBlank(current.affiliateUrl)) data.affiliateUrl = partner.affiliateUrl;
+  if (isBlank(current.productType)) data.productType = partner.productType || null;
+  if (isBlank(current.actionType)) data.actionType = partner.actionType || 'redirect';
+  if (current.isActive == null) data.isActive = true;
   if (isEmptyArray(current.productTypes)) data.productTypes = partner.productTypes;
   if (current.priority == null) data.priority = partner.priority;
   if (isBlank(current.internalNotes)) {

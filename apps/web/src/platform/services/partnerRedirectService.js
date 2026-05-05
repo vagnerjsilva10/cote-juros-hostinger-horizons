@@ -1,11 +1,13 @@
 import { portalApi } from '@/platform/services/portalApi.js';
 
 export const partnerRedirectService = {
-  async create({ partnerId, offerId, destinationUrl, sourcePage, productType, utm, metadata }) {
+  async create({ partnerId, partnerSlug, simulationId, leadId, offerId, sourcePage, productType, utm, metadata }) {
     const redirect = await portalApi.createPartnerRedirect({
       partnerId,
+      partnerSlug,
+      simulationId,
+      leadId,
       offerId,
-      destinationUrl,
       sourcePage,
       productType,
       utm,
@@ -15,7 +17,7 @@ export const partnerRedirectService = {
     await portalApi.trackClick({
       type: 'partner_redirect',
       sourcePage,
-      target: destinationUrl,
+      target: redirect?.clickId || partnerSlug || partnerId,
       offerId,
       partnerId,
       productType,
@@ -25,7 +27,7 @@ export const partnerRedirectService = {
 
     return {
       ...redirect,
-      resolvedUrl: redirect?.resolvedUrl || redirect?.destination || destinationUrl
+      resolvedUrl: redirect?.redirectUrl || redirect?.resolvedUrl || redirect?.destination || null
     };
   }
 };

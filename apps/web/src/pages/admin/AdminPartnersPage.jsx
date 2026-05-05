@@ -17,6 +17,10 @@ const emptyForm = {
   bankId: '',
   integrationType: 'tracking_link',
   trackingLink: '',
+  productType: '',
+  actionType: 'redirect',
+  affiliateUrl: '',
+  isActive: true,
   webhookUrl: '',
   apiBaseUrl: '',
   productTypes: ['loan'],
@@ -458,6 +462,11 @@ export default function AdminPartnersPage() {
               </div>
 
               <div><Label>Tracking link</Label><Input value={editing.trackingLink} onChange={(e) => setEditing((prev) => ({ ...prev, trackingLink: e.target.value }))} /></div>
+              <div><Label>Affiliate URL</Label><Input value={editing.affiliateUrl} onChange={(e) => setEditing((prev) => ({ ...prev, affiliateUrl: e.target.value }))} placeholder="https://parceiro.com/?m=..." /></div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div><Label>Produto principal</Label><Input value={editing.productType} onChange={(e) => setEditing((prev) => ({ ...prev, productType: e.target.value }))} placeholder="fgts, loan..." /></div>
+                <div><Label>Ação</Label><Input value={editing.actionType} onChange={(e) => setEditing((prev) => ({ ...prev, actionType: e.target.value }))} placeholder="redirect" /></div>
+              </div>
               <div><Label>Webhook URL</Label><Input value={editing.webhookUrl} onChange={(e) => setEditing((prev) => ({ ...prev, webhookUrl: e.target.value }))} /></div>
               <div><Label>API base URL</Label><Input value={editing.apiBaseUrl} onChange={(e) => setEditing((prev) => ({ ...prev, apiBaseUrl: e.target.value }))} /></div>
 

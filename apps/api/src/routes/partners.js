@@ -25,7 +25,15 @@ router.post(
           urgencia: z.string().nullable().optional(),
           tipoCredito: z.string().nullable().optional(),
           tipoCliente: z.string().nullable().optional(),
-          employmentStatus: z.string().nullable().optional()
+          employmentStatus: z.string().nullable().optional(),
+          hasVehicle: z.boolean().nullable().optional(),
+          hasProperty: z.boolean().nullable().optional(),
+          city: z.string().nullable().optional(),
+          state: z.string().nullable().optional(),
+          fullName: z.string().nullable().optional(),
+          phone: z.string().nullable().optional(),
+          whatsapp: z.string().nullable().optional(),
+          email: z.string().nullable().optional()
         })
         .partial()
         .optional()
@@ -44,7 +52,14 @@ router.post(
         income: profile.renda,
         requestedAmount: profile.valor,
         urgency: profile.urgencia,
-        employmentStatus: profile.employmentStatus || profile.tipoCliente || ''
+        employmentStatus: profile.employmentStatus || profile.tipoCliente || '',
+        creditType: profile.tipoCredito,
+        hasVehicle: profile.hasVehicle,
+        hasProperty: profile.hasProperty,
+        fullName: profile.fullName,
+        phone: profile.phone,
+        whatsapp: profile.whatsapp,
+        email: profile.email
       }
     });
 
@@ -61,32 +76,64 @@ router.post(
   '/redirect',
   asyncHandler(async (req, res) => {
     const schema = z.object({
-      partnerId: z.string(),
+      partnerId: z.string().optional(),
+      partnerSlug: z.string().optional(),
+      simulationId: z.string().optional(),
+      leadId: z.string().optional(),
       offerId: z.string().optional(),
       sourcePage: z.string(),
-      destinationUrl: z.string().url(),
-      trackingBaseUrl: z.string().url().optional(),
       utm: z.record(z.string()).optional()
+    }).refine((data) => data.partnerId || data.partnerSlug, {
+      message: 'partnerId ou partnerSlug obrigatorio'
     });
 
     const payload = schema.parse(req.body || {});
-
-    const redirectUrl = PartnerService.buildRedirectUrl({
-      destinationUrl: payload.destinationUrl,
-      trackingBaseUrl: payload.trackingBaseUrl,
-      sourcePage: payload.sourcePage,
-      offerId: payload.offerId,
-      utm: payload.utm
-    });
-
-    const record = await PartnerService.registerRedirect({
+    const result = await PartnerService.createTrackedRedirect({
       partnerId: payload.partnerId,
-      offerId: payload.offerId,
+      partnerSlug: payload.partnerSlug,
+      simulationId: payload.simulationId,
+      leadId: payload.leadId,
       sourcePage: payload.sourcePage,
-      destinationUrl: redirectUrl
+      utm: payload.utm,
+      userAgent: req.get('user-agent') || null,
+      ipHash: PartnerService.buildRequestIpHash(req)
     });
 
-    res.status(201).json({ data: { ...record, resolvedUrl: redirectUrl } });
+    res.status(201).json(result);
+  })
+);
+
+router.post(
+  '/postback',
+  asyncHandler(async (req, res) => {
+    const schema = z.object({
+      clickId: z.string().min(4),
+      partnerSlug: z.string().optional(),
+      status: z.enum(['lead', 'approved', 'rejected', 'paid', 'canceled']),
+      commissionValue: z.coerce.number().optional().nullable(),
+      contractValue: z.coerce.number().optional().nullable(),
+      externalId: z.string().optional().nullable(),
+      rawPayload: z.any().optional()
+    });
+
+    const payload = schema.parse(req.body || {});
+    try {
+      PartnerService.assertPostbackSecret(req.get('x-partner-secret'));
+    } catch (error) {
+      if (
+        error?.code === 'PARTNER_POSTBACK_UNAUTHORIZED' ||
+        error?.code === 'PARTNER_POSTBACK_SECRET_NOT_CONFIGURED'
+      ) {
+        return res.status(error.status || 500).json({
+          error: error.message,
+          code: error.code,
+          message: error.message
+        });
+      }
+      throw error;
+    }
+    const result = await PartnerService.recordPostback(payload);
+    res.status(201).json(result);
   })
 );
 

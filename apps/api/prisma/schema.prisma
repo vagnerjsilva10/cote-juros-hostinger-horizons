@@ -256,13 +256,13 @@ enum AdminAuditAction {
 }
 
 model Bank {
-  id        String   @id @default(cuid())
+  id        String       @id @default(cuid())
   name      String
   logo      String?
   website   String?
   status    RecordStatus @default(active)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
 
   offers         Offer[]
   partnerConfigs PartnerConfig[]
@@ -307,10 +307,10 @@ model Offer {
   id                 String       @id @default(cuid())
   bankId             String       @map("bank_id")
   productId          String       @map("product_id")
-  interestRate       Decimal?     @db.Decimal(10, 4) @map("interest_rate")
+  interestRate       Decimal?     @map("interest_rate") @db.Decimal(10, 4)
   cet                Decimal?     @db.Decimal(10, 4)
-  minAmount          Decimal?     @db.Decimal(14, 2) @map("min_amount")
-  maxAmount          Decimal?     @db.Decimal(14, 2) @map("max_amount")
+  minAmount          Decimal?     @map("min_amount") @db.Decimal(14, 2)
+  maxAmount          Decimal?     @map("max_amount") @db.Decimal(14, 2)
   minTerm            Int?         @map("min_term")
   maxTerm            Int?         @map("max_term")
   scoreRequirement   String?      @map("score_requirement")
@@ -321,9 +321,9 @@ model Offer {
   createdAt          DateTime     @default(now()) @map("created_at")
   updatedAt          DateTime     @updatedAt @map("updated_at")
 
-  bank     Bank             @relation(fields: [bankId], references: [id], onDelete: Cascade)
-  product  FinancialProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
-  clicks   ClickEvent[]
+  bank      Bank              @relation(fields: [bankId], references: [id], onDelete: Cascade)
+  product   FinancialProduct  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  clicks    ClickEvent[]
   redirects PartnerRedirect[]
 
   @@index([bankId])
@@ -333,34 +333,34 @@ model Offer {
 }
 
 model Article {
-  id             String       @id @default(cuid())
-  slug           String       @unique
-  title          String
-  content        String
-  excerpt        String?
-  categoryId     String?      @map("category_id")
-  clusterId      String?      @map("cluster_id")
-  briefId        String?      @unique @map("brief_id")
-  author         String?
-  seoTitle       String?      @map("seo_title")
-  seoDescription String?      @map("seo_description")
-  coverImage     String?      @map("cover_image")
-  ogImage        String?      @map("og_image")
-  readTime       Int?         @map("read_time")
-  wordCount      Int?         @map("word_count")
-  isPillar       Boolean      @default(false) @map("is_pillar")
-  structuredContent Json?     @map("structured_content")
-  publishedAt    DateTime?    @map("published_at")
-  status         RecordStatus @default(draft)
-  createdAt      DateTime     @default(now()) @map("created_at")
-  updatedAt      DateTime     @updatedAt @map("updated_at")
+  id                String       @id @default(cuid())
+  slug              String       @unique
+  title             String
+  content           String
+  excerpt           String?
+  categoryId        String?      @map("category_id")
+  clusterId         String?      @map("cluster_id")
+  briefId           String?      @unique @map("brief_id")
+  author            String?
+  seoTitle          String?      @map("seo_title")
+  seoDescription    String?      @map("seo_description")
+  coverImage        String?      @map("cover_image")
+  ogImage           String?      @map("og_image")
+  readTime          Int?         @map("read_time")
+  wordCount         Int?         @map("word_count")
+  isPillar          Boolean      @default(false) @map("is_pillar")
+  structuredContent Json?        @map("structured_content")
+  publishedAt       DateTime?    @map("published_at")
+  status            RecordStatus @default(draft)
+  createdAt         DateTime     @default(now()) @map("created_at")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
 
-  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  cluster  SeoCluster? @relation(fields: [clusterId], references: [id], onDelete: SetNull)
-  brief    EditorialBrief? @relation(fields: [briefId], references: [id], onDelete: SetNull)
-  assets   EditorialAsset[]
-  jobRuns  EditorialJobRun[]
-  usedImages BlogUsedImage[]
+  category       Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  cluster        SeoCluster?       @relation(fields: [clusterId], references: [id], onDelete: SetNull)
+  brief          EditorialBrief?   @relation(fields: [briefId], references: [id], onDelete: SetNull)
+  assets         EditorialAsset[]
+  jobRuns        EditorialJobRun[]
+  usedImages     BlogUsedImage[]
   automationJobs AutomationJob[]
 
   @@index([status, publishedAt])
@@ -371,16 +371,16 @@ model Article {
 }
 
 model AutomationJob {
-  id                String    @id @default(cuid())
-  jobName           String    @map("job_name")
-  startedAt         DateTime  @default(now()) @map("started_at")
-  finishedAt        DateTime? @map("finished_at")
-  status            String
-  errorMessage      String?   @map("error_message")
-  payload           Json?
-  result            Json?
-  createdArticleId  String?   @map("created_article_id")
-  wordpressPostId   Int?      @map("wordpress_post_id")
+  id               String    @id @default(cuid())
+  jobName          String    @map("job_name")
+  startedAt        DateTime  @default(now()) @map("started_at")
+  finishedAt       DateTime? @map("finished_at")
+  status           String
+  errorMessage     String?   @map("error_message")
+  payload          Json?
+  result           Json?
+  createdArticleId String?   @map("created_article_id")
+  wordpressPostId  Int?      @map("wordpress_post_id")
 
   article Article? @relation(fields: [createdArticleId], references: [id], onDelete: SetNull)
 
@@ -392,19 +392,19 @@ model AutomationJob {
 }
 
 model BlogUsedImage {
-  id             String   @id @default(cuid())
-  postId         String?  @map("post_id")
-  source         String
-  sourceImageId  String?  @map("source_image_id")
-  originalUrl    String?  @map("original_url")
-  downloadUrl    String?  @map("download_url")
-  imageHash      String?  @map("image_hash")
-  perceptualHash String?  @map("perceptual_hash")
-  visualSignature String? @map("visual_signature")
-  keywords       Json?
-  articleTitle   String?  @map("article_title")
-  usedAt         DateTime @default(now()) @map("used_at")
-  createdAt      DateTime @default(now()) @map("created_at")
+  id              String   @id @default(cuid())
+  postId          String?  @map("post_id")
+  source          String
+  sourceImageId   String?  @map("source_image_id")
+  originalUrl     String?  @map("original_url")
+  downloadUrl     String?  @map("download_url")
+  imageHash       String?  @map("image_hash")
+  perceptualHash  String?  @map("perceptual_hash")
+  visualSignature String?  @map("visual_signature")
+  keywords        Json?
+  articleTitle    String?  @map("article_title")
+  usedAt          DateTime @default(now()) @map("used_at")
+  createdAt       DateTime @default(now()) @map("created_at")
 
   article Article? @relation(fields: [postId], references: [id], onDelete: SetNull)
 
@@ -439,22 +439,22 @@ model SeoCluster {
 }
 
 model EditorialBrief {
-  id                 String               @id @default(cuid())
-  clusterId          String               @map("cluster_id")
-  slug               String               @unique
-  title              String
-  primaryKeyword     String               @map("primary_keyword")
-  secondaryKeywords  Json?                @map("secondary_keywords")
-  stage              EditorialIntentStage
-  brief              Json
-  seoTitle           String?              @map("seo_title")
-  metaDescription    String?              @map("meta_description")
-  scheduledFor       DateTime?            @map("scheduled_for")
-  status             EditorialBriefStatus @default(planned)
-  createdAt          DateTime             @default(now()) @map("created_at")
-  updatedAt          DateTime             @updatedAt @map("updated_at")
+  id                String               @id @default(cuid())
+  clusterId         String               @map("cluster_id")
+  slug              String               @unique
+  title             String
+  primaryKeyword    String               @map("primary_keyword")
+  secondaryKeywords Json?                @map("secondary_keywords")
+  stage             EditorialIntentStage
+  brief             Json
+  seoTitle          String?              @map("seo_title")
+  metaDescription   String?              @map("meta_description")
+  scheduledFor      DateTime?            @map("scheduled_for")
+  status            EditorialBriefStatus @default(planned)
+  createdAt         DateTime             @default(now()) @map("created_at")
+  updatedAt         DateTime             @updatedAt @map("updated_at")
 
-  cluster SeoCluster @relation(fields: [clusterId], references: [id], onDelete: Cascade)
+  cluster SeoCluster        @relation(fields: [clusterId], references: [id], onDelete: Cascade)
   article Article?
   jobRuns EditorialJobRun[]
 
@@ -464,20 +464,20 @@ model EditorialBrief {
 }
 
 model EditorialAsset {
-  id            String                @id @default(cuid())
-  articleId     String                @map("article_id")
+  id            String                 @id @default(cuid())
+  articleId     String                 @map("article_id")
   slug          String
   provider      EditorialImageProvider
   prompt        String
-  publicPath    String                @map("public_path")
+  publicPath    String                 @map("public_path")
   width         Int?
   height        Int?
-  fileSizeBytes Int?                  @map("file_size_bytes")
-  status        EditorialJobStatus    @default(queued)
-  errorMessage  String?               @map("error_message")
+  fileSizeBytes Int?                   @map("file_size_bytes")
+  status        EditorialJobStatus     @default(queued)
+  errorMessage  String?                @map("error_message")
   metadata      Json?
-  createdAt     DateTime              @default(now()) @map("created_at")
-  updatedAt     DateTime              @updatedAt @map("updated_at")
+  createdAt     DateTime               @default(now()) @map("created_at")
+  updatedAt     DateTime               @updatedAt @map("updated_at")
 
   article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
 
@@ -501,9 +501,9 @@ model EditorialJobRun {
   errorMessage  String?            @map("error_message")
   createdAt     DateTime           @default(now()) @map("created_at")
 
-  cluster SeoCluster?      @relation(fields: [clusterId], references: [id], onDelete: SetNull)
-  brief   EditorialBrief?  @relation(fields: [briefId], references: [id], onDelete: SetNull)
-  article Article?         @relation(fields: [articleId], references: [id], onDelete: SetNull)
+  cluster SeoCluster?     @relation(fields: [clusterId], references: [id], onDelete: SetNull)
+  brief   EditorialBrief? @relation(fields: [briefId], references: [id], onDelete: SetNull)
+  article Article?        @relation(fields: [articleId], references: [id], onDelete: SetNull)
 
   @@index([jobName, startedAt])
   @@index([status, startedAt])
@@ -569,7 +569,7 @@ model CompetitorSeoOpportunity {
 model SimulationLead {
   id               String      @id @default(cuid())
   productType      ProductType @map("product_type")
-  requestedAmount  Decimal?    @db.Decimal(14, 2) @map("requested_amount")
+  requestedAmount  Decimal?    @map("requested_amount") @db.Decimal(14, 2)
   income           Decimal?    @db.Decimal(14, 2)
   scoreRange       String?     @map("score_range")
   employmentStatus String?     @map("employment_status")
@@ -593,14 +593,15 @@ model SimulationLead {
   tagAssignments       LeadTagAssignment[]
   ownerAssignment      LeadOwnerAssignment?
   notes                LeadNote[]
-  primaryMerges        LeadMerge[] @relation("PrimaryLeadMerge")
-  mergedInto           LeadMerge[] @relation("MergedLeadMerge")
+  primaryMerges        LeadMerge[]           @relation("PrimaryLeadMerge")
+  mergedInto           LeadMerge[]           @relation("MergedLeadMerge")
   routingDecisions     LeadRoutingDecision[]
   deliveryAttempts     LeadDeliveryAttempt[]
   suppressions         LeadSuppression[]
   scoreSnapshots       LeadScoreSnapshot[]
   revenueEvents        RevenueEvent[]
   payoutEvents         PayoutEvent[]
+  partnerClicks        PartnerClick[]
 
   @@index([productType])
   @@index([originPage])
@@ -630,7 +631,7 @@ model CreditLead {
   city             String?
   state            String?
   zipCode          String?     @map("zip_code")
-  requestedAmount  Decimal?    @db.Decimal(14, 2) @map("requested_amount")
+  requestedAmount  Decimal?    @map("requested_amount") @db.Decimal(14, 2)
   income           Decimal?    @db.Decimal(14, 2)
   scoreRange       String?     @map("score_range")
   employmentStatus String?     @map("employment_status")
@@ -658,7 +659,7 @@ model CreditProviderSession {
   provider          String    @default("juros_baixos")
   externalUserId    String?   @map("external_user_id")
   externalSessionId String?   @map("external_session_id")
-  externalJwt       String?   @db.Text @map("external_jwt")
+  externalJwt       String?   @map("external_jwt") @db.Text
   tokenExpiresAt    DateTime? @map("token_expires_at")
   status            String    @default("pending")
   lastError         String?   @map("last_error")
@@ -668,10 +669,10 @@ model CreditProviderSession {
   lead        CreditLead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
   simulations CreditSimulation[]
 
-  @@index([leadId, provider])
-  @@index([status, updatedAt])
   @@unique([provider, externalUserId])
   @@unique([provider, externalSessionId])
+  @@index([leadId, provider])
+  @@index([status, updatedAt])
   @@map("credit_provider_sessions")
 }
 
@@ -681,7 +682,7 @@ model CreditSimulation {
   providerSessionId    String?     @map("provider_session_id")
   provider             String      @default("juros_baixos")
   externalSimulationId String?     @map("external_simulation_id")
-  requestedAmount      Decimal?    @db.Decimal(14, 2) @map("requested_amount")
+  requestedAmount      Decimal?    @map("requested_amount") @db.Decimal(14, 2)
   installments         Int?
   productType          ProductType @map("product_type")
   status               String      @default("pending")
@@ -696,40 +697,40 @@ model CreditSimulation {
   conversions     CreditConversion[]
   clicks          CreditOfferClick[]
 
+  @@unique([provider, externalSimulationId])
   @@index([leadId, createdAt])
   @@index([providerSessionId, createdAt])
   @@index([provider, status, createdAt])
-  @@unique([provider, externalSimulationId])
   @@map("credit_simulations")
 }
 
 model CreditOfferSnapshot {
-  id                String    @id @default(cuid())
-  simulationId      String    @map("simulation_id")
-  provider          String    @default("juros_baixos")
-  externalOfferId   String?   @map("external_offer_id")
-  bankName          String    @map("bank_name")
-  productName       String    @map("product_name")
-  monthlyRate       Decimal?  @db.Decimal(10, 4) @map("monthly_rate")
-  cet               Decimal?  @db.Decimal(10, 4)
-  installmentAmount Decimal?  @db.Decimal(14, 2) @map("installment_amount")
-  totalAmount       Decimal?  @db.Decimal(14, 2) @map("total_amount")
-  approvedAmount    Decimal?  @db.Decimal(14, 2) @map("approved_amount")
-  termMonths        Int?      @map("term_months")
-  redirectUrl       String?   @map("redirect_url")
-  rankingScore      Decimal?  @db.Decimal(10, 4) @map("ranking_score")
-  matchLabel        String?   @map("match_label")
-  rawPayload        Json?     @map("raw_payload")
-  createdAt         DateTime  @default(now()) @map("created_at")
-  updatedAt         DateTime  @updatedAt @map("updated_at")
+  id                String   @id @default(cuid())
+  simulationId      String   @map("simulation_id")
+  provider          String   @default("juros_baixos")
+  externalOfferId   String?  @map("external_offer_id")
+  bankName          String   @map("bank_name")
+  productName       String   @map("product_name")
+  monthlyRate       Decimal? @map("monthly_rate") @db.Decimal(10, 4)
+  cet               Decimal? @db.Decimal(10, 4)
+  installmentAmount Decimal? @map("installment_amount") @db.Decimal(14, 2)
+  totalAmount       Decimal? @map("total_amount") @db.Decimal(14, 2)
+  approvedAmount    Decimal? @map("approved_amount") @db.Decimal(14, 2)
+  termMonths        Int?     @map("term_months")
+  redirectUrl       String?  @map("redirect_url")
+  rankingScore      Decimal? @map("ranking_score") @db.Decimal(10, 4)
+  matchLabel        String?  @map("match_label")
+  rawPayload        Json?    @map("raw_payload")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
 
-  simulation  CreditSimulation  @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  simulation  CreditSimulation   @relation(fields: [simulationId], references: [id], onDelete: Cascade)
   conversions CreditConversion[]
   clicks      CreditOfferClick[]
 
+  @@unique([simulationId, externalOfferId])
   @@index([simulationId, createdAt])
   @@index([provider, bankName])
-  @@unique([simulationId, externalOfferId])
   @@map("credit_offer_snapshots")
 }
 
@@ -740,33 +741,33 @@ model CreditConversion {
   provider             String    @default("juros_baixos")
   externalConversionId String?   @map("external_conversion_id")
   status               String    @default("pending")
-  commissionAmount     Decimal?  @db.Decimal(14, 2) @map("commission_amount")
+  commissionAmount     Decimal?  @map("commission_amount") @db.Decimal(14, 2)
   convertedAt          DateTime? @map("converted_at")
   rawPayload           Json?     @map("raw_payload")
   createdAt            DateTime  @default(now()) @map("created_at")
   updatedAt            DateTime  @updatedAt @map("updated_at")
 
-  simulation   CreditSimulation   @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  simulation    CreditSimulation     @relation(fields: [simulationId], references: [id], onDelete: Cascade)
   offerSnapshot CreditOfferSnapshot? @relation(fields: [offerSnapshotId], references: [id], onDelete: SetNull)
 
+  @@unique([provider, externalConversionId])
   @@index([simulationId, createdAt])
   @@index([status, convertedAt])
-  @@unique([provider, externalConversionId])
   @@map("credit_conversions")
 }
 
 model CreditOfferClick {
-  id             String   @id @default(cuid())
-  simulationId   String   @map("simulation_id")
-  offerSnapshotId String  @map("offer_snapshot_id")
-  provider       String   @default("juros_baixos")
-  sourcePage     String   @map("source_page")
-  utmSource      String?  @map("utm_source")
-  utmMedium      String?  @map("utm_medium")
-  utmCampaign    String?  @map("utm_campaign")
-  createdAt      DateTime @default(now()) @map("created_at")
+  id              String   @id @default(cuid())
+  simulationId    String   @map("simulation_id")
+  offerSnapshotId String   @map("offer_snapshot_id")
+  provider        String   @default("juros_baixos")
+  sourcePage      String   @map("source_page")
+  utmSource       String?  @map("utm_source")
+  utmMedium       String?  @map("utm_medium")
+  utmCampaign     String?  @map("utm_campaign")
+  createdAt       DateTime @default(now()) @map("created_at")
 
-  simulation   CreditSimulation    @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  simulation    CreditSimulation    @relation(fields: [simulationId], references: [id], onDelete: Cascade)
   offerSnapshot CreditOfferSnapshot @relation(fields: [offerSnapshotId], references: [id], onDelete: Cascade)
 
   @@index([simulationId, createdAt])
@@ -843,6 +844,10 @@ model PartnerConfig {
   bankId                String?                @map("bank_id")
   integrationType       PartnerIntegrationType @default(tracking_link) @map("integration_type")
   trackingLink          String?                @map("tracking_link")
+  productType           String?                @map("product_type")
+  actionType            String?                @map("action_type")
+  affiliateUrl          String?                @map("affiliate_url")
+  isActive              Boolean                @default(true) @map("is_active")
   webhookUrl            String?                @map("webhook_url")
   apiBaseUrl            String?                @map("api_base_url")
   productTypes          ProductType[]          @default([]) @map("product_types")
@@ -864,23 +869,79 @@ model PartnerConfig {
   createdAt             DateTime               @default(now()) @map("created_at")
   updatedAt             DateTime               @updatedAt @map("updated_at")
 
-  bank                  Bank?                  @relation(fields: [bankId], references: [id], onDelete: SetNull)
-  fallbackPartner       PartnerConfig?         @relation("PartnerFallback", fields: [fallbackPartnerId], references: [id], onDelete: SetNull)
-  fallbackChildren      PartnerConfig[]        @relation("PartnerFallback")
+  bank               Bank?               @relation(fields: [bankId], references: [id], onDelete: SetNull)
+  fallbackPartner    PartnerConfig?      @relation("PartnerFallback", fields: [fallbackPartnerId], references: [id], onDelete: SetNull)
+  fallbackChildren   PartnerConfig[]     @relation("PartnerFallback")
+  partnerClicks      PartnerClick[]
+  partnerConversions PartnerConversion[]
 
   @@index([status, healthStatus])
   @@index([bankId, status])
   @@index([integrationType, status])
+  @@index([isActive, priority])
+  @@index([productType, isActive])
   @@map("partner_configs")
 }
 
+model PartnerClick {
+  id           String   @id @default(cuid())
+  clickId      String   @unique @map("click_id")
+  partnerId    String   @map("partner_id")
+  simulationId String?  @map("simulation_id")
+  leadId       String?  @map("lead_id")
+  sourcePage   String   @map("source_page")
+  utmSource    String?  @map("utm_source")
+  utmMedium    String?  @map("utm_medium")
+  utmCampaign  String?  @map("utm_campaign")
+  utmContent   String?  @map("utm_content")
+  utmTerm      String?  @map("utm_term")
+  redirectUrl  String   @map("redirect_url")
+  userAgent    String?  @map("user_agent")
+  ipHash       String?  @map("ip_hash")
+  status       String   @default("redirect_started")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  partner     PartnerConfig       @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  simulation  SimulationLead?     @relation(fields: [simulationId], references: [id], onDelete: SetNull)
+  conversions PartnerConversion[]
+
+  @@index([partnerId, createdAt])
+  @@index([simulationId])
+  @@index([leadId])
+  @@index([sourcePage])
+  @@index([status, createdAt])
+  @@map("partner_clicks")
+}
+
+model PartnerConversion {
+  id              String   @id @default(cuid())
+  clickId         String   @map("click_id")
+  partnerId       String   @map("partner_id")
+  status          String
+  externalId      String?  @map("external_id")
+  commissionValue Decimal? @map("commission_value") @db.Decimal(14, 2)
+  contractValue   Decimal? @map("contract_value") @db.Decimal(14, 2)
+  rawPayload      Json?    @map("raw_payload")
+  receivedAt      DateTime @default(now()) @map("received_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  click   PartnerClick  @relation(fields: [clickId], references: [clickId], onDelete: Cascade)
+  partner PartnerConfig @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+
+  @@unique([partnerId, externalId])
+  @@index([clickId])
+  @@index([partnerId, status])
+  @@index([receivedAt])
+  @@map("partner_conversions")
+}
+
 model AffiliateNetwork {
-  id          String               @id @default(cuid())
-  code        AffiliateNetworkCode @unique
-  name        String
-  status      RecordStatus         @default(active)
-  createdAt   DateTime             @default(now()) @map("created_at")
-  updatedAt   DateTime             @updatedAt @map("updated_at")
+  id        String               @id @default(cuid())
+  code      AffiliateNetworkCode @unique
+  name      String
+  status    RecordStatus         @default(active)
+  createdAt DateTime             @default(now()) @map("created_at")
+  updatedAt DateTime             @updatedAt @map("updated_at")
 
   programs AffiliateProgram[]
   offers   AffiliateOffer[]
@@ -889,56 +950,56 @@ model AffiliateNetwork {
 }
 
 model AffiliateProgram {
-  id            String       @id @default(cuid())
-  networkId     String       @map("network_id")
-  advertiserId  String       @map("advertiser_id")
-  externalProgramId String?  @map("external_program_id")
-  merchantName  String       @map("merchant_name")
-  programName   String?      @map("program_name")
-  description   String?
-  imageUrl      String?      @map("image_url")
-  category      String?
-  payoutText    String?      @map("payout_text")
-  status        RecordStatus @default(active)
-  metadata      Json?
-  createdAt     DateTime     @default(now()) @map("created_at")
-  updatedAt     DateTime     @updatedAt @map("updated_at")
+  id                String       @id @default(cuid())
+  networkId         String       @map("network_id")
+  advertiserId      String       @map("advertiser_id")
+  externalProgramId String?      @map("external_program_id")
+  merchantName      String       @map("merchant_name")
+  programName       String?      @map("program_name")
+  description       String?
+  imageUrl          String?      @map("image_url")
+  category          String?
+  payoutText        String?      @map("payout_text")
+  status            RecordStatus @default(active)
+  metadata          Json?
+  createdAt         DateTime     @default(now()) @map("created_at")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
 
   network AffiliateNetwork @relation(fields: [networkId], references: [id], onDelete: Cascade)
   offers  AffiliateOffer[]
 
-  @@index([networkId, status])
   @@unique([networkId, advertiserId])
+  @@index([networkId, status])
   @@map("affiliate_programs")
 }
 
 model AffiliateOffer {
-  id                  String               @id @default(cuid())
-  networkId           String               @map("network_id")
-  programId           String?              @map("program_id")
-  network             AffiliateNetworkCode @default(awin)
-  advertiserId        String               @map("advertiser_id")
-  externalProgramId   String?              @map("external_program_id")
-  merchantName        String               @map("merchant_name")
-  offerSlug           String               @unique @map("offer_slug")
-  title               String
-  category            String
-  description         String
-  audience            String?              @map("audience")
-  imageUrl            String?              @map("image_url")
-  productType         ProductType?         @map("product_type")
-  pageSlugs           String[]             @default([]) @map("page_slugs")
-  placements          String[]             @default([])
-  destinationUrl      String               @map("destination_url")
-  trackingUrl         String               @map("tracking_url")
-  payoutText          String?              @map("payout_text")
-  ctaText             String               @map("cta_text")
-  disclosureText      String               @map("disclosure_text")
-  isActive            Boolean              @default(true) @map("is_active")
-  priority            Int                  @default(0)
-  metadata            Json?
-  createdAt           DateTime             @default(now()) @map("created_at")
-  updatedAt           DateTime             @updatedAt @map("updated_at")
+  id                String               @id @default(cuid())
+  networkId         String               @map("network_id")
+  programId         String?              @map("program_id")
+  network           AffiliateNetworkCode @default(awin)
+  advertiserId      String               @map("advertiser_id")
+  externalProgramId String?              @map("external_program_id")
+  merchantName      String               @map("merchant_name")
+  offerSlug         String               @unique @map("offer_slug")
+  title             String
+  category          String
+  description       String
+  audience          String?              @map("audience")
+  imageUrl          String?              @map("image_url")
+  productType       ProductType?         @map("product_type")
+  pageSlugs         String[]             @default([]) @map("page_slugs")
+  placements        String[]             @default([])
+  destinationUrl    String               @map("destination_url")
+  trackingUrl       String               @map("tracking_url")
+  payoutText        String?              @map("payout_text")
+  ctaText           String               @map("cta_text")
+  disclosureText    String               @map("disclosure_text")
+  isActive          Boolean              @default(true) @map("is_active")
+  priority          Int                  @default(0)
+  metadata          Json?
+  createdAt         DateTime             @default(now()) @map("created_at")
+  updatedAt         DateTime             @updatedAt @map("updated_at")
 
   networkRef AffiliateNetwork  @relation(fields: [networkId], references: [id], onDelete: Cascade)
   program    AffiliateProgram? @relation(fields: [programId], references: [id], onDelete: SetNull)
@@ -951,14 +1012,14 @@ model AffiliateOffer {
 }
 
 model AffiliateClick {
-  id          String   @id @default(cuid())
-  affiliateOfferId String? @map("affiliate_offer_id")
-  offerSlug   String   @map("offer_slug")
-  pageSlug    String   @map("page_slug")
-  position    String
-  clickref    String
-  device      String
-  createdAt   DateTime @default(now()) @map("created_at")
+  id               String   @id @default(cuid())
+  affiliateOfferId String?  @map("affiliate_offer_id")
+  offerSlug        String   @map("offer_slug")
+  pageSlug         String   @map("page_slug")
+  position         String
+  clickref         String
+  device           String
+  createdAt        DateTime @default(now()) @map("created_at")
 
   offer AffiliateOffer? @relation(fields: [affiliateOfferId], references: [id], onDelete: SetNull)
 
@@ -969,62 +1030,62 @@ model AffiliateClick {
 }
 
 model ReactivationLead {
-  id                 String                 @id @default(cuid())
-  externalLeadId     String?                @map("external_lead_id")
-  batchId            String?                @map("batch_id")
-  tokenHash          String                 @unique @map("token_hash")
-  tokenLast4         String                 @map("token_last4")
-  tokenRevokedAt     DateTime?              @map("token_revoked_at")
-  tokenRegeneratedAt DateTime?              @map("token_regenerated_at")
-  lastUsedAt         DateTime?              @map("last_used_at")
-  status             ReactivationLeadStatus @default(imported)
-  fullName           String?                @map("full_name")
-  email              String?
-  phone              String?
-  cpfHash            String?                @map("cpf_hash")
-  productType        ProductType            @default(loan) @map("product_type")
-  source             String?                @map("source")
-  segment            String?
-  originalPayload    Json?                  @map("original_payload")
-  consentGivenAt     DateTime?              @map("consent_given_at")
-  consentRefusedAt   DateTime?              @map("consent_refused_at")
-  consentRevokedAt   DateTime?              @map("consent_revoked_at")
-  consentIp          String?                @map("consent_ip")
-  consentUserAgent   String?                @map("consent_user_agent")
-  consentVersion     String?                @map("consent_version")
-  privacyPolicyVersion String?              @map("privacy_policy_version")
-  consentSource      String?                @map("consent_source")
-  optOutReason       String?                @map("opt_out_reason")
-  requestedAmount    Decimal?               @db.Decimal(14, 2) @map("requested_amount")
-  income             Decimal?               @db.Decimal(14, 2)
-  employmentStatus   String?                @map("employment_status")
-  hasRestriction     Boolean?               @map("has_restriction")
-  hasGuarantee       Boolean?               @map("has_guarantee")
-  guaranteeType      String?                @map("guarantee_type")
-  scoreValue         Int?                   @map("score_value")
-  scoreBand          String?                @map("score_band")
-  qualification      String?
-  selectedPartnerId  String?                @map("selected_partner_id")
-  selectedPartnerName String?               @map("selected_partner_name")
-  idempotencyKey     String?                @unique @map("idempotency_key")
-  submissionHash     String?                @map("submission_hash")
-  submittedAt        DateTime?              @map("submitted_at")
-  processingLockId   String?                @map("processing_lock_id")
-  processingStartedAt DateTime?             @map("processing_started_at")
-  processingExpiresAt DateTime?             @map("processing_expires_at")
-  deliveryStatus     String?                @map("delivery_status")
-  deliveredAt        DateTime?              @map("delivered_at")
-  estimatedRevenueCents Int?                @map("estimated_revenue_cents")
-  payoutCents        Int?                   @map("payout_cents")
-  expiresAt          DateTime?              @map("expires_at")
-  createdAt          DateTime               @default(now()) @map("created_at")
-  updatedAt          DateTime               @updatedAt @map("updated_at")
+  id                    String                 @id @default(cuid())
+  externalLeadId        String?                @map("external_lead_id")
+  batchId               String?                @map("batch_id")
+  tokenHash             String                 @unique @map("token_hash")
+  tokenLast4            String                 @map("token_last4")
+  tokenRevokedAt        DateTime?              @map("token_revoked_at")
+  tokenRegeneratedAt    DateTime?              @map("token_regenerated_at")
+  lastUsedAt            DateTime?              @map("last_used_at")
+  status                ReactivationLeadStatus @default(imported)
+  fullName              String?                @map("full_name")
+  email                 String?
+  phone                 String?
+  cpfHash               String?                @map("cpf_hash")
+  productType           ProductType            @default(loan) @map("product_type")
+  source                String?                @map("source")
+  segment               String?
+  originalPayload       Json?                  @map("original_payload")
+  consentGivenAt        DateTime?              @map("consent_given_at")
+  consentRefusedAt      DateTime?              @map("consent_refused_at")
+  consentRevokedAt      DateTime?              @map("consent_revoked_at")
+  consentIp             String?                @map("consent_ip")
+  consentUserAgent      String?                @map("consent_user_agent")
+  consentVersion        String?                @map("consent_version")
+  privacyPolicyVersion  String?                @map("privacy_policy_version")
+  consentSource         String?                @map("consent_source")
+  optOutReason          String?                @map("opt_out_reason")
+  requestedAmount       Decimal?               @map("requested_amount") @db.Decimal(14, 2)
+  income                Decimal?               @db.Decimal(14, 2)
+  employmentStatus      String?                @map("employment_status")
+  hasRestriction        Boolean?               @map("has_restriction")
+  hasGuarantee          Boolean?               @map("has_guarantee")
+  guaranteeType         String?                @map("guarantee_type")
+  scoreValue            Int?                   @map("score_value")
+  scoreBand             String?                @map("score_band")
+  qualification         String?
+  selectedPartnerId     String?                @map("selected_partner_id")
+  selectedPartnerName   String?                @map("selected_partner_name")
+  idempotencyKey        String?                @unique @map("idempotency_key")
+  submissionHash        String?                @map("submission_hash")
+  submittedAt           DateTime?              @map("submitted_at")
+  processingLockId      String?                @map("processing_lock_id")
+  processingStartedAt   DateTime?              @map("processing_started_at")
+  processingExpiresAt   DateTime?              @map("processing_expires_at")
+  deliveryStatus        String?                @map("delivery_status")
+  deliveredAt           DateTime?              @map("delivered_at")
+  estimatedRevenueCents Int?                   @map("estimated_revenue_cents")
+  payoutCents           Int?                   @map("payout_cents")
+  expiresAt             DateTime?              @map("expires_at")
+  createdAt             DateTime               @default(now()) @map("created_at")
+  updatedAt             DateTime               @updatedAt @map("updated_at")
 
-  events     ReactivationAuditEvent[]
-  deliveries ReactivationPartnerDelivery[]
-  emailMessages ReactivationEmailMessage[]
+  events         ReactivationAuditEvent[]
+  deliveries     ReactivationPartnerDelivery[]
+  emailMessages  ReactivationEmailMessage[]
   flowExecutions ReactivationLeadFlowExecution[]
-  flowSteps ReactivationFlowExecutionStep[]
+  flowSteps      ReactivationFlowExecutionStep[]
 
   @@index([batchId, status])
   @@index([status, createdAt])
@@ -1036,16 +1097,16 @@ model ReactivationLead {
 }
 
 model ReactivationAuditEvent {
-  id          String        @id @default(cuid())
-  leadId      String?       @map("lead_id")
-  eventType   LgpdEventType @map("event_type")
-  actor       String        @default("system")
-  ipAddress   String?       @map("ip_address")
-  userAgent   String?       @map("user_agent")
-  source      String?
-  idempotencyKey String? @unique @map("idempotency_key")
-  metadata    Json?
-  createdAt   DateTime      @default(now()) @map("created_at")
+  id             String        @id @default(cuid())
+  leadId         String?       @map("lead_id")
+  eventType      LgpdEventType @map("event_type")
+  actor          String        @default("system")
+  ipAddress      String?       @map("ip_address")
+  userAgent      String?       @map("user_agent")
+  source         String?
+  idempotencyKey String?       @unique @map("idempotency_key")
+  metadata       Json?
+  createdAt      DateTime      @default(now()) @map("created_at")
 
   lead ReactivationLead? @relation(fields: [leadId], references: [id], onDelete: SetNull)
 
@@ -1055,77 +1116,77 @@ model ReactivationAuditEvent {
 }
 
 model ReactivationPartnerDelivery {
-  id             String                  @id @default(cuid())
-  leadId         String                  @map("lead_id")
-  partnerId      String                  @map("partner_id")
-  partnerName    String                  @map("partner_name")
-  mode           ReactivationPartnerMode
-  status         String                  @default("pending")
-  destination    String?
-  idempotencyKey String                  @unique @map("idempotency_key")
-  retryCount     Int                     @default(0) @map("retry_count")
-  nextAttemptAt  DateTime?               @map("next_attempt_at")
-  lastAttemptAt  DateTime?               @map("last_attempt_at")
-  deliveredAt    DateTime?               @map("delivered_at")
-  requestPayload Json?                   @map("request_payload")
-  responsePayload Json?                  @map("response_payload")
-  errorMessage   String?                 @map("error_message")
-  createdAt      DateTime                @default(now()) @map("created_at")
-  updatedAt      DateTime                @updatedAt @map("updated_at")
+  id              String                  @id @default(cuid())
+  leadId          String                  @map("lead_id")
+  partnerId       String                  @map("partner_id")
+  partnerName     String                  @map("partner_name")
+  mode            ReactivationPartnerMode
+  status          String                  @default("pending")
+  destination     String?
+  idempotencyKey  String                  @unique @map("idempotency_key")
+  retryCount      Int                     @default(0) @map("retry_count")
+  nextAttemptAt   DateTime?               @map("next_attempt_at")
+  lastAttemptAt   DateTime?               @map("last_attempt_at")
+  deliveredAt     DateTime?               @map("delivered_at")
+  requestPayload  Json?                   @map("request_payload")
+  responsePayload Json?                   @map("response_payload")
+  errorMessage    String?                 @map("error_message")
+  createdAt       DateTime                @default(now()) @map("created_at")
+  updatedAt       DateTime                @updatedAt @map("updated_at")
 
   lead ReactivationLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
+  @@unique([leadId, partnerId])
   @@index([leadId, createdAt])
   @@index([partnerId, status])
   @@index([status, createdAt])
   @@index([nextAttemptAt, status])
-  @@unique([leadId, partnerId])
   @@map("reactivation_partner_deliveries")
 }
 
 model ReactivationSuppression {
-  id        String                      @id @default(cuid())
+  id        String                       @id @default(cuid())
   scope     ReactivationSuppressionScope
-  emailHash String?                     @map("email_hash")
-  phoneHash String?                     @map("phone_hash")
-  cpfHash   String?                     @map("cpf_hash")
+  emailHash String?                      @map("email_hash")
+  phoneHash String?                      @map("phone_hash")
+  cpfHash   String?                      @map("cpf_hash")
   reason    String?
   source    String?
-  createdAt DateTime                    @default(now()) @map("created_at")
+  createdAt DateTime                     @default(now()) @map("created_at")
 
+  @@unique([emailHash, scope])
+  @@unique([phoneHash, scope])
+  @@unique([cpfHash, scope])
   @@index([scope, createdAt])
   @@index([emailHash, scope])
   @@index([phoneHash, scope])
   @@index([cpfHash, scope])
-  @@unique([emailHash, scope])
-  @@unique([phoneHash, scope])
-  @@unique([cpfHash, scope])
   @@map("reactivation_suppressions")
 }
 
 model ReactivationEmailCampaign {
-  id               String              @id @default(cuid())
-  name             String
-  slug             String              @unique
-  description      String?
-  status           EmailCampaignStatus @default(draft)
-  isActive         Boolean             @default(false) @map("is_active")
-  startsAt         DateTime?           @map("starts_at")
-  endsAt           DateTime?           @map("ends_at")
-  initialTemplateId String?            @map("initial_template_id")
-  reminderTemplateId String?           @map("reminder_template_id")
-  lastCallTemplateId String?           @map("last_call_template_id")
-  flowDefinitionId String?             @map("flow_definition_id")
-  publishedFlowVersionId String?       @map("published_flow_version_id")
-  dailyLimit       Int                 @default(5) @map("daily_limit")
-  batchSize        Int                 @default(5) @map("batch_size")
-  sendWindow       Json?               @map("send_window")
-  exitRules        Json?               @map("exit_rules")
-  metadata         Json?
-  createdBy        String?             @map("created_by")
-  updatedBy        String?             @map("updated_by")
-  createdAt        DateTime            @default(now()) @map("created_at")
-  updatedAt        DateTime            @updatedAt @map("updated_at")
+  id                     String              @id @default(cuid())
+  name                   String
+  slug                   String              @unique
+  description            String?
+  status                 EmailCampaignStatus @default(draft)
+  isActive               Boolean             @default(false) @map("is_active")
+  startsAt               DateTime?           @map("starts_at")
+  endsAt                 DateTime?           @map("ends_at")
+  initialTemplateId      String?             @map("initial_template_id")
+  reminderTemplateId     String?             @map("reminder_template_id")
+  lastCallTemplateId     String?             @map("last_call_template_id")
+  flowDefinitionId       String?             @map("flow_definition_id")
+  publishedFlowVersionId String?             @map("published_flow_version_id")
+  dailyLimit             Int                 @default(5) @map("daily_limit")
+  batchSize              Int                 @default(5) @map("batch_size")
+  sendWindow             Json?               @map("send_window")
+  exitRules              Json?               @map("exit_rules")
+  metadata               Json?
+  createdBy              String?             @map("created_by")
+  updatedBy              String?             @map("updated_by")
+  createdAt              DateTime            @default(now()) @map("created_at")
+  updatedAt              DateTime            @updatedAt @map("updated_at")
 
   messages ReactivationEmailMessage[]
 
@@ -1163,37 +1224,37 @@ model ReactivationEmailTemplate {
 }
 
 model ReactivationEmailMessage {
-  id              String             @id @default(cuid())
-  leadId          String?            @map("lead_id")
-  campaignId      String?            @map("campaign_id")
-  templateId      String?            @map("template_id")
-  flowExecutionId String?            @map("flow_execution_id")
-  stepKey         String?            @map("step_key")
-  sequenceKey     String?            @map("sequence_key")
-  provider        String             @default("sendgrid")
-  providerMessageId String?          @map("provider_message_id")
-  toEmailHash     String?            @map("to_email_hash")
-  toEmailMasked   String?            @map("to_email_masked")
-  subject         String?
-  status          EmailMessageStatus @default(queued)
-  idempotencyKey  String?            @unique @map("idempotency_key")
-  requestPayload  Json?              @map("request_payload")
-  responsePayload Json?              @map("response_payload")
-  errorMessage    String?            @map("error_message")
-  scheduledAt     DateTime?          @map("scheduled_at")
-  sentAt          DateTime?          @map("sent_at")
-  deliveredAt     DateTime?          @map("delivered_at")
-  openedAt        DateTime?          @map("opened_at")
-  clickedAt       DateTime?          @map("clicked_at")
-  bouncedAt       DateTime?          @map("bounced_at")
-  unsubscribedAt  DateTime?          @map("unsubscribed_at")
-  createdAt       DateTime           @default(now()) @map("created_at")
-  updatedAt       DateTime           @updatedAt @map("updated_at")
+  id                String             @id @default(cuid())
+  leadId            String?            @map("lead_id")
+  campaignId        String?            @map("campaign_id")
+  templateId        String?            @map("template_id")
+  flowExecutionId   String?            @map("flow_execution_id")
+  stepKey           String?            @map("step_key")
+  sequenceKey       String?            @map("sequence_key")
+  provider          String             @default("sendgrid")
+  providerMessageId String?            @map("provider_message_id")
+  toEmailHash       String?            @map("to_email_hash")
+  toEmailMasked     String?            @map("to_email_masked")
+  subject           String?
+  status            EmailMessageStatus @default(queued)
+  idempotencyKey    String?            @unique @map("idempotency_key")
+  requestPayload    Json?              @map("request_payload")
+  responsePayload   Json?              @map("response_payload")
+  errorMessage      String?            @map("error_message")
+  scheduledAt       DateTime?          @map("scheduled_at")
+  sentAt            DateTime?          @map("sent_at")
+  deliveredAt       DateTime?          @map("delivered_at")
+  openedAt          DateTime?          @map("opened_at")
+  clickedAt         DateTime?          @map("clicked_at")
+  bouncedAt         DateTime?          @map("bounced_at")
+  unsubscribedAt    DateTime?          @map("unsubscribed_at")
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
 
-  lead      ReactivationLead?          @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  campaign  ReactivationEmailCampaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
-  template  ReactivationEmailTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
-  events    ReactivationEmailMessageEvent[]
+  lead     ReactivationLead?               @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  campaign ReactivationEmailCampaign?      @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  template ReactivationEmailTemplate?      @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  events   ReactivationEmailMessageEvent[]
 
   @@index([leadId, createdAt])
   @@index([campaignId, status, createdAt])
@@ -1203,23 +1264,23 @@ model ReactivationEmailMessage {
 }
 
 model ReactivationEmailMessageEvent {
-  id              String         @id @default(cuid())
-  messageId       String?        @map("message_id")
-  leadId          String?        @map("lead_id")
-  campaignId      String?        @map("campaign_id")
-  eventType       EmailEventType @map("event_type")
-  provider        String         @default("sendgrid")
-  providerEventId String?        @map("provider_event_id")
-  providerMessageId String?      @map("provider_message_id")
-  emailHash       String?        @map("email_hash")
-  url             String?        @db.Text
-  userAgent       String?        @map("user_agent")
-  ipAddress       String?        @map("ip_address")
-  reason          String?
-  rawPayload      Json?          @map("raw_payload")
-  signatureVerified Boolean      @default(false) @map("signature_verified")
-  occurredAt      DateTime       @default(now()) @map("occurred_at")
-  createdAt       DateTime       @default(now()) @map("created_at")
+  id                String         @id @default(cuid())
+  messageId         String?        @map("message_id")
+  leadId            String?        @map("lead_id")
+  campaignId        String?        @map("campaign_id")
+  eventType         EmailEventType @map("event_type")
+  provider          String         @default("sendgrid")
+  providerEventId   String?        @map("provider_event_id")
+  providerMessageId String?        @map("provider_message_id")
+  emailHash         String?        @map("email_hash")
+  url               String?        @db.Text
+  userAgent         String?        @map("user_agent")
+  ipAddress         String?        @map("ip_address")
+  reason            String?
+  rawPayload        Json?          @map("raw_payload")
+  signatureVerified Boolean        @default(false) @map("signature_verified")
+  occurredAt        DateTime       @default(now()) @map("occurred_at")
+  createdAt         DateTime       @default(now()) @map("created_at")
 
   message ReactivationEmailMessage? @relation(fields: [messageId], references: [id], onDelete: SetNull)
 
@@ -1232,20 +1293,20 @@ model ReactivationEmailMessageEvent {
 }
 
 model ReactivationFlowDefinition {
-  id                String               @id @default(cuid())
-  name              String
-  slug              String               @unique
-  description       String?
-  status            AutomationFlowStatus @default(draft)
-  isActive          Boolean              @default(false) @map("is_active")
-  publishedVersionId String?             @map("published_version_id")
-  metadata          Json?
-  createdBy         String?              @map("created_by")
-  updatedBy         String?              @map("updated_by")
-  createdAt         DateTime             @default(now()) @map("created_at")
-  updatedAt         DateTime             @updatedAt @map("updated_at")
+  id                 String               @id @default(cuid())
+  name               String
+  slug               String               @unique
+  description        String?
+  status             AutomationFlowStatus @default(draft)
+  isActive           Boolean              @default(false) @map("is_active")
+  publishedVersionId String?              @map("published_version_id")
+  metadata           Json?
+  createdBy          String?              @map("created_by")
+  updatedBy          String?              @map("updated_by")
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updatedAt          DateTime             @updatedAt @map("updated_at")
 
-  versions ReactivationFlowVersion[]
+  versions   ReactivationFlowVersion[]
   executions ReactivationLeadFlowExecution[]
 
   @@index([status, isActive])
@@ -1253,17 +1314,17 @@ model ReactivationFlowDefinition {
 }
 
 model ReactivationFlowVersion {
-  id           String    @id @default(cuid())
-  flowId       String    @map("flow_id")
-  version      Int
-  status       String    @default("draft")
-  definition   Json
-  validationErrors Json? @map("validation_errors")
-  publishedAt  DateTime? @map("published_at")
-  createdBy    String?   @map("created_by")
-  createdAt    DateTime  @default(now()) @map("created_at")
+  id               String    @id @default(cuid())
+  flowId           String    @map("flow_id")
+  version          Int
+  status           String    @default("draft")
+  definition       Json
+  validationErrors Json?     @map("validation_errors")
+  publishedAt      DateTime? @map("published_at")
+  createdBy        String?   @map("created_by")
+  createdAt        DateTime  @default(now()) @map("created_at")
 
-  flow       ReactivationFlowDefinition @relation(fields: [flowId], references: [id], onDelete: Cascade)
+  flow       ReactivationFlowDefinition      @relation(fields: [flowId], references: [id], onDelete: Cascade)
   nodes      ReactivationFlowNode[]
   edges      ReactivationFlowEdge[]
   executions ReactivationLeadFlowExecution[]
@@ -1284,7 +1345,7 @@ model ReactivationFlowNode {
   createdAt     DateTime           @default(now()) @map("created_at")
   updatedAt     DateTime           @updatedAt @map("updated_at")
 
-  flowVersion ReactivationFlowVersion @relation(fields: [flowVersionId], references: [id], onDelete: Cascade)
+  flowVersion ReactivationFlowVersion         @relation(fields: [flowVersionId], references: [id], onDelete: Cascade)
   steps       ReactivationFlowExecutionStep[]
 
   @@unique([flowVersionId, nodeKey])
@@ -1310,25 +1371,25 @@ model ReactivationFlowEdge {
 }
 
 model ReactivationLeadFlowExecution {
-  id              String                    @id @default(cuid())
-  leadId          String                    @map("lead_id")
-  campaignId      String?                   @map("campaign_id")
-  flowId          String                    @map("flow_id")
-  flowVersionId   String                    @map("flow_version_id")
-  currentNodeKey  String?                   @map("current_node_key")
-  status          AutomationExecutionStatus @default(active)
-  context         Json?
-  startedAt       DateTime                  @default(now()) @map("started_at")
-  waitingUntil    DateTime?                 @map("waiting_until")
-  completedAt     DateTime?                 @map("completed_at")
-  failedAt        DateTime?                 @map("failed_at")
-  errorMessage    String?                   @map("error_message")
-  createdAt       DateTime                  @default(now()) @map("created_at")
-  updatedAt       DateTime                  @updatedAt @map("updated_at")
+  id             String                    @id @default(cuid())
+  leadId         String                    @map("lead_id")
+  campaignId     String?                   @map("campaign_id")
+  flowId         String                    @map("flow_id")
+  flowVersionId  String                    @map("flow_version_id")
+  currentNodeKey String?                   @map("current_node_key")
+  status         AutomationExecutionStatus @default(active)
+  context        Json?
+  startedAt      DateTime                  @default(now()) @map("started_at")
+  waitingUntil   DateTime?                 @map("waiting_until")
+  completedAt    DateTime?                 @map("completed_at")
+  failedAt       DateTime?                 @map("failed_at")
+  errorMessage   String?                   @map("error_message")
+  createdAt      DateTime                  @default(now()) @map("created_at")
+  updatedAt      DateTime                  @updatedAt @map("updated_at")
 
-  lead        ReactivationLead           @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  flow        ReactivationFlowDefinition @relation(fields: [flowId], references: [id], onDelete: Restrict)
-  flowVersion ReactivationFlowVersion    @relation(fields: [flowVersionId], references: [id], onDelete: Restrict)
+  lead        ReactivationLead                @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  flow        ReactivationFlowDefinition      @relation(fields: [flowId], references: [id], onDelete: Restrict)
+  flowVersion ReactivationFlowVersion         @relation(fields: [flowVersionId], references: [id], onDelete: Restrict)
   steps       ReactivationFlowExecutionStep[]
 
   @@index([leadId, status])
@@ -1339,19 +1400,19 @@ model ReactivationLeadFlowExecution {
 }
 
 model ReactivationFlowExecutionStep {
-  id              String               @id @default(cuid())
-  executionId     String               @map("execution_id")
-  leadId          String?              @map("lead_id")
-  flowNodeId      String?              @map("flow_node_id")
-  nodeKey         String               @map("node_key")
-  nodeType        AutomationNodeType    @map("node_type")
-  status          AutomationStepStatus  @default(pending)
-  input           Json?
-  output          Json?
-  errorMessage    String?              @map("error_message")
-  startedAt       DateTime?            @map("started_at")
-  completedAt     DateTime?            @map("completed_at")
-  createdAt       DateTime             @default(now()) @map("created_at")
+  id           String               @id @default(cuid())
+  executionId  String               @map("execution_id")
+  leadId       String?              @map("lead_id")
+  flowNodeId   String?              @map("flow_node_id")
+  nodeKey      String               @map("node_key")
+  nodeType     AutomationNodeType   @map("node_type")
+  status       AutomationStepStatus @default(pending)
+  input        Json?
+  output       Json?
+  errorMessage String?              @map("error_message")
+  startedAt    DateTime?            @map("started_at")
+  completedAt  DateTime?            @map("completed_at")
+  createdAt    DateTime             @default(now()) @map("created_at")
 
   execution ReactivationLeadFlowExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
   lead      ReactivationLead?             @relation(fields: [leadId], references: [id], onDelete: SetNull)
@@ -1364,17 +1425,17 @@ model ReactivationFlowExecutionStep {
 }
 
 model ReactivationAdminAuditLog {
-  id          String           @id @default(cuid())
-  actor       String           @default("system")
-  action      AdminAuditAction
-  entityType  String           @map("entity_type")
-  entityId    String?          @map("entity_id")
-  before      Json?
-  after       Json?
-  metadata    Json?
-  ipAddress   String?          @map("ip_address")
-  userAgent   String?          @map("user_agent")
-  createdAt   DateTime         @default(now()) @map("created_at")
+  id         String           @id @default(cuid())
+  actor      String           @default("system")
+  action     AdminAuditAction
+  entityType String           @map("entity_type")
+  entityId   String?          @map("entity_id")
+  before     Json?
+  after      Json?
+  metadata   Json?
+  ipAddress  String?          @map("ip_address")
+  userAgent  String?          @map("user_agent")
+  createdAt  DateTime         @default(now()) @map("created_at")
 
   @@index([entityType, entityId])
   @@index([action, createdAt])
@@ -1395,19 +1456,19 @@ model ReactivationAdminConfig {
 }
 
 model ReactivationAutomationJobRun {
-  id             String   @id @default(cuid())
-  jobName        String   @map("job_name")
+  id             String    @id @default(cuid())
+  jobName        String    @map("job_name")
   status         String
-  triggerSource  String?  @map("trigger_source")
-  startedAt      DateTime @default(now()) @map("started_at")
+  triggerSource  String?   @map("trigger_source")
+  startedAt      DateTime  @default(now()) @map("started_at")
   finishedAt     DateTime? @map("finished_at")
-  durationMs     Int?     @map("duration_ms")
-  processedCount Int?     @map("processed_count")
-  successCount   Int?     @map("success_count")
-  errorCount     Int?     @map("error_count")
+  durationMs     Int?      @map("duration_ms")
+  processedCount Int?      @map("processed_count")
+  successCount   Int?      @map("success_count")
+  errorCount     Int?      @map("error_count")
   metadata       Json?
-  errorMessage   String?  @map("error_message")
-  createdAt      DateTime @default(now()) @map("created_at")
+  errorMessage   String?   @map("error_message")
+  createdAt      DateTime  @default(now()) @map("created_at")
 
   @@index([jobName, startedAt])
   @@index([status, startedAt])
@@ -1415,14 +1476,14 @@ model ReactivationAutomationJobRun {
 }
 
 model AdminUser {
-  id             String                 @id @default(cuid())
-  email          String                 @unique
-  fullName       String                 @map("full_name")
-  passwordHash   String                 @map("password_hash")
-  status         AdminUserStatus        @default(active)
-  lastLoginAt    DateTime?              @map("last_login_at")
-  createdAt      DateTime               @default(now()) @map("created_at")
-  updatedAt      DateTime               @updatedAt @map("updated_at")
+  id           String          @id @default(cuid())
+  email        String          @unique
+  fullName     String          @map("full_name")
+  passwordHash String          @map("password_hash")
+  status       AdminUserStatus @default(active)
+  lastLoginAt  DateTime?       @map("last_login_at")
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
 
   sessions            AdminSession[]
   roles               AdminUserRole[]
@@ -1438,13 +1499,13 @@ model AdminUser {
 }
 
 model AdminRole {
-  id          String                @id @default(cuid())
-  code        String                @unique
+  id          String   @id @default(cuid())
+  code        String   @unique
   name        String
   description String?
-  isSystem    Boolean               @default(true) @map("is_system")
-  createdAt   DateTime              @default(now()) @map("created_at")
-  updatedAt   DateTime              @updatedAt @map("updated_at")
+  isSystem    Boolean  @default(true) @map("is_system")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   users       AdminUserRole[]
   permissions AdminRolePermission[]
@@ -1453,13 +1514,13 @@ model AdminRole {
 }
 
 model AdminPermission {
-  id          String                @id @default(cuid())
+  id          String   @id @default(cuid())
   resource    String
   action      String
   description String?
-  createdAt   DateTime              @default(now()) @map("created_at")
+  createdAt   DateTime @default(now()) @map("created_at")
 
-  roles       AdminRolePermission[]
+  roles AdminRolePermission[]
 
   @@unique([resource, action])
   @@index([resource, action])
@@ -1467,13 +1528,13 @@ model AdminPermission {
 }
 
 model AdminRolePermission {
-  id           String          @id @default(cuid())
-  roleId       String          @map("role_id")
-  permissionId String          @map("permission_id")
-  createdAt    DateTime        @default(now()) @map("created_at")
+  id           String   @id @default(cuid())
+  roleId       String   @map("role_id")
+  permissionId String   @map("permission_id")
+  createdAt    DateTime @default(now()) @map("created_at")
 
-  role         AdminRole       @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  permission   AdminPermission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  role       AdminRole       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission AdminPermission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
   @@unique([roleId, permissionId])
   @@index([permissionId])
@@ -1481,13 +1542,13 @@ model AdminRolePermission {
 }
 
 model AdminUserRole {
-  id        String    @id @default(cuid())
-  userId    String    @map("user_id")
-  roleId    String    @map("role_id")
-  createdAt DateTime  @default(now()) @map("created_at")
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  roleId    String   @map("role_id")
+  createdAt DateTime @default(now()) @map("created_at")
 
-  user      AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role      AdminRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  user AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role AdminRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@unique([userId, roleId])
   @@index([roleId])
@@ -1507,7 +1568,7 @@ model AdminSession {
   createdAt   DateTime           @default(now()) @map("created_at")
   updatedAt   DateTime           @updatedAt @map("updated_at")
 
-  user        AdminUser          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, status])
   @@index([status, expiresAt])
@@ -1515,16 +1576,16 @@ model AdminSession {
 }
 
 model AdminLoginAttempt {
-  id            String     @id @default(cuid())
-  userId        String?    @map("user_id")
+  id            String   @id @default(cuid())
+  userId        String?  @map("user_id")
   email         String?
-  ipAddress     String?    @map("ip_address")
-  userAgent     String?    @map("user_agent")
-  success       Boolean    @default(false)
-  failureReason String?    @map("failure_reason")
-  createdAt     DateTime   @default(now()) @map("created_at")
+  ipAddress     String?  @map("ip_address")
+  userAgent     String?  @map("user_agent")
+  success       Boolean  @default(false)
+  failureReason String?  @map("failure_reason")
+  createdAt     DateTime @default(now()) @map("created_at")
 
-  user          AdminUser? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user AdminUser? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([email, createdAt])
   @@index([ipAddress, createdAt])
@@ -1532,34 +1593,34 @@ model AdminLoginAttempt {
 }
 
 model AdminPasswordResetToken {
-  id          String     @id @default(cuid())
-  userId      String     @map("user_id")
-  tokenHash   String     @unique @map("token_hash")
-  expiresAt   DateTime   @map("expires_at")
-  usedAt      DateTime?  @map("used_at")
-  createdAt   DateTime   @default(now()) @map("created_at")
+  id        String    @id @default(cuid())
+  userId    String    @map("user_id")
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
 
-  user        AdminUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, expiresAt])
   @@map("admin_password_reset_tokens")
 }
 
 model AdminAuditLog {
-  id           String      @id @default(cuid())
-  actorUserId  String?     @map("actor_user_id")
-  actorEmail   String?     @map("actor_email")
-  action       String
-  resource     String
-  resourceId   String?     @map("resource_id")
-  before       Json?
-  after        Json?
-  metadata     Json?
-  ipAddress    String?     @map("ip_address")
-  userAgent    String?     @map("user_agent")
-  createdAt    DateTime    @default(now()) @map("created_at")
+  id          String   @id @default(cuid())
+  actorUserId String?  @map("actor_user_id")
+  actorEmail  String?  @map("actor_email")
+  action      String
+  resource    String
+  resourceId  String?  @map("resource_id")
+  before      Json?
+  after       Json?
+  metadata    Json?
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  createdAt   DateTime @default(now()) @map("created_at")
 
-  actorUser    AdminUser?  @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+  actorUser AdminUser? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
 
   @@index([resource, resourceId, createdAt])
   @@index([action, createdAt])
@@ -1568,13 +1629,13 @@ model AdminAuditLog {
 }
 
 model FeatureFlag {
-  id          String    @id @default(cuid())
-  key         String    @unique
+  id          String   @id @default(cuid())
+  key         String   @unique
   description String?
-  enabled     Boolean   @default(false)
+  enabled     Boolean  @default(false)
   payload     Json?
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("feature_flags")
 }
@@ -1646,12 +1707,12 @@ model SeoMeta {
 }
 
 model LeadTag {
-  id          String              @id @default(cuid())
-  key         String              @unique
-  label       String
-  color       String?
-  createdAt   DateTime            @default(now()) @map("created_at")
-  updatedAt   DateTime            @updatedAt @map("updated_at")
+  id        String   @id @default(cuid())
+  key       String   @unique
+  label     String
+  color     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   assignments LeadTagAssignment[]
 
@@ -1659,13 +1720,13 @@ model LeadTag {
 }
 
 model LeadTagAssignment {
-  id        String         @id @default(cuid())
-  leadId    String         @map("lead_id")
-  tagId     String         @map("tag_id")
-  createdAt DateTime       @default(now()) @map("created_at")
+  id        String   @id @default(cuid())
+  leadId    String   @map("lead_id")
+  tagId     String   @map("tag_id")
+  createdAt DateTime @default(now()) @map("created_at")
 
-  lead      SimulationLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  tag       LeadTag        @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  lead SimulationLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  tag  LeadTag        @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@unique([leadId, tagId])
   @@index([tagId])
@@ -1673,66 +1734,66 @@ model LeadTagAssignment {
 }
 
 model LeadOwnerAssignment {
-  id          String        @id @default(cuid())
-  leadId       String       @unique @map("lead_id")
-  ownerUserId  String       @map("owner_user_id")
-  note         String?
-  assignedAt   DateTime     @default(now()) @map("assigned_at")
-  updatedAt    DateTime     @updatedAt @map("updated_at")
+  id          String   @id @default(cuid())
+  leadId      String   @unique @map("lead_id")
+  ownerUserId String   @map("owner_user_id")
+  note        String?
+  assignedAt  DateTime @default(now()) @map("assigned_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  lead         SimulationLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  ownerUser    AdminUser      @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  lead      SimulationLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  ownerUser AdminUser      @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
 
   @@index([ownerUserId, assignedAt])
   @@map("lead_owner_assignments")
 }
 
 model LeadNote {
-  id           String         @id @default(cuid())
-  leadId        String        @map("lead_id")
-  authorUserId  String?       @map("author_user_id")
-  body          String
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
+  id           String   @id @default(cuid())
+  leadId       String   @map("lead_id")
+  authorUserId String?  @map("author_user_id")
+  body         String
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
-  lead          SimulationLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  authorUser    AdminUser?     @relation(fields: [authorUserId], references: [id], onDelete: SetNull)
+  lead       SimulationLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  authorUser AdminUser?     @relation(fields: [authorUserId], references: [id], onDelete: SetNull)
 
   @@index([leadId, createdAt])
   @@map("lead_notes")
 }
 
 model LeadMerge {
-  id             String         @id @default(cuid())
-  primaryLeadId  String         @map("primary_lead_id")
-  mergedLeadId   String         @unique @map("merged_lead_id")
-  mergedByUserId String?        @map("merged_by_user_id")
+  id             String   @id @default(cuid())
+  primaryLeadId  String   @map("primary_lead_id")
+  mergedLeadId   String   @unique @map("merged_lead_id")
+  mergedByUserId String?  @map("merged_by_user_id")
   reason         String?
-  createdAt      DateTime       @default(now()) @map("created_at")
+  createdAt      DateTime @default(now()) @map("created_at")
 
-  primaryLead    SimulationLead @relation("PrimaryLeadMerge", fields: [primaryLeadId], references: [id], onDelete: Cascade)
-  mergedLead     SimulationLead @relation("MergedLeadMerge", fields: [mergedLeadId], references: [id], onDelete: Cascade)
-  mergedByUser   AdminUser?     @relation(fields: [mergedByUserId], references: [id], onDelete: SetNull)
+  primaryLead  SimulationLead @relation("PrimaryLeadMerge", fields: [primaryLeadId], references: [id], onDelete: Cascade)
+  mergedLead   SimulationLead @relation("MergedLeadMerge", fields: [mergedLeadId], references: [id], onDelete: Cascade)
+  mergedByUser AdminUser?     @relation(fields: [mergedByUserId], references: [id], onDelete: SetNull)
 
   @@index([primaryLeadId, createdAt])
   @@map("lead_merges")
 }
 
 model LeadRoutingDecision {
-  id            String         @id @default(cuid())
-  leadId         String        @map("lead_id")
-  routeType      String?       @map("route_type")
-  inputSnapshot  Json?         @map("input_snapshot")
-  ruleMatched    String?       @map("rule_matched")
-  partnerId      String?       @map("partner_id")
-  partnerName    String?       @map("partner_name")
-  fallbackUsed   Boolean       @default(false) @map("fallback_used")
-  reason         String?
-  scoreValue     Int?          @map("score_value")
-  scoreBand      String?       @map("score_band")
-  createdAt      DateTime      @default(now()) @map("created_at")
+  id            String   @id @default(cuid())
+  leadId        String   @map("lead_id")
+  routeType     String?  @map("route_type")
+  inputSnapshot Json?    @map("input_snapshot")
+  ruleMatched   String?  @map("rule_matched")
+  partnerId     String?  @map("partner_id")
+  partnerName   String?  @map("partner_name")
+  fallbackUsed  Boolean  @default(false) @map("fallback_used")
+  reason        String?
+  scoreValue    Int?     @map("score_value")
+  scoreBand     String?  @map("score_band")
+  createdAt     DateTime @default(now()) @map("created_at")
 
-  lead           SimulationLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  lead SimulationLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([leadId, createdAt])
   @@index([partnerId, createdAt])
@@ -1740,19 +1801,19 @@ model LeadRoutingDecision {
 }
 
 model LeadDeliveryAttempt {
-  id              String         @id @default(cuid())
-  leadId           String        @map("lead_id")
-  partnerId        String?       @map("partner_id")
-  partnerName      String?       @map("partner_name")
-  mode             String?
-  status           String        @default("pending")
-  requestPayload   Json?         @map("request_payload")
-  responsePayload  Json?         @map("response_payload")
-  errorMessage     String?       @map("error_message")
-  attemptedAt      DateTime      @default(now()) @map("attempted_at")
-  createdAt        DateTime      @default(now()) @map("created_at")
+  id              String   @id @default(cuid())
+  leadId          String   @map("lead_id")
+  partnerId       String?  @map("partner_id")
+  partnerName     String?  @map("partner_name")
+  mode            String?
+  status          String   @default("pending")
+  requestPayload  Json?    @map("request_payload")
+  responsePayload Json?    @map("response_payload")
+  errorMessage    String?  @map("error_message")
+  attemptedAt     DateTime @default(now()) @map("attempted_at")
+  createdAt       DateTime @default(now()) @map("created_at")
 
-  lead             SimulationLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  lead SimulationLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([leadId, attemptedAt])
   @@index([partnerId, status])
@@ -1760,14 +1821,14 @@ model LeadDeliveryAttempt {
 }
 
 model LeadSuppression {
-  id         String               @id @default(cuid())
-  leadId      String?             @map("lead_id")
-  scope       LeadSuppressionScope @default(manual)
-  reason      String?
-  source      String?
-  createdAt   DateTime            @default(now()) @map("created_at")
+  id        String               @id @default(cuid())
+  leadId    String?              @map("lead_id")
+  scope     LeadSuppressionScope @default(manual)
+  reason    String?
+  source    String?
+  createdAt DateTime             @default(now()) @map("created_at")
 
-  lead        SimulationLead?     @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  lead SimulationLead? @relation(fields: [leadId], references: [id], onDelete: SetNull)
 
   @@index([leadId, createdAt])
   @@index([scope, createdAt])
@@ -1775,17 +1836,17 @@ model LeadSuppression {
 }
 
 model LeadScoreSnapshot {
-  id               String         @id @default(cuid())
-  leadId            String        @map("lead_id")
-  productType       ProductType?  @map("product_type")
-  scoreValue        Int           @map("score_value")
-  normalizedScore   Int?          @map("normalized_score")
-  eligibilityScore  Int?          @map("eligibility_score")
-  propensityScore   Int?          @map("propensity_score")
-  explanation       Json?
-  createdAt         DateTime      @default(now()) @map("created_at")
+  id               String       @id @default(cuid())
+  leadId           String       @map("lead_id")
+  productType      ProductType? @map("product_type")
+  scoreValue       Int          @map("score_value")
+  normalizedScore  Int?         @map("normalized_score")
+  eligibilityScore Int?         @map("eligibility_score")
+  propensityScore  Int?         @map("propensity_score")
+  explanation      Json?
+  createdAt        DateTime     @default(now()) @map("created_at")
 
-  lead              SimulationLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  lead SimulationLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@index([leadId, createdAt])
   @@index([productType, createdAt])
@@ -1793,20 +1854,20 @@ model LeadScoreSnapshot {
 }
 
 model RevenueEvent {
-  id             String         @id @default(cuid())
-  leadId          String?       @map("lead_id")
-  partnerId       String?       @map("partner_id")
-  productType     ProductType?  @map("product_type")
-  sourcePage      String?       @map("source_page")
-  eventType       String        @map("event_type")
-  estimatedCents  Int           @default(0) @map("estimated_cents")
-  confirmedCents  Int           @default(0) @map("confirmed_cents")
-  metadata        Json?
-  occurredAt      DateTime      @default(now()) @map("occurred_at")
-  createdAt       DateTime      @default(now()) @map("created_at")
+  id             String       @id @default(cuid())
+  leadId         String?      @map("lead_id")
+  partnerId      String?      @map("partner_id")
+  productType    ProductType? @map("product_type")
+  sourcePage     String?      @map("source_page")
+  eventType      String       @map("event_type")
+  estimatedCents Int          @default(0) @map("estimated_cents")
+  confirmedCents Int          @default(0) @map("confirmed_cents")
+  metadata       Json?
+  occurredAt     DateTime     @default(now()) @map("occurred_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
 
-  lead            SimulationLead? @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  adjustments     RevenueAdjustment[]
+  lead        SimulationLead?     @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  adjustments RevenueAdjustment[]
 
   @@index([leadId, occurredAt])
   @@index([partnerId, occurredAt])
@@ -1815,18 +1876,18 @@ model RevenueEvent {
 }
 
 model PayoutEvent {
-  id             String          @id @default(cuid())
-  leadId          String?        @map("lead_id")
-  partnerId       String?        @map("partner_id")
-  payoutRuleId    String?        @map("payout_rule_id")
-  amountCents     Int            @map("amount_cents")
-  status          String         @default("estimated")
-  metadata        Json?
-  occurredAt      DateTime       @default(now()) @map("occurred_at")
-  createdAt       DateTime       @default(now()) @map("created_at")
+  id           String   @id @default(cuid())
+  leadId       String?  @map("lead_id")
+  partnerId    String?  @map("partner_id")
+  payoutRuleId String?  @map("payout_rule_id")
+  amountCents  Int      @map("amount_cents")
+  status       String   @default("estimated")
+  metadata     Json?
+  occurredAt   DateTime @default(now()) @map("occurred_at")
+  createdAt    DateTime @default(now()) @map("created_at")
 
-  lead            SimulationLead? @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  payoutRule      PartnerPayoutRule? @relation(fields: [payoutRuleId], references: [id], onDelete: SetNull)
+  lead       SimulationLead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  payoutRule PartnerPayoutRule? @relation(fields: [payoutRuleId], references: [id], onDelete: SetNull)
 
   @@index([leadId, occurredAt])
   @@index([partnerId, occurredAt])
@@ -1835,30 +1896,30 @@ model PayoutEvent {
 }
 
 model RevenueAdjustment {
-  id             String        @id @default(cuid())
-  revenueEventId String        @map("revenue_event_id")
-  amountCents    Int           @map("amount_cents")
+  id             String   @id @default(cuid())
+  revenueEventId String   @map("revenue_event_id")
+  amountCents    Int      @map("amount_cents")
   reason         String
-  createdAt      DateTime      @default(now()) @map("created_at")
+  createdAt      DateTime @default(now()) @map("created_at")
 
-  revenueEvent   RevenueEvent  @relation(fields: [revenueEventId], references: [id], onDelete: Cascade)
+  revenueEvent RevenueEvent @relation(fields: [revenueEventId], references: [id], onDelete: Cascade)
 
   @@index([revenueEventId, createdAt])
   @@map("revenue_adjustments")
 }
 
 model PartnerPayoutRule {
-  id           String       @id @default(cuid())
-  partnerId     String      @map("partner_id")
-  productType   ProductType? @map("product_type")
-  payoutType    String      @default("lead") @map("payout_type")
-  amountCents   Int         @map("amount_cents")
-  status        String      @default("active")
-  metadata      Json?
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
+  id          String       @id @default(cuid())
+  partnerId   String       @map("partner_id")
+  productType ProductType? @map("product_type")
+  payoutType  String       @default("lead") @map("payout_type")
+  amountCents Int          @map("amount_cents")
+  status      String       @default("active")
+  metadata    Json?
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
 
-  payoutEvents  PayoutEvent[]
+  payoutEvents PayoutEvent[]
 
   @@index([partnerId, status])
   @@index([productType, status])
@@ -1866,12 +1927,12 @@ model PartnerPayoutRule {
 }
 
 model IntegrationHealthCheck {
-  id             String    @id @default(cuid())
-  integrationKey String    @map("integration_key")
+  id             String   @id @default(cuid())
+  integrationKey String   @map("integration_key")
   status         String
-  responseTimeMs Int?      @map("response_time_ms")
+  responseTimeMs Int?     @map("response_time_ms")
   details        Json?
-  checkedAt      DateTime  @default(now()) @map("checked_at")
+  checkedAt      DateTime @default(now()) @map("checked_at")
 
   @@index([integrationKey, checkedAt])
   @@index([status, checkedAt])
@@ -1879,14 +1940,14 @@ model IntegrationHealthCheck {
 }
 
 model PlatformAlert {
-  id          String    @id @default(cuid())
-  key         String
-  severity    String
-  status      String    @default("open")
-  message     String
-  metadata    Json?
-  createdAt   DateTime  @default(now()) @map("created_at")
-  resolvedAt  DateTime? @map("resolved_at")
+  id         String    @id @default(cuid())
+  key        String
+  severity   String
+  status     String    @default("open")
+  message    String
+  metadata   Json?
+  createdAt  DateTime  @default(now()) @map("created_at")
+  resolvedAt DateTime? @map("resolved_at")
 
   @@index([status, createdAt])
   @@index([severity, createdAt])

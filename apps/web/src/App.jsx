@@ -22,6 +22,7 @@ import MotionHeroPage from '@/pages/MotionHeroPage.jsx';
 import SeoProgrammaticPage from '@/pages/SeoProgrammaticPage.jsx';
 import CreditProfileLandingPage from '@/pages/CreditProfileLandingPage.jsx';
 import LeadNextStepPage from '@/pages/LeadNextStepPage.jsx';
+import ResultadoPage from '@/pages/ResultadoPage.jsx';
 import ReactivationLandingPage from '@/pages/ReactivationLandingPage.jsx';
 import {
   PlatformAboutPage,
@@ -51,6 +52,7 @@ import AdminDashboardPage from '@/pages/admin/AdminDashboardPage.jsx';
 import AdminOffersPage from '@/pages/admin/AdminOffersPage.jsx';
 import AdminBanksPage from '@/pages/admin/AdminBanksPage.jsx';
 import AdminPartnersPage from '@/pages/admin/AdminPartnersPage.jsx';
+import AdminPartnerPerformancePage from '@/pages/admin/AdminPartnerPerformancePage.jsx';
 import AdminUsersPage from '@/pages/admin/AdminUsersPage.jsx';
 import AdminArticlesPage from '@/pages/admin/AdminArticlesPage.jsx';
 import AdminSeoPagesPage from '@/pages/admin/AdminSeoPagesPage.jsx';
@@ -194,7 +196,7 @@ function App() {
         <Route path="/termos-de-uso" element={<PlatformTermsPage />} />
         <Route path="/cote-finance-ai" element={<AppLayout><CoteFinanceAIPage /></AppLayout>} />
         <Route path="/motion-hero" element={<AppLayout><MotionHeroPage /></AppLayout>} />
-        <Route path="/resultado" element={<AppLayout><LeadNextStepPage /></AppLayout>} />
+        <Route path="/resultado" element={<AppLayout><ResultadoPage /></AppLayout>} />
         <Route path="/proxima-etapa" element={<AppLayout><LeadNextStepPage /></AppLayout>} />
         <Route path="/r/:token" element={<AppLayout><ReactivationLandingPage /></AppLayout>} />
         <Route
@@ -320,6 +322,7 @@ function App() {
         <Route path="/admin/offers" element={<AdminRoute title="Gestão de ofertas"><AdminOffersPage /></AdminRoute>} />
         <Route path="/admin/banks" element={<AdminRoute title="Gestão de bancos"><AdminBanksPage /></AdminRoute>} />
         <Route path="/admin/partners" element={<AdminRoute title="Gestão de parceiros"><AdminPartnersPage /></AdminRoute>} />
+        <Route path="/admin/partners/performance" element={<AdminRoute title="Performance de parceiros"><AdminPartnerPerformancePage /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute title="Equipe e permissões"><AdminUsersPage /></AdminRoute>} />
         <Route path="/admin/articles" element={<AdminRoute title="Gestão de artigos"><AdminArticlesPage /></AdminRoute>} />
         <Route path="/admin/seo-pages" element={<AdminRoute title="Gestão de páginas SEO"><AdminSeoPagesPage /></AdminRoute>} />

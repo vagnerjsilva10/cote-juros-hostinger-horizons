@@ -10,6 +10,7 @@ const navItems = [
   { to: '/admin/offers', label: 'Ofertas' },
   { to: '/admin/banks', label: 'Bancos' },
   { to: '/admin/partners', label: 'Parceiros' },
+  { to: '/admin/partners/performance', label: 'Performance' },
   { to: '/admin/users', label: 'Equipe' },
   { to: '/admin/articles', label: 'Artigos' },
   { to: '/admin/seo-pages', label: 'SEO' },
@@ -64,7 +65,7 @@ export default function AdminLayout({ title, children }) {
               <NavLink
                 key={item.to}
                 to={item.to}
-                end={item.to === '/admin'}
+                end={item.to === '/admin' || item.to === '/admin/partners'}
                 className={({ isActive }) =>
                   `block rounded-[10px] px-4 py-3 text-sm font-medium transition-colors ${
                     isActive ? 'bg-background-secondary text-foreground' : 'text-muted-foreground hover:bg-background-secondary hover:text-foreground'
