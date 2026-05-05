@@ -450,12 +450,27 @@ export const portalApi = {
   },
 
   async getArticles(filters) {
+    const localItems = portalRepository
+      .listArticles(filters)
+      .map(normalizeArticleRecord);
+
+    if (!useRemote) {
+      await wait();
+      return localItems;
+    }
+
     try {
       const qs = toQueryString(filters);
       const data = await request(`/api/articles${qs ? `?${qs}` : ''}`, { baseUrl: ARTICLE_API_BASE });
-      return Array.isArray(data) ? data.map(normalizeArticleRecord) : [];
+      return withControlledPublicFallback({
+        key: 'articles',
+        remoteItems: Array.isArray(data) ? data.map(normalizeArticleRecord) : [],
+        localItems,
+        details: { filters }
+      });
     } catch (error) {
-      throw buildCriticalFallbackError('articles', error);
+      warnPublicFallback('articles', { filters, error: error?.message || String(error) });
+      return localItems;
     }
   },
 
@@ -528,10 +543,22 @@ export const portalApi = {
   async getArticleBySlug(slug) {
     if (!slug) return null;
 
+    const localArticle = portalRepository.getArticleBySlug(slug);
+    if (!useRemote) {
+      await wait();
+      return localArticle ? normalizeArticleRecord(localArticle) : null;
+    }
+
     try {
       const data = await request(`/api/articles/slug/${slug}`, { baseUrl: ARTICLE_API_BASE });
-      return data ? normalizeArticleRecord(data) : null;
+      const remoteArticle = data ? normalizeArticleRecord(data) : null;
+      if (remoteArticle) return remoteArticle;
+      return localArticle ? normalizeArticleRecord(localArticle) : null;
     } catch (error) {
+      if (localArticle) {
+        warnPublicFallback(`article:${slug}`, { error: error?.message || String(error) });
+        return normalizeArticleRecord(localArticle);
+      }
       throw buildCriticalFallbackError(`article:${slug}`, error);
     }
   },

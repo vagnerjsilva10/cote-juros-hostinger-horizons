@@ -17,7 +17,7 @@ const robotsPath = resolve(publicDir, 'robots.txt');
 
 const siteUrl = (process.env.SITE_URL || process.env.VITE_SITE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
 const apiBaseUrl = (process.env.VITE_API_BASE_URL || process.env.API_BASE_URL || 'https://api.cotejuros.com.br').replace(/\/$/, '');
-const allowLocalArticleFallback = process.env.SITEMAP_ALLOW_LOCAL_ARTICLE_FALLBACK === 'true';
+const allowLocalArticleFallback = process.env.SITEMAP_ALLOW_LOCAL_ARTICLE_FALLBACK !== 'false';
 const now = new Date().toISOString();
 
 const fixedRoutes = [
