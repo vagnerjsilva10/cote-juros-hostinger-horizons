@@ -274,9 +274,9 @@ function HomePage() {
         <section id="smart-quiz" className="cj-home-section cj-home-quiz-section">
           <div className="cj-home-shell">
             <SectionHeading
-              eyebrow="SmartQuiz conectado"
+              eyebrow="AnÃ¡lise guiada"
               title="Descubra qual caminho combina melhor com seu momento financeiro"
-              text="O quiz usa os adapters jÃ¡ preparados para recomendar, registrar eventos e manter a experiÃªncia API-ready."
+              text="Responda em poucos passos e veja caminhos de crédito organizados com clareza, sem promessa de aprovação."
             />
             <SmartQuiz onCompleted={setQuizResult} />
           </div>

@@ -6,13 +6,14 @@ import { Button } from '@/components/ui/button';
 import { recommendProducts } from '@/platform/services/recommendationAdapter.js';
 import { saveQuizProgress, submitSmartQuiz, getQuizProgress } from '@/platform/services/quizAdapter.js';
 import { trackEvent } from '@/platform/services/trackingAdapter.js';
+import { formatCurrencyBRL, parseCurrencyBRL } from '@/components/smart-quiz/currency.js';
 
 const steps = [
   {
     key: 'monthlyIncome',
     title: 'Qual sua renda mensal?',
     type: 'money',
-    placeholder: 'Ex: 3500'
+    placeholder: 'Ex: R$ 3.500'
   },
   {
     key: 'hasNegativeStatus',
@@ -61,12 +62,6 @@ const steps = [
     type: 'contact'
   }
 ];
-
-const parseAmount = (value) => {
-  if (typeof value === 'number') return value;
-  const normalized = String(value || '').replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, '');
-  return normalized ? Number(normalized) : 0;
-};
 
 export default function SmartQuiz({ onCompleted }) {
   const location = useLocation();
@@ -147,7 +142,7 @@ export default function SmartQuiz({ onCompleted }) {
   };
 
   const submitDraft = () => {
-    if (current.type === 'money') return advance({ [current.key]: parseAmount(draft[current.key]) });
+    if (current.type === 'money') return advance({ [current.key]: parseCurrencyBRL(draft[current.key]) });
     if (current.type === 'assets') {
       return advance({
         hasVehicle: Boolean(draft.hasVehicle),
@@ -173,7 +168,7 @@ export default function SmartQuiz({ onCompleted }) {
   };
 
   const canSubmitDraft = () => {
-    if (current.type === 'money') return parseAmount(draft[current.key]) > 0;
+    if (current.type === 'money') return parseCurrencyBRL(draft[current.key]) > 0;
     if (current.type === 'assets') return true;
     if (current.type === 'location') return draft.city && String(draft.state || '').length >= 2;
     if (current.type === 'contact') return draft.contactName && draft.whatsapp && draft.email;
@@ -230,7 +225,13 @@ export default function SmartQuiz({ onCompleted }) {
 
             {current.type === 'money' ? (
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <input className="min-h-12 flex-1 rounded-2xl border border-white/10 bg-white/[0.06] px-4 text-white outline-none focus:border-[#9C8FFF]" inputMode="numeric" placeholder={current.placeholder} value={draft[current.key] || ''} onChange={(event) => setDraft((item) => ({ ...item, [current.key]: event.target.value }))} />
+                <input
+                  className="min-h-12 flex-1 rounded-2xl border border-white/10 bg-white/[0.06] px-4 text-white outline-none focus:border-[#9C8FFF]"
+                  inputMode="numeric"
+                  placeholder={current.placeholder}
+                  value={draft[current.key] || ''}
+                  onChange={(event) => setDraft((item) => ({ ...item, [current.key]: formatCurrencyBRL(event.target.value) }))}
+                />
                 <Button disabled={!canSubmitDraft()} onClick={submitDraft} className="h-12 rounded-full bg-[#7C6EF7] px-6 text-white hover:bg-[#6254D4]">Continuar <ArrowRight className="h-4 w-4" /></Button>
               </div>
             ) : null}

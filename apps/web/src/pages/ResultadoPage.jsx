@@ -7,6 +7,7 @@ import { buildPartnerMatches, recommendProducts } from '@/platform/services/reco
 import { getQuizProgress, saveQuizProgress } from '@/platform/services/quizAdapter.js';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
 import { trackEvent } from '@/platform/services/trackingAdapter.js';
+import { formatCurrencyBRL } from '@/components/smart-quiz/currency.js';
 
 const CONSENT_VERSION = 'cj-funnel-v1';
 
@@ -20,9 +21,15 @@ const readLastAnalysis = () => {
 
 const chanceClass = {
   alta: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-  média: 'bg-amber-50 text-amber-700 border-amber-100',
+  media: 'bg-amber-50 text-amber-700 border-amber-100',
   baixa: 'bg-slate-100 text-slate-700 border-slate-200'
 };
+
+const normalizeChanceKey = (value = '') =>
+  String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
 
 function ResultadoPage() {
   const location = useLocation();
@@ -36,6 +43,10 @@ function ResultadoPage() {
   const [consents, setConsents] = useState({});
   const [status, setStatus] = useState('');
   const [redirectingPartnerId, setRedirectingPartnerId] = useState('');
+  const summaryItems = [
+    quizAnswers.monthlyIncome ? ['Renda mensal', formatCurrencyBRL(quizAnswers.monthlyIncome)] : null,
+    quizAnswers.requestedAmount ? ['Valor desejado', formatCurrencyBRL(quizAnswers.requestedAmount)] : null
+  ].filter(Boolean);
 
   useEffect(() => {
     trackEvent('result_viewed', {
@@ -86,7 +97,7 @@ function ResultadoPage() {
     }
 
     if (match.actionType === 'eligibility') {
-      setStatus('Elegibilidade preparada. Nenhum dado foi enviado para parceiro real neste lote.');
+      setStatus('Consulta registrada. As condicoes dependem da avaliacao do parceiro.');
       return;
     }
 
@@ -116,7 +127,7 @@ function ResultadoPage() {
       });
       window.location.href = redirect.redirectUrl || redirect.resolvedUrl;
     } catch (error) {
-      setStatus(error?.message || 'Não foi possível preparar o redirect rastreado agora.');
+      setStatus('Nao foi possivel abrir essa opcao agora. Tente novamente em instantes.');
     } finally {
       setRedirectingPartnerId('');
     }
@@ -169,6 +180,17 @@ function ResultadoPage() {
                 ))}
               </div>
             ) : null}
+
+            {summaryItems.length ? (
+              <div className="mt-6 grid gap-3">
+                {summaryItems.map(([label, value]) => (
+                  <div key={label} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{label}</p>
+                    <p className="mt-1 text-lg font-semibold text-slate-950">{value}</p>
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </aside>
 
           <main className="space-y-5">
@@ -179,13 +201,13 @@ function ResultadoPage() {
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">{match.productType}</p>
                     <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-950">{match.partnerName}</h2>
                   </div>
-                  <span className={`w-fit rounded-full border px-3 py-1 text-sm font-semibold ${chanceClass[match.chanceLabel] || chanceClass.baixa}`}>
+                  <span className={`w-fit rounded-full border px-3 py-1 text-sm font-semibold ${chanceClass[normalizeChanceKey(match.chanceLabel)] || chanceClass.baixa}`}>
                     Chance {match.chanceLabel}
                   </span>
                 </div>
 
                 <p className="mt-4 text-sm leading-7 text-slate-600">{match.reason}</p>
-                <div className="mt-4 text-sm text-slate-500">Match: {match.matchScore}/100</div>
+                <div className="mt-4 text-sm text-slate-500">Compatibilidade: {match.matchScore}/100</div>
 
                 {match.actionType === 'eligibility' ? (
                   <label className="mt-5 flex cursor-pointer gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-700">
