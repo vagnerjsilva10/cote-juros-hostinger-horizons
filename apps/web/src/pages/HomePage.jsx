@@ -26,6 +26,8 @@ import {
 } from 'lucide-react';
 import SeoHead from '@/components/SeoHead.jsx';
 import SmartQuiz from '@/components/smart-quiz/SmartQuiz.jsx';
+import { formatCurrencyBRL, parseCurrencyBRL } from '@/utils/currency.js';
+import { saveQuizProgress } from '@/platform/services/quizAdapter.js';
 import { trackingService } from '@/platform/services/trackingService.js';
 import { brandPages, createOrganizationSchema, createWebSiteSchema } from '@/seo/brandSeo.js';
 
@@ -95,6 +97,8 @@ const blogPreview = [
   ['Financiamento sem entrada vale a pena?', '/blog/financiamento-sem-entrada-vale-a-pena']
 ];
 
+const heroQuickAmounts = [1000, 5000, 10000, 20000];
+
 function DashboardPreview() {
   return (
     <div className="cj-home-dashboard" aria-label="Preview do radar financeiro Cote Juros">
@@ -155,6 +159,8 @@ function SectionHeading({ eyebrow, title, text, align = 'left' }) {
 function HomePage() {
   const location = useLocation();
   const [quizResult, setQuizResult] = useState(null);
+  const [heroLoanAmount, setHeroLoanAmount] = useState(0);
+  const [heroLoanAmountDisplay, setHeroLoanAmountDisplay] = useState('');
 
   useEffect(() => {
     if (!location.hash) return;
@@ -170,6 +176,35 @@ function HomePage() {
       ctaLabel,
       productType: 'loan'
     });
+  };
+
+  const syncHeroAmount = (amount) => {
+    if (!amount) return;
+    saveQuizProgress({
+      sourcePage: 'home_hero',
+      requestedAmount: amount,
+      quizAnswers: {
+        requestedAmount: amount,
+        sourcePage: 'home_hero'
+      }
+    });
+  };
+
+  const handleHeroAmountChange = (event) => {
+    const amount = parseCurrencyBRL(event.target.value);
+    setHeroLoanAmount(amount);
+    setHeroLoanAmountDisplay(formatCurrencyBRL(amount));
+  };
+
+  const handleQuickAmountClick = (amount) => {
+    setHeroLoanAmount(amount);
+    setHeroLoanAmountDisplay(formatCurrencyBRL(amount));
+    syncHeroAmount(amount);
+  };
+
+  const handleHeroQuizClick = () => {
+    syncHeroAmount(heroLoanAmount);
+    trackHomeCta('home_hero_quiz', 'Ver opcoes para meu perfil');
   };
 
   return (
@@ -196,19 +231,46 @@ function HomePage() {
                 Plataforma inteligente de comparaÃ§Ã£o financeira
               </span>
               <h1>
-                Compare crÃ©dito, cartÃµes e seguros com <span>clareza antes de contratar</span>
+                Encontre opções de crédito para o seu perfil
               </h1>
               <p>
-                A Cote Juros organiza seu perfil, objetivo e momento financeiro em uma leitura simples para vocÃª escolher o prÃ³ximo passo com mais seguranÃ§a.
+                Responda algumas perguntas rápidas e veja caminhos possíveis antes de decidir.
               </p>
-              <div className="cj-home-actions">
-                <a href="#smart-quiz" className="cj-home-primary-btn" onClick={() => trackHomeCta('home_hero_quiz', 'ComeÃ§ar meu radar')}>
-                  ComeÃ§ar meu radar
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-                <Link to="/comparar" className="cj-home-secondary-btn" onClick={() => trackHomeCta('home_hero_compare', 'Ver comparador')}>
-                  Ver comparador
-                </Link>
+              <div className="cj-home-hero-form" aria-label="Comece sua análise de crédito">
+                <label htmlFor="home-hero-amount">De quanto você precisa?</label>
+                <div className="cj-home-hero-input-row">
+                  <input
+                    id="home-hero-amount"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="off"
+                    placeholder="Ex: R$ 5.000"
+                    value={heroLoanAmountDisplay}
+                    onChange={handleHeroAmountChange}
+                    onBlur={() => syncHeroAmount(heroLoanAmount)}
+                  />
+                  <a href="#smart-quiz" className="cj-home-primary-btn" onClick={handleHeroQuizClick}>
+                    Ver opções para meu perfil
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                </div>
+                <div className="cj-home-quick-amounts" aria-label="Sugestões rápidas de valor">
+                  {heroQuickAmounts.map((amount) => (
+                    <button
+                      key={amount}
+                      type="button"
+                      className={heroLoanAmount === amount ? 'is-active' : ''}
+                      onClick={() => handleQuickAmountClick(amount)}
+                    >
+                      {formatCurrencyBRL(amount)}
+                    </button>
+                  ))}
+                </div>
+                <div className="cj-home-hero-microcopy">
+                  <span><ShieldCheck className="h-4 w-4" /> Sem cobrança antecipada</span>
+                  <span><LockKeyhole className="h-4 w-4" /> Dados protegidos (LGPD)</span>
+                  <span><Timer className="h-4 w-4" /> Resultado em poucos minutos</span>
+                </div>
               </div>
               <div className="cj-home-hero-meta">
                 {trustItems.map(({ label, icon: Icon }) => (
@@ -278,7 +340,7 @@ function HomePage() {
               title="Descubra qual caminho combina melhor com seu momento financeiro"
               text="Responda em poucos passos e veja caminhos de crédito organizados com clareza, sem promessa de aprovação."
             />
-            <SmartQuiz onCompleted={setQuizResult} />
+            <SmartQuiz onCompleted={setQuizResult} initialRequestedAmount={heroLoanAmount} />
           </div>
         </section>
 

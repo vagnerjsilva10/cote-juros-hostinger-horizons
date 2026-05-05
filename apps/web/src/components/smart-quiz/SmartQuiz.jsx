@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, ChevronLeft } from 'lucide-react';
@@ -63,7 +63,7 @@ const steps = [
   }
 ];
 
-export default function SmartQuiz({ onCompleted }) {
+export default function SmartQuiz({ onCompleted, initialRequestedAmount = 0 }) {
   const location = useLocation();
   const navigate = useNavigate();
   const stored = getQuizProgress();
@@ -75,6 +75,15 @@ export default function SmartQuiz({ onCompleted }) {
   }));
   const [draft, setDraft] = useState({});
   const [status, setStatus] = useState('idle');
+
+  useEffect(() => {
+    if (!initialRequestedAmount || answers.requestedAmount === initialRequestedAmount) return;
+    setAnswers((currentAnswers) => ({
+      ...currentAnswers,
+      requestedAmount: initialRequestedAmount,
+      sourcePage: currentAnswers.sourcePage || 'home_hero'
+    }));
+  }, [answers.requestedAmount, initialRequestedAmount]);
 
   const current = steps[step];
   const progress = useMemo(() => Math.round(((step + 1) / steps.length) * 100), [step]);
