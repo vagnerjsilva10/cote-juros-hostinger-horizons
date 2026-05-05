@@ -10,6 +10,7 @@ import {
   SITE_BASE_URL
 } from './editorialConfig.js';
 import { createEditorialLogger } from './editorialLogger.js';
+import { normalizeTextForValidation } from './portugueseTextService.js';
 
 const logger = createEditorialLogger('editorial-service');
 const OPENAI_RESPONSES_ENDPOINT = 'https://api.openai.com/v1/responses';
@@ -532,6 +533,40 @@ const getContextualLinks = ({ cluster, relatedArticles = [] }) => ({
   commercial: COMMERCIAL_DESTINATIONS
 });
 
+const normalizeLinkForValidation = (link = {}) => {
+  if (!link || typeof link !== 'object') return link;
+  return {
+    ...link,
+    title: link.title ? normalizeTextForValidation(link.title) : link.title,
+    anchor: link.anchor ? normalizeTextForValidation(link.anchor) : link.anchor,
+    label: link.label ? normalizeTextForValidation(link.label) : link.label
+  };
+};
+
+const normalizeLinksForValidation = (links = []) =>
+  Array.isArray(links) ? links.map((link) => normalizeLinkForValidation(link)) : [];
+
+const normalizeCtaForValidation = (cta = null) => {
+  if (!cta || typeof cta !== 'object') return cta;
+  return {
+    ...cta,
+    eyebrow: cta.eyebrow ? normalizeTextForValidation(cta.eyebrow) : cta.eyebrow,
+    title: cta.title ? normalizeTextForValidation(cta.title) : cta.title,
+    description: cta.description ? normalizeTextForValidation(cta.description) : cta.description,
+    label: cta.label ? normalizeTextForValidation(cta.label) : cta.label,
+    primary: cta.primary ? normalizeCtaForValidation(cta.primary) : cta.primary,
+    secondary: cta.secondary ? normalizeCtaForValidation(cta.secondary) : cta.secondary
+  };
+};
+
+const normalizeArticleForValidation = (article = {}) => ({
+  ...article,
+  internalLinks: normalizeLinksForValidation(article.internalLinks),
+  externalLinks: normalizeLinksForValidation(article.externalLinks),
+  cta: normalizeCtaForValidation(article.cta),
+  ctas: Array.isArray(article.ctas) ? article.ctas.map((cta) => normalizeCtaForValidation(cta)) : article.ctas
+});
+
 const buildInternalLinks = ({ cluster, article, relatedArticles = [] }) => {
   const links = [
     {
@@ -555,11 +590,11 @@ const buildInternalLinks = ({ cluster, article, relatedArticles = [] }) => {
   }
 
   const seen = new Set();
-  return links.filter((item) => {
+  return normalizeLinksForValidation(links.filter((item) => {
     if (!item?.path || seen.has(item.path)) return false;
     seen.add(item.path);
     return true;
-  }).slice(0, 6);
+  }).slice(0, 6));
 };
 
 const buildExternalLinks = ({ article, cluster }) => {
@@ -575,11 +610,11 @@ const buildExternalLinks = ({ article, cluster }) => {
   }
 
   const seen = new Set();
-  return list.filter((item) => {
+  return normalizeLinksForValidation(list.filter((item) => {
     if (!item?.url || seen.has(item.url)) return false;
     seen.add(item.url);
     return true;
-  }).slice(0, 3);
+  }).slice(0, 3));
 };
 
 const STAGE_OPPORTUNITY_SCORE = Object.freeze({
@@ -945,7 +980,8 @@ export class EditorialService {
     triggerSource = 'manual',
     ignoreSchedule = false,
     ignoreRecentClusterCooldown = false,
-    publishApproved = false
+    publishApproved = false,
+    retryOnValidationFailure = true
   } = {}) {
     await this.ensureClusterCalendar();
     const prisma = getPrisma();
@@ -979,14 +1015,16 @@ export class EditorialService {
       orderBy: [{ scheduledFor: 'asc' }, { createdAt: 'asc' }],
       take: useOpportunityPriority ? 50 : limit
     });
-    const skippedDraftBriefs = rawEligibleBriefs.filter((brief) => brief.article?.status === 'draft');
+    const shouldSkipExistingDraft = (brief) => brief.article?.status === 'draft' && !retryOnValidationFailure;
+    const skippedDraftBriefs = rawEligibleBriefs.filter(shouldSkipExistingDraft);
     if (skippedDraftBriefs.length) {
       await logger.warn('editorial_skipped_existing_draft_articles', {
         count: skippedDraftBriefs.length,
-        slugs: skippedDraftBriefs.map((brief) => brief.slug)
+        slugs: skippedDraftBriefs.map((brief) => brief.slug),
+        retryOnValidationFailure
       });
     }
-    const eligibleBriefs = rawEligibleBriefs.filter((brief) => brief.article?.status !== 'draft');
+    const eligibleBriefs = rawEligibleBriefs.filter((brief) => !shouldSkipExistingDraft(brief));
 
     let rankedBriefs = eligibleBriefs.map((brief) => ({
       brief,
@@ -1133,7 +1171,7 @@ export class EditorialService {
         cluster: brief.cluster
       });
 
-      const articlePayload = enforceArticleStandard({
+      let articlePayload = enforceArticleStandard({
         article: {
           ...generated,
           slug: brief.slug,
@@ -1162,6 +1200,7 @@ export class EditorialService {
         primaryKeyword: brief.primaryKeyword,
         internalLinks
       });
+      articlePayload = normalizeArticleForValidation(articlePayload);
 
       const existingArticles = await prisma.article.findMany({
           where: {
@@ -1301,17 +1340,21 @@ export class EditorialService {
         }
       });
 
+      const operationalStatus = shouldPublish ? 'published' : (validation.passed ? 'generated_draft' : 'validation_failed');
+      const jobRunStatus = shouldPublish ? 'succeeded' : 'draft_saved';
+
       await prisma.editorialJobRun.update({
         where: { id: jobRun.id },
         data: {
           articleId: articleRecord.id,
-          status: shouldPublish ? 'succeeded' : 'draft_saved',
+          status: jobRunStatus,
           finishedAt: new Date(),
           durationMs: Date.now() - new Date(jobRun.startedAt).getTime(),
           metadata: {
             slug: brief.slug,
             opportunity,
             publishApproved,
+            operationalStatus,
             validation,
             image: {
               provider: image.provider,

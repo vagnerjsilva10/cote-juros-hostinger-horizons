@@ -136,6 +136,43 @@ const validatePublishedArticle = (item = {}) => {
   };
 };
 
+const classifyIssueType = (issue = '') => {
+  const text = String(issue || '').toLowerCase();
+  if (/encoding|acentua/.test(text)) return 'encoding';
+  if (/imagem|image|cover/.test(text)) return 'image';
+  if (/distrib|pinterest|web story/.test(text)) return 'distribution';
+  return 'validation';
+};
+
+const summarizeValidationIssues = (items = []) =>
+  items.flatMap((item) => {
+    const issues = item.finalValidation?.issues?.length
+      ? item.finalValidation.issues
+      : (item.validation?.issues || []);
+    return issues.map((issue) => ({
+      slug: item.article?.slug || null,
+      type: classifyIssueType(issue),
+      issue
+    }));
+  });
+
+const classifyAutomationItemStatus = (item = {}) => {
+  if (item.distributionError) return 'distribution_failed';
+  if (item.article?.status === 'published') return 'published';
+  if (item.validation?.passed === false || item.finalValidation?.passed === false) return 'validation_failed';
+  if (item.article?.status === 'draft') return 'generated_draft';
+  return 'validation_failed';
+};
+
+const summarizeAutomationStatus = (items = [], publishApproved = false) => {
+  const statuses = items.map((item) => item.automationStatus);
+  if (statuses.includes('validation_failed')) return 'validation_failed';
+  if (statuses.includes('distribution_failed')) return 'distribution_failed';
+  if (statuses.includes('published')) return 'published';
+  if (statuses.includes('generated_draft')) return 'generated_draft';
+  return publishApproved ? 'published' : 'generated_draft';
+};
+
 export class ArticleCronAutomationService {
   static async createJob({ jobName, payload = {} }) {
     const prisma = getPrisma();
@@ -208,15 +245,20 @@ export class ArticleCronAutomationService {
         },
         distributionError: item.distributionError || null,
         finalValidation: validatePublishedArticle(item)
+      })).map((item) => ({
+        ...item,
+        automationStatus: classifyAutomationItemStatus(item)
       }));
-      const failed = items.filter((item) => !item.finalValidation.passed);
+      const issueSummary = summarizeValidationIssues(items);
+      const status = summarizeAutomationStatus(items, publishApproved);
       const firstArticle = items.find((item) => item.article?.id)?.article || null;
       const payload = {
-        ok: failed.length === 0,
-        status: failed.length ? 'failed' : (publishApproved ? 'success' : 'draft_saved'),
+        ok: true,
+        status,
         publishApproved,
         target: 'cotejuros.com.br',
         items,
+        issueSummary,
         article_id: firstArticle?.id || null,
         post_id: firstArticle?.id || null,
         url: firstArticle?.slug ? `${SITE_BASE_URL}/blog/${firstArticle.slug}/` : null
@@ -224,9 +266,9 @@ export class ArticleCronAutomationService {
 
       await this.finishJob({
         job,
-        status: failed.length ? 'failed' : (publishApproved ? 'success' : 'draft_saved'),
+        status,
         result: payload,
-        error: failed.length ? new Error(failed.map((item) => item.finalValidation.issues.join(', ')).join(' | ')) : null,
+        error: issueSummary.length ? new Error(issueSummary.map((item) => `${item.type}: ${item.issue}`).join(' | ')) : null,
         articleId: firstArticle?.id || null
       });
 
@@ -311,8 +353,11 @@ export class ArticleCronAutomationService {
       });
       await this.finishJob({
         job,
-        status: payload.ok ? 'success' : 'failed',
+        status: payload.status || (payload.ok ? 'success' : 'failed'),
         result: payload,
+        error: payload.issueSummary?.length
+          ? new Error(payload.issueSummary.map((item) => `${item.type}: ${item.issue}`).join(' | '))
+          : null,
         articleId: payload.items?.[0]?.article?.id || null
       });
       return payload;

@@ -386,6 +386,8 @@ export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', inte
 };
 
 export const validateArticle = ({ article = {}, internalLinks = [], image = null, existingIssues = [] } = {}) => {
+  article = repairPortugueseInObject(article);
+  internalLinks = repairPortugueseInObject(internalLinks);
   const issues = [...existingIssues];
   const portugueseIssues = findPortugueseEncodingIssues(article);
   const keyword = compactText(article.clusterKeyword || article.tags?.[0] || article.title || '');

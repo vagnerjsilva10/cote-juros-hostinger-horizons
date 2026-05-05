@@ -158,6 +158,8 @@ export const repairPortugueseText = (value = '') =>
     .replace(/\s{2,}/g, ' ')
     .trim();
 
+export const normalizeTextForValidation = (value = '') => repairPortugueseText(value);
+
 export const repairPortugueseInObject = (value, key = '') => {
   if (typeof value === 'string') {
     return SKIP_TEXT_KEYS.has(key) || /^https?:\/\//i.test(value) ? value : repairPortugueseText(value);
