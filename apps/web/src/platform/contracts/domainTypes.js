@@ -131,6 +131,49 @@
  *   metadata?: Record<string, unknown>
  * }} PartnerRedirect
  *
+ * @typedef {'yes'|'no'|'unknown'|boolean|null} NegativeStatus
+ * @typedef {'redirect'|'eligibility'|'complete_data'} PartnerActionType
+ * @typedef {'alta'|'média'|'baixa'} ChanceLabel
+ *
+ * @typedef {{
+ *   requestedAmount?: number,
+ *   monthlyIncome?: number,
+ *   hasNegativeStatus?: NegativeStatus,
+ *   occupation?: string,
+ *   creditPurpose?: string,
+ *   hasVehicle?: boolean,
+ *   hasProperty?: boolean,
+ *   city?: string,
+ *   state?: string,
+ *   contactName?: string,
+ *   whatsapp?: string,
+ *   email?: string,
+ *   consentGeneral?: boolean,
+ *   consentPartnerSharing?: boolean,
+ *   consentVersion?: string,
+ *   sourcePage?: string
+ * }} SimulationProfile
+ *
+ * @typedef {{
+ *   score: number,
+ *   profileLabel: 'baixo risco'|'médio risco'|'alto risco',
+ *   reasons: string[],
+ *   warnings: string[],
+ *   nextBestActions: string[]
+ * }} RecommendationResult
+ *
+ * @typedef {{
+ *   partnerId: string,
+ *   partnerName: string,
+ *   productType: string,
+ *   matchScore: number,
+ *   chanceLabel: ChanceLabel,
+ *   reason: string,
+ *   requiredFields: string[],
+ *   actionType: PartnerActionType,
+ *   ctaLabel: string
+ * }} PartnerMatch
+ *
  * @typedef {{
  *   id: string,
  *   sourcePage: string,

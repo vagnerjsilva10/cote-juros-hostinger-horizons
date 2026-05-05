@@ -35,6 +35,7 @@ const buildConfig = () => {
   const consumerSecret = readString('CREDITAS_CONSUMER_SECRET');
   const authUrl = (readString('CREDITAS_AUTH_URL') || defaults.authUrl).replace(/\s+$/, '');
   const apiBaseUrl = (readString('CREDITAS_API_BASE_URL') || readString('CREDITAS_BASE_URL') || defaults.apiBaseUrl).replace(/\/$/, '');
+  const acceptVersion = readString('CREDITAS_ACCEPT_VERSION') || 'v1';
   const configured = Boolean(consumerKey && consumerSecret && authUrl && apiBaseUrl);
   const missing = [];
 
@@ -54,6 +55,7 @@ const buildConfig = () => {
     consumerSecret,
     authUrl,
     apiBaseUrl,
+    acceptVersion,
     timeoutMs: readInt('CREDITAS_TIMEOUT_MS', 15000),
     retryCount: readInt('CREDITAS_RETRY_COUNT', 1),
     webhookSecret: readString('CREDITAS_WEBHOOK_SECRET')
@@ -85,6 +87,10 @@ export const getCreditasHealth = () => {
     hasConsumerKey: Boolean(config.consumerKey),
     hasConsumerSecret: Boolean(config.consumerSecret),
     hasWebhookSecret: Boolean(config.webhookSecret),
+    authConfigured: Boolean(config.consumerKey && config.consumerSecret),
+    authUrlConfigured: Boolean(config.authUrl),
+    apiBaseConfigured: Boolean(config.apiBaseUrl),
+    acceptVersion: config.acceptVersion,
     authUrl: config.authUrl,
     apiBaseUrl: config.apiBaseUrl,
     timeoutMs: config.timeoutMs,

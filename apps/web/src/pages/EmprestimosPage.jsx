@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ArrowUpRight, CheckCircle2, Filter, RotateCcw, Search, ShieldCheck, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +11,8 @@ import PageHero from '@/components/PageHero.jsx';
 import SeoHead from '@/components/SeoHead.jsx';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
 import { portalApi } from '@/platform/services/portalApi.js';
+import { saveQuizProgress } from '@/platform/services/quizAdapter.js';
+import { trackEvent } from '@/platform/services/trackingAdapter.js';
 import { brandPages, homeBreadcrumb } from '@/seo/brandSeo.js';
 import { useSiteDisclaimers, disclaimerText } from '@/hooks/useSiteDisclaimers.js';
 import { usePageContent } from '@/hooks/useSiteSettings.js';
@@ -90,6 +92,7 @@ const LOAN_FALLBACK_DISCLAIMER = 'A Cote Juros nao e instituicao financeira e na
 
 function EmprestimosPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const filtersRef = useRef(null);
   const content = usePageContent('loans', DEFAULT_LOANS_CONTENT);
   const loanDisclaimers = useSiteDisclaimers('emprestimos', [{
@@ -115,6 +118,7 @@ function EmprestimosPage() {
   const [matchError, setMatchError] = useState('');
   const [refreshKey, setRefreshKey] = useState(0);
   const [clickingPartnerId, setClickingPartnerId] = useState(null);
+  const [heroAmount, setHeroAmount] = useState('');
 
   const profile = useMemo(() => {
     const situation = getOption(situationOptions, filters.situation);
@@ -261,6 +265,21 @@ function EmprestimosPage() {
     }
   };
 
+  const startLoanQuiz = async (event) => {
+    event.preventDefault();
+    const requestedAmount = Number(String(heroAmount).replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, '')) || 0;
+    saveQuizProgress({
+      sourcePage: '/emprestimos',
+      requestedAmount,
+      quizAnswers: {
+        requestedAmount,
+        sourcePage: '/emprestimos'
+      }
+    });
+    await trackEvent('quiz_started', { sourcePage: '/emprestimos', requestedAmount });
+    navigate('/quiz', { state: { requestedAmount, sourcePage: '/emprestimos' } });
+  };
+
   return (
     <>
       <SeoHead
@@ -274,20 +293,14 @@ function EmprestimosPage() {
         className="loans-page-hero"
         breadcrumbs={[homeBreadcrumb, { name: 'Empréstimos', path: brandPages.emprestimos.path }]}
         eyebrow={content.hero.eyebrow}
-        title={content.hero.title}
-        subtitle={content.hero.subtitle}
+        title="Encontre opções de crédito para o seu perfil"
+        subtitle="Responda algumas perguntas rápidas e veja caminhos possíveis antes de decidir."
       >
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <a href="#comparador-emprestimos">
-            <Button size="lg">
-              {content.hero.primaryCta}
-              <SlidersHorizontal className="h-4 w-4" />
-            </Button>
-          </a>
-          <a href="#opcoes-emprestimos">
-            <Button size="lg" variant="outline" className="hero-secondary-btn">{content.hero.secondaryCta}</Button>
-          </a>
-        </div>
+        <form onSubmit={startLoanQuiz} className="mt-6 grid max-w-xl gap-3 rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_18px_54px_rgba(15,23,42,0.08)] sm:grid-cols-[1fr_auto]">
+          <label className="sr-only" htmlFor="loan-hero-amount">Valor desejado</label>
+          <input id="loan-hero-amount" inputMode="numeric" placeholder="Valor desejado (R$)" value={heroAmount} onChange={(event) => setHeroAmount(event.target.value)} className="min-h-12 rounded-2xl border-0 bg-slate-50 px-4 text-slate-950 outline-none focus:ring-2 focus:ring-primary/30" />
+          <Button size="lg" type="submit" className="min-h-12">Começar análise gratuita <SlidersHorizontal className="h-4 w-4" /></Button>
+        </form>
       </PageHero>
 
       <section className="border-b border-border bg-white py-5">

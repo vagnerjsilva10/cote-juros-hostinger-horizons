@@ -3,6 +3,7 @@ import { CreditasApiError } from './errors.js';
 
 const RETRYABLE_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504]);
 const TOKEN_EXPIRY_SKEW_MS = 60_000;
+const DEFAULT_TOKEN_TTL_SECONDS = 300;
 
 let cachedToken = null;
 
@@ -17,6 +18,16 @@ const parseResponsePayload = async (response) => {
   } catch {
     return text;
   }
+};
+
+const redactSensitivePayload = (value) => {
+  if (Array.isArray(value)) return value.map((item) => redactSensitivePayload(item));
+  if (!value || typeof value !== 'object') return value;
+
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => {
+    if (/token|secret|consumer/i.test(key)) return [key, '[redacted]'];
+    return [key, redactSensitivePayload(item)];
+  }));
 };
 
 const withTimeout = async ({ timeoutMs, executor }) => {
@@ -44,7 +55,7 @@ export const getCreditasAccessToken = async ({ forceRefresh = false } = {}) => {
       const response = await fetch(config.authUrl, {
         method: 'POST',
         headers: {
-          'Accept-Version': 'v1',
+          'Accept-Version': config.acceptVersion,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -59,7 +70,7 @@ export const getCreditasAccessToken = async ({ forceRefresh = false } = {}) => {
         throw new CreditasApiError(`Creditas authentication failed with status ${response.status}`, {
           statusCode: response.status,
           code: 'CREDITAS_AUTH_ERROR',
-          details: responsePayload
+          details: redactSensitivePayload(responsePayload)
         });
       }
 
@@ -69,19 +80,19 @@ export const getCreditasAccessToken = async ({ forceRefresh = false } = {}) => {
     if (error instanceof CreditasApiError) throw error;
     throw new CreditasApiError(error?.name === 'AbortError' ? 'Creditas authentication timed out.' : 'Unexpected Creditas authentication error.', {
       code: error?.name === 'AbortError' ? 'CREDITAS_AUTH_TIMEOUT' : 'CREDITAS_AUTH_NETWORK_ERROR',
-      details: error?.message || null
+      details: redactSensitivePayload(error?.message || null)
     });
   });
 
-  const accessToken = payload?.access_token || payload?.accessToken;
+  const accessToken = payload?.access_token || payload?.accessToken || payload?.token;
   if (!accessToken) {
     throw new CreditasApiError('Creditas authentication response did not include access_token.', {
       code: 'CREDITAS_AUTH_EMPTY_TOKEN',
-      details: payload
+      details: redactSensitivePayload(payload)
     });
   }
 
-  const expiresIn = Number(payload?.expires_in || payload?.expiresIn || 7200);
+  const expiresIn = Number(payload?.expires_in || payload?.expiresIn || DEFAULT_TOKEN_TTL_SECONDS);
   cachedToken = {
     accessToken,
     tokenType: payload?.token_type || payload?.tokenType || 'bearer',
@@ -146,7 +157,7 @@ export const creditasRequest = async ({
         const error = new CreditasApiError(`Creditas request failed with status ${response.status}`, {
           statusCode: response.status,
           code: 'CREDITAS_HTTP_ERROR',
-          details: payload
+          details: redactSensitivePayload(payload)
         });
 
         if (attempt < maxRetries && RETRYABLE_STATUS_CODES.has(response.status)) {
@@ -178,4 +189,3 @@ export const creditasRequest = async ({
 
   throw new CreditasApiError('Creditas request exhausted retries.', { code: 'CREDITAS_RETRY_EXHAUSTED' });
 };
-

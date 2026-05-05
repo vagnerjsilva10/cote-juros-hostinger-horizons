@@ -36,6 +36,7 @@ import { getCreditasStatus } from '@/platform/services/creditasAdapter.js';
 import { getCurrentCustomer, loginCustomer, logoutCustomer, registerCustomer } from '@/platform/services/authAdapter.js';
 import { getLeadFromLocalStorage } from '@/platform/services/leadAdapter.js';
 import { recommendProducts } from '@/platform/services/recommendationAdapter.js';
+import { saveQuizProgress } from '@/platform/services/quizAdapter.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackEvent } from '@/platform/services/trackingAdapter.js';
 import '@/platform/platformHtml.css';
@@ -348,6 +349,42 @@ function HeroDashboard() {
   );
 }
 
+function FunnelAmountCta({ sourcePage = '/', dark = true }) {
+  const navigate = useNavigate();
+  const [amount, setAmount] = useState('');
+
+  const startQuiz = async (event) => {
+    event.preventDefault();
+    const requestedAmount = Number(String(amount).replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, '')) || 0;
+    saveQuizProgress({
+      sourcePage,
+      requestedAmount,
+      quizAnswers: {
+        requestedAmount,
+        sourcePage
+      }
+    });
+    await trackEvent('quiz_started', { sourcePage, requestedAmount });
+    navigate('/quiz', { state: { requestedAmount, sourcePage } });
+  };
+
+  return (
+    <form className={`funnel-amount-cta ${dark ? 'funnel-amount-cta--dark' : ''}`} onSubmit={startQuiz}>
+      <label htmlFor={`requested-amount-${sourcePage.replace(/\W/g, '')}`}>Valor desejado</label>
+      <div>
+        <input
+          id={`requested-amount-${sourcePage.replace(/\W/g, '')}`}
+          inputMode="numeric"
+          placeholder="R$ 10.000"
+          value={amount}
+          onChange={(event) => setAmount(event.target.value)}
+        />
+        <button type="submit">Começar análise gratuita <ArrowIcon size={16} /></button>
+      </div>
+    </form>
+  );
+}
+
 export function PlatformHomePage() {
   return (
     <PlatformShell title="Cote Juros - Compare crédito, cartões e seguros">
@@ -357,10 +394,11 @@ export function PlatformHomePage() {
           <div className="container">
             <div className="hero-inner">
               <div className="hero-left reveal">
-                <div className="hero-badge"><div className="hero-badge-dot" /> Plataforma de comparação financeira</div>
-                <h1 className="hero-title">Compare crédito, cartões e seguros <span className="gradient-text">com clareza</span></h1>
-                <p className="hero-desc">Responda algumas perguntas e veja caminhos que podem fazer sentido para o seu perfil — sem cobrança antecipada e sem promessa de aprovação.</p>
-                <div className="hero-actions">
+                <div className="hero-badge"><div className="hero-badge-dot" /> Plataforma de decisão financeira</div>
+                <h1 className="hero-title">Encontre opções de crédito para o seu perfil</h1>
+                <p className="hero-desc">Responda algumas perguntas rápidas e veja caminhos possíveis antes de decidir.</p>
+                <FunnelAmountCta sourcePage="/" />
+                <div className="hero-actions" style={{ display: 'none' }}>
                   <Link className="btn-hero" to="/comparar">Ver minhas opções agora <ArrowIcon size={16} /></Link>
                   <Link className="btn-hero-outline" to="/radar">Radar de Crédito</Link>
                 </div>

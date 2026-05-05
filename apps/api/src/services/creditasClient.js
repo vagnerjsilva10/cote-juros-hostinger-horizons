@@ -84,8 +84,8 @@ export const normalizeCreditasResponse = (response = {}, context = {}) => {
     eligible,
     status,
     message: eligible === false
-      ? 'Não elegível no momento.'
-      : 'Elegibilidade consultada. Condições dependem da avaliação da parceira.',
+      ? 'Nao elegivel no momento.'
+      : 'Elegibilidade consultada. Condicoes dependem da avaliacao da parceira.',
     externalId: response?.id || response?.data?.id || response?.externalId || null
   };
 };
@@ -97,7 +97,7 @@ export const normalizeCreditasError = (error) => ({
   status: error?.statusCode || error?.status || 502,
   code: error?.code || 'CREDITAS_REQUEST_FAILED',
   message: error instanceof CreditasIntegrationError
-    ? 'Não conseguimos consultar a parceira agora.'
+    ? 'Nao conseguimos consultar a parceira agora.'
     : 'Erro inesperado ao consultar a parceira.',
   retryable: ['CREDITAS_TIMEOUT', 'CREDITAS_NETWORK_ERROR', 'CREDITAS_API_ERROR', 'CREDITAS_HTTP_ERROR'].includes(error?.code)
 });
@@ -136,24 +136,38 @@ export const checkCreditasEligibility = async (payload = {}) => {
   }
 };
 
-export const submitCreditasLead = async (payload = {}) => {
+export const submitCreditasEligibilityProxy = async (payload = {}) => {
   const eligibility = await checkCreditasEligibility(payload);
   if (!eligibility.ok) return eligibility;
 
   return {
     ...eligibility,
-    mode: eligibility.mode === 'api' ? 'lead_forwarded' : eligibility.mode,
-    status: eligibility.eligible === false ? 'not_eligible' : 'sent_to_analysis',
+    mode: eligibility.mode === 'api' ? 'eligibility_proxy' : eligibility.mode,
+    status: eligibility.eligible === false ? 'not_eligible' : 'eligibility_consulted',
+    leadSubmitted: false,
+    proposalSubmitted: false,
     message: eligibility.eligible === false
-      ? 'Não elegível no momento.'
-      : 'Enviado para análise. A aprovação e condições dependem da avaliação da parceira.'
+      ? 'Nao elegivel no momento.'
+      : 'Elegibilidade consultada. Nenhum lead ou proposta foi enviado para a Creditas.'
   };
 };
+
+export const submitCreditasLead = submitCreditasEligibilityProxy;
+
+export const submitCreditasProposal = async () => ({
+  ok: false,
+  mode: 'proposal_not_implemented',
+  provider: 'creditas',
+  status: 'not_sent',
+  message: 'Envio real de proposta Creditas ainda nao implementado. Use /creditas/proposals somente com payload oficial validado.'
+});
 
 export const creditasClient = {
   getCreditasToken,
   checkCreditasEligibility,
+  submitCreditasEligibilityProxy,
   submitCreditasLead,
+  submitCreditasProposal,
   normalizeCreditasResponse,
   normalizeCreditasError
 };
