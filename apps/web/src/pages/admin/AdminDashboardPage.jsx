@@ -33,6 +33,23 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-6">
+      <section className="rounded-lg border border-slate-200 bg-white p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Prioridade operacional</p>
+            <h2 className="mt-1 text-xl font-bold text-slate-950">
+              {data.openAlerts ? `${data.openAlerts} alerta${data.openAlerts === 1 ? '' : 's'} pedem atenção` : 'Operação sem alertas abertos'}
+            </h2>
+            <p className="mt-1 text-sm text-slate-600">
+              Use esta visão para priorizar leads, parceiros e receita antes de navegar pelos módulos.
+            </p>
+          </div>
+          <div className={`rounded-full px-4 py-2 text-sm font-semibold ${data.openAlerts ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>
+            {data.openAlerts ? 'Revisar alertas' : 'Tudo em ordem'}
+          </div>
+        </div>
+      </section>
+
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard label="Leads monitorados" value={data.totalLeads || 0} hint="Base operacional ativa" />
         <MetricCard label="Sessões administrativas" value={data.activeSessions || 0} hint="Usuários autenticados agora" />
@@ -83,7 +100,7 @@ export default function AdminDashboardPage() {
                 <th>Produto</th>
                 <th>Status</th>
                 <th>Parceiro</th>
-                <th>Owner</th>
+                <th>Responsável</th>
               </tr>
             </thead>
             <tbody>

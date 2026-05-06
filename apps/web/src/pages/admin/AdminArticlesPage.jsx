@@ -56,7 +56,7 @@ export default function AdminArticlesPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="CMS / Artigos" description="Operacao de artigos com rascunho, publicacao e SEO." actionLabel="Novo artigo" onAction={() => setEditing(emptyForm)} />
+      <AdminPageHeader title="Artigos" description="Organize rascunhos, publicacoes e otimização para busca." actionLabel="Novo artigo" onAction={() => setEditing(emptyForm)} />
 
       <Card className="border-slate-200">
         <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
@@ -115,7 +115,7 @@ export default function AdminArticlesPage() {
           <CardContent className="pt-6">
             <form className="space-y-4" onSubmit={handleSave}>
               <div><Label>Titulo</Label><Input value={editing.title} onChange={(e) => setEditing((prev) => ({ ...prev, title: e.target.value }))} required /></div>
-              <div><Label>Slug</Label><Input value={editing.slug} onChange={(e) => setEditing((prev) => ({ ...prev, slug: e.target.value }))} /></div>
+              <div><Label>Identificador</Label><Input value={editing.slug} onChange={(e) => setEditing((prev) => ({ ...prev, slug: e.target.value }))} /></div>
               <div><Label>Categoria</Label><Input value={editing.category} onChange={(e) => setEditing((prev) => ({ ...prev, category: e.target.value }))} /></div>
               <div>
                 <Label>Status</Label>

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import AdminPageHeader from '@/admin/AdminPageHeader.jsx';
+import { getLeadStatusLabel, getProductTypeLabel } from '@/admin/adminLabels.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -117,7 +118,7 @@ export default function AdminLeadsPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Gestão de leads"
-        description="Painel operacional com filtros, ownership, tags, trilha de roteamento e monetização."
+        description="Fila operacional com responsáveis, tags, histórico de encaminhamento e monetização."
       />
 
       <Card className="border-slate-200">
@@ -156,7 +157,7 @@ export default function AdminLeadsPage() {
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos</SelectItem>
-                {statuses.map((status) => <SelectItem key={status} value={status}>{status}</SelectItem>)}
+                {statuses.map((status) => <SelectItem key={status} value={status}>{getLeadStatusLabel(status)}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -170,7 +171,7 @@ export default function AdminLeadsPage() {
             </Select>
           </div>
           <div>
-            <Label>Owner</Label>
+            <Label>Responsável</Label>
             <Select value={filters.ownerId} onValueChange={(value) => setFilters((current) => ({ ...current, page: 1, ownerId: value }))}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -205,7 +206,7 @@ export default function AdminLeadsPage() {
                     <TableHead>Produto</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Parceiro</TableHead>
-                    <TableHead>Owner</TableHead>
+                    <TableHead>Responsável</TableHead>
                     <TableHead>Tags</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -221,8 +222,8 @@ export default function AdminLeadsPage() {
                         <p className="font-semibold text-slate-950">{lead.fullName || 'Lead sem nome'}</p>
                         <p className="text-xs text-slate-500">{lead.phone || '-'}</p>
                       </TableCell>
-                      <TableCell>{lead.productType || '-'}</TableCell>
-                      <TableCell>{lead.status || '-'}</TableCell>
+                      <TableCell>{getProductTypeLabel(lead.productType)}</TableCell>
+                      <TableCell>{getLeadStatusLabel(lead.status)}</TableCell>
                       <TableCell>{lead.partnerName || lead.partnerId || '-'}</TableCell>
                       <TableCell>{lead.ownerAssignment?.ownerUser?.fullName || '-'}</TableCell>
                       <TableCell>{(lead.tags || []).map((item) => item.label).join(', ') || '-'}</TableCell>
@@ -274,8 +275,8 @@ export default function AdminLeadsPage() {
                   <p className="text-base font-bold text-slate-950">{selectedLead.fullName || 'Lead sem nome'}</p>
                   <p>{selectedLead.phone || '-'}</p>
                   <p><strong>Origem:</strong> {selectedLead.originPage || '-'}</p>
-                  <p><strong>Produto:</strong> {selectedLead.productType || '-'}</p>
-                  <p><strong>Status:</strong> {selectedLead.status || '-'}</p>
+                  <p><strong>Produto:</strong> {getProductTypeLabel(selectedLead.productType)}</p>
+                  <p><strong>Status:</strong> {getLeadStatusLabel(selectedLead.status)}</p>
                   <p><strong>Renda:</strong> {formatMoney(selectedLead.income)}</p>
                   <p><strong>Valor solicitado:</strong> {formatMoney(selectedLead.requestedAmount)}</p>
                   <p><strong>Parceiro atual:</strong> {selectedLead.partnerName || selectedLead.partnerId || '-'}</p>
@@ -293,7 +294,7 @@ export default function AdminLeadsPage() {
                   >
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {statuses.map((status) => <SelectItem key={status} value={status}>{status}</SelectItem>)}
+                      {statuses.map((status) => <SelectItem key={status} value={status}>{getLeadStatusLabel(status)}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
@@ -320,11 +321,11 @@ export default function AdminLeadsPage() {
                 </div>
 
                 <div>
-                  <Label>Owner</Label>
+                  <Label>Responsável</Label>
                   <Select value={ownerId} onValueChange={setOwnerId}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">Sem owner</SelectItem>
+                      <SelectItem value="none">Sem responsável</SelectItem>
                       {ownerOptions.map((item) => <SelectItem key={item.id} value={item.id}>{item.fullName}</SelectItem>)}
                     </SelectContent>
                   </Select>
@@ -342,10 +343,10 @@ export default function AdminLeadsPage() {
                     disabled={busyAction === 'owner' || ownerId === 'none'}
                     onClick={() => runAction('owner', async () => {
                       await portalApi.assignAdminLeadOwner(selectedLead.id, ownerId, ownerNote);
-                      toast.success('Owner definido.');
+                      toast.success('Responsável definido.');
                     })}
                   >
-                    {busyAction === 'owner' ? 'Salvando owner...' : 'Salvar owner'}
+                    {busyAction === 'owner' ? 'Salvando responsável...' : 'Salvar responsável'}
                   </Button>
                 </div>
 

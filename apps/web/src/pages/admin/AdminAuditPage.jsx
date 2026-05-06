@@ -31,6 +31,20 @@ const commonResources = [
   'audit'
 ];
 
+const resourceLabels = {
+  all: 'Todos',
+  admin_session: 'Sessões administrativas',
+  admin_user: 'Usuários',
+  lead: 'Leads',
+  site_setting: 'Configurações públicas',
+  navigation_item: 'Navegação',
+  legal_disclaimer: 'Disclaimers',
+  seo_meta: 'SEO',
+  partner: 'Parceiros',
+  dashboard: 'Dashboard',
+  audit: 'Auditoria'
+};
+
 export default function AdminAuditPage() {
   const [filters, setFilters] = useState(emptyFilters);
   const [dataset, setDataset] = useState({ items: [], page: 1, pageSize: 20, total: 0, totalPages: 1 });
@@ -86,7 +100,7 @@ export default function AdminAuditPage() {
               <SelectContent>
                 {commonResources.map((item) => (
                   <SelectItem key={item} value={item}>
-                    {item === 'all' ? 'Todos' : item}
+                    {resourceLabels[item] || item}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -95,7 +109,7 @@ export default function AdminAuditPage() {
           <div>
             <Label>Ação</Label>
             <Input
-              placeholder="ex.: login_success"
+              placeholder="ex.: login realizado"
               value={filters.action}
               onChange={(event) => setFilters((current) => ({ ...current, page: 1, action: event.target.value }))}
             />
@@ -138,8 +152,8 @@ export default function AdminAuditPage() {
                       <p className="font-medium text-slate-950">{item.actorName || item.actorEmail || 'Sistema'}</p>
                       <p className="text-xs text-slate-500">{item.actorEmail || '-'}</p>
                     </TableCell>
-                    <TableCell>{item.action || '-'}</TableCell>
-                    <TableCell>{item.resource || '-'}</TableCell>
+                    <TableCell>{String(item.action || '-').replace(/_/g, ' ')}</TableCell>
+                    <TableCell>{resourceLabels[item.resource] || item.resource || '-'}</TableCell>
                     <TableCell className="font-mono text-xs">{item.resourceId || '-'}</TableCell>
                     <TableCell className="text-xs text-slate-500">{item.ipAddress || '-'}</TableCell>
                   </TableRow>

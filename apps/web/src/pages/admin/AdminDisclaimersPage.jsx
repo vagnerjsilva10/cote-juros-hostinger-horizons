@@ -74,14 +74,14 @@ export default function AdminDisclaimersPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Disclaimers" description="Textos legais globais por posicionamento, com fallback no site publico." actionLabel="Novo disclaimer" onAction={() => setEditing(emptyForm)} />
+      <AdminPageHeader title="Disclaimers" description="Textos legais globais por area do site, com conteudo padrao no portal publico." actionLabel="Novo disclaimer" onAction={() => setEditing(emptyForm)} />
 
       {error ? <p className="rounded-lg bg-red-50 p-4 text-sm font-semibold text-red-700">{error}</p> : null}
 
       <Card className="border-slate-200">
         <CardContent className="grid gap-4 pt-6 md:grid-cols-3">
           <div>
-            <Label>Placement</Label>
+            <Label>Area do site</Label>
             <Select value={placement} onValueChange={setPlacement}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -105,8 +105,8 @@ export default function AdminDisclaimersPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Key</TableHead>
-                    <TableHead>Placement</TableHead>
+                    <TableHead>Identificador</TableHead>
+                    <TableHead>Area do site</TableHead>
                     <TableHead>Titulo</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Acoes</TableHead>
@@ -134,10 +134,10 @@ export default function AdminDisclaimersPage() {
         <Card className="border-slate-200">
           <CardContent className="pt-6">
             <form className="space-y-4" onSubmit={handleSave}>
-              <div><Label>Key</Label><Input value={editing.key} onChange={(e) => setEditing((prev) => ({ ...prev, key: e.target.value }))} required /></div>
+              <div><Label>Identificador</Label><Input value={editing.key} onChange={(e) => setEditing((prev) => ({ ...prev, key: e.target.value }))} required /></div>
               <div><Label>Titulo</Label><Input value={editing.title} onChange={(e) => setEditing((prev) => ({ ...prev, title: e.target.value }))} required /></div>
               <div>
-                <Label>Placement</Label>
+                <Label>Area do site</Label>
                 <Select value={editing.placement} onValueChange={(value) => setEditing((prev) => ({ ...prev, placement: value }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>

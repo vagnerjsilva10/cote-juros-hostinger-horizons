@@ -35,8 +35,8 @@ export const LEAD_PROFILE_LABELS = {
 };
 
 export const DELIVERY_MODE_LABELS = {
-  tracking_link: 'Tracking link',
-  mock_api: 'Mock API'
+  tracking_link: 'Link de acompanhamento',
+  mock_api: 'Integração simulada'
 };
 
 export function getProductTypeLabel(value) {

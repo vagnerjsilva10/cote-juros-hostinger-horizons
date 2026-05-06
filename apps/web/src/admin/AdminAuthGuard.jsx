@@ -5,6 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { portalApi } from '@/platform/services/portalApi.js';
 
+const getFriendlyAdminError = (message, fallback) => {
+  const text = String(message || '');
+  if (/API|fetch|Failed to fetch|http/i.test(text)) {
+    return 'Não foi possível conectar ao ambiente administrativo agora. Tente novamente em instantes.';
+  }
+  return text || fallback;
+};
+
 export default function AdminAuthGuard({ children }) {
   const location = useLocation();
   const [password, setPassword] = useState('');
@@ -26,7 +34,7 @@ export default function AdminAuthGuard({ children }) {
       const nextSession = { authenticated: false, user: null };
       setSession(nextSession);
       if (location.pathname === '/admin/login') {
-        setError(sessionError.message || 'Não foi possível validar a sessão do admin.');
+        setError(getFriendlyAdminError(sessionError.message, 'Não foi possível validar a sessão do admin.'));
       }
       return nextSession;
     } finally {
@@ -48,10 +56,10 @@ export default function AdminAuthGuard({ children }) {
       setPassword('');
       const nextSession = await refreshSession();
       if (!nextSession.authenticated) {
-        setError('Login aceito, mas a sessão não foi persistida. Verifique cookie, CORS e domínio da API.');
+        setError('Login aceito, mas a sessão não foi persistida. Verifique domínio e sessão segura.');
       }
     } catch (submitError) {
-      setError(submitError.message || 'Não foi possível autenticar no admin.');
+      setError(getFriendlyAdminError(submitError.message, 'Não foi possível autenticar no admin.'));
     } finally {
       setBusy(false);
     }
@@ -80,7 +88,7 @@ export default function AdminAuthGuard({ children }) {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Senha configurada no backend"
+                  placeholder="Senha configurada com segurança"
                   autoComplete="current-password"
                 />
               </label>
@@ -90,11 +98,10 @@ export default function AdminAuthGuard({ children }) {
               </Button>
               {busy ? (
                 <p className="text-xs text-muted-foreground">
-                  Validando API, banco, senha e cookie de sessão. Se passar de alguns segundos, a chamada será interrompida com diagnóstico.
-                </p>
+                  Validando acesso e sessão segura. Se passar de alguns segundos, a chamada será interrompida com diagnóstico.</p>
               ) : null}
               <p className="text-xs text-muted-foreground">
-                A autenticação é validada pela API com sessão segura e trilha de auditoria.
+                A autenticação é validada com sessão segura e trilha de auditoria.
               </p>
             </form>
           </CardContent>

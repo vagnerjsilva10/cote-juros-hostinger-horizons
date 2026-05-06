@@ -83,7 +83,7 @@ export default function AdminNavigationPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="Navegacao" description="Header, footer, mobile e links legais controlados pelo SuperAdmin." actionLabel="Novo link" onAction={() => setEditing(emptyForm)} />
+      <AdminPageHeader title="Navegação" description="Menus do cabeçalho, rodapé, mobile e links legais controlados pelo SuperAdmin." actionLabel="Novo link" onAction={() => setEditing(emptyForm)} />
 
       {error ? <p className="rounded-lg bg-red-50 p-4 text-sm font-semibold text-red-700">{error}</p> : null}
 
@@ -115,8 +115,8 @@ export default function AdminNavigationPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Local</TableHead>
-                    <TableHead>Label</TableHead>
-                    <TableHead>Href</TableHead>
+                    <TableHead>Texto</TableHead>
+                    <TableHead>Destino</TableHead>
                     <TableHead>Ordem</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Acoes</TableHead>
@@ -157,15 +157,15 @@ export default function AdminNavigationPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div><Label>Label</Label><Input value={editing.label} onChange={(e) => setEditing((prev) => ({ ...prev, label: e.target.value }))} required /></div>
-              <div><Label>Href</Label><Input value={editing.href} onChange={(e) => setEditing((prev) => ({ ...prev, href: e.target.value }))} required /></div>
+              <div><Label>Texto</Label><Input value={editing.label} onChange={(e) => setEditing((prev) => ({ ...prev, label: e.target.value }))} required /></div>
+              <div><Label>Destino</Label><Input value={editing.href} onChange={(e) => setEditing((prev) => ({ ...prev, href: e.target.value }))} required /></div>
               <div><Label>Ordem</Label><Input type="number" value={editing.order} onChange={(e) => setEditing((prev) => ({ ...prev, order: e.target.value }))} /></div>
               <div>
-                <Label>Parent opcional</Label>
+                <Label>Item superior opcional</Label>
                 <Select value={editing.parentId || 'none'} onValueChange={(value) => setEditing((prev) => ({ ...prev, parentId: value === 'none' ? '' : value }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Sem parent</SelectItem>
+                    <SelectItem value="none">Sem item superior</SelectItem>
                     {parentOptions.map((item) => <SelectItem key={item.id} value={item.id}>{item.label}</SelectItem>)}
                   </SelectContent>
                 </Select>

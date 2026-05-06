@@ -88,13 +88,13 @@ export default function AdminSeoPagesPage() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader title="SEO por rota" description="Metas publicas por path. O site usa fallback de codigo quando nao existe registro ativo." actionLabel="Novo SEO" onAction={() => setEditing(emptyForm)} />
+      <AdminPageHeader title="SEO" description="Informacoes publicas de busca por pagina. O site usa conteudo padrao quando nao existe registro ativo." actionLabel="Novo SEO" onAction={() => setEditing(emptyForm)} />
 
       {error ? <p className="rounded-lg bg-red-50 p-4 text-sm font-semibold text-red-700">{error}</p> : null}
 
       <Card className="border-slate-200">
         <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
-          <Input placeholder="Buscar path" value={filters.search} onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))} />
+          <Input placeholder="Buscar pagina" value={filters.search} onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))} />
           <Select value={filters.status} onValueChange={(value) => setFilters((prev) => ({ ...prev, status: value }))}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
@@ -115,8 +115,8 @@ export default function AdminSeoPagesPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Path</TableHead>
-                    <TableHead>Title</TableHead>
+                    <TableHead>Pagina</TableHead>
+                    <TableHead>Titulo</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Acoes</TableHead>
                   </TableRow>
@@ -143,14 +143,14 @@ export default function AdminSeoPagesPage() {
         <Card className="border-slate-200">
           <CardContent className="pt-6">
             <form className="space-y-4" onSubmit={handleSave}>
-              <div><Label>Path</Label><Input value={editing.path} onChange={(e) => setEditing((prev) => ({ ...prev, path: e.target.value }))} required /></div>
-              <div><Label>Title</Label><Input value={editing.title} onChange={(e) => setEditing((prev) => ({ ...prev, title: e.target.value }))} required /></div>
-              <div><Label>Description</Label><Textarea rows={3} value={editing.description} onChange={(e) => setEditing((prev) => ({ ...prev, description: e.target.value }))} required /></div>
+              <div><Label>Pagina</Label><Input value={editing.path} onChange={(e) => setEditing((prev) => ({ ...prev, path: e.target.value }))} required /></div>
+              <div><Label>Titulo</Label><Input value={editing.title} onChange={(e) => setEditing((prev) => ({ ...prev, title: e.target.value }))} required /></div>
+              <div><Label>Descricao</Label><Textarea rows={3} value={editing.description} onChange={(e) => setEditing((prev) => ({ ...prev, description: e.target.value }))} required /></div>
               <div><Label>Canonical opcional</Label><Input value={editing.canonical || ''} onChange={(e) => setEditing((prev) => ({ ...prev, canonical: e.target.value }))} /></div>
               <div><Label>Robots</Label><Input value={editing.robots || ''} onChange={(e) => setEditing((prev) => ({ ...prev, robots: e.target.value }))} /></div>
-              <div><Label>OG title</Label><Input value={editing.ogTitle || ''} onChange={(e) => setEditing((prev) => ({ ...prev, ogTitle: e.target.value }))} /></div>
-              <div><Label>OG description</Label><Textarea rows={2} value={editing.ogDescription || ''} onChange={(e) => setEditing((prev) => ({ ...prev, ogDescription: e.target.value }))} /></div>
-              <div><Label>OG image</Label><Input value={editing.ogImage || ''} onChange={(e) => setEditing((prev) => ({ ...prev, ogImage: e.target.value }))} /></div>
+              <div><Label>Titulo para redes sociais</Label><Input value={editing.ogTitle || ''} onChange={(e) => setEditing((prev) => ({ ...prev, ogTitle: e.target.value }))} /></div>
+              <div><Label>Descricao para redes sociais</Label><Textarea rows={2} value={editing.ogDescription || ''} onChange={(e) => setEditing((prev) => ({ ...prev, ogDescription: e.target.value }))} /></div>
+              <div><Label>Imagem para redes sociais</Label><Input value={editing.ogImage || ''} onChange={(e) => setEditing((prev) => ({ ...prev, ogImage: e.target.value }))} /></div>
               <label className="flex items-center gap-2 text-sm text-slate-700">
                 <Checkbox checked={editing.isActive} onCheckedChange={(value) => setEditing((prev) => ({ ...prev, isActive: Boolean(value) }))} />
                 Ativo no site publico

@@ -103,7 +103,7 @@ export default function AdminBanksPage() {
           <CardContent className="pt-6">
             <form className="space-y-4" onSubmit={handleSave}>
               <div><Label>Nome</Label><Input value={editing.name} onChange={(e) => setEditing((prev) => ({ ...prev, name: e.target.value }))} required /></div>
-              <div><Label>Slug</Label><Input value={editing.slug} onChange={(e) => setEditing((prev) => ({ ...prev, slug: e.target.value }))} /></div>
+              <div><Label>Identificador</Label><Input value={editing.slug} onChange={(e) => setEditing((prev) => ({ ...prev, slug: e.target.value }))} /></div>
               <div><Label>URL do logo</Label><Input value={editing.logoUrl} onChange={(e) => setEditing((prev) => ({ ...prev, logoUrl: e.target.value }))} /></div>
               <div><Label>Cor</Label><Input value={editing.color} onChange={(e) => setEditing((prev) => ({ ...prev, color: e.target.value }))} /></div>
               <div><Label>Website</Label><Input value={editing.website} onChange={(e) => setEditing((prev) => ({ ...prev, website: e.target.value }))} /></div>

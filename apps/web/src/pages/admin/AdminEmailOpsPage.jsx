@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { portalApi } from '@/platform/services/portalApi.js';
 
 const money = (cents = 0) => `R$ ${Number(cents / 100).toFixed(2)}`;
@@ -6,11 +7,37 @@ const percent = (value = 0) => `${Number(value || 0).toFixed(1)}%`;
 const prettyJson = (value) => JSON.stringify(value || {}, null, 2);
 const defaultVariables = ['firstName', 'fullName', 'reactivationUrl', 'unsubscribeUrl'];
 
+const statusLabels = {
+  active: 'Ativo',
+  published: 'Publicado',
+  sent: 'Enviado',
+  delivered: 'Entregue',
+  draft: 'Rascunho',
+  paused: 'Pausado',
+  waiting: 'Aguardando',
+  inactive: 'Inativo',
+  archived: 'Arquivado',
+  failed: 'Falhou',
+  error: 'Erro'
+};
+
+const nodeTypeLabels = {
+  entry: 'Entrada',
+  email: 'Mensagem',
+  wait: 'Espera',
+  condition: 'Condição',
+  exit: 'Encerramento',
+  action: 'Ação'
+};
+
+const getStatusLabel = (value) => statusLabels[value] || value || '-';
+const getNodeTypeLabel = (value) => nodeTypeLabels[value] || 'Etapa';
+
 const parseJsonOrThrow = (value, label) => {
   try {
     return value?.trim() ? JSON.parse(value) : {};
   } catch {
-    throw new Error(`${label} contem JSON invalido.`);
+    throw new Error(`${label} contem dados invalidos.`);
   }
 };
 
@@ -111,7 +138,7 @@ function FlowCanvas({ flow }) {
     return (
       <EmptyState
         title="Nenhum fluxo publicado."
-        description="Sincronize o fluxo padrao para criar a regua inicial com entrada, emails, esperas, condicoes e encerramentos."
+        description="Sincronize o fluxo padrao para criar a regua inicial com entrada, mensagens, esperas, condicoes e encerramentos."
       />
     );
   }
@@ -121,11 +148,11 @@ function FlowCanvas({ flow }) {
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-4">
         <div>
           <p className="font-bold text-white">{flow.name}</p>
-          <p className="text-xs text-slate-300">{flow.slug} / v{version?.version || 1}</p>
+          <p className="text-xs text-slate-300">Versão {version?.version || 1}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Badge tone={flow.status}>{flow.status}</Badge>
-          <Badge tone={version?.status || 'draft'}>{version?.status || 'draft'}</Badge>
+          <Badge tone={flow.status}>{getStatusLabel(flow.status)}</Badge>
+          <Badge tone={version?.status || 'draft'}>{getStatusLabel(version?.status || 'draft')}</Badge>
         </div>
       </div>
       <div className="relative min-h-[540px] overflow-auto bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:32px_32px]">
@@ -154,9 +181,8 @@ function FlowCanvas({ flow }) {
               className="absolute w-[190px] rounded-lg border border-white/15 bg-white p-4 shadow-lg"
               style={{ left: Number(node.position?.x || 0), top: Number(node.position?.y || 0) }}
             >
-              <p className="text-xs font-bold uppercase text-teal-700">{node.type}</p>
+              <p className="text-xs font-bold uppercase text-teal-700">{getNodeTypeLabel(node.type)}</p>
               <p className="mt-1 text-sm font-black text-slate-950">{node.label}</p>
-              <p className="mt-3 break-words rounded bg-slate-50 px-2 py-1 text-xs text-slate-500">{node.key}</p>
             </div>
           ))}
         </div>
@@ -185,7 +211,7 @@ function CampaignsPanel({ campaigns, onRefresh, onBootstrap }) {
     return (
       <EmptyState
         title="Nenhuma campanha criada ainda."
-        description="Crie sua primeira campanha sincronizando o fluxo padrao. Ela conecta templates, limites diarios e fluxo publicado."
+        description="Crie sua primeira campanha sincronizando o fluxo padrao. Ela conecta modelos, limites diarios e fluxo publicado."
         actionLabel="Sincronizar campanha padrao"
         onAction={onBootstrap}
       />
@@ -200,8 +226,8 @@ function CampaignsPanel({ campaigns, onRefresh, onBootstrap }) {
             <th className="px-4 py-3">Campanha</th>
             <th>Status</th>
             <th>Limite</th>
-            <th>Batch</th>
-            <th>Flow</th>
+            <th>Lote</th>
+            <th>Fluxo</th>
             <th>Acao</th>
           </tr>
         </thead>
@@ -210,12 +236,12 @@ function CampaignsPanel({ campaigns, onRefresh, onBootstrap }) {
             <tr key={campaign.id} className="border-b border-slate-100">
               <td className="px-4 py-4">
                 <p className="font-bold text-slate-950">{campaign.name}</p>
-                <p className="text-xs text-slate-500">{campaign.slug}</p>
+                <p className="text-xs text-slate-500">Limite diario: {campaign.dailyLimit}</p>
               </td>
-              <td><Badge tone={campaign.status}>{campaign.status}</Badge></td>
+              <td><Badge tone={campaign.status}>{getStatusLabel(campaign.status)}</Badge></td>
               <td>{campaign.dailyLimit}/dia</td>
               <td>{campaign.batchSize}</td>
-              <td className="max-w-[220px] truncate">{campaign.flowDefinitionId || '-'}</td>
+              <td className="max-w-[220px] truncate">{campaign.flowName || 'Fluxo vinculado'}</td>
               <td>
                 <button
                   type="button"
@@ -238,9 +264,9 @@ function TemplatesPanel({ templates, onEdit, onBootstrap }) {
   if (!templates.length) {
     return (
       <EmptyState
-        title="Nenhum template criado ainda."
-        description="Sincronize os templates padrao ou crie um novo template para iniciar a regua com conteudo versionado."
-        actionLabel="Sincronizar templates padrao"
+        title="Nenhum modelo criado ainda."
+        description="Sincronize os modelos padrao ou crie um novo modelo para iniciar a regua com conteudo versionado."
+        actionLabel="Sincronizar modelos padrao"
         onAction={onBootstrap}
       />
     );
@@ -253,19 +279,19 @@ function TemplatesPanel({ templates, onEdit, onBootstrap }) {
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="font-black text-slate-950">{template.name}</p>
-              <p className="mt-1 text-xs text-slate-500">{template.slug}</p>
+              <p className="mt-1 text-xs text-slate-500">Versão {template.version}</p>
             </div>
-            <Badge tone={template.status}>v{template.version} / {template.status}</Badge>
+            <Badge tone={template.status}>{getStatusLabel(template.status)}</Badge>
           </div>
           <p className="mt-4 text-sm font-bold text-slate-800">{template.subject}</p>
-          <p className="mt-2 text-xs text-slate-500">{template.isActive ? 'Template ativo para envio' : 'Nao ativo'}</p>
+          <p className="mt-2 text-xs text-slate-500">{template.isActive ? 'Modelo ativo para envio' : 'Nao ativo'}</p>
           <div className="mt-4 flex flex-wrap gap-2">
             {(template.variables || []).slice(0, 5).map((variable) => (
               <span key={variable} className="rounded bg-teal-50 px-2 py-1 text-xs font-semibold text-teal-800">{`{{${variable}}}`}</span>
             ))}
           </div>
           <button type="button" className="mt-5 rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700" onClick={() => onEdit(template)}>
-            Editar template
+            Editar modelo
           </button>
         </article>
       ))}
@@ -303,18 +329,18 @@ function TemplateEditorPanel({ template, onSaved, onCancel }) {
   const variables = form.variables?.split(',').map((item) => item.trim()).filter(Boolean) || [];
 
   const validate = () => {
-    if (!form.name?.trim()) throw new Error('Informe o nome do template.');
+    if (!form.name?.trim()) throw new Error('Informe o nome do modelo.');
     if (!form.subject?.trim()) throw new Error('Informe o assunto do email.');
-    if (!form.html?.trim() || form.html.length < 10) throw new Error('Informe o HTML do email.');
+    if (!form.html?.trim() || form.html.length < 10) throw new Error('Informe o conteudo visual do email.');
     if (!form.text?.trim() || form.text.length < 10) throw new Error('Informe o texto plano do email.');
-    parseJsonOrThrow(form.metadata, 'Metadata');
+    parseJsonOrThrow(form.metadata, 'Dados avançados');
   };
 
   const payload = () => ({
     ...form,
     slug: form.slug || undefined,
     variables,
-    metadata: parseJsonOrThrow(form.metadata, 'Metadata')
+    metadata: parseJsonOrThrow(form.metadata, 'Dados avançados')
   });
 
   const save = async (publish = false) => {
@@ -327,10 +353,10 @@ function TemplateEditorPanel({ template, onSaved, onCancel }) {
         status: publish ? 'active' : form.status,
         isActive: publish ? true : form.isActive
       });
-      setMessage({ tone: 'success', text: publish ? 'Template publicado e marcado como ativo.' : 'Rascunho salvo.' });
+      setMessage({ tone: 'success', text: publish ? 'Modelo publicado e marcado como ativo.' : 'Rascunho salvo.' });
       onSaved(saved);
     } catch (err) {
-      setMessage({ tone: 'danger', text: err.message || 'Nao foi possivel salvar o template.' });
+      setMessage({ tone: 'danger', text: err.message || 'Nao foi possivel salvar o modelo.' });
     } finally {
       setBusy('');
     }
@@ -364,7 +390,7 @@ function TemplateEditorPanel({ template, onSaved, onCancel }) {
     <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h3 className="text-lg font-black text-slate-950">{form.id ? 'Editar template' : 'Novo template'}</h3>
+          <h3 className="text-lg font-black text-slate-950">{form.id ? 'Editar modelo' : 'Novo modelo'}</h3>
           <p className="mt-1 text-sm text-slate-600">Conteudo, configuracoes e preview em um unico lugar.</p>
         </div>
         <button type="button" className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700" onClick={onCancel}>
@@ -378,7 +404,7 @@ function TemplateEditorPanel({ template, onSaved, onCancel }) {
         {[
           ['content', 'Conteudo'],
           ['settings', 'Configuracoes'],
-          ['preview', 'Preview']
+          ['preview', 'Previa']
         ].map(([key, label]) => (
           <button key={key} type="button" className={`rounded-lg px-4 py-2 text-sm font-semibold ${tab === key ? 'bg-slate-950 text-white' : 'border border-slate-300 bg-white text-slate-700'}`} onClick={() => setTab(key)}>
             {label}
@@ -398,7 +424,7 @@ function TemplateEditorPanel({ template, onSaved, onCancel }) {
               <input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={form.preheader || ''} onChange={(event) => update('preheader', event.target.value)} />
             </label>
             <label className="block text-sm font-semibold text-slate-700">
-              HTML
+              Conteudo visual
               <textarea className="mt-1 h-72 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs" value={form.html || ''} onChange={(event) => update('html', event.target.value)} />
             </label>
           </div>
@@ -409,7 +435,7 @@ function TemplateEditorPanel({ template, onSaved, onCancel }) {
             </label>
             <div className="rounded-lg border border-slate-200 bg-white p-4">
               <p className="font-bold text-slate-950">Variaveis disponiveis</p>
-              <p className="mt-1 text-sm text-slate-600">Use variaveis com chaves duplas no assunto, HTML e texto.</p>
+              <p className="mt-1 text-sm text-slate-600">Use variaveis com chaves duplas no assunto e nos conteudos.</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {variables.map((variable) => <span key={variable} className="rounded bg-teal-50 px-2 py-1 text-xs font-semibold text-teal-800">{`{{${variable}}}`}</span>)}
               </div>
@@ -426,21 +452,21 @@ function TemplateEditorPanel({ template, onSaved, onCancel }) {
               <input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={form.name || ''} onChange={(event) => update('name', event.target.value)} />
             </label>
             <label className="block text-sm font-semibold text-slate-700">
-              Slug
+              Identificador
               <input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={form.slug || ''} onChange={(event) => update('slug', event.target.value)} />
             </label>
             <label className="block text-sm font-semibold text-slate-700">
               Status
               <select className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={form.status || 'draft'} onChange={(event) => update('status', event.target.value)}>
-                <option value="draft">draft</option>
-                <option value="active">active</option>
-                <option value="inactive">inactive</option>
-                <option value="archived">archived</option>
+                <option value="draft">Rascunho</option>
+                <option value="active">Ativo</option>
+                <option value="inactive">Inativo</option>
+                <option value="archived">Arquivado</option>
               </select>
             </label>
             <label className="flex items-center gap-2 pt-7 text-sm font-semibold text-slate-700">
               <input type="checkbox" checked={Boolean(form.isActive)} onChange={(event) => update('isActive', event.target.checked)} />
-              Template ativo
+              Modelo ativo
             </label>
           </div>
           <div className="space-y-4">
@@ -449,7 +475,7 @@ function TemplateEditorPanel({ template, onSaved, onCancel }) {
               <input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={form.variables || ''} onChange={(event) => update('variables', event.target.value)} />
             </label>
             <label className="block text-sm font-semibold text-slate-700">
-              Metadata JSON
+              Dados avançados
               <textarea className="mt-1 h-32 w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs" value={form.metadata || '{}'} onChange={(event) => update('metadata', event.target.value)} />
             </label>
           </div>
@@ -465,10 +491,10 @@ function TemplateEditorPanel({ template, onSaved, onCancel }) {
                 <p className="mt-2"><strong>Preheader:</strong> {preview.preheader || '-'}</p>
                 <pre className="mt-4 max-h-72 overflow-auto whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-xs">{preview.text}</pre>
               </div>
-              <iframe className="h-96 w-full rounded-lg border border-slate-200 bg-white" title="Preview HTML" srcDoc={preview.html || ''} />
+              <iframe className="h-96 w-full rounded-lg border border-slate-200 bg-white" title="Previa visual" srcDoc={preview.html || ''} />
             </div>
           ) : (
-            <EmptyState title="Preview ainda nao gerado." description="Clique em gerar preview para revisar assunto, preheader, HTML e texto plano com variaveis de exemplo." />
+            <EmptyState title="Previa ainda nao gerada." description="Clique em gerar previa para revisar assunto, preheader e conteudos com variaveis de exemplo." />
           )}
         </div>
       ) : null}
@@ -481,7 +507,7 @@ function TemplateEditorPanel({ template, onSaved, onCancel }) {
           {busy === 'Publicando' ? 'Publicando...' : 'Publicar e ativar'}
         </button>
         <button type="button" className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-60" disabled={Boolean(busy)} onClick={renderPreview}>
-          {busy === 'Gerando preview' ? 'Gerando...' : 'Gerar preview'}
+          {busy === 'Gerando preview' ? 'Gerando...' : 'Gerar previa'}
         </button>
       </div>
     </div>
@@ -517,7 +543,7 @@ function ManualActionsPanel({ templates }) {
     } catch (err) {
       const raw = err.message || 'Acao falhou.';
       const text = raw.includes('EMAIL_PROVIDER_NOT_CONFIGURED')
-        ? 'Provider de envio ainda nao configurado. Configure o provedor de email na API antes de enviar.'
+        ? 'Provedor de envio ainda nao configurado. Configure o provedor de email antes de enviar.'
         : raw;
       setMessage({ tone: 'danger', text });
       return null;
@@ -537,10 +563,10 @@ function ManualActionsPanel({ templates }) {
     <div className="grid gap-5 xl:grid-cols-[1fr_1.1fr]">
       <div className="rounded-lg border border-slate-200 p-5">
         <h3 className="font-black text-slate-950">Acoes seguras</h3>
-        <p className="mt-1 text-sm text-slate-600">Preview e envio de teste nao alteram o estado do lead.</p>
+        <p className="mt-1 text-sm text-slate-600">Previa e envio de teste nao alteram o estado do lead.</p>
         <div className="mt-4 grid gap-3">
           <label className="text-sm font-semibold text-slate-700">
-            Template
+            Modelo
             <select className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={templateId} onChange={(event) => setSelectedTemplateId(event.target.value)}>
               {templates.map((template) => <option key={template.id} value={template.id}>{template.name}</option>)}
             </select>
@@ -551,20 +577,20 @@ function ManualActionsPanel({ templates }) {
           </label>
           <div className="flex flex-wrap gap-2">
             <button type="button" className="rounded-lg bg-slate-950 px-3 py-2 text-xs font-semibold text-white disabled:opacity-60" disabled={!canUseTemplate || Boolean(busy)} onClick={() => runAction({
-              label: 'Preview do template',
+              label: 'Previa do modelo',
               action: async () => {
                 const result = await portalApi.previewReactivationEmailTemplate(templateId, previewVariables());
                 setPreview(result.rendered);
                 return result;
               },
-              success: 'Preview gerado com variaveis de exemplo.'
+              success: 'Previa gerada com variaveis de exemplo.'
             })}>
-              Preview
+              Previa
             </button>
             <button type="button" className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700 disabled:opacity-60" disabled={!canUseTemplate || !testEmail || Boolean(busy)} onClick={() => runAction({
               label: 'Envio de teste',
               action: () => portalApi.sendReactivationTemplateTest(templateId, { toEmail: testEmail, variables: previewVariables() }),
-              success: 'Envio de teste solicitado ao provider.'
+              success: 'Envio de teste solicitado ao provedor.'
             })}>
               Enviar teste
             </button>
@@ -591,7 +617,7 @@ function ManualActionsPanel({ templates }) {
             <input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={reactivationUrl} onChange={(event) => setReactivationUrl(event.target.value)} placeholder="https://finance.cotejuros.com.br/r/token" />
           </label>
           <label className="text-sm font-semibold text-slate-700">
-            Node de destino
+            Etapa de destino
             <input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={nodeKey} onChange={(event) => setNodeKey(event.target.value)} placeholder="reminder" />
           </label>
           <label className="text-sm font-semibold text-slate-700">
@@ -630,12 +656,12 @@ function ManualActionsPanel({ templates }) {
             Pausar lead
           </button>
           <button type="button" className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800 disabled:opacity-60" disabled={!canTargetLead || !nodeKey || !reason || Boolean(busy)} onClick={() => runAction({
-            label: 'Mover node',
-            confirmText: `Mover o lead ${leadId} para o node ${nodeKey}?`,
+            label: 'Mover etapa',
+            confirmText: `Mover o lead ${leadId} para a etapa ${nodeKey}?`,
             action: () => portalApi.moveReactivationLeadFlowNode(leadId, { nodeKey, reason }),
-            success: 'Lead movido para o node informado.'
+            success: 'Lead movido para a etapa informada.'
           })}>
-            Mover node
+            Mover etapa
           </button>
           <button type="button" className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800 disabled:opacity-60" disabled={!canTargetLead || Boolean(busy)} onClick={() => runAction({
             label: 'Forcar proxima etapa',
@@ -685,9 +711,9 @@ function LeadTimelinePanel() {
   };
 
   const eventRows = [
-    ...(timeline?.auditEvents || []).map((item) => ({ type: `audit:${item.eventType}`, at: item.createdAt, detail: item.source || item.actor })),
-    ...(timeline?.messages || []).map((item) => ({ type: `email:${item.sequenceKey}:${item.status}`, at: item.createdAt, detail: item.subject })),
-    ...(timeline?.flowSteps || []).map((item) => ({ type: `flow:${item.nodeKey}:${item.status}`, at: item.startedAt || item.createdAt, detail: item.nodeType }))
+    ...(timeline?.auditEvents || []).map((item) => ({ type: 'Auditoria operacional', at: item.createdAt, detail: item.source || item.actor || item.eventType })),
+    ...(timeline?.messages || []).map((item) => ({ type: 'Mensagem enviada', at: item.createdAt, detail: item.subject || item.status })),
+    ...(timeline?.flowSteps || []).map((item) => ({ type: 'Etapa do fluxo', at: item.startedAt || item.createdAt, detail: item.status || item.nodeType }))
   ].sort((a, b) => new Date(a.at || 0) - new Date(b.at || 0));
 
   return (
@@ -701,7 +727,7 @@ function LeadTimelinePanel() {
       {message ? <div className="mt-4"><Notice tone={message.tone}>{message.text}</Notice></div> : null}
       {!timeline ? (
         <div className="mt-4">
-          <EmptyState title="Busque um lead para ver a timeline." description="Informe o Lead ID para consultar emails, eventos de provider, passos do fluxo e auditoria operacional." />
+          <EmptyState title="Busque um lead para ver o historico." description="Informe o Lead ID para consultar mensagens, eventos de envio, passos do fluxo e auditoria operacional." />
         </div>
       ) : null}
       {timeline?.lead ? (
@@ -711,7 +737,7 @@ function LeadTimelinePanel() {
             <p className="mt-2">Status: <strong>{timeline.lead.status}</strong></p>
             <p>Score: <strong>{timeline.lead.scoreValue ?? '-'}</strong> / {timeline.lead.scoreBand || '-'}</p>
             <p>Parceiro: <strong>{timeline.lead.selectedPartnerName || '-'}</strong></p>
-            <p>Delivery: <strong>{timeline.lead.deliveryStatus || '-'}</strong></p>
+            <p>Envio: <strong>{timeline.lead.deliveryStatus || '-'}</strong></p>
             <p className="mt-2 break-all text-xs text-slate-500">{timeline.lead.externalLeadId || timeline.lead.id}</p>
           </div>
           <div className="max-h-[420px] overflow-auto rounded-lg border border-slate-200">
@@ -743,7 +769,7 @@ function LeadTimelinePanel() {
 
 function JobsPanel({ runs = [] }) {
   if (!runs.length) {
-    return <EmptyState title="Nenhum job executado ainda." description="Assim que a operacao rodar, execucoes, duracao, processados e erros aparecerao aqui." />;
+    return <EmptyState title="Nenhuma rotina executada ainda." description="Assim que a operacao rodar, execucoes, duracao, processados e erros aparecerao aqui." />;
   }
 
   return (
@@ -751,7 +777,7 @@ function JobsPanel({ runs = [] }) {
       <table className="w-full min-w-[860px] text-left text-sm">
         <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
           <tr>
-            <th className="px-4 py-3">Job</th>
+            <th className="px-4 py-3">Rotina</th>
             <th>Status</th>
             <th>Origem</th>
             <th>Inicio</th>
@@ -862,7 +888,7 @@ function FlowBuilderPanel({ flows, selectedFlow, selectedFlowId, setSelectedFlow
                 <input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={form.name || ''} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} />
               </label>
               <label className="block text-sm font-semibold text-slate-700">
-                Slug
+                Identificador
                 <input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value={form.slug || ''} onChange={(event) => setForm((current) => ({ ...current, slug: event.target.value }))} />
               </label>
               <label className="block text-sm font-semibold text-slate-700">
@@ -907,6 +933,8 @@ function FlowBuilderPanel({ flows, selectedFlow, selectedFlowId, setSelectedFlow
 }
 
 export default function AdminEmailOpsPage() {
+  const [searchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'campaigns';
   const [dashboard, setDashboard] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
   const [templates, setTemplates] = useState([]);
@@ -933,13 +961,13 @@ export default function AdminEmailOpsPage() {
       setFlows(flowData || []);
       setSelectedFlowId((current) => current || flowData?.[0]?.id || '');
     } catch (err) {
-      const text = err.message || 'Nao foi possivel carregar o Email Ops.';
+      const text = err.message || 'Nao foi possivel carregar campanhas e automacao.';
       const friendly = text.toLowerCase().includes('forbidden')
-        ? 'Acesso negado ao Email Ops. Seu usuario nao possui permissao email_ops.'
+        ? 'Acesso negado a campanhas e automacao. Seu usuario nao possui permissao para este modulo.'
         : text.toLowerCase().includes('sessao')
           ? text
           : text.includes('SENDGRID')
-            ? 'Integracao de email indisponivel. Verifique configuracao do provider.'
+            ? 'Integracao de email indisponivel. Verifique a configuracao do provedor.'
             : text;
       setError({ tone: 'danger', text: friendly });
     } finally {
@@ -954,7 +982,7 @@ export default function AdminEmailOpsPage() {
   const selectedFlow = flows.find((flow) => flow.id === selectedFlowId) || flows[0] || null;
 
   const bootstrap = async () => {
-    const ok = window.confirm('Sincronizar campanha, templates e fluxo padrao? Itens existentes serao atualizados de forma idempotente.');
+    const ok = window.confirm('Sincronizar campanha, modelos e fluxo padrao? Itens existentes serao atualizados de forma idempotente.');
     if (!ok) return;
     setSyncing(true);
     setError(null);
@@ -969,7 +997,7 @@ export default function AdminEmailOpsPage() {
   };
 
   if (loading) {
-    return <Notice>Carregando Email Ops com a sessao do admin principal...</Notice>;
+    return <Notice>Carregando campanhas e automacao com a sessao do admin principal...</Notice>;
   }
 
   return (
@@ -977,10 +1005,10 @@ export default function AdminEmailOpsPage() {
       <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Admin / Email Ops</p>
-            <h1 className="mt-2 text-3xl font-black text-slate-950">Email Ops</h1>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Relacionamento</p>
+            <h1 className="mt-2 text-3xl font-black text-slate-950">Campanhas e automação</h1>
             <p className="mt-2 max-w-3xl text-sm text-slate-600">
-              Operacao de reativacao por email com campanhas, templates, acoes manuais, jobs e fluxo visual usando exclusivamente a sessao do admin principal.
+              Operacao de reativacao por email com campanhas, modelos, acoes manuais, rotinas e fluxo visual usando a sessao segura do admin principal.
             </p>
           </div>
           <button type="button" className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60" onClick={bootstrap} disabled={syncing}>
@@ -988,15 +1016,27 @@ export default function AdminEmailOpsPage() {
           </button>
         </div>
         <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold">
-          <a className="rounded-lg border border-slate-200 px-3 py-2 text-slate-700" href="#overview">Visao geral</a>
-          <a className="rounded-lg border border-slate-200 px-3 py-2 text-slate-700" href="#content">Conteudo</a>
-          <a className="rounded-lg border border-slate-200 px-3 py-2 text-slate-700" href="#operation">Operacao</a>
-          <a className="rounded-lg border border-slate-200 px-3 py-2 text-slate-700" href="#infra">Infraestrutura</a>
+          {[
+            ['campaigns', 'Campanhas'],
+            ['models', 'Modelos'],
+            ['automation', 'Automacao']
+          ].map(([tab, label]) => (
+            <Link
+              key={tab}
+              className={`rounded-lg border px-3 py-2 ${
+                activeTab === tab ? 'border-slate-950 bg-slate-950 text-white' : 'border-slate-200 text-slate-700 hover:bg-slate-50'
+              }`}
+              to={`/admin/email-ops?tab=${tab}`}
+            >
+              {label}
+            </Link>
+          ))}
         </div>
       </div>
 
       {error ? <Notice tone={error.tone}>{error.text}</Notice> : null}
 
+      {activeTab === 'campaigns' ? (
       <Section id="overview" eyebrow="1. Visao geral" title="Status operacional da regua" description="KPIs principais, campanhas e limites de envio da operacao de reativacao.">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <Stat label="Fila" value={dashboard?.leadsInQueue || 0} hint="Leads importados ou visitados" />
@@ -1012,13 +1052,15 @@ export default function AdminEmailOpsPage() {
           <CampaignsPanel campaigns={campaigns} onRefresh={load} onBootstrap={bootstrap} />
         </div>
       </Section>
+      ) : null}
 
+      {activeTab === 'models' ? (
       <Section
         id="content"
         eyebrow="2. Conteudo"
-        title="Templates e versoes"
-        description="Gerencie assunto, preheader, HTML, texto plano, variaveis e estado publicado dos templates."
-        action={<button type="button" className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white" onClick={() => setEditingTemplate({})}>Novo template</button>}
+        title="Modelos e versoes"
+        description="Gerencie assunto, preheader, conteudo, variaveis e estado publicado dos modelos."
+        action={<button type="button" className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white" onClick={() => setEditingTemplate({})}>Novo modelo</button>}
       >
         <TemplatesPanel templates={templates} onEdit={setEditingTemplate} onBootstrap={bootstrap} />
         {editingTemplate ? (
@@ -1034,19 +1076,22 @@ export default function AdminEmailOpsPage() {
           </div>
         ) : null}
       </Section>
+      ) : null}
 
-      <Section id="operation" eyebrow="3. Operacao" title="Acoes manuais e timeline do lead" description="Execute intervenções controladas com confirmacao e consulte o historico operacional do lead.">
+      {activeTab === 'automation' ? (
+      <>
+      <Section id="operation" eyebrow="3. Operacao" title="Acoes manuais e historico do lead" description="Execute intervencoes controladas com confirmacao e consulte o historico operacional do lead.">
         <ManualActionsPanel templates={templates} />
         <div className="mt-6 rounded-lg border border-slate-200 p-5">
-          <h3 className="font-black text-slate-950">Timeline do lead</h3>
-          <p className="mt-1 text-sm text-slate-600">Busca por lead, eventos do provider, mensagens e etapas do fluxo.</p>
+          <h3 className="font-black text-slate-950">Historico do lead</h3>
+          <p className="mt-1 text-sm text-slate-600">Busca por lead, eventos de envio, mensagens e etapas do fluxo.</p>
           <div className="mt-4">
             <LeadTimelinePanel />
           </div>
         </div>
       </Section>
 
-      <Section id="infra" eyebrow="4. Infraestrutura" title="Jobs, saude do fluxo e construtor visual" description="Acompanhe execucoes recentes e mantenha o fluxo padrao sincronizado, validado e publicado.">
+      <Section id="infra" eyebrow="4. Operacao" title="Rotinas, status do fluxo e construtor visual" description="Acompanhe execucoes recentes e mantenha o fluxo padrao sincronizado, validado e publicado.">
         <JobsPanel runs={dashboard?.recentJobRuns || []} />
         <div className="mt-6">
           <FlowBuilderPanel
@@ -1059,6 +1104,8 @@ export default function AdminEmailOpsPage() {
           />
         </div>
       </Section>
+      </>
+      ) : null}
     </div>
   );
 }

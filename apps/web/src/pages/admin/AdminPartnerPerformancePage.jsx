@@ -68,13 +68,13 @@ export default function AdminPartnerPerformancePage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Performance de parceiros"
-        description="Cliques, conversões, postbacks e receita por parceiro em um único painel."
+        description="Cliques, conversões, retornos dos parceiros e receita por parceiro em um único painel."
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard label="Cliques" value={totals.clicks} hint="Redirects rastreados" />
-        <MetricCard label="Leads" value={totals.leads} hint="Postbacks status lead" />
-        <MetricCard label="Pagos" value={totals.paid} hint="Postbacks status paid" />
+        <MetricCard label="Leads" value={totals.leads} hint="Retornos marcados como lead" />
+        <MetricCard label="Pagos" value={totals.paid} hint="Retornos marcados como pago" />
         <MetricCard label="Receita" value={formatMoney(totals.revenue)} hint="Comissão confirmada" />
       </div>
 
@@ -87,7 +87,7 @@ export default function AdminPartnerPerformancePage() {
             <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-10 text-center">
               <p className="text-base font-semibold text-slate-950">Nenhuma performance registrada ainda.</p>
               <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-600">
-                Quando os redirects rastreados e postbacks começarem a entrar, os indicadores por parceiro aparecerão aqui.
+                Quando os encaminhamentos e retornos dos parceiros começarem a entrar, os indicadores por parceiro aparecerão aqui.
               </p>
             </div>
           ) : null}

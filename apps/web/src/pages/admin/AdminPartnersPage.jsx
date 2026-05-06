@@ -45,9 +45,9 @@ const healthTone = {
 };
 
 const integrationLabels = {
-  tracking_link: 'Tracking link',
-  webhook: 'Webhook',
-  api: 'API',
+  tracking_link: 'Link de acompanhamento',
+  webhook: 'Integração automática',
+  api: 'Integração automática',
   manual: 'Manual'
 };
 
@@ -176,7 +176,7 @@ export default function AdminPartnersPage() {
       await loadData();
     } catch (error) {
       if (error instanceof SyntaxError) {
-        toast.error('O campo de metadata precisa ser um JSON válido.');
+        toast.error('O campo de dados avançados precisa ser válido.');
       } else {
         toast.error(error.message || 'Não foi possível salvar o parceiro.');
       }
@@ -220,7 +220,7 @@ export default function AdminPartnersPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Gestão de parceiros"
-        description="Operação comercial de distribuição: integração, prioridade, peso, fallback, limites, payout e saúde."
+        description="Operação comercial de distribuição: parceiros, prioridade, limites, comissão e status operacional."
         actionLabel="Novo parceiro"
         onAction={() => setEditing(emptyForm)}
       />
@@ -228,15 +228,15 @@ export default function AdminPartnersPage() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <MetricCard label="Parceiros" value={metrics.total} hint={`${metrics.active} ativos no momento`} />
         <MetricCard label="Saudáveis" value={metrics.healthy} hint={`${metrics.warning} em atenção · ${metrics.error} com erro`} />
-        <MetricCard label="Payout estimado/lead" value={formatMoney(metrics.projectedLeadRevenueCents)} hint="Soma das regras ativas carregadas na tela" />
-        <MetricCard label="Webhook/API" value={partners.filter((item) => ['webhook', 'api'].includes(item.integrationType)).length} hint="Parceiros com integração mais sensível" />
-        <MetricCard label="Fallbacks" value={partners.filter((item) => item.fallbackPartnerId).length} hint="Parceiros com rota de contingência" />
+        <MetricCard label="Comissão estimada/lead" value={formatMoney(metrics.projectedLeadRevenueCents)} hint="Soma das regras ativas carregadas na tela" />
+        <MetricCard label="Integração automática" value={partners.filter((item) => ['webhook', 'api'].includes(item.integrationType)).length} hint="Parceiros com envio automatizado" />
+        <MetricCard label="Parceiros reserva" value={partners.filter((item) => item.fallbackPartnerId).length} hint="Rotas de contingência configuradas" />
       </div>
 
       <Card className="border-slate-200">
         <CardContent className="grid gap-4 pt-6 md:grid-cols-2 xl:grid-cols-4">
           <Input
-            placeholder="Buscar parceiro, slug ou observação"
+            placeholder="Buscar parceiro, identificador ou observação"
             value={filters.search}
             onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
           />
@@ -250,7 +250,7 @@ export default function AdminPartnersPage() {
             </SelectContent>
           </Select>
           <Select value={filters.healthStatus} onValueChange={(value) => setFilters((prev) => ({ ...prev, healthStatus: value }))}>
-            <SelectTrigger><SelectValue placeholder="Saúde" /></SelectTrigger>
+            <SelectTrigger><SelectValue placeholder="Status operacional" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Toda a saúde</SelectItem>
               <SelectItem value="healthy">Saudável</SelectItem>
@@ -263,9 +263,9 @@ export default function AdminPartnersPage() {
             <SelectTrigger><SelectValue placeholder="Integração" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todas as integrações</SelectItem>
-              <SelectItem value="tracking_link">Tracking link</SelectItem>
-              <SelectItem value="webhook">Webhook</SelectItem>
-              <SelectItem value="api">API</SelectItem>
+              <SelectItem value="tracking_link">Link de acompanhamento</SelectItem>
+              <SelectItem value="webhook">Integração automática</SelectItem>
+              <SelectItem value="api">Integração automática</SelectItem>
               <SelectItem value="manual">Manual</SelectItem>
             </SelectContent>
           </Select>
@@ -286,7 +286,7 @@ export default function AdminPartnersPage() {
                     <TableHead>Integração</TableHead>
                     <TableHead>Saúde</TableHead>
                     <TableHead>Capacidade</TableHead>
-                    <TableHead>Payout</TableHead>
+                    <TableHead>Comissão</TableHead>
                     <TableHead>Ações</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -371,21 +371,21 @@ export default function AdminPartnersPage() {
                   </p>
                 </div>
                 <div className="rounded-lg border border-slate-200 p-4">
-                  <p className="text-sm font-medium text-slate-950">Fallback</p>
+                  <p className="text-sm font-medium text-slate-950">Parceiro reserva</p>
                   <p className="mt-2 text-sm text-slate-600">
-                    Configure fallback para parceiro reserva quando o principal estiver indisponível ou estourar limite operacional.
+                    Configure um parceiro reserva quando o principal estiver indisponível ou estourar limite operacional.
                   </p>
                 </div>
                 <div className="rounded-lg border border-slate-200 p-4">
                   <p className="text-sm font-medium text-slate-950">Teste de integração</p>
                   <p className="mt-2 text-sm text-slate-600">
-                    O teste atual valida configuração mínima, grava check no banco e já ajuda a identificar webhook/API sem destino.
+                    O teste atual valida a configuração mínima e ajuda a identificar integrações sem destino.
                   </p>
                 </div>
                 <div className="rounded-lg border border-slate-200 p-4">
-                  <p className="text-sm font-medium text-slate-950">Payout</p>
+                  <p className="text-sm font-medium text-slate-950">Comissão</p>
                   <p className="mt-2 text-sm text-slate-600">
-                    Deixe payout por lead e por conversão preenchidos para alimentar receita estimada, comparação e decisões comerciais.
+                    Deixe comissão por lead e por conversão preenchidas para alimentar receita estimada, comparação e decisões comerciais.
                   </p>
                 </div>
               </div>
@@ -417,7 +417,7 @@ export default function AdminPartnersPage() {
                     <p className="mt-3 text-xs text-red-700">{selectedPartner.lastErrorMessage}</p>
                   ) : (
                     <p className="mt-3 text-xs text-slate-500">
-                      Último check: {selectedPartner.lastHealthCheckAt ? new Date(selectedPartner.lastHealthCheckAt).toLocaleString('pt-BR') : 'ainda não testado'}
+                      Última verificação: {selectedPartner.lastHealthCheckAt ? new Date(selectedPartner.lastHealthCheckAt).toLocaleString('pt-BR') : 'ainda não testado'}
                     </p>
                   )}
                 </div>
@@ -429,7 +429,7 @@ export default function AdminPartnersPage() {
               </div>
 
               <div>
-                <Label>Slug</Label>
+                <Label>Identificador</Label>
                 <Input
                   value={editing.slug}
                   onChange={(e) => setEditing((prev) => ({ ...prev, slug: e.target.value }))}
@@ -453,22 +453,22 @@ export default function AdminPartnersPage() {
                 <Select value={editing.integrationType} onValueChange={(value) => setEditing((prev) => ({ ...prev, integrationType: value }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="tracking_link">Tracking link</SelectItem>
-                    <SelectItem value="webhook">Webhook</SelectItem>
-                    <SelectItem value="api">API</SelectItem>
+                    <SelectItem value="tracking_link">Link de acompanhamento</SelectItem>
+                    <SelectItem value="webhook">Integração automática</SelectItem>
+                    <SelectItem value="api">Integração automática</SelectItem>
                     <SelectItem value="manual">Manual</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              <div><Label>Tracking link</Label><Input value={editing.trackingLink} onChange={(e) => setEditing((prev) => ({ ...prev, trackingLink: e.target.value }))} /></div>
+              <div><Label>Link de acompanhamento</Label><Input value={editing.trackingLink} onChange={(e) => setEditing((prev) => ({ ...prev, trackingLink: e.target.value }))} /></div>
               <div><Label>Affiliate URL</Label><Input value={editing.affiliateUrl} onChange={(e) => setEditing((prev) => ({ ...prev, affiliateUrl: e.target.value }))} placeholder="https://parceiro.com/?m=..." /></div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div><Label>Produto principal</Label><Input value={editing.productType} onChange={(e) => setEditing((prev) => ({ ...prev, productType: e.target.value }))} placeholder="fgts, loan..." /></div>
                 <div><Label>Ação</Label><Input value={editing.actionType} onChange={(e) => setEditing((prev) => ({ ...prev, actionType: e.target.value }))} placeholder="redirect" /></div>
               </div>
-              <div><Label>Webhook URL</Label><Input value={editing.webhookUrl} onChange={(e) => setEditing((prev) => ({ ...prev, webhookUrl: e.target.value }))} /></div>
-              <div><Label>API base URL</Label><Input value={editing.apiBaseUrl} onChange={(e) => setEditing((prev) => ({ ...prev, apiBaseUrl: e.target.value }))} /></div>
+              <div><Label>URL de retorno do parceiro</Label><Input value={editing.webhookUrl} onChange={(e) => setEditing((prev) => ({ ...prev, webhookUrl: e.target.value }))} /></div>
+              <div><Label>URL base da integração</Label><Input value={editing.apiBaseUrl} onChange={(e) => setEditing((prev) => ({ ...prev, apiBaseUrl: e.target.value }))} /></div>
 
               <div>
                 <Label>Produtos suportados (csv)</Label>
@@ -499,16 +499,16 @@ export default function AdminPartnersPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div><Label>Payout por lead (centavos)</Label><Input type="number" value={editing.payoutLeadCents} onChange={(e) => setEditing((prev) => ({ ...prev, payoutLeadCents: e.target.value }))} /></div>
-                <div><Label>Payout por conversão (centavos)</Label><Input type="number" value={editing.payoutConversionCents} onChange={(e) => setEditing((prev) => ({ ...prev, payoutConversionCents: e.target.value }))} /></div>
+                <div><Label>Comissão por lead (centavos)</Label><Input type="number" value={editing.payoutLeadCents} onChange={(e) => setEditing((prev) => ({ ...prev, payoutLeadCents: e.target.value }))} /></div>
+                <div><Label>Comissão por conversão (centavos)</Label><Input type="number" value={editing.payoutConversionCents} onChange={(e) => setEditing((prev) => ({ ...prev, payoutConversionCents: e.target.value }))} /></div>
               </div>
 
               <div>
-                <Label>Fallback</Label>
+                <Label>Parceiro reserva</Label>
                 <Select value={editing.fallbackPartnerId || 'none'} onValueChange={(value) => setEditing((prev) => ({ ...prev, fallbackPartnerId: value === 'none' ? '' : value }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Sem fallback</SelectItem>
+                    <SelectItem value="none">Sem parceiro reserva</SelectItem>
                     {fallbackOptions.map((partner) => (
                       <SelectItem key={partner.id} value={partner.id}>{partner.name}</SelectItem>
                     ))}
@@ -522,12 +522,12 @@ export default function AdminPartnersPage() {
               </div>
 
               <div>
-                <Label>Metadata (JSON)</Label>
+                <Label>Dados avançados</Label>
                 <Textarea
                   value={editing.metadataText}
                   onChange={(e) => setEditing((prev) => ({ ...prev, metadataText: e.target.value }))}
                   rows={6}
-                  placeholder='{"ownerTeam":"comercial","notes":"preferir horario comercial"}'
+                  placeholder='{"responsavel":"comercial","observacoes":"preferir horario comercial"}'
                 />
               </div>
 

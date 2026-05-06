@@ -84,7 +84,7 @@ export default function AdminOffersPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Gestao de ofertas"
-        description="Gerencie ofertas, parceiros e regras de redirecionamento."
+        description="Gerencie ofertas, parceiros e regras de encaminhamento."
         actionLabel="Nova oferta"
         onAction={() => setEditing(emptyForm)}
       />
@@ -203,7 +203,7 @@ export default function AdminOffersPage() {
                 <Input value={editing.redirectUrl} onChange={(e) => setEditing((prev) => ({ ...prev, redirectUrl: e.target.value }))} />
               </div>
               <div>
-                <Label>URL de rastreamento do parceiro</Label>
+                <Label>URL de acompanhamento do parceiro</Label>
                 <Input value={editing.partnerTrackingUrl} onChange={(e) => setEditing((prev) => ({ ...prev, partnerTrackingUrl: e.target.value }))} />
               </div>
               <div className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2">
