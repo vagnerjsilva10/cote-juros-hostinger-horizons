@@ -39,6 +39,7 @@ import { recommendProducts } from '@/platform/services/recommendationAdapter.js'
 import { saveQuizProgress } from '@/platform/services/quizAdapter.js';
 import { portalApi } from '@/platform/services/portalApi.js';
 import { trackEvent } from '@/platform/services/trackingAdapter.js';
+import { formatCurrencyBRL, parseCurrencyBRL } from '@/utils/currency.js';
 import '@/platform/platformHtml.css';
 
 const productRows = [
@@ -91,6 +92,8 @@ const heroTrustItems = [
   { label: 'Dados protegidos (LGPD)', Icon: ShieldCheck },
   { label: 'Transparência total', Icon: Eye }
 ];
+
+const heroQuickAmounts = [1000, 5000, 10000, 20000];
 
 const trustStripItems = [
   { label: 'Dados protegidos pela LGPD', Icon: ShieldCheck },
@@ -343,19 +346,32 @@ function HeroDashboard() {
           <div className="mini-card"><div className="mini-card-label">Opções</div><div className="mini-card-value">12</div><div className="mini-card-change"><BadgeCheck size={10} /> parceiros</div></div>
         </div>
       </div>
-      <div className="float-chip float-chip-1"><div className="float-dot" style={{ background: '#22D3A0' }} /> Empréstimo aprovado</div>
-      <div className="float-chip float-chip-2"><div className="float-dot" style={{ background: '#7C6EF7' }} /> Cartão sem anuidade</div>
+      <div className="float-chip float-chip-1"><div className="float-dot" style={{ background: '#22D3A0' }} /> Caminhos possíveis</div>
+      <div className="float-chip float-chip-2"><div className="float-dot" style={{ background: '#7C6EF7' }} /> Opções compatíveis</div>
     </div>
   );
 }
 
 function FunnelAmountCta({ sourcePage = '/', dark = true }) {
   const navigate = useNavigate();
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState(0);
+  const [displayAmount, setDisplayAmount] = useState('');
+
+  const updateAmount = (value) => {
+    const nextAmount = parseCurrencyBRL(value);
+    setAmount(nextAmount);
+    setDisplayAmount(formatCurrencyBRL(nextAmount));
+    return nextAmount;
+  };
+
+  const selectQuickAmount = (value) => {
+    setAmount(value);
+    setDisplayAmount(formatCurrencyBRL(value));
+  };
 
   const startQuiz = async (event) => {
     event.preventDefault();
-    const requestedAmount = Number(String(amount).replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, '')) || 0;
+    const requestedAmount = amount || parseCurrencyBRL(displayAmount);
     saveQuizProgress({
       sourcePage,
       requestedAmount,
@@ -370,16 +386,33 @@ function FunnelAmountCta({ sourcePage = '/', dark = true }) {
 
   return (
     <form className={`funnel-amount-cta ${dark ? 'funnel-amount-cta--dark' : ''}`} onSubmit={startQuiz}>
-      <label htmlFor={`requested-amount-${sourcePage.replace(/\W/g, '')}`}>Valor desejado</label>
-      <div>
+      <label htmlFor={`requested-amount-${sourcePage.replace(/\W/g, '')}`}>De quanto você precisa?</label>
+      <div className="funnel-amount-main">
         <input
           id={`requested-amount-${sourcePage.replace(/\W/g, '')}`}
           inputMode="numeric"
-          placeholder="R$ 10.000"
-          value={amount}
-          onChange={(event) => setAmount(event.target.value)}
+          placeholder="Ex: R$ 5.000"
+          value={displayAmount}
+          onChange={(event) => updateAmount(event.target.value)}
         />
-        <button type="submit">Começar análise gratuita <ArrowIcon size={16} /></button>
+        <button type="submit">Ver opções para meu perfil <ArrowIcon size={16} /></button>
+      </div>
+      <div className="funnel-quick-amounts" aria-label="Sugestões rápidas de valor">
+        {heroQuickAmounts.map((value) => (
+          <button
+            key={value}
+            type="button"
+            className={amount === value ? 'is-active' : ''}
+            onClick={() => selectQuickAmount(value)}
+          >
+            {formatCurrencyBRL(value)}
+          </button>
+        ))}
+      </div>
+      <div className="funnel-microcopy">
+        <span><DollarSign size={14} /> Sem cobrança antecipada</span>
+        <span><ShieldCheck size={14} /> Dados protegidos (LGPD)</span>
+        <span><Clock3 size={14} /> Resultado em poucos minutos</span>
       </div>
     </form>
   );
