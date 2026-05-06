@@ -88,9 +88,9 @@ const faqItems = [
 ];
 
 const heroTrustItems = [
-  { label: 'Sem cobranças antecipadas', Icon: DollarSign },
-  { label: 'Dados protegidos (LGPD)', Icon: ShieldCheck },
-  { label: 'Transparência total', Icon: Eye }
+  { label: 'Análise simples', Icon: SearchCheck },
+  { label: 'Sem pressão', Icon: Handshake },
+  { label: 'Parceiros verificados', Icon: BadgeCheck }
 ];
 
 const heroQuickAmounts = [1000, 5000, 10000, 20000];
