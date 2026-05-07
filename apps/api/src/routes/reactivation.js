@@ -74,6 +74,14 @@ const optOutSchema = z.object({
   reason: z.string().optional()
 });
 
+const unsubscribeParamsSchema = z.object({
+  token: z.string().min(16)
+});
+
+const unsubscribeQuerySchema = z.object({
+  scope: z.enum(['unsubscribe_email', 'dnc_global']).default('unsubscribe_email')
+});
+
 const refuseSchema = z.object({
   token: z.string().min(16),
   reason: z.string().optional()
@@ -165,6 +173,32 @@ router.post(
     const lead = await ReactivationService.registerOptOut({ ...payload, req });
     if (!lead) return res.status(404).json({ error: 'Lead not found' });
     res.json({ data: lead });
+  })
+);
+
+router.get(
+  '/unsubscribe/:token',
+  rateLimitPublic,
+  asyncHandler(async (req, res) => {
+    const { token } = unsubscribeParamsSchema.parse(req.params);
+    const { scope } = unsubscribeQuerySchema.parse(req.query || {});
+    const lead = await ReactivationService.registerOptOut({
+      token,
+      scope,
+      reason: 'email_unsubscribe_link',
+      req
+    });
+    if (!lead) return res.status(404).send('Descadastro nao encontrado.');
+    res.type('html').send(`
+      <!doctype html>
+      <html lang="pt-BR">
+        <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Descadastro confirmado</title></head>
+        <body style="font-family:Arial,sans-serif;line-height:1.5;padding:32px;color:#0f172a">
+          <h1>Descadastro confirmado</h1>
+          <p>Seu email foi removido da lista de reativacao da Cote Juros.</p>
+        </body>
+      </html>
+    `);
   })
 );
 

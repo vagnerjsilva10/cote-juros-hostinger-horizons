@@ -104,6 +104,7 @@ export const createApp = () => {
     verify: (req, _res, buf) => {
       if (
         req.originalUrl?.startsWith('/api/reactivation-admin/webhooks/sendgrid') ||
+        req.originalUrl?.startsWith('/api/reactivation-admin/webhooks/brevo') ||
         req.originalUrl?.startsWith('/api/credit/creditas/webhook')
       ) {
         req.rawBody = Buffer.from(buf);

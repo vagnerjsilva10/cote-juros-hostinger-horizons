@@ -9,19 +9,19 @@ on:
       batch_size:
         description: 'Maximum emails to send in this run'
         required: true
-        default: '5'
+        default: '1'
       daily_limit:
         description: 'Daily send cap enforced by the email job'
         required: true
-        default: '5'
+        default: '1'
       dry_run:
-        description: 'Run without sending through SendGrid'
+        description: 'Run without sending through Brevo'
         required: true
-        default: 'false'
+        default: 'true'
         type: choice
         options:
-          - 'false'
           - 'true'
+          - 'false'
 
 concurrency:
   group: reactivation-send-emails
@@ -39,14 +39,18 @@ jobs:
       GOOGLE_SHEETS_CREDENTIALS_JSON: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS_JSON }}
       REACTIVATION_BASE_URL: ${{ vars.REACTIVATION_BASE_URL || 'https://www.cotejuros.com.br' }}
       REACTIVATION_EMAIL_ENABLED: 'true'
-      REACTIVATION_EMAIL_DRY_RUN: ${{ github.event.inputs.dry_run || vars.REACTIVATION_EMAIL_DRY_RUN || 'false' }}
-      REACTIVATION_EMAIL_BATCH_SIZE: ${{ github.event.inputs.batch_size || vars.REACTIVATION_EMAIL_BATCH_SIZE || '5' }}
-      REACTIVATION_EMAIL_DAILY_LIMIT: ${{ github.event.inputs.daily_limit || vars.REACTIVATION_EMAIL_DAILY_LIMIT || '5' }}
+      REACTIVATION_EMAIL_DRY_RUN: ${{ github.event.inputs.dry_run || 'true' }}
+      REACTIVATION_EMAIL_BATCH_SIZE: ${{ github.event.inputs.batch_size || vars.REACTIVATION_EMAIL_BATCH_SIZE || '1' }}
+      REACTIVATION_BATCH_LIMIT: ${{ github.event.inputs.batch_size || vars.REACTIVATION_BATCH_LIMIT || '1' }}
+      REACTIVATION_EMAIL_DAILY_LIMIT: ${{ github.event.inputs.daily_limit || vars.REACTIVATION_EMAIL_DAILY_LIMIT || '1' }}
       REACTIVATION_EMAIL_SEND_DRY_RUN_ROWS: ${{ vars.REACTIVATION_EMAIL_SEND_DRY_RUN_ROWS || 'false' }}
-      SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-      SENDGRID_FROM_EMAIL: ${{ vars.SENDGRID_FROM_EMAIL || 'noreply@em.cotejuros.com.br' }}
-      SENDGRID_FROM_NAME: ${{ vars.SENDGRID_FROM_NAME || 'Cote Juros' }}
-      SENDGRID_REPLY_TO: ${{ vars.SENDGRID_REPLY_TO || 'noreply@em.cotejuros.com.br' }}
+      REACTIVATION_TEST_EMAIL: ${{ secrets.REACTIVATION_TEST_EMAIL || '' }}
+      REACTIVATION_ALLOW_REAL_RECIPIENTS: ${{ vars.REACTIVATION_ALLOW_REAL_RECIPIENTS || 'false' }}
+      EMAIL_PROVIDER: brevo
+      BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+      BREVO_SENDER_EMAIL: ${{ secrets.BREVO_SENDER_EMAIL }}
+      BREVO_SENDER_NAME: ${{ secrets.BREVO_SENDER_NAME || vars.BREVO_SENDER_NAME || 'Cote Juros' }}
+      BREVO_TEMPLATE_ID: ${{ vars.BREVO_TEMPLATE_ID || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

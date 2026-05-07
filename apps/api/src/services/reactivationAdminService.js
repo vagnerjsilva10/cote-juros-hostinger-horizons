@@ -916,6 +916,112 @@ export class ReactivationAdminService {
     return { processed: results.length, signatureVerified, results };
   }
 
+  static verifyBrevoWebhook(req) {
+    const secret = process.env.BREVO_WEBHOOK_SECRET;
+    if (!secret) return false;
+    const provided = req.header('x-brevo-webhook-secret') || req.query?.secret || '';
+    return provided && provided === secret;
+  }
+
+  static mapBrevoEventType(event) {
+    const raw = String(event || '').toLowerCase();
+    if (['delivered'].includes(raw)) return 'delivered';
+    if (['opened', 'open'].includes(raw)) return 'open';
+    if (['click', 'clicked', 'unique_click'].includes(raw)) return 'click';
+    if (['hardbounce', 'softbounce', 'blocked', 'invalid', 'error'].includes(raw)) return 'bounce';
+    if (['spam', 'complaint'].includes(raw)) return 'spamreport';
+    if (['unsubscribed', 'unsubscribe'].includes(raw)) return 'unsubscribe';
+    if (['request', 'requests', 'sent'].includes(raw)) return 'processed';
+    return 'processed';
+  }
+
+  static async handleBrevoWebhook(events, req) {
+    const prisma = getPrisma();
+    const signatureVerified = this.verifyBrevoWebhook(req);
+    const safeEvents = Array.isArray(events) ? events : [events].filter(Boolean);
+    const results = [];
+
+    for (const event of safeEvents) {
+      const providerMessageId = event['message-id'] || event.messageId || event.message_id || event.messageIdBrevo || null;
+      const providerEventId = event.id || event.event_id || `${providerMessageId || 'unknown'}-${event.event || event.eventType}-${event.ts || event.date || Date.now()}`;
+      const eventType = this.mapBrevoEventType(event.event || event.eventType);
+      const occurredAt = event.ts ? new Date(Number(event.ts) * 1000) : event.date ? new Date(event.date) : new Date();
+      const existingMessage = providerMessageId
+        ? await prisma.reactivationEmailMessage.findFirst({ where: { providerMessageId } })
+        : null;
+
+      const messageEvent = await prisma.reactivationEmailMessageEvent.upsert({
+        where: {
+          provider_providerEventId: {
+            provider: 'brevo',
+            providerEventId
+          }
+        },
+        create: {
+          messageId: existingMessage?.id || null,
+          leadId: existingMessage?.leadId || null,
+          campaignId: existingMessage?.campaignId || null,
+          eventType,
+          provider: 'brevo',
+          providerEventId,
+          providerMessageId,
+          emailHash: hashEmail(event.email),
+          url: event.link || event.url || null,
+          userAgent: event.user_agent || event.userAgent || null,
+          ipAddress: event.ip || null,
+          reason: event.reason || event.tag || null,
+          rawPayload: event,
+          signatureVerified,
+          occurredAt
+        },
+        update: {}
+      });
+
+      const nextStatus = this.messageStatusForEvent(eventType);
+      if (existingMessage && nextStatus) {
+        const dateField = {
+          delivered: 'deliveredAt',
+          opened: 'openedAt',
+          clicked: 'clickedAt',
+          bounced: 'bouncedAt',
+          unsubscribed: 'unsubscribedAt'
+        }[nextStatus];
+        await prisma.reactivationEmailMessage.update({
+          where: { id: existingMessage.id },
+          data: {
+            status: nextStatus,
+            ...(dateField ? { [dateField]: occurredAt } : {})
+          }
+        });
+      }
+
+      if (['unsubscribe', 'spamreport', 'bounce', 'dropped'].includes(eventType) && event.email) {
+        await prisma.reactivationSuppression.upsert({
+          where: { emailHash_scope: { emailHash: hashEmail(event.email), scope: 'unsubscribe_email' } },
+          create: {
+            scope: 'unsubscribe_email',
+            emailHash: hashEmail(event.email),
+            reason: `brevo:${eventType}`,
+            source: 'brevo_webhook'
+          },
+          update: {
+            reason: `brevo:${eventType}`,
+            source: 'brevo_webhook'
+          }
+        });
+      }
+
+      results.push({ id: messageEvent.id, eventType, providerEventId });
+    }
+
+    await audit(prisma, req, 'webhook_received', 'brevo_event_batch', null, {
+      count: results.length,
+      signatureVerified
+    });
+
+    return { processed: results.length, results };
+  }
+
   static async bootstrapDefaults(req) {
     const prisma = getPrisma();
     const templates = [];

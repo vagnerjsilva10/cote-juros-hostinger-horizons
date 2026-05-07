@@ -257,6 +257,11 @@ router.post('/webhooks/sendgrid', asyncHandler(async (req, res) => {
   res.json({ data: result });
 }));
 
+router.post('/webhooks/brevo', asyncHandler(async (req, res) => {
+  const result = await ReactivationAdminService.handleBrevoWebhook(req.body || [], req);
+  res.json({ data: result });
+}));
+
 router.post('/auth/login', asyncHandler(async (req, res) => {
   const configuredPassword = process.env.REACTIVATION_ADMIN_PASSWORD;
   if (!configuredPassword) {

@@ -2,38 +2,42 @@ import 'dotenv/config.js';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import axios from 'axios';
-import sgMail from '@sendgrid/mail';
 import { googleSheetsClient } from '../integrations/googleSheets.js';
 import { getPrisma } from '../lib/prisma.js';
+import { buildBrevoTransactionalEmailPayload, sendBrevoTransactionalEmail } from '../services/brevoEmailService.js';
 
 const SHEET_NAME = 'leads_queue';
 const DEFAULT_LIMIT = 25;
 const CAMPAIGN_SLUG = process.env.REACTIVATION_EMAIL_CAMPAIGN_SLUG || 'reactivation-credit-main';
 const ELIGIBLE_STATUSES = new Set(['imported', 'email_error']);
 const TERMINAL_EMAIL_STATUSES = new Set(['completed', 'suppressed', 'invalid_email', 'unsubscribed']);
+const REAL_RECIPIENTS_GUARD_ENV = 'REACTIVATION_ALLOW_REAL_RECIPIENTS';
 const FALLBACK_SEQUENCE = [
   {
     key: 'initial',
     templateSlot: 'initialTemplateId',
     nextDelayDays: 3,
     subject: 'Ainda faz sentido buscar credito agora?',
-    html: '<p>Ola {{firstName}},</p><p>Confirme seu interesse em opcoes de credito com parceiros da Cote Juros.</p><p><a href="{{reactivationUrl}}">Atualizar meu interesse</a></p>',
-    text: 'Ola {{firstName}}, confirme seu interesse em opcoes de credito com parceiros da Cote Juros: {{reactivationUrl}}',
+    preheader: 'Atualize seu interesse antes de receber novas oportunidades.',
+    html: '<p>Ola {{firstName}},</p><p>Estamos revisando cadastros antigos da Cote Juros. Se ainda fizer sentido receber opcoes de credito, confirme seu interesse no link abaixo.</p><p><a href="{{reactivationUrl}}">Atualizar meu interesse</a></p>',
+    text: 'Ola {{firstName}}, estamos revisando cadastros antigos da Cote Juros. Confirme seu interesse: {{reactivationUrl}}',
   },
   {
     key: 'reminder',
     templateSlot: 'reminderTemplateId',
     nextDelayDays: 4,
     subject: 'Seu link de atualizacao ainda esta disponivel',
-    html: '<p>Ola {{firstName}},</p><p>Seu link seguro ainda esta ativo.</p><p><a href="{{reactivationUrl}}">Continuar atualizacao</a></p>',
-    text: 'Ola {{firstName}}, seu link seguro ainda esta ativo: {{reactivationUrl}}',
+    preheader: 'Seu link seguro continua disponivel por tempo limitado.',
+    html: '<p>Ola {{firstName}},</p><p>Seu link seguro ainda esta ativo para atualizar seu interesse em opcoes de credito.</p><p><a href="{{reactivationUrl}}">Continuar atualizacao</a></p>',
+    text: 'Ola {{firstName}}, seu link seguro ainda esta ativo para atualizar seu interesse: {{reactivationUrl}}',
   },
   {
     key: 'last_call',
     templateSlot: 'lastCallTemplateId',
     nextDelayDays: null,
     subject: 'Podemos encerrar seu cadastro?',
-    html: '<p>Ola {{firstName}},</p><p>Esta e a ultima mensagem desta sequencia.</p><p><a href="{{reactivationUrl}}">Confirmar interesse</a></p>',
+    preheader: 'Se voce nao tiver interesse, pode se descadastrar com um clique.',
+    html: '<p>Ola {{firstName}},</p><p>Esta e a ultima mensagem desta sequencia. Se ainda quiser receber opcoes de credito da Cote Juros, confirme abaixo.</p><p><a href="{{reactivationUrl}}">Confirmar interesse</a></p>',
     text: 'Ola {{firstName}}, esta e a ultima mensagem desta sequencia. Confirme aqui: {{reactivationUrl}}',
   },
 ];
@@ -42,21 +46,25 @@ const nowIso = () => new Date().toISOString();
 
 export class SendReactivationEmailsJob {
   constructor() {
+    this.dryRun = process.env.REACTIVATION_EMAIL_DRY_RUN !== 'false';
     this.validateEnv();
-    this.prisma = getPrisma();
+    this.prisma = this.dryRun && !process.env.DATABASE_URL ? null : getPrisma();
     this.spreadsheetId = process.env.GOOGLE_SHEETS_REACTIVATION_ID;
     this.apiBaseUrl = process.env.COTE_API_BASE_URL;
     this.apiToken = process.env.COTE_API_TOKEN;
     this.reactivationBaseUrl = process.env.REACTIVATION_BASE_URL || 'https://www.cotejuros.com.br';
-    this.limit = Number(process.env.REACTIVATION_EMAIL_BATCH_SIZE || DEFAULT_LIMIT);
+    this.limit = Number(process.env.REACTIVATION_BATCH_LIMIT || process.env.REACTIVATION_EMAIL_BATCH_SIZE || DEFAULT_LIMIT);
     this.dailyLimit = Number(process.env.REACTIVATION_EMAIL_DAILY_LIMIT || 50);
-    this.dryRun = process.env.REACTIVATION_EMAIL_DRY_RUN !== 'false';
     this.enabled = process.env.REACTIVATION_EMAIL_ENABLED === 'true';
     this.includeDryRunRows = process.env.REACTIVATION_EMAIL_SEND_DRY_RUN_ROWS === 'true';
-    this.fromEmail = process.env.SENDGRID_FROM_EMAIL || 'relacionamento@finance.cotejuros.com.br';
-    this.fromName = process.env.SENDGRID_FROM_NAME || 'Cote Juros';
-    this.replyTo = process.env.SENDGRID_REPLY_TO || this.fromEmail;
-    this.provider = process.env.EMAIL_PROVIDER || 'sendgrid';
+    this.testEmail = this.normalizeEmail(process.env.REACTIVATION_TEST_EMAIL);
+    this.testMode = Boolean(this.testEmail);
+    this.testRunId = this.testMode ? `${Date.now()}-${crypto.randomBytes(4).toString('hex')}` : null;
+    this.fromEmail = process.env.BREVO_SENDER_EMAIL || 'relacionamento@finance.cotejuros.com.br';
+    this.fromName = process.env.BREVO_SENDER_NAME || 'Cote Juros';
+    this.replyToEmail = process.env.BREVO_REPLY_TO_EMAIL || process.env.BREVO_SENDER_EMAIL || this.fromEmail;
+    this.replyToName = process.env.BREVO_REPLY_TO_NAME || this.fromName;
+    this.provider = process.env.EMAIL_PROVIDER || 'brevo';
     this.campaign = null;
     this.templates = new Map();
     this.jobRun = null;
@@ -70,8 +78,20 @@ export class SendReactivationEmailsJob {
       errors: 0,
     };
 
-    if (process.env.SENDGRID_API_KEY) {
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    if (this.testMode && !this.isValidEmail(this.testEmail)) {
+      throw new Error('REACTIVATION_TEST_EMAIL must be a valid email address');
+    }
+    if (this.testMode) {
+      this.limit = Math.min(Math.max(1, this.limit), 5);
+      this.dailyLimit = Math.min(Math.max(1, this.dailyLimit), 5);
+    }
+    if (!this.dryRun && !this.testMode && process.env[REAL_RECIPIENTS_GUARD_ENV] !== 'true') {
+      throw new Error(
+        `Real recipient sends are blocked. Set REACTIVATION_TEST_EMAIL for controlled tests or ${REAL_RECIPIENTS_GUARD_ENV}=true for an approved campaign send.`
+      );
+    }
+    if (!this.dryRun && !process.env.BREVO_API_KEY) {
+      throw new Error('BREVO_API_KEY is required when REACTIVATION_EMAIL_DRY_RUN=false');
     }
   }
 
@@ -90,7 +110,10 @@ export class SendReactivationEmailsJob {
 
   async run() {
     console.log('[SendEmails] Job started');
-    console.log(`[SendEmails] mode=${this.dryRun ? 'dry_run' : 'send'} enabled=${this.enabled} provider=${this.provider}`);
+    console.log(
+      `[SendEmails] mode=${this.dryRun ? 'dry_run' : 'send'} enabled=${this.enabled} ` +
+        `provider=${this.provider} test_mode=${this.testMode}`
+    );
     this.jobRun = await this.startJobRun();
 
     try {
@@ -98,11 +121,22 @@ export class SendReactivationEmailsJob {
       const rows = await googleSheetsClient.readRows(this.spreadsheetId, SHEET_NAME);
       const eligible = this.pickEligibleRows(rows);
       this.stats.eligible = eligible.length;
-      const remainingDailyQuota = Math.max(0, this.dailyLimit - await this.countEmailsSentToday(rows));
+      const remainingDailyQuota = this.testMode
+        ? Math.min(this.limit, this.dailyLimit)
+        : Math.max(0, this.dailyLimit - await this.countEmailsSentToday(rows));
 
       console.log(`[SendEmails] Campaign=${this.campaign?.slug || 'fallback'} dailyLimit=${this.dailyLimit} batchSize=${this.limit}`);
       console.log(`[SendEmails] Eligible leads: ${eligible.length}`);
       console.log(`[SendEmails] Daily quota remaining: ${remainingDailyQuota}/${this.dailyLimit}`);
+      if (this.dryRun || !this.enabled) {
+        console.log('[SendEmails] Dry-run active; Brevo will not be called and lead rows will not be mutated');
+      }
+      if (this.testMode) {
+        console.log(
+          `[SendEmails] Test mode active; all sends are forced to ${this.maskEmail(this.testEmail)} ` +
+            `and lead rows will not be mutated; testRunId=${this.testRunId}`
+        );
+      }
 
       if (!this.campaign?.isActive || this.campaign?.status !== 'active') {
         console.log('[SendEmails] Campaign is not active; no emails will be sent');
@@ -134,6 +168,9 @@ export class SendReactivationEmailsJob {
   }
 
   async startJobRun() {
+    if (this.dryRun || !this.prisma) {
+      return null;
+    }
     return this.prisma.reactivationAutomationJobRun.create({
       data: {
         jobName: 'send_reactivation_emails',
@@ -143,6 +180,8 @@ export class SendReactivationEmailsJob {
           dryRun: this.dryRun,
           enabled: this.enabled,
           provider: this.provider,
+          testMode: this.testMode,
+          testRecipient: this.testMode ? this.maskEmail(this.testEmail) : null,
           campaignSlug: CAMPAIGN_SLUG,
         },
       },
@@ -171,9 +210,17 @@ export class SendReactivationEmailsJob {
   }
 
   async loadCampaign() {
-    this.campaign = await this.prisma.reactivationEmailCampaign.findUnique({
-      where: { slug: CAMPAIGN_SLUG },
-    });
+    try {
+      this.campaign = this.prisma
+        ? await this.prisma.reactivationEmailCampaign.findUnique({
+            where: { slug: CAMPAIGN_SLUG },
+          })
+        : null;
+    } catch (error) {
+      if (!this.dryRun) throw error;
+      console.warn(`[SendEmails] Dry-run could not load campaign from database; using fallback campaign: ${this.sanitizeError(error.message)}`);
+      this.campaign = null;
+    }
 
     if (!this.campaign) {
       console.warn(`[SendEmails] Campaign ${CAMPAIGN_SLUG} not found; using env fallback limits/templates`);
@@ -207,6 +254,7 @@ export class SendReactivationEmailsJob {
       if (!row.email || !this.isValidEmail(row.email)) return false;
       if (!row.token && !row.reactivationUrl) return false;
       if (!ELIGIBLE_STATUSES.has(String(row.status || '').toLowerCase())) return false;
+      if (this.isRevokedOrOptedOut(row)) return false;
 
       const emailStatus = String(row.emailStatus || '').toLowerCase();
       if (TERMINAL_EMAIL_STATUSES.has(emailStatus)) return false;
@@ -252,72 +300,86 @@ export class SendReactivationEmailsJob {
     const sequence = this.getEmailSequence(lead);
 
     if (!sequence) {
-      await this.markCompleted(lead, currentIso);
+      if (this.dryRun || !this.enabled) {
+        this.stats.completed++;
+      } else {
+        await this.markCompleted(lead, currentIso);
+      }
       return;
     }
 
     try {
-      await this.updateLeadRow(lead, {
-        emailStatus: 'checking_suppression',
-        lastEmailAttemptAt: currentIso,
-        emailSequence: sequence.key,
-        emailError: '',
-      });
-
-      const suppression = await this.checkSuppression(lead);
-      if (suppression.suppressed || suppression.emailSuppressed) {
-        await this.markSuppressed(lead, suppression, currentIso);
-        console.log(`[SendEmails] Suppressed externalLeadId=${externalLeadId}`);
-        return;
-      }
-
       if (this.dryRun || !this.enabled) {
-        await this.updateLeadRow(lead, {
-          emailStatus: 'dry_run',
-          lastEmailAttemptAt: currentIso,
-          emailProvider: this.provider,
-          emailSequence: sequence.key,
-          unsubscribeUrl: this.buildUnsubscribeUrl(lead),
-          nextEmailAt: lead.nextEmailAt || '',
-        });
+        const email = this.buildEmail(lead, sequence, null);
+        const validation = this.validateDryRunEmail(email);
         this.stats.dryRun++;
-        console.log(`[SendEmails] DRY RUN ${sequence.key} ${this.maskEmail(lead.email)} externalLeadId=${externalLeadId}`);
+        console.log(
+          `[SendEmails] DRY RUN ${sequence.key} ${this.maskEmail(this.recipientEmailForLead(lead))} ` +
+            `externalLeadId=${externalLeadId} valid=${validation.valid}`
+        );
+        if (this.stats.dryRun <= 3) {
+          console.log(`[SendEmails] DRY RUN payload example=${JSON.stringify(this.sanitizeBrevoPayload(email.brevoPayload))}`);
+        }
         return;
       }
 
-      const execution = await this.ensureFlowExecution(lead);
+      if (!this.testMode) {
+        await this.updateLeadRow(lead, {
+          emailStatus: 'checking_suppression',
+          lastEmailAttemptAt: currentIso,
+          emailSequence: sequence.key,
+          emailError: '',
+        });
+
+        const suppression = await this.checkSuppression(lead);
+        if (suppression.suppressed || suppression.emailSuppressed) {
+          await this.markSuppressed(lead, suppression, currentIso);
+          console.log(`[SendEmails] Suppressed externalLeadId=${externalLeadId}`);
+          return;
+        }
+      }
+
+      const execution = this.testMode ? null : await this.ensureFlowExecution(lead);
       const messageRecord = await this.createMessageRecord(lead, sequence, execution);
       const sendResult = await this.sendEmail(lead, sequence, messageRecord);
       await this.markMessageSent(messageRecord, sendResult);
 
       const nextCount = Number(lead.emailCount || 0) + 1;
       const completed = nextCount >= FALLBACK_SEQUENCE.length;
-      await this.updateLeadRow(lead, {
-        emailStatus: completed ? 'completed' : 'sent',
-        emailSentAt: currentIso,
-        lastEmailAttemptAt: currentIso,
-        emailProvider: this.provider,
-        emailSequence: sequence.key,
-        emailCount: nextCount,
-        nextEmailAt: completed ? '' : this.nextEmailAt(new Date(), sequence),
-        unsubscribeUrl: this.buildUnsubscribeUrl(lead),
-        emailError: '',
-      });
+      if (!this.testMode) {
+        await this.updateLeadRow(lead, {
+          emailStatus: completed ? 'completed' : 'sent',
+          emailSentAt: currentIso,
+          lastEmailAttemptAt: currentIso,
+          emailProvider: this.provider,
+          emailSequence: sequence.key,
+          emailCount: nextCount,
+          nextEmailAt: completed ? '' : this.nextEmailAt(new Date(), sequence),
+          unsubscribeUrl: this.buildUnsubscribeUrl(lead),
+          emailError: '',
+        });
 
-      await this.markFlowStepCompleted(execution, sequence, messageRecord);
+        await this.markFlowStepCompleted(execution, sequence, messageRecord);
+      }
 
-      if (completed) this.stats.completed++;
+      if (completed && !this.testMode) this.stats.completed++;
       this.stats.sent++;
-      console.log(`[SendEmails] Sent ${sequence.key} ${this.maskEmail(lead.email)} externalLeadId=${externalLeadId}`);
+      console.log(
+        `[SendEmails] Sent status=${sendResult.statusCode || 'unknown'} provider=${this.provider} ` +
+          `messageId=${sendResult.providerMessageId || 'missing'} test_mode=${this.testMode} ` +
+          `recipient=${this.maskEmail(this.recipientEmailForLead(lead))} externalLeadId=${externalLeadId}`
+      );
     } catch (error) {
       this.stats.errors++;
       const safeError = this.sanitizeError(this.formatError(error));
-      await this.updateLeadRow(lead, {
-        emailStatus: 'error',
-        lastEmailAttemptAt: nowIso(),
-        nextEmailAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-        emailError: safeError,
-      });
+      if (!this.testMode) {
+        await this.updateLeadRow(lead, {
+          emailStatus: 'error',
+          lastEmailAttemptAt: nowIso(),
+          nextEmailAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+          emailError: safeError,
+        });
+      }
       console.error(`[SendEmails] Error externalLeadId=${externalLeadId}: ${safeError}`);
     }
   }
@@ -408,15 +470,15 @@ export class SendReactivationEmailsJob {
     const record = await this.prisma.reactivationEmailMessage.upsert({
       where: { idempotencyKey },
       create: {
-        leadId: lead.leadId || null,
+        leadId: this.testMode ? null : lead.leadId || null,
         campaignId: this.campaign?.id || null,
         templateId: template?.id || null,
         flowExecutionId: execution?.id || null,
         stepKey: sequence.key,
         sequenceKey: sequence.key,
         provider: this.provider,
-        toEmailHash: this.hashEmail(lead.email),
-        toEmailMasked: this.maskEmail(lead.email),
+        toEmailHash: this.hashEmail(this.recipientEmailForLead(lead)),
+        toEmailMasked: this.maskEmail(this.recipientEmailForLead(lead)),
         subject: email.subject,
         status: 'sending',
         idempotencyKey,
@@ -433,20 +495,12 @@ export class SendReactivationEmailsJob {
   }
 
   async sendEmail(lead, sequence, messageRecord) {
-    if (this.provider !== 'sendgrid') {
+    if (this.provider !== 'brevo') {
       throw new Error(`Unsupported EMAIL_PROVIDER: ${this.provider}`);
-    }
-    if (!process.env.SENDGRID_API_KEY) {
-      throw new Error('SENDGRID_API_KEY is required when REACTIVATION_EMAIL_DRY_RUN=false');
     }
 
     const message = this.buildEmail(lead, sequence, messageRecord);
-    const [response] = await sgMail.send(message);
-    return {
-      statusCode: response?.statusCode || null,
-      providerMessageId: response?.headers?.['x-message-id'] || null,
-      headers: response?.headers || {},
-    };
+    return sendBrevoTransactionalEmail(message.brevoRequest);
   }
 
   async markMessageSent(messageRecord, sendResult) {
@@ -460,6 +514,8 @@ export class SendReactivationEmailsJob {
         responsePayload: {
           statusCode: sendResult.statusCode,
           providerMessageId: sendResult.providerMessageId,
+          test_mode: this.testMode,
+          ...(sendResult.responsePayload || {}),
         },
       },
     });
@@ -476,6 +532,7 @@ export class SendReactivationEmailsJob {
         rawPayload: {
           statusCode: sendResult.statusCode,
           providerMessageId: sendResult.providerMessageId,
+          test_mode: this.testMode,
         },
         signatureVerified: true,
         occurredAt: sentAt,
@@ -520,20 +577,63 @@ export class SendReactivationEmailsJob {
     const template = this.templateForSequence(sequence);
     const variables = this.templateVariables(lead);
     const subject = this.renderTemplate(template?.subject || sequence.subject, variables);
-    const html = this.renderTemplate(template?.html || sequence.html, variables);
-    const text = this.renderTemplate(template?.text || sequence.text, variables);
+    const preheader = this.renderTemplate(template?.preheader || sequence.preheader || '', variables);
+    const html = this.withComplianceHtml(this.renderTemplate(template?.html || sequence.html, variables), variables, preheader);
+    const text = this.withComplianceText(this.renderTemplate(template?.text || sequence.text, variables), variables);
+    const recipientEmail = this.recipientEmailForLead(lead);
+    const recipientName = this.testMode ? 'Teste Cote Juros' : variables.fullName;
+    const headers = this.buildEmailHeaders(variables);
 
     return {
-      to: lead.email,
-      from: { email: this.fromEmail, name: this.fromName },
-      replyTo: this.replyTo,
+      to: recipientEmail,
+      name: recipientName,
       subject,
-      html,
-      text,
-      trackingSettings: {
-        clickTracking: { enable: true, enableText: true },
-        openTracking: { enable: true },
+      htmlContent: html,
+      textContent: text,
+      brevoRequest: {
+        to: recipientEmail,
+        name: recipientName,
+        subject,
+        htmlContent: html,
+        textContent: text,
+        senderName: this.fromName,
+        senderEmail: this.fromEmail,
+        replyTo: { email: this.replyToEmail, name: this.replyToName },
+        headers,
+        tags: ['reactivation', sequence.key],
+        params: {
+          messageId: String(messageRecord?.id || ''),
+          externalLeadId: String(lead.externalLeadId || ''),
+          batchId: String(lead.batchId || ''),
+          leadId: String(lead.leadId || ''),
+          campaignId: String(this.campaign?.id || ''),
+          campaign: String(this.campaign?.slug || CAMPAIGN_SLUG),
+          sequence: sequence.key,
+          test_mode: this.testMode,
+        },
       },
+      brevoPayload: buildBrevoTransactionalEmailPayload({
+        to: recipientEmail,
+        name: recipientName,
+        subject,
+        htmlContent: html,
+        textContent: text,
+        senderName: this.fromName,
+        senderEmail: this.fromEmail,
+        replyTo: { email: this.replyToEmail, name: this.replyToName },
+        headers,
+        tags: ['reactivation', sequence.key],
+        params: {
+          messageId: String(messageRecord?.id || ''),
+          externalLeadId: String(lead.externalLeadId || ''),
+          batchId: String(lead.batchId || ''),
+          leadId: String(lead.leadId || ''),
+          campaignId: String(this.campaign?.id || ''),
+          campaign: String(this.campaign?.slug || CAMPAIGN_SLUG),
+          sequence: sequence.key,
+          test_mode: this.testMode,
+        },
+      }),
       customArgs: {
         messageId: String(messageRecord?.id || ''),
         externalLeadId: String(lead.externalLeadId || ''),
@@ -542,6 +642,7 @@ export class SendReactivationEmailsJob {
         campaignId: String(this.campaign?.id || ''),
         campaign: String(this.campaign?.slug || CAMPAIGN_SLUG),
         sequence: sequence.key,
+        test_mode: String(this.testMode),
       },
     };
   }
@@ -586,7 +687,47 @@ export class SendReactivationEmailsJob {
   }
 
   buildUnsubscribeUrl(lead) {
-    return `${this.buildReactivationUrl(lead)}?optout=1`;
+    if (!lead.token) return `${this.buildReactivationUrl(lead)}?optout=1`;
+    return `${this.apiBaseUrl}/api/reactivation/unsubscribe/${encodeURIComponent(lead.token)}?scope=unsubscribe_email`;
+  }
+
+  buildEmailHeaders(variables) {
+    const unsubscribeUrl = variables.unsubscribeUrl;
+    return {
+      'List-Unsubscribe': `<${unsubscribeUrl}>`,
+      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+    };
+  }
+
+  withComplianceHtml(html, variables, preheader = '') {
+    const hiddenPreheader = preheader
+      ? `<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${preheader}</div>`
+      : '';
+    const footer = `
+      <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0" />
+      <p style="font-size:12px;line-height:18px;color:#475569;margin:0">
+        Voce recebeu este email porque seu cadastro consta na base da Cote Juros para atualizacao de interesse.
+        Se nao quiser mais receber emails de reativacao, <a href="${variables.unsubscribeUrl}">descadastre-se aqui</a>.
+      </p>
+    `;
+    return `${hiddenPreheader}${html}${footer}`;
+  }
+
+  withComplianceText(text, variables) {
+    return `${text}\n\nVoce recebeu este email porque seu cadastro consta na base da Cote Juros para atualizacao de interesse.\nDescadastro: ${variables.unsubscribeUrl}`;
+  }
+
+  isRevokedOrOptedOut(row) {
+    const status = String(row.status || '').toLowerCase();
+    const emailStatus = String(row.emailStatus || '').toLowerCase();
+    const optOutReason = String(row.optOutReason || row.opt_out_reason || '').trim();
+    return Boolean(
+      ['revoked', 'suppressed', 'rejected'].includes(status) ||
+      ['unsubscribed', 'suppressed', 'spam_reported', 'bounce', 'bounced'].includes(emailStatus) ||
+      row.consentRevokedAt ||
+      row.tokenRevokedAt ||
+      optOutReason
+    );
   }
 
   describeSuppression(suppression) {
@@ -602,6 +743,7 @@ export class SendReactivationEmailsJob {
   messageIdempotencyKey(lead, sequence) {
     const base = [
       this.campaign?.id || CAMPAIGN_SLUG,
+      this.testMode ? `test:${this.testEmail}:${this.testRunId}` : 'live',
       lead.leadId || lead.externalLeadId || `row-${lead._rowIndex}`,
       sequence.key,
       Number(lead.emailCount || 0),
@@ -618,15 +760,47 @@ export class SendReactivationEmailsJob {
   maskEmailPayload(email) {
     return {
       to: this.maskEmail(email.to),
-      from: email.from,
-      replyTo: email.replyTo,
       subject: email.subject,
       customArgs: email.customArgs,
     };
   }
 
+  validateDryRunEmail(email) {
+    if (!this.isValidEmail(email.to)) {
+      throw new Error('Invalid recipient email');
+    }
+    if (!email.subject || !email.htmlContent || !email.textContent) {
+      throw new Error('Invalid Brevo payload: subject, htmlContent and textContent are required');
+    }
+    return { valid: true };
+  }
+
+  sanitizeBrevoPayload(payload) {
+    return {
+      ...payload,
+      sender: {
+        name: payload.sender?.name,
+        email: this.maskEmail(payload.sender?.email),
+      },
+      to: (payload.to || []).map((recipient) => ({
+        ...recipient,
+        email: this.maskEmail(recipient.email),
+      })),
+      htmlContent: '[HTML_REDACTED]',
+      textContent: '[TEXT_REDACTED]',
+    };
+  }
+
   isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || ''));
+  }
+
+  normalizeEmail(email) {
+    return String(email || '').trim().toLowerCase();
+  }
+
+  recipientEmailForLead(lead) {
+    return this.testMode ? this.testEmail : lead.email;
   }
 
   firstName(name) {
