@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import sendgridEventWebhook from '@sendgrid/eventwebhook';
 import sgMail from '@sendgrid/mail';
 import { getPrisma } from '../lib/prisma.js';
+import { CampaignTrackingService } from './campaignTrackingService.js';
 
 const { EventWebhook, EventWebhookHeader } = sendgridEventWebhook;
 
@@ -185,7 +186,8 @@ export class ReactivationAdminService {
       optOuts,
       nextMessages,
       recentJobRuns,
-      reactivationKpis
+      reactivationKpis,
+      campaignTracking
     ] = await Promise.all([
       prisma.reactivationLead.count({ where: { status: { in: ['imported', 'visited'] } } }),
       prisma.reactivationEmailCampaign.count({ where: { status: 'active', isActive: true } }),
@@ -207,7 +209,8 @@ export class ReactivationAdminService {
         orderBy: { startedAt: 'desc' },
         take: 12
       }),
-      this.reactivationKpiSnapshot()
+      this.reactivationKpiSnapshot(),
+      CampaignTrackingService.dashboardSummary()
     ]);
 
     const dailyLimitConfig = await prisma.reactivationAdminConfig.findUnique({ where: { key: 'email.daily_limit' } });
@@ -237,6 +240,7 @@ export class ReactivationAdminService {
       conversionByCampaign: await this.conversionByCampaign(prisma),
       conversionByPartner: reactivationKpis.byPartner || [],
       estimatedRevenueCents: reactivationKpis.revenue?.estimatedRevenueCents || 0,
+      campaignTracking,
       recentJobRuns
     };
   }

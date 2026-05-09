@@ -5,6 +5,7 @@ import offersRoutes from './routes/offers.js';
 import articlesRoutes from './routes/articles.js';
 import simulationsRoutes from './routes/simulations.js';
 import trackingRoutes from './routes/tracking.js';
+import campaignTrackingRoutes from './routes/campaignTracking.js';
 import partnersRoutes from './routes/partners.js';
 import integrationRoutes from './routes/integration.js';
 import creditRoutes from './routes/credit.js';
@@ -134,6 +135,7 @@ export const createApp = () => {
   app.use('/api/articles', articlesRoutes);
   app.use('/api/simulations', simulationsRoutes);
   app.use('/api/tracking', trackingRoutes);
+  app.use('/', campaignTrackingRoutes);
   app.use('/api/partners', partnersRoutes);
   app.use('/api/integration', integrationRoutes);
   app.use('/api/credit', creditRoutes);

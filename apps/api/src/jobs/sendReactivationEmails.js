@@ -5,6 +5,7 @@ import axios from 'axios';
 import { googleSheetsClient } from '../integrations/googleSheets.js';
 import { getPrisma } from '../lib/prisma.js';
 import { buildBrevoTransactionalEmailPayload, sendBrevoTransactionalEmail } from '../services/brevoEmailService.js';
+import { CampaignTrackingService } from '../services/campaignTrackingService.js';
 
 const SHEET_NAME = 'leads_queue';
 const DEFAULT_LIMIT = 25;
@@ -81,10 +82,7 @@ export class SendReactivationEmailsJob {
     if (this.testMode && !this.isValidEmail(this.testEmail)) {
       throw new Error('REACTIVATION_TEST_EMAIL must be a valid email address');
     }
-    if (this.testMode) {
-      this.limit = Math.min(Math.max(1, this.limit), 5);
-      this.dailyLimit = Math.min(Math.max(1, this.dailyLimit), 5);
-    }
+    this.applyTestModeLimits();
     if (!this.dryRun && !this.testMode && process.env[REAL_RECIPIENTS_GUARD_ENV] !== 'true') {
       throw new Error(
         `Real recipient sends are blocked. Set REACTIVATION_TEST_EMAIL for controlled tests or ${REAL_RECIPIENTS_GUARD_ENV}=true for an approved campaign send.`
@@ -237,6 +235,7 @@ export class SendReactivationEmailsJob {
 
     this.dailyLimit = Number(this.campaign.dailyLimit || this.dailyLimit);
     this.limit = Number(this.campaign.batchSize || this.limit);
+    this.applyTestModeLimits();
     const ids = [
       this.campaign.initialTemplateId,
       this.campaign.reminderTemplateId,
@@ -246,6 +245,14 @@ export class SendReactivationEmailsJob {
       ? await this.prisma.reactivationEmailTemplate.findMany({ where: { id: { in: ids } } })
       : [];
     this.templates = new Map(templates.map((template) => [template.id, template]));
+  }
+
+  applyTestModeLimits() {
+    if (!this.testMode) return;
+    const requestedLimit = Number(process.env.REACTIVATION_BATCH_LIMIT || process.env.REACTIVATION_EMAIL_BATCH_SIZE || this.limit || 1);
+    const requestedDailyLimit = Number(process.env.REACTIVATION_EMAIL_DAILY_LIMIT || this.dailyLimit || 1);
+    this.limit = Math.min(Math.max(1, Number(this.limit) || 1), Math.max(1, requestedLimit), 5);
+    this.dailyLimit = Math.min(Math.max(1, Number(this.dailyLimit) || 1), Math.max(1, requestedDailyLimit), 5);
   }
 
   pickEligibleRows(rows) {
@@ -499,7 +506,20 @@ export class SendReactivationEmailsJob {
       throw new Error(`Unsupported EMAIL_PROVIDER: ${this.provider}`);
     }
 
-    const message = this.buildEmail(lead, sequence, messageRecord);
+    const destinationUrl = this.buildReactivationUrl(lead);
+    const ctaClick = await CampaignTrackingService.ensureEmailCtaClick({
+      lead,
+      campaign: this.campaign,
+      messageRecord,
+      sequence,
+      destinationUrl,
+      fallbackUrl: destinationUrl,
+    });
+    const message = this.buildEmail(lead, sequence, messageRecord, ctaClick);
+    await this.prisma.reactivationEmailMessage.update({
+      where: { id: messageRecord.id },
+      data: { requestPayload: this.maskEmailPayload(message) },
+    });
     return sendBrevoTransactionalEmail(message.brevoRequest);
   }
 
@@ -573,9 +593,9 @@ export class SendReactivationEmailsJob {
     });
   }
 
-  buildEmail(lead, sequence, messageRecord) {
+  buildEmail(lead, sequence, messageRecord, ctaClick = null) {
     const template = this.templateForSequence(sequence);
-    const variables = this.templateVariables(lead);
+    const variables = this.templateVariables(lead, ctaClick);
     const subject = this.renderTemplate(template?.subject || sequence.subject, variables);
     const preheader = this.renderTemplate(template?.preheader || sequence.preheader || '', variables);
     const html = this.withComplianceHtml(this.renderTemplate(template?.html || sequence.html, variables), variables, preheader);
@@ -610,6 +630,7 @@ export class SendReactivationEmailsJob {
           campaign: String(this.campaign?.slug || CAMPAIGN_SLUG),
           sequence: sequence.key,
           test_mode: this.testMode,
+          ctaClickId: String(ctaClick?.clickId || ''),
         },
       },
       brevoPayload: buildBrevoTransactionalEmailPayload({
@@ -632,6 +653,7 @@ export class SendReactivationEmailsJob {
           campaign: String(this.campaign?.slug || CAMPAIGN_SLUG),
           sequence: sequence.key,
           test_mode: this.testMode,
+          ctaClickId: String(ctaClick?.clickId || ''),
         },
       }),
       customArgs: {
@@ -643,6 +665,7 @@ export class SendReactivationEmailsJob {
         campaign: String(this.campaign?.slug || CAMPAIGN_SLUG),
         sequence: sequence.key,
         test_mode: String(this.testMode),
+        ctaClickId: String(ctaClick?.clickId || ''),
       },
     };
   }
@@ -652,15 +675,19 @@ export class SendReactivationEmailsJob {
     return templateId ? this.templates.get(templateId) : null;
   }
 
-  templateVariables(lead) {
+  templateVariables(lead, ctaClick = null) {
     const firstName = this.firstName(lead.fullName || lead.name || lead.nome);
-    const reactivationUrl = this.buildReactivationUrl(lead);
+    const directReactivationUrl = this.buildReactivationUrl(lead);
+    const reactivationUrl = ctaClick
+      ? CampaignTrackingService.buildGoUrl(ctaClick.clickId)
+      : directReactivationUrl;
     const unsubscribeUrl = this.buildUnsubscribeUrl(lead);
     return {
       firstName,
       name: firstName,
       fullName: lead.fullName || lead.name || lead.nome || firstName,
       reactivationUrl,
+      directReactivationUrl,
       unsubscribeUrl,
     };
   }

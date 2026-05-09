@@ -869,11 +869,14 @@ model PartnerConfig {
   createdAt             DateTime               @default(now()) @map("created_at")
   updatedAt             DateTime               @updatedAt @map("updated_at")
 
-  bank               Bank?               @relation(fields: [bankId], references: [id], onDelete: SetNull)
-  fallbackPartner    PartnerConfig?      @relation("PartnerFallback", fields: [fallbackPartnerId], references: [id], onDelete: SetNull)
-  fallbackChildren   PartnerConfig[]     @relation("PartnerFallback")
+  bank               Bank?                   @relation(fields: [bankId], references: [id], onDelete: SetNull)
+  fallbackPartner    PartnerConfig?          @relation("PartnerFallback", fields: [fallbackPartnerId], references: [id], onDelete: SetNull)
+  fallbackChildren   PartnerConfig[]         @relation("PartnerFallback")
   partnerClicks      PartnerClick[]
   partnerConversions PartnerConversion[]
+  ctaClicks          CtaClick[]
+  redirectAttempts   RedirectAttempt[]
+  conversions        ConversionAttribution[]
 
   @@index([status, healthStatus])
   @@index([bankId, status])
@@ -933,6 +936,85 @@ model PartnerConversion {
   @@index([partnerId, status])
   @@index([receivedAt])
   @@map("partner_conversions")
+}
+
+model CtaClick {
+  id               String    @id @default(cuid())
+  clickId          String    @unique @map("click_id")
+  leadId           String?   @map("lead_id")
+  campaignId       String?   @map("campaign_id")
+  messageId        String?   @map("message_id")
+  partnerId        String?   @map("partner_id")
+  affiliateOfferId String?   @map("affiliate_offer_id")
+  source           String    @default("email")
+  ctaType          String?   @map("cta_type")
+  destinationUrl   String?   @map("destination_url") @db.Text
+  fallbackUrl      String?   @map("fallback_url") @db.Text
+  status           String    @default("created")
+  clickedAt        DateTime? @map("clicked_at")
+  metadata         Json?
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  lead           ReactivationLead?         @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  message        ReactivationEmailMessage? @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  partner        PartnerConfig?            @relation(fields: [partnerId], references: [id], onDelete: SetNull)
+  affiliateOffer AffiliateOffer?           @relation(fields: [affiliateOfferId], references: [id], onDelete: SetNull)
+  redirects      RedirectAttempt[]
+  conversions    ConversionAttribution[]
+
+  @@index([campaignId, createdAt])
+  @@index([leadId, createdAt])
+  @@index([messageId])
+  @@index([partnerId])
+  @@index([status, createdAt])
+  @@map("cta_clicks")
+}
+
+model RedirectAttempt {
+  id             String   @id @default(cuid())
+  clickId        String   @map("click_id")
+  partnerId      String?  @map("partner_id")
+  destinationUrl String   @map("destination_url") @db.Text
+  fallbackUrl    String?  @map("fallback_url") @db.Text
+  status         String   @default("redirect_started")
+  httpStatus     Int?     @map("http_status")
+  userAgent      String?  @map("user_agent")
+  ipHash         String?  @map("ip_hash")
+  referer        String?
+  errorMessage   String?  @map("error_message")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  click   CtaClick       @relation(fields: [clickId], references: [clickId], onDelete: Cascade)
+  partner PartnerConfig? @relation(fields: [partnerId], references: [id], onDelete: SetNull)
+
+  @@index([clickId, createdAt])
+  @@index([partnerId, createdAt])
+  @@index([status, createdAt])
+  @@map("redirect_attempts")
+}
+
+model ConversionAttribution {
+  id              String    @id @default(cuid())
+  clickId         String    @map("click_id")
+  partnerId       String?   @map("partner_id")
+  status          String    @default("pending")
+  externalId      String?   @map("external_id")
+  commissionValue Decimal?  @map("commission_value") @db.Decimal(14, 2)
+  contractValue   Decimal?  @map("contract_value") @db.Decimal(14, 2)
+  currency        String    @default("BRL")
+  rawPayload      Json?     @map("raw_payload")
+  convertedAt     DateTime? @map("converted_at")
+  receivedAt      DateTime  @default(now()) @map("received_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  click   CtaClick       @relation(fields: [clickId], references: [clickId], onDelete: Cascade)
+  partner PartnerConfig? @relation(fields: [partnerId], references: [id], onDelete: SetNull)
+
+  @@index([clickId])
+  @@index([partnerId, status])
+  @@index([receivedAt])
+  @@map("conversion_attributions")
 }
 
 model AffiliateNetwork {
@@ -1004,6 +1086,7 @@ model AffiliateOffer {
   networkRef AffiliateNetwork  @relation(fields: [networkId], references: [id], onDelete: Cascade)
   program    AffiliateProgram? @relation(fields: [programId], references: [id], onDelete: SetNull)
   clicks     AffiliateClick[]
+  ctaClicks  CtaClick[]
 
   @@index([network, isActive, priority])
   @@index([productType, isActive])
@@ -1086,6 +1169,7 @@ model ReactivationLead {
   emailMessages  ReactivationEmailMessage[]
   flowExecutions ReactivationLeadFlowExecution[]
   flowSteps      ReactivationFlowExecutionStep[]
+  ctaClicks      CtaClick[]
 
   @@index([batchId, status])
   @@index([status, createdAt])
@@ -1251,10 +1335,11 @@ model ReactivationEmailMessage {
   createdAt         DateTime           @default(now()) @map("created_at")
   updatedAt         DateTime           @updatedAt @map("updated_at")
 
-  lead     ReactivationLead?               @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  campaign ReactivationEmailCampaign?      @relation(fields: [campaignId], references: [id], onDelete: SetNull)
-  template ReactivationEmailTemplate?      @relation(fields: [templateId], references: [id], onDelete: SetNull)
-  events   ReactivationEmailMessageEvent[]
+  lead      ReactivationLead?               @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  campaign  ReactivationEmailCampaign?      @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  template  ReactivationEmailTemplate?      @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  events    ReactivationEmailMessageEvent[]
+  ctaClicks CtaClick[]
 
   @@index([leadId, createdAt])
   @@index([campaignId, status, createdAt])
