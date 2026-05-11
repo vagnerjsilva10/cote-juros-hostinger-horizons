@@ -1,4 +1,5 @@
-export const SITE_BASE_URL = (process.env.SITE_BASE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
+export const PUBLIC_SITE_URL = (process.env.PUBLIC_SITE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
+export const SITE_BASE_URL = (process.env.SITE_BASE_URL || PUBLIC_SITE_URL).replace(/\/$/, '');
 export const WEB_PUBLIC_DIR = new URL('../../../web/public/', import.meta.url);
 export const BLOG_IMAGE_DIR = new URL('../../../web/public/images/blog/', import.meta.url);
 export const BLOG_IMAGE_VARIANTS_DIR = new URL('../../../web/public/images/blog/variants/', import.meta.url);

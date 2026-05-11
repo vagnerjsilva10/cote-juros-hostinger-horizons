@@ -41,7 +41,7 @@ const toArticlePayload = (record) => {
     coverImage: record.coverImage || structured.coverImage || '',
     ogImage: record.ogImage || structured.ogImage || '',
     routePath: structured.routePath || `/blog/${record.slug}`,
-    canonicalUrl: structured.canonicalUrl || `${process.env.SITE_BASE_URL || 'https://www.cotejuros.com.br'}/blog/${record.slug}/`,
+    canonicalUrl: `${process.env.PUBLIC_SITE_URL || 'https://www.cotejuros.com.br'}/blog/${record.slug}/`,
     tags: Array.isArray(structured.tags) ? structured.tags : [],
     intro: Array.isArray(structured.intro) ? structured.intro : [],
     sections: Array.isArray(structured.sections) ? structured.sections : [],

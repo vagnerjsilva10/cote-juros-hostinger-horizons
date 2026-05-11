@@ -1,9 +1,15 @@
 import express from 'express';
 import { getPrisma } from '../lib/prisma.js';
-import { SITE_BASE_URL } from '../services/editorialConfig.js';
+import { PUBLIC_SITE_URL } from '../services/editorialConfig.js';
+import {
+  normalizePublicStoryUrl,
+  normalizeStoredStoryDistribution,
+  normalizeStorySeoHtml,
+  validateWebStorySeo
+} from '../services/webStorySeoService.js';
 
 const router = express.Router();
-const DISTRIBUTION_PUBLIC_BASE_URL = (process.env.DISTRIBUTION_PUBLIC_BASE_URL || SITE_BASE_URL).replace(/\/$/, '');
+const DISTRIBUTION_PUBLIC_BASE_URL = PUBLIC_SITE_URL;
 
 const escapeXml = (value = '') =>
   String(value || '')
@@ -15,7 +21,7 @@ const escapeXml = (value = '') =>
 
 const getStructured = (article = {}) =>
   article?.structuredContent && typeof article.structuredContent === 'object'
-    ? article.structuredContent
+    ? normalizeStoredStoryDistribution(article.structuredContent)
     : {};
 
 const findPublishedArticleBySlug = async (slug) => {
@@ -35,7 +41,49 @@ const findPublishedArticleBySlug = async (slug) => {
 
 const getCanonicalArticleUrl = (article = {}) => {
   const structured = getStructured(article);
-  return structured.canonicalUrl || `${SITE_BASE_URL}/blog/${article.slug}/`;
+  return structured.canonicalUrl && structured.canonicalUrl.startsWith(PUBLIC_SITE_URL)
+    ? structured.canonicalUrl
+    : `${PUBLIC_SITE_URL}/blog/${article.slug}/`;
+};
+
+const getStorySitemapNode = (article = {}) => {
+  const structured = getStructured(article);
+  const story = structured.distribution?.webStory;
+  if (!story?.url && !story?.path) return null;
+  const storyUrl = normalizePublicStoryUrl(story.url, story.path);
+  if (!storyUrl.startsWith(PUBLIC_SITE_URL)) return null;
+
+  const validation = story.seoValidation || validateWebStorySeo({
+    article: {
+      ...structured,
+      slug: article.slug,
+      title: structured.title || article.title || article.slug,
+      metaDescription: structured.metaDescription || structured.summary || ''
+    },
+    storyHtml: normalizeStorySeoHtml(structured.distributionAssets?.webStoryHtml || ''),
+    bookendJson: normalizeStorySeoHtml(structured.distributionAssets?.bookendJson || ''),
+    distribution: {
+      ...structured.distribution,
+      webStory: {
+        ...story,
+        url: storyUrl
+      }
+    },
+    slideAssets: (structured.distributionAssets?.slides || []).map((asset) => ({
+      ...asset,
+      content: normalizeStorySeoHtml(asset.content || '')
+    })),
+    posterImageUrl: structured.coverImage || structured.ogImage || structured.distribution?.pinterest?.imageUrl || '',
+    storyPublicPath: story.path || new URL(storyUrl).pathname,
+    articleUrl: getCanonicalArticleUrl(article)
+  });
+  if (validation.passed === false) return null;
+
+  return {
+    loc: storyUrl,
+    lastmod: new Date(article.updatedAt).toISOString(),
+    priority: '0.6'
+  };
 };
 
 router.get('/sitemap.xml', async (req, res, next) => {
@@ -87,7 +135,7 @@ router.get('/sitemap.xml', async (req, res, next) => {
     ];
 
     const fixedNodes = fixedRoutes.map((path) => ({
-      loc: `${SITE_BASE_URL}${path === '/' ? '' : path}`,
+      loc: `${PUBLIC_SITE_URL}${path === '/' ? '' : path}`,
       lastmod: new Date().toISOString(),
       priority: path === '/' ? '1.0' : '0.7'
     }));
@@ -97,16 +145,7 @@ router.get('/sitemap.xml', async (req, res, next) => {
       priority: '0.8'
     }));
     const storyNodes = stories
-      .map((article) => {
-        const storyUrl = getStructured(article).distribution?.webStory?.url;
-        return storyUrl
-          ? {
-              loc: storyUrl,
-              lastmod: new Date(article.updatedAt).toISOString(),
-              priority: '0.6'
-            }
-          : null;
-      })
+      .map(getStorySitemapNode)
       .filter(Boolean);
 
     const seen = new Set();
@@ -138,7 +177,7 @@ router.get('/robots.txt', (_req, res) => {
     'User-agent: *',
     'Allow: /',
     '',
-    `Sitemap: ${SITE_BASE_URL}/sitemap.xml`,
+    `Sitemap: ${PUBLIC_SITE_URL}/sitemap.xml`,
     `Sitemap: ${DISTRIBUTION_PUBLIC_BASE_URL}/stories-sitemap.xml`
   ].join('\n'));
 });
@@ -159,14 +198,18 @@ router.get('/stories-sitemap.xml', async (req, res, next) => {
       take: 1000
     });
 
+    const seen = new Set();
     const urls = articles
       .map((article) => {
-        const distribution = getStructured(article).distribution;
-        if (!distribution?.webStory?.url) return '';
+        const node = getStorySitemapNode(article);
+        if (!node) return '';
+        const storyUrl = node.loc;
+        if (seen.has(storyUrl)) return '';
+        seen.add(storyUrl);
         return [
           '  <url>',
-          `    <loc>${escapeXml(distribution.webStory.url)}</loc>`,
-          `    <lastmod>${new Date(article.updatedAt).toISOString()}</lastmod>`,
+          `    <loc>${escapeXml(storyUrl)}</loc>`,
+          `    <lastmod>${node.lastmod}</lastmod>`,
           '  </url>'
         ].join('\n');
       })
@@ -182,7 +225,7 @@ router.get('/stories-sitemap.xml', async (req, res, next) => {
 router.get('/stories/:slug/', async (req, res, next) => {
   try {
     const article = await findPublishedArticleBySlug(req.params.slug);
-    const html = getStructured(article).distributionAssets?.webStoryHtml;
+    const html = normalizeStorySeoHtml(getStructured(article).distributionAssets?.webStoryHtml || '');
     if (!html) return res.status(404).send('Web Story not found');
     res.set('Cache-Control', 'public, max-age=300, s-maxage=3600');
     return res.type('html').send(html);
@@ -194,7 +237,7 @@ router.get('/stories/:slug/', async (req, res, next) => {
 router.get('/stories/:slug/bookend.json', async (req, res, next) => {
   try {
     const article = await findPublishedArticleBySlug(req.params.slug);
-    const bookendJson = getStructured(article).distributionAssets?.bookendJson;
+    const bookendJson = normalizeStorySeoHtml(getStructured(article).distributionAssets?.bookendJson || '');
     if (!bookendJson) return res.status(404).json({ error: 'Bookend not found' });
     res.set('Cache-Control', 'public, max-age=300, s-maxage=3600');
     return res.type('json').send(bookendJson);
@@ -210,7 +253,7 @@ router.get('/stories/:slug/assets/:asset', async (req, res, next) => {
     const asset = (getStructured(article).distributionAssets?.slides || []).find((item) => item.path === targetPath);
     if (!asset?.content) return res.status(404).send('Story asset not found');
     res.set('Cache-Control', 'public, max-age=300, s-maxage=3600');
-    return res.type('image/svg+xml').send(asset.content);
+    return res.type('image/svg+xml').send(normalizeStorySeoHtml(asset.content));
   } catch (error) {
     return next(error);
   }

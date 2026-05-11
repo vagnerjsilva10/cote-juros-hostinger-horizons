@@ -7,17 +7,23 @@ import {
   EDITORIAL_FALLBACK_IMAGE_ABSOLUTE_URL,
   PINTEREST_API_BASE_URL,
   PINTEREST_IMAGE_DIR,
+  PUBLIC_SITE_URL,
   SITE_BASE_URL,
   WEB_STORIES_DIR
 } from './editorialConfig.js';
 import { createEditorialLogger } from './editorialLogger.js';
 import { isTemplateOrPlaceholderImage } from './blogImage/validator.js';
+import {
+  buildPublicStoryUrl,
+  buildStoryGenerationState,
+  validateWebStorySeo
+} from './webStorySeoService.js';
 
 const logger = createEditorialLogger('content-distribution');
 const MAX_STORY_SLIDES = 8;
 const MIN_STORY_SLIDES = 5;
 const WRITE_LOCAL_DISTRIBUTION_FILES = process.env.DISTRIBUTION_WRITE_LOCAL_FILES === 'true';
-const DISTRIBUTION_PUBLIC_BASE_URL = (process.env.DISTRIBUTION_PUBLIC_BASE_URL || SITE_BASE_URL).replace(/\/$/, '');
+const DISTRIBUTION_PUBLIC_BASE_URL = PUBLIC_SITE_URL;
 const DEFAULT_PINTEREST_REQUIRED_SCOPES = [
   'pins:read',
   'pins:write',
@@ -65,7 +71,7 @@ const truncateClean = (value = '', max = 84) => {
 const normalizeAbsoluteUrl = (value = '') => {
   if (!value) return '';
   if (/^https?:\/\//i.test(value)) return value;
-  return `${SITE_BASE_URL}${value.startsWith('/') ? value : `/${value}`}`;
+  return `${PUBLIC_SITE_URL}${value.startsWith('/') ? value : `/${value}`}`;
 };
 
 const isValidStoryImageUrl = (value = '') => {
@@ -223,7 +229,7 @@ export const validatePinterestTokenScopes = async ({
 };
 
 const getArticleUrl = (article = {}) =>
-  normalizeAbsoluteUrl(article.canonicalUrl || article.routePath || `/blog/${article.slug}/`);
+  `${PUBLIC_SITE_URL}${String(article.routePath || `/blog/${article.slug}/`).replace(/\/?$/, '/')}`;
 
 const getSecondaryKeywords = (article = {}, brief = {}) => {
   const candidates = [
@@ -428,7 +434,8 @@ const buildPinterestSvg = ({ article, keywords }) => {
 
 const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterImageUrl }) => {
   const title = escapeHtml(`${article.title} | Web Story Cote Juros`);
-  const publisherLogo = `${SITE_BASE_URL}/assets/logo/logo-icon-square.png`;
+  const publisherLogo = `${PUBLIC_SITE_URL}/assets/logo/logo-icon-square.png`;
+  const storyUrl = buildPublicStoryUrl(storyPublicPath);
 
   const pages = slides.map((slide, index) => {
     const id = `slide-${index + 1}`;
@@ -469,7 +476,8 @@ const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterIm
 <head>
   <meta charset="utf-8">
   <title>${title}</title>
-  <link rel="canonical" href="${escapeHtml(`${DISTRIBUTION_PUBLIC_BASE_URL}${storyPublicPath}/`)}">
+  <link rel="canonical" href="${escapeHtml(storyUrl)}">
+  <meta property="og:url" content="${escapeHtml(storyUrl)}">
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="description" content="${escapeHtml(article.metaDescription || article.summary || article.excerpt || article.title)}">
@@ -493,7 +501,7 @@ const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterIm
     headline: article.title,
     description: article.metaDescription || article.summary || article.excerpt,
     image: posterImageUrl,
-    mainEntityOfPage: `${DISTRIBUTION_PUBLIC_BASE_URL}${storyPublicPath}/`,
+    mainEntityOfPage: storyUrl,
     isPartOf: articleUrl,
     publisher: {
       '@type': 'Organization',
@@ -508,7 +516,7 @@ const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterIm
     publisher-logo-src="${publisherLogo}"
     poster-portrait-src="${escapeHtml(posterImageUrl)}">
     ${pages}
-    <amp-story-bookend src="${escapeHtml(`${DISTRIBUTION_PUBLIC_BASE_URL}${storyPublicPath}/bookend.json`)}" layout="nodisplay"></amp-story-bookend>
+    <amp-story-bookend src="${escapeHtml(`${storyUrl}bookend.json`)}" layout="nodisplay"></amp-story-bookend>
   </amp-story>
 </body>
 </html>`;
@@ -530,6 +538,19 @@ const buildBookendJson = ({ article, articleUrl }) => JSON.stringify({
     }
   ]
 }, null, 2);
+
+const updateStoryGenerationState = async ({ prisma, articleRecord, articlePayload, state }) => {
+  if (!articleRecord?.id) return;
+  await prisma.article.update({
+    where: { id: articleRecord.id },
+    data: {
+      structuredContent: {
+        ...(articlePayload || {}),
+        storyGeneration: state
+      }
+    }
+  });
+};
 
 const ensureDistributionDirs = async (slug) => {
   const safeSlug = toSlug(slug);
@@ -762,7 +783,7 @@ export class ContentDistributionService {
       }));
       const pinterestSvg = buildPinterestSvg({ article, keywords });
 
-      const posterImageUrl = `${DISTRIBUTION_PUBLIC_BASE_URL}${pinterestPublicPath}`;
+      const posterImageUrl = storyImageUrl;
       const storyIndexPath = path.join(dirs.storyDir, 'index.html');
       const storyHtml = buildStoryHtml({
         article,
@@ -794,6 +815,26 @@ export class ContentDistributionService {
       if (!validation.passed) {
         throw new Error(`Distribution validation failed: ${validation.issues.join(' | ')}`);
       }
+      const storyUrl = buildPublicStoryUrl(dirs.storyPublicPath);
+      const storySeoValidation = validateWebStorySeo({
+        article,
+        storyHtml,
+        bookendJson,
+        distribution: {
+          webStory: {
+            path: `${dirs.storyPublicPath}/`,
+            url: storyUrl
+          }
+        },
+        slideAssets,
+        posterImageUrl,
+        storyPublicPath: dirs.storyPublicPath,
+        articleUrl
+      });
+
+      if (!storySeoValidation.passed) {
+        throw new Error(`Web Story SEO validation failed: ${storySeoValidation.issues.join(' | ')}`);
+      }
 
       const pinterest = await publishPinterestPin({
         article,
@@ -806,8 +847,10 @@ export class ContentDistributionService {
         webStory: {
           status: 'created',
           path: `${dirs.storyPublicPath}/`,
-          url: `${DISTRIBUTION_PUBLIC_BASE_URL}${dirs.storyPublicPath}/`,
-          slideCount: slides.length
+          url: storyUrl,
+          canonicalUrl: storyUrl,
+          slideCount: slides.length,
+          seoValidation: storySeoValidation
         },
         pinterest: {
           status: pinterest.status,
@@ -822,7 +865,10 @@ export class ContentDistributionService {
           missingScopes: pinterest.missingScopes || [],
           requiredScopes: pinterest.requiredScopes || getRequiredPinterestScopes()
         },
-        validation
+        validation: {
+          ...validation,
+          storySeo: storySeoValidation
+        }
       };
       distribution.webStory.validation = storyValidation;
       const distributionAssets = {
@@ -846,7 +892,14 @@ export class ContentDistributionService {
           structuredContent: {
             ...articlePayload,
             distribution,
-            distributionAssets
+            distributionAssets,
+            storyGeneration: buildStoryGenerationState({
+              status: 'story_generated',
+              reason: 'distribution_completed',
+              url: storyUrl,
+              canonical: storySeoValidation.canonical,
+              validation: storySeoValidation
+            })
           }
         }
       });
@@ -878,6 +931,17 @@ export class ContentDistributionService {
 
       return distribution;
     } catch (error) {
+      await updateStoryGenerationState({
+        prisma,
+        articleRecord,
+        articlePayload,
+        state: buildStoryGenerationState({
+          status: articleRecord.status !== 'published' ? 'story_blocked' : 'story_failed',
+          reason: articleRecord.status !== 'published' ? 'article_not_published' : 'generation_failed',
+          error: error?.message || String(error)
+        })
+      });
+
       await prisma.editorialJobRun.update({
         where: { id: jobRun.id },
         data: {
