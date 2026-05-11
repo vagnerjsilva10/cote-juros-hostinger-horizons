@@ -2,6 +2,7 @@ import {
   findPortugueseEncodingIssues,
   repairPortugueseText
 } from './portugueseTextService.js';
+import { validateSemanticIntent } from './semanticIntentGuardService.js';
 
 const normalize = (value = '') =>
   repairPortugueseText(value)
@@ -157,13 +158,15 @@ export const validateHardPortugueseGate = (article = {}) => {
 export const buildPublishHardBlockers = ({ article = {}, validation = {}, topicFatigue = null } = {}) => {
   const qualityScore = validation.qualityScore || validation.checks?.qualityScore || {};
   const portugueseGate = validateHardPortugueseGate(article);
+  const semanticIntent = validateSemanticIntent(article);
   const blockers = [
     validation.passed === false ? 'validacao editorial geral falhou' : null,
     (qualityScore.human_readability_score || 0) < 82 ? 'readability abaixo de 82' : null,
     (qualityScore.anti_template_score || 0) < 82 ? 'anti-template abaixo de 82' : null,
     (qualityScore.structural_fingerprint_score || 0) > 35 ? 'fingerprint risk acima de 35' : null,
     topicFatigue?.blocked ? `topic fatigue bloqueado: ${topicFatigue.blockers.join('; ')}` : null,
-    portugueseGate.blocked ? `portugues hard gate falhou: ${portugueseGate.issues.slice(0, 6).join('; ')}` : null
+    portugueseGate.blocked ? `portugues hard gate falhou: ${portugueseGate.issues.slice(0, 6).join('; ')}` : null,
+    semanticIntent.blocked ? `semantic intent falhou: ${semanticIntent.issues.slice(0, 4).join('; ')}` : null
   ].filter(Boolean);
 
   return {
@@ -172,11 +175,13 @@ export const buildPublishHardBlockers = ({ article = {}, validation = {}, topicF
     status: blockers.length > 0 ? 'draft_blocked' : 'publishable',
     blockers,
     portugueseGate,
+    semanticIntent,
     thresholds: {
       readabilityMin: 82,
       antiTemplateMin: 82,
       fingerprintRiskMax: 35,
-      topicFatigueMax: 64
+      topicFatigueMax: 64,
+      intentMatchMin: 85
     }
   };
 };

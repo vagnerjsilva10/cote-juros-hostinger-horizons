@@ -443,14 +443,22 @@ const ensureFaq = ({ faq = [], keyword = '' } = {}) => {
 
 export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', internalLinks = [] } = {}) => {
   const cleanArticle = repairPortugueseInObject(article);
+  const isIntentSpecific = cleanArticle.intentComposerProfile?.preserveIntentSpecific === true;
   const keyword = compactText(primaryKeyword || cleanArticle.clusterKeyword || cleanArticle.tags?.[0] || cleanArticle.title || '');
-  const editorialIntent = classifyArticleIntent({
-    title: cleanArticle.title || cleanArticle.h1,
-    keyword,
-    slug: cleanArticle.slug,
-    category: cleanArticle.category
-  });
-  let title = buildQuestionHeadline(keyword, cleanArticle.title || cleanArticle.h1);
+  const editorialIntent = isIntentSpecific && cleanArticle.editorialIntent
+    ? cleanArticle.editorialIntent
+    : classifyArticleIntent({
+        title: cleanArticle.title || cleanArticle.h1,
+        keyword,
+        slug: cleanArticle.slug,
+        category: cleanArticle.category
+      });
+  let title = isIntentSpecific
+    ? compactText(cleanArticle.title || cleanArticle.h1 || keyword)
+    : buildQuestionHeadline(keyword, cleanArticle.title || cleanArticle.h1);
+  if (isIntentSpecific && title.length > MAX_HEADLINE_LENGTH) {
+    title = title.slice(0, MAX_HEADLINE_LENGTH).replace(/\s+\S*$/g, '').trim();
+  }
   if (/\bvale a$/i.test(title) && /vale a pena/i.test(keyword)) {
     title = title.replace(/\bvale a$/i, 'vale a pena?');
   }
@@ -461,6 +469,7 @@ export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', inte
   ];
 
   let sections = (Array.isArray(cleanArticle.sections) ? cleanArticle.sections : []).map(normalizeSection).filter((section) => section.heading);
+  if (!isIntentSpecific) {
   sections = appendSectionIfMissing(sections, /exemplo|simulacao|numeros/, {
     heading: `${keyword}: exemplo real com números`,
     subheading: 'Uma simulação simples ajuda a enxergar o custo além da parcela.',
@@ -491,6 +500,7 @@ export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', inte
     paragraphs: ['Uma lista simples evita que a decisão fique baseada apenas em urgência, propaganda ou valor da parcela.', 'Revise os pontos principais no celular antes de enviar dados ou aceitar qualquer proposta.'],
     bullets: ['Confirme o CET.', 'Compare pelo menos duas alternativas.', 'Veja o impacto na renda.', 'Leia as condições de atraso.']
   });
+  }
   while (sections.length < 5) {
     sections.push({
       heading: `Ponto essencial sobre ${keyword}`,
@@ -499,20 +509,22 @@ export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', inte
       bullets: ['Revise a parcela.', 'Compare o custo total.', 'Evite pressa na contratação.']
     });
   }
-  sections = ensureKeywordHeadings(sections.slice(0, cleanArticle.editorialPipeline ? 12 : 8), keyword);
+  sections = isIntentSpecific
+    ? sections.slice(0, cleanArticle.editorialPipeline ? 12 : 8)
+    : ensureKeywordHeadings(sections.slice(0, cleanArticle.editorialPipeline ? 12 : 8), keyword);
 
   const standard = {
     featuredSnippet: trimToSentence(
       cleanArticle.featuredSnippet || `${keyword} deve ser analisado pelo custo total, pelo impacto da parcela na renda e pelo risco de endividamento antes da contratação.`,
       180
     ),
-    example: inferMoneyExample({ title, keyword }),
-    alert: buildAlert({ keyword }),
-    midQuestions: buildMidQuestions({ keyword }),
-    ctas: buildCtas(),
-    financialImpact: buildFinancialImpact({ keyword }),
-    alternatives: buildAlternatives({ keyword }),
-    qualityStandardVersion: '2026-04-finance-portal',
+    example: cleanArticle.example || inferMoneyExample({ title, keyword }),
+    alert: cleanArticle.alert || buildAlert({ keyword }),
+    midQuestions: Array.isArray(cleanArticle.midQuestions) && cleanArticle.midQuestions.length ? cleanArticle.midQuestions : buildMidQuestions({ keyword }),
+    ctas: Array.isArray(cleanArticle.ctas) && cleanArticle.ctas.length ? cleanArticle.ctas : buildCtas(),
+    financialImpact: Array.isArray(cleanArticle.financialImpact) && cleanArticle.financialImpact.length ? cleanArticle.financialImpact : buildFinancialImpact({ keyword }),
+    alternatives: Array.isArray(cleanArticle.alternatives) && cleanArticle.alternatives.length ? cleanArticle.alternatives : buildAlternatives({ keyword }),
+    qualityStandardVersion: isIntentSpecific ? '2026-05-intent-specific' : '2026-04-finance-portal',
     discoverProfile: {
       intent: editorialIntent,
       headlineLength: title.length,
@@ -536,15 +548,23 @@ export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', inte
     metaTitle: title,
     metaDescription: trimToSentence(cleanArticle.metaDescription || `Entenda ${keyword}, compare custos reais, veja riscos, alternativas e exemplos antes de contratar.`, 165),
     intro: (intro.length >= 1 ? intro : fallbackIntro).map((paragraph, index) => (
-      index === 0 && !includesKeyword(paragraph, keyword)
+      !isIntentSpecific && index === 0 && !includesKeyword(paragraph, keyword)
         ? `${keyword}: ${paragraph}`
         : paragraph
     )),
     sections,
-    faq: ensureFaq({ faq: cleanArticle.faq, keyword }),
+    faq: isIntentSpecific
+      ? (Array.isArray(cleanArticle.faq) ? cleanArticle.faq : [])
+          .map((item) => ({
+            question: compactText(item?.question || '').replace(/\.$/, '?'),
+            answer: trimToSentence(item?.answer || '', 220)
+          }))
+          .filter((item) => item.question && item.answer)
+          .slice(0, 6)
+      : ensureFaq({ faq: cleanArticle.faq, keyword }),
     conclusion: textArray(cleanArticle.conclusion || [], 2).length
       ? textArray(cleanArticle.conclusion || [], 2).map((paragraph, index) => (
-          index === 0 && !includesKeyword(paragraph, keyword)
+          !isIntentSpecific && index === 0 && !includesKeyword(paragraph, keyword)
             ? `${keyword}: ${paragraph}`
             : paragraph
         ))
@@ -625,7 +645,7 @@ export const validateArticle = ({ article = {}, internalLinks = [], image = null
   const qualityScore = calculateQualityScore({ article, internalLinks, plain, keyword, editorialIntent });
   const hasSerpIntelligence = article.serpIntelligence && article.serpIntelligence.ok !== false;
 
-  if (article.editorialPipeline && qualityScore.signals.wordCount < 1800) issues.push('Artigo premium abaixo de 1800 palavras');
+  if (article.editorialPipeline && article.intentComposerProfile?.preserveIntentSpecific !== true && qualityScore.signals.wordCount < 1800) issues.push('Artigo premium abaixo de 1800 palavras');
   if (CLICKBAIT_PATTERNS.test(title)) issues.push('Titulo com risco de clickbait ou promessa excessiva');
   if (qualityScore.signals.genericHits >= 6) issues.push('Texto com excesso de termos genericos e pouco especificos');
   if (qualityScore.signals.aiPatternHits >= 3) issues.push('Sinais de AI SEO content acima do aceitavel');

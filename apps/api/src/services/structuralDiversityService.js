@@ -294,6 +294,7 @@ const diversifyCtas = (ctas = []) => {
 
 export const applyStructuralDiversity = (article = {}) => {
   const repaired = repairPortugueseInObject(article);
+  const preserveIntentSpecific = repaired.intentComposerProfile?.preserveIntentSpecific === true;
   const sections = reorderSections(Array.isArray(repaired.sections) ? repaired.sections : [])
     .map((section, index) => ({
       ...section,
@@ -326,7 +327,14 @@ export const applyStructuralDiversity = (article = {}) => {
     alternatives: sentenceCaseArray(repaired.alternatives || []),
     faq: diversifyFaq(repaired.faq || []),
     conclusion: sentenceCaseArray(repaired.conclusion || []),
-    ctas: diversifyCtas(repaired.ctas || []),
+    ctas: preserveIntentSpecific
+      ? (repaired.ctas || []).map((cta) => ({
+          ...cta,
+          title: sentenceCase(cta.title || ''),
+          description: sentenceCase(cta.description || ''),
+          label: sentenceCase(cta.label || '')
+        }))
+      : diversifyCtas(repaired.ctas || []),
     cta: repaired.cta ? {
       ...repaired.cta,
       eyebrow: sentenceCase(repaired.cta.eyebrow || ''),

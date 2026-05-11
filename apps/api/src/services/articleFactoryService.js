@@ -9,6 +9,7 @@ import { ArticleService } from './articleService.js';
 import { repairPortugueseText } from './portugueseTextService.js';
 import { SerpIntelligenceService } from './serpIntelligenceService.js';
 import { buildPremiumArticle } from './premiumArticleComposerService.js';
+import { buildIntentSpecificArticle } from './intentSpecificComposerService.js';
 import { EditorialTopicFatigueService } from './editorialTopicFatigueService.js';
 import { buildPublishHardBlockers } from './publishSafetyService.js';
 
@@ -168,7 +169,7 @@ const buildArticleDraft = ({ topic, keyword, intent = 'guide', category = 'Educa
 const buildStructuredContent = ({ article, image, keyword, intent, category }) => ({
   ...article,
   clusterKeyword: keyword,
-  editorialIntent: intent,
+  editorialIntent: article.editorialIntent || intent,
   category,
   routePath: `/blog/${article.slug}`,
   canonicalUrl: `${SITE_BASE_URL}/blog/${article.slug}/`,
@@ -272,10 +273,15 @@ const ensureUniqueSlug = async ({ slug, idempotencyKey }) => {
 };
 
 export async function generateArticle({ topic, keyword, intent = 'guide', category = 'Educacao financeira', serpIntelligence = null }) {
-  const draft = buildPremiumArticle({ topic, keyword, intent, category, serpIntelligence })
+  const draft = buildIntentSpecificArticle({ topic, keyword, intent, category, serpIntelligence })
+    || buildPremiumArticle({ topic, keyword, intent, category, serpIntelligence })
     || buildArticleDraft({ topic, keyword, intent, category, serpIntelligence });
-  const internalLinks = defaultInternalLinks({ category, keyword });
-  const externalLinks = defaultExternalLinks({ intent, keyword });
+  const internalLinks = Array.isArray(draft.internalLinks) && draft.internalLinks.length
+    ? draft.internalLinks
+    : defaultInternalLinks({ category, keyword });
+  const externalLinks = Array.isArray(draft.externalLinks) && draft.externalLinks.length
+    ? draft.externalLinks
+    : defaultExternalLinks({ intent, keyword });
   const article = enforceArticleStandard({
     article: {
       ...draft,
