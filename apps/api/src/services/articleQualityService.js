@@ -92,6 +92,14 @@ const includesKeyword = (value = '', keyword = '') => {
 const trimToSentence = (value = '', max = 160) => {
   const text = ensureSentence(value);
   if (text.length <= max) return text;
+  const sentences = text.match(/[^.!?:]+[.!?:]/g) || [];
+  let complete = '';
+  for (const sentence of sentences) {
+    const candidate = `${complete} ${sentence}`.replace(/\s+/g, ' ').trim();
+    if (candidate.length > max) break;
+    complete = candidate;
+  }
+  if (complete.length >= 70 && !/\b(com|sem|para|por|de|esses)\.$/i.test(complete)) return complete;
   const slice = text.slice(0, max - 1).trim();
   const lastSpace = slice.lastIndexOf(' ');
   return `${slice.slice(0, lastSpace > 80 ? lastSpace : slice.length).trim()}.`;
@@ -442,7 +450,10 @@ export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', inte
     slug: cleanArticle.slug,
     category: cleanArticle.category
   });
-  const title = buildQuestionHeadline(keyword, cleanArticle.title || cleanArticle.h1);
+  let title = buildQuestionHeadline(keyword, cleanArticle.title || cleanArticle.h1);
+  if (/\bvale a$/i.test(title) && /vale a pena/i.test(keyword)) {
+    title = title.replace(/\bvale a$/i, 'vale a pena?');
+  }
   const intro = textArray(cleanArticle.intro || [], 2);
   const fallbackIntro = [
     `${keyword} exige comparar custo total, parcela e risco antes de decidir. A melhor escolha é aquela que cabe na renda e deixa claro o que acontece se houver atraso.`,

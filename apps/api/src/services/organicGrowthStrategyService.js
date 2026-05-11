@@ -1,6 +1,7 @@
 import { ArticleFactoryService } from './articleFactoryService.js';
 import { SeoGrowthService } from './seoGrowthService.js';
 import { getPrisma } from '../lib/prisma.js';
+import { EditorialTopicFatigueService } from './editorialTopicFatigueService.js';
 
 const SITE_BASE_URL = (process.env.SITE_BASE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
 
@@ -543,6 +544,7 @@ export class OrganicGrowthStrategyService {
     return {
       ok: true,
       selected,
+      calendar: EditorialTopicFatigueService.calendarPolicy(),
       playbook: DIVERSITY_PLAYBOOK,
       antiFootprintRules: [
         'rotacionar abertura: pergunta, cena, numero, alerta ou comparacao',
@@ -702,6 +704,7 @@ export class OrganicGrowthStrategyService {
       canonicalUrl: article.canonicalUrl || url,
       metaDescription: record.metaDescription || article.metaDescription || result.article?.metaDescription || '',
       status: record.status,
+      factoryStatus: result.status,
       publishedAt: record.publishedAt || null,
       scores: {
         editorial: qualityScore.total || 0,
@@ -728,6 +731,8 @@ export class OrganicGrowthStrategyService {
         aiSpamRisk: (qualityScore.anti_template_score || 0) >= 70 && (qualityScore.human_readability_score || 0) >= 70 ? 'baixo' : 'revisar'
       },
       validation: result.validation,
+      topicFatigue: result.topicFatigue,
+      publishSafety: result.publishSafety,
       article: record,
       guardrails: {
         oneArticleOnly: true,

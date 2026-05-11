@@ -9,6 +9,8 @@ import { ArticleService } from './articleService.js';
 import { repairPortugueseText } from './portugueseTextService.js';
 import { SerpIntelligenceService } from './serpIntelligenceService.js';
 import { buildPremiumArticle } from './premiumArticleComposerService.js';
+import { EditorialTopicFatigueService } from './editorialTopicFatigueService.js';
+import { buildPublishHardBlockers } from './publishSafetyService.js';
 
 const logger = createEditorialLogger('article-factory');
 
@@ -395,12 +397,27 @@ export class ArticleFactoryService {
     });
 
     if (!image.validationPassed) validation.issues.push('Imagem obrigatoria ausente ou invalida');
+    const topicFatigue = await EditorialTopicFatigueService.analyze({
+      keyword: cleanKeyword,
+      title: structuredContent.title || generated.title,
+      category: cleanCategory,
+      article: structuredContent
+    });
+    const publishSafety = buildPublishHardBlockers({
+      article: structuredContent,
+      validation,
+      topicFatigue
+    });
+    const publishable = validation.passed && !publishSafety.blocked;
 
     const result = {
-      ok: validation.passed,
+      ok: dryRun ? validation.passed : publishable,
       dryRun,
       persisted: false,
-      status: publishApproved && validation.passed ? 'published' : 'draft',
+      status: publishApproved
+        ? (publishable ? 'published' : 'draft_blocked')
+        : 'draft',
+      persistenceStatus: publishApproved && publishable ? 'published' : 'draft',
       slug: slugState.slug,
       title: article.title,
       image: {
@@ -409,13 +426,19 @@ export class ArticleFactoryService {
         altText: image.altText
       },
       validation,
+      topicFatigue,
+      publishSafety,
       serpIntelligence,
       article: {
         ...generated,
         slug: slugState.slug,
         coverImage: image.coverImage,
         ogImage: image.ogImage,
-        structuredContent
+        structuredContent: {
+          ...structuredContent,
+          topicFatigue,
+          publishSafety
+        }
       },
       durationMs: Date.now() - startedAt
     };
@@ -423,8 +446,8 @@ export class ArticleFactoryService {
     if (persist) {
       const saved = await ArticleService.createOrUpdateGeneratedArticle({
         article: result.article,
-        status: result.status,
-        publishApproved,
+        status: result.persistenceStatus,
+        publishApproved: publishApproved && publishable,
         idempotencyKey
       });
       result.persisted = true;

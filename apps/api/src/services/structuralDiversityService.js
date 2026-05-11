@@ -191,7 +191,10 @@ const HUMAN_INSERTS = [
   'Parece detalhe. Não é.',
   'Na vida real, esse é o ponto que costuma pesar.',
   'Aqui vale diminuir a velocidade.',
-  'O contrato não sente urgência; quem sente é a família.'
+  'O contrato não sente urgência; quem sente é a família.',
+  'A conta fica menos bonita quando entra no calendário.',
+  'É nesse pedaço que muita decisão boa ou ruim nasce.',
+  'A pressa costuma deixar a proposta mais convincente do que ela merece.'
 ];
 
 const diversifyBullets = (bullets = [], sectionIndex = 0) => {
@@ -213,10 +216,12 @@ const diversifyParagraphs = (paragraphs = [], sectionIndex = 0) => {
   const clean = sentenceCaseArray(paragraphs);
   if (!clean.length) return [];
   if ([1, 5, 9].includes(sectionIndex) && clean.length >= 2) {
-    return [clean[0], HUMAN_INSERTS[sectionIndex % HUMAN_INSERTS.length], ...clean.slice(1)];
+    const insertIndex = [1, 5, 9].indexOf(sectionIndex);
+    return [clean[0], HUMAN_INSERTS[insertIndex % HUMAN_INSERTS.length], ...clean.slice(1)];
   }
   if ([3, 7].includes(sectionIndex) && clean.length >= 3) {
-    return [clean[0], `${HUMAN_INSERTS[sectionIndex % HUMAN_INSERTS.length]} ${clean[1]}`, ...clean.slice(2)];
+    const insertIndex = [3, 7].indexOf(sectionIndex) + 3;
+    return [clean[0], `${HUMAN_INSERTS[insertIndex % HUMAN_INSERTS.length]} ${clean[1]}`, ...clean.slice(2)];
   }
   return clean;
 };
