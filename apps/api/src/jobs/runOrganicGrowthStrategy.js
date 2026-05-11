@@ -54,6 +54,13 @@ const main = async () => {
       intent: options.intent,
       category: options.category
     });
+  } else if (options.mode === 'manual-publish-one') {
+    result = await OrganicGrowthStrategyService.manualPublishOne({
+      keyword: options.keyword,
+      topic: options.topic,
+      intent: options.intent,
+      category: options.category
+    });
   } else {
     result = await OrganicGrowthStrategyService.buildGrowthPlan({
       keyword: options.keyword,

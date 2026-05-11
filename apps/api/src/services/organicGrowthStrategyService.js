@@ -1,6 +1,8 @@
 import { ArticleFactoryService } from './articleFactoryService.js';
 import { SeoGrowthService } from './seoGrowthService.js';
 
+const SITE_BASE_URL = (process.env.SITE_BASE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
+
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
 const normalize = (value = '') =>
@@ -394,6 +396,32 @@ const buildScalePolicy = () => ({
   ]
 });
 
+const countTables = (article = {}) =>
+  (Array.isArray(article.sections) ? article.sections : [])
+    .filter((section) => section.table?.rows?.length >= 2)
+    .length;
+
+const countWords = (article = {}, fallbackWordCount = 0) => {
+  if (Number(fallbackWordCount) > 0) return Number(fallbackWordCount);
+  const text = [
+    ...(article.intro || []),
+    article.featuredSnippet,
+    article.example,
+    ...((article.sections || []).flatMap((section) => [
+      section.heading,
+      section.subheading,
+      ...(section.paragraphs || []),
+      ...(section.bullets || []),
+      section.table?.caption,
+      ...(section.table?.columns || []),
+      ...((section.table?.rows || []).flat())
+    ])),
+    ...((article.faq || []).flatMap((item) => [item.question, item.answer])),
+    ...(article.conclusion || [])
+  ].filter(Boolean).join(' ');
+  return text.split(/\s+/).filter(Boolean).length;
+};
+
 export class OrganicGrowthStrategyService {
   static buildClusterStrategy() {
     const clusters = SEO_CLUSTER_STRATEGY
@@ -567,6 +595,87 @@ export class OrganicGrowthStrategyService {
       reviewChecklist: buildScalePolicy().reviewGates,
       diversityPlan: this.buildEditorialDiversityPlan({ keyword: cleanKeyword, cluster: category }),
       result
+    };
+  }
+
+  static async manualPublishOne({
+    keyword,
+    topic,
+    intent = 'comparativo',
+    category = 'Emprestimos',
+    triggerSource = 'manual-premium-single-publish'
+  } = {}) {
+    const cleanKeyword = keyword || topic;
+    if (!cleanKeyword) throw new Error('keyword is required for manual single publish');
+
+    const result = await ArticleFactoryService.run({
+      keyword: cleanKeyword,
+      topic: topic || cleanKeyword,
+      intent,
+      category,
+      dryRun: false,
+      persist: true,
+      publishApproved: true,
+      triggerSource
+    });
+
+    const article = result.article?.structuredContent || {};
+    const record = result.articleRecord || {};
+    const qualityScore = result.validation?.qualityScore || {};
+    const slug = record.slug || result.slug;
+    const url = article.canonicalUrl || `${SITE_BASE_URL}/blog/${slug}/`;
+    const faqCount = Array.isArray(article.faq) ? article.faq.length : 0;
+    const internalLinks = Array.isArray(article.internalLinks) ? article.internalLinks : [];
+
+    return {
+      ok: Boolean(result.ok && result.persisted && record.status === 'published'),
+      mode: 'manual-single-publish',
+      bulkPublish: false,
+      cron: false,
+      autoPublishMass: false,
+      distributed: false,
+      refreshAutomatic: false,
+      publishedCount: record.status === 'published' ? 1 : 0,
+      url,
+      title: record.title || result.title,
+      slug,
+      canonicalUrl: article.canonicalUrl || url,
+      metaDescription: record.metaDescription || article.metaDescription || result.article?.metaDescription || '',
+      status: record.status,
+      publishedAt: record.publishedAt || null,
+      scores: {
+        editorial: qualityScore.total || 0,
+        seo: qualityScore.seo_structure_score || 0,
+        eeat: qualityScore.expert_authority_score || 0,
+        factualDepth: qualityScore.factual_depth_score || 0,
+        practicalValue: qualityScore.practical_value_score || 0,
+        originality: qualityScore.originality_score || 0,
+        antiTemplate: qualityScore.anti_template_score || 0,
+        humanReadability: qualityScore.human_readability_score || 0
+      },
+      metrics: {
+        wordCount: countWords(article, record.wordCount || article.wordCount),
+        tableCount: countTables(article),
+        faqCount,
+        internalLinkCount: internalLinks.length
+      },
+      interlinks: internalLinks,
+      searchConsoleReadiness: {
+        readyForIndexing: record.status === 'published' && Boolean(article.canonicalUrl || url),
+        canonicalValid: Boolean(article.canonicalUrl || url),
+        schemaType: article.schema?.['@type'] || 'BlogPosting',
+        thinContentRisk: countWords(article, record.wordCount || article.wordCount) >= 1800 ? 'baixo' : 'alto',
+        aiSpamRisk: (qualityScore.anti_template_score || 0) >= 70 && (qualityScore.human_readability_score || 0) >= 70 ? 'baixo' : 'revisar'
+      },
+      validation: result.validation,
+      article: record,
+      guardrails: {
+        oneArticleOnly: true,
+        guardrailsUnchanged: true,
+        cronDisabled: true,
+        distributionDisabled: true,
+        bulkPublishDisabled: true
+      }
     };
   }
 
