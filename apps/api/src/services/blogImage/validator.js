@@ -26,9 +26,7 @@ const asDescriptiveText = (image = {}) =>
     image.description,
     image.alt,
     image.provider,
-    image.kind,
-    image.pageUrl,
-    image.downloadUrl
+    image.kind
   ].filter(Boolean).join(' '));
 
 const hasAny = (text = '', terms = []) => terms.some((term) => text.includes(term));
@@ -167,6 +165,27 @@ const allowedSubjectTerms = [
   'debt'
 ];
 
+const STRICT_INTENT_TERMS = {
+  'debt-negative-name': [
+    'credit score',
+    'score',
+    'loan',
+    'approval',
+    'approved',
+    'rejected',
+    'denied',
+    'debt',
+    'bills',
+    'overdue',
+    'worried',
+    'stress',
+    'financial problem',
+    'contract',
+    'documents',
+    'calculator'
+  ]
+};
+
 const getArticleContextTerms = (article = {}) => normalize([
   article.title,
   article.h1,
@@ -185,6 +204,15 @@ const getIntentTerms = (intent = '') => {
   if (intent === 'home-financing') return ['home', 'house', 'mortgage', 'real estate', 'contract', 'family'];
   if (intent === 'financial-education') return ['budget', 'financial planning', 'family', 'finance', 'calculator'];
   return ['finance', 'money', 'contract', 'calculator', 'smartphone', 'laptop'];
+};
+
+const countMatches = (text = '', terms = []) =>
+  terms.reduce((count, term) => count + (text.includes(term) ? 1 : 0), 0);
+
+const validateStrictIntentContext = ({ descriptiveText = '', intent = '' }) => {
+  const requiredTerms = STRICT_INTENT_TERMS[intent];
+  if (!requiredTerms) return true;
+  return countMatches(descriptiveText, requiredTerms) >= 2;
 };
 
 const validateLicense = (image = {}, text = '') => {
@@ -210,9 +238,10 @@ const validateContext = ({ image, article = {}, intent = '' }) => {
   const intentTerms = getIntentTerms(intent);
   const hasSubject = hasAny(descriptiveText, allowedSubjectTerms);
   const hasIntentMatch = hasAny(descriptiveText, intentTerms);
+  const hasStrictIntentContext = validateStrictIntentContext({ descriptiveText, intent });
   const articleTokens = articleText.split(/[^a-z0-9]+/).filter((term) => term.length >= 4);
   const overlap = articleTokens.filter((term) => descriptiveText.includes(term)).length;
-  return hasSubject && (hasIntentMatch || overlap >= 1);
+  return hasSubject && hasStrictIntentContext && (hasIntentMatch || overlap >= 1);
 };
 
 export const validateBlogImage = (image = {}, { article = {}, intent = '' } = {}) => {

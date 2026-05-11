@@ -41,6 +41,28 @@ const run = async () => {
   });
   assert.equal(validation.passed, true);
 
+  const scoreLoanArticle = {
+    title: 'Score baixo consegue emprestimo? Veja como comparar alternativas',
+    summary: 'Guia para quem tem score baixo, dividas e precisa avaliar uma proposta de emprestimo.',
+    category: 'Score',
+    clusterLabel: 'Score de credito',
+    tags: ['credit score', 'loan approval', 'debt']
+  };
+  const genericDebtImageValidation = validateBlogImage(realPhoto({
+    title: 'business person in modern bank office',
+    description: 'real photo of professional bank meeting with documents on table',
+    query: 'modern bank meeting finance'
+  }), { article: scoreLoanArticle, intent: 'debt-negative-name' });
+  assert.equal(genericDebtImageValidation.passed, false);
+  assert.ok(genericDebtImageValidation.errors.includes('isContextual'));
+
+  const contextualDebtImageValidation = validateBlogImage(realPhoto({
+    title: 'worried person checking credit score and loan documents',
+    description: 'real photo of overdue bills, calculator and loan approval documents',
+    query: 'low credit score loan application'
+  }), { article: scoreLoanArticle, intent: 'debt-negative-name' });
+  assert.equal(contextualDebtImageValidation.passed, true);
+
   const templateValidation = validateBlogImage(realPhoto({
     kind: 'illustration',
     title: 'Blog Cote Juros banner template with title text',
@@ -81,6 +103,8 @@ const run = async () => {
     checks: [
       'template_images_blocked',
       'real_photo_validation_passes',
+      'generic_debt_image_rejected',
+      'contextual_debt_image_passes',
       'duplicate_url_blocked',
       'duplicate_hash_blocked',
       'perceptual_hash_similarity_blocked',

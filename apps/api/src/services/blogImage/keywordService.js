@@ -47,16 +47,16 @@ const INTENT_QUERY_LIBRARY = {
     'paying bills'
   ],
   'debt-negative-name': [
-    'debt',
-    'financial problem',
-    'worried person bills',
-    'bills debt',
-    'credit score',
-    'person reviewing bills',
-    'debt negotiation',
-    'financial stress documents',
-    'overdue bills table',
-    'budget problem'
+    'low credit score loan application',
+    'person checking credit score loan documents',
+    'worried person reviewing loan bills',
+    'rejected loan application credit score',
+    'debt negotiation documents calculator',
+    'overdue bills loan application',
+    'financial stress credit score',
+    'person reviewing bills debt',
+    'credit score smartphone finance',
+    'loan approval documents worried person'
   ],
   'credit-card': [
     'credit card payment',

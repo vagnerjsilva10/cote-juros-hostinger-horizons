@@ -23,4 +23,5 @@ apps/web/public/llms.txt
 .vscode/
 temp/
 .chrome-*/
+generated/chrome-profile*/
 *.log
