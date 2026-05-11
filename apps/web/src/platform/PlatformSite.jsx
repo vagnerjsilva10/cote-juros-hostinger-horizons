@@ -52,14 +52,6 @@ const productRows = [
   ['C6 Bank', 'C6 Carbono', 'Milhas', '+ benefícios', ['1 ponto por real', 'Sala VIP aeroporto', 'Anuidade isenta'], 'C6', 'Cartão', 'badge-card', 'card']
 ];
 
-const compareFilters = [
-  ['all', 'Todos'],
-  ['loan', 'Empréstimos'],
-  ['card', 'Cartões'],
-  ['financing', 'Financiamentos'],
-  ['insurance', 'Seguros']
-];
-
 const insuranceCards = [
   ['Seguro Auto', 'Cobertura completa, parcial e terceiros. Assistência 24h e carro reserva.', '/seguro-auto', 'Cotar seguro auto'],
   ['Seguro Viagem', 'Emergência médica, bagagem, cancelamento e assistência no exterior.', '/seguro-viagem', 'Cotar seguro viagem'],
@@ -448,9 +440,7 @@ export function PlatformHomePage() {
         <TrustStrip />
         <HowItWorks />
         <RadarHome />
-        <CompareHome />
         <CategoriesHome />
-        <InsuranceHome />
         <BlogHome />
         <Compliance />
         <FinalCta />
@@ -540,63 +530,12 @@ function EligibilitySvg({ label, color }) {
   return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>;
 }
 
-function CompareHome() {
-  const [activeFilter, setActiveFilter] = useState('all');
-  const visibleProducts = useMemo(() => {
-    if (activeFilter === 'all') return productRows;
-    return productRows.filter((row) => {
-      const type = row[8];
-      if (activeFilter === 'loan') return type === 'loan' || type === 'guarantee';
-      return type === activeFilter;
-    });
-  }, [activeFilter]);
-
-  return (
-    <section id="compare-home" className="section-pad" style={{ background: 'var(--light-bg)' }}>
-      <div className="container">
-        <div style={{ textAlign: 'center', maxWidth: 520, margin: '0 auto' }}><div className="section-label" style={{ justifyContent: 'center', color: 'var(--accent-dark)' }}>Marketplace financeiro</div><h2 style={{ color: 'var(--light-text)', marginBottom: 12 }}>Compare e escolha<br />com mais segurança</h2><p className="section-desc" style={{ margin: '0 auto', textAlign: 'center', color: 'var(--light-muted)' }}>Taxas, condições e benefícios lado a lado. Você compara sem pressão.</p></div>
-        <AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.homeInline} minHeight={120} />
-        <div className="filter-tabs">
-          {compareFilters.map(([value, label]) => <button key={value} type="button" className={`filter-tab ${activeFilter === value ? 'active' : ''}`} aria-pressed={activeFilter === value} onClick={() => setActiveFilter(value)}>{label}</button>)}
-        </div>
-        <div className="products-grid">{visibleProducts.map((row) => <ProductCard key={`${row[0]}-${row[1]}`} row={row} />)}</div>
-      </div>
-    </section>
-  );
-}
-
-function ProductCard({ row }) {
-  const [bank, product, rate, unit, tags, , badge, badgeClass, type] = row;
-  const isCreditas = type === 'guarantee' || bank === 'Creditas';
-  const handleClick = () => {
-    if (isCreditas) {
-      trackEvent('creditas_cta_clicked', { sourcePage: 'marketplace_home', partnerRoute: 'creditas' });
-    }
-  };
-  return (
-    <div className="product-card">
-      <div className={`card-badge ${badgeClass}`}>{badge}</div><div className="card-bank-name">{bank}</div><div className="card-product-name">{product}</div>
-      <div className="card-rate-row"><span className="rate-value">{rate}</span><span className="rate-unit">{unit}</span></div>
-      <div className="card-features">{tags.map((tag) => <div className="card-feat" key={tag}><div className="feat-dot" />{tag}</div>)}</div>
-      <button className="card-cta" onClick={handleClick}>Ver condições <ArrowIcon /></button>
-    </div>
-  );
-}
-
 function CategoriesHome() {
   return <section id="categories" className="section-pad"><div className="container"><div style={{ textAlign: 'center', maxWidth: 520, margin: '0 auto' }}><div className="section-label" style={{ justifyContent: 'center', color: 'var(--accent-dark)' }}>O que você precisa</div><h2 style={{ color: 'var(--light-text)', marginBottom: 12 }}>Encontre o produto<br />certo para você</h2></div><div className="categories-grid">{categoryCards.map(([title, desc, label, href, color], index) => { const Icon = categoryIconByTitle[title] || BadgeCheck; return <Link className="category-card reveal" style={{ transitionDelay: `${(index % 3) / 10}s` }} key={title} to={href}><div className="cat-icon" style={{ background: color === 'var(--accent)' ? 'rgba(124,110,247,0.1)' : `${color}1A` }}><Icon color={color} size={22} strokeWidth={2.2} /></div><div><div className="cat-title">{title}</div><div className="cat-desc">{desc}</div></div><div className="cat-link" style={{ color }}>{label}<ArrowIcon /></div></Link>; })}</div></div></section>;
 }
 
-function InsuranceHome() {
-  return <section id="seguros-home" className="section-pad section-surface"><div className="container"><div className="seguros-inner"><div className="section-label" style={{ justifyContent: 'center' }}>Nova vertical</div><h2 style={{ marginBottom: 12 }}>Seguros que <span className="text-accent">protegem de verdade</span></h2><p className="section-desc" style={{ margin: '0 auto', textAlign: 'center' }}>Compare coberturas, entenda diferenças e escolha com mais segurança. Sem jargões.</p></div><InsuranceGrid /></div></section>;
-}
-
-function InsuranceGrid() {
-  return <div className="seguros-grid">{insuranceCards.map(([name, desc, href, cta]) => { const Icon = insuranceIconByName[name] || ShieldCheck; return <Link className="seguro-card" key={name} to={href}><div className="seg-icon"><Icon color="currentColor" size={20} strokeWidth={2.2} /></div><div className="seg-name">{name}</div><div className="seg-desc">{desc}</div><div className="seg-link">{cta} <ArrowIcon size={12} /></div></Link>; })}</div>;
-}
-
 function BlogHome() {
-  return <section id="blog-home" className="section-pad" style={{ background: 'var(--light-bg)' }}><div className="container"><div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20 }}><div><div className="section-label" style={{ color: 'var(--accent-dark)' }}>Educação financeira</div><h2 style={{ color: 'var(--light-text)' }}>Conteúdo para decidir<br />com mais consciência</h2></div><Link className="btn-outline" style={{ borderColor: 'var(--accent-dark)', color: 'var(--accent-dark)' }} to="/blog">Ver todos os artigos</Link></div><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.blogTop} minHeight={120} className="mt-adsense" /><BlogGrid count={3} /></div></section>;
+  return <section id="blog-home" className="section-pad" style={{ background: 'var(--light-bg)' }}><div className="container"><div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20 }}><div><div className="section-label" style={{ color: 'var(--accent-dark)' }}>Educação financeira</div><h2 style={{ color: 'var(--light-text)' }}>Conteúdo para decidir<br />com mais consciência</h2></div><Link className="btn-outline" style={{ borderColor: 'var(--accent-dark)', color: 'var(--accent-dark)' }} to="/blog">Ver todos os artigos</Link></div><BlogGrid count={3} /></div></section>;
 }
 
 function BlogGrid({ count = 3 }) {
