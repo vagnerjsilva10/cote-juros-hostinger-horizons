@@ -81,7 +81,6 @@ function AppLayout({ children }) {
       <Header />
       <main className="min-w-0">{children}</main>
       <Footer />
-      <CookieConsent />
     </div>
   );
 }
@@ -97,6 +96,11 @@ function AdminRoute({ title, children }) {
 function RouteAwareAdSenseScript() {
   const location = useLocation();
   return location.pathname === '/' ? null : <AdSenseScript />;
+}
+
+function RouteAwareCookieConsent() {
+  const location = useLocation();
+  return location.pathname.startsWith('/admin') ? null : <CookieConsent />;
 }
 
 function App() {
@@ -392,6 +396,7 @@ function App() {
           }
         />
       </Routes>
+      <RouteAwareCookieConsent />
       <Toaster position="top-right" />
     </Router>
   );
