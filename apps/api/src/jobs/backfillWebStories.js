@@ -36,6 +36,16 @@ const hasLegacyStoryIssue = (record = {}) => {
   const html = structured.distributionAssets?.webStoryHtml || '';
   const slides = structured.distributionAssets?.slides || [];
   const webStory = structured.distribution?.webStory;
+  const storySeoValidation = structured.storyGeneration?.validation || webStory?.seoValidation;
+
+  if (storySeoValidation?.passed && !/api\.cotejuros\.com\.br|localhost|127\.0\.0\.1/i.test([
+    webStory?.url || '',
+    html,
+    structured.distributionAssets?.bookendJson || '',
+    JSON.stringify(structured.distribution || {})
+  ].join('\n'))) {
+    return false;
+  }
 
   return Boolean(webStory?.url)
     && (
@@ -44,7 +54,6 @@ const hasLegacyStoryIssue = (record = {}) => {
       || html.includes('/assets/slide-')
       || !html.includes('object-fit="cover"')
       || slides.some((slide) => !String(slide.content || '').includes('<image href="http'))
-      || slides.some((slide) => String(slide.content || '').includes('preserveAspectRatio="xMidYMid slice"'))
       || slides.some((slide) => !String(slide.content || '').includes('linearGradient id="readability"'))
       || !webStory.validation?.passed
     );
