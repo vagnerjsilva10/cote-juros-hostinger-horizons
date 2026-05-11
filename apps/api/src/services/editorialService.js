@@ -11,6 +11,7 @@ import {
 } from './editorialConfig.js';
 import { createEditorialLogger } from './editorialLogger.js';
 import { normalizeTextForValidation } from './portugueseTextService.js';
+import { SerpIntelligenceService } from './serpIntelligenceService.js';
 
 const logger = createEditorialLogger('editorial-service');
 const OPENAI_RESPONSES_ENDPOINT = 'https://api.openai.com/v1/responses';
@@ -448,7 +449,7 @@ const buildBriefPayload = ({ cluster, brief, scheduleDate }) => ({
   scheduledFor: normalizeDate(scheduleDate)
 });
 
-const buildGenerationPrompt = ({ cluster, brief, contextualLinks }) => `
+const buildGenerationPrompt = ({ cluster, brief, contextualLinks, serpIntelligence = null }) => `
 Você e um editor sênior de conteúdo SEO da Cote Juros, um portal brasileiro de comparação de crédito.
 
 Escreva um artigo original em português do Brasil, profundo e natural, com linguagem clara, adulta e sem exageros promocionais.
@@ -483,8 +484,19 @@ ${JSON.stringify({
     secondaryKeywords: brief.secondaryKeywords,
     stage: brief.stage,
     category: cluster.category,
-    contextualLinks
+    contextualLinks,
+    serpIntelligence
   }, null, 2)}
+
+Como usar a inteligência SERP:
+- searchIntent define o formato do artigo e a resposta direta do primeiro parágrafo
+- readerProblem deve aparecer resolvido já na introdução
+- mustCoverTopics viram H2/H3, mas com linguagem natural
+- contentGaps são oportunidades obrigatórias de diferenciação
+- faqQuestions devem inspirar a FAQ final e perguntas no meio do texto
+- officialSourcesToCite devem aparecer em externalLinks ou como referência textual, sem inventar dados
+- avoid lista comportamentos proibidos
+- não copie texto, sequência de argumentos ou conclusões dos concorrentes
 
 Responda somente JSON valido, sem markdown, com o seguinte formato:
 {
@@ -1146,9 +1158,18 @@ export class EditorialService {
         cluster: brief.cluster,
         relatedArticles
       });
+      const briefPayload = brief.brief && typeof brief.brief === 'object' ? brief.brief : {};
+      const serpIntelligence = briefPayload.serpIntelligence || await SerpIntelligenceService.analyzeKeyword({
+        keyword: brief.primaryKeyword,
+        dryRun: process.env.SERP_INTELLIGENCE_DRY_RUN === 'true'
+      }).catch((error) => ({
+        ok: false,
+        keyword: brief.primaryKeyword,
+        error: error?.message || String(error)
+      }));
 
       const generatedBase = applySeoBestPractices({
-        article: await this.generateArticleFromAi({ brief, cluster: brief.cluster, contextualLinks }),
+        article: await this.generateArticleFromAi({ brief, cluster: brief.cluster, contextualLinks, serpIntelligence }),
         brief
       });
       const generated = enforceArticleStandard({
@@ -1193,6 +1214,7 @@ export class EditorialService {
           clusterKeyword: brief.cluster.primaryKeyword,
           internalLinks,
           externalLinks,
+          serpIntelligence,
           readTime: 0,
           wordCount: 0,
           sourceType: 'editorial-automation'
@@ -1364,6 +1386,7 @@ export class EditorialService {
               winnerScore: image.winnerScore,
               winnerReason: image.winnerReason
             },
+            serpIntelligence,
             distribution,
             distributionError
           },
@@ -1487,8 +1510,8 @@ export class EditorialService {
     }));
   }
 
-  static async generateArticleFromAi({ brief, cluster, contextualLinks }) {
-    const prompt = buildGenerationPrompt({ brief, cluster, contextualLinks });
+  static async generateArticleFromAi({ brief, cluster, contextualLinks, serpIntelligence = null }) {
+    const prompt = buildGenerationPrompt({ brief, cluster, contextualLinks, serpIntelligence });
     const providers = getAvailableAiProviders();
     let lastError = null;
 

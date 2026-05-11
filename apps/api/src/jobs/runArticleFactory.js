@@ -48,6 +48,14 @@ const main = async () => {
     slug: result.slug,
     title: result.title,
     image: result.image,
+    serpIntelligence: {
+      provider: result.serpIntelligence?.provider,
+      searchIntent: result.serpIntelligence?.searchIntent,
+      readerProblem: result.serpIntelligence?.readerProblem,
+      mustCoverTopics: result.serpIntelligence?.mustCoverTopics?.slice(0, 6) || [],
+      contentGaps: result.serpIntelligence?.contentGaps?.slice(0, 6) || [],
+      faqQuestions: result.serpIntelligence?.faqQuestions?.slice(0, 5) || []
+    },
     validation: result.validation,
     articleRecord: result.articleRecord || null,
     sample: {

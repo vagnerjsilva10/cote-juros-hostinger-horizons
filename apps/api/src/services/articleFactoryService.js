@@ -7,6 +7,7 @@ import { searchUnsplashImages } from './blogImage/providers/unsplashProvider.js'
 import { UsedBlogImageStore } from './blogImage/usedImageStore.js';
 import { ArticleService } from './articleService.js';
 import { repairPortugueseText } from './portugueseTextService.js';
+import { SerpIntelligenceService } from './serpIntelligenceService.js';
 
 const logger = createEditorialLogger('article-factory');
 
@@ -68,12 +69,16 @@ const defaultInternalLinks = ({ category = '', keyword = '' } = {}) => {
   return links.slice(0, 5);
 };
 
-const buildArticleDraft = ({ topic, keyword, intent = 'guide', category = 'Educacao financeira' }) => {
+const buildArticleDraft = ({ topic, keyword, intent = 'guide', category = 'Educacao financeira', serpIntelligence = null }) => {
   const cleanKeyword = repairPortugueseText(compact(keyword || topic));
   const cleanTopic = repairPortugueseText(compact(topic || cleanKeyword));
   const cleanCategory = repairPortugueseText(compact(category || 'Educacao financeira'));
   const title = `${cleanKeyword}: como avaliar custos, riscos e alternativas`;
   const excerpt = `Entenda ${cleanKeyword}, veja cuidados praticos, exemplos e alternativas para decidir com mais seguranca.`;
+
+  const structure = Array.isArray(serpIntelligence?.recommendedStructure) ? serpIntelligence.recommendedStructure : [];
+  const faqQuestions = Array.isArray(serpIntelligence?.faqQuestions) ? serpIntelligence.faqQuestions : [];
+  const gaps = Array.isArray(serpIntelligence?.contentGaps) ? serpIntelligence.contentGaps : [];
 
   return {
     title,
@@ -86,12 +91,12 @@ const buildArticleDraft = ({ topic, keyword, intent = 'guide', category = 'Educa
     category: cleanCategory,
     tags: unique([cleanKeyword, cleanTopic, cleanCategory, intent, 'Cote Juros']).slice(0, 8),
     intro: [
-      `${cleanKeyword} exige comparar custo total, impacto na renda e riscos antes de qualquer decisao. A ideia deste guia e mostrar o que olhar primeiro e como evitar escolhas tomadas no impulso.`,
+      `${cleanKeyword} exige comparar custo total, impacto na renda e riscos antes de qualquer decisao. ${serpIntelligence?.readerProblem || 'A ideia deste guia e mostrar o que olhar primeiro e como evitar escolhas tomadas no impulso.'}`,
       `A seguir, voce encontra uma leitura pratica sobre ${cleanTopic}, com exemplo numerico, alertas, links uteis e um caminho de comparacao sem promessa de aprovacao.`
     ],
     sections: [
       {
-        heading: `${cleanKeyword}: o que observar primeiro`,
+        heading: structure[0] || `${cleanKeyword}: o que observar primeiro`,
         subheading: 'Comece pelo custo total e pelo efeito da parcela no orcamento.',
         paragraphs: [
           `O primeiro passo e separar desejo, urgencia e capacidade real de pagamento. Em temas de ${cleanCategory.toLowerCase()}, a decisao costuma ficar mais segura quando o custo total aparece antes da parcela.`,
@@ -100,7 +105,7 @@ const buildArticleDraft = ({ topic, keyword, intent = 'guide', category = 'Educa
         bullets: ['Compare CET, prazo e custo total.', 'Desconfie de cobranca antecipada.', 'Simule um mes de renda menor.']
       },
       {
-        heading: `Exemplo real para analisar ${cleanKeyword}`,
+        heading: structure[1] || `Exemplo real para analisar ${cleanKeyword}`,
         subheading: 'Uma simulacao simples mostra como a parcela pode enganar.',
         paragraphs: [
           'Exemplo: uma parcela de R$ 420 pode parecer baixa, mas em 18 meses representa R$ 7.560 antes de considerar tarifas, atrasos ou perda de renda.',
@@ -109,7 +114,7 @@ const buildArticleDraft = ({ topic, keyword, intent = 'guide', category = 'Educa
         bullets: ['Some todas as parcelas.', 'Compare a taxa mensal e anual.', 'Veja se existe tarifa adicional.']
       },
       {
-        heading: `Riscos comuns em ${cleanKeyword}`,
+        heading: structure[2] || `Riscos comuns em ${cleanKeyword}`,
         subheading: 'O risco maior aparece quando a decisao nasce da pressa.',
         paragraphs: [
           `O principal risco em ${cleanKeyword} e assumir uma parcela que cabe apenas no melhor cenario. Se houver atraso, queda de renda ou despesa inesperada, o custo pode crescer rapido.`,
@@ -118,7 +123,7 @@ const buildArticleDraft = ({ topic, keyword, intent = 'guide', category = 'Educa
         bullets: ['Nao aceite promessa de aprovacao garantida.', 'Guarde comprovantes e contratos.', 'Revise o custo em caso de atraso.']
       },
       {
-        heading: `Alternativas antes de seguir com ${cleanKeyword}`,
+        heading: structure[3] || `Alternativas antes de seguir com ${cleanKeyword}`,
         subheading: 'Comparar caminhos reduz a chance de contratar caro.',
         paragraphs: [
           'Antes de contratar, vale testar prazos diferentes, simular valores menores e avaliar se uma reorganizacao de despesas resolve parte do problema.',
@@ -127,25 +132,26 @@ const buildArticleDraft = ({ topic, keyword, intent = 'guide', category = 'Educa
         bullets: ['Simule pelo menos dois prazos.', 'Compare modalidades diferentes.', 'Considere renegociar antes de contratar.']
       },
       {
-        heading: `Checklist final para ${cleanKeyword}`,
+        heading: structure[4] || `Checklist final para ${cleanKeyword}`,
         subheading: 'Use estes pontos antes de enviar dados ou aceitar uma proposta.',
         paragraphs: [
           'A decisao fica mais segura quando existe uma lista objetiva de verificacao. Ela evita que a comunicacao comercial pese mais do que os numeros reais.',
           'Se algum ponto importante estiver ausente, o melhor caminho e pausar, pedir esclarecimento e comparar outra opcao.'
         ],
-        bullets: ['CET informado.', 'Prazo claro.', 'Parcela cabe na renda.', 'Instituicao identificada.', 'Sem taxa antecipada.']
+        bullets: unique(['CET informado.', 'Prazo claro.', 'Parcela cabe na renda.', 'Instituicao identificada.', 'Sem taxa antecipada.', ...gaps.slice(0, 2)]).slice(0, 5)
       }
     ],
     faq: [
-      { question: `${cleanKeyword} vale a pena?`, answer: 'Vale quando o custo total cabe na renda, a finalidade e clara e existem alternativas comparadas antes da decisao.' },
-      { question: 'O que comparar primeiro?', answer: 'Compare CET, prazo, valor da parcela, custo total e consequencias em caso de atraso.' },
+      { question: faqQuestions[0] || `${cleanKeyword} vale a pena?`, answer: 'Vale quando o custo total cabe na renda, a finalidade e clara e existem alternativas comparadas antes da decisao.' },
+      { question: faqQuestions[1] || 'O que comparar primeiro?', answer: 'Compare CET, prazo, valor da parcela, custo total e consequencias em caso de atraso.' },
       { question: 'A Cote Juros aprova credito?', answer: 'Nao. A Cote Juros organiza informacoes e caminhos de comparacao, mas a aprovacao depende da analise dos parceiros.' },
-      { question: 'Como evitar golpe?', answer: 'Nao pague taxa antecipada, confira a empresa, leia o contrato e desconfie de promessa de aprovacao garantida.' }
+      { question: faqQuestions[2] || 'Como evitar golpe?', answer: 'Nao pague taxa antecipada, confira a empresa, leia o contrato e desconfie de promessa de aprovacao garantida.' }
     ],
     conclusion: [
       `${cleanKeyword} pode fazer sentido quando a decisao nasce de comparacao, e nao de pressa. O custo total precisa estar claro antes de qualquer compromisso.`,
       'Use o artigo como ponto de partida, compare alternativas e avance apenas quando a proposta fizer sentido para o seu orcamento.'
     ],
+    serpIntelligence,
     cta: {
       eyebrow: 'Proximo passo',
       title: 'Compare antes de contratar',
@@ -262,8 +268,8 @@ const ensureUniqueSlug = async ({ slug, idempotencyKey }) => {
   return { slug: candidate, existingArticle: null };
 };
 
-export async function generateArticle({ topic, keyword, intent = 'guide', category = 'Educacao financeira' }) {
-  const draft = buildArticleDraft({ topic, keyword, intent, category });
+export async function generateArticle({ topic, keyword, intent = 'guide', category = 'Educacao financeira', serpIntelligence = null }) {
+  const draft = buildArticleDraft({ topic, keyword, intent, category, serpIntelligence });
   const internalLinks = defaultInternalLinks({ category, keyword });
   const externalLinks = defaultExternalLinks({ intent, keyword });
   const article = enforceArticleStandard({
@@ -273,6 +279,7 @@ export async function generateArticle({ topic, keyword, intent = 'guide', catego
       keywords: draft.tags,
       internalLinks,
       externalLinks,
+      serpIntelligence,
       sourceType: 'article-factory'
     },
     primaryKeyword: keyword,
@@ -337,7 +344,18 @@ export class ArticleFactoryService {
       triggerSource
     });
 
-    const generated = await generateArticle({ topic: cleanTopic, keyword: cleanKeyword, intent, category: cleanCategory });
+    const serpIntelligence = await SerpIntelligenceService.analyzeKeyword({
+      keyword: cleanKeyword,
+      dryRun: dryRun || process.env.SERP_INTELLIGENCE_DRY_RUN === 'true'
+    });
+    const resolvedIntent = serpIntelligence.searchIntent || intent;
+    const generated = await generateArticle({
+      topic: cleanTopic,
+      keyword: cleanKeyword,
+      intent: resolvedIntent,
+      category: cleanCategory,
+      serpIntelligence
+    });
     const idempotencyKey = toSlug(`${cleanKeyword}-${intent}-${cleanCategory}`);
     const slugState = dryRun
       ? { slug: generated.slug, existingArticle: null }
@@ -363,7 +381,7 @@ export class ArticleFactoryService {
       factoryTriggerSource: triggerSource,
       sourceType: 'article-factory'
     };
-    const structuredContent = buildStructuredContent({ article, image, keyword: cleanKeyword, intent, category: cleanCategory });
+    const structuredContent = buildStructuredContent({ article, image, keyword: cleanKeyword, intent: resolvedIntent, category: cleanCategory });
     const validation = validateArticle({
       article: structuredContent,
       internalLinks: structuredContent.internalLinks,
@@ -389,6 +407,7 @@ export class ArticleFactoryService {
         altText: image.altText
       },
       validation,
+      serpIntelligence,
       article: {
         ...generated,
         slug: slugState.slug,

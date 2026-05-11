@@ -6,6 +6,18 @@ import {
 
 const MAX_HEADLINE_LENGTH = 70;
 const MIN_INTERNAL_LINKS = 3;
+const GENERIC_TERMS = [
+  'clareza',
+  'jornada',
+  'contexto',
+  'organizacao',
+  'organização',
+  'momento financeiro',
+  'decidir com seguranca',
+  'decidir com segurança',
+  'sem pressa'
+];
+const CLICKBAIT_PATTERNS = /segredo|imperdivel|garantido|aprovacao garantida|aprovação garantida|100%|nunca te contaram|chocante|urgente/i;
 const INTENT_RULES = [
   { intent: 'news', pattern: /pris[aã]o|governo|lan[cç]a|recorde|2025|2026|stf|pf|banco master|selic hoje|cdi|sal[aá]rio|inss/i },
   { intent: 'tool', pattern: /calculadora|simulador|consulta|tabela|fipe/i },
@@ -206,6 +218,73 @@ const normalizeSection = (section = {}) => ({
     .filter(Boolean)
     .slice(0, 5)
 });
+
+const countPattern = (value = '', pattern) => (String(value || '').match(pattern) || []).length;
+
+const calculateQualityScore = ({
+  article = {},
+  internalLinks = [],
+  plain = '',
+  keyword = '',
+  editorialIntent = ''
+} = {}) => {
+  const sections = Array.isArray(article.sections) ? article.sections : [];
+  const faq = Array.isArray(article.faq) ? article.faq : [];
+  const serp = article.serpIntelligence || {};
+  const normalizedPlain = normalizeKeyword(plain);
+  const numberSignals = countPattern(plain, /R\$\s?\d|[0-9]+%|\d+\s*(mes|meses|dias|anos)|CET|IOF/gi);
+  const genericHits = GENERIC_TERMS.reduce((total, term) => total + countPattern(normalizedPlain, new RegExp(normalizeKeyword(term), 'g')), 0);
+  const mustCover = Array.isArray(serp.mustCoverTopics) ? serp.mustCoverTopics : [];
+  const coveredTopics = mustCover.filter((topic) => includesKeyword(plain, topic) || normalizeKeyword(topic).split(/\s+/).some((token) => token.length > 4 && normalizedPlain.includes(token)));
+  const hasRiskLanguage = /risco|atraso|inadimpl|cuidado|cautela|cen[aá]rio negativo|endivid/i.test(normalizedPlain);
+  const hasOfficialSource = Array.isArray(article.externalLinks)
+    ? article.externalLinks.some((link) => /bcb|banco central|gov\.br|serasa|febraban|cvm/i.test(`${link.label || ''} ${link.url || ''}`))
+    : /banco central|gov\.br|serasa|febraban|cvm/i.test(plain);
+
+  const intentMatch = Math.min(100, 45
+    + (includesKeyword(article.title || article.h1 || '', keyword) ? 15 : 0)
+    + (includesKeyword(article.intro?.[0] || '', keyword) ? 15 : 0)
+    + (serp.searchIntent && serp.searchIntent !== 'informacional' ? 10 : 5)
+    + (coveredTopics.length ? 15 : 0));
+  const factualDepth = Math.min(100, 20 + Math.min(numberSignals, 5) * 12 + (hasOfficialSource ? 20 : 0) + (hasRiskLanguage ? 15 : 0));
+  const originality = Math.max(0, 100 - genericHits * 8 - (sections.length && sections.every((section) => /^ponto essencial/i.test(section.heading || '')) ? 25 : 0));
+  const practicalValue = Math.min(100, 25
+    + (article.example ? 15 : 0)
+    + (sections.some((section) => /checklist|passo|lista|tabela|compar/i.test(normalizeKeyword(section.heading))) ? 20 : 0)
+    + Math.min((article.alternatives || []).length, 4) * 8
+    + (faq.length >= 4 ? 8 : 0));
+  const seoStructure = Math.min(100, 25 + Math.min(sections.length, 8) * 6 + Math.min(faq.length, 6) * 5 + (article.featuredSnippet ? 12 : 0));
+  const internalLinkScore = Math.min(100, (Array.isArray(internalLinks) ? internalLinks.length : 0) * 25);
+  const riskScore = Math.min(100, (CLICKBAIT_PATTERNS.test(article.title || '') ? 40 : 0) + (!hasRiskLanguage ? 25 : 0) + (!hasOfficialSource && editorialIntent !== 'guide' ? 15 : 0));
+  const weighted = Math.round(
+    intentMatch * 0.18
+    + factualDepth * 0.2
+    + originality * 0.18
+    + practicalValue * 0.2
+    + seoStructure * 0.12
+    + internalLinkScore * 0.12
+    - riskScore * 0.15
+  );
+
+  return {
+    total: Math.max(0, Math.min(100, weighted)),
+    intent_match_score: intentMatch,
+    factual_depth_score: factualDepth,
+    originality_score: originality,
+    practical_value_score: practicalValue,
+    seo_structure_score: seoStructure,
+    internal_link_score: internalLinkScore,
+    risk_score: riskScore,
+    signals: {
+      numberSignals,
+      genericHits,
+      coveredSerpTopics: coveredTopics.length,
+      requiredSerpTopics: mustCover.length,
+      hasOfficialSource,
+      hasRiskLanguage
+    }
+  };
+};
 
 const hasSectionLike = (sections = [], pattern) =>
   sections.some((section) => pattern.test(normalizeKeyword(section.heading)));
@@ -438,6 +517,19 @@ export const validateArticle = ({ article = {}, internalLinks = [], image = null
   if (image && (!image.publicPath || !image.validationPassed || image.isFallback)) issues.push('Imagem editorial invalida');
   if (portugueseIssues.length) issues.push(`Problemas de acentuação/encoding em: ${portugueseIssues.slice(0, 12).join(', ')}`);
 
+  const qualityScore = calculateQualityScore({ article, internalLinks, plain, keyword, editorialIntent });
+  const hasSerpIntelligence = article.serpIntelligence && article.serpIntelligence.ok !== false;
+
+  if (CLICKBAIT_PATTERNS.test(title)) issues.push('Titulo com risco de clickbait ou promessa excessiva');
+  if (qualityScore.signals.genericHits >= 8) issues.push('Texto com excesso de termos genericos e pouco especificos');
+  if (qualityScore.factual_depth_score < 55) issues.push('Profundidade factual insuficiente: faltam numeros, fonte oficial ou risco financeiro');
+  if (qualityScore.practical_value_score < 60) issues.push('Valor pratico insuficiente: faltam exemplos, checklist, tabela ou passos acionaveis');
+  if (qualityScore.originality_score < 60) issues.push('Originalidade insuficiente ou estrutura programatica demais');
+  if (hasSerpIntelligence && qualityScore.signals.requiredSerpTopics > 0 && qualityScore.signals.coveredSerpTopics < 2) {
+    issues.push('Intencao/lacunas da SERP pouco refletidas no artigo');
+  }
+  if (qualityScore.risk_score >= 45) issues.push('Risco editorial alto: cautela financeira, fontes ou titulo precisam revisao');
+
   return {
     passed: issues.length === 0,
     issues,
@@ -447,8 +539,10 @@ export const validateArticle = ({ article = {}, internalLinks = [], image = null
       sections: sections.length,
       faq: faq.length,
       ctas: ctas.length,
-      internalLinks: Array.isArray(internalLinks) ? internalLinks.length : 0
+      internalLinks: Array.isArray(internalLinks) ? internalLinks.length : 0,
+      qualityScore
     },
+    qualityScore,
     intent: editorialIntent
   };
 };

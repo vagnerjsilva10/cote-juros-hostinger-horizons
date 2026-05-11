@@ -3,6 +3,7 @@ import { getPrisma } from '../lib/prisma.js';
 import { DEFAULT_EDITORIAL_CLUSTERS, SITE_BASE_URL } from './editorialConfig.js';
 import { EditorialService } from './editorialService.js';
 import { createEditorialLogger } from './editorialLogger.js';
+import { buildSerpIntelligenceFromResults } from './serpIntelligenceService.js';
 
 const logger = createEditorialLogger('competitor-seo-research');
 const OWN_DOMAIN_RE = /(^|\.)cotejuros\.com\.br$/i;
@@ -215,6 +216,7 @@ export class CompetitorSeoResearchService {
     });
     const existingBriefTerms = new Set(existingBriefs.map((brief) => normalize(brief.primaryKeyword || brief.title)));
     const stored = [];
+    const serpByQuery = new Map();
 
     for (const item of queries) {
       let results = [];
@@ -232,6 +234,10 @@ export class CompetitorSeoResearchService {
         normalize(`${article.title} ${article.excerpt || ''} ${article.content || ''}`).includes(normalize(item.query))
       );
       const exactBriefExists = existingBriefTerms.has(normalize(item.query));
+      serpByQuery.set(item.query, {
+        query: item.query,
+        results: results.slice(0, resultsPerQuery)
+      });
 
       for (const result of results) {
         const domain = domainFromUrl(result.url);
@@ -295,7 +301,7 @@ export class CompetitorSeoResearchService {
     }
 
     const briefs = createBriefs
-      ? await this.createBriefsFromGaps({ limit: briefLimit })
+      ? await this.createBriefsFromGaps({ limit: briefLimit, serpByQuery })
       : { ok: true, created: 0, items: [] };
 
     return {
@@ -326,7 +332,7 @@ export class CompetitorSeoResearchService {
     };
   }
 
-  static async createBriefsFromGaps({ limit = 5, minScore = 60 } = {}) {
+  static async createBriefsFromGaps({ limit = 5, minScore = 60, serpByQuery = new Map() } = {}) {
     const prisma = getPrisma();
     await EditorialService.ensureClusterCalendar();
     const opportunities = await prisma.competitorSeoOpportunity.findMany({
@@ -358,6 +364,18 @@ export class CompetitorSeoResearchService {
       }
 
       const scheduledFor = new Date(Date.now() + (created.length + 1) * 24 * 60 * 60 * 1000);
+      const serpContext = serpByQuery.get(opportunity.query) || {
+        results: [{
+          position: opportunity.position,
+          title: opportunity.competitorTitle,
+          url: opportunity.competitorUrl,
+          snippet: opportunity.snippet
+        }]
+      };
+      const serpIntelligence = buildSerpIntelligenceFromResults({
+        keyword: opportunity.query,
+        serp: serpContext
+      });
       const briefPayload = {
         clusterSlug: cluster.slug,
         clusterLabel: cluster.name,
@@ -373,14 +391,17 @@ export class CompetitorSeoResearchService {
         stage: 'middle',
         angle: 'competitor-gap',
         targetLength: '1400-2000 palavras',
-        requiredStructure: ['h1', 'summary', '6-8 h2/h3 blocks', 'faq', 'cta'],
+        requiredStructure: serpIntelligence.recommendedStructure?.length
+          ? serpIntelligence.recommendedStructure
+          : ['h1', 'summary', '6-8 h2/h3 blocks', 'faq', 'cta'],
         competitorInsight: {
           source: opportunity.competitorDomain,
           url: opportunity.competitorUrl,
           title: opportunity.competitorTitle,
           position: opportunity.position,
           gapReason: opportunity.gapReason
-        }
+        },
+        serpIntelligence
       };
 
       const brief = await prisma.editorialBrief.create({
