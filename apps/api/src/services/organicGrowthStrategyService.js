@@ -1,5 +1,6 @@
 import { ArticleFactoryService } from './articleFactoryService.js';
 import { SeoGrowthService } from './seoGrowthService.js';
+import { getPrisma } from '../lib/prisma.js';
 
 const SITE_BASE_URL = (process.env.SITE_BASE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
 
@@ -422,6 +423,64 @@ const countWords = (article = {}, fallbackWordCount = 0) => {
   return text.split(/\s+/).filter(Boolean).length;
 };
 
+const enforceCanonicalSinglePublish = async ({ result, canonicalSlug }) => {
+  const publishedRecord = result.articleRecord || {};
+  if (!canonicalSlug || !publishedRecord.slug || publishedRecord.slug === canonicalSlug) return publishedRecord;
+
+  const prisma = getPrisma();
+  const [source, destination] = await Promise.all([
+    prisma.article.findUnique({ where: { slug: publishedRecord.slug } }),
+    prisma.article.findUnique({ where: { slug: canonicalSlug } })
+  ]);
+
+  if (!source || !destination || source.status !== 'published') return publishedRecord;
+  if (source.structuredContent?.sourceType !== 'article-factory') return publishedRecord;
+
+  const structuredContent = {
+    ...(source.structuredContent || {}),
+    slug: canonicalSlug,
+    routePath: `/blog/${canonicalSlug}`,
+    canonicalUrl: `${SITE_BASE_URL}/blog/${canonicalSlug}/`,
+    factoryMigratedFrom: source.slug
+  };
+
+  const [canonicalRecord] = await prisma.$transaction([
+    prisma.article.update({
+      where: { id: destination.id },
+      data: {
+        title: source.title,
+        content: source.content,
+        excerpt: source.excerpt,
+        categoryId: source.categoryId,
+        author: source.author,
+        seoTitle: source.seoTitle,
+        seoDescription: source.seoDescription,
+        coverImage: source.coverImage,
+        ogImage: source.ogImage,
+        readTime: source.readTime,
+        wordCount: source.wordCount,
+        structuredContent,
+        status: 'published',
+        publishedAt: new Date()
+      }
+    }),
+    prisma.article.update({
+      where: { id: source.id },
+      data: {
+        status: 'draft',
+        publishedAt: null,
+        structuredContent: {
+          ...(source.structuredContent || {}),
+          canonicalDisabled: true,
+          manualDuplicateRetiredAt: new Date().toISOString()
+        }
+      }
+    })
+  ]);
+
+  return canonicalRecord;
+};
+
 export class OrganicGrowthStrategyService {
   static buildClusterStrategy() {
     const clusters = SEO_CLUSTER_STRATEGY
@@ -619,8 +678,9 @@ export class OrganicGrowthStrategyService {
       triggerSource
     });
 
-    const article = result.article?.structuredContent || {};
-    const record = result.articleRecord || {};
+    const canonicalSlug = toSlug(cleanKeyword);
+    const record = await enforceCanonicalSinglePublish({ result, canonicalSlug });
+    const article = record.structuredContent || result.article?.structuredContent || {};
     const qualityScore = result.validation?.qualityScore || {};
     const slug = record.slug || result.slug;
     const url = article.canonicalUrl || `${SITE_BASE_URL}/blog/${slug}/`;
