@@ -39,6 +39,7 @@
     "blog-images:validate": "node scripts/validateBlogImagePipeline.js",
     "meta:fix": "node scripts/fixArticleMetaDescriptions.js",
     "seo:growth": "node src/jobs/runSeoGrowth.js",
+    "seo:organic-growth": "node src/jobs/runOrganicGrowthStrategy.js",
     "seo:competitors": "node src/jobs/runCompetitorSeoResearch.js",
     "articles:scale": "node src/jobs/runArticleScaleLayers.js --mode=all --limit=200"
   },
