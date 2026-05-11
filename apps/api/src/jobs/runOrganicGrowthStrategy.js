@@ -1,5 +1,6 @@
 import 'dotenv/config.js';
 import { OrganicGrowthStrategyService } from '../services/organicGrowthStrategyService.js';
+import { FinancialNewsIntelligenceService } from '../services/financialNewsIntelligenceService.js';
 
 const parseArgs = () => {
   const entries = new Map();
@@ -61,6 +62,21 @@ const main = async () => {
       intent: options.intent,
       category: options.category
     });
+  } else if (options.mode === 'news-sources') {
+    result = FinancialNewsIntelligenceService.listSources();
+  } else if (options.mode === 'news-trends') {
+    result = FinancialNewsIntelligenceService.detectTrends({ limit });
+  } else if (options.mode === 'freshness') {
+    result = FinancialNewsIntelligenceService.buildFreshnessStrategy();
+  } else if (options.mode === 'trend-pipeline') {
+    result = FinancialNewsIntelligenceService.buildTrendToArticlePipeline({ limit });
+  } else if (options.mode === 'trend-preview') {
+    result = await FinancialNewsIntelligenceService.createTrendArticlePreview({
+      keyword: options.keyword,
+      limit
+    });
+  } else if (options.mode === 'news-diagnosis') {
+    result = FinancialNewsIntelligenceService.buildDiagnosis({ limit });
   } else {
     result = await OrganicGrowthStrategyService.buildGrowthPlan({
       keyword: options.keyword,
