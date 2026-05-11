@@ -8,6 +8,7 @@ import { UsedBlogImageStore } from './blogImage/usedImageStore.js';
 import { ArticleService } from './articleService.js';
 import { repairPortugueseText } from './portugueseTextService.js';
 import { SerpIntelligenceService } from './serpIntelligenceService.js';
+import { buildPremiumArticle } from './premiumArticleComposerService.js';
 
 const logger = createEditorialLogger('article-factory');
 
@@ -269,7 +270,8 @@ const ensureUniqueSlug = async ({ slug, idempotencyKey }) => {
 };
 
 export async function generateArticle({ topic, keyword, intent = 'guide', category = 'Educacao financeira', serpIntelligence = null }) {
-  const draft = buildArticleDraft({ topic, keyword, intent, category, serpIntelligence });
+  const draft = buildPremiumArticle({ topic, keyword, intent, category, serpIntelligence })
+    || buildArticleDraft({ topic, keyword, intent, category, serpIntelligence });
   const internalLinks = defaultInternalLinks({ category, keyword });
   const externalLinks = defaultExternalLinks({ intent, keyword });
   const article = enforceArticleStandard({

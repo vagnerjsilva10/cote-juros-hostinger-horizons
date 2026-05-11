@@ -15,9 +15,17 @@ const GENERIC_TERMS = [
   'momento financeiro',
   'decidir com seguranca',
   'decidir com segurança',
-  'sem pressa'
+  'sem pressa',
+  'tomar decisões melhores',
+  'organizar sua jornada',
+  'contextualizar',
+  'menos fricção',
+  'momento ideal',
+  'solução completa'
 ];
 const CLICKBAIT_PATTERNS = /segredo|imperdivel|garantido|aprovacao garantida|aprovação garantida|100%|nunca te contaram|chocante|urgente/i;
+const AI_CONTENT_PATTERNS = /neste guia voce encontra|a ideia deste guia|com mais clareza|jornada financeira|decisão mais consciente|solução completa|contexto financeiro|sem complicação|de forma simples e prática/gi;
+const TEMPLATE_HEADING_PATTERNS = /ponto essencial|lista rápida|checklist final|o que observar primeiro|alternativas antes de seguir|riscos comuns em/i;
 const INTENT_RULES = [
   { intent: 'news', pattern: /pris[aã]o|governo|lan[cç]a|recorde|2025|2026|stf|pf|banco master|selic hoje|cdi|sal[aá]rio|inss/i },
   { intent: 'tool', pattern: /calculadora|simulador|consulta|tabela|fipe/i },
@@ -96,7 +104,7 @@ const textArray = (items = [], max = 3) =>
     .filter(Boolean)
     .slice(0, max);
 
-const limitParagraph = (value = '') => trimToSentence(value, 320);
+const limitParagraph = (value = '') => trimToSentence(value, 620);
 
 const buildQuestionHeadline = (keyword = '', fallbackTitle = '') => {
   const rawKeyword = compactText(keyword || fallbackTitle)
@@ -216,7 +224,18 @@ const normalizeSection = (section = {}) => ({
   bullets: (Array.isArray(section.bullets) ? section.bullets : [])
     .map((item) => ensureSentence(item))
     .filter(Boolean)
-    .slice(0, 5)
+    .slice(0, 5),
+  table: section.table && typeof section.table === 'object'
+    ? {
+        caption: compactText(section.table.caption || ''),
+        columns: (Array.isArray(section.table.columns) ? section.table.columns : []).map(compactText).filter(Boolean).slice(0, 6),
+        rows: (Array.isArray(section.table.rows) ? section.table.rows : [])
+          .map((row) => (Array.isArray(row) ? row : []))
+          .map((row) => row.map((cell) => trimToSentence(cell, 220)).filter(Boolean))
+          .filter((row) => row.length >= 2)
+          .slice(0, 12)
+      }
+    : null
 });
 
 const countPattern = (value = '', pattern) => (String(value || '').match(pattern) || []).length;
@@ -232,8 +251,21 @@ const calculateQualityScore = ({
   const faq = Array.isArray(article.faq) ? article.faq : [];
   const serp = article.serpIntelligence || {};
   const normalizedPlain = normalizeKeyword(plain);
+  const wordCount = plain.split(/\s+/).filter(Boolean).length;
   const numberSignals = countPattern(plain, /R\$\s?\d|[0-9]+%|\d+\s*(mes|meses|dias|anos)|CET|IOF/gi);
   const genericHits = GENERIC_TERMS.reduce((total, term) => total + countPattern(normalizedPlain, new RegExp(normalizeKeyword(term), 'g')), 0);
+  const aiPatternHits = countPattern(plain, AI_CONTENT_PATTERNS);
+  const tableCount = sections.filter((section) => section.table?.rows?.length >= 2).length;
+  const comparisonSignals = countPattern(normalizedPlain, /compar|modalidade|alternativa|garantia|consignado|fgts|renegoci|score|cpf|banco central|gov\.br|serasa|febraban/gi);
+  const paragraphLengths = sections.flatMap((section) => section.paragraphs || []).map((paragraph) => paragraph.split(/\s+/).filter(Boolean).length);
+  const repeatedOpenings = new Map();
+  for (const paragraph of sections.flatMap((section) => section.paragraphs || [])) {
+    const opening = normalizeKeyword(paragraph).split(/\s+/).slice(0, 4).join(' ');
+    if (opening) repeatedOpenings.set(opening, (repeatedOpenings.get(opening) || 0) + 1);
+  }
+  const repeatedOpeningCount = [...repeatedOpenings.values()].filter((count) => count >= 2).length;
+  const templateHeadingHits = sections.filter((section) => TEMPLATE_HEADING_PATTERNS.test(section.heading || '')).length;
+  TEMPLATE_HEADING_PATTERNS.lastIndex = 0;
   const mustCover = Array.isArray(serp.mustCoverTopics) ? serp.mustCoverTopics : [];
   const coveredTopics = mustCover.filter((topic) => includesKeyword(plain, topic) || normalizeKeyword(topic).split(/\s+/).some((token) => token.length > 4 && normalizedPlain.includes(token)));
   const hasRiskLanguage = /risco|atraso|inadimpl|cuidado|cautela|cen[aá]rio negativo|endivid/i.test(normalizedPlain);
@@ -246,38 +278,78 @@ const calculateQualityScore = ({
     + (includesKeyword(article.intro?.[0] || '', keyword) ? 15 : 0)
     + (serp.searchIntent && serp.searchIntent !== 'informacional' ? 10 : 5)
     + (coveredTopics.length ? 15 : 0));
-  const factualDepth = Math.min(100, 20 + Math.min(numberSignals, 5) * 12 + (hasOfficialSource ? 20 : 0) + (hasRiskLanguage ? 15 : 0));
-  const originality = Math.max(0, 100 - genericHits * 8 - (sections.length && sections.every((section) => /^ponto essencial/i.test(section.heading || '')) ? 25 : 0));
-  const practicalValue = Math.min(100, 25
-    + (article.example ? 15 : 0)
-    + (sections.some((section) => /checklist|passo|lista|tabela|compar/i.test(normalizeKeyword(section.heading))) ? 20 : 0)
-    + Math.min((article.alternatives || []).length, 4) * 8
-    + (faq.length >= 4 ? 8 : 0));
-  const seoStructure = Math.min(100, 25 + Math.min(sections.length, 8) * 6 + Math.min(faq.length, 6) * 5 + (article.featuredSnippet ? 12 : 0));
+  const factualDepth = Math.min(100, 10 + Math.min(numberSignals, 14) * 4 + comparisonSignals * 1.2 + tableCount * 8 + (hasOfficialSource ? 14 : 0) + (hasRiskLanguage ? 10 : 0));
+  const expertAuthority = Math.min(100, 15 + tableCount * 10 + (hasOfficialSource ? 18 : 0) + Math.min(comparisonSignals, 20) * 2 + (wordCount >= 1800 ? 12 : 0));
+  const editorialDepth = Math.min(100, 10 + Math.min(sections.length, 12) * 5 + Math.min(wordCount / 30, 70));
+  const originality = Math.max(0, 100 - genericHits * 6 - aiPatternHits * 7 - templateHeadingHits * 5 - repeatedOpeningCount * 8);
+  const practicalValue = Math.min(100, 15
+    + (article.example ? 8 : 0)
+    + tableCount * 10
+    + (sections.some((section) => /checklist|passo|lista|tabela|compar/i.test(normalizeKeyword(section.heading))) ? 12 : 0)
+    + Math.min((article.alternatives || []).length, 4) * 5
+    + (faq.length >= 4 ? 6 : 0)
+    + Math.min(numberSignals, 10) * 2);
+  const humanReadability = Math.max(0, Math.min(100, 92
+    - genericHits * 4
+    - aiPatternHits * 8
+    - repeatedOpeningCount * 10
+    - (paragraphLengths.filter((length) => length > 95).length * 3)
+    + (paragraphLengths.some((length) => length >= 25 && length <= 55) ? 8 : 0)));
+  const serpCompetitiveness = Math.min(100, 20
+    + (coveredTopics.length / Math.max(1, mustCover.length)) * 35
+    + tableCount * 8
+    + (wordCount >= 2200 ? 18 : wordCount >= 1500 ? 10 : 0)
+    + (faq.length >= 5 ? 7 : 0));
+  const antiTemplate = Math.max(0, 100 - templateHeadingHits * 9 - repeatedOpeningCount * 10 - aiPatternHits * 8);
+  const seoStructure = Math.min(100, 15 + Math.min(sections.length, 12) * 5 + Math.min(faq.length, 6) * 4 + tableCount * 8 + (article.featuredSnippet ? 8 : 0));
   const internalLinkScore = Math.min(100, (Array.isArray(internalLinks) ? internalLinks.length : 0) * 25);
   const riskScore = Math.min(100, (CLICKBAIT_PATTERNS.test(article.title || '') ? 40 : 0) + (!hasRiskLanguage ? 25 : 0) + (!hasOfficialSource && editorialIntent !== 'guide' ? 15 : 0));
   const weighted = Math.round(
-    intentMatch * 0.18
-    + factualDepth * 0.2
-    + originality * 0.18
-    + practicalValue * 0.2
-    + seoStructure * 0.12
-    + internalLinkScore * 0.12
+    intentMatch * 0.1
+    + factualDepth * 0.15
+    + expertAuthority * 0.13
+    + editorialDepth * 0.13
+    + originality * 0.13
+    + practicalValue * 0.14
+    + humanReadability * 0.1
+    + serpCompetitiveness * 0.08
+    + antiTemplate * 0.08
+    + seoStructure * 0.04
+    + internalLinkScore * 0.02
     - riskScore * 0.15
   );
 
+  const cappedTotal = Math.min(
+    weighted,
+    originality + 8,
+    humanReadability + 8,
+    antiTemplate + 8,
+    factualDepth + 6
+  );
+
   return {
-    total: Math.max(0, Math.min(100, weighted)),
+    total: Math.max(0, Math.min(100, Math.round(cappedTotal))),
     intent_match_score: intentMatch,
     factual_depth_score: factualDepth,
+    expert_authority_score: Math.round(expertAuthority),
+    editorial_depth_score: Math.round(editorialDepth),
     originality_score: originality,
     practical_value_score: practicalValue,
+    human_readability_score: Math.round(humanReadability),
+    serp_competitiveness_score: Math.round(serpCompetitiveness),
+    anti_template_score: Math.round(antiTemplate),
     seo_structure_score: seoStructure,
     internal_link_score: internalLinkScore,
     risk_score: riskScore,
     signals: {
+      wordCount,
       numberSignals,
       genericHits,
+      aiPatternHits,
+      tableCount,
+      comparisonSignals,
+      repeatedOpeningCount,
+      templateHeadingHits,
       coveredSerpTopics: coveredTopics.length,
       requiredSerpTopics: mustCover.length,
       hasOfficialSource,
@@ -406,7 +478,7 @@ export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', inte
       bullets: ['Revise a parcela.', 'Compare o custo total.', 'Evite pressa na contratação.']
     });
   }
-  sections = ensureKeywordHeadings(sections.slice(0, 8), keyword);
+  sections = ensureKeywordHeadings(sections.slice(0, cleanArticle.editorialPipeline ? 12 : 8), keyword);
 
   const standard = {
     featuredSnippet: trimToSentence(
@@ -486,7 +558,17 @@ export const validateArticle = ({ article = {}, internalLinks = [], image = null
     article.featuredSnippet,
     article.example,
     article.alert,
-    ...sections.flatMap((section) => [section.heading, section.subheading, ...(section.paragraphs || []), ...(section.bullets || [])]),
+    ...((article.expertInsights || [])),
+    ...((article.retentionHooks || [])),
+    ...sections.flatMap((section) => [
+      section.heading,
+      section.subheading,
+      ...(section.paragraphs || []),
+      ...(section.bullets || []),
+      section.table?.caption,
+      ...(section.table?.columns || []),
+      ...((section.table?.rows || []).flat())
+    ]),
     ...((article.midQuestions || []).flatMap((item) => [item.question, item.answer])),
     ...((article.financialImpact || [])),
     ...((article.alternatives || [])),
@@ -520,11 +602,20 @@ export const validateArticle = ({ article = {}, internalLinks = [], image = null
   const qualityScore = calculateQualityScore({ article, internalLinks, plain, keyword, editorialIntent });
   const hasSerpIntelligence = article.serpIntelligence && article.serpIntelligence.ok !== false;
 
+  if (article.editorialPipeline && qualityScore.signals.wordCount < 1800) issues.push('Artigo premium abaixo de 1800 palavras');
   if (CLICKBAIT_PATTERNS.test(title)) issues.push('Titulo com risco de clickbait ou promessa excessiva');
-  if (qualityScore.signals.genericHits >= 8) issues.push('Texto com excesso de termos genericos e pouco especificos');
-  if (qualityScore.factual_depth_score < 55) issues.push('Profundidade factual insuficiente: faltam numeros, fonte oficial ou risco financeiro');
-  if (qualityScore.practical_value_score < 60) issues.push('Valor pratico insuficiente: faltam exemplos, checklist, tabela ou passos acionaveis');
-  if (qualityScore.originality_score < 60) issues.push('Originalidade insuficiente ou estrutura programatica demais');
+  if (qualityScore.signals.genericHits >= 6) issues.push('Texto com excesso de termos genericos e pouco especificos');
+  if (qualityScore.signals.aiPatternHits >= 3) issues.push('Sinais de AI SEO content acima do aceitavel');
+  if (qualityScore.signals.repeatedOpeningCount >= 3) issues.push('Repeticao estrutural em aberturas de paragrafos');
+  if (qualityScore.signals.templateHeadingHits >= 3) issues.push('Headings com cara de template editorial');
+  if (qualityScore.factual_depth_score < 70) issues.push('Profundidade factual insuficiente: faltam numeros, fonte oficial, tabela ou risco financeiro');
+  if (qualityScore.expert_authority_score < 65) issues.push('Autoridade especializada insuficiente para YMYL financeiro');
+  if (qualityScore.editorial_depth_score < 65) issues.push('Profundidade editorial insuficiente para keyword competitiva');
+  if (qualityScore.practical_value_score < 70) issues.push('Valor pratico insuficiente: faltam exemplos, checklist, tabela ou passos acionaveis');
+  if (qualityScore.human_readability_score < 70) issues.push('Leitura pouco humana ou repetitiva');
+  if (qualityScore.anti_template_score < 70) issues.push('Score anti-template insuficiente');
+  if (qualityScore.originality_score < 65) issues.push('Originalidade insuficiente ou estrutura programatica demais');
+  if (article.editorialPipeline && qualityScore.signals.tableCount < 2) issues.push('Artigo premium precisa de pelo menos 2 tabelas reais');
   if (hasSerpIntelligence && qualityScore.signals.requiredSerpTopics > 0 && qualityScore.signals.coveredSerpTopics < 2) {
     issues.push('Intencao/lacunas da SERP pouco refletidas no artigo');
   }
