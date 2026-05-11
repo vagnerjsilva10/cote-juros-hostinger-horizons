@@ -3,6 +3,10 @@ import {
   repairPortugueseInObject,
   repairPortugueseText
 } from './portugueseTextService.js';
+import {
+  analyzeStructuralFingerprint,
+  applyStructuralDiversity
+} from './structuralDiversityService.js';
 
 const MAX_HEADLINE_LENGTH = 70;
 const MIN_INTERNAL_LINKS = 3;
@@ -301,6 +305,8 @@ const calculateQualityScore = ({
     + (wordCount >= 2200 ? 18 : wordCount >= 1500 ? 10 : 0)
     + (faq.length >= 5 ? 7 : 0));
   const antiTemplate = Math.max(0, 100 - templateHeadingHits * 9 - repeatedOpeningCount * 10 - aiPatternHits * 8);
+  const structuralFingerprint = analyzeStructuralFingerprint(article);
+  const antiTemplateAdjusted = Math.max(0, antiTemplate - Math.round(structuralFingerprint.aiFootprintRiskScore * 0.25));
   const seoStructure = Math.min(100, 15 + Math.min(sections.length, 12) * 5 + Math.min(faq.length, 6) * 4 + tableCount * 8 + (article.featuredSnippet ? 8 : 0));
   const internalLinkScore = Math.min(100, (Array.isArray(internalLinks) ? internalLinks.length : 0) * 25);
   const riskScore = Math.min(100, (CLICKBAIT_PATTERNS.test(article.title || '') ? 40 : 0) + (!hasRiskLanguage ? 25 : 0) + (!hasOfficialSource && editorialIntent !== 'guide' ? 15 : 0));
@@ -313,17 +319,18 @@ const calculateQualityScore = ({
     + practicalValue * 0.14
     + humanReadability * 0.1
     + serpCompetitiveness * 0.08
-    + antiTemplate * 0.08
+    + antiTemplateAdjusted * 0.08
     + seoStructure * 0.04
     + internalLinkScore * 0.02
     - riskScore * 0.15
+    - structuralFingerprint.aiFootprintRiskScore * 0.08
   );
 
   const cappedTotal = Math.min(
     weighted,
     originality + 8,
     humanReadability + 8,
-    antiTemplate + 8,
+    antiTemplateAdjusted + 8,
     factualDepth + 6
   );
 
@@ -337,10 +344,12 @@ const calculateQualityScore = ({
     practical_value_score: practicalValue,
     human_readability_score: Math.round(humanReadability),
     serp_competitiveness_score: Math.round(serpCompetitiveness),
-    anti_template_score: Math.round(antiTemplate),
+    anti_template_score: Math.round(antiTemplateAdjusted),
     seo_structure_score: seoStructure,
     internal_link_score: internalLinkScore,
     risk_score: riskScore,
+    structural_fingerprint_score: structuralFingerprint.aiFootprintRiskScore,
+    structural_fingerprint: structuralFingerprint,
     signals: {
       wordCount,
       numberSignals,
@@ -353,7 +362,8 @@ const calculateQualityScore = ({
       coveredSerpTopics: coveredTopics.length,
       requiredSerpTopics: mustCover.length,
       hasOfficialSource,
-      hasRiskLanguage
+      hasRiskLanguage,
+      structuralFingerprint
     }
   };
 };
@@ -505,7 +515,7 @@ export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', inte
     }
   };
 
-  return {
+  const standardized = {
     ...cleanArticle,
     clusterKeyword: keyword,
     editorialIntent,
@@ -534,6 +544,8 @@ export const enforceArticleStandard = ({ article = {}, primaryKeyword = '', inte
     internalLinks: Array.isArray(internalLinks) && internalLinks.length ? internalLinks : cleanArticle.internalLinks,
     ...standard
   };
+
+  return applyStructuralDiversity(standardized);
 };
 
 export const validateArticle = ({ article = {}, internalLinks = [], image = null, existingIssues = [] } = {}) => {
@@ -615,6 +627,15 @@ export const validateArticle = ({ article = {}, internalLinks = [], image = null
   if (qualityScore.human_readability_score < 70) issues.push('Leitura pouco humana ou repetitiva');
   if (qualityScore.anti_template_score < 70) issues.push('Score anti-template insuficiente');
   if (qualityScore.originality_score < 65) issues.push('Originalidade insuficiente ou estrutura programatica demais');
+  if (qualityScore.structural_fingerprint_score >= 58) issues.push('Fingerprint estrutural alto: artigo parece automatizado demais');
+  if (qualityScore.structural_fingerprint?.structureRepetitionScore >= 62) issues.push('Repeticao estrutural excessiva entre secoes');
+  if (qualityScore.structural_fingerprint?.bulletPatternRepetitionScore >= 55) issues.push('Padrao de bullets repetitivo demais');
+  if (qualityScore.structural_fingerprint?.cadenceRepetitionScore >= 62) issues.push('Cadencia repetitiva em paragrafos, FAQ ou CTA');
+  if (qualityScore.structural_fingerprint?.paragraphSymmetryScore >= 68) issues.push('Paragrafos simetricos demais para leitura humana');
+  if (qualityScore.structural_fingerprint?.signals?.accentDebtHits > 0) issues.push('Palavras comuns sem acentuacao apos reparo editorial');
+  if (qualityScore.structural_fingerprint?.signals?.lowercaseOpeningCount > 0) issues.push('Frase, bloco ou paragrafo iniciando com letra minuscula');
+  if (qualityScore.structural_fingerprint?.signals?.repeatedFaqPatterns >= 2) issues.push('FAQ com padrao de resposta repetitivo');
+  if (qualityScore.structural_fingerprint?.signals?.repeatedCtaPatterns >= 2) issues.push('CTA com padrao repetitivo');
   if (article.editorialPipeline && qualityScore.signals.tableCount < 2) issues.push('Artigo premium precisa de pelo menos 2 tabelas reais');
   if (hasSerpIntelligence && qualityScore.signals.requiredSerpTopics > 0 && qualityScore.signals.coveredSerpTopics < 2) {
     issues.push('Intencao/lacunas da SERP pouco refletidas no artigo');
