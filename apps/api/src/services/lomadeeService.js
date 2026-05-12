@@ -61,7 +61,6 @@ const NICHE_ALLOW_TERMS = [
   'emprest',
   'loan',
   'cartao',
-  'card',
   'financi',
   'finance',
   'banco',
