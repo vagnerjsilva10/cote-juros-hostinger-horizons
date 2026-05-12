@@ -60,6 +60,7 @@ enum EditorialImageProvider {
 enum AffiliateNetworkCode {
   awin
   admitad
+  lomadee
 }
 
 enum ReactivationLeadStatus {

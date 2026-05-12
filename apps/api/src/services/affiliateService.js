@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { getPrisma } from '../lib/prisma.js';
 import { AwinService } from './awinService.js';
 import { AdmitadService } from './admitadService.js';
+import { LomadeeService } from './lomadeeService.js';
 
 const normalizePath = (value = '') => {
   if (!value) return '/';
@@ -137,22 +138,34 @@ export class AffiliateService {
       }
     });
 
+    let redirectUrl = null;
+
+    if (offer.network === 'admitad') {
+      redirectUrl = AdmitadService.buildTrackingUrl({
+        trackingUrl: offer.trackingUrl,
+        destinationUrl: offer.destinationUrl,
+        clickref
+      });
+    } else if (offer.network === 'lomadee') {
+      redirectUrl = await LomadeeService.buildTrackingUrl({
+        trackingUrl: offer.trackingUrl,
+        destinationUrl: offer.destinationUrl,
+        clickref,
+        metadata: offer.metadata || {}
+      });
+    } else {
+      redirectUrl = AwinService.buildTrackingUrl({
+        trackingUrl: offer.trackingUrl,
+        destinationUrl: offer.destinationUrl,
+        clickref
+      });
+    }
+
     return {
       offer: normalizeAffiliateOffer(offer),
       clickref,
       device,
-      redirectUrl:
-        offer.network === 'admitad'
-          ? AdmitadService.buildTrackingUrl({
-            trackingUrl: offer.trackingUrl,
-            destinationUrl: offer.destinationUrl,
-            clickref
-          })
-          : AwinService.buildTrackingUrl({
-            trackingUrl: offer.trackingUrl,
-            destinationUrl: offer.destinationUrl,
-            clickref
-          })
+      redirectUrl
     };
   }
 }
