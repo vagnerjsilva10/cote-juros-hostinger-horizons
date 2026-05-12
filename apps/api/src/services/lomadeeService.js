@@ -73,9 +73,7 @@ const NICHE_ALLOW_TERMS = [
   'consignado',
   'score',
   'invest',
-  'carteira digital',
-  'cashback',
-  'pix'
+  'carteira digital'
 ];
 
 const NICHE_BLOCK_TERMS = [
