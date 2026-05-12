@@ -26,9 +26,9 @@ const collectOffers = (placements = {}) => {
 };
 
 const handoffPoints = [
-  'Esta área existe só para saídas externas, sem misturar com a comparação principal.',
-  'Você entende o contexto antes e só clica quando a oferta fizer sentido.',
-  'Se você avançar, a Cote Juros pode receber comissão sem custo extra para você.'
+  'Compare o contexto primeiro e avance apenas quando a indicação fizer sentido para o seu perfil.',
+  'Cada clique passa por rastreamento interno para medir desempenho sem prometer aprovação.',
+  'A Cote Juros pode receber comissão de parceiros, sem custo extra para você.'
 ];
 
 function OfertasPage() {
@@ -66,19 +66,19 @@ function OfertasPage() {
   return (
     <>
       <Helmet>
-        <title>Ofertas externas selecionadas | Cote Juros</title>
+        <title>Parceiros e recomendações financeiras | Cote Juros</title>
         <meta
           name="description"
-          content="Veja saídas externas em uma área separada, com leitura clara, aviso de saída e mais contexto antes do clique."
+          content="Compare indicações financeiras selecionadas pela Cote Juros, com aviso de parceria, rastreamento interno e contexto antes do clique."
         />
       </Helmet>
 
       <PageHero
-        eyebrow="Saídas externas"
-        badge="Área separada da experiência principal"
+        eyebrow="Parceiros selecionados"
+        badge="Indicações com transparência"
         centered
-        title="Quando fizer sentido sair da Cote Juros, as opções ficam aqui."
-        subtitle="A comparação principal continua nas páginas de produto. Esta rota existe só para organizar ofertas externas com mais clareza, contexto e transparência."
+        title="Indicações financeiras para comparar antes de seguir."
+        subtitle="Esta central organiza parceiros e ofertas em um formato mais próximo de marketplace: contexto primeiro, clique rastreado depois, sem promessa de aprovação."
       >
         <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
           <div className="grid gap-4 md:grid-cols-3">
@@ -109,9 +109,9 @@ function OfertasPage() {
         <section className="grid gap-5 rounded-[28px] border border-border bg-white p-6 shadow-[var(--shadow-sm)] md:grid-cols-[1.1fr_0.9fr] md:p-8">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Leitura direta</p>
-            <h2 className="mt-3 text-3xl text-foreground">A área existe para não poluir a experiência principal.</h2>
+            <h2 className="mt-3 text-3xl text-foreground">A indicação aparece onde há intenção clara.</h2>
             <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
-              Em vez de misturar saída externa com a leitura do produto, a Cote Juros deixa esse passo separado. Assim, você compara primeiro e só considera um clique externo quando isso fizer sentido.
+              O modelo mais eficiente é simples: páginas informativas educam, comparadores organizam a decisão e esta central reúne parceiros quando o usuário já quer avaliar uma próxima etapa.
             </p>
           </div>
 
@@ -135,7 +135,7 @@ function OfertasPage() {
         <section id="ofertas-disponiveis" className="mt-14 space-y-10">
           {!hasAnyOffer ? (
             <div className="rounded-[24px] border border-dashed border-border bg-background-secondary px-6 py-14 text-center">
-              <h2 className="text-2xl text-foreground">Nenhuma oferta externa disponível agora</h2>
+              <h2 className="text-2xl text-foreground">Nenhuma indicação disponível agora</h2>
               <p className="mt-3 text-muted-foreground">Continue pela comparação principal para entender melhor o seu cenário antes de tentar novamente.</p>
               <div className="mt-6">
                 <Link to="/emprestimos" className="inline-flex">
@@ -149,9 +149,9 @@ function OfertasPage() {
             <section className="space-y-6">
               <div className="max-w-3xl">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Empréstimos</p>
-                <h2 className="mt-3 text-3xl text-foreground">Ofertas externas para quem já decidiu olhar crédito pessoal.</h2>
+                <h2 className="mt-3 text-3xl text-foreground">Parceiros para quem já decidiu olhar crédito pessoal.</h2>
                 <p className="mt-4 text-base leading-8 text-muted-foreground">
-                  Esta vitrine só faz sentido depois da leitura principal. Aqui entram saídas objetivas, sem prometer mais do que a oferta realmente entrega.
+                  Aqui entram indicações com intenção comercial clara: marketplaces, fintechs e parceiros que podem receber o usuário em ambiente próprio.
                 </p>
               </div>
 
@@ -165,7 +165,7 @@ function OfertasPage() {
                   title="SuperSim"
                   description="Uma alternativa externa para quem quer seguir com empréstimo online de forma mais direta, depois de já ter comparado o cenário."
                   ctaLabel="Simular empréstimo"
-                  badgeLabel="Saída externa"
+                  badgeLabel="Parceiro"
                   onSelect={(offer) => handleAffiliateClick(offer, 'ofertas-loan-featured')}
                 />
               ) : null}
@@ -178,8 +178,8 @@ function OfertasPage() {
                     disclosureText:
                       offer.disclosureText || 'Se você avançar por este link, a Cote Juros pode receber comissão sem custo extra para você.'
                   }))}
-                  title="Ao continuar, você será direcionado para uma instituição externa"
-                  eyebrow="Ofertas externas"
+                  title="Compare parceiros antes de seguir para a próxima etapa"
+                  eyebrow="Indicações rastreadas"
                   onSelect={(offer) => handleAffiliateClick(offer, 'ofertas-loan-grid')}
                 />
               ) : null}
@@ -190,9 +190,9 @@ function OfertasPage() {
             <section className="space-y-6">
               <div className="max-w-3xl">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Cartões</p>
-                <h2 className="mt-3 text-3xl text-foreground">Saídas externas para quem quer seguir olhando cartões.</h2>
+                <h2 className="mt-3 text-3xl text-foreground">Parceiros para quem quer seguir olhando cartões.</h2>
                 <p className="mt-4 text-base leading-8 text-muted-foreground">
-                  A comparação principal continua na navegação do produto. Esta seção existe só para organizar alternativas externas de forma mais limpa.
+                  Cartões funcionam melhor por campanha CPA. A central organiza opções sem misturar promessa de limite ou aprovação.
                 </p>
               </div>
 
@@ -203,8 +203,8 @@ function OfertasPage() {
                   disclosureText:
                     offer.disclosureText || 'Se você avançar por este link, a Cote Juros pode receber comissão sem custo extra para você.'
                 }))}
-                title="Ao continuar, você será direcionado para uma instituição externa"
-                eyebrow="Ofertas externas"
+                title="Compare emissores e benefícios antes de sair da Cote Juros"
+                eyebrow="Indicações rastreadas"
                 onSelect={(offer) => handleAffiliateClick(offer, 'ofertas-credit-card')}
               />
             </section>
@@ -214,9 +214,9 @@ function OfertasPage() {
             <section className="space-y-6">
               <div className="max-w-3xl">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Financiamentos</p>
-                <h2 className="mt-3 text-3xl text-foreground">Alternativas externas para quem quer seguir com financiamento.</h2>
+                <h2 className="mt-3 text-3xl text-foreground">Parceiros para quem quer seguir com financiamento.</h2>
                 <p className="mt-4 text-base leading-8 text-muted-foreground">
-                  Mantivemos esta área separada para o site continuar mais claro. A saída externa aparece aqui, e não no meio da jornada principal.
+                  Financiamento exige mais cautela. Por isso a indicação aparece com contexto e não como promessa de taxa fixa.
                 </p>
               </div>
 
@@ -227,8 +227,8 @@ function OfertasPage() {
                   disclosureText:
                     offer.disclosureText || 'Se você avançar por este link, a Cote Juros pode receber comissão sem custo extra para você.'
                 }))}
-                title="Ao continuar, você será direcionado para uma instituição externa"
-                eyebrow="Ofertas externas"
+                title="Avalie alternativas antes de iniciar proposta fora do portal"
+                eyebrow="Indicações rastreadas"
                 onSelect={(offer) => handleAffiliateClick(offer, 'ofertas-financing')}
               />
             </section>

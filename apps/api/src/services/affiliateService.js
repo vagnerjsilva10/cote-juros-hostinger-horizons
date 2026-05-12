@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import { getPrisma } from '../lib/prisma.js';
 import { AwinService } from './awinService.js';
 import { AdmitadService } from './admitadService.js';
@@ -117,7 +118,13 @@ export class AffiliateService {
     const device = detectDevice(userAgent);
     const normalizedPageSlug = normalizePath(pageSlug);
     const normalizedPosition = normalizePlacement(position) || 'unknown';
-    const clickref = `${slugifyPath(normalizedPageSlug)}|${normalizedPosition}|${offer.offerSlug}|${device}`;
+    const clickrefContext = [
+      slugifyPath(normalizedPageSlug),
+      normalizedPosition,
+      offer.offerSlug,
+      device
+    ].join('__');
+    const clickref = `${clickrefContext}__${crypto.randomBytes(8).toString('hex')}`;
 
     await getPrisma().affiliateClick.create({
       data: {

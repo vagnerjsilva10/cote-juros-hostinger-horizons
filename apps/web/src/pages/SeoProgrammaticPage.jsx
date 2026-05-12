@@ -947,7 +947,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               </CardContent>
             </Card>
 
-            {!isCleanComparePage && belowHeroSupersimOffer ? (
+            {belowHeroSupersimOffer ? (
               <SuperSimOfferCard
                 offer={belowHeroSupersimOffer}
                 title={normalizedModel.path === '/supersim-emprestimo' ? 'SuperSim Empréstimo' : 'SuperSim como recomendação editorial'}
@@ -960,7 +960,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               />
             ) : null}
 
-            {!isCleanComparePage && belowHeroOtherOffers.length ? (
+            {belowHeroOtherOffers.length ? (
               <AffiliateOfferGrid
                 offers={belowHeroOtherOffers}
                 title="Condições relacionadas para analisar nesta comparação"
@@ -1009,7 +1009,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
 
             <RecommendationCardsSection title={normalizedModel.recommendationCardsTitle || 'Sugestões para você'} cards={visibleRecommendationCards} />
 
-            {!isCleanComparePage && midContentOffer ? (
+            {midContentOffer ? (
               getSupersimOffer([midContentOffer]) ? (
                 <SuperSimInlineCTA
                   offer={midContentOffer}
@@ -1025,7 +1025,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               )
             ) : null}
 
-            {!isCleanComparePage && beforeFaqSupersimOffer ? (
+            {beforeFaqSupersimOffer ? (
               <SuperSimOfferCard
                 offer={beforeFaqSupersimOffer}
                 title="SuperSim para seguir a jornada com mais clareza"
@@ -1034,7 +1034,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               />
             ) : null}
 
-            {!isCleanComparePage && beforeFaqOtherOffers.length ? (
+            {beforeFaqOtherOffers.length ? (
               <AffiliateOfferGrid
                 offers={beforeFaqOtherOffers}
                 title="Mais opções para avaliar antes de concluir sua pesquisa"
@@ -1081,7 +1081,7 @@ function SeoProgrammaticPage({ mode = 'static', pagePath = '' }) {
               </CardContent>
             </Card>
 
-            {!isCleanComparePage && sidebarOffer ? (
+            {sidebarOffer ? (
               getSupersimOffer([sidebarOffer]) ? (
                 <SuperSimSidebarCard
                   offer={sidebarOffer}
