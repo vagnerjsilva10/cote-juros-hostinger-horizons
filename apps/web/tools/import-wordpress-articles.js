@@ -12,7 +12,7 @@ const inventoryPath = resolve(__dirname, '../content/migrations/wordpress/invent
 const redirectsJsonPath = resolve(__dirname, '../public/content/migrations/wordpress-redirects.json');
 const redirectsTxtPath = resolve(__dirname, '../public/wordpress-redirects.txt');
 
-const SITE_URL = 'https://cotejuros.com.br';
+const SITE_URL = 'https://www.cotejuros.com.br';
 const WORDPRESS_URL = 'https://wordpress.cotejuros.com.br';
 const TITLE_SUFFIX = ' | Cote Juros';
 const CATEGORY_IMAGE_FALLBACKS = {

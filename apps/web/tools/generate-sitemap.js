@@ -13,9 +13,25 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicDir = resolve(__dirname, '../public');
 const sitemapPath = resolve(publicDir, 'sitemap.xml');
+const sitemapIndexPath = resolve(publicDir, 'sitemap-index.xml');
 const robotsPath = resolve(publicDir, 'robots.txt');
 
-const siteUrl = (process.env.SITE_URL || process.env.VITE_SITE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
+const normalizePublicSiteUrl = (value = '') => {
+  const raw = String(value || 'https://www.cotejuros.com.br').trim().replace(/\/$/, '');
+  try {
+    const url = new URL(raw);
+    if (url.hostname === 'www.cotejuros.com.br') return 'https://www.cotejuros.com.br';
+    if (url.hostname === 'cotejuros.com.br' || url.hostname === 'api.cotejuros.com.br') {
+      return 'https://www.cotejuros.com.br';
+    }
+    console.warn(`[sitemap] SITE_URL ignorado por domínio não canônico: ${raw}`);
+    return 'https://www.cotejuros.com.br';
+  } catch {
+    return 'https://www.cotejuros.com.br';
+  }
+};
+
+const siteUrl = normalizePublicSiteUrl(process.env.SITE_URL || process.env.VITE_SITE_URL);
 const apiBaseUrl = (process.env.VITE_API_BASE_URL || process.env.API_BASE_URL || 'https://api.cotejuros.com.br').replace(/\/$/, '');
 const allowLocalArticleFallback = process.env.SITEMAP_ALLOW_LOCAL_ARTICLE_FALLBACK !== 'false';
 const now = new Date().toISOString();
@@ -151,11 +167,35 @@ const sitemapXml = [
 
 writeFileSync(sitemapPath, sitemapXml, 'utf8');
 
+const sitemapIndexXml = [
+  '<?xml version="1.0" encoding="UTF-8"?>',
+  '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+  '  <sitemap>',
+  `    <loc>${siteUrl}/sitemap.xml</loc>`,
+  `    <lastmod>${now}</lastmod>`,
+  '  </sitemap>',
+  '  <sitemap>',
+  `    <loc>${siteUrl}/stories-sitemap.xml</loc>`,
+  `    <lastmod>${now}</lastmod>`,
+  '  </sitemap>',
+  '</sitemapindex>'
+].join('\n');
+
+writeFileSync(sitemapIndexPath, sitemapIndexXml, 'utf8');
+
 const robotsTxt = [
+  'User-agent: Googlebot',
+  'Allow: /',
+  '',
+  'User-agent: Mediapartners-Google',
+  'Allow: /',
+  '',
   'User-agent: *',
   'Allow: /',
   '',
-  `Sitemap: ${siteUrl}/sitemap.xml`
+  `Sitemap: ${siteUrl}/sitemap-index.xml`,
+  `Sitemap: ${siteUrl}/sitemap.xml`,
+  `Sitemap: ${siteUrl}/stories-sitemap.xml`
 ].join('\n');
 
 writeFileSync(robotsPath, robotsTxt, 'utf8');

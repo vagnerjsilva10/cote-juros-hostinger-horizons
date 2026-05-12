@@ -1,8 +1,20 @@
 {
   "version": 2,
+  "env": {
+    "SITE_URL": "https://www.cotejuros.com.br",
+    "VITE_SITE_URL": "https://www.cotejuros.com.br"
+  },
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
+    {
+      "source": "/blog/:slug",
+      "destination": "https://api.cotejuros.com.br/blog/:slug"
+    },
+    {
+      "source": "/blog/:slug/",
+      "destination": "https://api.cotejuros.com.br/blog/:slug"
+    },
     {
       "source": "/stories-sitemap.xml",
       "destination": "https://api.cotejuros.com.br/stories-sitemap.xml"

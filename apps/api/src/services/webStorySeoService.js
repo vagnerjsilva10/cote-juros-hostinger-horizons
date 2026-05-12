@@ -96,6 +96,8 @@ export const validateWebStorySeo = ({
     canonical !== expectedStoryUrl ? `canonical incorreto: ${canonical || 'ausente'}` : null,
     storyUrl !== expectedStoryUrl ? `story URL incorreta: ${storyUrl || 'ausente'}` : null,
     !normalizedHtml.includes('<amp-story ') ? 'AMP story ausente' : null,
+    !normalizedHtml.includes('<amp-story-auto-ads>') ? 'monetização AMP story ausente' : null,
+    !normalizedHtml.includes('data-ad-client') ? 'AdSense client ausente na Web Story' : null,
     !article.title || String(article.title).trim().length < 8 ? 'title inválido' : null,
     !(article.metaDescription || article.summary || article.excerpt) ? 'descrição ausente' : null,
     !isValidAbsoluteImage(posterImageUrl) ? 'poster inválido' : null,
@@ -118,6 +120,7 @@ export const validateWebStorySeo = ({
     forbiddenUrls: Array.from(new Set(forbiddenUrls)),
     checks: {
       hasAmpStory: normalizedHtml.includes('<amp-story '),
+      hasStoryAds: normalizedHtml.includes('<amp-story-auto-ads>'),
       hasJsonLd: Boolean(jsonLd),
       posterValid: isValidAbsoluteImage(posterImageUrl),
       slideCount: Array.isArray(slideAssets) ? slideAssets.length : 0,

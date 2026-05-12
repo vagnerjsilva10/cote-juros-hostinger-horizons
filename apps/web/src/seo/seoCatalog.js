@@ -1,7 +1,7 @@
 import { merchantMachineComparePages, merchantMachineStaticPages } from './merchantMachinesCatalog.js';
 import { normalizeMojibakeDeep } from '../lib/textEncoding.js';
 
-const DEFAULT_SITE_URL = 'https://cote-juros-hostinger-horizons-web.vercel.app';
+const DEFAULT_SITE_URL = 'https://www.cotejuros.com.br';
 
 export const corePillarPaths = [
   '/',

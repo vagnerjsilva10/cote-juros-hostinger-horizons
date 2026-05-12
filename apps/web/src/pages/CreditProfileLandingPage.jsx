@@ -50,7 +50,7 @@ export function CreditProfileLandingPage({
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
-        <link rel="canonical" href={`https://cotejuros.com.br${canonicalPath}`} />
+        <link rel="canonical" href={`https://www.cotejuros.com.br${canonicalPath}`} />
       </Helmet>
 
       <QuickCreditFlowModal

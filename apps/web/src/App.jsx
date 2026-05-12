@@ -94,8 +94,7 @@ function AdminRoute({ title, children }) {
 }
 
 function RouteAwareAdSenseScript() {
-  const location = useLocation();
-  return location.pathname === '/' ? null : <AdSenseScript />;
+  return <AdSenseScript />;
 }
 
 function RouteAwareCookieConsent() {

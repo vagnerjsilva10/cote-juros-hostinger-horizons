@@ -237,7 +237,7 @@ function PremiumAd({ position = 'article' }) {
       className={`cj-article-ad cj-article-ad--${position}`}
       format={isSidebar ? 'auto' : 'fluid'}
       layout={isSidebar ? undefined : 'in-article'}
-      minHeight={isSidebar ? 118 : 96}
+      minHeight={isSidebar ? 320 : 280}
       theme="light"
     />
   );
@@ -605,6 +605,8 @@ function BlogArticlePage({ articleSlugOverride = '' }) {
                     ))}
                   </section>
                 ) : null}
+
+                {relatedArticles.length ? <PremiumAd position="article" /> : null}
 
                 {relatedArticles.length ? (
                   <section className="cj-article-related-panel" aria-label="Leituras relacionadas">

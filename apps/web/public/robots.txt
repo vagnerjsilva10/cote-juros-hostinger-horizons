@@ -1,4 +1,12 @@
+User-agent: Googlebot
+Allow: /
+
+User-agent: Mediapartners-Google
+Allow: /
+
 User-agent: *
 Allow: /
 
+Sitemap: https://www.cotejuros.com.br/sitemap-index.xml
 Sitemap: https://www.cotejuros.com.br/sitemap.xml
+Sitemap: https://www.cotejuros.com.br/stories-sitemap.xml

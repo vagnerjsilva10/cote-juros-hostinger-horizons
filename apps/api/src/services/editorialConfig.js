@@ -1,5 +1,19 @@
-export const PUBLIC_SITE_URL = (process.env.PUBLIC_SITE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
-export const SITE_BASE_URL = (process.env.SITE_BASE_URL || PUBLIC_SITE_URL).replace(/\/$/, '');
+const normalizePublicSiteUrl = (value = '') => {
+  const raw = String(value || 'https://www.cotejuros.com.br').trim().replace(/\/$/, '');
+  try {
+    const url = new URL(raw);
+    if (url.hostname === 'www.cotejuros.com.br') return 'https://www.cotejuros.com.br';
+    if (url.hostname === 'cotejuros.com.br' || url.hostname === 'api.cotejuros.com.br') {
+      return 'https://www.cotejuros.com.br';
+    }
+    return 'https://www.cotejuros.com.br';
+  } catch {
+    return 'https://www.cotejuros.com.br';
+  }
+};
+
+export const PUBLIC_SITE_URL = normalizePublicSiteUrl(process.env.PUBLIC_SITE_URL);
+export const SITE_BASE_URL = normalizePublicSiteUrl(process.env.SITE_BASE_URL || PUBLIC_SITE_URL);
 export const WEB_PUBLIC_DIR = new URL('../../../web/public/', import.meta.url);
 export const BLOG_IMAGE_DIR = new URL('../../../web/public/images/blog/', import.meta.url);
 export const BLOG_IMAGE_VARIANTS_DIR = new URL('../../../web/public/images/blog/variants/', import.meta.url);

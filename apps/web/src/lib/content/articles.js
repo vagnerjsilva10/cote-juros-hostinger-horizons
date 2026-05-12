@@ -246,9 +246,12 @@ export const normalizeArticleData = (article = {}) => {
   const slug = normalizeArticleSlug({ ...source, title });
   const explicitRoutePath = sanitizeInlineText(source.routePath || source.path || '');
   const routePath = explicitRoutePath || (slug ? `/blog/${slug}` : '');
-  const canonicalUrl =
+  const canonicalUrl = (
     sanitizeInlineText(source.canonicalUrl || '') ||
-    (routePath ? `https://www.cotejuros.com.br${routePath}${routePath.endsWith('/') ? '' : '/'}` : '');
+    (routePath ? `https://www.cotejuros.com.br${routePath}${routePath.endsWith('/') ? '' : '/'}` : '')
+  )
+    .replace(/^https:\/\/cotejuros\.com\.br/i, 'https://www.cotejuros.com.br')
+    .replace(/^https:\/\/api\.cotejuros\.com\.br/i, 'https://www.cotejuros.com.br');
   const category = sanitizeInlineText(source.category || source.categoryName || source.clusterLabel || '');
   const excerpt = sanitizeInlineText(source.excerpt || source.summary || source.metaDescription || source.seoDescription || '');
   const intro = sanitizeStringArray(source.intro);

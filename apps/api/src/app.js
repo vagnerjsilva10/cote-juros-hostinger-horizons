@@ -17,6 +17,7 @@ import siteRoutes from './routes/site.js';
 import internalRoutes from './routes/internal.js';
 import cronArticlesRoutes from './routes/cronArticles.js';
 import distributionPublicRoutes from './routes/distributionPublic.js';
+import blogSeoRoutes from './routes/blogSeo.js';
 import { PrismaConfigError } from './lib/prisma.js';
 import { AdminAuthSetupError } from './lib/adminAuth.js';
 import { IntegrationConfigurationError, JurosBaixosIntegrationError } from './integrations/jurosBaixos/errors.js';
@@ -146,6 +147,7 @@ export const createApp = () => {
   app.use('/api/site', siteRoutes);
   app.use('/api/internal', internalRoutes);
   app.use('/api/cron/articles', cronArticlesRoutes);
+  app.use('/', blogSeoRoutes);
   app.use('/', distributionPublicRoutes);
 
   app.use((err, req, res, _next) => {

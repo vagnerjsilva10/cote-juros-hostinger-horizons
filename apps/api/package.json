@@ -41,7 +41,8 @@
     "seo:growth": "node src/jobs/runSeoGrowth.js",
     "seo:organic-growth": "node src/jobs/runOrganicGrowthStrategy.js",
     "seo:competitors": "node src/jobs/runCompetitorSeoResearch.js",
-    "articles:scale": "node src/jobs/runArticleScaleLayers.js --mode=all --limit=200"
+    "articles:scale": "node src/jobs/runArticleScaleLayers.js --mode=all --limit=200",
+    "seo:audit-indexing": "node src/jobs/auditSeoIndexing.js"
   },
   "dependencies": {
     "@prisma/client": "^6.12.0",

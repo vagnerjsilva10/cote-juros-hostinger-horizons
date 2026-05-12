@@ -436,6 +436,8 @@ const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterIm
   const title = escapeHtml(`${article.title} | Web Story Cote Juros`);
   const publisherLogo = `${PUBLIC_SITE_URL}/assets/logo/logo-icon-square.png`;
   const storyUrl = buildPublicStoryUrl(storyPublicPath);
+  const storyAdClient = process.env.ADSENSE_CLIENT_ID || 'ca-pub-2873725911890738';
+  const storyAdSlot = process.env.ADSENSE_WEB_STORY_SLOT || process.env.ADSENSE_ARTICLE_INLINE_SLOT || '1892315338';
 
   const pages = slides.map((slide, index) => {
     const id = `slide-${index + 1}`;
@@ -483,6 +485,7 @@ const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterIm
   <meta name="description" content="${escapeHtml(article.metaDescription || article.summary || article.excerpt || article.title)}">
   <script async src="https://cdn.ampproject.org/v0.js"></script>
   <script async custom-element="amp-story" src="https://cdn.ampproject.org/v0/amp-story-1.0.js"></script>
+  <script async custom-element="amp-story-auto-ads" src="https://cdn.ampproject.org/v0/amp-story-auto-ads-0.1.js"></script>
   <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
   <style amp-custom>
     amp-story{font-family:Arial,sans-serif;color:#fff}
@@ -515,6 +518,17 @@ const buildStoryHtml = ({ article, slides, storyPublicPath, articleUrl, posterIm
     publisher="Cote Juros"
     publisher-logo-src="${publisherLogo}"
     poster-portrait-src="${escapeHtml(posterImageUrl)}">
+    <amp-story-auto-ads>
+      <script type="application/json">
+        {
+          "ad-attributes": {
+            "type": "adsense",
+            "data-ad-client": "${escapeHtml(storyAdClient)}",
+            "data-ad-slot": "${escapeHtml(storyAdSlot)}"
+          }
+        }
+      </script>
+    </amp-story-auto-ads>
     ${pages}
     <amp-story-bookend src="${escapeHtml(`${storyUrl}bookend.json`)}" layout="nodisplay"></amp-story-bookend>
   </amp-story>

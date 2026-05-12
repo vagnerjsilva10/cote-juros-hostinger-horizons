@@ -1,5 +1,21 @@
 import { getPrisma } from '../lib/prisma.js';
 
+const PUBLIC_SITE_URL = 'https://www.cotejuros.com.br';
+
+const normalizePublicUrl = (value = '') => {
+  if (!value) return '';
+  try {
+    const url = new URL(value, PUBLIC_SITE_URL);
+    if (url.hostname === 'cotejuros.com.br' || url.hostname === 'api.cotejuros.com.br') {
+      url.protocol = 'https:';
+      url.hostname = 'www.cotejuros.com.br';
+    }
+    return url.toString();
+  } catch {
+    return value;
+  }
+};
+
 const parseStructuredContent = (article) => {
   if (article?.structuredContent && typeof article.structuredContent === 'object') {
     return article.structuredContent;
@@ -53,7 +69,7 @@ const serializeArticle = (article) => {
     conclusion: Array.isArray(structured.conclusion) ? structured.conclusion : [],
     cta: structured.cta || null,
     routePath: structured.routePath || `/blog/${article.slug}`,
-    canonicalUrl: structured.canonicalUrl || `https://www.cotejuros.com.br/blog/${article.slug}/`,
+    canonicalUrl: normalizePublicUrl(structured.canonicalUrl || `${PUBLIC_SITE_URL}/blog/${article.slug}/`),
     clusterLabel: article.cluster?.name || structured.clusterLabel || ''
   };
 };

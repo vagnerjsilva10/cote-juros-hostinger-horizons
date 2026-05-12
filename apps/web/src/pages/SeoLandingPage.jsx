@@ -5,7 +5,7 @@ import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import QuickCreditFlowModal from '@/components/QuickCreditFlowModal.jsx';
-import { AdSpace, ADSENSE_SLOT_IDS } from '@/components/AdSpace.jsx';
+import AdSenseBlock, { ADSENSE_PLATFORM_SLOTS } from '@/components/AdSenseBlock.jsx';
 import PageHero from '@/components/PageHero.jsx';
 import { resolveSiteUrl } from '@/seo/seoCatalog.js';
 
@@ -41,13 +41,13 @@ function SeoLandingPage({ title, description, heading, content }) {
       <section className="page-section bg-background">
         <div className="page-shell grid gap-8 lg:grid-cols-[1fr_320px]">
           <div className="space-y-8">
-            <AdSpace height="90px" adSlot={ADSENSE_SLOT_IDS.header} />
+            <AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.blogTop} minHeight={120} />
             {content.map((paragraph, index) => (
               <React.Fragment key={`${paragraph.slice(0, 20)}-${index}`}>
                 <div className="rounded-[16px] border border-border bg-background-secondary p-8">
                   <p>{paragraph}</p>
                 </div>
-                {index === 1 ? <AdSpace height="220px" adSlot={ADSENSE_SLOT_IDS.inContent} /> : null}
+                {index === 1 ? <AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.articleInline} minHeight={280} layout="in-article" format="fluid" /> : null}
               </React.Fragment>
             ))}
 
@@ -94,7 +94,7 @@ function SeoLandingPage({ title, description, heading, content }) {
                 </p>
               </CardContent>
             </Card>
-            <AdSpace height="600px" adSlot={ADSENSE_SLOT_IDS.sidebar} />
+            <AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.articleSidebar} minHeight={320} />
           </div>
         </div>
       </section>
