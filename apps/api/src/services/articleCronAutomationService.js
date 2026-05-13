@@ -6,6 +6,7 @@ import { checkWordpressHealth } from './blogImage/wordpressPublisher.js';
 const TIMEZONE = 'America/Sao_Paulo';
 const DAILY_LIMIT = Number(process.env.ARTICLE_AUTOMATION_DAILY_LIMIT || 3);
 const isPublishingApproved = () => process.env.ARTICLE_AUTOMATION_ALLOW_PUBLISH === 'true';
+const isFactoryFallbackEnabled = () => process.env.ARTICLE_AUTOMATION_FACTORY_FALLBACK_ENABLED === 'true';
 const SITE_BASE_URL = (process.env.SITE_BASE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
 const SCHEDULE_SLOTS = Object.freeze([
   { name: 'morning', hour: 8, minute: 30 },
@@ -334,6 +335,7 @@ export class ArticleCronAutomationService {
         limit,
         force,
         publishApproved,
+        factoryFallbackEnabled: isFactoryFallbackEnabled(),
         timezone: TIMEZONE
       }
     });
@@ -349,7 +351,7 @@ export class ArticleCronAutomationService {
       });
 
       if (!result.length) {
-        const fallbackItem = publishApproved
+        const fallbackItem = publishApproved && isFactoryFallbackEnabled()
           ? await this.runFactoryFallback({ triggerSource: `${triggerSource}-factory-fallback-empty` })
           : null;
         if (fallbackItem?.article?.status === 'published') {
@@ -394,7 +396,7 @@ export class ArticleCronAutomationService {
         ...item,
         automationStatus: classifyAutomationItemStatus(item)
       }));
-      if (publishApproved && !items.some((item) => item.automationStatus === 'published')) {
+      if (publishApproved && isFactoryFallbackEnabled() && !items.some((item) => item.automationStatus === 'published')) {
         const fallbackItem = await this.runFactoryFallback({ triggerSource: `${triggerSource}-factory-fallback-validation` });
         items.push({
           ...fallbackItem,
@@ -463,7 +465,8 @@ export class ArticleCronAutomationService {
         expectedByNow,
         missing,
         dailyLimit: DAILY_LIMIT,
-        publishApproved
+        publishApproved,
+        factoryFallbackEnabled: isFactoryFallbackEnabled()
       }
     });
 
