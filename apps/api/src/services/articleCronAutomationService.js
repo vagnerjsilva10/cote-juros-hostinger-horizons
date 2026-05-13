@@ -20,6 +20,15 @@ const FACTORY_FALLBACK_CANDIDATES = Object.freeze([
   { keyword: 'cartao de credito para MEI', category: 'Cartoes', intent: 'comparison' },
   { keyword: 'emprestimo com garantia de celular', category: 'Emprestimos', intent: 'comparison' }
 ]);
+const toSlug = (value = '') =>
+  String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
 
 const dateTimeFormatter = new Intl.DateTimeFormat('en-CA', {
   timeZone: TIMEZONE,
@@ -244,10 +253,33 @@ export class ArticleCronAutomationService {
   }
 
   static async runFactoryFallback({ triggerSource = 'factory-fallback' } = {}) {
+    const prisma = getPrisma();
     const errors = [];
 
     for (const candidate of FACTORY_FALLBACK_CANDIDATES) {
       try {
+        const idempotencyKey = toSlug(`${candidate.keyword}-${candidate.intent}-${candidate.category}`);
+        const existingCandidate = await prisma.article.findFirst({
+          where: {
+            structuredContent: {
+              path: ['factoryIdempotencyKey'],
+              equals: idempotencyKey
+            }
+          },
+          select: {
+            slug: true,
+            status: true
+          }
+        });
+        if (existingCandidate) {
+          errors.push({
+            keyword: candidate.keyword,
+            status: 'already_tried',
+            blockers: [`factory candidate already exists: ${existingCandidate.slug} (${existingCandidate.status})`]
+          });
+          continue;
+        }
+
         const result = await ArticleFactoryService.run({
           ...candidate,
           topic: candidate.keyword,
