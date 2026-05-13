@@ -20,6 +20,107 @@ const text = (article = {}) => [
 ].filter(Boolean).join(' ');
 
 export class EditorialFeedbackLoopService {
+  static ingestPerformanceSignals({
+    article = {},
+    searchConsole = {},
+    analytics = {},
+    conversions = {},
+    rankings = {},
+    backlinks = {},
+  } = {}) {
+    const ctr = Number(searchConsole.ctr || 0);
+    const impressions = Number(searchConsole.impressions || 0);
+    const clicks = Number(searchConsole.clicks || 0);
+    const averagePosition = Number(searchConsole.averagePosition || rankings.averagePosition || 0);
+    const scrollDepth = Number(analytics.scrollDepth || 0);
+    const timeOnPage = Number(analytics.timeOnPage || 0);
+    const bounceRate = Number(analytics.bounceRate || 0);
+    const conversionRate = Number(conversions.conversionRate || 0);
+    const backlinkCount = Number(backlinks.count || 0);
+
+    return {
+      slug: article.slug,
+      title: article.title,
+      capturedAt: new Date().toISOString(),
+      metrics: {
+        ctr,
+        impressions,
+        clicks,
+        averagePosition,
+        scrollDepth,
+        timeOnPage,
+        bounceRate,
+        conversionRate,
+        backlinkCount,
+        engagementScore: clamp(scrollDepth * 0.35 + timeOnPage * 0.25 + conversionRate * 0.2 + Math.min(backlinkCount, 20)),
+        serpDecayRisk: clamp((averagePosition > 12 ? 35 : 0) + (ctr < 1.2 && impressions > 300 ? 25 : 0) + (bounceRate > 70 ? 15 : 0)),
+      },
+      sourcePolicy: {
+        allowedSources: ['Google Search Console', 'GA4', 'ranking tracker', 'CTA events', 'backlink monitor'],
+        writeMode: 'append-only aggregate signals',
+        autopublishImpact: 'never bypass governance',
+      },
+    };
+  }
+
+  static learnFromSignals({ signals = [] } = {}) {
+    const byFormat = {};
+    const byCluster = {};
+    const byCta = {};
+    const intros = [];
+    const headlines = [];
+
+    for (const signal of signals) {
+      const meta = signal.metadata || {};
+      const metrics = signal.metrics || {};
+      const format = meta.contentType || 'unknown';
+      const cluster = meta.cluster || 'unknown';
+      const cta = meta.ctaPattern || 'unknown';
+      byFormat[format] = this.aggregateLearning(byFormat[format], metrics);
+      byCluster[cluster] = this.aggregateLearning(byCluster[cluster], metrics);
+      byCta[cta] = this.aggregateLearning(byCta[cta], metrics);
+      if (meta.introPattern) intros.push({ pattern: meta.introPattern, metrics });
+      if (meta.headlinePattern) headlines.push({ pattern: meta.headlinePattern, metrics });
+    }
+
+    return {
+      learnedAt: new Date().toISOString(),
+      byFormat,
+      byCluster,
+      byCta,
+      winningIntroPatterns: this.rankPatterns(intros),
+      winningHeadlinePatterns: this.rankPatterns(headlines),
+      refreshCandidates: signals
+        .filter((signal) => (signal.metrics?.serpDecayRisk || 0) >= 55)
+        .map((signal) => ({ slug: signal.slug, risk: signal.metrics.serpDecayRisk, reason: 'queda de SERP/engajamento' })),
+      policy: 'aprendizado ajusta prioridade, estrutura e refresh; nao publica sozinho',
+    };
+  }
+
+  static aggregateLearning(current = {}, metrics = {}) {
+    const count = (current.count || 0) + 1;
+    const next = {
+      count,
+      averageCtr: ((current.averageCtr || 0) * (count - 1) + (metrics.ctr || 0)) / count,
+      averageScrollDepth: ((current.averageScrollDepth || 0) * (count - 1) + (metrics.scrollDepth || 0)) / count,
+      averageTimeOnPage: ((current.averageTimeOnPage || 0) * (count - 1) + (metrics.timeOnPage || 0)) / count,
+      averageConversionRate: ((current.averageConversionRate || 0) * (count - 1) + (metrics.conversionRate || 0)) / count,
+      averageRanking: ((current.averageRanking || 0) * (count - 1) + (metrics.averagePosition || 0)) / count,
+    };
+    next.health = clamp(next.averageCtr * 12 + next.averageScrollDepth * 0.45 + next.averageTimeOnPage * 0.25 + next.averageConversionRate * 8 - next.averageRanking * 1.2);
+    return next;
+  }
+
+  static rankPatterns(items = []) {
+    return items
+      .map((item) => ({
+        pattern: item.pattern,
+        score: clamp((item.metrics.ctr || 0) * 12 + (item.metrics.scrollDepth || 0) * 0.5 + (item.metrics.timeOnPage || 0) * 0.2),
+      }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8);
+  }
+
   static projectPerformanceSignals({ article = {}, validation = {}, governance = {} } = {}) {
     const body = text(article);
     const words = article.wordCount || countWords(body);

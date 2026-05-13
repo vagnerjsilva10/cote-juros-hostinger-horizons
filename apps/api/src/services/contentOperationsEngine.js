@@ -5,6 +5,7 @@ import { EditorialMemoryService } from './editorialMemoryService.js';
 import { EditorialFingerprintService } from './editorialFingerprintService.js';
 import { TopicalAuthorityService } from './topicalAuthorityService.js';
 import { TrendIntelligenceService } from './trendIntelligenceService.js';
+import { LiveDiscoveryResilienceService } from './liveDiscoveryResilienceService.js';
 
 const WEEKLY_CONTENT_MIX = {
   evergreen_premium: 6,
@@ -145,6 +146,27 @@ const STATIC_CANDIDATES = [
     angle: 'uso pratico de dado oficial para entender dividas, contas e riscos',
   },
   {
+    keyword: 'como negociar divida com banco sem aceitar a primeira proposta',
+    type: 'evergreen_premium',
+    cluster: 'renegociacao',
+    family: 'renegociacao',
+    angle: 'leitura critica de desconto, prazo, entrada e custo final',
+  },
+  {
+    keyword: 'como montar um plano financeiro depois de limpar o nome',
+    type: 'evergreen_premium',
+    cluster: 'educacao_financeira',
+    family: 'educacao_financeira',
+    angle: 'pos-negativacao, reconstrucao de rotina e prevencao de novo atraso',
+  },
+  {
+    keyword: 'conta atrasada ou cartao rotativo qual pagar primeiro',
+    type: 'evergreen_premium',
+    cluster: 'orcamento_familiar',
+    family: 'educacao_financeira',
+    angle: 'decisao domestica entre juros, servico essencial e risco de corte',
+  },
+  {
     keyword: 'Selic mudou o que muda no seu bolso',
     type: 'news_analysis',
     cluster: 'juros_selic',
@@ -173,6 +195,27 @@ const STATIC_CANDIDATES = [
     angle: 'liquidez futura, emergencia e custo da antecipacao',
   },
   {
+    keyword: 'Banco Central alerta sobre segurança digital o que muda para o consumidor',
+    type: 'news_analysis',
+    cluster: 'consumidor_financeiro',
+    family: 'news',
+    angle: 'traduzir alerta institucional em passos praticos de protecao',
+  },
+  {
+    keyword: 'mutirao de renegociacao de dividas como avaliar se vale a pena',
+    type: 'news_analysis',
+    cluster: 'renegociacao',
+    family: 'news',
+    angle: 'noticia de oportunidade com leitura de desconto, prazo e renda',
+  },
+  {
+    keyword: 'mudanca em regras de cartao como afeta a fatura do consumidor',
+    type: 'news_analysis',
+    cluster: 'cartao',
+    family: 'news',
+    angle: 'explicar regulacao sem promessa e com impacto no bolso',
+  },
+  {
     keyword: 'como se proteger de golpe do falso atendente do banco',
     type: 'consumer_alert',
     cluster: 'golpes_bancarios',
@@ -192,6 +235,27 @@ const STATIC_CANDIDATES = [
     cluster: 'inss',
     family: 'consumidor_financeiro',
     angle: 'extrato Meu INSS, banco, reclamacao e provas',
+  },
+  {
+    keyword: 'golpe da falsa central antifraude como identificar',
+    type: 'consumer_alert',
+    cluster: 'golpes_bancarios',
+    family: 'golpes_fraudes',
+    angle: 'alerta sobre engenharia social, senha, acesso remoto e pressa',
+  },
+  {
+    keyword: 'golpe do comprovante falso de Pix como se proteger',
+    type: 'consumer_alert',
+    cluster: 'golpes_pix',
+    family: 'golpes_fraudes',
+    angle: 'conferencia do extrato, comprovante falso e prova de recebimento',
+  },
+  {
+    keyword: 'emprestimo falso pelo WhatsApp sinais de golpe',
+    type: 'consumer_alert',
+    cluster: 'golpes_fraudes',
+    family: 'golpes_fraudes',
+    angle: 'taxa antecipada, promessa de aprovacao e canal nao oficial',
   },
   {
     keyword: 'emprestimo para negativado atualizar dados de CET e golpes',
@@ -250,6 +314,30 @@ const STATIC_CANDIDATES = [
     angle: 'refresh com criterio de juros, servico essencial, garantia e impacto familiar',
   },
   {
+    keyword: 'como sair das dividas atualizar plano de 30 dias',
+    type: 'content_refresh',
+    cluster: 'renegociacao',
+    family: 'renegociacao',
+    targetSlug: 'como-sair-das-dividas',
+    angle: 'refresh com ordem de prioridades, renda real e renegociacao responsavel',
+  },
+  {
+    keyword: 'reserva de emergencia atualizar exemplos para renda apertada',
+    type: 'content_refresh',
+    cluster: 'orcamento_familiar',
+    family: 'educacao_financeira',
+    targetSlug: 'reserva-de-emergencia-como-montar',
+    angle: 'refresh de reserva com valores pequenos, frequencia e gatilhos de uso',
+  },
+  {
+    keyword: 'juros abusivos no cartao atualizar como contestar',
+    type: 'content_refresh',
+    cluster: 'consumidor_financeiro',
+    family: 'cartao',
+    targetSlug: 'juros-abusivos-no-cartao',
+    angle: 'refresh com contrato, atendimento, consumidor.gov.br e prova documental',
+  },
+  {
     keyword: 'MED no Pix quando ajuda e quais sao os limites',
     type: 'topical_support',
     cluster: 'golpes_pix',
@@ -304,6 +392,27 @@ const STATIC_CANDIDATES = [
     cluster: 'consumidor_financeiro',
     family: 'defesa_consumidor',
     angle: 'provas, protocolo, print, contrato e linha do tempo do problema',
+  },
+  {
+    keyword: 'como usar o Registrato para conferir contas e emprestimos no seu CPF',
+    type: 'topical_support',
+    cluster: 'consumidor_financeiro',
+    family: 'banco_central',
+    angle: 'supporting page de dado oficial, CPF e prevencao de fraude',
+  },
+  {
+    keyword: 'o que e minimo existencial no superendividamento',
+    type: 'topical_support',
+    cluster: 'superendividamento',
+    family: 'defesa_consumidor',
+    angle: 'explicar conceito juridico-financeiro em linguagem de orcamento domestico',
+  },
+  {
+    keyword: 'como montar linha do tempo para reclamar de golpe financeiro',
+    type: 'topical_support',
+    cluster: 'golpes_fraudes',
+    family: 'golpes_fraudes',
+    angle: 'documentacao, datas, protocolos, banco, BO e consumidor.gov.br',
   },
 ];
 
@@ -511,26 +620,38 @@ export class ContentOperationsEngine {
 
     const liveResults = [];
     if (canUseLive) {
-      for (const seed of seeds.slice(0, maxSerpSeeds)) {
-        try {
-          const serp = await SerpIntelligenceService.analyzeKeyword({
-            keyword: seed.keyword,
-            dryRun: false,
-            limit: 8,
-          });
-          liveResults.push(deriveCandidateFromSerp(seed.keyword, serp, seed.type));
-        } catch (error) {
-          liveResults.push({
-            keyword: seed.keyword,
-            type: seed.type,
-            cluster: TopicalAuthorityService.classifyCluster({ keyword: seed.keyword, category: seed.type }),
-            family: seed.type,
-            angle: 'fallback de discovery apos falha de SERP live',
-            source: 'serp_discovery_fallback',
-            discoveryError: error.message,
-          });
-        }
-      }
+      const resilient = await LiveDiscoveryResilienceService.fetchWithResilience({
+        key: `serp-discovery:${seeds.map((seed) => seed.keyword).join('|')}`,
+        timeoutMs: 14000,
+        retries: 1,
+        fetcher: async () => {
+          const items = [];
+          for (const seed of seeds.slice(0, maxSerpSeeds)) {
+            const serp = await SerpIntelligenceService.analyzeKeyword({
+              keyword: seed.keyword,
+              dryRun: false,
+              limit: 8,
+            });
+            items.push(deriveCandidateFromSerp(seed.keyword, serp, seed.type));
+          }
+          return {
+            ok: true,
+            candidates: LiveDiscoveryResilienceService.rankOffline(items),
+            provider: process.env.SERPAPI_API_KEY ? 'serpapi' : 'valueserp',
+          };
+        },
+        fallback: () => ({
+          ok: true,
+          candidates: LiveDiscoveryResilienceService.rankOffline(discovered),
+          provider: 'offline_fallback',
+        }),
+      });
+      liveResults.push(...(resilient.candidates || []).map((item) => ({
+        ...item,
+        discoveryCache: resilient.cache,
+        discoveryStale: resilient.stale,
+        discoveryCircuitOpen: resilient.circuitOpen,
+      })));
     }
 
     return {
@@ -543,6 +664,7 @@ export class ContentOperationsEngine {
         serpUsed: canUseLive,
         trendsAdapter: 'planned',
         newsAdapter: 'planned',
+        resilience: LiveDiscoveryResilienceService.getStatus(),
       },
       candidates: [...liveResults, ...discovered],
     };
@@ -607,7 +729,7 @@ export class ContentOperationsEngine {
     const sameDayCluster = weekState.dayClusters?.has(cluster);
     const clusterWeekCount = weekState.weekClusters?.get(cluster) || 0;
     const typeWeekCount = weekState.typeCounts?.get(candidate.type) || 0;
-    const typeTarget = WEEKLY_CONTENT_MIX[candidate.type] || 0;
+    const typeTarget = weekState.typeTargets?.[candidate.type] || WEEKLY_CONTENT_MIX[candidate.type] || 0;
 
     const blockers = [];
     if (!isRefresh && canibalizationRisk >= 62) blockers.push('canibalization_risk_high');
@@ -741,7 +863,7 @@ export class ContentOperationsEngine {
       .filter((item) => !usedKeys.has(`${item.type}:${item.targetSlug || toSlug(item.keyword)}`))
       .filter((item) => item.governance.publishAllowed)
       .filter((item) => !weekState.dayClusters.has(item.cluster))
-      .filter((item) => (weekState.typeCounts.get(item.type) || 0) < (WEEKLY_CONTENT_MIX[item.type] || 0))
+      .filter((item) => (weekState.typeCounts.get(item.type) || 0) < (weekState.typeTargets?.[item.type] || WEEKLY_CONTENT_MIX[item.type] || 0))
       .sort((a, b) => rank(b) - rank(a));
 
     return eligible[0] || null;
@@ -760,9 +882,14 @@ export class ContentOperationsEngine {
 
     const baseEvaluations = await this.evaluateCandidatePool({ candidates, dryRun });
     const usedKeys = new Set();
+    const targetMultiplier = Math.max(1, Math.ceil(days / 7));
+    const typeTargets = Object.fromEntries(
+      Object.entries(WEEKLY_CONTENT_MIX).map(([type, count]) => [type, count * targetMultiplier])
+    );
     const weekState = {
       weekClusters: new Map(),
       typeCounts: new Map(),
+      typeTargets,
     };
     const daysPlan = [];
     const blockedCandidates = [];
@@ -864,8 +991,8 @@ export class ContentOperationsEngine {
       target: {
         days,
         dailyTarget,
-        weeklyTarget: days * dailyTarget,
-        weeklyMix: WEEKLY_CONTENT_MIX,
+      weeklyTarget: days * dailyTarget,
+        weeklyMix: typeTargets,
       },
       discovery,
       days: daysPlan,
