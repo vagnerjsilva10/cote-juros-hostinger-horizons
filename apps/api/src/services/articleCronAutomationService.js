@@ -1,5 +1,6 @@
 import { getPrisma } from '../lib/prisma.js';
 import { EditorialService } from './editorialService.js';
+import { ArticleFactoryService } from './articleFactoryService.js';
 import { checkWordpressHealth } from './blogImage/wordpressPublisher.js';
 
 const TIMEZONE = 'America/Sao_Paulo';
@@ -10,6 +11,14 @@ const SCHEDULE_SLOTS = Object.freeze([
   { name: 'morning', hour: 8, minute: 30 },
   { name: 'afternoon', hour: 13, minute: 30 },
   { name: 'evening', hour: 19, minute: 30 }
+]);
+const FACTORY_FALLBACK_CANDIDATES = Object.freeze([
+  { keyword: 'cartao de credito para autonomo', category: 'Cartoes', intent: 'comparison' },
+  { keyword: 'emprestimo para autonomo com renda informal', category: 'Emprestimos', intent: 'decision' },
+  { keyword: 'como comparar CET de emprestimo pessoal', category: 'Emprestimos', intent: 'howto' },
+  { keyword: 'financiamento para MEI comprar veiculo', category: 'Financiamentos', intent: 'decision' },
+  { keyword: 'cartao de credito para MEI', category: 'Cartoes', intent: 'comparison' },
+  { keyword: 'emprestimo com garantia de celular', category: 'Emprestimos', intent: 'comparison' }
 ]);
 
 const dateTimeFormatter = new Intl.DateTimeFormat('en-CA', {
@@ -166,11 +175,45 @@ const classifyAutomationItemStatus = (item = {}) => {
 
 const summarizeAutomationStatus = (items = [], publishApproved = false) => {
   const statuses = items.map((item) => item.automationStatus);
+  if (statuses.includes('published')) return 'published';
   if (statuses.includes('validation_failed')) return 'validation_failed';
   if (statuses.includes('distribution_failed')) return 'distribution_failed';
-  if (statuses.includes('published')) return 'published';
   if (statuses.includes('generated_draft')) return 'generated_draft';
   return publishApproved ? 'published' : 'generated_draft';
+};
+
+const buildFactoryFallbackItem = (result = {}) => {
+  const record = result.articleRecord || {};
+  const article = result.article?.structuredContent || {};
+  const slug = record.slug || result.slug || article.slug || '';
+  return {
+    jobRunId: null,
+    source: 'article-factory-fallback',
+    article: {
+      id: record.id || null,
+      slug,
+      title: record.title || result.title || article.title,
+      status: record.status || result.status,
+      publishedAt: record.publishedAt || null,
+      coverImage: record.coverImage || result.image?.coverImage || article.coverImage || '',
+      url: slug ? `${SITE_BASE_URL}/blog/${slug}/` : null
+    },
+    validation: result.validation,
+    image: {
+      provider: result.image?.provider,
+      publicPath: result.image?.coverImage,
+      validationPassed: Boolean(result.image?.coverImage),
+      errorMessage: null
+    },
+    distributionError: null,
+    finalValidation: {
+      passed: result.ok && record.status === 'published',
+      issues: [
+        ...(result.validation?.issues || []),
+        ...(result.publishSafety?.blockers || [])
+      ]
+    }
+  };
 };
 
 export class ArticleCronAutomationService {
@@ -200,6 +243,56 @@ export class ArticleCronAutomationService {
     });
   }
 
+  static async runFactoryFallback({ triggerSource = 'factory-fallback' } = {}) {
+    const errors = [];
+
+    for (const candidate of FACTORY_FALLBACK_CANDIDATES) {
+      try {
+        const result = await ArticleFactoryService.run({
+          ...candidate,
+          topic: candidate.keyword,
+          dryRun: false,
+          persist: true,
+          publishApproved: true,
+          triggerSource
+        });
+        if (result.ok && result.articleRecord?.status === 'published') {
+          return buildFactoryFallbackItem(result);
+        }
+        errors.push({
+          keyword: candidate.keyword,
+          status: result.status,
+          blockers: result.publishSafety?.blockers || result.validation?.issues || []
+        });
+      } catch (error) {
+        errors.push({
+          keyword: candidate.keyword,
+          error: error?.message || String(error)
+        });
+      }
+    }
+
+    return {
+      source: 'article-factory-fallback',
+      article: null,
+      validation: {
+        passed: false,
+        issues: ['factory_fallback_failed']
+      },
+      image: {
+        provider: null,
+        publicPath: '',
+        validationPassed: false,
+        errorMessage: 'Nenhum candidato de fallback conseguiu publicar.'
+      },
+      finalValidation: {
+        passed: false,
+        issues: errors.map((item) => item.error || `${item.keyword}: ${(item.blockers || []).join(' | ')}`).filter(Boolean)
+      },
+      distributionError: null
+    };
+  }
+
   static async runNow({ triggerSource = 'manual-run-now', limit = 1, force = true } = {}) {
     const publishApproved = isPublishingApproved();
     const job = await this.createJob({
@@ -219,15 +312,35 @@ export class ArticleCronAutomationService {
         triggerSource,
         ignoreSchedule: force,
         ignoreRecentClusterCooldown: force,
-        publishApproved
+        publishApproved,
+        retryOnValidationFailure: force
       });
 
       if (!result.length) {
+        const fallbackItem = publishApproved
+          ? await this.runFactoryFallback({ triggerSource: `${triggerSource}-factory-fallback-empty` })
+          : null;
+        if (fallbackItem?.article?.status === 'published') {
+          const payload = {
+            ok: true,
+            status: 'published',
+            publishApproved,
+            target: 'cotejuros.com.br',
+            items: [fallbackItem],
+            issueSummary: [],
+            article_id: fallbackItem.article.id,
+            post_id: fallbackItem.article.id,
+            url: fallbackItem.article.url
+          };
+          await this.finishJob({ job, status: 'published', result: payload, articleId: fallbackItem.article.id });
+          return payload;
+        }
+
         const payload = {
           ok: false,
           status: 'skipped',
           reason: 'no_eligible_editorial_brief',
-          items: []
+          items: fallbackItem ? [fallbackItem] : []
         };
         await this.finishJob({ job, status: 'skipped', result: payload });
         return payload;
@@ -249,9 +362,21 @@ export class ArticleCronAutomationService {
         ...item,
         automationStatus: classifyAutomationItemStatus(item)
       }));
+      if (publishApproved && !items.some((item) => item.automationStatus === 'published')) {
+        const fallbackItem = await this.runFactoryFallback({ triggerSource: `${triggerSource}-factory-fallback-validation` });
+        items.push({
+          ...fallbackItem,
+          automationStatus: classifyAutomationItemStatus(fallbackItem)
+        });
+      }
+
       const issueSummary = summarizeValidationIssues(items);
       const status = summarizeAutomationStatus(items, publishApproved);
-      const firstArticle = items.find((item) => item.article?.id)?.article || null;
+      const firstArticle = (
+        items.find((item) => item.automationStatus === 'published' && item.article?.id)?.article
+        || items.find((item) => item.article?.id)?.article
+        || null
+      );
       const payload = {
         ok: true,
         status,
@@ -268,7 +393,9 @@ export class ArticleCronAutomationService {
         job,
         status,
         result: payload,
-        error: issueSummary.length ? new Error(issueSummary.map((item) => `${item.type}: ${item.issue}`).join(' | ')) : null,
+        error: status === 'published' || !issueSummary.length
+          ? null
+          : new Error(issueSummary.map((item) => `${item.type}: ${item.issue}`).join(' | ')),
         articleId: firstArticle?.id || null
       });
 

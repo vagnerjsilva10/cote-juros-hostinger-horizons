@@ -74,6 +74,7 @@ const toSlug = (value = '') =>
 
 const toCategorySlug = (value = '') => `blog-${toSlug(value || 'finanças-pessoais')}`;
 const countWords = (value = '') => String(value).trim().split(/\s+/).filter(Boolean).length;
+const unique = (items = []) => Array.from(new Set(items.filter(Boolean)));
 const stripMarkdownArtifacts = (value = '') =>
   String(value || '')
     .replace(/```[\s\S]*?```/g, ' ')
@@ -332,10 +333,15 @@ const coerceGeneratedArticle = (raw = {}) => ({
   metaTitle: trimMetaTitle(raw?.metaTitle || raw?.seoTitle || raw?.title || ''),
   metaDescription: trimMetaDescription(ensureSentencePunctuation(raw?.metaDescription || raw?.seoDescription || raw?.summary || '')),
   category: compactWhitespace(raw?.category || 'Emprestimos'),
-  tags: (Array.isArray(raw?.tags) ? raw.tags : [])
-    .map((item) => compactWhitespace(item))
-    .filter(Boolean)
-    .slice(0, 10),
+  tags: unique([
+    ...(Array.isArray(raw?.tags) ? raw.tags : []),
+    raw?.category,
+    raw?.title,
+    raw?.h1,
+    'credito',
+    'financas pessoais',
+    'Cote Juros'
+  ].map((item) => compactWhitespace(item))).slice(0, 10),
   intro: normalizeParagraphList(raw?.intro || []).slice(0, 3),
   sections: (function () {
     const normalizedSections = normalizeSections(raw?.sections || []);
@@ -1060,7 +1066,15 @@ export class EditorialService {
         prisma.editorialJobRun.groupBy({
           by: ['briefId'],
           where: {
-            status: 'failed',
+            OR: [
+              { status: 'failed' },
+              {
+                status: 'draft_saved',
+                errorMessage: {
+                  not: null
+                }
+              }
+            ],
             briefId: {
               in: eligibleBriefs.map((brief) => brief.id)
             },
@@ -1355,10 +1369,13 @@ export class EditorialService {
         })
       });
 
+      const briefStatus = shouldPublish
+        ? 'published'
+        : (validation.passed ? 'draft' : 'failed');
       await prisma.editorialBrief.update({
         where: { id: brief.id },
         data: {
-          status: shouldPublish ? 'published' : 'draft'
+          status: briefStatus
         }
       });
 
@@ -1480,7 +1497,15 @@ export class EditorialService {
       prisma.editorialJobRun.groupBy({
         by: ['briefId'],
         where: {
-          status: 'failed',
+          OR: [
+            { status: 'failed' },
+            {
+              status: 'draft_saved',
+              errorMessage: {
+                not: null
+              }
+            }
+          ],
           briefId: {
             in: briefs.map((brief) => brief.id)
           },
