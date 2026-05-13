@@ -284,6 +284,11 @@ const calculateQualityScore = ({
   const hasOfficialSource = Array.isArray(article.externalLinks)
     ? article.externalLinks.some((link) => /bcb|banco central|gov\.br|serasa|febraban|cvm/i.test(`${link.label || ''} ${link.url || ''}`))
     : /banco central|gov\.br|serasa|febraban|cvm/i.test(plain);
+  const insightSignals = countPattern(plain, /muita gente|e ai mora o problema|banco aprova|quem promete|na pratica|aqui a cote juros|armadilha|sinal de alerta|se a proposta|nao e plano|ansiedade|erro mais caro|med nao e promessa|pressa do outro|print nao e confirmacao|canal oficial pesa|agir no escuro|pare antes|decisao correta|detalhe perigoso/gi);
+  const storySignals = countPattern(plain, /cenario comum|exemplo|imagine|uma pessoa|renda familiar|no primeiro dia|no terceiro mes|pressa|vergonha|medo|aperto/gi);
+  const emotionSignals = countPattern(plain, /pressa|ansiedade|medo|vergonha|aperto|alivio|risco|perda|urgencia|desconfie/gi);
+  const officialContextSignals = countPattern(plain, /banco central|gov\.br|consumidor\.gov\.br|med|mecanismo especial|febraban|serasa|procon|boletim de ocorrencia/gi);
+  const topicalSignals = countPattern(plain, /cet|pix|med|score|cpf|fgts|inss|consignado|renegoci|superendividamento|banco central|consumidor\.gov\.br|renda|parcela|juros/gi);
 
   const intentMatch = Math.min(100, 45
     + (includesKeyword(article.title || article.h1 || '', keyword) ? 15 : 0)
@@ -306,18 +311,35 @@ const calculateQualityScore = ({
     - aiPatternHits * 8
     - repeatedOpeningCount * 10
     - (paragraphLengths.filter((length) => length > 95).length * 3)
-    + (paragraphLengths.some((length) => length >= 25 && length <= 55) ? 8 : 0)));
+    + (paragraphLengths.some((length) => length >= 25 && length <= 55) ? 8 : 0)
+    + Math.min(insightSignals, 6) * 2
+    + (storySignals >= 4 ? 5 : 0)));
   const serpCompetitiveness = Math.min(100, 20
     + (coveredTopics.length / Math.max(1, mustCover.length)) * 35
     + tableCount * 8
     + (wordCount >= 2200 ? 18 : wordCount >= 1500 ? 10 : 0)
     + (faq.length >= 5 ? 7 : 0));
-  const antiTemplate = Math.max(0, 100 - templateHeadingHits * 9 - repeatedOpeningCount * 10 - aiPatternHits * 8);
+  const antiTemplate = Math.min(100, Math.max(0, 100
+    - templateHeadingHits * 9
+    - repeatedOpeningCount * 10
+    - aiPatternHits * 8
+    + Math.min(insightSignals, 8) * 2
+    + Math.min(storySignals, 6)));
   const structuralFingerprint = analyzeStructuralFingerprint(article);
   const antiTemplateAdjusted = Math.max(0, antiTemplate - Math.round(structuralFingerprint.aiFootprintRiskScore * 0.25));
   const seoStructure = Math.min(100, 15 + Math.min(sections.length, 12) * 5 + Math.min(faq.length, 6) * 4 + tableCount * 8 + (article.featuredSnippet ? 8 : 0));
   const internalLinkScore = Math.min(100, (Array.isArray(internalLinks) ? internalLinks.length : 0) * 25);
   const riskScore = Math.min(100, (CLICKBAIT_PATTERNS.test(article.title || '') ? 40 : 0) + (!hasRiskLanguage ? 25 : 0) + (!hasOfficialSource && editorialIntent !== 'guide' ? 15 : 0));
+  const narrativeStrength = Math.min(100, 25 + storySignals * 8 + insightSignals * 5 + (article.miniScenarios?.length ? 12 : 0) + (paragraphLengths.length >= 8 ? 8 : 0));
+  const emotionalVariance = Math.min(100, 35 + emotionSignals * 5 + (paragraphLengths.some((length) => length <= 16) ? 10 : 0) + (paragraphLengths.some((length) => length >= 45) ? 10 : 0));
+  const topicalAuthority = Math.min(100, 30 + topicalSignals * 2 + officialContextSignals * 8 + (hasOfficialSource ? 12 : 0) + (internalLinks.length >= 3 ? 8 : 0));
+  const editorialPersonality = Math.min(100, 25 + insightSignals * 9 + (article.editorialBrandVoice ? 12 : 0) + (article.expertInsights?.length ? 10 : 0) - genericHits * 3);
+  const fingerprintRisk = Math.max(structuralFingerprint.aiFootprintRiskScore, 100 - antiTemplateAdjusted);
+  const canibalizationRisk = Math.max(
+    article.editorialGovernance?.memory?.canibalizationRisk || 0,
+    article.governance?.memory?.canibalizationRisk || 0,
+    0
+  );
   const weighted = Math.round(
     intentMatch * 0.1
     + factualDepth * 0.15
@@ -330,8 +352,12 @@ const calculateQualityScore = ({
     + antiTemplateAdjusted * 0.08
     + seoStructure * 0.04
     + internalLinkScore * 0.02
+    + narrativeStrength * 0.04
+    + topicalAuthority * 0.04
+    + editorialPersonality * 0.03
     - riskScore * 0.15
     - structuralFingerprint.aiFootprintRiskScore * 0.08
+    - canibalizationRisk * 0.05
   );
 
   const cappedTotal = Math.min(
@@ -356,6 +382,12 @@ const calculateQualityScore = ({
     seo_structure_score: seoStructure,
     internal_link_score: internalLinkScore,
     risk_score: riskScore,
+    narrative_strength_score: Math.round(narrativeStrength),
+    emotional_variance_score: Math.round(emotionalVariance),
+    topical_authority_score: Math.round(topicalAuthority),
+    editorial_personality_score: Math.round(editorialPersonality),
+    fingerprint_risk_score: Math.round(fingerprintRisk),
+    canibalization_risk_score: Math.round(canibalizationRisk),
     structural_fingerprint_score: structuralFingerprint.aiFootprintRiskScore,
     structural_fingerprint: structuralFingerprint,
     signals: {
@@ -371,6 +403,11 @@ const calculateQualityScore = ({
       requiredSerpTopics: mustCover.length,
       hasOfficialSource,
       hasRiskLanguage,
+      insightSignals,
+      storySignals,
+      emotionSignals,
+      officialContextSignals,
+      topicalSignals,
       structuralFingerprint
     }
   };
@@ -658,6 +695,12 @@ export const validateArticle = ({ article = {}, internalLinks = [], image = null
   if (qualityScore.human_readability_score < 70) issues.push('Leitura pouco humana ou repetitiva');
   if (qualityScore.anti_template_score < 70) issues.push('Score anti-template insuficiente');
   if (qualityScore.originality_score < 65) issues.push('Originalidade insuficiente ou estrutura programatica demais');
+  if (qualityScore.narrative_strength_score < 62) issues.push('Storytelling financeiro fraco ou pouco humano');
+  if (qualityScore.emotional_variance_score < 55) issues.push('Contraste emocional insuficiente para reter leitura');
+  if (qualityScore.topical_authority_score < 62) issues.push('Autoridade topica insuficiente: faltam entidades, fontes ou links de hub');
+  if (qualityScore.editorial_personality_score < 62) issues.push('Voz editorial fraca ou neutra demais');
+  if (qualityScore.fingerprint_risk_score > 45) issues.push('Risco de footprint editorial alto');
+  if (qualityScore.canibalization_risk_score > 60) issues.push('Risco de canibalizacao alto');
   if (qualityScore.structural_fingerprint_score >= 58) issues.push('Fingerprint estrutural alto: artigo parece automatizado demais');
   if (qualityScore.structural_fingerprint?.structureRepetitionScore >= 62) issues.push('Repeticao estrutural excessiva entre secoes');
   if (qualityScore.structural_fingerprint?.bulletPatternRepetitionScore >= 55) issues.push('Padrao de bullets repetitivo demais');

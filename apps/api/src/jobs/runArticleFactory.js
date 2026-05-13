@@ -57,6 +57,18 @@ const main = async () => {
       faqQuestions: result.serpIntelligence?.faqQuestions?.slice(0, 5) || []
     },
     validation: result.validation,
+    publishSafety: result.publishSafety,
+    topicFatigue: result.topicFatigue,
+    governance: result.governance ? {
+      decision: result.governance.decision,
+      blockers: result.governance.blockers,
+      family: result.governance.family,
+      cluster: result.governance.cluster,
+      scores: result.governance.scores,
+      closestMatches: result.governance.memory?.closestMatches?.slice(0, 3) || [],
+      feedbackProjection: result.governance.feedbackProjection?.metrics || null,
+      trend: result.governance.trend || null
+    } : null,
     articleRecord: result.articleRecord || null,
     sample: {
       excerpt: result.article.excerpt,

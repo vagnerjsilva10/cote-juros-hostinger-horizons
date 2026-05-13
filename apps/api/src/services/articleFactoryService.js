@@ -12,6 +12,8 @@ import { buildPremiumArticle } from './premiumArticleComposerService.js';
 import { buildIntentSpecificArticle } from './intentSpecificComposerService.js';
 import { EditorialTopicFatigueService } from './editorialTopicFatigueService.js';
 import { buildPublishHardBlockers } from './publishSafetyService.js';
+import { EditorialGovernanceService } from './editorialGovernanceService.js';
+import { applyOpinionatedFinanceLayerV2 } from './opinionatedFinanceService.js';
 
 const logger = createEditorialLogger('article-factory');
 
@@ -273,9 +275,10 @@ const ensureUniqueSlug = async ({ slug, idempotencyKey }) => {
 };
 
 export async function generateArticle({ topic, keyword, intent = 'guide', category = 'Educacao financeira', serpIntelligence = null }) {
-  const draft = buildIntentSpecificArticle({ topic, keyword, intent, category, serpIntelligence })
+  const rawDraft = buildIntentSpecificArticle({ topic, keyword, intent, category, serpIntelligence })
     || buildPremiumArticle({ topic, keyword, intent, category, serpIntelligence })
     || buildArticleDraft({ topic, keyword, intent, category, serpIntelligence });
+  const draft = applyOpinionatedFinanceLayerV2({ article: rawDraft, keyword });
   const internalLinks = Array.isArray(draft.internalLinks) && draft.internalLinks.length
     ? draft.internalLinks
     : defaultInternalLinks({ category, keyword });
@@ -414,14 +417,28 @@ export class ArticleFactoryService {
       validation,
       topicFatigue
     });
-    const publishable = validation.passed && !publishSafety.blocked;
+    const governance = await EditorialGovernanceService.evaluate({
+      article: structuredContent,
+      keyword: cleanKeyword,
+      topic: cleanTopic,
+      category: cleanCategory,
+      intent: resolvedIntent,
+      serpIntelligence,
+      validation,
+      topicFatigue,
+      publishSafety,
+      triggerSource,
+      mode: publishApproved ? 'autopublish' : 'dry-run',
+      publishApproved
+    });
+    const publishable = validation.passed && !publishSafety.blocked && governance.publishAllowed;
 
     const result = {
       ok: dryRun ? validation.passed : publishable,
       dryRun,
       persisted: false,
       status: publishApproved
-        ? (publishable ? 'published' : 'draft_blocked')
+        ? (publishable ? 'published' : governance.decision || 'draft_blocked')
         : 'draft',
       persistenceStatus: publishApproved && publishable ? 'published' : 'draft',
       slug: slugState.slug,
@@ -434,6 +451,7 @@ export class ArticleFactoryService {
       validation,
       topicFatigue,
       publishSafety,
+      governance,
       serpIntelligence,
       article: {
         ...generated,
@@ -443,7 +461,8 @@ export class ArticleFactoryService {
         structuredContent: {
           ...structuredContent,
           topicFatigue,
-          publishSafety
+          publishSafety,
+          editorialGovernance: governance
         }
       },
       durationMs: Date.now() - startedAt

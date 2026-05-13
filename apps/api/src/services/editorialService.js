@@ -12,6 +12,9 @@ import {
 import { createEditorialLogger } from './editorialLogger.js';
 import { normalizeTextForValidation } from './portugueseTextService.js';
 import { SerpIntelligenceService } from './serpIntelligenceService.js';
+import { EditorialTopicFatigueService } from './editorialTopicFatigueService.js';
+import { buildPublishHardBlockers } from './publishSafetyService.js';
+import { EditorialGovernanceService } from './editorialGovernanceService.js';
 
 const logger = createEditorialLogger('editorial-service');
 const OPENAI_RESPONSES_ENDPOINT = 'https://api.openai.com/v1/responses';
@@ -1275,11 +1278,40 @@ export class EditorialService {
       });
       validation.issues = qualityValidation.issues;
       validation.quality = qualityValidation.checks;
+      validation.qualityScore = qualityValidation.qualityScore;
       validation.passed = qualityValidation.passed;
 
       articlePayload.wordCount = validation.wordCount;
       articlePayload.readTime = validation.readTime;
-      const shouldPublish = Boolean(publishApproved && validation.passed);
+      const topicFatigue = await EditorialTopicFatigueService.analyze({
+        keyword: brief.primaryKeyword,
+        title: articlePayload.title || generated.title,
+        category: generated.category || brief.cluster.name,
+        article: articlePayload
+      });
+      const publishSafety = buildPublishHardBlockers({
+        article: articlePayload,
+        validation,
+        topicFatigue
+      });
+      const governance = await EditorialGovernanceService.evaluate({
+        article: articlePayload,
+        keyword: brief.primaryKeyword,
+        topic: brief.title,
+        category: generated.category || brief.cluster.name,
+        intent: brief.stage,
+        serpIntelligence,
+        validation,
+        topicFatigue,
+        publishSafety,
+        triggerSource,
+        mode: publishApproved ? 'autopublish' : 'dry-run',
+        publishApproved
+      });
+      articlePayload.editorialGovernance = governance;
+      articlePayload.topicFatigue = topicFatigue;
+      articlePayload.publishSafety = publishSafety;
+      const shouldPublish = Boolean(publishApproved && validation.passed && !publishSafety.blocked && governance.publishAllowed);
 
       const category = await ensureBlogCategory(prisma, generated.category || brief.cluster.name);
       const articleRecord = await prisma.article.upsert({
@@ -1395,6 +1427,9 @@ export class EditorialService {
             publishApproved,
             operationalStatus,
             validation,
+            topicFatigue,
+            publishSafety,
+            governance,
             image: {
               provider: image.provider,
               publicPath: image.publicPath,
@@ -1422,6 +1457,9 @@ export class EditorialService {
         jobRunId: jobRun.id,
         article: serializeArticleRecord(articleRecord),
         validation,
+        topicFatigue,
+        publishSafety,
+        governance,
         image,
         distribution,
         distributionError

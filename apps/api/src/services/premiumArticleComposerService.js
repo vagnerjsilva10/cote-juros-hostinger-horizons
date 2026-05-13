@@ -1,4 +1,5 @@
 import { repairPortugueseInObject, repairPortugueseText } from './portugueseTextService.js';
+import { applyOpinionatedFinanceLayerV2 } from './opinionatedFinanceService.js';
 
 const compact = (value = '') => String(value || '').replace(/\s+/g, ' ').trim();
 
@@ -677,7 +678,8 @@ export const buildPremiumArticle = ({
     }
   };
 
-  const storyDriven = applyStorytellingFinanceLayer(baseArticle);
+  const opinionated = applyOpinionatedFinanceLayerV2({ article: baseArticle, keyword: cleanKeyword });
+  const storyDriven = applyStorytellingFinanceLayer(opinionated);
   const rewritten = applyHumanRewriteV2(storyDriven);
   const polished = applySeoPolish({ article: rewritten, keyword: cleanKeyword, serpIntelligence });
 

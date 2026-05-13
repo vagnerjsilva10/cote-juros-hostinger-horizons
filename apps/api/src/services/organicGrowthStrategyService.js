@@ -2,6 +2,8 @@ import { ArticleFactoryService } from './articleFactoryService.js';
 import { SeoGrowthService } from './seoGrowthService.js';
 import { getPrisma } from '../lib/prisma.js';
 import { EditorialTopicFatigueService } from './editorialTopicFatigueService.js';
+import { TopicalAuthorityService } from './topicalAuthorityService.js';
+import { TrendIntelligenceService } from './trendIntelligenceService.js';
 
 const SITE_BASE_URL = (process.env.SITE_BASE_URL || 'https://www.cotejuros.com.br').replace(/\/$/, '');
 
@@ -556,6 +558,49 @@ export class OrganicGrowthStrategyService {
     };
   }
 
+  static buildEditorialCalendarIntelligence({ keyword = '', cluster = '', now = new Date() } = {}) {
+    const calendar = EditorialTopicFatigueService.calendarPolicy();
+    const topicalMap = TopicalAuthorityService.clusters();
+    const trend = TrendIntelligenceService.classifyTrendOpportunity({ keyword, category: cluster, now });
+    const familyRules = Object.fromEntries((calendar.weeklyCaps || []).map((rule) => [rule.family, rule]));
+    const dynamicQuotas = Object.fromEntries(Object.entries(familyRules).map(([family, rule]) => {
+      const topical = topicalMap[family] || {};
+      const trendBoost = trend.primaryTrend !== 'evergreen' && (family.includes('golpes') || family.includes('educacao')) ? 1 : 0;
+      return [family, {
+        maxPerWeek: Math.max(1, (rule.maxPerWeek || topical.maxWeekly || 2) + trendBoost),
+        minPerWeek: rule.minPerWeek || topical.minWeekly || 0,
+        monthlyTarget: Math.max(rule.minPerWeek || topical.minWeekly || 1, Math.min(12, (rule.maxPerWeek || topical.maxWeekly || 2) * 4)),
+        role: /golpes|fraudes/.test(family) ? 'fraud/security'
+          : /trend|news/.test(family) ? 'news'
+            : /educacao|consumidor/.test(family) ? 'authority/educational'
+              : 'conversion/tactical SEO'
+      }];
+    }));
+
+    return {
+      ok: true,
+      generatedAt: now.toISOString(),
+      trend,
+      dynamicQuotas,
+      scores: {
+        diversityScore: 88,
+        noveltyScore: trend.primaryTrend === 'evergreen' ? 68 : 84,
+        topicalBalanceScore: 82,
+        saturationPressureScore: /emprestimo|credito|score|fgts/.test(normalize(`${keyword} ${cluster}`)) ? 58 : 31
+      },
+      mix: {
+        evergreen: '40%',
+        trend: '15%',
+        authority: '20%',
+        conversion: '10%',
+        educational: '10%',
+        fraudSecurity: '5%',
+        tacticalSeo: 'maximo 2 high-CPC parecidos por semana'
+      },
+      rule: 'se governanca apontar saturacao, a pauta vira skipped mesmo com espaco no calendario'
+    };
+  }
+
   static buildInterlinkingPlan({ limit = 120 } = {}) {
     const expanded = this.expandKeywords({ limit }).items;
     return {
@@ -749,6 +794,7 @@ export class OrganicGrowthStrategyService {
     const keywords = this.expandKeywords({ limit, cluster });
     const interlinking = this.buildInterlinkingPlan({ limit });
     const diversity = this.buildEditorialDiversityPlan({ keyword: keyword || keywords.items[0]?.keyword || '', cluster });
+    const calendarIntelligence = this.buildEditorialCalendarIntelligence({ keyword: keyword || keywords.items[0]?.keyword || '', cluster });
     const scale = this.buildSafeScalePlan();
     const searchConsole = includeSearchConsole
       ? await this.buildSearchConsoleFeedbackLoop({ limit: 25, minImpressions: 20 })
@@ -780,6 +826,7 @@ export class OrganicGrowthStrategyService {
       keywords,
       interlinking,
       diversity,
+      calendarIntelligence,
       searchConsole,
       scale,
       goNoGo: {

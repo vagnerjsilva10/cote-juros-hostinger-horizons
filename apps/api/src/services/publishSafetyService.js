@@ -155,7 +155,7 @@ export const validateHardPortugueseGate = (article = {}) => {
   };
 };
 
-export const buildPublishHardBlockers = ({ article = {}, validation = {}, topicFatigue = null } = {}) => {
+export const buildPublishHardBlockers = ({ article = {}, validation = {}, topicFatigue = null, governance = null } = {}) => {
   const qualityScore = validation.qualityScore || validation.checks?.qualityScore || {};
   const portugueseGate = validateHardPortugueseGate(article);
   const semanticIntent = validateSemanticIntent(article);
@@ -164,7 +164,12 @@ export const buildPublishHardBlockers = ({ article = {}, validation = {}, topicF
     (qualityScore.human_readability_score || 0) < 82 ? 'readability abaixo de 82' : null,
     (qualityScore.anti_template_score || 0) < 82 ? 'anti-template abaixo de 82' : null,
     (qualityScore.structural_fingerprint_score || 0) > 35 ? 'fingerprint risk acima de 35' : null,
+    (qualityScore.fingerprint_risk_score || 0) > 35 ? 'fingerprint editorial acima de 35' : null,
+    (qualityScore.canibalization_risk_score || 0) > 60 ? 'canibalizacao acima de 60' : null,
+    (qualityScore.narrative_strength_score ?? 100) < 62 ? 'storytelling fraco' : null,
+    (qualityScore.editorial_personality_score ?? 100) < 62 ? 'personalidade editorial fraca' : null,
     topicFatigue?.blocked ? `topic fatigue bloqueado: ${topicFatigue.blockers.join('; ')}` : null,
+    governance && governance.decision !== 'publishable' ? `governanca editorial bloqueou: ${(governance.blockers || []).slice(0, 6).join('; ')}` : null,
     portugueseGate.blocked ? `portugues hard gate falhou: ${portugueseGate.issues.slice(0, 6).join('; ')}` : null,
     semanticIntent.blocked ? `semantic intent falhou: ${semanticIntent.issues.slice(0, 4).join('; ')}` : null
   ].filter(Boolean);
@@ -181,7 +186,10 @@ export const buildPublishHardBlockers = ({ article = {}, validation = {}, topicF
       antiTemplateMin: 82,
       fingerprintRiskMax: 35,
       topicFatigueMax: 64,
-      intentMatchMin: 85
+      intentMatchMin: 85,
+      canibalizationRiskMax: 60,
+      narrativeStrengthMin: 62,
+      editorialPersonalityMin: 62
     }
   };
 };

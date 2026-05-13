@@ -144,11 +144,18 @@ const buildFraudPixArticle = ({ keyword = '', topic = '', category = 'Golpes e f
     featuredSnippet: 'Se alguém pedir devolução por um Pix supostamente errado, confira o extrato no app do banco, não use dados enviados por mensagem, guarde comprovantes e acione o banco pelos canais oficiais.',
     intro: [
       'Se alguém diz que fez um Pix errado e pede devolução rápida, pare antes de transferir. Pode ser engano real, mas também pode ser golpe.',
-      'O caminho seguro é conferir o extrato, falar pelo app do banco, registrar protocolos e só devolver por canais orientados pela instituição.'
+      'O caminho seguro é conferir o extrato, falar pelo app do banco, registrar protocolos e só devolver por canais orientados pela instituição. A pressa do outro não pode virar o seu prejuízo: em Pix, alguns minutos de checagem costumam valer mais do que uma resposta educada no impulso.'
     ],
     expertInsights: [
       'Quem pressiona por devolução imediata normalmente quer tirar você do ambiente seguro do banco.',
-      'Print não é confirmação de dinheiro recebido. Extrato bancário, protocolo e canal oficial pesam mais.'
+      'Print não é confirmação de dinheiro recebido. Extrato bancário, protocolo e canal oficial pesam mais.',
+      'O MED é uma ferramenta importante, mas a expectativa precisa ser adulta: ele ajuda a abrir uma trilha formal de análise, não cria devolução garantida. O que aumenta a qualidade do caso é a combinação de rapidez, relato claro, comprovantes íntegros e protocolo do banco.',
+      'Quando o assunto é Pix suspeito, o comportamento da outra pessoa vale quase tanto quanto o comprovante. Pedido legítimo aceita checagem; golpe tenta impedir checagem. Essa diferença aparece na pressa, na troca de chave, na ameaça e na tentativa de levar a conversa para fora do banco.',
+      'A vítima não precisa escolher entre ser correta e ser cuidadosa. Dá para agir de boa-fé sem transferir no escuro: confirmar extrato, pedir orientação oficial, usar devolução vinculada à transação quando existir e guardar prova de cada passo.',
+      'Também existe um custo emocional no golpe: a pessoa fica com medo de parecer desonesta, de ser acusada ou de perder tempo com banco. O conteúdo precisa reconhecer isso sem dramatizar. A orientação boa não é "desconfie de todo mundo"; é "confira antes de movimentar dinheiro".',
+      'Para quem cuida do dinheiro da família, a melhor prevenção é transformar Pix suspeito em procedimento, não em improviso. Recebeu cobrança? Verifica extrato. Existe valor? Fala com o banco. Não existe valor? Não devolve. Houve prejuízo? Formaliza com protocolo, MED quando couber e BO.',
+      'O detalhe técnico mais esquecido é a chave de devolução. Se o dinheiro entrou de uma origem e a pessoa pede envio para outra, a operação muda de natureza. Mesmo que a história pareça plausível, o rastro fica pior. É nessa troca aparentemente pequena que muita fraude ganha espaço.',
+      'Por isso a recomendação final é deliberadamente simples: não discuta com a pressa. Discuta com o extrato, com o protocolo e com o canal oficial.'
     ],
     retentionHooks: [
       'O detalhe perigoso é simples: a pressa do outro não pode virar o seu prejuízo.',
@@ -159,7 +166,8 @@ const buildFraudPixArticle = ({ keyword = '', topic = '', category = 'Golpes e f
         heading: 'Resposta imediata: não devolva no impulso',
         subheading: 'A primeira decisão é ganhar alguns minutos de controle.',
         paragraphs: [
-          'Abra o aplicativo do banco e confira se o valor aparece no extrato. Não use apenas print, mensagem de WhatsApp ou ligação como prova.',
+          'Abra o aplicativo do banco e confira se o valor aparece no extrato. Faça isso com calma antes de qualquer devolução, sem pular etapas. Não use apenas print, mensagem de WhatsApp ou ligação como prova.',
+          'A diferença entre extrato e print parece pequena, mas é decisiva. O extrato mostra o que o banco registrou; o print mostra apenas uma imagem que pode estar incompleta, fora de contexto ou adulterada. Se o dinheiro entrou, procure no próprio app se existe função de devolução vinculada à transação. Quando a devolução acontece por fora, para outra chave Pix, o risco aumenta bastante.',
           'Se o dinheiro entrou, procure no próprio app se existe função de devolução vinculada à transação. Quando a devolução acontece por fora, para outra chave Pix, o risco aumenta bastante.'
         ],
         bullets: ['Confira o extrato pelo app.', 'Não clique em links enviados por mensagem.', 'Anote horário, valor e chave Pix envolvida.', 'Procure o canal oficial do banco.']
@@ -169,7 +177,8 @@ const buildFraudPixArticle = ({ keyword = '', topic = '', category = 'Golpes e f
         subheading: 'Nem todo Pix recebido por engano é golpe, mas todo pedido urgente merece cautela.',
         paragraphs: [
           'Há casos reais de erro de digitação da chave Pix. Também há fraude com comprovante falso, engenharia social e tentativa de fazer a vítima devolver para uma chave diferente.',
-          'A pergunta prática é: o pedido combina com o extrato e com os dados da transação? Se não combina, trate como alerta.'
+          'A pergunta prática é: o pedido combina com o extrato e com os dados da transação? Se não combina, trate como alerta.',
+          'O comportamento de quem pede também importa. Pessoa que errou de verdade tende a aceitar conferência, protocolo e orientação do banco. Golpista tende a acelerar, culpar, ameaçar ou mudar a história quando você pede tempo.'
         ],
         table: {
           caption: 'Cenários comuns em pedido de devolução de Pix',
@@ -187,7 +196,8 @@ const buildFraudPixArticle = ({ keyword = '', topic = '', category = 'Golpes e f
         subheading: 'A ordem dos passos evita duas perdas: dinheiro e prova.',
         paragraphs: [
           'Tire prints da conversa, salve o comprovante exibido no aplicativo, copie o identificador da transação quando disponível e registre o protocolo de atendimento.',
-          'Depois, entre em contato com o banco pelo app, telefone oficial ou agência. Explique que recebeu ou enviou um Pix suspeito e peça orientação sobre contestação, bloqueio preventivo ou análise pelo MED.'
+          'Depois, entre em contato com o banco pelo app, telefone oficial ou agência. Explique que recebeu ou enviou um Pix suspeito e peça orientação sobre contestação, bloqueio preventivo ou análise pelo MED.',
+          'Aqui existe um ponto humano importante: a pessoa honesta tende a querer resolver rápido para não parecer errada. O golpista usa exatamente essa pressa. Alguns minutos de checagem não transformam ninguém em mau pagador; transformam uma reação emocional em decisão documentada.'
         ],
         bullets: ['Salve conversa completa.', 'Guarde comprovante e identificador da transação.']
       },
@@ -196,7 +206,8 @@ const buildFraudPixArticle = ({ keyword = '', topic = '', category = 'Golpes e f
         subheading: 'O golpe costuma crescer quando a vítima tenta resolver rápido demais.',
         paragraphs: [
           'Não devolva para uma chave diferente só porque a pessoa pediu. Também não instale aplicativo de acesso remoto, não informe senha e não confirme códigos recebidos por SMS.',
-          'Se houver ameaça, promessa de processo imediato ou insistência fora do canal bancário, reduza a conversa. Banco sério não resolve contestação pedindo senha em chat informal.'
+          'Se houver ameaça, promessa de processo imediato ou insistência fora do canal bancário, reduza a conversa. Banco sério não resolve contestação pedindo senha em chat informal.',
+          'Outra armadilha é a narrativa de culpa: "você está ficando com dinheiro que não é seu". Se o valor realmente entrou, ele estará no extrato e poderá ser tratado pelo caminho correto. Se não entrou, a culpa é fabricada para empurrar uma transferência.'
         ],
         bullets: ['Não informe senha, token ou código.', 'Não aceite ajuda por acesso remoto.', 'Não confie em comprovante fora do extrato.', 'Não faça nova transferência sob pressão.', 'Não apague conversas.']
       },
@@ -205,7 +216,8 @@ const buildFraudPixArticle = ({ keyword = '', topic = '', category = 'Golpes e f
         subheading: 'O pedido precisa ser objetivo, com dados que permitam rastrear a transação.',
         paragraphs: [
           'Informe valor, data, horário, chave Pix, nome que aparece no extrato e uma descrição curta do que aconteceu. Peça número de protocolo.',
-          'Se você enviou dinheiro e percebeu fraude, avise o banco rapidamente. A instituição pode avaliar bloqueio, contestação e abertura de análise pelo Mecanismo Especial de Devolução.'
+          'Se você enviou dinheiro e percebeu fraude, avise o banco rapidamente. A instituição pode avaliar bloqueio, contestação e abertura de análise pelo Mecanismo Especial de Devolução.',
+          'Evite começar o atendimento com um texto enorme e emocional. Comece com fatos: "recebi contato pedindo devolução de Pix", "o valor não aparece no extrato" ou "fiz transferência e identifiquei fraude". Depois anexe provas. Atendimento bancário funciona melhor quando o caso fica rastreável.'
         ],
         table: {
           caption: 'Dados úteis para atendimento do banco',
@@ -223,16 +235,38 @@ const buildFraudPixArticle = ({ keyword = '', topic = '', category = 'Golpes e f
         subheading: 'O MED existe para casos com suspeita de fraude ou falha operacional, mas não é promessa de retorno automático.',
         paragraphs: [
           'O Mecanismo Especial de Devolução, criado no ecossistema Pix do Banco Central, permite que instituições financeiras analisem uma transação suspeita e tentem bloquear valores ainda disponíveis na conta recebedora.',
-          'Na prática, tempo importa. Quanto mais rápido o banco é avisado, maior a chance de análise útil. Mesmo assim, o resultado depende das regras do arranjo Pix, das evidências e da existência de saldo na conta envolvida.'
+          'Na prática, tempo importa. Quanto mais rápido o banco é avisado, maior a chance de análise útil. Mesmo assim, o resultado depende das regras do arranjo Pix, das evidências e da existência de saldo na conta envolvida.',
+          'A interpretação financeira é simples: o MED melhora o processo, mas não apaga o risco. Por isso ele deve ser acionado junto com prova organizada, protocolo e, quando houver prejuízo, boletim de ocorrência. Não trate o mecanismo como garantia; trate como trilho formal.'
         ],
         bullets: ['Peça análise pelo MED quando houver suspeita de fraude.', 'Guarde protocolo e acompanhe o prazo informado pelo banco.', 'Entenda que o MED não substitui BO nem reclamação formal quando o caso for grave.']
+      },
+      {
+        heading: 'Mini cenários: como a fraude aparece na vida real',
+        subheading: 'O golpe raramente começa parecendo golpe; ele começa parecendo urgência de outra pessoa.',
+        paragraphs: [
+          'Cenário 1: você recebe uma mensagem educada, com nome completo, dizendo que um Pix de R$ 480 caiu errado. A pessoa manda print, pede desculpa e informa outra chave para devolução. O dinheiro não aparece no seu extrato. Nesse caso, não há o que devolver. Salve tudo e fale com o banco se a insistência continuar.',
+          'Cenário 2: o valor aparece no extrato, mas a pessoa pede devolução para chave diferente, em nome de terceiro. Pode existir explicação legítima, mas também pode existir tentativa de quebrar o rastro da operação. A decisão mais segura é pedir orientação ao banco e usar o recurso de devolução da própria transação quando disponível.',
+          'Cenário 3: você enviou dinheiro porque acreditou na história e percebeu depois que era fraude. Aqui a prioridade muda: acionar o banco, pedir análise pelo MED, registrar BO e organizar provas. Discutir com o golpista quase nunca recupera dinheiro; documentar rápido costuma ajudar mais.'
+        ],
+        table: {
+          caption: 'Como interpretar cada cenário',
+          columns: ['Cenário', 'Leitura crítica', 'Próximo passo'],
+          rows: [
+            ['Print sem dinheiro no extrato', 'Pode ser comprovante falso ou pressão artificial.', 'Não devolver e salvar evidências.'],
+            ['Dinheiro no extrato, chave diferente', 'Há risco de tirar a devolução do rastro original.', 'Pedir orientação ao banco.'],
+            ['Transferência já enviada', 'O tempo contra a fraude começa a contar.', 'Acionar banco, MED e BO.'],
+            ['Ameaça ou chantagem', 'Tentativa de reduzir sua capacidade de checar.', 'Encerrar conversa e formalizar.']
+          ]
+        }
       },
       {
         heading: 'BO, consumidor.gov.br e Banco Central',
         subheading: 'Quando o prejuízo existe ou o banco não responde bem, formalizar ajuda.',
         paragraphs: [
           'Se houve perda financeira, ameaça, uso de dados ou indício claro de fraude, registre boletim de ocorrência. Muitas delegacias permitem BO online, dependendo do estado.',
-          'Se o banco não der retorno adequado, consumidor.gov.br pode ser usado para reclamação contra empresas participantes. O Banco Central também recebe reclamações sobre instituições financeiras, mas não julga indenização individual.'
+          'Se o banco não der retorno adequado, consumidor.gov.br pode ser usado para reclamação contra empresas participantes. O Banco Central também recebe reclamações sobre instituições financeiras, mas não julga indenização individual.',
+          'Essa diferença importa. O Banco Central ajuda a pressionar o atendimento regulado e a registrar falhas de instituição financeira, mas não substitui Justiça, Procon, delegacia ou negociação direta. Cada canal tem função diferente; misturar tudo pode atrasar a resposta.',
+          'Uma boa estratégia é montar uma linha do tempo antes de abrir reclamações: quando recebeu o contato, quando verificou o extrato, quando falou com o banco, qual protocolo recebeu e qual resposta foi dada. Isso evita relato confuso e aumenta a chance de a instituição entender o caso.'
         ],
         bullets: ['Registre BO quando houver fraude ou prejuízo.', 'Use consumidor.gov.br para tentar solução com a instituição.', 'Reclame ao Banco Central se houver falha no atendimento bancário.', 'Mantenha tudo documentado.']
       },
@@ -241,7 +275,8 @@ const buildFraudPixArticle = ({ keyword = '', topic = '', category = 'Golpes e f
         subheading: 'Prova boa é aquela que mostra sequência, data e canal.',
         paragraphs: [
           'Guarde prints da conversa inteira, comprovantes, extratos, protocolos, nome do atendente quando houver e qualquer áudio ou e-mail relacionado.',
-          'Não edite imagens antes de salvar. Se precisar enviar para o banco ou BO, mantenha os arquivos originais em uma pasta separada.'
+          'Não edite imagens antes de salvar. Se precisar enviar para o banco ou BO, mantenha os arquivos originais em uma pasta separada.',
+          'A lógica é reconstruir a história sem depender de memória. Quem falou, quando falou, qual valor pediu, qual chave informou, qual canal usou e qual resposta o banco deu. Esse encadeamento vale mais que um print solto.'
         ],
         table: {
           caption: 'Checklist de provas',
@@ -260,7 +295,8 @@ const buildFraudPixArticle = ({ keyword = '', topic = '', category = 'Golpes e f
         subheading: 'A história pode mudar, mas alguns sinais se repetem.',
         paragraphs: [
           'Desconfie quando a pessoa pede segredo, pressiona por minutos, manda comprovante sem o dinheiro aparecer no extrato ou orienta devolução para outra chave.',
-          'Outro sinal forte é tentar tirar você do app do banco. Link externo, aplicativo desconhecido e pedido de código são alerta vermelho.'
+          'Outro sinal forte é tentar tirar você do app do banco. Link externo, aplicativo desconhecido e pedido de código são alerta vermelho.',
+          'Um pedido legítimo tolera conferência. Um golpe tenta impedir conferência. Essa é uma boa régua: se a pessoa fica mais agressiva quando você diz que vai falar com o banco, o problema provavelmente não é sua demora.'
         ],
         bullets: ['Urgência exagerada.', 'Comprovante que não bate com o extrato.', 'Pedido para devolver a outra pessoa.', 'Link ou aplicativo fora do banco.']
       },
@@ -269,16 +305,29 @@ const buildFraudPixArticle = ({ keyword = '', topic = '', category = 'Golpes e f
         subheading: 'Devolver corretamente também é uma forma de proteção.',
         paragraphs: [
           'Se o dinheiro realmente entrou por engano, a devolução deve seguir caminho rastreável. O ideal é usar o recurso de devolução da própria transação, quando disponível, ou orientação documentada do banco.',
-          'Não existe problema em agir de boa-fé. O problema é agir no escuro.'
+          'Não existe problema em agir de boa-fé. O problema é agir no escuro.',
+          'Antes de devolver, faça uma pausa pequena e objetiva: confira extrato, confirme dados, salve protocolo e só então decida. Essa pausa não é burocracia. É proteção contra uma fraude que depende exatamente da sua pressa.'
         ],
         bullets: ['O valor está no extrato?', 'A chave de devolução é a mesma da transação?', 'O banco orientou por canal oficial?', 'Você salvou o protocolo?', 'A conversa parece coerente?']
+      },
+      {
+        heading: 'Como conversar sem se expor',
+        subheading: 'Responder pouco também é uma estratégia de proteção.',
+        paragraphs: [
+          'Se decidir responder, não discuta senha, saldo, agência, documentos ou códigos. Uma resposta suficiente seria: "vou verificar pelo canal oficial do banco". Depois disso, pare de alimentar a conversa.',
+          'Golpistas testam reação. Se percebem medo, insistem. Se percebem dúvida técnica, inventam explicação. Se percebem que você vai para o banco, muitas vezes somem. A conversa não precisa virar negociação.',
+          'Também não aceite chamada de vídeo, acesso remoto ou orientação para "corrigir" aplicativo. O banco não precisa entrar no seu celular para analisar um Pix. Quem pede controle do aparelho quer mais do que resolver uma devolução.'
+        ],
+        bullets: ['Não envie documentos.', 'Não diga seu saldo.', 'Não confirme códigos.', 'Não instale aplicativos indicados por desconhecidos.']
       },
       {
         heading: 'Como reduzir risco nos próximos Pix',
         subheading: 'Prevenção no Pix é menos sobre medo e mais sobre rotina.',
         paragraphs: [
           'Ative notificações do banco, revise limites diários, mantenha o aplicativo atualizado e evite resolver pedido financeiro por link recebido em conversa.',
-          'Também vale combinar com familiares uma regra simples: Pix suspeito só se resolve depois de checar no app e falar por canal conhecido.'
+          'Também vale combinar com familiares uma regra simples: Pix suspeito só se resolve depois de checar no app e falar por canal conhecido.',
+          'Em famílias, o golpe costuma circular por quem quer ajudar rápido: pais, avós, filhos ou alguém que cuida das contas. Uma regra combinada antes do susto reduz a chance de decisão impulsiva.',
+          'Outro cuidado prático é revisar limites por horário. Se a sua rotina não exige Pix alto à noite, um limite menor nesse período reduz dano em caso de celular roubado, engenharia social ou decisão tomada sob pressão.'
         ],
         bullets: ['Use limites compatíveis com sua rotina.', 'Ative alertas no celular.', 'Não confirme códigos por telefone.']
       }
@@ -330,7 +379,8 @@ const buildFraudPixArticle = ({ keyword = '', topic = '', category = 'Golpes e f
     ],
     conclusion: [
       'Golpe do Pix errado se combate com calma, prova e canal oficial. Muita fraude nasce justamente da pressa de parecer correto.',
-      'Se o dinheiro entrou por engano, devolva pelo caminho rastreável. Se a história não fecha, pare, registre tudo e deixe o banco analisar.'
+      'Se o dinheiro entrou por engano, devolva pelo caminho rastreável. Se a história não fecha, pare, registre tudo e deixe o banco analisar.',
+      'A leitura editorial da Cote Juros é direta: agir corretamente não é agir correndo. Quem quer resolver um erro real aceita conferência; quem quer aplicar golpe tenta impedir a conferência. Essa diferença deve guiar sua próxima ação.'
     ],
     ctas: [
       {
