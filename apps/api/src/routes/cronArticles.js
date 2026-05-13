@@ -1,6 +1,7 @@
 import express from 'express';
 import { asyncHandler } from '../lib/http.js';
 import { ArticleCronAutomationService } from '../services/articleCronAutomationService.js';
+import { AutonomousEditorialPublishingService } from '../services/autonomousEditorialPublishingService.js';
 
 const router = express.Router();
 
@@ -40,6 +41,34 @@ router.get(
 router.get(
   '/run',
   asyncHandler(async (req, res) => {
+    if (process.env.AUTO_PUBLISH_MODE === 'autonomous_premium') {
+      const result = await AutonomousEditorialPublishingService.runDaily({
+        dryRun: false,
+        useLiveDiscovery: req.query.liveDiscovery === 'true',
+      });
+
+      console.log(JSON.stringify({
+        event: 'autonomous_editorial_cron_finished',
+        triggerSource: req.get('user-agent')?.includes('vercel-cron')
+          ? 'vercel-cron-autonomous-editorial'
+          : (req.query.trigger || 'cron-autonomous-editorial'),
+        status: result.status,
+        autonomousReal: result.autonomousReal,
+        dailyLimit: result.dailyLimit,
+        publishedToday: result.publishedToday,
+        actions: (result.actions || []).map((action) => ({
+          keyword: action.keyword,
+          type: action.type,
+          status: action.status,
+          slug: action.slug,
+          targetSlug: action.targetSlug,
+          blockers: action.blockers || [],
+        })),
+      }));
+
+      return res.status(result.ok === false ? 503 : 200).json(result);
+    }
+
     const result = await ArticleCronAutomationService.runDue({
       triggerSource: req.get('user-agent')?.includes('vercel-cron')
         ? 'vercel-cron-articles'
