@@ -12,10 +12,13 @@ const resolveBearerToken = (req) => {
 };
 
 const requireCronSecret = (req, res, next) => {
-  const expected = process.env.CRON_SECRET;
+  const allowedTokens = [
+    process.env.CRON_SECRET,
+    process.env.COTE_API_TOKEN
+  ].filter(Boolean);
   const received = resolveBearerToken(req) || req.query.secret || '';
 
-  if (expected && received === expected) return next();
+  if (allowedTokens.length && allowedTokens.includes(received)) return next();
 
   return res.status(401).json({
     ok: false,
