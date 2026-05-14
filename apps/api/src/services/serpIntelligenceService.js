@@ -45,6 +45,25 @@ const domainFromUrl = (value = '') => {
   }
 };
 
+const extractPublishedAt = (item = {}) => {
+  const raw = item.date || item.date_utc || item.published_at || item.snippet_highlighted_words?.join(' ') || item.snippet || '';
+  const text = normalize(raw);
+  const now = new Date();
+  const relative = text.match(/(\d+)\s+(hora|horas|dia|dias|semana|semanas|mes|meses)/);
+  if (relative) {
+    const amount = Number(relative[1]);
+    const unit = relative[2];
+    const date = new Date(now);
+    if (/hora/.test(unit)) date.setHours(date.getHours() - amount);
+    if (/dia/.test(unit)) date.setDate(date.getDate() - amount);
+    if (/semana/.test(unit)) date.setDate(date.getDate() - amount * 7);
+    if (/mes/.test(unit)) date.setMonth(date.getMonth() - amount);
+    return date.toISOString();
+  }
+  const parsed = Date.parse(raw);
+  return Number.isFinite(parsed) ? new Date(parsed).toISOString() : null;
+};
+
 const classifyIntent = ({ keyword = '', results = [] } = {}) => {
   const text = normalize([
     keyword,
@@ -180,6 +199,7 @@ const normalizeSerpApiPayload = (payload = {}) => ({
     title: item.title || '',
     url: item.link || '',
     snippet: item.snippet || '',
+    publishedAt: extractPublishedAt(item),
     displayedLink: item.displayed_link || '',
     richData: {
       sitelinks: item.sitelinks || null,
@@ -197,6 +217,7 @@ const normalizeValueSerpPayload = (payload = {}) => ({
     title: item.title || '',
     url: item.link || item.url || '',
     snippet: item.snippet || '',
+    publishedAt: extractPublishedAt(item),
     displayedLink: item.displayed_link || '',
     richData: {}
   })),
@@ -205,13 +226,15 @@ const normalizeValueSerpPayload = (payload = {}) => ({
     .filter(Boolean)
 });
 
-const fetchSerpResults = async ({ keyword, topN = 10 } = {}) => {
+const fetchSerpResults = async ({ keyword, topN = 10, searchMode = 'web', recencyDays = null } = {}) => {
   if (process.env.SERPAPI_API_KEY) {
     const response = await axios.get('https://serpapi.com/search.json', {
       timeout: 20000,
       params: {
         engine: 'google',
         q: keyword,
+        ...(searchMode === 'news' ? { tbm: 'nws' } : {}),
+        ...(recencyDays ? { tbs: `qdr:d${recencyDays}` } : {}),
         google_domain: 'google.com.br',
         gl: 'br',
         hl: 'pt-br',
@@ -227,6 +250,8 @@ const fetchSerpResults = async ({ keyword, topN = 10 } = {}) => {
       timeout: 20000,
       params: {
         q: keyword,
+        ...(searchMode === 'news' ? { search_type: 'news' } : {}),
+        ...(recencyDays ? { time_period: `last_${recencyDays}_days` } : {}),
         location: 'Brazil',
         google_domain: 'google.com.br',
         gl: 'br',
@@ -247,19 +272,22 @@ const buildDryRunResults = (keyword = '') => ({
       position: 1,
       title: `${keyword}: guia completo para comparar custos e riscos`,
       url: 'https://example.com/guia',
-      snippet: `Veja como analisar ${keyword}, comparar CET, prazo, parcela e alternativas antes de contratar.`
+      snippet: `Veja como analisar ${keyword}, comparar CET, prazo, parcela e alternativas antes de contratar.`,
+      publishedAt: new Date().toISOString()
     },
     {
       position: 2,
       title: `Como funciona ${keyword} e quais cuidados tomar`,
       url: 'https://example.org/cuidados',
-      snippet: 'Entenda requisitos, score, riscos de atraso, exemplos de parcela e perguntas frequentes.'
+      snippet: 'Entenda requisitos, score, riscos de atraso, exemplos de parcela e perguntas frequentes.',
+      publishedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
     },
     {
       position: 3,
       title: `Melhores opcoes de ${keyword}: compare antes de decidir`,
       url: 'https://example.net/comparativo',
-      snippet: 'Comparativo com pontos positivos, riscos, documentos, taxas e alternativas.'
+      snippet: 'Comparativo com pontos positivos, riscos, documentos, taxas e alternativas.',
+      publishedAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString()
     }
   ],
   relatedQuestions: [
@@ -306,20 +334,24 @@ export const buildSerpIntelligenceFromResults = ({ keyword = '', serp = {} } = {
       position: item.position,
       title: item.title,
       domain: domainFromUrl(item.url),
-      snippet: item.snippet
+      url: item.url,
+      snippet: item.snippet,
+      publishedAt: item.publishedAt || null
     }))
   };
 };
 
 export class SerpIntelligenceService {
-  static async analyzeKeyword({ keyword, topN = 10, dryRun = false } = {}) {
+  static async analyzeKeyword({ keyword, topN = 10, dryRun = false, searchMode = 'web', recencyDays = null } = {}) {
     const cleanKeyword = compact(keyword);
     if (!cleanKeyword) throw new Error('keyword is required for SERP intelligence');
-    const serp = dryRun ? buildDryRunResults(cleanKeyword) : await fetchSerpResults({ keyword: cleanKeyword, topN });
+    const serp = dryRun ? buildDryRunResults(cleanKeyword) : await fetchSerpResults({ keyword: cleanKeyword, topN, searchMode, recencyDays });
 
     return {
       ok: true,
       dryRun,
+      searchMode,
+      recencyDays,
       provider: dryRun
         ? 'dry-run-sample'
         : process.env.SERPAPI_API_KEY

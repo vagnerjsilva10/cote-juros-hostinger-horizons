@@ -151,6 +151,7 @@ const summarizePublishSafety = (publishSafety = {}) => ({
 
 const summarizeCandidate = (candidate = {}, slot = null, gate = null) => ({
   slot,
+  candidateKey: `${candidate.type}:${candidate.targetSlug || toSlug(candidate.keyword)}`,
   keyword: candidate.keyword,
   slug: candidate.targetSlug || toSlug(candidate.keyword),
   type: candidate.type,
@@ -162,10 +163,20 @@ const summarizeCandidate = (candidate = {}, slot = null, gate = null) => ({
   refreshPlanned: Boolean(candidate.refreshPlanned),
   governance: candidate.governance || null,
   publishSafety: candidate.publishSafety || null,
+  newsSource: candidate.news?.newsSource || candidate.newsSource || null,
+  publishedAt: candidate.news?.publishedAt || candidate.publishedAt || null,
+  freshnessScore: candidate.news?.freshnessScore || candidate.scores?.freshnessScore || null,
+  officialSourceDetected: candidate.news?.officialSourceDetected || false,
+  secondSourceConfirmed: candidate.news?.secondSourceConfirmed || false,
+  impactOnWalletScore: candidate.news?.impactOnWalletScore || candidate.scores?.impactOnWalletScore || null,
+  newsworthinessScore: candidate.news?.newsworthinessScore || candidate.scores?.newsworthinessScore || null,
+  reasonIfRejected: candidate.news?.reasonIfRejected || [],
   candidateBlockers: candidate.blockers || [],
   decision: gate?.decision || candidate.governance?.decision || 'unknown',
   blockers: gate?.blockers || candidate.blockers || [],
   scores: gate?.scores || candidate.scores || {},
+  selection: candidate.selection || null,
+  nearestCompetingArticle: candidate.nearestCompetingArticle || null,
   reason: candidate.reason || '',
 });
 
@@ -629,6 +640,14 @@ export class AutonomousEditorialPublishingService {
       useLiveDiscovery: effectiveLiveDiscovery,
     });
     const discovery = summarizeDiscovery(plan.discovery, effectiveLiveDiscovery);
+    for (const missingProvider of discovery.providers?.providerMissing || []) {
+      logStructured('provider_missing', {
+        cronId,
+        jobId: auditJob?.id || null,
+        provider: missingProvider,
+        liveDiscovery: effectiveLiveDiscovery,
+      });
+    }
     logStructured('discovery_finished', {
       cronId,
       jobId: auditJob?.id || null,
@@ -637,18 +656,30 @@ export class AutonomousEditorialPublishingService {
       blockedSummary: plan.blockedSummary,
     });
 
-    const candidates = this.pickDailyCandidates(plan.days?.[0] || {}).slice(0, remaining);
+    const dayPlan = plan.days?.[0] || {};
+    const candidates = this.pickDailyCandidates(dayPlan).slice(0, remaining);
+    const slotOptions = dayPlan.candidateOptions || [];
     const actions = [];
     const attemptedSlots = [];
+    const runtimeUsedCandidateKeys = new Set();
 
     for (let index = 0; index < remaining; index += 1) {
-      const candidate = candidates[index];
       const slotNumber = index + 1;
-      if (!candidate) {
+      const slotPlan = slotOptions.find((item) => item.slot === slotNumber);
+      const candidatesForSlot = (slotPlan?.options?.length ? slotPlan.options : [candidates[index]].filter(Boolean))
+        .filter((candidate) => !runtimeUsedCandidateKeys.has(`${candidate.type}:${candidate.targetSlug || toSlug(candidate.keyword)}`))
+        .slice(0, 3);
+      const rejectedBeforeGeneration = [];
+      const rejectedAfterGeneration = [];
+
+      if (!candidatesForSlot.length) {
         const action = {
           slot: slotNumber,
           status: 'critical_skip',
           reason: 'sem pauta segura para o slot sem violar governanca',
+          retryCount: 0,
+          rejected_candidates_before_generation: slotPlan?.rejectedBeforeGeneration || [],
+          rejected_candidates_after_generation: [],
         };
         actions.push(action);
         attemptedSlots.push(action);
@@ -660,51 +691,116 @@ export class AutonomousEditorialPublishingService {
         continue;
       }
 
-      const gate = this.evaluateAutonomousGate(candidate);
-      const candidateAudit = summarizeCandidate(candidate, slotNumber, gate);
-      attemptedSlots.push(candidateAudit);
-      logStructured('candidate_selected', {
-        cronId,
-        jobId: auditJob?.id || null,
-        ...candidateAudit,
-      });
+      let finalAction = null;
 
-      if (!gate.publishable) {
-        const action = {
-          ...candidateAudit,
-          keyword: candidate.keyword,
-          status: 'blocked',
-          blockers: gate.blockers,
-          scores: gate.scores,
-        };
-        actions.push(action);
-        logStructured('candidate_blocked', {
+      for (let attemptIndex = 0; attemptIndex < candidatesForSlot.length; attemptIndex += 1) {
+        const candidate = candidatesForSlot[attemptIndex];
+        const retryCount = attemptIndex;
+        const gate = this.evaluateAutonomousGate(candidate);
+        const candidateAudit = summarizeCandidate(candidate, slotNumber, gate);
+        candidateAudit.retryCount = retryCount;
+        candidateAudit.attempt = attemptIndex + 1;
+        attemptedSlots.push(candidateAudit);
+        logStructured('candidate_selected', {
           cronId,
           jobId: auditJob?.id || null,
-          ...action,
-        });
-        continue;
-      }
-
-      if (dryRun) {
-        const action = {
           ...candidateAudit,
-          keyword: candidate.keyword,
-          type: candidate.type,
-          status: 'would_publish',
-          scores: gate.scores,
-          explanation: EditorialDecisionExplainabilityService.explainCandidate(candidate).rationale,
+        });
+
+        if (!gate.publishable) {
+          const action = {
+            ...candidateAudit,
+            keyword: candidate.keyword,
+            status: 'blocked',
+            blockers: gate.blockers,
+            scores: gate.scores,
+          };
+          rejectedBeforeGeneration.push(action);
+          logStructured('rejected_candidates_before_generation', {
+            cronId,
+            jobId: auditJob?.id || null,
+            ...action,
+          });
+          logStructured('candidate_blocked', {
+            cronId,
+            jobId: auditJob?.id || null,
+            ...action,
+          });
+          continue;
+        }
+
+        if (dryRun) {
+          finalAction = {
+            ...candidateAudit,
+            keyword: candidate.keyword,
+            type: candidate.type,
+            status: 'would_publish',
+            candidateKey: candidateAudit.candidateKey,
+            retryCount,
+            rejected_candidates_before_generation: rejectedBeforeGeneration,
+            rejected_candidates_after_generation: rejectedAfterGeneration,
+            scores: gate.scores,
+            explanation: EditorialDecisionExplainabilityService.explainCandidate(candidate).rationale,
+          };
+          break;
+        }
+
+        const published = await this.publishCandidate(candidate, {
+          cronId,
+          jobId: auditJob?.id || null,
+          slot: slotNumber,
+          retryCount,
+        });
+
+        if (published.status === 'published' || published.status === 'published_refresh') {
+          finalAction = {
+            ...published,
+            retryCount,
+            candidateKey: `${candidate.type}:${candidate.targetSlug || toSlug(candidate.keyword)}`,
+            finalSelectedCandidate: summarizeCandidate(candidate, slotNumber, gate),
+            rejected_candidates_before_generation: rejectedBeforeGeneration,
+            rejected_candidates_after_generation: rejectedAfterGeneration,
+          };
+          break;
+        }
+
+        const rejected = {
+          ...published,
+          retryCount,
+          cluster: candidate.cluster,
+          family: candidate.family,
+          nearestCompetingArticle: candidate.nearestCompetingArticle || null,
+          reason: (published.blockers || []).join('; ') || 'blocked_after_generation',
         };
-        actions.push(action);
-        continue;
+        rejectedAfterGeneration.push(rejected);
+        logStructured('rejected_candidates_after_generation', {
+          cronId,
+          jobId: auditJob?.id || null,
+          ...rejected,
+        });
       }
 
-      const published = await this.publishCandidate(candidate, {
-        cronId,
-        jobId: auditJob?.id || null,
-        slot: slotNumber,
-      });
-      actions.push(published);
+      if (!finalAction) {
+        finalAction = {
+          slot: slotNumber,
+          status: 'critical_skip',
+          reason: 'todos os candidatos do slot foram bloqueados antes ou depois da geracao',
+          retryCount: candidatesForSlot.length,
+          rejected_candidates_before_generation: rejectedBeforeGeneration,
+          rejected_candidates_after_generation: rejectedAfterGeneration,
+          finalSelectedCandidate: null,
+        };
+        logStructured('critical_skip', {
+          cronId,
+          jobId: auditJob?.id || null,
+          ...finalAction,
+        });
+      }
+
+      actions.push(finalAction);
+      if (finalAction.candidateKey && !['critical_skip', 'blocked'].includes(finalAction.status)) {
+        runtimeUsedCandidateKeys.add(finalAction.candidateKey);
+      }
     }
 
     if (!actions.length) {
@@ -799,6 +895,10 @@ export class AutonomousEditorialPublishingService {
         type: candidate.type,
         status: 'blocked_after_generation',
         slug: result.slug,
+        retryCount: audit.retryCount || 0,
+        cluster: candidate.cluster,
+        family: candidate.family,
+        nearestCompetingArticle: candidate.nearestCompetingArticle || null,
         blockers: finalGate.blockers,
         scores: finalGate.scores,
         validation: summarizeValidation(result.validation),
@@ -827,6 +927,10 @@ export class AutonomousEditorialPublishingService {
       status: saved.status === 'published' ? 'published' : 'blocked_after_generation',
       slug: result.slug,
       articleId: saved.id || null,
+      retryCount: audit.retryCount || 0,
+      cluster: candidate.cluster,
+      family: candidate.family,
+      nearestCompetingArticle: candidate.nearestCompetingArticle || null,
       factoryStatus: result.status,
       validation: summarizeValidation(result.validation),
       publishSafety: summarizePublishSafety(result.publishSafety),
@@ -860,6 +964,10 @@ export class AutonomousEditorialPublishingService {
         status: 'blocked_after_generation',
         slug: candidate.targetSlug,
         targetSlug: candidate.targetSlug,
+        retryCount: audit.retryCount || 0,
+        cluster: candidate.cluster,
+        family: candidate.family,
+        nearestCompetingArticle: candidate.nearestCompetingArticle || null,
         blockers: finalGate.blockers,
         scores: finalGate.scores,
         validation: summarizeValidation(generated.validation),
@@ -902,6 +1010,10 @@ export class AutonomousEditorialPublishingService {
       slug: saved.slug,
       articleId: saved.id,
       targetSlug: candidate.targetSlug,
+      retryCount: audit.retryCount || 0,
+      cluster: candidate.cluster,
+      family: candidate.family,
+      nearestCompetingArticle: candidate.nearestCompetingArticle || null,
       factoryStatus: generated.status,
       validation: summarizeValidation(generated.validation),
       publishSafety: summarizePublishSafety(generated.publishSafety),

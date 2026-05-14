@@ -105,6 +105,8 @@ export class LiveDiscoveryResilienceService {
         offlineRankScore:
           (candidate.type === 'consumer_alert' ? 18 : 0) +
           (candidate.type === 'news_analysis' ? 16 : 0) +
+          (candidate.type === 'market_update' ? 18 : 0) +
+          (candidate.type === 'regulatory_update' ? 20 : 0) +
           (candidate.type === 'content_refresh' ? 14 : 0) +
           (candidate.angle?.length > 45 ? 8 : 0) +
           (/golpe|fraude|pix|consumidor|superendividamento/i.test(`${candidate.cluster || ''} ${candidate.keyword || ''}`) ? 18 : 0) +
