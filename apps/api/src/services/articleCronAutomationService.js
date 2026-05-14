@@ -2,6 +2,7 @@ import { getPrisma } from '../lib/prisma.js';
 import { EditorialService } from './editorialService.js';
 import { ArticleFactoryService } from './articleFactoryService.js';
 import { checkWordpressHealth } from './blogImage/wordpressPublisher.js';
+import { AutonomousEditorialPublishingService } from './autonomousEditorialPublishingService.js';
 
 const TIMEZONE = 'America/Sao_Paulo';
 const DAILY_LIMIT = Number(process.env.ARTICLE_AUTOMATION_DAILY_LIMIT || 3);
@@ -90,6 +91,31 @@ const getNextSlot = (date = new Date()) => {
     localTime: `${String(slot.hour).padStart(2, '0')}:${String(slot.minute).padStart(2, '0')}`,
     scheduledAt: base.toISOString()
   };
+};
+
+const getUpcomingSlots = (date = new Date(), limit = 3) => {
+  const parts = getSaoPauloParts(date);
+  const nowMinutes = minutesFromMidnight(parts);
+  const todayBase = new Date(`${parts.dateKey}T00:00:00-03:00`);
+  const upcoming = [];
+
+  for (let dayOffset = 0; upcoming.length < limit && dayOffset < 3; dayOffset += 1) {
+    for (const slot of SCHEDULE_SLOTS) {
+      const slotMinutes = minutesFromMidnight(slot);
+      if (dayOffset === 0 && slotMinutes <= nowMinutes) continue;
+      const scheduledAt = new Date(todayBase);
+      scheduledAt.setUTCDate(scheduledAt.getUTCDate() + dayOffset);
+      scheduledAt.setUTCHours(slot.hour + 3, slot.minute, 0, 0);
+      upcoming.push({
+        name: slot.name,
+        localTime: `${String(slot.hour).padStart(2, '0')}:${String(slot.minute).padStart(2, '0')}`,
+        scheduledAt: scheduledAt.toISOString()
+      });
+      if (upcoming.length >= limit) break;
+    }
+  }
+
+  return upcoming;
 };
 
 const serializeArticle = (article = null) => {
@@ -223,6 +249,65 @@ const buildFactoryFallbackItem = (result = {}) => {
         ...(result.publishSafety?.blockers || [])
       ]
     }
+  };
+};
+
+const compactAutonomousAction = (action = {}) => ({
+  slot: action.slot,
+  keyword: action.keyword,
+  slug: action.slug || action.targetSlug,
+  type: action.type,
+  family: action.family,
+  cluster: action.cluster,
+  status: action.status,
+  decision: action.decision,
+  blockers: action.blockers || [],
+  scores: action.scores || null,
+  governance: action.governance ? {
+    decision: action.governance.decision,
+    status: action.governance.status,
+    family: action.governance.family,
+    cluster: action.governance.cluster,
+    blockers: action.governance.blockers || []
+  } : null,
+  publishSafety: action.publishSafety ? {
+    status: action.publishSafety.status,
+    blocked: action.publishSafety.blocked,
+    blockers: action.publishSafety.blockers || []
+  } : null,
+  validation: action.validation ? {
+    passed: action.validation.passed,
+    status: action.validation.status,
+    issues: action.validation.issues || [],
+    qualityScore: action.validation.qualityScore || null
+  } : null,
+  reason: action.reason || null
+});
+
+const summarizeRecurringBlockers = (jobs = []) => {
+  const byBlocker = {};
+  const examples = [];
+
+  for (const job of jobs) {
+    for (const action of job.result?.actions || []) {
+      for (const blocker of action.blockers || []) {
+        byBlocker[blocker] = (byBlocker[blocker] || 0) + 1;
+        if (examples.length < 12) {
+          examples.push({
+            jobId: job.id,
+            startedAt: job.startedAt,
+            keyword: action.keyword,
+            slug: action.slug || action.targetSlug,
+            blocker
+          });
+        }
+      }
+    }
+  }
+
+  return {
+    byBlocker,
+    examples
   };
 };
 
@@ -544,14 +629,25 @@ export class ArticleCronAutomationService {
       lastCreatedArticle,
       lastPublishedArticle,
       failedJob,
-      databaseCount
+      databaseCount,
+      lastAutonomousJob,
+      recentAutonomousJobs
     ] = await Promise.all([
       prisma.automationJob.findFirst({ orderBy: { startedAt: 'desc' } }),
       prisma.editorialJobRun.findFirst({ orderBy: { startedAt: 'desc' } }),
       prisma.article.findFirst({ orderBy: { createdAt: 'desc' } }),
       prisma.article.findFirst({ where: { status: 'published' }, orderBy: { publishedAt: 'desc' } }),
       prisma.automationJob.findFirst({ where: { status: 'failed' }, orderBy: { startedAt: 'desc' } }),
-      prisma.article.count()
+      prisma.article.count(),
+      prisma.automationJob.findFirst({
+        where: { jobName: 'autonomous-premium-editorial-cron' },
+        orderBy: { startedAt: 'desc' }
+      }),
+      prisma.automationJob.findMany({
+        where: { jobName: 'autonomous-premium-editorial-cron' },
+        orderBy: { startedAt: 'desc' },
+        take: 10
+      })
     ]);
 
     const dueSlots = getDueSlots(now);
@@ -582,7 +678,64 @@ export class ArticleCronAutomationService {
       localNow: getSaoPauloParts(now),
       schedule: SCHEDULE_SLOTS,
       nextScheduledRun: getNextSlot(now),
+      upcomingScheduledRuns: getUpcomingSlots(now, 3),
       lastJobExecuted: lastAutomationJob || lastEditorialJob,
+      autonomousPremium: {
+        config: {
+          ...AutonomousEditorialPublishingService.getConfig(),
+          secrets: 'hidden'
+        },
+        lastExecution: lastAutonomousJob ? {
+          id: lastAutonomousJob.id,
+          status: lastAutonomousJob.status,
+          startedAt: lastAutonomousJob.startedAt,
+          finishedAt: lastAutonomousJob.finishedAt,
+          durationMs: lastAutonomousJob.finishedAt
+            ? lastAutonomousJob.finishedAt.getTime() - lastAutonomousJob.startedAt.getTime()
+            : null,
+          cronId: lastAutonomousJob.payload?.cronId || lastAutonomousJob.result?.cronId || null,
+          triggerSource: lastAutonomousJob.payload?.triggerSource || lastAutonomousJob.result?.triggerSource || null,
+          slot: lastAutonomousJob.payload?.scheduledSlot || lastAutonomousJob.result?.slot?.currentSlot || null,
+          discovery: lastAutonomousJob.result?.discovery || null,
+          actions: (lastAutonomousJob.result?.actions || []).map(compactAutonomousAction),
+          attemptedSlots: (lastAutonomousJob.result?.attemptedSlots || []).map(compactAutonomousAction),
+          finalStatus: lastAutonomousJob.result?.status || lastAutonomousJob.status,
+          publishedArticleId: lastAutonomousJob.createdArticleId || lastAutonomousJob.result?.article_id || null,
+          errorMessage: lastAutonomousJob.errorMessage
+        } : null,
+        lastPublish: (() => {
+          const found = recentAutonomousJobs
+            .flatMap((job) => (job.result?.actions || []).map((action) => ({ job, action })))
+            .find(({ action }) => action.status === 'published' || action.status === 'published_refresh');
+          return found ? {
+            jobId: found.job.id,
+            startedAt: found.job.startedAt,
+            articleId: found.action.articleId || found.job.createdArticleId || null,
+            ...compactAutonomousAction(found.action)
+          } : null;
+        })(),
+        lastBlocker: recentAutonomousJobs
+          .flatMap((job) => (job.result?.actions || []).map((action) => ({
+            jobId: job.id,
+            startedAt: job.startedAt,
+            ...compactAutonomousAction(action)
+          })))
+          .find((action) => action.blockers?.length) || null,
+        recurringBlockers: summarizeRecurringBlockers(recentAutonomousJobs),
+        recentStatuses: recentAutonomousJobs.map((job) => ({
+          id: job.id,
+          status: job.status,
+          startedAt: job.startedAt,
+          finishedAt: job.finishedAt,
+          cronId: job.payload?.cronId || job.result?.cronId || null,
+          actionStatuses: (job.result?.actions || []).map((action) => action.status)
+        }))
+      },
+      cronPlatformNotes: {
+        planObserved: 'hobby',
+        expectedDrift: 'Vercel Hobby cron has hourly precision and may drift up to 59 minutes',
+        timezone: 'Vercel cron schedules are UTC; local article slots are 08:30, 13:30 and 19:30 America/Sao_Paulo'
+      },
       lastArticleCreated: serializeArticle(lastCreatedArticle),
       lastArticlePublished: serializeArticle(lastPublishedArticle),
       lastFailureReason: failedJob?.errorMessage || lastEditorialJob?.errorMessage || null,

@@ -1,4 +1,5 @@
 import { getPrisma } from '../lib/prisma.js';
+import { randomUUID } from 'node:crypto';
 import { ArticleFactoryService } from './articleFactoryService.js';
 import { ArticleService } from './articleService.js';
 import { ContentOperationsEngine } from './contentOperationsEngine.js';
@@ -7,6 +8,7 @@ import { EditorialDecisionExplainabilityService } from './editorialDecisionExpla
 import { NewsroomPriorityService } from './newsroomPriorityService.js';
 
 const DEFAULT_DAILY_LIMIT = 3;
+const TIMEZONE = 'America/Sao_Paulo';
 
 const AUTO_PUBLISH_THRESHOLDS = Object.freeze({
   seo: 88,
@@ -36,6 +38,154 @@ const normalize = (value = '') =>
 
 const clamp = (value, min = 0, max = 100) => Math.max(min, Math.min(max, Math.round(value)));
 
+const dateTimeFormatter = new Intl.DateTimeFormat('en-CA', {
+  timeZone: TIMEZONE,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+});
+
+const SCHEDULE_SLOTS = Object.freeze([
+  { name: 'morning', hour: 8, minute: 30 },
+  { name: 'afternoon', hour: 13, minute: 30 },
+  { name: 'evening', hour: 19, minute: 30 },
+]);
+
+const getSaoPauloParts = (date = new Date()) => {
+  const parts = Object.fromEntries(
+    dateTimeFormatter.formatToParts(date)
+      .filter((part) => part.type !== 'literal')
+      .map((part) => [part.type, part.value])
+  );
+
+  return {
+    year: Number(parts.year),
+    month: Number(parts.month),
+    day: Number(parts.day),
+    hour: Number(parts.hour),
+    minute: Number(parts.minute),
+    second: Number(parts.second),
+    dateKey: `${parts.year}-${parts.month}-${parts.day}`,
+  };
+};
+
+const minutesFromMidnight = ({ hour, minute }) => (hour * 60) + minute;
+
+const resolveCurrentSlot = (date = new Date()) => {
+  const parts = getSaoPauloParts(date);
+  const currentMinutes = minutesFromMidnight(parts);
+  const dueSlots = SCHEDULE_SLOTS.filter((slot) => minutesFromMidnight(slot) <= currentMinutes);
+  const currentSlot = dueSlots.at(-1) || null;
+  const nextSlot = SCHEDULE_SLOTS.find((slot) => minutesFromMidnight(slot) > currentMinutes) || SCHEDULE_SLOTS[0];
+
+  return {
+    timezone: TIMEZONE,
+    localNow: parts,
+    currentSlot,
+    dueSlots,
+    nextSlot,
+    schedule: SCHEDULE_SLOTS,
+  };
+};
+
+const toSlug = (value = '') =>
+  String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+
+const trimArray = (value = [], max = 12) => Array.isArray(value) ? value.slice(0, max) : [];
+
+const logStructured = (event, payload = {}) => {
+  console.log(JSON.stringify({
+    event,
+    at: new Date().toISOString(),
+    ...payload,
+  }));
+};
+
+const summarizeValidation = (validation = {}) => ({
+  passed: validation?.passed,
+  status: validation?.status,
+  issues: trimArray(validation?.issues || validation?.blockers || [], 12),
+  qualityScore: validation?.qualityScore ? {
+    total: validation.qualityScore.total,
+    seo_structure_score: validation.qualityScore.seo_structure_score,
+    serp_competitiveness_score: validation.qualityScore.serp_competitiveness_score,
+    expert_authority_score: validation.qualityScore.expert_authority_score,
+    human_readability_score: validation.qualityScore.human_readability_score,
+    anti_template_score: validation.qualityScore.anti_template_score,
+    originality_score: validation.qualityScore.originality_score,
+    factual_depth_score: validation.qualityScore.factual_depth_score,
+    editorial_depth_score: validation.qualityScore.editorial_depth_score,
+    fingerprint_risk_score: validation.qualityScore.fingerprint_risk_score,
+    structural_fingerprint_score: validation.qualityScore.structural_fingerprint_score,
+    canibalization_risk_score: validation.qualityScore.canibalization_risk_score,
+  } : null,
+});
+
+const summarizeGovernance = (governance = {}) => ({
+  decision: governance?.decision,
+  status: governance?.status,
+  family: governance?.family,
+  cluster: governance?.cluster,
+  publishAllowed: governance?.publishAllowed,
+  blockers: trimArray(governance?.blockers, 12),
+  scores: governance?.scores || null,
+});
+
+const summarizePublishSafety = (publishSafety = {}) => ({
+  status: publishSafety?.status,
+  blocked: publishSafety?.blocked,
+  blockers: trimArray(publishSafety?.blockers, 12),
+  thresholds: publishSafety?.thresholds || null,
+});
+
+const summarizeCandidate = (candidate = {}, slot = null, gate = null) => ({
+  slot,
+  keyword: candidate.keyword,
+  slug: candidate.targetSlug || toSlug(candidate.keyword),
+  type: candidate.type,
+  family: candidate.family,
+  cluster: candidate.cluster,
+  source: candidate.source,
+  intent: candidate.intent,
+  targetSlug: candidate.targetSlug || null,
+  refreshPlanned: Boolean(candidate.refreshPlanned),
+  governance: candidate.governance || null,
+  publishSafety: candidate.publishSafety || null,
+  candidateBlockers: candidate.blockers || [],
+  decision: gate?.decision || candidate.governance?.decision || 'unknown',
+  blockers: gate?.blockers || candidate.blockers || [],
+  scores: gate?.scores || candidate.scores || {},
+  reason: candidate.reason || '',
+});
+
+const summarizeDiscovery = (discovery = {}, useLiveDiscovery = false) => ({
+  triggered: discovery?.triggered === true,
+  requestedLiveDiscovery: useLiveDiscovery,
+  usedLiveDiscovery: discovery?.usedLiveDiscovery === true,
+  providers: discovery?.providers || {},
+  candidates: (discovery?.candidates || []).map((candidate) => ({
+    keyword: candidate.keyword,
+    type: candidate.type,
+    family: candidate.family,
+    cluster: candidate.cluster,
+    source: candidate.source,
+    discoveryCache: candidate.discoveryCache,
+    discoveryStale: candidate.discoveryStale,
+    discoveryCircuitOpen: candidate.discoveryCircuitOpen,
+  })),
+});
+
 const todayRange = (now = new Date()) => {
   const start = new Date(now);
   start.setHours(0, 0, 0, 0);
@@ -60,7 +210,58 @@ export class AutonomousEditorialPublishingService {
       dailyLimit: Number.isFinite(dailyLimit) && dailyLimit > 0 ? Math.min(6, dailyLimit) : DEFAULT_DAILY_LIMIT,
       factoryPublishAllowed: env.ARTICLE_FACTORY_ALLOW_PUBLISH === 'true',
       dryRunDefault: env.AUTO_PUBLISH_SHADOW_MODE !== 'false',
+      liveDiscoveryEnabled: env.AUTO_PUBLISH_LIVE_DISCOVERY === 'true' ||
+        (env.AUTO_PUBLISH_LIVE_DISCOVERY !== 'false' && env.AUTO_PUBLISH_MODE === 'autonomous_premium'),
     };
+  }
+
+  static async createAuditJob({
+    cronId,
+    triggerSource = 'cron-autonomous-editorial',
+    dryRun = true,
+    useLiveDiscovery = false,
+    now = new Date(),
+  } = {}) {
+    const prisma = getPrisma();
+    const slot = resolveCurrentSlot(now);
+    return prisma.automationJob.create({
+      data: {
+        jobName: 'autonomous-premium-editorial-cron',
+        status: 'running',
+        payload: {
+          cronId,
+          triggerSource,
+          dryRun,
+          autonomousReal: this.isRealPublishingAllowed({ dryRun }),
+          useLiveDiscovery,
+          timezone: TIMEZONE,
+          scheduledSlot: slot.currentSlot,
+          dueSlots: slot.dueSlots,
+          localDate: slot.localNow.dateKey,
+          localNow: slot.localNow,
+          startedAt: now.toISOString(),
+          config: {
+            ...this.getConfig(),
+            secrets: 'hidden',
+          },
+        },
+      },
+    });
+  }
+
+  static async finishAuditJob({ job, status, result = null, error = null, articleId = null } = {}) {
+    if (!job?.id) return null;
+    const prisma = getPrisma();
+    return prisma.automationJob.update({
+      where: { id: job.id },
+      data: {
+        status,
+        finishedAt: new Date(),
+        result,
+        errorMessage: error ? (error.message || String(error)) : null,
+        createdArticleId: articleId,
+      },
+    });
   }
 
   static isRealPublishingAllowed({ dryRun = true, env = process.env } = {}) {
@@ -337,15 +538,43 @@ export class AutonomousEditorialPublishingService {
     dryRun = true,
     useLiveDiscovery = false,
     now = new Date(),
+    triggerSource = 'cron-autonomous-editorial',
+    cronId = randomUUID(),
+    persistAudit = true,
   } = {}) {
+    const startedAt = Date.now();
     const config = this.getConfig();
+    const effectiveLiveDiscovery = Boolean(useLiveDiscovery || config.liveDiscoveryEnabled);
     const realPublishingAllowed = this.isRealPublishingAllowed({ dryRun });
     const dailyLimit = config.dailyLimit;
+    const slot = resolveCurrentSlot(now);
+    let auditJob = null;
+    if (persistAudit) {
+      auditJob = await this.createAuditJob({
+        cronId,
+        triggerSource,
+        dryRun,
+        useLiveDiscovery: effectiveLiveDiscovery,
+        now,
+      });
+    }
+
+    logStructured('autonomous_cron_started', {
+      cronId,
+      jobId: auditJob?.id || null,
+      triggerSource,
+      dryRun,
+      autonomousReal: realPublishingAllowed,
+      liveDiscovery: effectiveLiveDiscovery,
+      slot,
+    });
+
+    try {
     const publishedToday = await this.countPublishedToday({ now });
     const remaining = Math.max(0, dailyLimit - publishedToday);
 
     if (!dryRun && !realPublishingAllowed) {
-      return {
+      const result = {
         ok: false,
         status: 'blocked_by_flags',
         published: false,
@@ -357,52 +586,124 @@ export class AutonomousEditorialPublishingService {
           AUTO_PUBLISH_MODE: 'autonomous_premium',
           ARTICLE_FACTORY_ALLOW_PUBLISH: 'true',
         },
+        cronId,
+        jobId: auditJob?.id || null,
+        durationMs: Date.now() - startedAt,
       };
+      await this.finishAuditJob({ job: auditJob, status: result.status, result });
+      logStructured('autonomous_cron_finished', result);
+      return result;
     }
 
     if (remaining <= 0) {
-      return {
+      const result = {
         ok: true,
         status: 'daily_limit_reached',
         publishedToday,
         dailyLimit,
         actions: [],
+        cronId,
+        jobId: auditJob?.id || null,
+        slot,
+        durationMs: Date.now() - startedAt,
       };
+      await this.finishAuditJob({ job: auditJob, status: result.status, result });
+      logStructured('autonomous_cron_finished', result);
+      return result;
     }
+
+    logStructured('discovery_started', {
+      cronId,
+      jobId: auditJob?.id || null,
+      liveDiscovery: effectiveLiveDiscovery,
+      providersRequested: {
+        serpApiConfigured: Boolean(process.env.SERPAPI_API_KEY),
+        valueSerpConfigured: Boolean(process.env.VALUESERP_API_KEY),
+      },
+    });
 
     const plan = await ContentOperationsEngine.simulateWeek({
       days: 1,
       dailyTarget: remaining,
       dryRun: true,
-      useLiveDiscovery,
+      useLiveDiscovery: effectiveLiveDiscovery,
     });
+    const discovery = summarizeDiscovery(plan.discovery, effectiveLiveDiscovery);
+    logStructured('discovery_finished', {
+      cronId,
+      jobId: auditJob?.id || null,
+      discovery,
+      distribution: plan.distribution,
+      blockedSummary: plan.blockedSummary,
+    });
+
     const candidates = this.pickDailyCandidates(plan.days?.[0] || {}).slice(0, remaining);
     const actions = [];
+    const attemptedSlots = [];
 
-    for (const candidate of candidates) {
+    for (let index = 0; index < remaining; index += 1) {
+      const candidate = candidates[index];
+      const slotNumber = index + 1;
+      if (!candidate) {
+        const action = {
+          slot: slotNumber,
+          status: 'critical_skip',
+          reason: 'sem pauta segura para o slot sem violar governanca',
+        };
+        actions.push(action);
+        attemptedSlots.push(action);
+        logStructured('critical_skip', {
+          cronId,
+          jobId: auditJob?.id || null,
+          ...action,
+        });
+        continue;
+      }
+
       const gate = this.evaluateAutonomousGate(candidate);
+      const candidateAudit = summarizeCandidate(candidate, slotNumber, gate);
+      attemptedSlots.push(candidateAudit);
+      logStructured('candidate_selected', {
+        cronId,
+        jobId: auditJob?.id || null,
+        ...candidateAudit,
+      });
+
       if (!gate.publishable) {
-        actions.push({
+        const action = {
+          ...candidateAudit,
           keyword: candidate.keyword,
           status: 'blocked',
           blockers: gate.blockers,
           scores: gate.scores,
+        };
+        actions.push(action);
+        logStructured('candidate_blocked', {
+          cronId,
+          jobId: auditJob?.id || null,
+          ...action,
         });
         continue;
       }
 
       if (dryRun) {
-        actions.push({
+        const action = {
+          ...candidateAudit,
           keyword: candidate.keyword,
           type: candidate.type,
           status: 'would_publish',
           scores: gate.scores,
           explanation: EditorialDecisionExplainabilityService.explainCandidate(candidate).rationale,
-        });
+        };
+        actions.push(action);
         continue;
       }
 
-      const published = await this.publishCandidate(candidate);
+      const published = await this.publishCandidate(candidate, {
+        cronId,
+        jobId: auditJob?.id || null,
+        slot: slotNumber,
+      });
       actions.push(published);
     }
 
@@ -411,24 +712,73 @@ export class AutonomousEditorialPublishingService {
         status: 'critical_skip',
         reason: 'nenhuma pauta segura encontrada apos discovery, cache e fallback editorial',
       });
+      logStructured('critical_skip', {
+        cronId,
+        jobId: auditJob?.id || null,
+        reason: 'nenhuma pauta segura encontrada apos discovery, cache e fallback editorial',
+      });
     }
 
-    return {
+    const result = {
       ok: true,
       status: dryRun ? 'shadow_daily_complete' : 'autonomous_daily_complete',
       dryRun,
       autonomousReal: realPublishingAllowed,
+      cronId,
+      jobId: auditJob?.id || null,
+      triggerSource,
+      slot,
       publishedToday,
       dailyLimit,
       remainingAtStart: remaining,
+      discovery,
+      attemptedSlots,
       actions,
       observability: EditorialObservabilityService.collectFromSimulation(plan),
+      durationMs: Date.now() - startedAt,
     };
+    const articleId = actions.find((action) => action.articleId)?.articleId || null;
+    await this.finishAuditJob({ job: auditJob, status: result.status, result, articleId });
+    logStructured('autonomous_cron_finished', {
+      cronId,
+      jobId: auditJob?.id || null,
+      status: result.status,
+      published: actions.filter((action) => action.status === 'published' || action.status === 'published_refresh').length,
+      blocked: actions.filter((action) => /blocked/.test(action.status || '')).length,
+      criticalSkips: actions.filter((action) => action.status === 'critical_skip').length,
+      durationMs: result.durationMs,
+    });
+    return result;
+    } catch (error) {
+      const result = {
+        ok: false,
+        status: 'failed',
+        dryRun,
+        autonomousReal: realPublishingAllowed,
+        cronId,
+        jobId: auditJob?.id || null,
+        triggerSource,
+        slot,
+        error: {
+          name: error?.name || 'Error',
+          message: error?.message || String(error),
+        },
+        durationMs: Date.now() - startedAt,
+      };
+      await this.finishAuditJob({
+        job: auditJob,
+        status: 'failed',
+        result,
+        error,
+      });
+      logStructured('autonomous_cron_finished', result);
+      throw error;
+    }
   }
 
-  static async publishCandidate(candidate = {}) {
+  static async publishCandidate(candidate = {}, audit = {}) {
     if (candidate.refreshPlanned && candidate.targetSlug) {
-      return this.publishRefreshCandidate(candidate);
+      return this.publishRefreshCandidate(candidate, audit);
     }
 
     const result = await ArticleFactoryService.run({
@@ -443,17 +793,24 @@ export class AutonomousEditorialPublishingService {
     });
     const finalGate = this.evaluateGeneratedResultGate(result, candidate);
     if (!finalGate.publishable) {
-      return {
+      const action = {
+        slot: audit.slot || null,
         keyword: candidate.keyword,
         type: candidate.type,
         status: 'blocked_after_generation',
         slug: result.slug,
         blockers: finalGate.blockers,
         scores: finalGate.scores,
-        validation: result.validation,
-        publishSafety: result.publishSafety,
-        governance: result.governance,
+        validation: summarizeValidation(result.validation),
+        publishSafety: summarizePublishSafety(result.publishSafety),
+        governance: summarizeGovernance(result.governance),
       };
+      logStructured('post_generation_validation_failed', {
+        cronId: audit.cronId,
+        jobId: audit.jobId,
+        ...action,
+      });
+      return action;
     }
 
     const saved = await ArticleService.createOrUpdateGeneratedArticle({
@@ -463,20 +820,27 @@ export class AutonomousEditorialPublishingService {
       idempotencyKey: result.article?.structuredContent?.factoryIdempotencyKey || `autonomous:${result.slug}`,
     });
 
-    return {
+    const action = {
+      slot: audit.slot || null,
       keyword: candidate.keyword,
       type: candidate.type,
       status: saved.status === 'published' ? 'published' : 'blocked_after_generation',
       slug: result.slug,
       articleId: saved.id || null,
       factoryStatus: result.status,
-      validation: result.validation,
-      publishSafety: result.publishSafety,
-      governance: result.governance,
+      validation: summarizeValidation(result.validation),
+      publishSafety: summarizePublishSafety(result.publishSafety),
+      governance: summarizeGovernance(result.governance),
     };
+    logStructured(action.status === 'published' ? 'article_published' : 'post_generation_validation_failed', {
+      cronId: audit.cronId,
+      jobId: audit.jobId,
+      ...action,
+    });
+    return action;
   }
 
-  static async publishRefreshCandidate(candidate = {}) {
+  static async publishRefreshCandidate(candidate = {}, audit = {}) {
     const generated = await ArticleFactoryService.run({
       topic: candidate.keyword,
       keyword: candidate.keyword,
@@ -489,7 +853,8 @@ export class AutonomousEditorialPublishingService {
     });
     const finalGate = this.evaluateGeneratedResultGate(generated, candidate);
     if (!finalGate.publishable) {
-      return {
+      const action = {
+        slot: audit.slot || null,
         keyword: candidate.keyword,
         type: candidate.type,
         status: 'blocked_after_generation',
@@ -497,10 +862,16 @@ export class AutonomousEditorialPublishingService {
         targetSlug: candidate.targetSlug,
         blockers: finalGate.blockers,
         scores: finalGate.scores,
-        validation: generated.validation,
-        publishSafety: generated.publishSafety,
-        governance: generated.governance,
+        validation: summarizeValidation(generated.validation),
+        publishSafety: summarizePublishSafety(generated.publishSafety),
+        governance: summarizeGovernance(generated.governance),
       };
+      logStructured('post_generation_validation_failed', {
+        cronId: audit.cronId,
+        jobId: audit.jobId,
+        ...action,
+      });
+      return action;
     }
 
     const article = {
@@ -523,7 +894,8 @@ export class AutonomousEditorialPublishingService {
       idempotencyKey: `autonomous-refresh:${candidate.targetSlug}`,
     });
 
-    return {
+    const action = {
+      slot: audit.slot || null,
       keyword: candidate.keyword,
       type: candidate.type,
       status: saved.status === 'published' ? 'published_refresh' : 'blocked_after_generation',
@@ -531,10 +903,16 @@ export class AutonomousEditorialPublishingService {
       articleId: saved.id,
       targetSlug: candidate.targetSlug,
       factoryStatus: generated.status,
-      validation: generated.validation,
-      publishSafety: generated.publishSafety,
-      governance: generated.governance,
+      validation: summarizeValidation(generated.validation),
+      publishSafety: summarizePublishSafety(generated.publishSafety),
+      governance: summarizeGovernance(generated.governance),
     };
+    logStructured(action.status === 'published_refresh' ? 'article_published' : 'post_generation_validation_failed', {
+      cronId: audit.cronId,
+      jobId: audit.jobId,
+      ...action,
+    });
+    return action;
   }
 
   static evaluateGeneratedResultGate(result = {}, candidate = {}) {

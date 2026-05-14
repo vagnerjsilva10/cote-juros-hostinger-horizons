@@ -36,6 +36,12 @@ const parseLimit = (value, fallback = 1, max = 3) => {
   return Math.min(max, Math.floor(parsed));
 };
 
+const parseBooleanOverride = (value) => {
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  return null;
+};
+
 router.use(requireCronSecret);
 
 router.get(
@@ -49,21 +55,30 @@ router.get(
   '/run',
   asyncHandler(async (req, res) => {
     if (process.env.AUTO_PUBLISH_MODE === 'autonomous_premium') {
+      const config = AutonomousEditorialPublishingService.getConfig();
+      const liveDiscoveryOverride = parseBooleanOverride(req.query.liveDiscovery);
+      const triggerSource = req.get('user-agent')?.includes('vercel-cron')
+        ? 'vercel-cron-autonomous-editorial'
+        : (req.query.trigger || 'cron-autonomous-editorial');
       const result = await AutonomousEditorialPublishingService.runDaily({
-        dryRun: false,
-        useLiveDiscovery: req.query.liveDiscovery === 'true',
+        dryRun: req.query.dryRun === 'true',
+        useLiveDiscovery: liveDiscoveryOverride ?? config.liveDiscoveryEnabled,
+        triggerSource,
       });
 
       console.log(JSON.stringify({
         event: 'autonomous_editorial_cron_finished',
-        triggerSource: req.get('user-agent')?.includes('vercel-cron')
-          ? 'vercel-cron-autonomous-editorial'
-          : (req.query.trigger || 'cron-autonomous-editorial'),
+        triggerSource,
+        cronId: result.cronId,
+        jobId: result.jobId,
         status: result.status,
         autonomousReal: result.autonomousReal,
+        liveDiscovery: result.discovery?.requestedLiveDiscovery,
+        usedLiveDiscovery: result.discovery?.usedLiveDiscovery,
         dailyLimit: result.dailyLimit,
         publishedToday: result.publishedToday,
         actions: (result.actions || []).map((action) => ({
+          slot: action.slot,
           keyword: action.keyword,
           type: action.type,
           status: action.status,
