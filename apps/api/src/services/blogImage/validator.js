@@ -244,7 +244,31 @@ const validateContext = ({ image, article = {}, intent = '' }) => {
   return hasSubject && hasStrictIntentContext && (hasIntentMatch || overlap >= 1);
 };
 
-export const validateBlogImage = (image = {}, { article = {}, intent = '' } = {}) => {
+const validateEditorialFallbackContext = ({ image }) => {
+  const descriptiveText = asDescriptiveText(image);
+  return hasAny(descriptiveText, [
+    'money',
+    'cash',
+    'banknote',
+    'credit card',
+    'card',
+    'smartphone',
+    'phone',
+    'contract',
+    'document',
+    'calculator',
+    'bank',
+    'office',
+    'bills',
+    'debt',
+    'family',
+    'home',
+    'car',
+    'vehicle'
+  ]);
+};
+
+export const validateBlogImage = (image = {}, { article = {}, intent = '', allowEditorialFallback = false } = {}) => {
   const text = asText(image);
   const checks = {
     isRealPhoto: image.kind === 'photo' && hasAny(text, REAL_PHOTO_TERMS) && !hasAny(text, ['vector', 'illustration', 'cartoon', 'render']),
@@ -264,10 +288,17 @@ export const validateBlogImage = (image = {}, { article = {}, intent = '' } = {}
     .filter(([key, value]) => typeof value === 'boolean' && !value)
     .map(([key]) => key);
 
+  const editorialFallback = allowEditorialFallback
+    && errors.length === 1
+    && errors[0] === 'isContextual'
+    && validateEditorialFallbackContext({ image });
+
   return {
     ...checks,
-    passed: errors.length === 0,
-    errors
+    isContextual: editorialFallback ? true : checks.isContextual,
+    editorialFallback,
+    passed: editorialFallback || errors.length === 0,
+    errors: editorialFallback ? [] : errors
   };
 };
 

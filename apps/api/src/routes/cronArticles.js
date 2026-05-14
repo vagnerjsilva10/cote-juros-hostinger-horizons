@@ -18,8 +18,11 @@ const requireCronSecret = (req, res, next) => {
     process.env.COTE_API_TOKEN
   ].filter(Boolean);
   const received = resolveBearerToken(req) || req.query.secret || '';
+  const userAgent = String(req.get('user-agent') || '').toLowerCase();
+  const isVercelCron = userAgent.includes('vercel-cron') || req.get('x-vercel-cron') === '1';
 
   if (allowedTokens.length && allowedTokens.includes(received)) return next();
+  if (isVercelCron && process.env.CRON_ALLOW_VERCEL_CRON !== 'false') return next();
 
   return res.status(401).json({
     ok: false,

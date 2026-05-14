@@ -162,10 +162,17 @@ export const findValidatedBlogImageCandidate = async (article) => {
         continue;
       }
 
-      const validation = validateBlogImage(candidate, {
+      const strictValidation = validateBlogImage(candidate, {
         article: articleContext,
         intent
       });
+      const validation = strictValidation.passed
+        ? strictValidation
+        : validateBlogImage(candidate, {
+          article: articleContext,
+          intent,
+          allowEditorialFallback: true
+        });
 
       if (!validation.passed) {
         rejected.push({
@@ -211,10 +218,17 @@ export const findValidatedBlogImageCandidate = async (article) => {
           width: dimensions?.width || candidate.width,
           height: dimensions?.height || candidate.height
         };
-        const finalValidation = validateBlogImage(candidateWithDimensions, {
+        const finalStrictValidation = validateBlogImage(candidateWithDimensions, {
           article: articleContext,
           intent
         });
+        const finalValidation = finalStrictValidation.passed
+          ? finalStrictValidation
+          : validateBlogImage(candidateWithDimensions, {
+            article: articleContext,
+            intent,
+            allowEditorialFallback: true
+          });
 
         if (!finalValidation.passed) {
           rejected.push({
@@ -357,10 +371,17 @@ export class BlogImageAutomationService {
       buffer: undefined,
       contentType: undefined
     };
-    const finalValidation = validateBlogImage(winnerWithDimensions, {
+    const strictValidation = validateBlogImage(winnerWithDimensions, {
       article: getArticleImageContext(article),
       intent: selection.intent
     });
+    const finalValidation = strictValidation.passed
+      ? strictValidation
+      : validateBlogImage(winnerWithDimensions, {
+        article: getArticleImageContext(article),
+        intent: selection.intent,
+        allowEditorialFallback: true
+      });
 
     if (!finalValidation.passed) {
       await logger.warn('blog_image_downloaded_candidate_rejected', {

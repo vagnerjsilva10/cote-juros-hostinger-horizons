@@ -97,6 +97,8 @@ export class LiveDiscoveryResilienceService {
   }
 
   static rankOffline(candidates = []) {
+    const saturationFamilies = new Set(['credito_emprestimo', 'score', 'cartao', 'financiamento']);
+    const freshnessSignals = /hoje|nova regra|mudanca|banco central|selic|inss|fgts|pix|golpe|fraude/i;
     return this.deduplicateCandidates(candidates)
       .map((candidate) => ({
         ...candidate,
@@ -104,7 +106,12 @@ export class LiveDiscoveryResilienceService {
           (candidate.type === 'consumer_alert' ? 18 : 0) +
           (candidate.type === 'news_analysis' ? 16 : 0) +
           (candidate.type === 'content_refresh' ? 14 : 0) +
-          (candidate.angle?.length > 45 ? 8 : 0),
+          (candidate.angle?.length > 45 ? 8 : 0) +
+          (/golpe|fraude|pix|consumidor|superendividamento/i.test(`${candidate.cluster || ''} ${candidate.keyword || ''}`) ? 18 : 0) +
+          (freshnessSignals.test(`${candidate.keyword || ''} ${candidate.title || ''} ${candidate.angle || ''}`) ? 12 : 0) +
+          (/banco central|bacen|gov\.br|inss|fgts|procon|consumidor/i.test(`${candidate.angle || ''} ${candidate.source || ''}`) ? 10 : 0) -
+          (saturationFamilies.has(candidate.cluster || candidate.family) ? 18 : 0) -
+          (/emprestimo|credito|score|cartao|financiamento/i.test(candidate.keyword || '') ? 8 : 0),
       }))
       .sort((a, b) => b.offlineRankScore - a.offlineRankScore);
   }

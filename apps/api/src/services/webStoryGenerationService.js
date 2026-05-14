@@ -42,6 +42,8 @@ const truncate = (value = '', max = 64) => {
 
 const sentence = (value = '', max = 112) => truncate(compact(value).split(/(?<=[.!?])\s+/)[0] || value, max);
 const MIN_DISCOVER_READINESS = 80;
+const AMP_BOILERPLATE_STYLE = 'body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}';
+const AMP_NOSCRIPT_BOILERPLATE_STYLE = 'body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}';
 
 const cleanTitle = (value = '') =>
   compact(value)
@@ -297,7 +299,7 @@ const buildStoryHtml = ({ story = {} }) => {
   <script async src="https://cdn.ampproject.org/v0.js"></script>
   <script async custom-element="amp-story" src="https://cdn.ampproject.org/v0/amp-story-1.0.js"></script>
   <script async custom-element="amp-story-auto-ads" src="https://cdn.ampproject.org/v0/amp-story-auto-ads-0.1.js"></script>
-  <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;animation:none}</style></noscript>
+  <style amp-boilerplate>${AMP_BOILERPLATE_STYLE}</style><noscript><style amp-boilerplate>${AMP_NOSCRIPT_BOILERPLATE_STYLE}</style></noscript>
   <style amp-custom>
     amp-story{font-family:Arial,sans-serif;color:#fff}
     .shade{width:100%;height:100%;background:linear-gradient(180deg,rgba(2,6,23,.08),rgba(2,6,23,.18) 42%,${story.visualSystem?.palette?.shade || 'rgba(2,6,23,.78)'})}
