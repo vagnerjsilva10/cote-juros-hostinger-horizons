@@ -180,6 +180,29 @@ const summarizeCandidate = (candidate = {}, slot = null, gate = null) => ({
   reason: candidate.reason || '',
 });
 
+const buildNewsContext = (candidate = {}) => {
+  const news = candidate.news || {};
+  return {
+    ...news,
+    type: candidate.type,
+    keyword: candidate.keyword,
+    topic: candidate.keyword,
+    family: candidate.family,
+    cluster: candidate.cluster,
+    angle: candidate.angle || candidate.reason || '',
+    newsSource: news.newsSource || candidate.newsSource || null,
+    sourceUrl: news.sourceUrl || candidate.sourceUrl || null,
+    publishedAt: news.publishedAt || candidate.publishedAt || null,
+    sources: news.sources || candidate.newsSources || [],
+    freshnessScore: news.freshnessScore || candidate.scores?.freshnessScore || null,
+    officialSourceDetected: news.officialSourceDetected || false,
+    secondSourceConfirmed: news.secondSourceConfirmed || false,
+    impactOnWalletScore: news.impactOnWalletScore || candidate.scores?.impactOnWalletScore || null,
+    newsworthinessScore: news.newsworthinessScore || candidate.scores?.newsworthinessScore || null,
+    nearestCompetingArticle: candidate.nearestCompetingArticle || null,
+  };
+};
+
 const summarizeDiscovery = (discovery = {}, useLiveDiscovery = false) => ({
   triggered: discovery?.triggered === true,
   requestedLiveDiscovery: useLiveDiscovery,
@@ -886,6 +909,7 @@ export class AutonomousEditorialPublishingService {
       persist: false,
       publishApproved: true,
       triggerSource: 'autonomous-premium',
+      newsContext: buildNewsContext(candidate),
     });
     const finalGate = this.evaluateGeneratedResultGate(result, candidate);
     if (!finalGate.publishable) {
@@ -899,6 +923,13 @@ export class AutonomousEditorialPublishingService {
         cluster: candidate.cluster,
         family: candidate.family,
         nearestCompetingArticle: candidate.nearestCompetingArticle || null,
+        newsSource: candidate.news?.newsSource || candidate.newsSource || null,
+        publishedAt: candidate.news?.publishedAt || candidate.publishedAt || null,
+        freshnessScore: candidate.news?.freshnessScore || candidate.scores?.freshnessScore || null,
+        officialSourceDetected: candidate.news?.officialSourceDetected || false,
+        secondSourceConfirmed: candidate.news?.secondSourceConfirmed || false,
+        impactOnWalletScore: candidate.news?.impactOnWalletScore || candidate.scores?.impactOnWalletScore || null,
+        newsworthinessScore: candidate.news?.newsworthinessScore || candidate.scores?.newsworthinessScore || null,
         blockers: finalGate.blockers,
         scores: finalGate.scores,
         validation: summarizeValidation(result.validation),
@@ -931,6 +962,13 @@ export class AutonomousEditorialPublishingService {
       cluster: candidate.cluster,
       family: candidate.family,
       nearestCompetingArticle: candidate.nearestCompetingArticle || null,
+      newsSource: candidate.news?.newsSource || candidate.newsSource || null,
+      publishedAt: candidate.news?.publishedAt || candidate.publishedAt || null,
+      freshnessScore: candidate.news?.freshnessScore || candidate.scores?.freshnessScore || null,
+      officialSourceDetected: candidate.news?.officialSourceDetected || false,
+      secondSourceConfirmed: candidate.news?.secondSourceConfirmed || false,
+      impactOnWalletScore: candidate.news?.impactOnWalletScore || candidate.scores?.impactOnWalletScore || null,
+      newsworthinessScore: candidate.news?.newsworthinessScore || candidate.scores?.newsworthinessScore || null,
       factoryStatus: result.status,
       validation: summarizeValidation(result.validation),
       publishSafety: summarizePublishSafety(result.publishSafety),

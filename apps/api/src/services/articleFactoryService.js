@@ -10,6 +10,7 @@ import { repairPortugueseText } from './portugueseTextService.js';
 import { SerpIntelligenceService } from './serpIntelligenceService.js';
 import { buildPremiumArticle } from './premiumArticleComposerService.js';
 import { buildIntentSpecificArticle } from './intentSpecificComposerService.js';
+import { buildFinancialNewsArticle, FinancialNewsArticleComposerService } from './financialNewsArticleComposerService.js';
 import { EditorialTopicFatigueService } from './editorialTopicFatigueService.js';
 import { buildPublishHardBlockers } from './publishSafetyService.js';
 import { EditorialGovernanceService } from './editorialGovernanceService.js';
@@ -274,11 +275,14 @@ const ensureUniqueSlug = async ({ slug, idempotencyKey }) => {
   return { slug: candidate, existingArticle: null };
 };
 
-export async function generateArticle({ topic, keyword, intent = 'guide', category = 'Educacao financeira', serpIntelligence = null }) {
-  const rawDraft = buildIntentSpecificArticle({ topic, keyword, intent, category, serpIntelligence })
+export async function generateArticle({ topic, keyword, intent = 'guide', category = 'Educacao financeira', serpIntelligence = null, newsContext = null }) {
+  const rawDraft = buildFinancialNewsArticle({ topic, keyword, intent, category, serpIntelligence, newsContext })
+    || buildIntentSpecificArticle({ topic, keyword, intent, category, serpIntelligence })
     || buildPremiumArticle({ topic, keyword, intent, category, serpIntelligence })
     || buildArticleDraft({ topic, keyword, intent, category, serpIntelligence });
-  const draft = applyOpinionatedFinanceLayerV2({ article: rawDraft, keyword });
+  const draft = rawDraft.intentComposerProfile?.type === 'financial_news'
+    ? rawDraft
+    : applyOpinionatedFinanceLayerV2({ article: rawDraft, keyword });
   const internalLinks = Array.isArray(draft.internalLinks) && draft.internalLinks.length
     ? draft.internalLinks
     : defaultInternalLinks({ category, keyword });
@@ -338,7 +342,8 @@ export class ArticleFactoryService {
     dryRun = false,
     persist = false,
     publishApproved = false,
-    triggerSource = 'manual'
+    triggerSource = 'manual',
+    newsContext = null
   } = {}) {
     const startedAt = Date.now();
     const cleanKeyword = repairPortugueseText(compact(keyword || topic));
@@ -354,8 +359,63 @@ export class ArticleFactoryService {
       dryRun,
       persist,
       publishApproved,
-      triggerSource
+      triggerSource,
+      contentType: newsContext?.type || null
     });
+
+    if (FinancialNewsArticleComposerService.isFinancialNewsContext({
+      type: newsContext?.type,
+      intent,
+      category: cleanCategory,
+      newsContext
+    })) {
+      const preflight = FinancialNewsArticleComposerService.validatePreflight({
+        ...newsContext,
+        keyword: cleanKeyword,
+        topic: cleanTopic,
+      });
+      if (!preflight.ok) {
+        const generated = FinancialNewsArticleComposerService.buildPreflightBlockedResult({
+          topic: cleanTopic,
+          keyword: cleanKeyword,
+          category: cleanCategory,
+          newsContext,
+          blockers: preflight.blockers,
+        });
+        const validation = {
+          passed: false,
+          issues: preflight.blockers,
+          checks: { financialNewsPreflight: preflight },
+          qualityScore: {
+            total: 0,
+            originality_score: 0,
+            factual_depth_score: 0,
+            canibalization_risk_score: 100,
+            fingerprint_risk_score: 100,
+          },
+        };
+        return {
+          ok: false,
+          dryRun,
+          persisted: false,
+          status: 'news_preflight_blocked',
+          persistenceStatus: 'draft',
+          slug: generated.slug,
+          title: generated.title,
+          image: null,
+          validation,
+          topicFatigue: null,
+          publishSafety: { blocked: true, status: 'draft_blocked', blockers: preflight.blockers },
+          governance: { publishAllowed: false, decision: 'skipped', blockers: preflight.blockers },
+          serpIntelligence: null,
+          article: {
+            ...generated,
+            structuredContent: generated.structuredContent,
+          },
+          durationMs: Date.now() - startedAt,
+        };
+      }
+    }
 
     const serpIntelligence = await SerpIntelligenceService.analyzeKeyword({
       keyword: cleanKeyword,
@@ -367,7 +427,8 @@ export class ArticleFactoryService {
       keyword: cleanKeyword,
       intent: resolvedIntent,
       category: cleanCategory,
-      serpIntelligence
+      serpIntelligence,
+      newsContext
     });
     const idempotencyKey = toSlug(`${cleanKeyword}-${intent}-${cleanCategory}`);
     const slugState = dryRun
