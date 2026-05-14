@@ -2,6 +2,7 @@ import express from 'express';
 import { asyncHandler } from '../lib/http.js';
 import { ArticleCronAutomationService } from '../services/articleCronAutomationService.js';
 import { AutonomousEditorialPublishingService } from '../services/autonomousEditorialPublishingService.js';
+import { WebStoryOperationsService } from '../services/webStoryOperationsService.js';
 
 const router = express.Router();
 
@@ -78,6 +79,46 @@ router.get(
         : (req.query.trigger || 'cron-articles')
     });
     res.status(result.status === 'failed' ? 500 : 200).json(result);
+  })
+);
+
+router.get(
+  '/web-stories/run',
+  asyncHandler(async (req, res) => {
+    const result = await WebStoryOperationsService.runSelectiveProduction({
+      dryRun: req.query.dryRun === 'true',
+      firstRun: false,
+      limit: parseLimit(req.query.limit, process.env.WEB_STORY_DAILY_LIMIT || 3, 3),
+      includeRecent: parseLimit(req.query.includeRecent, 180, 250),
+      slug: req.query.slug || '',
+      force: req.query.force === 'true'
+    });
+
+    console.log(JSON.stringify({
+      event: 'selective_web_story_cron_finished',
+      triggerSource: req.get('user-agent')?.includes('vercel-cron')
+        ? 'vercel-cron-web-stories'
+        : (req.query.trigger || 'cron-web-stories'),
+      status: result.status,
+      storyPublished: result.story_published,
+      storyIndexed: result.story_indexed,
+      dailyLimit: result.safety?.dailyLimit,
+      publishedToday: result.safety?.publishedToday,
+      published: (result.published || []).map((item) => ({
+        slug: item.slug,
+        storyUrl: item.storyUrl || item.url,
+        type: item.type,
+        cluster: item.cluster,
+        scores: item.scores,
+      })),
+      blocked: (result.blocked || []).map((item) => ({
+        slug: item.slug,
+        status: item.status,
+        blockers: item.blockers || [],
+      })),
+    }));
+
+    res.status(result.ok === false ? 503 : 200).json(result);
   })
 );
 

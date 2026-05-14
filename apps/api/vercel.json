@@ -23,6 +23,10 @@
       "schedule": "30 22 * * *"
     },
     {
+      "path": "/api/cron/articles/web-stories/run",
+      "schedule": "45 22 * * *"
+    },
+    {
       "path": "/api/internal/distribution/backfill",
       "schedule": "45 2 * * *"
     },
