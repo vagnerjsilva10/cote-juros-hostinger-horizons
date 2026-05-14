@@ -2,6 +2,8 @@ import { PUBLIC_SITE_URL } from './editorialConfig.js';
 import { buildPublicStoryUrl, validateWebStorySeo } from './webStorySeoService.js';
 import { WebStoryEligibilityService } from './webStoryEligibilityService.js';
 import { WebStoryFingerprintService } from './webStoryFingerprintService.js';
+import { WebStoryPremiumComposerService } from './webStoryPremiumComposerService.js';
+import { WebStoryQualityService } from './webStoryQualityService.js';
 
 const clamp = (value, min = 0, max = 100) => Math.max(min, Math.min(max, Math.round(value)));
 
@@ -259,6 +261,7 @@ const buildSlideSvg = ({ slide = {}, story = {}, index = 0 } = {}) => `<?xml ver
   </defs>
   <image href="${escapeHtml(slide.imageUrl)}" x="0" y="0" width="720" height="1280" preserveAspectRatio="xMidYMid slice"/>
   <rect width="720" height="1280" fill="url(#readability)"/>
+  <rect x="48" y="762" width="120" height="8" rx="4" fill="${escapeHtml(story.visualSystem?.palette?.accent || '#38bdf8')}"/>
   <text x="48" y="820" fill="#ffffff" font-family="Arial, sans-serif" font-size="24" font-weight="700">${escapeHtml(story.clusterLabel || 'Cote Juros')}</text>
   <text x="48" y="910" fill="#ffffff" font-family="Arial, sans-serif" font-size="44" font-weight="900">${escapeHtml(slide.headline)}</text>
   <text x="48" y="1010" fill="#f8fafc" font-family="Arial, sans-serif" font-size="28" font-weight="700">${escapeHtml(slide.subline)}</text>
@@ -274,6 +277,7 @@ const buildStoryHtml = ({ story = {} }) => {
       <amp-story-grid-layer template="fill"><div class="shade"></div></amp-story-grid-layer>
       <amp-story-grid-layer template="vertical" class="copy ${escapeHtml(slide.layout)}">
         <div class="spacer"></div>
+        <span class="accent"></span>
         <p class="kicker">${escapeHtml(story.clusterLabel || 'Cote Juros')}</p>
         <h1>${escapeHtml(slide.headline)}</h1>
         <p>${escapeHtml(slide.subline)}</p>
@@ -296,13 +300,14 @@ const buildStoryHtml = ({ story = {} }) => {
   <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;animation:none}</style></noscript>
   <style amp-custom>
     amp-story{font-family:Arial,sans-serif;color:#fff}
-    .shade{width:100%;height:100%;background:linear-gradient(180deg,rgba(2,6,23,.08),rgba(2,6,23,.18) 42%,rgba(2,6,23,.78))}
+    .shade{width:100%;height:100%;background:linear-gradient(180deg,rgba(2,6,23,.08),rgba(2,6,23,.18) 42%,${story.visualSystem?.palette?.shade || 'rgba(2,6,23,.78)'})}
     .copy{padding:70px 34px 96px;text-shadow:0 2px 16px rgba(0,0,0,.44)}
-    .spacer{height:40vh;min-height:300px}
+    .spacer{height:40vh;min-height:300px}.impact .spacer,.action .spacer{height:36vh}.quote .spacer{height:46vh}
+    .accent{display:block;width:74px;height:7px;border-radius:999px;background:${story.visualSystem?.palette?.accent || '#38bdf8'};margin-bottom:16px}
     .kicker{display:inline-flex;width:max-content;max-width:260px;padding:10px 18px;border-radius:999px;background:rgba(2,6,23,.5);font-size:13px;font-weight:900}
     h1{width:310px;max-width:calc(100vw - 68px);font-size:30px;line-height:1.08;margin:20px 0 0;font-weight:900;letter-spacing:0;overflow-wrap:break-word}
     p{width:320px;max-width:calc(100vw - 68px);font-size:16px;line-height:1.28;margin:18px 0 0;font-weight:800;color:rgba(255,255,255,.94)}
-    .quote h1{font-size:34px}.checklist h1{font-size:28px}.cta{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 26px;border-radius:999px;background:#fff;color:#111827;font-size:18px;font-weight:900;text-decoration:none}
+    .quote h1{font-size:34px}.checklist h1,.action h1{font-size:28px}.impact h1{font-size:32px}.cta{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 26px;border-radius:999px;background:#fff;color:#111827;font-size:18px;font-weight:900;text-decoration:none}
   </style>
   <script type="application/ld+json">${JSON.stringify(story.schema)}</script>
 </head>
@@ -343,12 +348,16 @@ export class WebStoryGenerationService {
       };
     }
 
+    const premium = WebStoryPremiumComposerService.compose({ article: storySource });
     const slug = storySource.slug;
     const storyPublicPath = `/stories/${slug}`;
     const canonical = buildPublicStoryUrl(storyPublicPath);
-    const slides = buildSlides(storySource);
-    const cta = ctaFor(storySource);
-    const posterImageUrl = pickImage(storySource);
+    const slides = premium.slides;
+    const cta = {
+      ...premium.cta,
+      url: articleUrl(storySource),
+    };
+    const posterImageUrl = premium.posterImageUrl || pickImage(storySource);
     const story = {
       status: 'story_generated_preview',
       dryRun,
@@ -358,9 +367,9 @@ export class WebStoryGenerationService {
       slug,
       articleSlug: storySource.slug,
       articleUrl: articleUrl(storySource),
-      title: `${truncate(cleanTitle(storySource.title || storySource.keyword), 64)} | Web Story`,
-      headline: truncate(cleanTitle(storySource.title || storySource.keyword), 56),
-      description: sentence(storySource.metaDescription || storySource.summary || storySource.reason || storySource.title, 140),
+      title: `${truncate(premium.title || cleanTitle(storySource.title || storySource.keyword), 64)} | Web Story`,
+      headline: premium.headline || truncate(cleanTitle(storySource.title || storySource.keyword), 56),
+      description: premium.description || sentence(storySource.metaDescription || storySource.summary || storySource.reason || storySource.title, 140),
       canonical,
       storyPublicPath,
       posterImageUrl,
@@ -369,11 +378,7 @@ export class WebStoryGenerationService {
       cluster: storySource.cluster,
       family: storySource.family,
       clusterLabel: storySource.clusterLabel || storySource.cluster || 'Cote Juros',
-      visualSystem: {
-        templateKey: `${slideToneFor(storySource)}-${clamp((storySource.slug || '').length % 5, 0, 4)}`,
-        mobileNative: true,
-        dimensions: '720x1280',
-      },
+      visualSystem: premium.visualSystem,
     };
     story.schema = {
       '@context': 'https://schema.org',
@@ -410,7 +415,8 @@ export class WebStoryGenerationService {
       articleUrl: story.articleUrl,
     });
     const fingerprint = WebStoryFingerprintService.evaluate({ story, history });
-    const validation = this.validateStory({ story, eligibility, seoValidation, fingerprint });
+    const quality = WebStoryQualityService.evaluate({ story, article: storySource, seoValidation, fingerprint });
+    const validation = this.validateStory({ story, eligibility, seoValidation, fingerprint, quality });
 
     return {
       ok: validation.passed,
@@ -422,6 +428,7 @@ export class WebStoryGenerationService {
       story,
       eligibility,
       fingerprint,
+      quality,
       seoValidation,
       validation,
       observability: {
@@ -434,7 +441,7 @@ export class WebStoryGenerationService {
     };
   }
 
-  static validateStory({ story = {}, eligibility = {}, seoValidation = {}, fingerprint = {} } = {}) {
+  static validateStory({ story = {}, eligibility = {}, seoValidation = {}, fingerprint = {}, quality = {} } = {}) {
     const slideTextIssues = (story.slides || []).flatMap((slide, index) => {
       const issues = [];
       if (compact(slide.headline).length > 58) issues.push(`slide ${index + 1}: headline longo`);
@@ -455,6 +462,7 @@ export class WebStoryGenerationService {
     const issues = [
       ...(eligibility.blockers || []),
       ...(fingerprint.blockers || []),
+      ...(quality.blockers || []),
       ...(seoValidation.issues || []),
       ...slideTextIssues,
       (story.slides || []).length < 5 ? 'menos de 5 slides' : null,
@@ -472,11 +480,13 @@ export class WebStoryGenerationService {
         originality,
         discoverReadiness,
         webStoryFingerprintRisk: fingerprint.webStoryFingerprintRisk || 0,
+        ...(quality.scores || {}),
       },
       gates: {
         articleApproved: true,
         seo: seoValidation.passed,
         antiFootprint: fingerprint.passed,
+        premiumQuality: quality.passed,
         robots: story.indexable ? 'index,follow' : 'noindex,nofollow',
       },
     };

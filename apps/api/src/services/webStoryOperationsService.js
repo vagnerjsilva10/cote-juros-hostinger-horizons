@@ -425,6 +425,7 @@ export class WebStoryOperationsService {
       scores: result.validation?.scores || {},
       eligibility: result.eligibility || {},
       fingerprint: result.fingerprint || {},
+      quality: result.quality || {},
       storyPreview: {
         slug: story.slug,
         title: story.title,
@@ -493,6 +494,11 @@ export class WebStoryOperationsService {
         visualRepetitionRisk: result.fingerprint.visualRepetitionRisk,
         narrativeRepetitionRisk: result.fingerprint.narrativeRepetitionRisk,
         templateRepetitionRisk: result.fingerprint.templateRepetitionRisk,
+      } : null,
+      quality: result.quality ? {
+        passed: result.quality.passed,
+        scores: result.quality.scores,
+        signals: result.quality.signals,
       } : null,
       reason: result.ok
         ? 'alto potencial mobile/Discover com gates de SEO, Discover readiness e anti-footprint aprovados'
