@@ -676,7 +676,14 @@ function CompareResult({ title, subtitle, rate, desc, tags, logo }) {
 }
 
 export function PlatformQuizPage() {
-  return <PlatformShell title="Quiz inteligente | Cote Juros"><div className="page active" id="page-quiz"><InnerHero badge="Análise gratuita" title={<>Descubra qual caminho combina melhor com seu <span className="text-accent">momento financeiro</span></>} desc="Responda algumas perguntas e veja caminhos que podem fazer sentido para o seu perfil. Sem cobranças antecipadas e sem promessa de aprovação." /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container"><div className="quiz-shell"><div><SmartQuiz /></div><aside className="creditas-card"><div className="section-label">Funil preparado</div><h3 style={{ marginBottom: 10 }}>Quiz - resultado - lead - parceiro/API</h3><div className="quiz-side-list">{['Crédito com garantia', 'Seguros', 'Cartões', 'Compliance'].map((item) => <div className="quiz-side-item" key={item}><strong>{item}</strong><span>Rota preparada para adapters existentes, sem prometer aprovação.</span></div>)}</div></aside></div></div></section></div></PlatformShell>;
+  const quizSideItems = [
+    ['Crédito com garantia', 'Encontramos opções de crédito conforme o seu perfil, sem prometer aprovação.'],
+    ['Seguros', 'Conectamos você a opções de seguros alinhadas à sua necessidade.'],
+    ['Cartões', 'Buscamos alternativas de cartões conforme seu perfil financeiro.'],
+    ['Segurança e privacidade', 'Seus dados são tratados com proteção e responsabilidade durante todo o processo.']
+  ];
+
+  return <PlatformShell title="Quiz inteligente | Cote Juros"><div className="page active" id="page-quiz"><InnerHero badge="Análise gratuita" title={<>Descubra qual caminho combina melhor com seu <span className="text-accent">momento financeiro</span></>} desc="Responda algumas perguntas e veja caminhos que podem fazer sentido para o seu perfil. Sem cobranças antecipadas e sem promessa de aprovação." /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container"><div className="quiz-shell"><div><SmartQuiz /></div><aside className="creditas-card"><div className="section-label">Como funciona</div><h3 style={{ marginBottom: 10 }}>Responda ao quiz → analisamos seu perfil → buscamos opções disponíveis → conectamos você a parceiros compatíveis.</h3><div className="quiz-side-list">{quizSideItems.map(([title, description]) => <div className="quiz-side-item" key={title}><strong>{title}</strong><span>{description}</span></div>)}</div><p className="api-ready-note" style={{ marginTop: 14 }}>As opções dependem da análise dos parceiros e podem variar conforme o perfil informado.</p></aside></div></div></section></div></PlatformShell>;
 }
 
 export function PlatformRadarPage() {
