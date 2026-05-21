@@ -974,22 +974,37 @@ export class ContentOperationsEngine {
               searchMode: seed.searchMode || (NEWS_TYPES.has(seed.type) ? 'news' : 'web'),
               recencyDays: seed.recencyDays || (NEWS_TYPES.has(seed.type) ? 3 : null),
             });
+            if (serp.fallbackUsed) {
+              console.warn(JSON.stringify({
+                event: 'liveDiscoveryFallback',
+                seed: seed.keyword,
+                seedType: seed.type,
+                provider: serp.provider,
+                reason: serp.fallbackReason,
+                statusCode: serp.providerError?.statusCode || null,
+                timestamp: new Date().toISOString(),
+              }));
+              return null;
+            }
             return deriveCandidateFromSerp(seed.keyword, serp, seed.type);
           }));
           const items = settled
             .filter((result) => result.status === 'fulfilled')
-            .map((result) => result.value);
+            .map((result) => result.value)
+            .filter(Boolean);
           return {
             ok: true,
             candidates: LiveDiscoveryResilienceService.rankOffline(items),
             provider: process.env.SERPAPI_API_KEY ? 'serpapi' : 'valueserp',
-            failedSeeds: settled.filter((result) => result.status === 'rejected').length,
+            failedSeeds: settled.filter((result) => result.status === 'rejected' || !result.value).length,
           };
         },
         fallback: () => ({
           ok: true,
-          candidates: LiveDiscoveryResilienceService.rankOffline(discovered),
-          provider: 'offline_fallback',
+          candidates: [],
+          provider: 'live_discovery_fallback',
+          fallbackUsed: true,
+          reason: 'external live discovery failed; skipping synthetic discovery candidates',
         }),
       });
       liveResults.push(...(resilient.candidates || []).map((item) => ({
@@ -1021,7 +1036,7 @@ export class ContentOperationsEngine {
         newsAdapter: 'planned',
         resilience: LiveDiscoveryResilienceService.getStatus(),
       },
-      candidates: [...liveResults, ...discovered],
+      candidates: [...liveResults, ...(canUseLive ? [] : discovered)],
     };
   }
 

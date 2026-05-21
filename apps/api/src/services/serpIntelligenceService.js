@@ -194,14 +194,18 @@ const buildTopPatterns = ({ results = [] } = {}) => {
 };
 
 const normalizeSerpApiPayload = (payload = {}) => ({
-  results: (payload.organic_results || []).map((item, index) => ({
+  results: [
+    ...(payload.news_results || []),
+    ...(payload.organic_results || [])
+  ].map((item, index) => ({
     position: Number(item.position || index + 1),
     title: item.title || '',
     url: item.link || '',
     snippet: item.snippet || '',
-    publishedAt: extractPublishedAt(item),
+    publishedAt: item.iso_date || item.date_utc || extractPublishedAt(item),
     displayedLink: item.displayed_link || '',
     richData: {
+      source: item.source || null,
       sitelinks: item.sitelinks || null,
       aboutThisResult: item.about_this_result || null
     }
@@ -297,6 +301,31 @@ const buildDryRunResults = (keyword = '') => ({
   ]
 });
 
+const buildSafeFallbackResults = ({ keyword = '', searchMode = 'web' } = {}) => {
+  if (searchMode === 'news') {
+    return { results: [], relatedQuestions: [] };
+  }
+
+  return buildDryRunResults(keyword);
+};
+
+const serializeProviderError = (error, provider = 'disabled') => ({
+  name: error?.name || 'Error',
+  message: error?.message || String(error),
+  statusCode: error?.response?.status || error?.status || null,
+  code: error?.code || null,
+  provider,
+  reason: error?.code || error?.response?.status || error?.name || 'provider_error',
+  timestamp: new Date().toISOString(),
+});
+
+const fallbackEventFor = (provider = '') =>
+  provider === 'serpapi'
+    ? 'serpapi_fallback'
+    : provider === 'valueserp'
+      ? 'valueserp_fallback'
+      : 'serp_intelligence_fallback';
+
 export const buildSerpIntelligenceFromResults = ({ keyword = '', serp = {} } = {}) => {
   const results = (serp.results || []).slice(0, 10);
   const relatedQuestions = serp.relatedQuestions || [];
@@ -345,20 +374,57 @@ export class SerpIntelligenceService {
   static async analyzeKeyword({ keyword, topN = 10, dryRun = false, searchMode = 'web', recencyDays = null } = {}) {
     const cleanKeyword = compact(keyword);
     if (!cleanKeyword) throw new Error('keyword is required for SERP intelligence');
-    const serp = dryRun ? buildDryRunResults(cleanKeyword) : await fetchSerpResults({ keyword: cleanKeyword, topN, searchMode, recencyDays });
+    let serp = null;
+    let provider = dryRun
+      ? 'dry-run-sample'
+      : process.env.SERPAPI_API_KEY
+        ? 'serpapi'
+        : process.env.VALUESERP_API_KEY
+          ? 'valueserp'
+          : 'disabled';
+    let fallbackUsed = false;
+    let providerError = null;
+    let fallbackReason = null;
+
+    if (dryRun) {
+      serp = buildDryRunResults(cleanKeyword);
+    } else {
+      try {
+        serp = await fetchSerpResults({ keyword: cleanKeyword, topN, searchMode, recencyDays });
+      } catch (error) {
+        fallbackUsed = true;
+        providerError = serializeProviderError(error, provider);
+        fallbackReason = searchMode === 'news'
+          ? 'external_news_discovery_failed_skip_synthetic_results'
+          : 'external_serp_provider_failed_use_safe_editorial_fallback';
+        const originalProvider = provider;
+        provider = `${provider}_fallback`;
+        console.warn(JSON.stringify({
+          event: fallbackEventFor(originalProvider),
+          keyword: cleanKeyword,
+          searchMode,
+          provider: originalProvider,
+          statusCode: providerError.statusCode,
+          code: providerError.code,
+          message: providerError.message,
+          fallbackUsed,
+          fallbackReason,
+          timestamp: providerError.timestamp,
+        }));
+        serp = buildSafeFallbackResults({ keyword: cleanKeyword, searchMode });
+      }
+    }
 
     return {
       ok: true,
       dryRun,
+      degraded: fallbackUsed,
+      fallbackUsed,
+      fallbackReason,
       searchMode,
       recencyDays,
-      provider: dryRun
-        ? 'dry-run-sample'
-        : process.env.SERPAPI_API_KEY
-          ? 'serpapi'
-          : process.env.VALUESERP_API_KEY
-            ? 'valueserp'
-            : 'disabled',
+      provider,
+      providerError,
       generatedAt: new Date().toISOString(),
       ...buildSerpIntelligenceFromResults({ keyword: cleanKeyword, serp })
     };
