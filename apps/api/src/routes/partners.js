@@ -93,6 +93,7 @@ router.post(
       partnerSlug: payload.partnerSlug,
       simulationId: payload.simulationId,
       leadId: payload.leadId,
+      offerId: payload.offerId,
       sourcePage: payload.sourcePage,
       utm: payload.utm,
       userAgent: req.get('user-agent') || null,

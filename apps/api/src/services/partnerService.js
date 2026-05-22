@@ -4,6 +4,15 @@ import { getPrisma } from '../lib/prisma.js';
 const ensureProtocol = (url) => (url && !url.startsWith('http') ? `https://${url}` : url);
 const ALLOWED_CONVERSION_STATUS = new Set(['lead', 'approved', 'rejected', 'paid', 'canceled']);
 
+const isInternalCoteJurosUrl = (url = '') => {
+  try {
+    const parsed = new URL(ensureProtocol(url));
+    return /(^|\.)cotejuros\.(com\.br|br)$/i.test(parsed.hostname);
+  } catch {
+    return false;
+  }
+};
+
 const cleanUtm = (utm = {}) => ({
   source: utm.source || utm.utm_source || utm.utmSource || 'cotejuros',
   medium: utm.medium || utm.utm_medium || utm.utmMedium || null,
@@ -20,6 +29,17 @@ const normalizePartner = (partner) => {
   return {
     ...partner,
     affiliateUrl: partner.affiliateUrl || partner.trackingLink || metadata.affiliateUrl || ''
+  };
+};
+
+const normalizeOffer = (offer) => {
+  if (!offer) return null;
+  const redirectUrl = offer.redirectUrl && !isInternalCoteJurosUrl(offer.redirectUrl)
+    ? offer.redirectUrl
+    : '';
+  return {
+    ...offer,
+    destinationUrl: offer.partnerTrackingUrl || redirectUrl || offer.bank?.website || ''
   };
 };
 
@@ -73,11 +93,25 @@ export class PartnerService {
     return normalizePartner(partner);
   }
 
+  static async findActiveOffer({ offerId }) {
+    if (!offerId) return null;
+    const offer = await getPrisma().offer.findFirst({
+      where: {
+        id: offerId,
+        status: 'active'
+      },
+      include: {
+        bank: true
+      }
+    });
+    return normalizeOffer(offer);
+  }
+
   static createClickId() {
     return `cj_${crypto.randomBytes(12).toString('hex')}`;
   }
 
-  static async createTrackedRedirect({ partnerId, partnerSlug, simulationId, leadId, sourcePage, utm, userAgent, ipHash }) {
+  static async createTrackedRedirect({ partnerId, partnerSlug, simulationId, leadId, offerId, sourcePage, utm, userAgent, ipHash }) {
     const partner = await this.findActivePartner({ partnerId, partnerSlug });
     if (!partner) {
       const error = new Error('Parceiro ativo nao encontrado.');
@@ -85,7 +119,10 @@ export class PartnerService {
       error.code = 'PARTNER_NOT_FOUND';
       throw error;
     }
-    if (!partner.affiliateUrl) {
+    const offer = await this.findActiveOffer({ offerId });
+    const destinationUrl = partner.affiliateUrl || offer?.destinationUrl || '';
+
+    if (!destinationUrl) {
       const error = new Error('Parceiro sem affiliateUrl configurada.');
       error.status = 422;
       error.code = 'PARTNER_AFFILIATE_URL_MISSING';
@@ -95,9 +132,10 @@ export class PartnerService {
     const normalizedUtm = cleanUtm(utm);
     const clickId = this.createClickId();
     const redirectUrl = this.buildRedirectUrl({
-      destinationUrl: partner.affiliateUrl,
+      destinationUrl,
       sourcePage,
       utm: normalizedUtm,
+      offerId,
       clickId,
       partner
     });
