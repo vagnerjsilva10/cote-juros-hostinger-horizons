@@ -642,6 +642,106 @@ function InnerHero({ badge, title, desc, action }) {
 export function PlatformComparePage() {
   const isProduction = isProductionRuntime();
   const [offers, setOffers] = useState([]);
+  const [clickingOfferId, setClickingOfferId] = useState(null);
+  const [offerClickError, setOfferClickError] = useState('');
+
+  useEffect(() => {
+    let mounted = true;
+    Promise.allSettled([getCreditOffers({ rank: true }), getCardOffers({ rank: true }), getFinancingOffers({ rank: true })])
+      .then((results) => {
+        if (!mounted) return;
+        setOffers(results.flatMap((result) => (result.status === 'fulfilled' && Array.isArray(result.value) ? result.value : [])));
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const compareOffers = [...(!isProduction ? [buildCreditasOffer()] : []), ...offers].filter(Boolean);
+  const rows = compareOffers.length
+    ? compareOffers.slice(0, 5).map(normalizeCompareOffer)
+    : productRows.map(([bank, product, rate, unit, tags, logo]) => ({
+      offer: null,
+      title: `${bank} - ${product}`,
+      subtitle: 'Exemplo visual',
+      rate,
+      desc: unit,
+      tags,
+      logo
+    }));
+
+  const handleCompareOfferClick = async (offer) => {
+    const fallbackUrl = offer.partnerTrackingUrl || offer.redirectUrl || offer.destinationUrl || '';
+
+    if (!offer.id) {
+      if (fallbackUrl) window.location.assign(fallbackUrl);
+      return;
+    }
+
+    setClickingOfferId(offer.id);
+    setOfferClickError('');
+
+    try {
+      const result = await portalApi.trackCreditOfferClick({
+        offerId: offer.id,
+        sourcePage: '/comparar'
+      });
+      const redirectUrl = result?.redirectUrl || fallbackUrl;
+      if (!redirectUrl) throw new Error('Oferta sem URL de redirecionamento.');
+      window.location.assign(redirectUrl);
+    } catch (error) {
+      if (fallbackUrl) {
+        window.location.assign(fallbackUrl);
+        return;
+      }
+      setOfferClickError(error?.message || 'Nao foi possivel abrir a oferta agora.');
+    } finally {
+      setClickingOfferId(null);
+    }
+  };
+
+  if (isProduction && !compareOffers.length) {
+    return <PlatformShell title="Comparar produtos | Cote Juros"><div className="page active" id="page-compare"><InnerHero badge="Marketplace" title={<>Compare produtos<br /><span className="text-accent">financeiros</span></>} desc="Taxas, condicoes e coberturas lado a lado. Voce decide quando e se avancar." action={<div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 24 }}><Link className="btn-primary" to="/radar">Acessar Radar de Credito</Link><button className="btn-outline">Ver mais filtros</button></div>} /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container"><div className="compare-layout"><FilterSidebar /><div><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.compareResults} minHeight={120} theme="dark" className="mb-adsense" /><div className="api-ready-note">Nenhuma oferta disponivel agora.</div><div className="api-ready-note">As condicoes exibidas podem variar conforme perfil e disponibilidade dos parceiros. A Cote Juros nao e banco e nao concede credito diretamente.</div></div></div></div></section></div></PlatformShell>;
+  }
+
+  return <PlatformShell title="Comparar produtos | Cote Juros"><div className="page active" id="page-compare"><InnerHero badge="Marketplace" title={<>Compare produtos<br /><span className="text-accent">financeiros</span></>} desc="Taxas, condicoes e coberturas lado a lado. Voce decide quando e se avancar." action={<div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 24 }}><Link className="btn-primary" to="/radar">Acessar Radar de Credito</Link><button className="btn-outline">Ver mais filtros</button></div>} /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container"><div className="compare-layout"><FilterSidebar /><div><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.compareResults} minHeight={120} theme="dark" className="mb-adsense" />{offerClickError ? <div className="api-ready-note">{offerClickError}</div> : null}<div className="compare-results">{rows.map((row) => <ConnectedCompareResult key={row.offer?.id || row.title} {...row} clicking={row.offer?.id && clickingOfferId === row.offer.id} onOpenOffer={row.offer ? () => handleCompareOfferClick(row.offer) : null} />)}</div><div className="api-ready-note">As condicoes exibidas sao ilustrativas e podem variar conforme perfil e disponibilidade dos parceiros. A Cote Juros nao e banco e nao concede credito diretamente.</div></div></div></div></section></div></PlatformShell>;
+}
+
+function normalizeCompareOffer(offer) {
+  const bankName = offer.bankName || offer.bank?.name || offer.merchantName || 'Parceiro';
+  const productName = offer.title || offer.productName || offer.product?.name || 'Produto financeiro';
+  const rate = offer.monthlyRate || offer.interestRate
+    ? `${offer.monthlyRate || offer.interestRate}%`
+    : offer.annualFee === 0
+      ? 'R$0'
+      : offer.rate || 'Sob analise';
+  const unit = offer.annualFee === 0 ? 'anuidade' : 'ao mes';
+  const tags = offer.tags || [
+    offer.product?.category?.name || offer.category || 'Online',
+    offer.scoreRequirement ? `Score ${offer.scoreRequirement}` : 'Parceiro verificado'
+  ].filter(Boolean);
+
+  return {
+    offer,
+    title: `${bankName} - ${productName}`,
+    subtitle: offer.partnerTrackingUrl ? 'Link de parceiro conectado' : 'Parceiro verificado',
+    rate,
+    desc: unit,
+    tags,
+    logo: offer.logo || offer.bank?.logo || bankName
+  };
+}
+
+function ConnectedCompareResult({ title, subtitle, rate, desc, tags, logo, onOpenOffer, clicking }) {
+  const logoText = /^https?:\/\//i.test(String(logo || '')) ? title : logo;
+  return <div className="compare-card"><div className="compare-card-main"><div className="bank-logo">{String(logoText).slice(0, 3).toUpperCase()}</div><div><div className="compare-card-title">{title}</div><div className="compare-card-subtitle">{subtitle}</div><div className="compare-card-tags">{(tags || []).map((tag) => <span className="tag" key={tag}>{tag}</span>)}</div></div></div><div className="compare-card-rate"><div className="rate-big">{rate}</div><div className="rate-desc">{desc}</div></div><div className="compare-card-action"><button type="button" className="btn-primary" onClick={onOpenOffer} disabled={!onOpenOffer || clicking}>{clicking ? 'Abrindo...' : 'Ver oferta'}</button><span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{onOpenOffer ? 'Clique rastreado' : 'Link nao configurado'}</span></div></div>;
+}
+
+function LegacyPlatformComparePage() {
+  const isProduction = isProductionRuntime();
+  const [offers, setOffers] = useState([]);
+  const [clickingOfferId, setClickingOfferId] = useState(null);
+  const [offerClickError, setOfferClickError] = useState('');
   useEffect(() => {
     let mounted = true;
     Promise.allSettled([getCreditOffers({ rank: true }), getCardOffers({ rank: true }), getFinancingOffers({ rank: true })])
@@ -654,6 +754,35 @@ export function PlatformComparePage() {
     };
   }, []);
   const compareOffers = [...(!isProduction ? [buildCreditasOffer()] : []), ...offers].filter(Boolean);
+  const handleCompareOfferClick = async (offer) => {
+    const fallbackUrl = offer.partnerTrackingUrl || offer.redirectUrl || offer.destinationUrl || '';
+
+    if (!offer.id) {
+      if (fallbackUrl) window.location.assign(fallbackUrl);
+      return;
+    }
+
+    setClickingOfferId(offer.id);
+    setOfferClickError('');
+
+    try {
+      const result = await portalApi.trackCreditOfferClick({
+        offerId: offer.id,
+        sourcePage: '/comparar'
+      });
+      const redirectUrl = result?.redirectUrl || fallbackUrl;
+      if (!redirectUrl) throw new Error('Oferta sem URL de redirecionamento.');
+      window.location.assign(redirectUrl);
+    } catch (error) {
+      if (fallbackUrl) {
+        window.location.assign(fallbackUrl);
+        return;
+      }
+      setOfferClickError(error?.message || 'Nao foi possivel abrir a oferta agora.');
+    } finally {
+      setClickingOfferId(null);
+    }
+  };
   if (isProduction && !compareOffers.length) {
     return <PlatformShell title="Comparar produtos | Cote Juros"><div className="page active" id="page-compare"><InnerHero badge="Marketplace" title={<>Compare produtos<br /><span className="text-accent">financeiros</span></>} desc="Taxas, condicoes e coberturas lado a lado. Voce decide quando e se avancar." action={<div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 24 }}><Link className="btn-primary" to="/radar">Acessar Radar de Credito</Link><button className="btn-outline">Ver mais filtros</button></div>} /><section className="section-pad" style={{ background: 'var(--bg-surface)' }}><div className="container"><div className="compare-layout"><FilterSidebar /><div><AdSenseBlock adSlot={ADSENSE_PLATFORM_SLOTS.compareResults} minHeight={120} theme="dark" className="mb-adsense" /><div className="api-ready-note">Nenhuma oferta disponivel agora.</div><div className="api-ready-note">As condicoes exibidas podem variar conforme perfil e disponibilidade dos parceiros. A Cote Juros nao e banco e nao concede credito diretamente.</div></div></div></div></section></div></PlatformShell>;
   }

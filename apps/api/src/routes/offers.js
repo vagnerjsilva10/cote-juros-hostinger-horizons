@@ -48,7 +48,7 @@ router.post(
     return res.json({
       data: {
         offerId: offer.id,
-        redirectUrl: offer.redirectUrl,
+        redirectUrl: offer.partnerTrackingUrl || offer.redirectUrl,
         tracking: pickUtm(payload)
       }
     });
