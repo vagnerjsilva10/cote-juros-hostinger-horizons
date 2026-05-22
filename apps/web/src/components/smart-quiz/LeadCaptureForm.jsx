@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { captureLead } from '@/platform/services/leadAdapter.js';
 import { trackEvent } from '@/platform/services/trackingAdapter.js';
+import { formatPhoneValue } from '@/lib/quickCreditSubmission.js';
 
 export default function LeadCaptureForm({ quizAnswers, recommendation, onCaptured }) {
   const [form, setForm] = useState({ name: '', phone: '', email: '', consent: false });
@@ -61,7 +62,7 @@ export default function LeadCaptureForm({ quizAnswers, recommendation, onCapture
 
       <div className="grid gap-3 sm:grid-cols-2">
         <Input value={form.name} onChange={(e) => update('name', e.target.value)} placeholder="Nome" required className="bg-white text-slate-950" />
-        <Input value={form.phone} onChange={(e) => update('phone', e.target.value)} placeholder="WhatsApp" required className="bg-white text-slate-950" />
+        <Input value={form.phone} onChange={(e) => update('phone', formatPhoneValue(e.target.value))} placeholder="(11) 99999-9999" inputMode="tel" autoComplete="tel" maxLength={15} required className="bg-white text-slate-950" />
         <Input value={form.email} onChange={(e) => update('email', e.target.value)} placeholder="E-mail" type="email" className="bg-white text-slate-950 sm:col-span-2" />
       </div>
 

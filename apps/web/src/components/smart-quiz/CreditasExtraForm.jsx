@@ -10,6 +10,7 @@ import {
 import { trackEvent } from '@/platform/services/trackingAdapter.js';
 import { openWhatsApp } from '@/platform/utils/whatsapp.js';
 import { formatCurrencyBRL, parseCurrencyBRL } from '@/components/smart-quiz/currency.js';
+import { formatPhoneValue } from '@/lib/quickCreditSubmission.js';
 
 const LGPD_TEXT = 'Autorizo a Cote Juros a compartilhar meus dados com a parceira Creditas para analise de opcoes de credito com garantia. A aprovacao e condicoes dependem da avaliacao da parceira.';
 
@@ -118,7 +119,7 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
 
       <div className="grid gap-3 sm:grid-cols-2">
         {!lead?.name && !lead?.fullName ? <Input value={form.fullName} onChange={(event) => update('fullName', event.target.value)} placeholder="Nome completo" className="bg-white text-slate-950 sm:col-span-2" /> : null}
-        {!lead?.phone && !lead?.whatsapp ? <Input value={form.phone} onChange={(event) => update('phone', event.target.value)} placeholder="WhatsApp" className="bg-white text-slate-950" /> : null}
+        {!lead?.phone && !lead?.whatsapp ? <Input value={form.phone} onChange={(event) => update('phone', formatPhoneValue(event.target.value))} placeholder="(11) 99999-9999" inputMode="tel" autoComplete="tel" maxLength={15} className="bg-white text-slate-950" /> : null}
         {!lead?.email ? <Input value={form.email} onChange={(event) => update('email', event.target.value)} placeholder="E-mail" type="email" className="bg-white text-slate-950" /> : null}
         <Input value={form.cpf} onChange={(event) => update('cpf', event.target.value)} placeholder="CPF" className="bg-white text-slate-950" />
         <select className="creditas-select" value={form.guaranteeType} onChange={(event) => update('guaranteeType', event.target.value)}>

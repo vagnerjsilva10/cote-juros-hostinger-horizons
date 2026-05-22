@@ -7,6 +7,7 @@ import { recommendProducts } from '@/platform/services/recommendationAdapter.js'
 import { saveQuizProgress, submitSmartQuiz, getQuizProgress } from '@/platform/services/quizAdapter.js';
 import { trackEvent } from '@/platform/services/trackingAdapter.js';
 import { formatCurrencyBRL, parseCurrencyBRL } from '@/components/smart-quiz/currency.js';
+import { formatPhoneValue } from '@/lib/quickCreditSubmission.js';
 
 const steps = [
   {
@@ -180,7 +181,7 @@ export default function SmartQuiz({ onCompleted, initialRequestedAmount = 0 }) {
     if (current.type === 'money') return parseCurrencyBRL(draft[current.key]) > 0;
     if (current.type === 'assets') return true;
     if (current.type === 'location') return draft.city && String(draft.state || '').length >= 2;
-    if (current.type === 'contact') return draft.contactName && draft.whatsapp && draft.email;
+    if (current.type === 'contact') return draft.contactName && String(draft.whatsapp || '').replace(/\D/g, '').length >= 10 && draft.email;
     return false;
   };
 
@@ -271,7 +272,7 @@ export default function SmartQuiz({ onCompleted, initialRequestedAmount = 0 }) {
             {current.type === 'contact' ? (
               <div className="mt-7 grid gap-3">
                 <input className="min-h-12 rounded-2xl border border-white/10 bg-white/[0.06] px-4 text-white outline-none focus:border-[#9C8FFF]" placeholder="Nome" value={draft.contactName || ''} onChange={(event) => setDraft((item) => ({ ...item, contactName: event.target.value }))} />
-                <input className="min-h-12 rounded-2xl border border-white/10 bg-white/[0.06] px-4 text-white outline-none focus:border-[#9C8FFF]" placeholder="WhatsApp" inputMode="tel" value={draft.whatsapp || ''} onChange={(event) => setDraft((item) => ({ ...item, whatsapp: event.target.value }))} />
+                <input className="min-h-12 rounded-2xl border border-white/10 bg-white/[0.06] px-4 text-white outline-none focus:border-[#9C8FFF]" placeholder="(11) 99999-9999" inputMode="tel" autoComplete="tel" maxLength={15} value={draft.whatsapp || ''} onChange={(event) => setDraft((item) => ({ ...item, whatsapp: formatPhoneValue(event.target.value) }))} />
                 <input className="min-h-12 rounded-2xl border border-white/10 bg-white/[0.06] px-4 text-white outline-none focus:border-[#9C8FFF]" placeholder="E-mail" type="email" value={draft.email || ''} onChange={(event) => setDraft((item) => ({ ...item, email: event.target.value }))} />
                 <p className="text-xs leading-6 text-white/52">Usamos esses dados para salvar sua análise. Compartilhamento com parceiro só acontece com aceite específico no resultado.</p>
                 <Button disabled={!canSubmitDraft()} onClick={submitDraft} className="h-12 rounded-full bg-[#7C6EF7] px-6 text-white hover:bg-[#6254D4]">Ver resultado <ArrowRight className="h-4 w-4" /></Button>
