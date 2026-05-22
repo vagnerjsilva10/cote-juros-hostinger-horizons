@@ -156,7 +156,7 @@ function ResultadoPage() {
         path="/resultado"
       />
 
-      <section className="bg-[#07111f] px-4 py-12 text-white md:py-16">
+      <section className="result-page-surface bg-[#07111f] px-4 py-12 text-white md:py-16">
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1fr_320px] lg:items-end">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9C8FFF]">Resultado indicativo</p>
@@ -184,7 +184,7 @@ function ResultadoPage() {
         </div>
       </section>
 
-      <section className="bg-[#07111f] px-4 pb-14 md:pb-18">
+      <section className="result-page-surface bg-[#07111f] px-4 pb-14 md:pb-18">
         <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1fr_360px]">
           <main className="space-y-5">
             {resultCards.length ? resultCards.map(({ key, match, Icon, title, badge, description, compatibility, cta, note }) => (

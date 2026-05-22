@@ -74,7 +74,9 @@ import { wordpressMigratedArticles, wordpressMigratedArticlePaths } from '@/data
 
 function AppLayout({ children }) {
   const location = useLocation();
-  const routeClass = location.pathname === '/' ? 'is-home' : 'is-domain-page';
+  const routeClass = location.pathname === '/'
+    ? 'is-home'
+    : `is-domain-page${location.pathname === '/resultado' ? ' is-result-page' : ''}`;
 
   return (
     <div className={`public-site-shell ${routeClass} min-h-screen overflow-x-hidden flex flex-col bg-background selection:bg-primary/10`}>
