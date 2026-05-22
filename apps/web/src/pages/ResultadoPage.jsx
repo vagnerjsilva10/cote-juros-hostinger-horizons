@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowUpRight, BadgeCheck, Car, ClipboardCheck, CreditCard, LockKeyhole, ShieldCheck } from 'lucide-react';
 import SeoHead from '@/components/SeoHead.jsx';
+import CreditasExtraForm from '@/components/smart-quiz/CreditasExtraForm.jsx';
 import { PlatformShell } from '@/platform/PlatformSite.jsx';
 import { buildPartnerMatches, recommendProducts } from '@/platform/services/recommendationAdapter.js';
 import { getQuizProgress, saveQuizProgress } from '@/platform/services/quizAdapter.js';
@@ -19,8 +20,17 @@ const readLastAnalysis = () => {
   }
 };
 
+const getFriendlyCreditasStatus = (result = {}) => {
+  if (result?.mode === 'missing_required_data') return 'Complete os dados destacados para continuar com segurança.';
+  if (result?.mode === 'fallback' || result?.ok === false) return 'Não conseguimos consultar a Creditas agora. Seus dados foram salvos para continuidade.';
+  if (result?.status === 'not_eligible') return 'Essa opção não está disponível para o perfil informado no momento.';
+  if (result?.ok) return result?.message || 'Consulta registrada. As condições dependem da avaliação da Creditas.';
+  return result?.message || '';
+};
+
 function ResultadoPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const stored = location.state || readLastAnalysis() || getQuizProgress() || {};
   const quizAnswers = stored.quizAnswers || {};
   const recommendation = stored.recommendation || recommendProducts(quizAnswers);
@@ -31,6 +41,7 @@ function ResultadoPage() {
   const [consents, setConsents] = useState({});
   const [status, setStatus] = useState('');
   const [redirectingPartnerId, setRedirectingPartnerId] = useState('');
+  const [creditasFormOpen, setCreditasFormOpen] = useState(false);
 
   const guaranteeMatch = matches.find((match) => String(match.productType || '').includes('equity')) || matches[0];
   const personalMatch = matches.find((match) => match.partnerId === 'standard-credit-hub') || matches.find((match) => match !== guaranteeMatch);
@@ -103,6 +114,7 @@ function ResultadoPage() {
 
     if (match.actionType === 'complete_data') {
       setStatus('Para avançar, revise seus dados de contato no quiz e tente novamente.');
+      navigate('/quiz');
       return;
     }
 
@@ -112,7 +124,13 @@ function ResultadoPage() {
     }
 
     if (match.actionType === 'eligibility') {
-      setStatus('Consulta registrada. As condições finais dependem da análise do parceiro.');
+      setCreditasFormOpen(true);
+      setStatus('Complete os dados complementares para consultar a Creditas.');
+      await trackEvent('creditas_extra_form_opened', {
+        sourcePage: '/resultado',
+        partnerId: match.partnerId,
+        productType: match.productType
+      });
       return;
     }
 
@@ -140,9 +158,15 @@ function ResultadoPage() {
         destination: 'partner_redirect',
         clickId: redirect?.clickId
       });
-      window.location.href = redirect.redirectUrl || redirect.resolvedUrl;
+      const resolvedUrl = redirect.redirectUrl || redirect.resolvedUrl;
+      if (resolvedUrl) {
+        window.location.href = resolvedUrl;
+        return;
+      }
+      navigate('/comparar');
     } catch (error) {
-      setStatus('Não foi possível abrir essa opção agora. Tente novamente em instantes.');
+      setStatus('Não encontramos um link direto para esse parceiro agora. Abrimos a lista de comparação para você continuar.');
+      navigate('/comparar');
     } finally {
       setRedirectingPartnerId('');
     }
@@ -251,6 +275,22 @@ function ResultadoPage() {
                 )}
 
                 {status ? <div className="api-ready-note result-status">{status}</div> : null}
+
+                {creditasFormOpen ? (
+                  <CreditasExtraForm
+                    lead={{
+                      fullName: quizAnswers.contactName || quizAnswers.name || quizAnswers.fullName || '',
+                      phone: quizAnswers.whatsapp || quizAnswers.phone || '',
+                      email: quizAnswers.email || ''
+                    }}
+                    quizAnswers={quizAnswers}
+                    recommendation={recommendation}
+                    onStatus={(result) => {
+                      const friendlyStatus = getFriendlyCreditasStatus(result);
+                      if (friendlyStatus) setStatus(friendlyStatus);
+                    }}
+                  />
+                ) : null}
 
                 <div className="api-ready-note result-legal-note">
                   <ShieldCheck size={16} color="var(--accent-light)" strokeWidth={2.2} />
