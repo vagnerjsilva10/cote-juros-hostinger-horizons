@@ -11,10 +11,10 @@ import { formatCurrencyBRL } from '@/components/smart-quiz/currency.js';
 
 const getFriendlyPartnerStatus = (status = {}) => {
   if (!status) return '';
-  if (status?.mode === 'missing_required_data') return 'Complete os dados destacados para continuar com seguranca.';
-  if (status?.mode === 'fallback' || status?.ok === false) return 'Nao conseguimos consultar as opcoes agora. Seus dados foram salvos para continuidade.';
-  if (status?.status === 'not_eligible') return 'Essa opcao nao esta disponivel para o perfil informado no momento.';
-  if (status?.ok) return status?.message || 'Consulta registrada. As condicoes dependem da avaliacao da parceira.';
+  if (status?.mode === 'missing_required_data') return 'Complete os dados destacados para continuar com segurança.';
+  if (status?.mode === 'fallback' || status?.ok === false) return 'Não conseguimos consultar as opções agora. Seus dados foram salvos para continuidade.';
+  if (status?.status === 'not_eligible') return 'Essa opção não está disponível para o perfil informado no momento.';
+  if (status?.ok) return status?.message || 'Consulta registrada. As condições dependem da avaliação da parceira.';
   return status?.message || '';
 };
 
@@ -44,7 +44,7 @@ export default function QuizResult({ quizAnswers, recommendation, onRestart }) {
       return;
     }
 
-    setPartnerStatus('Preparando sua opcao...');
+    setPartnerStatus('Preparando sua opção...');
     await trackPartnerClick({
       sourcePage: 'smart_quiz',
       partnerId: recommendation.partnerRoute,
@@ -52,8 +52,8 @@ export default function QuizResult({ quizAnswers, recommendation, onRestart }) {
     });
     const routed = await routeLeadToPartner({ lead: lead || { source: 'smart_quiz', score: recommendation.score }, recommendation });
     setPartnerStatus(routed?.redirectUrl || routed?.destinationUrl
-      ? 'Opcao pronta. Vamos abrir o proximo passo com seguranca.'
-      : 'Opcao salva. Voce pode continuar pelo atendimento.');
+      ? 'Opção pronta. Vamos abrir o próximo passo com segurança.'
+      : 'Opção salva. Você pode continuar pelo atendimento.');
   };
 
   const handleWhatsApp = () =>
@@ -118,12 +118,12 @@ export default function QuizResult({ quizAnswers, recommendation, onRestart }) {
         ) : null}
 
         <div className="mt-5 rounded-[18px] border border-white/10 bg-white/[0.04] p-4 text-sm leading-7 text-white/65">
-          <h3 className="text-base font-semibold text-white">Como funciona sua analise</h3>
+          <h3 className="text-base font-semibold text-white">Como funciona sua análise</h3>
           <ul className="mt-3 grid gap-2 sm:grid-cols-2">
             {[
               'Entendemos seu objetivo',
               'Avaliamos seu perfil',
-              'Buscamos opcoes compativeis',
+              'Buscamos opções compatíveis',
               'Conectamos com parceiros'
             ].map((item) => (
               <li key={item} className="flex gap-2">
@@ -133,13 +133,13 @@ export default function QuizResult({ quizAnswers, recommendation, onRestart }) {
             ))}
           </ul>
           <p className="mt-4 text-white/60">
-            Resultado ilustrativo baseado nas informacoes fornecidas. A aprovacao, contratacao e condicoes dependem da analise dos parceiros.
+            Resultado ilustrativo baseado nas informações fornecidas. A aprovação, contratação e condições dependem da análise dos parceiros.
           </p>
         </div>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <Button onClick={handlePartner} className="h-12 rounded-full bg-[#7C6EF7] px-6 text-white hover:bg-[#6254D4]">
-            {showCreditas ? 'Simular com Creditas' : 'Ver opcao disponivel'}
+            {showCreditas ? 'Simular com Creditas' : 'Ver opção disponível'}
             <ArrowRight className="h-4 w-4" />
           </Button>
           <Button onClick={handleWhatsApp} variant="outline" className="h-12 rounded-full border-white/15 bg-white/[0.04] px-6 text-white hover:bg-white/10">
@@ -147,7 +147,7 @@ export default function QuizResult({ quizAnswers, recommendation, onRestart }) {
             <MessageCircle className="h-4 w-4" />
           </Button>
           <Button onClick={onRestart} variant="ghost" className="h-12 rounded-full text-white/72 hover:bg-white/10 hover:text-white">
-            Refazer analise
+            Refazer análise
           </Button>
         </div>
 

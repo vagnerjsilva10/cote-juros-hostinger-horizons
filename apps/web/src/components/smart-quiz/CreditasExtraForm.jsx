@@ -12,7 +12,7 @@ import { openWhatsApp } from '@/platform/utils/whatsapp.js';
 import { formatCurrencyBRL, parseCurrencyBRL } from '@/components/smart-quiz/currency.js';
 import { formatPhoneValue } from '@/lib/quickCreditSubmission.js';
 
-const LGPD_TEXT = 'Autorizo a Cote Juros a compartilhar meus dados com a parceira Creditas para analise de opcoes de credito com garantia. A aprovacao e condicoes dependem da avaliacao da parceira.';
+const LGPD_TEXT = 'Autorizo a Cote Juros a compartilhar meus dados com a parceira Creditas para análise de opções de crédito com garantia. A aprovação e condições dependem da avaliação da parceira.';
 
 const STATES = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT', 'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO'];
 
@@ -76,7 +76,7 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
     if (eligibility?.mode === 'missing_required_data') {
       setStatus('missing');
       setRequiredFields(eligibility.requiredFields || []);
-      setMessage('Faltam dados para consultar a Creditas com seguranca.');
+      setMessage('Faltam dados para consultar a Creditas com segurança.');
       onStatus?.(eligibility);
       return;
     }
@@ -87,20 +87,20 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
 
     if (leadResult?.mode === 'fallback') {
       setStatus('fallback');
-      setMessage('Nao conseguimos consultar as opcoes agora. Seus dados foram salvos para continuidade.');
+      setMessage('Não conseguimos consultar as opções agora. Seus dados foram salvos para continuidade.');
       return;
     }
 
     if (leadResult?.ok) {
       setStatus('done');
       setMessage(finalStatus === 'not_eligible'
-        ? 'Nao elegivel no momento. Voce ainda pode seguir por outros caminhos.'
-        : 'Consulta registrada. As condicoes dependem da avaliacao da Creditas.');
+        ? 'Não elegível no momento. Você ainda pode seguir por outros caminhos.'
+        : 'Consulta registrada. As condições dependem da avaliação da Creditas.');
       return;
     }
 
     setStatus('error');
-    setMessage('Nao conseguimos consultar as opcoes agora. Seus dados foram salvos para continuidade.');
+    setMessage('Não conseguimos consultar as opções agora. Seus dados foram salvos para continuidade.');
   };
 
   return (
@@ -110,9 +110,9 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
           <ShieldCheck className="h-4 w-4" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-white">Simulacao com garantia</h3>
+          <h3 className="text-lg font-semibold text-white">Simulação com garantia</h3>
           <p className="mt-1 text-sm leading-6 text-white/65">
-            Complete apenas os dados necessarios para consultar opcoes com garantia, sujeito a analise.
+            Complete apenas os dados necessários para consultar opções com garantia, sujeito a análise.
           </p>
         </div>
       </div>
@@ -124,8 +124,8 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
         <Input value={form.cpf} onChange={(event) => update('cpf', event.target.value)} placeholder="CPF" className="bg-white text-slate-950" />
         <select className="creditas-select" value={form.guaranteeType} onChange={(event) => update('guaranteeType', event.target.value)}>
           <option value="">Tipo de garantia</option>
-          <option value="home">Imovel</option>
-          <option value="vehicle">Veiculo</option>
+          <option value="home">Imóvel</option>
+          <option value="vehicle">Veículo</option>
         </select>
         <Input value={form.city} onChange={(event) => update('city', event.target.value)} placeholder="Cidade" className="bg-white text-slate-950" />
         <select className="creditas-select" value={form.state} onChange={(event) => update('state', event.target.value)}>
@@ -152,7 +152,7 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
           {status === 'submitting' ? 'Consultando...' : 'Continuar com Creditas'}
         </Button>
         {status === 'fallback' || status === 'error' ? (
-          <Button type="button" variant="outline" className="h-11 rounded-full border-white/15 bg-white/[0.04] px-5 text-white hover:bg-white/10" onClick={() => openWhatsApp({ sourcePage: 'creditas_fallback', mainProduct: 'Credito com garantia' })}>
+          <Button type="button" variant="outline" className="h-11 rounded-full border-white/15 bg-white/[0.04] px-5 text-white hover:bg-white/10" onClick={() => openWhatsApp({ sourcePage: 'creditas_fallback', mainProduct: 'Crédito com garantia' })}>
             Continuar no WhatsApp
           </Button>
         ) : null}
