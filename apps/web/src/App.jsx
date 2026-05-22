@@ -74,9 +74,7 @@ import { wordpressMigratedArticles, wordpressMigratedArticlePaths } from '@/data
 
 function AppLayout({ children }) {
   const location = useLocation();
-  const routeClass = location.pathname === '/'
-    ? 'is-home'
-    : `is-domain-page${location.pathname === '/resultado' ? ' is-result-page' : ''}`;
+  const routeClass = location.pathname === '/' ? 'is-home' : 'is-domain-page';
 
   return (
     <div className={`public-site-shell ${routeClass} min-h-screen overflow-x-hidden flex flex-col bg-background selection:bg-primary/10`}>
@@ -201,7 +199,7 @@ function App() {
         <Route path="/termos-de-uso" element={<PlatformTermsPage />} />
         <Route path="/cote-finance-ai" element={<AppLayout><CoteFinanceAIPage /></AppLayout>} />
         <Route path="/motion-hero" element={<AppLayout><MotionHeroPage /></AppLayout>} />
-        <Route path="/resultado" element={<AppLayout><ResultadoPage /></AppLayout>} />
+        <Route path="/resultado" element={<ResultadoPage />} />
         <Route path="/proxima-etapa" element={<AppLayout><LeadNextStepPage /></AppLayout>} />
         <Route path="/r/:token" element={<AppLayout><ReactivationLandingPage /></AppLayout>} />
         <Route

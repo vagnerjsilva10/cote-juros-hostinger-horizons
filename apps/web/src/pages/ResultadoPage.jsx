@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ArrowUpRight, BadgeCheck, Car, ClipboardCheck, CreditCard, LockKeyhole, ShieldCheck } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import SeoHead from '@/components/SeoHead.jsx';
+import { PlatformShell } from '@/platform/PlatformSite.jsx';
 import { buildPartnerMatches, recommendProducts } from '@/platform/services/recommendationAdapter.js';
 import { getQuizProgress, saveQuizProgress } from '@/platform/services/quizAdapter.js';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
@@ -39,22 +39,22 @@ function ResultadoPage() {
       key: 'secured-credit',
       match: guaranteeMatch,
       Icon: Car,
-      title: 'Crédito com garantia de veículo',
+      title: 'Credito com garantia de veiculo',
       badge: 'Boa possibilidade',
-      description: 'Você informou possuir uma garantia, o que pode abrir caminho para opções de crédito com taxas mais competitivas.',
+      description: 'Voce informou possuir uma garantia, o que pode abrir caminho para opcoes de credito com taxas mais competitivas.',
       compatibility: 'Compatibilidade estimada: 90%',
-      cta: 'Consultar opção',
-      note: 'A análise final pode exigir CPF, dados complementares e validação do parceiro.'
+      cta: 'Consultar opcao',
+      note: 'A analise final pode exigir CPF, dados complementares e validacao do parceiro.'
     },
     {
       key: 'personal-credit',
       match: personalMatch,
       Icon: CreditCard,
-      title: 'Crédito pessoal',
-      badge: 'Disponível para análise',
-      description: 'Uma alternativa para comparar opções sem garantia, conforme seu perfil informado.',
+      title: 'Credito pessoal',
+      badge: 'Disponivel para analise',
+      description: 'Uma alternativa para comparar opcoes sem garantia, conforme seu perfil informado.',
       compatibility: 'Compatibilidade estimada: 82%',
-      cta: 'Ver opção'
+      cta: 'Ver opcao'
     }
   ].filter((card) => card.match);
 
@@ -102,17 +102,17 @@ function ResultadoPage() {
     });
 
     if (match.actionType === 'complete_data') {
-      setStatus('Para avançar, revise seus dados de contato no quiz e tente novamente.');
+      setStatus('Para avancar, revise seus dados de contato no quiz e tente novamente.');
       return;
     }
 
     if (match.actionType === 'eligibility' && !consents[match.partnerId]?.accepted) {
-      setStatus('Antes de consultar essa opção, confirme a autorização de compartilhamento de dados no card.');
+      setStatus('Antes de consultar essa opcao, confirme a autorizacao de compartilhamento de dados no card.');
       return;
     }
 
     if (match.actionType === 'eligibility') {
-      setStatus('Consulta registrada. As condições finais dependem da análise do parceiro.');
+      setStatus('Consulta registrada. As condicoes finais dependem da analise do parceiro.');
       return;
     }
 
@@ -142,149 +142,164 @@ function ResultadoPage() {
       });
       window.location.href = redirect.redirectUrl || redirect.resolvedUrl;
     } catch (error) {
-      setStatus('Não foi possível abrir essa opção agora. Tente novamente em instantes.');
+      setStatus('Nao foi possivel abrir essa opcao agora. Tente novamente em instantes.');
     } finally {
       setRedirectingPartnerId('');
     }
   };
 
   return (
-    <>
+    <PlatformShell title="Diagnostico financeiro | Cote Juros">
       <SeoHead
-        title="Diagnóstico financeiro | Cote Juros"
-        description="Veja um diagnóstico financeiro indicativo com caminhos possíveis para o seu perfil."
+        title="Diagnostico financeiro | Cote Juros"
+        description="Veja um diagnostico financeiro indicativo com caminhos possiveis para o seu perfil."
         path="/resultado"
       />
 
-      <section className="result-page-surface bg-[#07111f] px-4 py-12 text-white md:py-16">
-        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1fr_320px] lg:items-end">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9C8FFF]">Resultado indicativo</p>
-            <h1 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight tracking-[-0.02em] text-white md:text-4xl">
-              Seu diagnóstico financeiro está pronto
-            </h1>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-white/72">
-              Com base nas informações preenchidas, encontramos caminhos que podem fazer sentido para o seu perfil.
-            </p>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/55">
-              Este resultado é indicativo e não representa aprovação de crédito. As condições finais dependem da análise dos parceiros.
-            </p>
+      <div className="page active" id="page-resultado">
+        <section className="inner-hero result-hero">
+          <div className="container">
+            <div className="result-hero-grid">
+              <div>
+                <div className="inner-hero-badge"><span className="hero-badge-dot" /> Resultado indicativo</div>
+                <h1>Seu diagnostico financeiro esta pronto</h1>
+                <p className="section-desc">
+                  Com base nas informacoes preenchidas, encontramos caminhos que podem fazer sentido para o seu perfil.
+                </p>
+                <p className="result-hero-disclaimer">
+                  Este resultado nao representa aprovacao de credito. As condicoes finais dependem da analise dos parceiros.
+                </p>
+                <div className="result-hero-actions">
+                  <Link className="btn-primary" to="/comparar">Comparar ofertas <ArrowUpRight size={14} /></Link>
+                  <Link className="btn-outline" to="/quiz">Refazer analise</Link>
+                </div>
+              </div>
+
+              <aside className="result-score-card">
+                <div className="dash-badge">Perfil analisado</div>
+                <div className="result-score-value">{recommendation.score}/100</div>
+                <div className="result-score-label">Boa compatibilidade</div>
+                <p>
+                  Seu perfil apresenta sinais positivos para consulta com parceiros, mas a aprovacao depende da analise final.
+                </p>
+              </aside>
+            </div>
           </div>
+        </section>
 
-          <aside className="rounded-[24px] border border-white/10 bg-white/[0.05] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.22)]">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/48">Perfil analisado</p>
-            <div className="mt-4 flex flex-wrap items-end gap-3">
-              <strong className="text-5xl font-semibold tracking-[-0.05em] text-white">{recommendation.score}/100</strong>
-              <span className="mb-2 rounded-full border border-[#7C6EF7]/25 bg-[#7C6EF7]/15 px-3 py-1 text-xs font-semibold text-[#D9D5FF]">Boa compatibilidade</span>
+        <section id="trust-strip">
+          <div className="container">
+            <div className="trust-inner">
+              {[
+                ['Sem cobranca antecipada', ShieldCheck],
+                ['Analise indicativa', ClipboardCheck],
+                ['Dados sob consentimento', LockKeyhole]
+              ].map(([label, Icon]) => (
+                <div className="trust-item" key={label}>
+                  <div className="trust-icon-wrap"><Icon size={15} color="var(--accent-light)" strokeWidth={2.2} /></div>
+                  <span>{label}</span>
+                </div>
+              ))}
             </div>
-            <p className="mt-4 text-sm leading-6 text-white/62">
-              Seu perfil apresenta sinais positivos para consulta com parceiros, mas a aprovação depende da análise final.
-            </p>
-          </aside>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      <section className="result-page-surface bg-[#07111f] px-4 pb-14 md:pb-18">
-        <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1fr_360px]">
-          <main className="space-y-5">
-            {resultCards.length ? resultCards.map(({ key, match, Icon, title, badge, description, compatibility, cta, note }) => (
-              <article key={key} className="rounded-[26px] border border-white/10 bg-[#101a2b] p-6 text-white shadow-[0_26px_80px_rgba(0,0,0,0.24)]">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="flex gap-4">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#7C6EF7]/25 bg-[#7C6EF7]/14 text-[#D9D5FF]">
-                      <Icon className="h-5 w-5" />
+        <section className="section-pad result-section">
+          <div className="container">
+            <div className="result-layout">
+              <main className="result-main">
+                {resultCards.length ? resultCards.map(({ key, match, Icon, title, badge, description, compatibility, cta, note }) => (
+                  <article key={key} className="compare-card result-path-card">
+                    <div className="compare-card-main">
+                      <div className="bank-logo"><Icon size={18} color="currentColor" strokeWidth={2.2} /></div>
+                      <div>
+                        <div className="compare-card-title">{title}</div>
+                        <div className="compare-card-subtitle">{description}</div>
+                        <div className="compare-card-tags">
+                          <span className="tag">{badge}</span>
+                          <span className="tag">Parceiro verificado</span>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="text-xl font-semibold tracking-[-0.02em] text-white md:text-2xl">{title}</h2>
-                      <p className="mt-3 max-w-2xl text-sm leading-7 text-white/64">{description}</p>
+
+                    <div className="compare-card-rate">
+                      <div className="rate-big">{compatibility.replace('Compatibilidade estimada: ', '')}</div>
+                      <div className="rate-desc">compatibilidade</div>
                     </div>
+
+                    <div className="compare-card-action">
+                      <button type="button" onClick={() => handlePartnerClick(match)} disabled={redirectingPartnerId === match.partnerId} className="btn-primary">
+                        {redirectingPartnerId === match.partnerId ? 'Preparando...' : cta}
+                        <ArrowUpRight size={13} />
+                      </button>
+                      {note ? <span className="result-card-note">{note}</span> : null}
+                    </div>
+
+                    {match.actionType === 'eligibility' ? (
+                      <label className="result-consent">
+                        <input type="checkbox" checked={Boolean(consents[match.partnerId]?.accepted)} onChange={(event) => event.target.checked && acceptConsent(match.partnerId)} />
+                        <span>Autorizo a Cote Juros a compartilhar meus dados com o parceiro responsavel para analise de credito.</span>
+                      </label>
+                    ) : null}
+                  </article>
+                )) : (
+                  <div className="creditas-card result-empty-card">
+                    <h2>Ainda nao encontramos uma opcao clara.</h2>
+                    <p>Tente reduzir o valor solicitado, informar renda/cidade ou revisar a finalidade do credito.</p>
+                    <Link className="btn-primary" to="/quiz">Refazer analise</Link>
                   </div>
-                  <span className="w-fit rounded-full border border-[#7C6EF7]/25 bg-[#7C6EF7]/12 px-3 py-1 text-xs font-semibold text-[#D9D5FF]">
-                    {badge}
-                  </span>
+                )}
+
+                {status ? <div className="api-ready-note result-status">{status}</div> : null}
+
+                <div className="api-ready-note result-legal-note">
+                  <ShieldCheck size={16} color="var(--accent-light)" strokeWidth={2.2} />
+                  <span>A Cote Juros nao e banco, nao concede credito diretamente, nao garante aprovacao e nao cobra taxa antecipada. As opcoes apresentadas dependem da analise e criterios dos parceiros.</span>
                 </div>
+              </main>
 
-                <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-medium text-white/78">
-                  {compatibility}
-                </div>
+              <aside className="result-sidebar">
+                <section className="creditas-card result-insight-card">
+                  <div className="result-side-icon"><ClipboardCheck size={18} color="var(--accent-light)" strokeWidth={2.2} /></div>
+                  <h2>Como calculamos este diagnostico</h2>
+                  <p>
+                    Usamos as informacoes preenchidas no quiz, como renda informada, valor desejado, objetivo do credito e existencia de garantia.
+                  </p>
+                  <div className="result-check-list">
+                    {['Renda informada', 'Valor solicitado', 'Perfil declarado', 'Tipo de credito desejado', 'Existencia de garantia', 'Criterios dos parceiros'].map((item) => (
+                      <div key={item}>
+                        <BadgeCheck size={14} color="var(--accent-light)" strokeWidth={2.2} />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
 
-                {match.actionType === 'eligibility' ? (
-                  <label className="mt-4 flex cursor-pointer gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm leading-6 text-white/68">
-                    <input type="checkbox" checked={Boolean(consents[match.partnerId]?.accepted)} onChange={(event) => event.target.checked && acceptConsent(match.partnerId)} />
-                    <span>Autorizo a Cote Juros a compartilhar meus dados com o parceiro responsável para análise de crédito.</span>
-                  </label>
-                ) : null}
+                  {summaryItems.length ? (
+                    <div className="result-summary-grid">
+                      {summaryItems.map(([label, value]) => (
+                        <div key={label} className="dashboard-api-item">
+                          <span>{label}</span>
+                          <strong>{value}</strong>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </section>
 
-                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <Button onClick={() => handlePartnerClick(match)} disabled={redirectingPartnerId === match.partnerId} className="h-11 rounded-full bg-[#7C6EF7] px-5 text-white shadow-[0_16px_36px_rgba(124,110,247,0.25)] hover:bg-[#6254D4]">
-                    {redirectingPartnerId === match.partnerId ? 'Preparando...' : cta}
-                    <ArrowUpRight className="h-4 w-4" />
-                  </Button>
-                  {note ? <p className="max-w-md text-xs leading-5 text-white/45">{note}</p> : null}
-                </div>
-              </article>
-            )) : (
-              <div className="rounded-[26px] border border-white/10 bg-[#101a2b] p-8 text-center text-white shadow-[0_26px_80px_rgba(0,0,0,0.24)]">
-                <h2 className="text-2xl font-semibold text-white">Ainda não encontramos uma opção clara.</h2>
-                <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-white/62">Tente reduzir o valor solicitado, informar renda/cidade ou revisar a finalidade do crédito.</p>
-                <Link className="mt-6 inline-flex" to="/quiz"><Button className="rounded-full bg-[#7C6EF7] text-white hover:bg-[#6254D4]">Refazer análise</Button></Link>
-              </div>
-            )}
-
-            {status ? <div className="rounded-2xl border border-[#7C6EF7]/20 bg-[#7C6EF7]/10 p-4 text-sm leading-6 text-[#D9D5FF]">{status}</div> : null}
-
-            <div className="flex gap-3 rounded-[22px] border border-white/10 bg-white/[0.04] p-5 text-sm leading-7 text-white/58">
-              <ShieldCheck className="mt-1 h-5 w-5 shrink-0 text-[#9C8FFF]" />
-              <p>A Cote Juros não é banco, não concede crédito diretamente, não garante aprovação e não cobra taxa antecipada. As opções apresentadas dependem da análise e critérios dos parceiros.</p>
+                <section className="creditas-card result-insight-card">
+                  <div className="result-side-icon"><LockKeyhole size={18} color="var(--accent-light)" strokeWidth={2.2} /></div>
+                  <h2>Preciso informar CPF ou conectar Open Finance?</h2>
+                  <p>
+                    Neste primeiro diagnostico, nao e obrigatorio conectar Open Finance. Alguns parceiros podem solicitar CPF, dados adicionais ou autorizacao de consulta para realizar a analise final.
+                  </p>
+                  <div className="api-ready-note">Sem CPF ou dados complementares, o resultado permanece apenas indicativo.</div>
+                </section>
+              </aside>
             </div>
-          </main>
-
-          <aside className="space-y-5">
-            <section className="rounded-[26px] border border-white/10 bg-white/[0.04] p-6 text-white shadow-[0_26px_80px_rgba(0,0,0,0.18)]">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#7C6EF7]/25 bg-[#7C6EF7]/14 text-[#D9D5FF]">
-                <ClipboardCheck className="h-5 w-5" />
-              </div>
-              <h2 className="mt-5 text-xl font-semibold tracking-[-0.02em]">Como calculamos este diagnóstico</h2>
-              <p className="mt-3 text-sm leading-7 text-white/60">
-                Usamos as informações preenchidas no quiz, como renda informada, valor desejado, objetivo do crédito e existência de garantia. O resultado é apenas uma estimativa inicial.
-              </p>
-              <div className="mt-5 grid gap-2 text-sm text-white/66">
-                {['Renda informada', 'Valor solicitado', 'Perfil declarado', 'Tipo de crédito desejado', 'Existência de garantia', 'Critérios dos parceiros'].map((item) => (
-                  <div key={item} className="flex items-center gap-2">
-                    <BadgeCheck className="h-4 w-4 text-[#9C8FFF]" />
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-
-              {summaryItems.length ? (
-                <div className="mt-5 grid gap-3">
-                  {summaryItems.map(([label, value]) => (
-                    <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.04] p-3">
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/42">{label}</p>
-                      <p className="mt-1 text-base font-semibold text-white">{value}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : null}
-            </section>
-
-            <section className="rounded-[26px] border border-white/10 bg-white/[0.04] p-6 text-white shadow-[0_26px_80px_rgba(0,0,0,0.18)]">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#7C6EF7]/25 bg-[#7C6EF7]/14 text-[#D9D5FF]">
-                <LockKeyhole className="h-5 w-5" />
-              </div>
-              <h2 className="mt-5 text-xl font-semibold tracking-[-0.02em]">Preciso informar CPF ou conectar Open Finance?</h2>
-              <p className="mt-3 text-sm leading-7 text-white/60">
-                Neste primeiro diagnóstico, não é obrigatório conectar Open Finance. Alguns parceiros podem solicitar CPF, dados adicionais ou autorização de consulta para realizar a análise final.
-              </p>
-              <p className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm leading-6 text-white/66">
-                Sem CPF ou dados complementares, o resultado permanece apenas indicativo.
-              </p>
-            </section>
-          </aside>
-        </div>
-      </section>
-    </>
+          </div>
+        </section>
+      </div>
+    </PlatformShell>
   );
 }
 
