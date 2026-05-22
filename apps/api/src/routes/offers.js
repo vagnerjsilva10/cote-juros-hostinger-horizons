@@ -5,6 +5,28 @@ import { OfferService } from '../services/offerService.js';
 
 const router = express.Router();
 
+const withProtocol = (url = '') => {
+  const value = String(url || '').trim();
+  if (!value) return '';
+  return /^https?:\/\//i.test(value) ? value : `https://${value}`;
+};
+
+const isGenericInternalOfferUrl = (url = '') => {
+  try {
+    const parsed = new URL(withProtocol(url));
+    if (!/(^|\.)cotejuros\.(com\.br|br)$/i.test(parsed.hostname)) return false;
+    return ['/', '/emprestimos', '/comparar'].includes(parsed.pathname.replace(/\/$/, '') || '/');
+  } catch {
+    return false;
+  }
+};
+
+const resolveOfferRedirectUrl = (offer) => {
+  if (offer.partnerTrackingUrl) return offer.partnerTrackingUrl;
+  if (offer.redirectUrl && !isGenericInternalOfferUrl(offer.redirectUrl)) return offer.redirectUrl;
+  return withProtocol(offer.bank?.website || offer.redirectUrl);
+};
+
 router.get(
   '/',
   asyncHandler(async (req, res) => {
@@ -48,7 +70,7 @@ router.post(
     return res.json({
       data: {
         offerId: offer.id,
-        redirectUrl: offer.partnerTrackingUrl || offer.redirectUrl,
+        redirectUrl: resolveOfferRedirectUrl(offer),
         tracking: pickUtm(payload)
       }
     });
