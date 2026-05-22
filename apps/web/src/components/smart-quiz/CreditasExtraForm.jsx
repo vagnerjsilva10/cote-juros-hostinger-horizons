@@ -29,7 +29,11 @@ const REQUIRED_FIELD_LABELS = {
   income: 'renda mensal'
 };
 
+const hasMoneyValue = (value) => parseCurrencyBRL(value) > 0;
+
 export default function CreditasExtraForm({ lead, quizAnswers, recommendation, onStatus }) {
+  const hasIncome = hasMoneyValue(quizAnswers?.monthlyIncome ?? quizAnswers?.income ?? quizAnswers?.renda ?? lead?.monthlyIncome ?? lead?.income);
+  const hasRequestedAmount = hasMoneyValue(quizAnswers?.amount ?? quizAnswers?.valor ?? quizAnswers?.requestedAmount ?? lead?.requestedAmount ?? lead?.amount);
   const [form, setForm] = useState({
     fullName: lead?.name || lead?.fullName || '',
     phone: lead?.phone || lead?.whatsapp || '',
@@ -39,6 +43,8 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
     state: '',
     guaranteeType: '',
     assetValue: '',
+    requestedAmount: '',
+    income: '',
     consent: false
   });
   const [status, setStatus] = useState('idle');
@@ -62,6 +68,8 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
         fullName: form.fullName,
         phone: form.phone,
         email: form.email,
+        income: parseCurrencyBRL(form.income),
+        requestedAmount: parseCurrencyBRL(form.requestedAmount),
         assetValue: parseCurrencyBRL(form.assetValue),
         sourcePage: 'smart_quiz_creditas'
       }
@@ -132,6 +140,8 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
           <option value="">Estado</option>
           {STATES.map((state) => <option key={state} value={state}>{state}</option>)}
         </select>
+        {!hasRequestedAmount ? <Input value={form.requestedAmount} onChange={(event) => update('requestedAmount', formatCurrencyBRL(event.target.value))} placeholder="Valor desejado" inputMode="numeric" className="bg-white text-slate-950" /> : null}
+        {!hasIncome ? <Input value={form.income} onChange={(event) => update('income', formatCurrencyBRL(event.target.value))} placeholder="Renda mensal" inputMode="numeric" className="bg-white text-slate-950" /> : null}
         <Input value={form.assetValue} onChange={(event) => update('assetValue', formatCurrencyBRL(event.target.value))} placeholder="Valor estimado do bem" inputMode="numeric" className="bg-white text-slate-950 sm:col-span-2" />
       </div>
 

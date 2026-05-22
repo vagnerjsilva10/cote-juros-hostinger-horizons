@@ -31,7 +31,7 @@ export const getCreditasStatus = () => {
 
 export const isCreditasEligibleRecommendation = (recommendation = {}, quizAnswers = {}) => {
   const requestedAmount = parseMoney(quizAnswers.amount ?? quizAnswers.valor ?? quizAnswers.requestedAmount);
-  const income = parseMoney(quizAnswers.income ?? quizAnswers.renda);
+  const income = parseMoney(quizAnswers.monthlyIncome ?? quizAnswers.income ?? quizAnswers.renda);
   const productText = `${recommendation.mainProduct || ''} ${recommendation.partnerRoute || ''}`.toLowerCase();
 
   if ((recommendation.score || 0) < 60) return false;
@@ -45,8 +45,8 @@ export const buildCreditasPayload = ({ lead = {}, quizAnswers = {}, recommendati
   phone: onlyDigits(lead.phone || lead.whatsapp || extraFields.phone),
   email: lead.email || extraFields.email,
   cpf: onlyDigits(extraFields.cpf || lead.cpf),
-  income: parseMoney(quizAnswers.income ?? quizAnswers.renda ?? lead.income),
-  requestedAmount: parseMoney(quizAnswers.amount ?? quizAnswers.valor ?? quizAnswers.requestedAmount ?? lead.requestedAmount),
+  income: parseMoney(quizAnswers.monthlyIncome ?? quizAnswers.income ?? quizAnswers.renda ?? lead.monthlyIncome ?? lead.income ?? extraFields.income),
+  requestedAmount: parseMoney(quizAnswers.amount ?? quizAnswers.valor ?? quizAnswers.requestedAmount ?? lead.requestedAmount ?? lead.amount ?? extraFields.requestedAmount),
   productType: 'loan',
   guaranteeType: extraFields.guaranteeType,
   assetValue: parseMoney(extraFields.assetValue),

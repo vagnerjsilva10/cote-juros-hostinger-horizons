@@ -4259,19 +4259,32 @@
 }
 
 .cj-platform .creditas-extra-form {
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(circle at top left, rgba(124, 110, 247, 0.16), transparent 32%),
+    var(--bg-card);
   border-radius: 24px;
+  box-shadow: var(--shadow-card);
   padding: 18px;
+}
+
+.cj-platform .creditas-extra-form :is(input, select) {
+  min-height: 44px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.cj-platform .creditas-extra-form :is(input, select)::placeholder {
+  color: var(--text-muted);
 }
 
 .cj-platform .creditas-select {
   width: 100%;
-  min-height: 40px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.16);
-  background: #fff;
-  color: #0f172a;
+  min-height: 44px;
+  border-radius: 12px;
   padding: 0 12px;
   font-size: 14px;
 }
