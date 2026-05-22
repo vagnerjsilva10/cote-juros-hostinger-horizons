@@ -24,6 +24,12 @@ const AUTO_PUBLISH_THRESHOLDS = Object.freeze({
   topicFatigueMax: 35,
 });
 
+const GENERATED_RESULT_FLOORS = Object.freeze({
+  originality: 76,
+  factualDensity: 82,
+  cannibalizationRiskMax: 55,
+});
+
 const DAILY_SLOT_TYPES = [
   ['evergreen_premium', 'topical_support'],
   ['news_analysis'],
@@ -1088,21 +1094,32 @@ export class AutonomousEditorialPublishingService {
       cannibalizationRisk: quality.canibalization_risk_score || governance.memory?.canibalizationRisk || 0,
       topicFatigue: topicFatigue.topicFatigueScore || 0,
     };
+    const validationPassed = result.validation?.passed !== false;
+    const publishSafetyOk = result.publishSafety?.status === 'publishable';
+    const governancePublishable = governance.decision === 'publishable' || governance.decision === 'publishable_refresh';
+    const marginalQualityAllowed = Boolean(
+      validationPassed &&
+        publishSafetyOk &&
+        governancePublishable &&
+        scores.originality >= GENERATED_RESULT_FLOORS.originality &&
+        scores.factualDensity >= GENERATED_RESULT_FLOORS.factualDensity &&
+        (isRefresh || scores.cannibalizationRisk <= GENERATED_RESULT_FLOORS.cannibalizationRiskMax)
+    );
 
     const blockers = [
-      result.validation?.passed === false ? 'validacao editorial geral falhou' : null,
-      result.publishSafety?.status !== 'publishable' ? `publishSafety.status=${result.publishSafety?.status || 'unknown'}` : null,
-      governance.decision !== 'publishable' && governance.decision !== 'publishable_refresh' ? `governance.decision=${governance.decision || 'unknown'}` : null,
+      !validationPassed ? 'validacao editorial geral falhou' : null,
+      !publishSafetyOk ? `publishSafety.status=${result.publishSafety?.status || 'unknown'}` : null,
+      !governancePublishable ? `governance.decision=${governance.decision || 'unknown'}` : null,
       scores.seo < AUTO_PUBLISH_THRESHOLDS.seo ? `SEO abaixo de ${AUTO_PUBLISH_THRESHOLDS.seo}` : null,
       scores.eeat < AUTO_PUBLISH_THRESHOLDS.eeat ? `EEAT abaixo de ${AUTO_PUBLISH_THRESHOLDS.eeat}` : null,
       scores.humanization < AUTO_PUBLISH_THRESHOLDS.humanization ? `humanization abaixo de ${AUTO_PUBLISH_THRESHOLDS.humanization}` : null,
       scores.antiTemplate < AUTO_PUBLISH_THRESHOLDS.antiTemplate ? `antiTemplate abaixo de ${AUTO_PUBLISH_THRESHOLDS.antiTemplate}` : null,
-      scores.originality < AUTO_PUBLISH_THRESHOLDS.originality ? `originality abaixo de ${AUTO_PUBLISH_THRESHOLDS.originality}` : null,
-      scores.factualDensity < AUTO_PUBLISH_THRESHOLDS.factualDensity ? `factualDensity abaixo de ${AUTO_PUBLISH_THRESHOLDS.factualDensity}` : null,
+      scores.originality < AUTO_PUBLISH_THRESHOLDS.originality && !marginalQualityAllowed ? `originality abaixo de ${AUTO_PUBLISH_THRESHOLDS.originality}` : null,
+      scores.factualDensity < AUTO_PUBLISH_THRESHOLDS.factualDensity && !marginalQualityAllowed ? `factualDensity abaixo de ${AUTO_PUBLISH_THRESHOLDS.factualDensity}` : null,
       scores.editorialDepth < AUTO_PUBLISH_THRESHOLDS.editorialDepth ? `editorialDepth abaixo de ${AUTO_PUBLISH_THRESHOLDS.editorialDepth}` : null,
       scores.sourceCredibility < AUTO_PUBLISH_THRESHOLDS.sourceCredibility ? `sourceCredibility abaixo de ${AUTO_PUBLISH_THRESHOLDS.sourceCredibility}` : null,
       scores.fingerprintRisk > AUTO_PUBLISH_THRESHOLDS.fingerprintRiskMax ? `fingerprintRisk acima de ${AUTO_PUBLISH_THRESHOLDS.fingerprintRiskMax}` : null,
-      !isRefresh && scores.cannibalizationRisk > AUTO_PUBLISH_THRESHOLDS.cannibalizationRiskMax ? `cannibalizationRisk acima de ${AUTO_PUBLISH_THRESHOLDS.cannibalizationRiskMax}` : null,
+      !isRefresh && scores.cannibalizationRisk > AUTO_PUBLISH_THRESHOLDS.cannibalizationRiskMax && !marginalQualityAllowed ? `cannibalizationRisk acima de ${AUTO_PUBLISH_THRESHOLDS.cannibalizationRiskMax}` : null,
       scores.topicFatigue > AUTO_PUBLISH_THRESHOLDS.topicFatigueMax ? `topicFatigue acima de ${AUTO_PUBLISH_THRESHOLDS.topicFatigueMax}` : null,
     ].filter(Boolean);
 
@@ -1110,6 +1127,7 @@ export class AutonomousEditorialPublishingService {
       publishable: blockers.length === 0,
       blockers,
       scores,
+      marginalQualityAllowed,
     };
   }
 }
