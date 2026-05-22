@@ -4297,6 +4297,17 @@
   color: var(--text-muted);
 }
 
+.cj-platform .creditas-prefill-note {
+  margin: 0 0 14px;
+  border: 1px solid rgba(34, 211, 160, 0.18);
+  background: rgba(34, 211, 160, 0.08);
+  color: rgba(255,255,255,0.74);
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 650;
+}
+
 .cj-platform .creditas-select {
   width: 100%;
   min-height: 44px;

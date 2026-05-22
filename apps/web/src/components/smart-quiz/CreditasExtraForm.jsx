@@ -31,6 +31,8 @@ const REQUIRED_FIELD_LABELS = {
   income: 'renda mensal'
 };
 
+const REQUIRED_EXTRA_FIELDS = ['fullName', 'phone', 'email', 'cpf', 'guaranteeType', 'city', 'state', 'requestedAmount', 'income', 'assetValue'];
+
 const hasMoneyValue = (value) => parseCurrencyBRL(value) > 0;
 
 const firstMoneyValue = (...values) => {
@@ -40,15 +42,36 @@ const firstMoneyValue = (...values) => {
 
 const resolveCreditasProduct = (guaranteeType) => guaranteeType === 'vehicle' ? 'auto_equity' : 'home_equity';
 
+const firstTextValue = (...values) => values.map((value) => String(value || '').trim()).find(Boolean) || '';
+
+const resolveGuaranteeType = (quizAnswers = {}, lead = {}) => {
+  const explicit = firstTextValue(
+    quizAnswers.guaranteeType,
+    quizAnswers.tipoGarantia,
+    quizAnswers.guarantee,
+    lead.guaranteeType
+  ).toLowerCase();
+
+  if (['home', 'imovel', 'imóvel', 'property', 'real_estate', 'home_equity'].includes(explicit)) return 'home';
+  if (['vehicle', 'veiculo', 'veículo', 'auto', 'car', 'auto_equity'].includes(explicit)) return 'vehicle';
+  if (quizAnswers.hasProperty || quizAnswers.property || lead.hasProperty) return 'home';
+  if (quizAnswers.hasVehicle || quizAnswers.vehicle || lead.hasVehicle) return 'vehicle';
+  return '';
+};
+
 export default function CreditasExtraForm({ lead, quizAnswers, recommendation, onStatus }) {
+  const initialGuaranteeType = resolveGuaranteeType(quizAnswers, lead);
+  const initialCity = firstTextValue(quizAnswers?.city, quizAnswers?.cidade, lead?.city, lead?.cidade);
+  const initialState = firstTextValue(quizAnswers?.state, quizAnswers?.estado, lead?.state, lead?.estado).toUpperCase();
+  const initialCpf = firstTextValue(quizAnswers?.cpf, lead?.cpf);
   const [form, setForm] = useState({
     fullName: lead?.name || lead?.fullName || '',
     phone: lead?.phone || lead?.whatsapp || '',
     email: lead?.email || '',
-    cpf: '',
-    city: '',
-    state: '',
-    guaranteeType: '',
+    cpf: initialCpf,
+    city: initialCity,
+    state: initialState,
+    guaranteeType: initialGuaranteeType,
     assetValue: '',
     requestedAmount: firstMoneyValue(quizAnswers?.amount, quizAnswers?.valor, quizAnswers?.requestedAmount, lead?.requestedAmount, lead?.amount),
     income: firstMoneyValue(quizAnswers?.monthlyIncome, quizAnswers?.income, quizAnswers?.renda, lead?.monthlyIncome, lead?.income),
@@ -59,6 +82,13 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
   const [requiredFields, setRequiredFields] = useState([]);
 
   const update = (field, value) => setForm((current) => ({ ...current, [field]: value }));
+  const filledFields = REQUIRED_EXTRA_FIELDS.filter((field) => {
+    if (['requestedAmount', 'income', 'assetValue'].includes(field)) return hasMoneyValue(form[field]);
+    if (field === 'phone') return String(form.phone || '').replace(/\D/g, '').length >= 10;
+    if (field === 'state') return String(form.state || '').trim().length >= 2;
+    return Boolean(String(form[field] || '').trim());
+  });
+  const missingExtraFields = REQUIRED_EXTRA_FIELDS.filter((field) => !filledFields.includes(field));
 
   const redirectToCreditas = async (payload, result) => {
     setStatus('redirecting');
@@ -183,10 +213,18 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
         <div>
           <h3 className="text-lg font-semibold text-white">Simulação com garantia</h3>
           <p className="mt-1 text-sm leading-6 text-white/65">
-            Complete apenas os dados necessários para consultar opções com garantia, sujeito a análise.
+            {missingExtraFields.length
+              ? 'Complete apenas os dados que ainda faltam para consultar opções com garantia, sujeito a análise.'
+              : 'Dados do quiz aproveitados. Revise e confirme para continuar com a Creditas.'}
           </p>
         </div>
       </div>
+
+      {filledFields.length ? (
+        <div className="creditas-prefill-note">
+          {filledFields.length} dado(s) preenchido(s) automaticamente a partir do quiz.
+        </div>
+      ) : null}
 
       <div className="grid gap-3 sm:grid-cols-2">
         {!lead?.name && !lead?.fullName ? <label className="creditas-field sm:col-span-2"><span>Nome completo</span><Input value={form.fullName} onChange={(event) => update('fullName', event.target.value)} placeholder="Nome completo" /></label> : null}
@@ -205,7 +243,7 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
         </select></label>
         <label className="creditas-field"><span>Valor desejado</span><Input value={form.requestedAmount} onChange={(event) => update('requestedAmount', formatCurrencyBRL(event.target.value))} placeholder="R$ 50.000" inputMode="numeric" /></label>
         <label className="creditas-field"><span>Renda mensal</span><Input value={form.income} onChange={(event) => update('income', formatCurrencyBRL(event.target.value))} placeholder="R$ 3.500" inputMode="numeric" /></label>
-        <label className="creditas-field sm:col-span-2"><span>Valor estimado do bem</span><Input value={form.assetValue} onChange={(event) => update('assetValue', formatCurrencyBRL(event.target.value))} placeholder="R$ 150.000" inputMode="numeric" /></label>
+        <label className="creditas-field sm:col-span-2"><span>Valor estimado do bem</span><Input value={form.assetValue} onChange={(event) => update('assetValue', formatCurrencyBRL(event.target.value))} placeholder={form.guaranteeType === 'vehicle' ? 'R$ 40.000' : 'R$ 150.000'} inputMode="numeric" /></label>
       </div>
 
       <label className="mt-4 flex items-start gap-3 rounded-[16px] border border-white/10 bg-white/[0.04] p-3 text-sm leading-6 text-white/72">
