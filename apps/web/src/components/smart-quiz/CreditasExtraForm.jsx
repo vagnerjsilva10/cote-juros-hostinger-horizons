@@ -59,6 +59,43 @@ const resolveGuaranteeType = (quizAnswers = {}, lead = {}) => {
   return '';
 };
 
+function CreditasSelect({ label, value, placeholder, options, onChange }) {
+  const [open, setOpen] = useState(false);
+  const selected = options.find((option) => option.value === value);
+
+  return (
+    <label className="creditas-field">
+      <span>{label}</span>
+      <div className="creditas-custom-select" onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
+      }}>
+        <button type="button" className={`creditas-select-trigger ${open ? 'is-open' : ''}`} onClick={() => setOpen((current) => !current)}>
+          <span>{selected?.label || placeholder}</span>
+          <span className="creditas-select-caret" aria-hidden="true" />
+        </button>
+        {open ? (
+          <div className="creditas-select-menu">
+            {options.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                className={`creditas-select-option ${option.value === value ? 'is-selected' : ''}`}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => {
+                  onChange(option.value);
+                  setOpen(false);
+                }}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </label>
+  );
+}
+
 export default function CreditasExtraForm({ lead, quizAnswers, recommendation, onStatus }) {
   const initialGuaranteeType = resolveGuaranteeType(quizAnswers, lead);
   const initialCity = firstTextValue(quizAnswers?.city, quizAnswers?.cidade, lead?.city, lead?.cidade);
@@ -231,16 +268,24 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
         {!lead?.phone && !lead?.whatsapp ? <label className="creditas-field"><span>WhatsApp</span><Input value={form.phone} onChange={(event) => update('phone', formatPhoneValue(event.target.value))} placeholder="(11) 99999-9999" inputMode="tel" autoComplete="tel" maxLength={15} /></label> : null}
         {!lead?.email ? <label className="creditas-field"><span>E-mail</span><Input value={form.email} onChange={(event) => update('email', event.target.value)} placeholder="seu@email.com" type="email" /></label> : null}
         <label className="creditas-field"><span>CPF</span><Input value={form.cpf} onChange={(event) => update('cpf', event.target.value)} placeholder="000.000.000-00" /></label>
-        <label className="creditas-field"><span>Tipo de garantia</span><select className="creditas-select" value={form.guaranteeType} onChange={(event) => update('guaranteeType', event.target.value)}>
-          <option value="">Selecione</option>
-          <option value="home">Imóvel</option>
-          <option value="vehicle">Veículo</option>
-        </select></label>
+        <CreditasSelect
+          label="Tipo de garantia"
+          value={form.guaranteeType}
+          placeholder="Selecione"
+          options={[
+            { value: 'home', label: 'Imóvel' },
+            { value: 'vehicle', label: 'Veículo' }
+          ]}
+          onChange={(value) => update('guaranteeType', value)}
+        />
         <label className="creditas-field"><span>Cidade</span><Input value={form.city} onChange={(event) => update('city', event.target.value)} placeholder="Cidade" /></label>
-        <label className="creditas-field"><span>Estado</span><select className="creditas-select" value={form.state} onChange={(event) => update('state', event.target.value)}>
-          <option value="">UF</option>
-          {STATES.map((state) => <option key={state} value={state}>{state}</option>)}
-        </select></label>
+        <CreditasSelect
+          label="Estado"
+          value={form.state}
+          placeholder="UF"
+          options={STATES.map((state) => ({ value: state, label: state }))}
+          onChange={(value) => update('state', value)}
+        />
         <label className="creditas-field"><span>Valor desejado</span><Input value={form.requestedAmount} onChange={(event) => update('requestedAmount', formatCurrencyBRL(event.target.value))} placeholder="R$ 50.000" inputMode="numeric" /></label>
         <label className="creditas-field"><span>Renda mensal</span><Input value={form.income} onChange={(event) => update('income', formatCurrencyBRL(event.target.value))} placeholder="R$ 3.500" inputMode="numeric" /></label>
         <label className="creditas-field sm:col-span-2"><span>Valor estimado do bem</span><Input value={form.assetValue} onChange={(event) => update('assetValue', formatCurrencyBRL(event.target.value))} placeholder={form.guaranteeType === 'vehicle' ? 'R$ 40.000' : 'R$ 150.000'} inputMode="numeric" /></label>
