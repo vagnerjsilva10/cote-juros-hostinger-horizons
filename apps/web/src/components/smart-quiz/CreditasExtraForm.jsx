@@ -8,11 +8,13 @@ import {
   submitCreditasLead
 } from '@/platform/services/creditasAdapter.js';
 import { trackEvent } from '@/platform/services/trackingAdapter.js';
-import { openWhatsApp } from '@/platform/utils/whatsapp.js';
+import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
 import { formatCurrencyBRL, parseCurrencyBRL } from '@/components/smart-quiz/currency.js';
 import { formatPhoneValue } from '@/lib/quickCreditSubmission.js';
 
 const LGPD_TEXT = 'Autorizo a Cote Juros a compartilhar meus dados com a parceira Creditas para análise de opções de crédito com garantia. A aprovação e condições dependem da avaliação da parceira.';
+const CREDITAS_PARTNER_URL = 'https://www.creditas.com/emprestimo-de-qualidade';
+const CREDITAS_OFFER_ID = 'offer-creditas-garantia-api';
 
 const STATES = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT', 'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO'];
 
@@ -31,9 +33,14 @@ const REQUIRED_FIELD_LABELS = {
 
 const hasMoneyValue = (value) => parseCurrencyBRL(value) > 0;
 
+const firstMoneyValue = (...values) => {
+  const value = values.find((item) => hasMoneyValue(item));
+  return value ? formatCurrencyBRL(value) : '';
+};
+
+const resolveCreditasProduct = (guaranteeType) => guaranteeType === 'vehicle' ? 'auto_equity' : 'home_equity';
+
 export default function CreditasExtraForm({ lead, quizAnswers, recommendation, onStatus }) {
-  const hasIncome = hasMoneyValue(quizAnswers?.monthlyIncome ?? quizAnswers?.income ?? quizAnswers?.renda ?? lead?.monthlyIncome ?? lead?.income);
-  const hasRequestedAmount = hasMoneyValue(quizAnswers?.amount ?? quizAnswers?.valor ?? quizAnswers?.requestedAmount ?? lead?.requestedAmount ?? lead?.amount);
   const [form, setForm] = useState({
     fullName: lead?.name || lead?.fullName || '',
     phone: lead?.phone || lead?.whatsapp || '',
@@ -43,8 +50,8 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
     state: '',
     guaranteeType: '',
     assetValue: '',
-    requestedAmount: '',
-    income: '',
+    requestedAmount: firstMoneyValue(quizAnswers?.amount, quizAnswers?.valor, quizAnswers?.requestedAmount, lead?.requestedAmount, lead?.amount),
+    income: firstMoneyValue(quizAnswers?.monthlyIncome, quizAnswers?.income, quizAnswers?.renda, lead?.monthlyIncome, lead?.income),
     consent: false
   });
   const [status, setStatus] = useState('idle');
@@ -52,6 +59,40 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
   const [requiredFields, setRequiredFields] = useState([]);
 
   const update = (field, value) => setForm((current) => ({ ...current, [field]: value }));
+
+  const redirectToCreditas = async (payload, result) => {
+    setStatus('redirecting');
+    setMessage('Consulta registrada. Redirecionando para a Creditas...');
+
+    try {
+      const productType = resolveCreditasProduct(payload.guaranteeType);
+      const redirect = await partnerRedirectService.create({
+        partnerId: 'creditas',
+        partnerSlug: 'creditas',
+        offerId: CREDITAS_OFFER_ID,
+        sourcePage: 'smart_quiz_creditas',
+        productType,
+        utm: {
+          source: 'cotejuros',
+          medium: 'resultado',
+          campaign: productType
+        },
+        metadata: {
+          provider: 'creditas',
+          eligibilityStatus: result?.status || result?.mode,
+          externalId: result?.externalId || null
+        }
+      });
+
+      window.location.assign(redirect?.resolvedUrl || redirect?.redirectUrl || CREDITAS_PARTNER_URL);
+    } catch (error) {
+      await trackEvent('creditas_redirect_fallback_used', {
+        sourcePage: 'smart_quiz_creditas',
+        reason: error?.message || 'redirect_failed'
+      });
+      window.location.assign(CREDITAS_PARTNER_URL);
+    }
+  };
 
   const submit = async (event) => {
     event.preventDefault();
@@ -80,7 +121,18 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
       guaranteeType: payload.guaranteeType
     });
 
-    const eligibility = await checkCreditasEligibility(payload);
+    let eligibility;
+    try {
+      eligibility = await checkCreditasEligibility(payload);
+    } catch (error) {
+      await redirectToCreditas(payload, {
+        ok: false,
+        mode: 'creditas_api_error',
+        status: error?.status || error?.code || 'api_error'
+      });
+      return;
+    }
+
     if (eligibility?.mode === 'missing_required_data') {
       setStatus('missing');
       setRequiredFields(eligibility.requiredFields || []);
@@ -89,26 +141,37 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
       return;
     }
 
-    const leadResult = eligibility?.ok ? await submitCreditasLead(payload) : eligibility;
+    let leadResult;
+    try {
+      leadResult = eligibility?.ok ? await submitCreditasLead(payload) : eligibility;
+    } catch (error) {
+      await redirectToCreditas(payload, {
+        ok: false,
+        mode: 'creditas_submit_error',
+        status: error?.status || error?.code || 'submit_error'
+      });
+      return;
+    }
     const finalStatus = leadResult?.status || leadResult?.mode;
     onStatus?.(leadResult);
 
     if (leadResult?.mode === 'fallback') {
-      setStatus('fallback');
-      setMessage('Não conseguimos consultar as opções agora. Seus dados foram salvos para continuidade.');
+      await redirectToCreditas(payload, leadResult);
       return;
     }
 
     if (leadResult?.ok) {
+      if (finalStatus !== 'not_eligible') {
+        await redirectToCreditas(payload, leadResult);
+        return;
+      }
+
       setStatus('done');
-      setMessage(finalStatus === 'not_eligible'
-        ? 'Não elegível no momento. Você ainda pode seguir por outros caminhos.'
-        : 'Consulta registrada. As condições dependem da avaliação da Creditas.');
+      setMessage('Não elegível no momento. Você ainda pode seguir por outros caminhos.');
       return;
     }
 
-    setStatus('error');
-    setMessage('Não conseguimos consultar as opções agora. Seus dados foram salvos para continuidade.');
+    await redirectToCreditas(payload, leadResult);
   };
 
   return (
@@ -126,23 +189,23 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        {!lead?.name && !lead?.fullName ? <Input value={form.fullName} onChange={(event) => update('fullName', event.target.value)} placeholder="Nome completo" className="bg-white text-slate-950 sm:col-span-2" /> : null}
-        {!lead?.phone && !lead?.whatsapp ? <Input value={form.phone} onChange={(event) => update('phone', formatPhoneValue(event.target.value))} placeholder="(11) 99999-9999" inputMode="tel" autoComplete="tel" maxLength={15} className="bg-white text-slate-950" /> : null}
-        {!lead?.email ? <Input value={form.email} onChange={(event) => update('email', event.target.value)} placeholder="E-mail" type="email" className="bg-white text-slate-950" /> : null}
-        <Input value={form.cpf} onChange={(event) => update('cpf', event.target.value)} placeholder="CPF" className="bg-white text-slate-950" />
-        <select className="creditas-select" value={form.guaranteeType} onChange={(event) => update('guaranteeType', event.target.value)}>
-          <option value="">Tipo de garantia</option>
+        {!lead?.name && !lead?.fullName ? <label className="creditas-field sm:col-span-2"><span>Nome completo</span><Input value={form.fullName} onChange={(event) => update('fullName', event.target.value)} placeholder="Nome completo" /></label> : null}
+        {!lead?.phone && !lead?.whatsapp ? <label className="creditas-field"><span>WhatsApp</span><Input value={form.phone} onChange={(event) => update('phone', formatPhoneValue(event.target.value))} placeholder="(11) 99999-9999" inputMode="tel" autoComplete="tel" maxLength={15} /></label> : null}
+        {!lead?.email ? <label className="creditas-field"><span>E-mail</span><Input value={form.email} onChange={(event) => update('email', event.target.value)} placeholder="seu@email.com" type="email" /></label> : null}
+        <label className="creditas-field"><span>CPF</span><Input value={form.cpf} onChange={(event) => update('cpf', event.target.value)} placeholder="000.000.000-00" /></label>
+        <label className="creditas-field"><span>Tipo de garantia</span><select className="creditas-select" value={form.guaranteeType} onChange={(event) => update('guaranteeType', event.target.value)}>
+          <option value="">Selecione</option>
           <option value="home">Imóvel</option>
           <option value="vehicle">Veículo</option>
-        </select>
-        <Input value={form.city} onChange={(event) => update('city', event.target.value)} placeholder="Cidade" className="bg-white text-slate-950" />
-        <select className="creditas-select" value={form.state} onChange={(event) => update('state', event.target.value)}>
-          <option value="">Estado</option>
+        </select></label>
+        <label className="creditas-field"><span>Cidade</span><Input value={form.city} onChange={(event) => update('city', event.target.value)} placeholder="Cidade" /></label>
+        <label className="creditas-field"><span>Estado</span><select className="creditas-select" value={form.state} onChange={(event) => update('state', event.target.value)}>
+          <option value="">UF</option>
           {STATES.map((state) => <option key={state} value={state}>{state}</option>)}
-        </select>
-        {!hasRequestedAmount ? <Input value={form.requestedAmount} onChange={(event) => update('requestedAmount', formatCurrencyBRL(event.target.value))} placeholder="Valor desejado" inputMode="numeric" className="bg-white text-slate-950" /> : null}
-        {!hasIncome ? <Input value={form.income} onChange={(event) => update('income', formatCurrencyBRL(event.target.value))} placeholder="Renda mensal" inputMode="numeric" className="bg-white text-slate-950" /> : null}
-        <Input value={form.assetValue} onChange={(event) => update('assetValue', formatCurrencyBRL(event.target.value))} placeholder="Valor estimado do bem" inputMode="numeric" className="bg-white text-slate-950 sm:col-span-2" />
+        </select></label>
+        <label className="creditas-field"><span>Valor desejado</span><Input value={form.requestedAmount} onChange={(event) => update('requestedAmount', formatCurrencyBRL(event.target.value))} placeholder="R$ 50.000" inputMode="numeric" /></label>
+        <label className="creditas-field"><span>Renda mensal</span><Input value={form.income} onChange={(event) => update('income', formatCurrencyBRL(event.target.value))} placeholder="R$ 3.500" inputMode="numeric" /></label>
+        <label className="creditas-field sm:col-span-2"><span>Valor estimado do bem</span><Input value={form.assetValue} onChange={(event) => update('assetValue', formatCurrencyBRL(event.target.value))} placeholder="R$ 150.000" inputMode="numeric" /></label>
       </div>
 
       <label className="mt-4 flex items-start gap-3 rounded-[16px] border border-white/10 bg-white/[0.04] p-3 text-sm leading-6 text-white/72">
@@ -158,14 +221,9 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
       ) : null}
 
       <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-        <Button type="submit" disabled={status === 'submitting'} className="h-11 rounded-full bg-[#7C6EF7] px-5 text-white hover:bg-[#6254D4]">
-          {status === 'submitting' ? 'Consultando...' : 'Continuar com Creditas'}
+        <Button type="submit" disabled={status === 'submitting' || status === 'redirecting'} className="h-11 rounded-full bg-[#7C6EF7] px-5 text-white hover:bg-[#6254D4]">
+          {status === 'submitting' ? 'Consultando...' : status === 'redirecting' ? 'Redirecionando...' : 'Continuar com Creditas'}
         </Button>
-        {status === 'fallback' || status === 'error' ? (
-          <Button type="button" variant="outline" className="h-11 rounded-full border-white/15 bg-white/[0.04] px-5 text-white hover:bg-white/10" onClick={() => openWhatsApp({ sourcePage: 'creditas_fallback', mainProduct: 'Crédito com garantia' })}>
-            Continuar no WhatsApp
-          </Button>
-        ) : null}
       </div>
     </form>
   );
