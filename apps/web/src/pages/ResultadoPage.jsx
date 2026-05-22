@@ -39,22 +39,22 @@ function ResultadoPage() {
       key: 'secured-credit',
       match: guaranteeMatch,
       Icon: Car,
-      title: 'Credito com garantia de veiculo',
+      title: 'Crédito com garantia de veículo',
       badge: 'Boa possibilidade',
-      description: 'Voce informou possuir uma garantia, o que pode abrir caminho para opcoes de credito com taxas mais competitivas.',
+      description: 'Você informou possuir uma garantia, o que pode abrir caminho para opções de crédito com taxas mais competitivas.',
       compatibility: 'Compatibilidade estimada: 90%',
-      cta: 'Consultar opcao',
-      note: 'A analise final pode exigir CPF, dados complementares e validacao do parceiro.'
+      cta: 'Consultar opção',
+      note: 'A análise final pode exigir CPF, dados complementares e validação do parceiro.'
     },
     {
       key: 'personal-credit',
       match: personalMatch,
       Icon: CreditCard,
-      title: 'Credito pessoal',
-      badge: 'Disponivel para analise',
-      description: 'Uma alternativa para comparar opcoes sem garantia, conforme seu perfil informado.',
+      title: 'Crédito pessoal',
+      badge: 'Disponível para análise',
+      description: 'Uma alternativa para comparar opções sem garantia, conforme seu perfil informado.',
       compatibility: 'Compatibilidade estimada: 82%',
-      cta: 'Ver opcao'
+      cta: 'Ver opção'
     }
   ].filter((card) => card.match);
 
@@ -102,17 +102,17 @@ function ResultadoPage() {
     });
 
     if (match.actionType === 'complete_data') {
-      setStatus('Para avancar, revise seus dados de contato no quiz e tente novamente.');
+      setStatus('Para avançar, revise seus dados de contato no quiz e tente novamente.');
       return;
     }
 
     if (match.actionType === 'eligibility' && !consents[match.partnerId]?.accepted) {
-      setStatus('Antes de consultar essa opcao, confirme a autorizacao de compartilhamento de dados no card.');
+      setStatus('Antes de consultar essa opção, confirme a autorização de compartilhamento de dados no card.');
       return;
     }
 
     if (match.actionType === 'eligibility') {
-      setStatus('Consulta registrada. As condicoes finais dependem da analise do parceiro.');
+      setStatus('Consulta registrada. As condições finais dependem da análise do parceiro.');
       return;
     }
 
@@ -142,17 +142,17 @@ function ResultadoPage() {
       });
       window.location.href = redirect.redirectUrl || redirect.resolvedUrl;
     } catch (error) {
-      setStatus('Nao foi possivel abrir essa opcao agora. Tente novamente em instantes.');
+      setStatus('Não foi possível abrir essa opção agora. Tente novamente em instantes.');
     } finally {
       setRedirectingPartnerId('');
     }
   };
 
   return (
-    <PlatformShell title="Diagnostico financeiro | Cote Juros">
+    <PlatformShell title="Diagnóstico financeiro | Cote Juros">
       <SeoHead
-        title="Diagnostico financeiro | Cote Juros"
-        description="Veja um diagnostico financeiro indicativo com caminhos possiveis para o seu perfil."
+        title="Diagnóstico financeiro | Cote Juros"
+        description="Veja um diagnóstico financeiro indicativo com caminhos possíveis para o seu perfil."
         path="/resultado"
       />
 
@@ -162,16 +162,16 @@ function ResultadoPage() {
             <div className="result-hero-grid">
               <div>
                 <div className="inner-hero-badge"><span className="hero-badge-dot" /> Resultado indicativo</div>
-                <h1>Seu diagnostico financeiro esta pronto</h1>
+                <h1>Seu diagnóstico financeiro está pronto</h1>
                 <p className="section-desc">
-                  Com base nas informacoes preenchidas, encontramos caminhos que podem fazer sentido para o seu perfil.
+                  Com base nas informações preenchidas, encontramos caminhos que podem fazer sentido para o seu perfil.
                 </p>
                 <p className="result-hero-disclaimer">
-                  Este resultado nao representa aprovacao de credito. As condicoes finais dependem da analise dos parceiros.
+                  Este resultado não representa aprovação de crédito. As condições finais dependem da análise dos parceiros.
                 </p>
                 <div className="result-hero-actions">
                   <Link className="btn-primary" to="/comparar">Comparar ofertas <ArrowUpRight size={14} /></Link>
-                  <Link className="btn-outline" to="/quiz">Refazer analise</Link>
+                  <Link className="btn-outline" to="/quiz">Refazer análise</Link>
                 </div>
               </div>
 
@@ -180,7 +180,7 @@ function ResultadoPage() {
                 <div className="result-score-value">{recommendation.score}/100</div>
                 <div className="result-score-label">Boa compatibilidade</div>
                 <p>
-                  Seu perfil apresenta sinais positivos para consulta com parceiros, mas a aprovacao depende da analise final.
+                  Seu perfil apresenta sinais positivos para consulta com parceiros, mas a aprovação depende da análise final.
                 </p>
               </aside>
             </div>
@@ -191,8 +191,8 @@ function ResultadoPage() {
           <div className="container">
             <div className="trust-inner">
               {[
-                ['Sem cobranca antecipada', ShieldCheck],
-                ['Analise indicativa', ClipboardCheck],
+                ['Sem cobrança antecipada', ShieldCheck],
+                ['Análise indicativa', ClipboardCheck],
                 ['Dados sob consentimento', LockKeyhole]
               ].map(([label, Icon]) => (
                 <div className="trust-item" key={label}>
@@ -238,15 +238,15 @@ function ResultadoPage() {
                     {match.actionType === 'eligibility' ? (
                       <label className="result-consent">
                         <input type="checkbox" checked={Boolean(consents[match.partnerId]?.accepted)} onChange={(event) => event.target.checked && acceptConsent(match.partnerId)} />
-                        <span>Autorizo a Cote Juros a compartilhar meus dados com o parceiro responsavel para analise de credito.</span>
+                        <span>Autorizo a Cote Juros a compartilhar meus dados com o parceiro responsável para análise de crédito.</span>
                       </label>
                     ) : null}
                   </article>
                 )) : (
                   <div className="creditas-card result-empty-card">
-                    <h2>Ainda nao encontramos uma opcao clara.</h2>
-                    <p>Tente reduzir o valor solicitado, informar renda/cidade ou revisar a finalidade do credito.</p>
-                    <Link className="btn-primary" to="/quiz">Refazer analise</Link>
+                    <h2>Ainda não encontramos uma opção clara.</h2>
+                    <p>Tente reduzir o valor solicitado, informar renda/cidade ou revisar a finalidade do crédito.</p>
+                    <Link className="btn-primary" to="/quiz">Refazer análise</Link>
                   </div>
                 )}
 
@@ -254,19 +254,19 @@ function ResultadoPage() {
 
                 <div className="api-ready-note result-legal-note">
                   <ShieldCheck size={16} color="var(--accent-light)" strokeWidth={2.2} />
-                  <span>A Cote Juros nao e banco, nao concede credito diretamente, nao garante aprovacao e nao cobra taxa antecipada. As opcoes apresentadas dependem da analise e criterios dos parceiros.</span>
+                  <span>A Cote Juros não é banco, não concede crédito diretamente, não garante aprovação e não cobra taxa antecipada. As opções apresentadas dependem da análise e critérios dos parceiros.</span>
                 </div>
               </main>
 
               <aside className="result-sidebar">
                 <section className="creditas-card result-insight-card">
                   <div className="result-side-icon"><ClipboardCheck size={18} color="var(--accent-light)" strokeWidth={2.2} /></div>
-                  <h2>Como calculamos este diagnostico</h2>
+                  <h2>Como calculamos este diagnóstico</h2>
                   <p>
-                    Usamos as informacoes preenchidas no quiz, como renda informada, valor desejado, objetivo do credito e existencia de garantia.
+                    Usamos as informações preenchidas no quiz, como renda informada, valor desejado, objetivo do crédito e existência de garantia.
                   </p>
                   <div className="result-check-list">
-                    {['Renda informada', 'Valor solicitado', 'Perfil declarado', 'Tipo de credito desejado', 'Existencia de garantia', 'Criterios dos parceiros'].map((item) => (
+                    {['Renda informada', 'Valor solicitado', 'Perfil declarado', 'Tipo de crédito desejado', 'Existência de garantia', 'Critérios dos parceiros'].map((item) => (
                       <div key={item}>
                         <BadgeCheck size={14} color="var(--accent-light)" strokeWidth={2.2} />
                         <span>{item}</span>
@@ -290,7 +290,7 @@ function ResultadoPage() {
                   <div className="result-side-icon"><LockKeyhole size={18} color="var(--accent-light)" strokeWidth={2.2} /></div>
                   <h2>Preciso informar CPF ou conectar Open Finance?</h2>
                   <p>
-                    Neste primeiro diagnostico, nao e obrigatorio conectar Open Finance. Alguns parceiros podem solicitar CPF, dados adicionais ou autorizacao de consulta para realizar a analise final.
+                    Neste primeiro diagnóstico, não é obrigatório conectar Open Finance. Alguns parceiros podem solicitar CPF, dados adicionais ou autorização de consulta para realizar a análise final.
                   </p>
                   <div className="api-ready-note">Sem CPF ou dados complementares, o resultado permanece apenas indicativo.</div>
                 </section>
