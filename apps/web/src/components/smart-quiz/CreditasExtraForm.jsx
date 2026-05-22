@@ -10,7 +10,7 @@ import {
 import { trackEvent } from '@/platform/services/trackingAdapter.js';
 import { partnerRedirectService } from '@/platform/services/partnerRedirectService.js';
 import { formatCurrencyBRL, parseCurrencyBRL } from '@/components/smart-quiz/currency.js';
-import { formatPhoneValue } from '@/lib/quickCreditSubmission.js';
+import { formatCpfValue, formatPhoneValue } from '@/lib/quickCreditSubmission.js';
 
 const LGPD_TEXT = 'Autorizo a Cote Juros a compartilhar meus dados com a parceira Creditas para análise de opções de crédito com garantia. A aprovação e condições dependem da avaliação da parceira.';
 const CREDITAS_PARTNER_URL = 'https://www.creditas.com/emprestimo-de-qualidade';
@@ -100,7 +100,7 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
   const initialGuaranteeType = resolveGuaranteeType(quizAnswers, lead);
   const initialCity = firstTextValue(quizAnswers?.city, quizAnswers?.cidade, lead?.city, lead?.cidade);
   const initialState = firstTextValue(quizAnswers?.state, quizAnswers?.estado, lead?.state, lead?.estado).toUpperCase();
-  const initialCpf = firstTextValue(quizAnswers?.cpf, lead?.cpf);
+  const initialCpf = formatCpfValue(firstTextValue(quizAnswers?.cpf, lead?.cpf));
   const [form, setForm] = useState({
     fullName: lead?.name || lead?.fullName || '',
     phone: lead?.phone || lead?.whatsapp || '',
@@ -122,6 +122,7 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
   const filledFields = REQUIRED_EXTRA_FIELDS.filter((field) => {
     if (['requestedAmount', 'income', 'assetValue'].includes(field)) return hasMoneyValue(form[field]);
     if (field === 'phone') return String(form.phone || '').replace(/\D/g, '').length >= 10;
+    if (field === 'cpf') return String(form.cpf || '').replace(/\D/g, '').length === 11;
     if (field === 'state') return String(form.state || '').trim().length >= 2;
     return Boolean(String(form[field] || '').trim());
   });
@@ -267,7 +268,7 @@ export default function CreditasExtraForm({ lead, quizAnswers, recommendation, o
         {!lead?.name && !lead?.fullName ? <label className="creditas-field sm:col-span-2"><span>Nome completo</span><Input value={form.fullName} onChange={(event) => update('fullName', event.target.value)} placeholder="Nome completo" /></label> : null}
         {!lead?.phone && !lead?.whatsapp ? <label className="creditas-field"><span>WhatsApp</span><Input value={form.phone} onChange={(event) => update('phone', formatPhoneValue(event.target.value))} placeholder="(11) 99999-9999" inputMode="tel" autoComplete="tel" maxLength={15} /></label> : null}
         {!lead?.email ? <label className="creditas-field"><span>E-mail</span><Input value={form.email} onChange={(event) => update('email', event.target.value)} placeholder="seu@email.com" type="email" /></label> : null}
-        <label className="creditas-field"><span>CPF</span><Input value={form.cpf} onChange={(event) => update('cpf', event.target.value)} placeholder="000.000.000-00" /></label>
+        <label className="creditas-field"><span>CPF</span><Input value={form.cpf} onChange={(event) => update('cpf', formatCpfValue(event.target.value))} placeholder="000.000.000-00" inputMode="numeric" autoComplete="off" maxLength={14} /></label>
         <CreditasSelect
           label="Tipo de garantia"
           value={form.guaranteeType}

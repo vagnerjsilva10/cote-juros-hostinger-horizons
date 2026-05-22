@@ -30,6 +30,14 @@ export const formatPhoneValue = (value = '') => {
   return next;
 };
 
+export const formatCpfValue = (value = '') => {
+  let next = String(value || '').replace(/\D/g, '').slice(0, 11);
+  if (next.length > 9) next = next.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+  else if (next.length > 6) next = next.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+  else if (next.length > 3) next = next.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+  return next;
+};
+
 export const normalizeQuickCreditLead = (data = {}) => ({
   amount: parseCurrencyValue(data.amount),
   income: parseCurrencyValue(data.income),
